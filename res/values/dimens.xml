@@ -1,0 +1,22 @@
+<resources>
+    <dimen name="bt">20dp</dimen>
+    <!-- 头部高度 -->
+    <dimen name="title_hight">50dp</dimen>
+    <!-- 头部图片按钮大小 -->
+    <dimen name="title_image">30dp</dimen>
+    <dimen name="title_width">50dp</dimen>
+    <!-- 内容边距 -->
+    <dimen name="margins">10dp</dimen>
+    <dimen name="image_width">40dp</dimen>
+    <dimen name="double_margins">20dp</dimen>
+    <!-- 圆角 -->
+    <dimen name="corners">5dp</dimen>
+    <!-- 头部字体 -->
+    <dimen name="head">22sp</dimen>
+	<!-- 标题文字 -->
+    <dimen name="title">20sp</dimen>
+    <!-- 辅助字体，按钮 -->
+    <dimen name="main">18sp</dimen>
+    <!-- 内容文字大小 -->
+    <dimen name="content">16sp</dimen>
+</resources>

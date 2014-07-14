@@ -1,0 +1,99 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/margins"
+        android:background="@color/gray_light" >
+        <ImageView
+            android:id="@+id/iv_share"
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_width"
+            android:padding="@dimen/margins"            
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/share_black" />
+        <ImageView
+            android:id="@+id/iv_Collect"
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_width"            
+            android:paddingLeft="@dimen/margins"            
+            android:paddingTop="@dimen/margins"            
+            android:paddingBottom="@dimen/margins"            
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/iv_share"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_launcher" />
+        <TextView
+            android:id="@+id/tv_item_dealadress_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"    
+            android:layout_toLeftOf="@id/iv_Collect"
+            android:textSize="@dimen/content"
+            android:textColor="@color/common"
+            android:layout_centerVertical="true"
+            android:text="深圳红岭北路3002号梅"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:paddingLeft="@dimen/margins">
+
+        <ImageView
+            android:id="@+id/iv_location"
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_width"
+            android:padding="@dimen/margins"            
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/lbs" />
+
+        <TextView
+            android:id="@+id/tv_item_dealadress_adress"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_location"
+            android:layout_marginRight="@dimen/margins"
+            android:text="深圳市福田区大昌汽车服务有限公司汽车检测站"
+            android:textColor="@color/common" />
+    </RelativeLayout>
+    <TextView 
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_lights"/>
+    <RelativeLayout
+        android:id="@+id/ll_adress_tel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/margins">
+        <TextView
+            android:id="@+id/tv_item_dealadress_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="0755-25846135"
+            android:textColor="@color/common" />
+        <ImageView
+            android:id="@+id/iv_tel"
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_width"
+            android:padding="@dimen/margins"            
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/phone" />
+    </RelativeLayout>
+    <TextView 
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/margins"
+        android:background="@color/gray"/>
+</LinearLayout>

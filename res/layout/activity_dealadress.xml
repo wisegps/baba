@@ -1,0 +1,36 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"    
+    android:background="@drawable/bg_huise">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/title_hight"
+        android:background="@color/title_back">
+		<ImageView
+            android:id="@+id/iv_activity_dealadress_back"
+            android:layout_width="@dimen/title_hight"
+	        android:layout_height="@dimen/title_hight"
+	        android:layout_marginLeft="@dimen/margins"
+	        android:padding="@dimen/margins"
+            android:layout_alignParentLeft="true"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/nav_back"/>
+        <TextView
+            android:id="@+id/tv_activity_travel_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="处理地点"
+            android:textColor="@color/white"
+            android:textSize="@dimen/head"/>
+	</RelativeLayout>
+	<ListView 
+	    android:id="@+id/lv_activity_dealadress"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+        android:divider="@null"
+        android:cacheColorHint="#00000000"></ListView>
+</LinearLayout>

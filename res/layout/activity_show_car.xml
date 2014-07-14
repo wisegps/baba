@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+    <RelativeLayout 
+    	android:id="@+id/ll_main"
+	    android:layout_width="fill_parent"
+	    android:layout_height="@dimen/title_hight"
+        android:background="@drawable/nav_bg">
+	    <TextView
+	         android:layout_width="fill_parent"
+	         android:layout_height="wrap_content"
+	         android:layout_centerInParent="true"
+	         android:text="秀我的车"
+	         android:gravity="center"
+	         android:textSize="@dimen/title"
+	         android:textColor="@color/white" />
+	    <ImageView 
+	        android:id="@+id/iv_show"
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
+	        android:layout_centerVertical="true"
+	        android:layout_alignParentRight="true"
+	        android:src="@drawable/ic_launcher"/>
+	</RelativeLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_card"
+        android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/tv_service"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="保养费用"
+            android:textColor="@color/common" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_card"
+        android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/tv_service"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="车型：大众途安2013版"
+            android:textColor="@color/common" />
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_card">
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="280元"/>
+        <TextView
+            android:id="@+id/tv_service"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="机油"
+            android:textColor="@color/common" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_card">
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="120元"/>
+        <TextView
+            android:id="@+id/tv_service"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="机油滤芯"
+            android:textColor="@color/common" />
+    </RelativeLayout>
+</LinearLayout>

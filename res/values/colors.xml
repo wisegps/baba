@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 灰色背景 -->
+    <!-- 导航条背景色 -->
+    <color name="title_back">#50B7DE</color>
+    <!-- 蓝色字 -->
+    <color name="blue">#53A5C4</color>
+    <color name="blue_press">#50B7DE</color>
+    <color name="yellow">#F8B264</color>
+    
+    <!-- 分割线 -->
+    <color name="line">#CCCCCC</color>
+    <!--  -->
+    <color name="pink">#FF8C8C</color>
+    <color name="gray">#d8d9e1</color>
+    <color name="gray_lights">#80d8d9e1</color>
+    <color name="gray_light">#4cd8d9e1</color>
+    <color name="gray_light_ten">#19d8d9e1</color>
+    <!-- 选择城市 -->
+    <color name="gray_weak">#f2f1f7</color>
+    <!-- 蓝色背景 -->
+    <color name="blue_light">#993b5197</color>
+    <color name="blue_light_ten">#193b5197</color>
+    <!-- 红色背景 -->
+    <color name="red">#e41d34</color>
+    <color name="red_light">#B3e41d34</color>
+    <!-- 首页背景 -->
+    <color name="bg_home">#4c121220</color>
+    <color name="bg_home1">#4c313131</color>
+    <!-- 洗车指数 -->
+    <color name="blue_bg">#3a5197</color>
+    <!-- 车友圈用户名字体颜色 -->
+    <color name="article_user_name">#3a5195</color>
+    <!-- 常规字体颜色 -->
+    <color name="common">#313131</color>
+    <color name="common1">#CC313131</color>
+    <!-- 未激活字体颜色 -->
+    <color name="common_inactive">#7f313131</color>
+    <!-- 蓝色字体 -->
+    <color name="common_blue">#436af5</color>
+    <!-- 红色字体 -->
+    <color name="common_red">#e41d34</color>
+    <color name="white_inactive">#7fFFFFFF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black1">#000000</color>
+    <color name="white_light">#CCFFFFFF</color>
+    
+    
+    <color name="circle_color">#323a45</color>
+    <color name="ring_color">#14b9d6</color>
+
+    <!-- 二维码 -->
+    <color name="transparent">#00000000</color>
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="result_view">#b0000000</color>
+    <color name="viewfinder_frame">#ff000000</color>
+    <color name="viewfinder_laser">#ffff0000</color>
+    <color name="possible_result_points">#c0ffff00</color>
+</resources>

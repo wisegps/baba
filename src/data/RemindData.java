@@ -1,0 +1,76 @@
+package data;
+
+import java.io.Serializable;
+public class RemindData implements Serializable{
+	String create_time;
+	String remind_time;
+	String content;
+	int repeat_type;
+	int remind_way;
+	int mileage;
+	int obj_id;
+	int remind_type;
+	String reminder_id;
+	public String getCreate_time() {
+		return create_time;
+	}
+	public void setCreate_time(String create_time) {
+		this.create_time = create_time;
+	}
+	public String getRemind_time() {
+		return remind_time;
+	}
+	public void setRemind_time(String remind_time) {
+		this.remind_time = remind_time;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public int getRepeat_type() {
+		return repeat_type;
+	}
+	public void setRepeat_type(int repeat_type) {
+		this.repeat_type = repeat_type;
+	}
+	public int getRemind_way() {
+		return remind_way;
+	}
+	public void setRemind_way(int remind_way) {
+		this.remind_way = remind_way;
+	}
+	public int getMileage() {
+		return mileage;
+	}
+	public void setMileage(int mileage) {
+		this.mileage = mileage;
+	}
+	public int getObj_id() {
+		return obj_id;
+	}
+	public void setObj_id(int obj_id) {
+		this.obj_id = obj_id;
+	}
+	public int getRemind_type() {
+		return remind_type;
+	}
+	public void setRemind_type(int remind_type) {
+		this.remind_type = remind_type;
+	}
+	public String getReminder_id() {
+		return reminder_id;
+	}
+	public void setReminder_id(String reminder_id) {
+		this.reminder_id = reminder_id;
+	}
+	@Override
+	public String toString() {
+		return "RemindData [create_time=" + create_time + ", remind_time="
+				+ remind_time + ", content=" + content + ", repeat_type="
+				+ repeat_type + ", remind_way=" + remind_way + ", mileage="
+				+ mileage + ", obj_id=" + obj_id + ", remind_type="
+				+ remind_type + ", reminder_id=" + reminder_id + "]";
+	}    	
+}

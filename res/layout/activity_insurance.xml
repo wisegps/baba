@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/title_hight"
+        android:background="@drawable/nav_bg" >
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/title_width"
+            android:layout_height="@dimen/title_image"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/nav_back" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:text="保险公司"
+            android:textColor="@color/white"
+            android:textSize="@dimen/head" />
+    </RelativeLayout>
+    <xlist.XListView
+        android:id="@+id/lv_insurance"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:cacheColorHint="#00000000"
+        android:listSelector="@drawable/bg_item_selector"
+        android:divider="@color/gray_light"
+        android:dividerHeight="0.5dip"
+        android:scrollingCache="false" >
+    </xlist.XListView>
+</LinearLayout>

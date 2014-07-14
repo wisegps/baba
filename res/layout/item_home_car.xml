@@ -1,0 +1,39 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout 
+        android:id="@+id/ll_car"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+		android:background="@drawable/bg_card"
+		android:layout_marginBottom="@dimen/margins"
+    	android:orientation="vertical">
+        <TextView 
+	        android:id="@+id/tv_number"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/common"
+	        android:textSize="@dimen/content"
+	        android:text="车牌：粤B 1234"/>
+	    <TextView 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/common"
+	        android:textSize="@dimen/content"
+	        android:text="我的爱车 大众途安    健康指数：*****"/>
+	    <TextView 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/common"
+	        android:textSize="@dimen/content"
+	        android:text="平均油耗：１０Ｌ/100KM  剩余油量： 行驶50km"/>
+	    <TextView 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/common"
+	        android:textSize="@dimen/content"
+	        android:text="离车辆年检还有90天"/>   
+    </LinearLayout>    
+</LinearLayout>

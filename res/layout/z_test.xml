@@ -1,0 +1,70 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >            
+    <RelativeLayout
+     	android:layout_width="fill_parent"
+     	android:layout_height="wrap_content" 
+     	android:paddingLeft="@dimen/margins"
+        android:background="@color/gray_light" >
+        <Button 
+            android:id="@+id/bt_bind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/iv_share"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:text="绑定终端"/>
+        <ImageView
+         	android:id="@+id/iv_icon"
+         	android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_width"
+            android:padding="@dimen/margins" 
+            android:layout_centerVertical="true"
+         	android:contentDescription="@string/app_name"
+         	android:src="@drawable/ic_launcher" />
+        <LinearLayout 
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toRightOf="@id/iv_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+		         android:id="@+id/tv_name"
+		         android:layout_width="wrap_content"
+		         android:layout_height="wrap_content"            
+		         android:textSize="@dimen/main"
+		         android:textColor="@color/common"
+		         android:text="沙河西路加油站" />
+            <TextView
+		         android:layout_width="wrap_content"
+		         android:layout_height="wrap_content"            
+		         android:textSize="@dimen/main"
+		         android:textColor="@color/common"
+		         android:layout_marginRight="@dimen/margins"
+		         android:text="粤B12345" />
+        </LinearLayout>	     
+	 </RelativeLayout>
+	 <LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+	     <TextView
+	         android:layout_width="wrap_content"
+	         android:layout_height="80dp"
+	         android:background="@color/red"
+	         android:ems="2"
+	         android:text="解除绑定"
+	         android:gravity="center_vertical"
+	         android:textColor="@color/white" />
+	     <TextView
+	         android:layout_width="wrap_content"
+	         android:layout_height="80dp"
+	         android:background="@color/red"
+	         android:text="解除绑定"
+	         android:textColor="@color/white" />
+    </LinearLayout>
+</LinearLayout>

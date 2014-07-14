@@ -1,0 +1,41 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+    <RelativeLayout 
+    	android:id="@+id/ll_main"
+	    android:layout_width="fill_parent"
+	    android:layout_height="@dimen/title_hight"
+        android:background="@drawable/nav_bg">
+        <ImageView 
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_launcher"/>
+	    <TextView
+	         android:layout_width="wrap_content"
+	         android:layout_height="wrap_content"
+	         android:layout_centerInParent="true"
+	         android:text="回复：楼主"
+	         android:textSize="@dimen/title"
+	         android:textColor="@color/white" />
+	    <Button 
+	        android:id="@+id/bt_register"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:textColor="@color/color_white"
+	        android:layout_centerVertical="true"
+	        android:layout_marginRight="@dimen/margins"
+	        android:background="@drawable/bg_bt_white"
+	        android:text="回复"/>
+	</RelativeLayout>
+	<EditText 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:minLines="8"/>
+</LinearLayout>

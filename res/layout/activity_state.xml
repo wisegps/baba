@@ -1,0 +1,79 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tc="http://schemas.android.com/apk/res/com.wise.baba"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white">
+    <RelativeLayout 
+    	android:id="@+id/ll_main"
+	    android:layout_width="fill_parent"
+	    android:layout_height="@dimen/title_hight"
+        android:background="@drawable/nav_bg">
+        <ImageView 
+	        android:layout_width="@dimen/title_hight"
+	        android:layout_height="@dimen/title_hight"
+	        android:padding="@dimen/margins"
+	        android:layout_centerVertical="true"
+	        android:src="@drawable/nav_back"/>
+	    <TextView
+	         android:layout_width="fill_parent"
+	         android:layout_height="wrap_content"
+	         android:layout_centerInParent="true"
+	         android:text="叭叭管家"
+	         android:gravity="center"
+	         android:textSize="@dimen/title"
+	         android:textColor="@color/white" />
+	</RelativeLayout>
+	<TextView
+	    android:id="@+id/tv_name"
+        android:layout_below="@id/ll_main"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_horizontal"
+	    android:padding="10dp"
+	    android:text="大众途安(粤B1245)"/>
+    <com.wise.state.TasksCompletedView
+        android:id="@+id/tasks_view"
+        android:layout_below="@id/tv_name"
+        android:layout_width="fill_parent"
+        android:layout_height="200dip"
+        tc:radius="80dip"
+        tc:strokeWidth="10dip"
+        tc:circleColor="@color/circle_color"
+        tc:ringColor="@color/ring_color" />
+    <ScrollView 
+        android:layout_below="@id/tasks_view"
+        android:layout_width="fill_parent"
+        android:scrollbars="vertical"
+        android:fadingEdge="vertical"
+        android:id="@+id/scrollView"
+        android:layout_marginTop="10px"
+        android:layout_marginLeft="10px"
+        android:layout_marginRight="10px"
+        android:layout_marginBottom="10px"
+        android:layout_height="20dp">     
+        <LinearLayout android:orientation="vertical" android:layout_width="fill_parent"    android:layout_height="fill_parent">       
+			<TextView android:text="第一行"  android:textColor="#1A1A1A" android:background="#C1CDCD"  android:textSize="13dp" android:id="@+id/textView1" android:layout_width="fill_parent" android:layout_height="20dp"></TextView>
+			<TextView android:text="第二行"  android:textColor="#1A1A1A" android:background="#C1CDCD"  android:textSize="13dp" android:id="@+id/textView2" android:layout_width="fill_parent" android:layout_height="20dp"></TextView>
+			<TextView android:text="第三行"  android:textColor="#1A1A1A" android:background="#C1CDCD"  android:textSize="13dp" android:id="@+id/textView3" android:layout_width="fill_parent" android:layout_height="20dp"></TextView>
+			<TextView android:text="第四行"  android:textColor="#1A1A1A" android:background="#C1CDCD"  android:textSize="13dp" android:id="@+id/textView4" android:layout_width="fill_parent" android:layout_height="20dp"></TextView>        
+		</LinearLayout>
+    </ScrollView>
+    <LinearLayout 
+        android:id="@+id/ll_bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="问一下"/>
+        <Button 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="秀一下"/>
+    </LinearLayout>
+</RelativeLayout>

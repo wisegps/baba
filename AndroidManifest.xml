@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.wise.baba"
+    android:versionCode="1"
+    android:versionName="1.0" >
+	<supports-screens android:largeScreens="true" android:normalScreens="true" android:smallScreens="true" android:resizeable="true" android:anyDensity="true"/>  
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="17" />
+	<permission
+        android:name="com.wise.wawc.permission.JPUSH_MESSAGE"
+        android:protectionLevel="signature" />
+    <!-- Required  一些系统要求的权限，如访问网络等-->
+    <uses-permission android:name="com.wise.wawc.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/> 
+    
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+	<uses-permission android:name="android.permission.CALL_PHONE"/>
+	<uses-permission android:name="android.permission.GET_TASKS" />
+	<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+	<uses-permission android:name="android.permission.READ_LOGS"/>
+	<uses-permission android:name="android.permission.RECORD_AUDIO" />
+	<uses-permission android:name="android.permission.CAMERA"/>	
+	<uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    
+    <application
+        android:name="com.wise.baba.AppApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ServiceActivity"></activity>
+        <activity android:name=".ServiceInfoActivity"></activity>
+        <activity android:name=".ShowActivity"></activity>
+        <activity android:name=".ShowCarActivity"></activity>
+        <activity android:name=".MoreActivity"></activity>
+        <activity android:name="com.wise.setting.SetActivity"></activity>
+        <activity android:name="com.wise.setting.LoginActivity"></activity>
+        <activity android:name="com.wise.setting.RegisterActivity"></activity>
+        <activity android:name="com.wise.setting.CaptchaActivity"></activity>
+        <activity android:name="com.wise.setting.RegisterInfoActivity"></activity>
+        <activity android:name="com.wise.setting.AccountActivity"></activity>
+        <activity android:name="com.wise.setting.NameActivity"></activity>
+        <activity android:name="com.wise.setting.BindActivity"></activity>
+        <activity android:name="com.wise.setting.UpdatePwdActivity"></activity>
+        
+        <activity android:name="com.wise.state.FaultDetectionActivity"></activity>
+        <activity android:name="com.wise.state.FaultActivity"></activity>
+        <activity android:name="com.wise.state.TestActivity">            
+            <intent-filter android:label="测试">  
+               <action android:name="android.intent.action.SEND" />  
+               <action android:name="android.intent.action.SEND_MULTIPLE" />  
+               <category android:name="android.intent.category.DEFAULT" />  
+               <data android:mimeType="application/*" />  
+               <data android:mimeType="audio/*" />  
+               <data android:mimeType="image/*" />  
+               <data android:mimeType="text/*" />  
+               <data android:mimeType="video/*" />  
+               <data android:mimeType="multipart/*" />  
+           </intent-filter> 
+        </activity>
+        <activity android:name="com.wise.show.ShowActivity"></activity>
+        <activity android:name="com.wise.show.PicActivity"></activity>
+        <activity android:name="com.wise.car.CarActivity"></activity>
+        <activity android:name="com.wise.car.CarAddActivity"></activity>
+        <activity android:name="com.wise.car.ModelsActivity"></activity>
+        <activity android:name="com.wise.car.DevicesAddActivity"></activity>
+        <activity android:name="com.wise.car.CarUpdateActivity"></activity>
+        <activity android:name="com.wise.car.TrafficCitiyActivity"></activity>
+        <activity android:name="com.wise.car.PetrolGradeActivity"></activity>
+        <activity android:name="com.wise.car.InsuranceActivity"></activity>
+        <activity android:name="com.wise.car.MaintainShopActivity"></activity>        
+        <activity android:name="com.wise.remind.RemindAddActivity" 
+            android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan">            
+        </activity>
+        <activity android:name="com.wise.remind.CarRemindUpdateActivity"
+            android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan">            
+        </activity>
+        <activity android:name="com.wise.remind.RemindActivity" android:screenOrientation="portrait">            
+        </activity>
+        <activity android:name="com.wise.remind.DealAddressActivity" android:screenOrientation="portrait"></activity>        
+        <activity android:name="com.wise.violation.TrafficActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.wise.violation.ComplainActivity" android:screenOrientation="portrait"></activity>
+        
+        <activity android:name=".AskActivity"></activity>
+        <activity android:name=".AskInfoActivity"></activity>
+        <activity android:name=".QuestionActivity"></activity>
+        <activity android:name=".FriendQuestionActivity"></activity>
+        <activity android:name=".ReplyActivity"></activity>
+        <activity android:name=".ServiceRankingActivity"></activity>
+        <activity android:name=".SearchServiceActivity"></activity>
+        <activity android:name=".ServiceShowActivity"></activity>
+        <activity android:name=".ServiceShowInfoActivity"></activity>
+        <activity android:name=".AddShowActivity"></activity>
+        <activity android:name=".CollectionActivity"></activity>
+        <activity android:name=".SmsActivity"></activity>
+        <activity android:name="com.wise.remind.RemindListActivity"></activity>
+        
+        <activity
+            android:name="cn.sharesdk.framework.ShareSDKUIShell"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation|screenSize" android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+            <meta-data android:name="Adapter" android:value="cn.sharesdk.demo.MyAdapter" />
+            <intent-filter>
+                <data android:scheme="db-7janx53ilz11gbs" />
+        		<action android:name="android.intent.action.VIEW" />
+        		<category android:name="android.intent.category.BROWSABLE"/>
+        		<category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <service android:name=".LocationService"></service>
+        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"></service>
+        <!-- Required SDK核心功能-->
+        <activity
+            android:name="cn.jpush.android.ui.PushActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.ui.PushActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.wise.wawc" />
+            </intent-filter>
+        </activity>
+        
+		<!-- Required  SDK核心功能-->
+        <service
+            android:name="cn.jpush.android.service.DownloadService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+        
+    	<!-- Required -->
+        <service
+            android:name="cn.jpush.android.service.PushService"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTER" />
+                <action android:name="cn.jpush.android.intent.REPORT" />
+                <action android:name="cn.jpush.android.intent.PushService" />
+                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
+            </intent-filter>
+        </service>
+        
+        <!-- Required SDK核心功能-->
+        <receiver
+            android:name="cn.jpush.android.service.PushReceiver"
+            android:enabled="true" >
+             <intent-filter android:priority="1000">
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />   <!--Required  显示通知栏 -->
+                <category android:name="com.wise.wawc" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+             <!-- Optional -->
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
+   
+        </receiver>
+        
+        <!-- Required SDK核心功能-->
+        <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
+        
+		<receiver
+		    android:name="com.wise.wawc.SmsReceiver"
+		    android:enabled="true">
+		    <intent-filter>
+		        <action android:name="cn.jpush.android.intent.REGISTRATION" />
+		        <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
+		        <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />		        
+		        <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />		        
+		        <category android:name="com.wise.wawc" />
+		    </intent-filter>
+		</receiver>
+		
+        <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default"/>
+        <!-- Required. AppKey copied from Portal -->
+        <meta-data android:name="JPUSH_APPKEY" android:value="e73e42fc51c344d1a020d605"/>
+        
+    </application>
+</manifest>
