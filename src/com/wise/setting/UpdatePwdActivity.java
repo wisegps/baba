@@ -10,6 +10,8 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
+
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import android.app.Activity;
 import android.content.Context;
@@ -115,5 +117,15 @@ public class UpdatePwdActivity extends Activity{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 }

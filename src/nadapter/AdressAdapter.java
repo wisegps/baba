@@ -119,7 +119,7 @@ public class AdressAdapter extends BaseAdapter{
 		if(adressData.isIs_collect()){
 		    holder.iv_Collect.setImageResource(R.drawable.body_icon_collect_press);
 		}else{
-		    holder.iv_Collect.setImageResource(R.drawable.ic_launcher);
+		    holder.iv_Collect.setImageResource(R.drawable.body_icon_collect);
 		}
 		holder.iv_share.setOnClickListener(new OnClickListener() {            
             @Override
@@ -160,8 +160,6 @@ public class AdressAdapter extends BaseAdapter{
 			public void onClick(View v) {
 				GeoPoint point = new GeoPoint((int) (Variable.Lat * 1E6),(int) (Variable.Lon * 1E6));
                 GeoPoint point1 = new GeoPoint((int) (adressData.getLat() * 1E6),(int) (adressData.getLon() * 1E6));
-                System.out.println(Variable.Lat + "/" + Variable.Lat);
-                System.out.println(adressData.getLat() + "/" + adressData.getLat());
                 GetSystem.FindCar(mActivity, point, point1, "point", "point1");
 			}
 		});
@@ -202,7 +200,6 @@ public class AdressAdapter extends BaseAdapter{
 				        values.put("lon", adressData.getLon());
 				        values.put("lat", adressData.getLat());
 				        dbExcute.InsertDB(mActivity, values, Constant.TB_Collection);
-				        System.out.println(adressData.toString());
 						Toast.makeText(mActivity, "添加成功", Toast.LENGTH_SHORT).show();
 						if(onCollectListener != null){
 						    onCollectListener.OnCollect(index);

@@ -27,7 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
- * 我的收藏自定义迭代器
+ * 收藏
  */
 public class CollectionAdapter extends BaseAdapter {
     private static final String TAG = "CollectionAdapter";
@@ -105,7 +105,6 @@ public class CollectionAdapter extends BaseAdapter {
         holder.tv_del.setOnClickListener(new OnClickListener() {            
             @Override
             public void onClick(View v) {
-                System.out.println(position);
                 if(collectionItemListener != null){
                     collectionItemListener.Delete(position);
                 }

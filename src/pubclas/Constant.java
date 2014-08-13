@@ -1,68 +1,25 @@
 package pubclas;
 
 import com.wise.baba.R;
-
 import android.os.Environment;
+
 /**
  * 常量
  * @author honesty
  */
 public class Constant {
-    /**
-     * true,放在百度云上测试,需要默认自动登录
-     * false 正式发布
-     */
-    public static boolean isTest = false;
-    /**
-     * 服务器地址："http://wiwc.api.wisegps.cn/"
-     * http://baba.api.wisegps.cn/
-     */
-    public static String BaseUrl = "http://42.121.109.221:8002/";
-	
-    /**
-     * 图片地址"http://img.wisegps.cn/logo/"
-     */
+    /**url**/
+    public static String BaseUrl = "http://42.121.109.221:8002/";	
+    /**图片地址**/
     public static String ImageUrl = "http://img.wisegps.cn/logo/";
-    /**
-     * 图片路径存储地址
-     */
-    public static String BasePath = Environment.getExternalStorageDirectory().getPath() + "/wiwc/";
-    /**
-     * 个人头像和其他图片
-     */
-    public static String picPath = BasePath + "pic/";
-    /**
-     * 存放用户头像
-     */
-    public static String userIconPath = BasePath + "userIcon/";
-    /**
-     * 车友圈
-     */
-    public static String VehiclePath = BasePath + "vehicle/";
-    /**
-     * 车品牌logo
-     */
+    /**图片路径存储地址**/
+    public static String BasePath = Environment.getExternalStorageDirectory().getPath() + "/baba/";
+    /**车品牌logo**/
     public static String VehicleLogoPath = BasePath + "vehicleLogo/";
-    /**
-     * 车品牌背景
-     */
-    public static String VehicleSpellPath = BasePath + "vehicleSpell/";
-    /**
-     * 个人头像
-     */
-    public static final String UserImage = "UserIcon.jpg";
-    /**
-     * 救援照片存储
-     */
-    public static final String ShareImage = "Share.jpg";
-    /**
-     * 首页背景图片
-     */
-    public static final String BgImage = "HomeBg.jpg";
-	/**
-	 * 获取版本信息用到
-	 */
-	public static String PackageName = "com.wise.wawc";
+    /**存放用户头像**/
+    public static String userIconPath = BasePath + "userIcon/";    
+	/**获取版本信息用到**/
+	public static String PackageName = "com.wise.baba";
 	
 	/**
 	 * 违章推送
@@ -88,17 +45,18 @@ public class Constant {
 	
 	public static final String DefaultCity = "DefaultCity";
 	/**
-	 * 定位城市，获取天气油价
-	 */
-	public static final String LocationCity = "LocationCity";
-	/**
 	 * 城市编码
 	 */
 	public static final String LocationCityCode = "LocationCityCode";
-	/**
-	 * 省份
-	 */
-	public static final String LocationProvince = "LocationProvince";
+
+	/**存放城市**/
+	public static final String sp_city = "sp_city";
+	/**存放省份**/
+	public static final String sp_province = "sp_province";
+	/**存放体检**/
+	public static final String sp_health_score = "sp_health_score";
+	/**存放个人信息**/
+	public static final String sp_customer = "sp_customer";
 	/**
 	 * 油价
 	 */
@@ -131,31 +89,6 @@ public class Constant {
 	 */
 	public static String TB_Base = "TB_Base";
 	/**
-	 * 车友圈
-	 */
-	public static String TB_VehicleFriend = "TB_VehicleFriend";
-	/**
-	 * 车友圈类型
-	 */
-	public static String TB_VehicleFriendType = "TB_VehicleFriendType";
-	
-	/**
-	 * 爱车故障
-	 */
-	public static String TB_Faults = "TB_Faults";
-	/**
-	 * 行程统计
-	 */
-	public static String TB_TripTotal = "TB_TripTotal";
-	/**
-	 * 行程记录
-	 */
-	public static String TB_TripList = "TB_TripList";
-	/**
-	 * 单次行程记录详细
-	 */
-	public static String TB_Trip = "TB_Trip";
-	/**
 	 * 我的爱车
 	 */
 	public static String TB_Vehicle = "TB_Vehicle";
@@ -167,14 +100,6 @@ public class Constant {
 	 * 我的收藏
 	 */
 	public static String TB_Collection = "TB_Collection";
-	/**
-	 * 我的违章
-	 */
-	public static String TB_Traffic = "TB_Traffic";
-	/**
-	 * 我的账户
-	 */
-	public static String TB_Account = "TB_Account";
 	/**
 	 * 我的消息
 	 */
@@ -191,10 +116,6 @@ public class Constant {
 	 * 登录广播，首页获取车辆用到
 	 */
 	public static String A_Login = "com.wise.wawc.login";
-	/**
-	 * 注销广播
-	 */
-    public static String A_LoginOut = "com.wise.wawc.login_out";
     /**
      * 提交订单广播
      */
@@ -203,6 +124,10 @@ public class Constant {
      * 更新or修改车辆
      */
     public static String A_UpdateCar = "com.wise.wawc.update_car";
+    /**更新首页信息**/
+    public static String A_RefreshHomeCar = "com.wise.baba.refresh_home_car";
+	/**注销广播**/
+    public static String A_LoginOut = "com.wise.baba.login_out";
     
     /**
      * 我的爱车logo刷新
@@ -244,6 +169,6 @@ public class Constant {
 	
 
 	public static String[] items_note_type = {"驾照换证","车辆年检", "车辆保养", "车辆续保", "车辆理赔", "通用提醒"};
-	public static int[] items_note_type_image = {R.drawable.ic_launcher,R.drawable.icon_cw_nianjian, R.drawable.icon_cw_baoyang, R.drawable.icon_cw_xuxian, R.drawable.icon_cw_niansheng, R.drawable.icon_xx_notice};
+	public static int[] items_note_type_image = {R.drawable.icon_cw_niansheng,R.drawable.icon_cw_nianjian, R.drawable.icon_cw_baoyang, R.drawable.icon_cw_xuxian, R.drawable.icon_xx_notice, R.drawable.icon_xx_notice};
 	public static String[] items_note_mode = {"不重复","按月重复", "按周重复", "按日重复", "末月按周重复，其他按周重复"};
 }

@@ -1,13 +1,12 @@
 package com.wise.state;
 
 import com.wise.baba.R;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.Paint.FontMetrics;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -16,14 +15,10 @@ import android.view.View;
  * @version 1.0
  */
 public class TasksCompletedView extends View {
-	// 画实心圆的画笔
-	private Paint mCirclePaint;
 	// 画圆环的画笔
 	private Paint mRingPaint;
-	//字体的画笔
-	private Paint mTextPaint;
-	//进度的画笔
-	private Paint mProgressPaint;
+	// 画圆环背景的画笔
+	private Paint mRingBgPaint;
 	// 圆形颜色
 	private int mCircleColor;
 	// 圆环颜色
@@ -38,16 +33,12 @@ public class TasksCompletedView extends View {
 	private int mXCenter;
 	// 圆心y坐标
 	private int mYCenter;
-	// 字的长度
-	private float mTxtWidth;
-	// 字的高度
-	private float mTxtHeight;
-	//进度的高度
-	private float mProgressHeight;
 	// 总进度
 	private int mTotalProgress = 100;
 	// 当前进度
 	private int mProgress;
+	
+	boolean isGreen = false;
 
 	public TasksCompletedView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -68,34 +59,23 @@ public class TasksCompletedView extends View {
 	}
 
 	private void initVariable() {
-		mCirclePaint = new Paint();
-		mCirclePaint.setAntiAlias(true);
-		mCirclePaint.setColor(mCircleColor);
-		mCirclePaint.setStyle(Paint.Style.FILL);
+		mRingBgPaint = new Paint();
+		mRingBgPaint.setAntiAlias(true);
+		mRingBgPaint.setColor(mCircleColor);
+		mRingBgPaint.setStyle(Paint.Style.STROKE);
+		mRingBgPaint.setStrokeWidth(mStrokeWidth);
 		
 		mRingPaint = new Paint();
 		mRingPaint.setAntiAlias(true);
 		mRingPaint.setColor(mRingColor);
 		mRingPaint.setStyle(Paint.Style.STROKE);
-		mRingPaint.setStrokeWidth(mStrokeWidth);
-		
-		mTextPaint = new Paint();
-		mTextPaint.setAntiAlias(true);
-		mTextPaint.setStyle(Paint.Style.FILL);
-		mTextPaint.setARGB(255, 255, 255, 255);
-		mTextPaint.setTextSize(mRadius / 4);
-		
-		FontMetrics fm = mTextPaint.getFontMetrics();
-		mTxtHeight = (int) Math.ceil(fm.descent - fm.ascent);
-		
-		mProgressPaint = new Paint();
-		mProgressPaint.setAntiAlias(true);
-		mProgressPaint.setStyle(Paint.Style.FILL);
-		mProgressPaint.setARGB(255, 255, 255, 255);
-		mProgressPaint.setTextSize(mRadius / 2);
-		
-		FontMetrics fm1 = mProgressPaint.getFontMetrics();
-		mProgressHeight = (int) Math.ceil(fm1.descent - fm1.ascent);		
+		mRingPaint.setStrokeWidth(mStrokeWidth);	
+	}
+	public void setRingColor(int resId,boolean isGreen){
+		isGreen = true;
+		mRingColor = resId;
+		initVariable();
+		postInvalidate();
 	}
 
 	@Override
@@ -103,8 +83,7 @@ public class TasksCompletedView extends View {
 
 		mXCenter = getWidth() / 2;
 		mYCenter = getHeight() / 2;
-		
-		canvas.drawCircle(mXCenter, mYCenter, mRadius, mCirclePaint);
+		canvas.drawCircle(mXCenter, mYCenter, mRingRadius, mRingBgPaint);
 		
 		if (mProgress > 0 ) {
 			RectF oval = new RectF();
@@ -112,20 +91,80 @@ public class TasksCompletedView extends View {
 			oval.top = (mYCenter - mRingRadius);
 			oval.right = mRingRadius * 2 + (mXCenter - mRingRadius);
 			oval.bottom = mRingRadius * 2 + (mYCenter - mRingRadius);
-			canvas.drawArc(oval, -90, ((float)mProgress / mTotalProgress) * 360, false, mRingPaint); //
-//			canvas.drawCircle(mXCenter, mYCenter, mRadius + mStrokeWidth / 2, mRingPaint);
-			String txt = mProgress + "%";
-			mTxtWidth = mProgressPaint.measureText(txt, 0, txt.length());
-			float width = mTextPaint.measureText("健康指数", 0, "健康指数".length());
-			canvas.drawText("健康指数", mXCenter - width / 2, mYCenter - mTxtHeight/4, mTextPaint);
-			canvas.drawText(txt, mXCenter - mTxtWidth / 2, mYCenter + mProgressHeight - mTxtHeight/4 , mProgressPaint);
+			if(!isGreen){
+				int[] color = colors[indexOf(mProgress)];
+				//mRingPaint.setColor(Color.rgb(color[0], color[1], color[2]));
+				mRingPaint.setColor(Color.argb(76, color[0], color[1], color[2]));
+			}
+			canvas.drawArc(oval, -90, ((float)mProgress / mTotalProgress) * 360, false, mRingPaint);
 		}
+	}	
+	public void setProgress(int progress,boolean is) {
+		isGreen = is;
+		mProgress = progress;
+		postInvalidate();
 	}
 	
 	public void setProgress(int progress) {
+		isGreen = false;
 		mProgress = progress;
-//		invalidate();
 		postInvalidate();
 	}
-
+	
+	private int indexOf(int progress){
+		return (mTotalProgress - progress)/2;
+	}
+	
+	int[][] colors = {
+			{83,181,220},
+			{85,183,218},
+			{87,185,201},
+			{89,187,193},
+			{91,189,185},			
+			{98,190,175},
+			{99,192,163},
+			{102,194,157},
+			{106,195,149},			
+			{108,195,140},
+			{111,197,134},
+			{113,199,124},
+			{116,199,117},			
+			{118,201,109},
+			{122,203,100},
+			{123,202,93},
+			{126,206,85},			
+			{130,207,77},
+			{133,208,66},
+			{135,208,65},
+			{142,205,65},			
+			{152,199,67},
+			{156,197,69},
+			{163,193,71},
+			{171,188,73},			
+			{177,185,76},
+			{185,182,79},
+			{193,177,79},
+			{199,174,81},			
+			{206,170,82},
+			{216,165,84},
+			{221,165,86},
+			{228,159,90},			
+			{235,156,90},
+			{241,152,92},
+			{245,149,91},
+			{245,145,93},			
+			{245,143,94},
+			{247,140,94},
+			{247,138,97},
+			{248,136,98},			
+			{247,133,96},
+			{249,130,96},
+			{248,127,96},
+			{250,126,98},			
+			{252,123,101},
+			{251,120,102},
+			{251,118,101},
+			{252,116,102},
+			{254,106,104}
+	};
 }

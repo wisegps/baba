@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/title_hight"
+        android:background="@color/title_back" >
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="关于叭叭"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margins"
+            android:padding="@dimen/margins"
+            android:src="@drawable/nav_back" />
+    </RelativeLayout>
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_check_update" 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/content"
+            android:textColor="@color/Green"
+            android:gravity="center_horizontal"
+            android:text="检查新版本"/>
+        <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/content"
+            android:textColor="@color/Green"
+            android:gravity="center_horizontal"
+            android:text="http://www.bibibaba.cn"/>
+        <TextView 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/double_margins"
+            android:layout_marginBottom="@dimen/double_margins"
+            android:textSize="@dimen/content"
+            android:textColor="#CCCCCC"
+            android:gravity="center_horizontal"
+            android:text="Copyright@2014 Bibibaba Inc."/>
+    </LinearLayout>
+    <ImageView 
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="80dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/icon_new"/>
+    <TextView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/content"
+        android:textColor="@color/Green"
+        android:layout_centerInParent="true"
+        android:text="叭叭V1.0"/>
+</RelativeLayout>

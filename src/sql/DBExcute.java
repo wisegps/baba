@@ -7,17 +7,13 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
-import pubclas.Variable;
-
 import data.AdressData;
 import data.Article;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class DBExcute {	
 	private static final String TAG = "DBExcute";
@@ -31,7 +27,6 @@ public class DBExcute {
 		db.insert(table, null, values);
 		db.close();
 		dbHelper.close();
-		System.out.println("插入成功");
 	}
 	/**
 	 * 删除表
@@ -59,7 +54,6 @@ public class DBExcute {
         db.update(Table, values, where, args);
         db.close();
         dbHelper.close();
-        System.out.println("更新数据库");
 	}
 	/**
 	 * 更新基础数据表
@@ -161,33 +155,7 @@ public class DBExcute {
 				}
 				db.close();  
 				return articleData;
-		}
-		
-		/**
-		 * 分类查询车友圈文章
-		 */
-		public List<Article> getArticleTypeList(Context context,String sql,String[] whereClause){
-			List<Article> articleData = new ArrayList<Article>();
-			DBHelper dbHelper = new DBHelper(context);
-			SQLiteDatabase db = dbHelper.getReadableDatabase();
-			Cursor cursor = db.rawQuery(sql, whereClause);
-			while(cursor.moveToNext()){
-				int blog_id = cursor.getInt(cursor.getColumnIndex("Blog_id"));
-				Log.d(TAG, "blog_id = " + blog_id);
-				//通过文章类型中的blog_id 在文章表中查询文章详细信息
-				SQLiteDatabase reader = dbHelper.getReadableDatabase();
-				Cursor cursors = reader.rawQuery("select * from " + Constant.TB_VehicleFriend + " where Blog_id=?", new String[]{String.valueOf(blog_id)});
-				if(cursors.moveToFirst()){
-					articleData.add(parseDBDatas(cursors));
-				}
-				cursors.close();
-			}
-			if(cursor != null){
-				cursor.close();
-			}
-			db.close();
-			return articleData;
-		}
+		}	
 		
 	/**
  	* 更新车友圈数据

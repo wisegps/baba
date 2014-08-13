@@ -45,16 +45,19 @@ public class EnergyGroup extends ViewGroup{
         }
         scrollTo(0, 0);//Scroller定位
     }
+    private int rightWidth = 200;
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         int childLeft = 0;
+        int width = 0;
         final int count = getChildCount();
         for(int i = 0 ; i < count; i++){
             final View childView = getChildAt(i);
-            final int width = childView.getMeasuredWidth();
+            width = childView.getMeasuredWidth();
             childView.layout(childLeft, 0, childLeft+width, childView.getMeasuredHeight());
             childLeft += width;
         }
+        rightWidth = width;
     }
     private float mLastMotionY;
     private final static int TOUCH_STATE_REST = 0;  
@@ -109,12 +112,22 @@ public class EnergyGroup extends ViewGroup{
             downMotionX = x;
             break;
         case MotionEvent.ACTION_MOVE:
-            int deltaX = (int)(downMotionX - x);
-            downMotionX = x;
-            scrollBy(deltaX, 0);//画面跟随指尖
             if (velocityTracker != null){
-                velocityTracker.addMovement(event); 
-             }
+				velocityTracker.addMovement(event);
+			}
+            int deltaX = (int)(downMotionX - x);
+            if(deltaX < 0){//向右
+                if(getScrollX() > 0){
+                    int ScrollX = - getScrollX();
+                    scrollBy(deltaX > ScrollX ? deltaX : ScrollX, 0);
+                }
+            }else{//向左
+                if(getScrollX() < rightWidth){
+                    int ScrollX = rightWidth - getScrollX();
+                    scrollBy(deltaX > ScrollX ? ScrollX : deltaX, 0);
+                }
+            }
+            downMotionX = x;
             break;
         case MotionEvent.ACTION_UP:
             int velocityX = 0;

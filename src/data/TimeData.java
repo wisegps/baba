@@ -7,16 +7,17 @@ import android.R.string;
  * @author keven.cheng
  */
 public class TimeData {
-	public String Date;
+	public String Day;
 	public String Year;
-	public String Month;
-    public String getDate() {
-        return Date;
-    }
-    public void setDate(String date) {
-        Date = date;
-    }
-    public String getYear() {
+	public String Month;    
+	
+    public String getDay() {
+		return Day;
+	}
+	public void setDay(String day) {
+		Day = day;
+	}
+	public String getYear() {
         return Year;
     }
     public void setYear(String year) {
@@ -27,10 +28,5 @@ public class TimeData {
     }
     public void setMonth(String month) {
         Month = month;
-    }
-    @Override
-    public String toString() {
-        return "TimeData [Date=" + Date + ", Year=" + Year + ", Month=" + Month
-                + "]";
     }	
 }

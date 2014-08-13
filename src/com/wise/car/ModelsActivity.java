@@ -16,6 +16,8 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
+
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;
 import sql.DBExcute;
@@ -96,6 +98,8 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 
 	public static final String carBrankTitle = "carBrank"; // 数据库基础表车辆品牌的标题字段
 	public static final String carSeriesTitle = "carSeries"; // 数据库基础表车辆款式的标题字段
+	
+	boolean isNeedType = true;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -105,19 +109,17 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		dBExcute = new DBExcute();
 		// 初始化控件
 		initViews();
+		isNeedType = getIntent().getBooleanExtra("isNeedType", true);
 	}
 	
 	OnItemClickListener onBrankClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			System.out.println("lv_brand");
 			BrankModel brankModel = (BrankModel) lv_brand.getItemAtPosition(arg2);
 			carBrank = brankModel.getVehicleBrank();
 			carBrankId = brankModel.getBrankId();
 			logoUrl = brankModel.getLogoUrl();
-			Log.e("品牌id:", carBrankId);
-			Log.e("品牌:", carBrank);
 			// 点击品牌列表 选择车型
 			progressDialog = ProgressDialog.show(ModelsActivity.this,
 					getString(R.string.dialog_title),
@@ -135,12 +137,22 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			String[] str = (String[]) lv_modles.getItemAtPosition(arg2);
 			carSeriesId = str[0];
 			carSeries = str[1];
-			progressDialog = ProgressDialog.show(ModelsActivity.this,
-					getString(R.string.dialog_title),
-					getString(R.string.dialog_message));
-			progressDialog.setCancelable(true);
-			getDate(carSeriesTitle + carSeriesId, Constant.BaseUrl
-					+ "base/car_type?pid=" + carSeriesId, GET_TYPE);
+			if(isNeedType){
+				progressDialog = ProgressDialog.show(ModelsActivity.this,
+						getString(R.string.dialog_title),
+						getString(R.string.dialog_message));
+				progressDialog.setCancelable(true);
+				getDate(carSeriesTitle + carSeriesId, Constant.BaseUrl
+						+ "base/car_type?pid=" + carSeriesId, GET_TYPE);
+			}else{
+				Intent intent = new Intent();
+				intent.putExtra("brank", carBrank);
+				intent.putExtra("brankId", carBrankId);
+				intent.putExtra("series", carSeries);
+				intent.putExtra("seriesId", carSeriesId);
+				ModelsActivity.this.setResult(1, intent);
+				ModelsActivity.this.finish();
+			}
 		}
 	};
 	
@@ -489,10 +501,12 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 
 	protected void onRestart() {
 		super.onRestart();
+		MobclickAgent.onResume(this);
 	}
 
 	protected void onResume() {
 		super.onResume();
+		MobclickAgent.onPause(this);
 	}
 
 	// 将获取的数据存到数据库
@@ -506,16 +520,15 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		dBExcute.InsertDB(context, values, Constant.TB_Base);
 	}
 
-	public void logoImageIsExist(final String imagePath, final String name,
-			final String logoUrl) {
+	public void logoImageIsExist(final String imagePath, final String name,final String logoUrl) {
+		//去掉最后面的斜杠
 		File filePath = new File(imagePath);
-		File imageFile = new File(imagePath + name + ".png");
 		if (!filePath.exists()) {
-			filePath.mkdir();
+			filePath.mkdirs();
 		}
+		File imageFile = new File(imagePath + name + ".png");	
 		if (!imageFile.exists()) {
-			Bitmap bitmap = GetSystem.getBitmapFromURL(Constant.ImageUrl
-					+ logoUrl);
+			Bitmap bitmap = GetSystem.getBitmapFromURL(Constant.ImageUrl+ logoUrl);
 			if (bitmap != null) {
 				createImage(imagePath + name + ".png", bitmap);
 			}

@@ -5,6 +5,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.NetThread;
+
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import android.app.Activity;
@@ -75,11 +77,13 @@ public class RegisterActivity extends Activity {
 			tv_title.setText("修改手机");
 			bt_register.setText("下一步");
 			tv_note.setVisibility(View.GONE);
+			et_account.setText(intent.getStringExtra("phone"));
 			et_account.setHint("请输入要修改的手机号码");
 		}else if(mark == 4){
 			tv_title.setText("修改邮箱");
 			bt_register.setText("下一步");
 			tv_note.setVisibility(View.GONE);
+			et_account.setText(intent.getStringExtra("email"));
 			et_account.setHint("请输入要修改的邮箱");
 		}
 		setNote();
@@ -236,7 +240,6 @@ public class RegisterActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		System.out.println("requestCode = " + requestCode + " , resultCode = " + resultCode);
 		switch (resultCode) {
 		case 2:
 			setResult(2,data);
@@ -254,5 +257,15 @@ public class RegisterActivity extends Activity {
 		Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		tv_note.setText(sp);
 		tv_note.setMovementMethod(LinkMovementMethod.getInstance());
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 }

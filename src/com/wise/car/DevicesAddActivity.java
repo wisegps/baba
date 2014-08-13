@@ -9,7 +9,12 @@ import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.Variable;
 import sql.DBExcute;
+
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
+
+import customView.WaitLinearLayout;
+import customView.WaitLinearLayout.OnFinishListener;
 import data.CarData;
 import android.app.Activity;
 import android.content.ContentValues;
@@ -25,11 +30,12 @@ import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * 添加终端
- * 
+ * 添加绑定终端
  * @author honesty
  */
 public class DevicesAddActivity extends Activity {
@@ -44,8 +50,13 @@ public class DevicesAddActivity extends Activity {
 	ImageView iv_serial;
 	Button iv_add;
 	EditText et_serial, et_sim;
+	TextView tv_note;
+	RelativeLayout rl_wait;
+	WaitLinearLayout ll_wait;
 
 	int car_id;
+	/**true绑定终端，false修改终端**/
+	boolean isBind;
 	String device_id;
 
 	@Override
@@ -53,6 +64,10 @@ public class DevicesAddActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_devices_add);
+		ll_wait = (WaitLinearLayout)findViewById(R.id.ll_wait);
+		ll_wait.setOnFinishListener(onFinishListener);
+		tv_note = (TextView)findViewById(R.id.tv_note);
+		rl_wait = (RelativeLayout)findViewById(R.id.rl_wait);
 		et_serial = (EditText) findViewById(R.id.et_serial);
 		et_serial.setOnFocusChangeListener(onFocusChangeListener);
 		et_sim = (EditText) findViewById(R.id.et_sim);
@@ -66,8 +81,7 @@ public class DevicesAddActivity extends Activity {
 
 		Intent intent = getIntent();
 		car_id = intent.getIntExtra("car_id", 0);
-
-		System.out.println("car_id = " + car_id);
+		isBind = intent.getBooleanExtra("isBind", true);
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -82,14 +96,25 @@ public class DevicesAddActivity extends Activity {
 						BarcodeActivity.class), 0);
 				break;
 			case R.id.iv_add:
-				SaveDataIn();
-				Toast.makeText(DevicesAddActivity.this, "终端添加中",
-						Toast.LENGTH_LONG).show();
 				Add();
 				break;
 			}
 		}
 	};
+	
+	OnFinishListener onFinishListener = new OnFinishListener() {		
+		@Override
+		public void OnFinish(int index) {
+			SaveDataOver();
+			updateVariableCarData();
+			Intent intent = new Intent();
+			setResult(1, intent);
+			finish();
+			Intent intent1 = new Intent(Constant.A_RefreshHomeCar);
+            sendBroadcast(intent1);
+		}
+	};
+	
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -103,14 +128,10 @@ public class DevicesAddActivity extends Activity {
 				jsonAddSerial(msg.obj.toString());
 				break;
 			case update_sim:
-				Log.d(TAG, "update_sim" + msg.obj.toString());
 				try {
-					String status_code = new JSONObject(msg.obj.toString())
-							.getString("status_code");
+					String status_code = new JSONObject(msg.obj.toString()).getString("status_code");
 					if (status_code.equals("0")) {
-						String url_sim = Constant.BaseUrl + "device/"
-								+ device_id + "/customer?auth_code="
-								+ Variable.auth_code;
+						String url_sim = Constant.BaseUrl + "device/" + device_id + "/customer?auth_code=" + Variable.auth_code;
 						List<NameValuePair> paramSim = new ArrayList<NameValuePair>();
 						paramSim.add(new BasicNameValuePair("cust_id",Variable.cust_id));
 						new Thread(new NetThread.putDataThread(handler,
@@ -127,30 +148,17 @@ public class DevicesAddActivity extends Activity {
 
 				break;
 			case update_user:
-				Log.d(TAG, "更换用户 = " + msg.obj.toString());
 				try {
-					String status_code = new JSONObject(msg.obj.toString())
-							.getString("status_code");
-					System.out.println("car_id = " + car_id);
+					String status_code = new JSONObject(msg.obj.toString()).getString("status_code");
 					if (status_code.equals("0")) {
-						if (car_id != 0) {
-							// 绑定车辆
-							String url = Constant.BaseUrl + "vehicle/" + car_id
-									+ "/device?auth_code=" + Variable.auth_code;
-							List<NameValuePair> params = new ArrayList<NameValuePair>();
-							params.add(new BasicNameValuePair("device_id",
-									device_id));
-							new Thread(new NetThread.putDataThread(handler,
-									url, params, update_car)).start();
-						} else {
-							// 操作完成
-							SaveDataOver();
-							Toast.makeText(DevicesAddActivity.this, "终端添加成功",
-									Toast.LENGTH_LONG).show();
-						}
-						// TODO 发送广播更新
-						Intent intent = new Intent(Constant.A_UpdateDevice);
-						sendBroadcast(intent);
+						// 绑定车辆
+						String url = Constant.BaseUrl + "vehicle/" + car_id
+								+ "/device?auth_code=" + Variable.auth_code;
+						List<NameValuePair> params = new ArrayList<NameValuePair>();
+						params.add(new BasicNameValuePair("device_id",
+								device_id));
+						new Thread(new NetThread.putDataThread(handler,
+								url, params, update_car)).start();
 					} else {
 						SaveDataOver();
 						showToast();
@@ -162,14 +170,8 @@ public class DevicesAddActivity extends Activity {
 				}
 				break;
 			case update_car:
-				Log.d(TAG, "更换车辆 = " + msg.obj.toString());
 				// TODO 更新车辆数据
-				SaveDataOver();
-				updateVariableCarData();
-				//updateDBData();
-				Intent intent = new Intent();
-				setResult(1, intent);
-				finish();
+				ll_wait.runFast();
 				break;
 			}
 		}
@@ -181,7 +183,6 @@ public class DevicesAddActivity extends Activity {
 	private void updateVariableCarData() {
 		for (CarData carData : Variable.carDatas) {
 			if (carData.getObj_id() == Integer.valueOf(car_id)) {
-				carData.setCheck(true);
 				carData.setDevice_id(device_id);
 				carData.setSerial(et_serial.getText().toString().trim());
 				break;
@@ -202,8 +203,11 @@ public class DevicesAddActivity extends Activity {
 	}
 
 	private void showToast() {
-		Toast.makeText(DevicesAddActivity.this, "添加终端失败", Toast.LENGTH_SHORT)
-				.show();
+		if(isBind){
+			Toast.makeText(DevicesAddActivity.this, "绑定终端失败", Toast.LENGTH_SHORT).show();
+		}else{
+			Toast.makeText(DevicesAddActivity.this, "修改终端失败", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	private void Add() {
@@ -214,10 +218,16 @@ public class DevicesAddActivity extends Activity {
 		} else if (sim.length() != 11) {
 			et_sim.setError("sim格式不对");
 		} else {
-			String url = Constant.BaseUrl + "device/serial/" + serial
-					+ "?auth_code=" + Variable.auth_code;
-			new Thread(new NetThread.GetDataThread(handler, url, add_serial))
-					.start();
+			if(isBind){
+				tv_note.setText("终端绑定中");
+			}else{
+				tv_note.setText("终端修改中");
+			}
+			rl_wait.setVisibility(View.VISIBLE);
+			ll_wait.startWheel();
+			String url = Constant.BaseUrl + "device/serial/" + serial + "?auth_code=" + Variable.auth_code;
+			new NetThread.GetDataThread(handler, url, add_serial).start();
+			SaveDataIn();
 		}
 	}
 
@@ -259,6 +269,8 @@ public class DevicesAddActivity extends Activity {
 		et_sim.setEnabled(true);
 		iv_serial.setEnabled(true);
 		iv_add.setEnabled(true);
+		ll_wait.refreshView();
+		rl_wait.setVisibility(View.GONE);
 	}
 
 	private void checkSerial() {
@@ -313,4 +325,17 @@ public class DevicesAddActivity extends Activity {
 			et_serial.setText(result);
 		}
 	};
+	private void init(){
+		
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 }

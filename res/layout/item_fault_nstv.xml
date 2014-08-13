@@ -1,0 +1,16 @@
+<!-- 首页车辆信息 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/line" />
+    <customView.NoticeScrollTextView
+        android:id="@+id/nstv_message"
+        android:layout_width="fill_parent"
+        android:layout_height="35dp">
+    </customView.NoticeScrollTextView>
+</LinearLayout>

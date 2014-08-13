@@ -1,0 +1,103 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/title_hight"
+        android:background="@color/title_back">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:text="选择城市"
+            android:textColor="@color/white"
+            android:textSize="@dimen/head"/>
+		<ImageView 
+            android:id="@+id/iv_select_city_back"
+	        android:layout_width="@dimen/title_hight"
+	        android:layout_height="@dimen/title_hight"
+	        android:layout_marginLeft="@dimen/margins"
+	        android:padding="@dimen/margins"
+	        android:layout_centerVertical="true"
+	        android:src="@drawable/nav_back"/>
+	</RelativeLayout>	
+	<com.wise.car.ClearEditText
+        android:id="@+id/filter_edit"
+        android:layout_margin="@dimen/margins"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/new_article_edit_border"
+        android:drawableLeft="@drawable/toolbar_icon_search"
+        android:hint="请输入关键字"
+        android:singleLine="true"
+        android:textColor="@color/common"
+        android:textSize="@dimen/content" />
+	<TextView 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/margins"
+        android:paddingRight="@dimen/margins"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@color/gray_weak"
+        android:textColor="@color/common_inactive"
+        android:text="当前定位"/>
+	<TextView 
+        android:id="@+id/tv_activity_select_city_location"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margins"
+        android:textColor="@color/common"
+        android:background="@drawable/bg_item_selector"
+        android:text="正在定位..."/>
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+        <ListView
+            android:id="@+id/lv_activity_select_city"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:listSelector="@drawable/bg_item_selector"
+            android:dividerHeight="1dp"
+            android:divider="@color/gray_lights" />
+        <LinearLayout
+            android:id="@+id/ll_activity_select_city"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical">
+		    <TextView
+		        android:id="@+id/tv_select_city_title"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:paddingLeft="@dimen/margins"
+		        android:paddingRight="@dimen/margins"
+		        android:paddingTop="5dp"
+		        android:paddingBottom="5dp"
+		        android:background="@color/gray_weak"
+		        android:textColor="@color/common_inactive"
+		        android:text="热门城市"/>
+		</LinearLayout>
+        <!-- 点击字母显示 -->
+        <TextView
+            android:id="@+id/dialog"
+            android:layout_width="80.0dip"
+            android:layout_height="80.0dip"
+            android:layout_gravity="center"
+            android:background="@drawable/show_head_toast_bg"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="30.0dip"
+            android:visibility="invisible" />        
+        <!-- 右边字母索引 -->
+        <com.wise.car.SideBar
+            android:id="@+id/sidrbar"
+            android:layout_width="30.0dip"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right|center" />
+    </FrameLayout>
+</LinearLayout>

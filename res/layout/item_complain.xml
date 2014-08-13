@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/double_margins"
+    android:paddingTop="@dimen/margins"
+    android:paddingBottom="@dimen/margins"
+    android:paddingLeft="@dimen/double_margins"
+    android:paddingRight="@dimen/double_margins"
     android:orientation="vertical">
     <LinearLayout 
         android:layout_width="fill_parent"
@@ -13,21 +16,24 @@
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/title"
+            android:textSize="@dimen/content"
+            android:textColor="@color/navy"
             android:layout_marginRight="@dimen/double_margins"
             android:text="张三"/>
         <TextView 
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/title"
+            android:textSize="@dimen/content"
+            android:textColor="@color/blue_sms"
             android:text="2014-06-07 00：00：00"/>
     </LinearLayout>
     <TextView 
         android:id="@+id/tv_content"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_marginTop="@dimen/double_margins"
-	    android:textSize="@dimen/title"
+	    android:layout_marginTop="@dimen/margins"
+	    android:textSize="@dimen/content"
+	    android:textColor="@color/navy"
 	    android:text="我没有超速"/>
 </LinearLayout>

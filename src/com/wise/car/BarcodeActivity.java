@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Vector;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+import com.umeng.analytics.MobclickAgent;
 import com.wise.Zxing.camera.CameraManager;
 import com.wise.Zxing.decoding.CaptureActivityHandler;
 import com.wise.Zxing.decoding.InactivityTimer;
@@ -61,6 +62,7 @@ public class BarcodeActivity extends Activity implements Callback {
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onResume(this);
         SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         if (hasSurface) {
@@ -89,6 +91,7 @@ public class BarcodeActivity extends Activity implements Callback {
             handler = null;
         }
         CameraManager.get().closeDriver();
+        MobclickAgent.onPause(this);
     }
 
     @Override
@@ -202,5 +205,4 @@ public class BarcodeActivity extends Activity implements Callback {
             mediaPlayer.seekTo(0);
         }
     };
-
 }

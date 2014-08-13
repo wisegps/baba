@@ -1,5 +1,6 @@
 package com.wise.car;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
@@ -11,6 +12,8 @@ import nadapter.OpenDateDialogListener;
 import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.Variable;
+
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import data.CarData;
 import data.CityData;
@@ -42,7 +45,10 @@ public class CarUpdateActivity extends Activity{
 			et_insurance_tel,et_insurance_no,et_maintain_tel;
 	TextView tv_models,tv_gas_no,tv_city,tv_insurance_company,tv_insurance_date,tv_maintain_company,
 			tv_buy_date,tv_year_check;
+	int index = 0;
 	CarData carData;
+	CarData carNewData = new CarData();
+	
 	List<CityData> chooseCityDatas = new ArrayList<CityData>();
 
 	String car_brand;
@@ -57,7 +63,7 @@ public class CarUpdateActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_update_car);
-		int index = getIntent().getIntExtra("index", 0);
+		index = getIntent().getIntExtra("index", 0);
 		carData = Variable.carDatas.get(index);
 		init();
 		setData();
@@ -77,7 +83,9 @@ public class CarUpdateActivity extends Activity{
 				startActivityForResult(new Intent(CarUpdateActivity.this, ModelsActivity.class),2);
 				break;
 			case R.id.tv_city:
-				startActivityForResult(new Intent(CarUpdateActivity.this, TrafficCitiyActivity.class),2);
+				Intent intent1 = new Intent(CarUpdateActivity.this, TrafficCitiyActivity.class);
+				intent1.putExtra("cityDatas", (Serializable)chooseCityDatas);
+				startActivityForResult(intent1,2);
 				break;
 			case R.id.tv_gas_no:
 				startActivityForResult(new Intent(CarUpdateActivity.this, PetrolGradeActivity.class),2);
@@ -87,8 +95,8 @@ public class CarUpdateActivity extends Activity{
 				break;
 			case R.id.tv_maintain_company:
 				Intent intent = new Intent(CarUpdateActivity.this, MaintainShopActivity.class);
-				intent.putExtra("city", "深圳");
-				intent.putExtra("brank", "大众");
+				intent.putExtra("city", Variable.City);
+				intent.putExtra("brank", carData.getCar_brand());
 				startActivityForResult(intent,2);
 				break;
 			case R.id.tv_insurance_date:
@@ -118,7 +126,7 @@ public class CarUpdateActivity extends Activity{
         OpenDateDialog.ShowDate(CarUpdateActivity.this, index);
     }
 	private void jsonSave(String str){
-		System.out.println(str);
+		Variable.carDatas.set(index, carNewData);
 		setResult(3);
 		finish();
 	}
@@ -134,20 +142,19 @@ public class CarUpdateActivity extends Activity{
 		String regist_no = et_regist_no.getText().toString();
 		
 		for(CityData cityData : chooseCityDatas){
-			System.out.println(cityData.toString());
-			//发送机号
+			//TODO 发送机号
 			if(cityData.getEngine() == 0){
 				
 			}else{
 				if(cityData.getEngineno() == 0){//全部
 					if(engine_no.length() == 0){
 						Toast.makeText(CarUpdateActivity.this, "需要完整的发送机号", Toast.LENGTH_SHORT).show();
-						break;
+						return;
 					}
 				}else{
 					if(engine_no.length() < cityData.getEngineno()){
 						Toast.makeText(CarUpdateActivity.this, "需要发送机号的" +cityData.getEngineno()+"位", Toast.LENGTH_SHORT).show();
-						break;
+						return;
 					}
 				}
 			}
@@ -158,12 +165,12 @@ public class CarUpdateActivity extends Activity{
 				if(cityData.getFrameno() == 0){//全部
 					if(frame_no.length() == 0){
 						Toast.makeText(CarUpdateActivity.this, "需要完整的车架号", Toast.LENGTH_SHORT).show();
-						break;
+						return;
 					}
 				}else{
 					if(frame_no.length() < cityData.getFrameno()){
 						Toast.makeText(CarUpdateActivity.this, "需要车架号的" +cityData.getFrameno()+"位", Toast.LENGTH_SHORT).show();
-						break;
+						return;
 					}
 				}
 			}
@@ -174,12 +181,12 @@ public class CarUpdateActivity extends Activity{
 				if(cityData.getRegistno() == 0){//全部
 					if(regist_no.length() == 0){
 						Toast.makeText(CarUpdateActivity.this, "需要完整的登记证号", Toast.LENGTH_SHORT).show();
-						break;
+						return;
 					}
 				}else{
 					if(regist_no.length() < cityData.getRegistno()){
 						Toast.makeText(CarUpdateActivity.this, "需要登记证号的" +cityData.getRegistno()+"位", Toast.LENGTH_SHORT).show();
-						break;
+						return;
 					}
 				}
 			}
@@ -195,6 +202,38 @@ public class CarUpdateActivity extends Activity{
 		String maintain_tel = et_maintain_tel.getText().toString();
 		String buy_date = tv_buy_date.getText().toString();
 		String year_check = tv_year_check.getText().toString();
+		
+		carNewData.setDevice_id(carData.getDevice_id());
+		carNewData.setObj_name(obj_name);
+		carNewData.setNick_name(nick_name);
+		carNewData.setCar_brand(car_brand);
+		carNewData.setCar_series(car_series);
+		carNewData.setCar_type(car_type);
+		
+		ArrayList<String> vio_citys = new ArrayList<String>();
+		ArrayList<String> vio_citys_code = new ArrayList<String>();
+		for(int j = 0 ; j < chooseCityDatas.size() ; j++){
+			String vio_city_name = chooseCityDatas.get(j).getCityName();
+			String vio_location = chooseCityDatas.get(j).getCityCode();
+			vio_citys.add(vio_city_name);
+			vio_citys_code.add(vio_location);
+		}
+		carNewData.setVio_citys(vio_citys);		
+		carNewData.setVio_citys_code(vio_citys_code);
+		carNewData.setEngine_no(engine_no);
+		carNewData.setFrame_no(frame_no);
+		carNewData.setRegNo(regist_no);
+		carNewData.setInsurance_company(insurance_company);
+		carNewData.setInsurance_tel(insurance_tel);
+		carNewData.setInsurance_date(insurance_date);
+		carNewData.setInsurance_no(insurance_no);
+		carNewData.setMaintain_company(maintain_company);
+		carNewData.setMaintain_tel(maintain_tel);
+		carNewData.setBuy_date(buy_date);
+		carNewData.setGas_no(gas_no);
+		carNewData.setCar_brand_id(car_brand_id);
+		carNewData.setCar_series_id(car_series_id);
+		carNewData.setCar_type_id(car_type_id);		
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("obj_name", obj_name));
@@ -212,14 +251,14 @@ public class CarUpdateActivity extends Activity{
         params.add(new BasicNameValuePair("insurance_no", insurance_no));
         params.add(new BasicNameValuePair("maintain_company", maintain_company));
         params.add(new BasicNameValuePair("maintain_tel", maintain_tel));
-        params.add(new BasicNameValuePair("maintain_last_mileage", "100"));
+        params.add(new BasicNameValuePair("maintain_last_mileage", "0"));
         params.add(new BasicNameValuePair("maintain_last_date", "2014-10-10"));
         params.add(new BasicNameValuePair("buy_date", buy_date));
         params.add(new BasicNameValuePair("gas_no", gas_no));
         params.add(new BasicNameValuePair("car_brand_id", car_brand_id));
         params.add(new BasicNameValuePair("car_series_id", car_series_id));
-        params.add(new BasicNameValuePair("car_type_id", car_type_id));
-    	//TODO 保存
+        params.add(new BasicNameValuePair("car_type_id", car_type_id));        
+        
         String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id() + "?auth_code=" + Variable.auth_code;
         new Thread(new NetThread.putDataThread(handler, url, params, update)).start();
 	}
@@ -243,7 +282,6 @@ public class CarUpdateActivity extends Activity{
 		});
 	}
 	private void setData(){
-		System.out.println(carData.toString());
 		car_brand = carData.getCar_brand();
 		car_brand_id = carData.getCar_brand_id();
 		car_series = carData.getCar_series();
@@ -258,14 +296,24 @@ public class CarUpdateActivity extends Activity{
 		
 		et_engine_no.setText(carData.getEngine_no());
 		et_frame_no.setText(carData.getFrame_no());
+		et_regist_no.setText(carData.getRegNo());
 		tv_insurance_company.setText(carData.getInsurance_company());
 		et_insurance_tel.setText(carData.getInsurance_tel());
 		tv_insurance_date.setText(carData.getInsurance_date());
-		et_insurance_no.setText("");
+		et_insurance_no.setText(carData.getInsurance_no());
 		tv_maintain_company.setText(carData.getMaintain_company());
 		et_maintain_tel.setText(carData.getMaintain_tel());
 		tv_buy_date.setText(carData.getBuy_date());
 		tv_year_check.setText(carData.getAnnual_inspect_date());
+		String citys = "";
+		for(int i = 0 ; i < carData.getVio_citys().size() ; i++){
+			citys += carData.getVio_citys().get(i) + " ";
+			CityData cityData = new CityData();
+			cityData.setCityName(carData.getVio_citys().get(i));
+			cityData.setCityCode(carData.getVio_citys_code().get(i));
+			chooseCityDatas.add(cityData);
+		}
+		tv_city.setText(citys);
 	}
 	private void init(){
 		ImageView iv_save = (ImageView)findViewById(R.id.iv_save);
@@ -313,7 +361,7 @@ public class CarUpdateActivity extends Activity{
 		}
 		return "[]";
 	}
-	
+		
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -332,7 +380,40 @@ public class CarUpdateActivity extends Activity{
 				city += cityData.getCityName() + " " ;
 			}
 			tv_city.setText(city);
-			jsonList(chooseCityDatas);
+			
+			for(CityData cityData : chooseCityDatas){
+				//TODO 发送机号
+				if(cityData.getEngine() == 0){
+					et_engine_no.setHint("选填");
+				}else{
+					if(cityData.getEngineno() == 0){//全部
+						et_engine_no.setHint("需要完整的发送机号");
+					}else{
+						et_engine_no.setHint("需要发送机号的" +cityData.getEngineno()+"位");
+					}
+				}
+				//车架号
+				if(cityData.getFrame() == 0){
+					et_frame_no.setHint("选填");
+				}else{
+					if(cityData.getFrameno() == 0){//全部
+						et_frame_no.setHint("需要完整的车架号");
+					}else{
+						et_frame_no.setHint("需要车架号的" +cityData.getFrameno()+"位");
+					}
+				}
+				//登记证号
+				if(cityData.getRegist() == 0){
+					et_regist_no.setHint("选填");
+				}else{
+					if(cityData.getRegistno() == 0){//全部
+						et_regist_no.setHint("需要完整的登记证号");
+					}else{
+						et_regist_no.setHint("需要登记证号的" +cityData.getRegistno()+"位");
+					}
+				}
+			}
+			
 		}else if(resultCode == 3){//汽油标号返回
 			tv_gas_no.setText(data.getStringExtra("result"));
 		}else if(resultCode == 4){//保险公司返回
@@ -342,5 +423,15 @@ public class CarUpdateActivity extends Activity{
 			tv_maintain_company.setText(data.getStringExtra("maintain_name"));
 			et_maintain_tel.setText(data.getStringExtra("maintain_phone"));
 		}
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 }

@@ -1,17 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 灰色背景 -->
     <!-- 导航条背景色 -->
     <color name="title_back">#50B7DE</color>
-    <!-- 蓝色字 -->
-    <color name="blue">#53A5C4</color>
+    <!-- 淡蓝色字体 -->
+    <color name="blue_light">#7794A1</color>
+    <!-- 蓝色 -->
     <color name="blue_press">#50B7DE</color>
-    <color name="yellow">#F8B264</color>
-    
+    <!-- 深蓝色字体 -->
+    <color name="navy">#225065</color>
+    <!-- 蓝色，圆点 -->
+    <color name="navy_light">#4C225065</color>
+    <!-- 蓝色，登录 -->
+    <color name="blue_login">#407D8C</color>
+    <!-- 蓝色，登录 -->
+    <color name="blue_account">#618290</color>
+    <!-- 蓝色，通知 -->
+    <color name="blue_noti">#60808F</color>
+    <!-- 时间，消息，吐槽 -->
+    <color name="blue_sms">#9BB6BD</color>
     <!-- 分割线 -->
-    <color name="line">#CCCCCC</color>
-    <!--  -->
+    <color name="line">#D2DADE</color>
+    <!-- 车辆检测分割线 -->
+    <color name="blue_line">#CAD5D9</color>
+    <!-- 分割线，设置 -->
+    <color name="gay_line">#BDCAD0</color>
+    <color name="gay_z">#D3DCE0</color>
+    <!-- 分割线，地点 -->
+    <color name="gay_adress">#D3DCE0</color>
+    <!-- 灰色背景 -->
+    <color name="gray_bg">#F4F6F6</color>
+    <!-- 蓝色背景，违章城市 -->
+    <color name="blue_bg_traffic">#E3F0F4</color>
+    <!-- 黄色，首页背景 -->
+    <color name="yellow_bg">#FFC733</color>
+    <!-- 蓝色，首页背景 -->
+    <color name="blue_bg">#E4EFF3</color>
+    <!-- 黄色，故障 -->
+    <color name="yellow">#FAB466</color>    
+    <!-- 绿色 -->
+    <color name="Green">#1ABAA5</color>
+    <!-- 油耗曲线 -->
+    <color name="Green_curve_bg">#40D9F4F1</color>
+    <color name="Green_curve_line">#90CEFA</color>
+    <!-- 绿色，油耗明细 -->
+    <color name="Green_Light">#68D2C6</color>
+    <!-- 绿色，收藏,消息 -->
+    <color name="Green_collection">#EDFAF8</color>
+    <!-- 绿色，违章 -->
+    <color name="Green_traffic">#20B7DE</color>
+    <!-- 提示，删除，退出粉红色背景 -->
     <color name="pink">#FF8C8C</color>
+    <!-- 解除绑定,修改终端 -->
+    <color name="blue_bg_car">#96D4EB</color>
+    <!-- 黄色，检测 -->
+    <color name="yellow_dete">#F8B264</color>
+    <color name="yellow_dete_press">#E49749</color>
+    
+    
+    <!-- 蓝色-->
+    <color name="blue">#53A5C4</color>
+    <!-- 浅绿色背景 -->
+    <color name="Green_Lights">#EDF8FC</color>
+    
     <color name="gray">#d8d9e1</color>
     <color name="gray_lights">#80d8d9e1</color>
     <color name="gray_light">#4cd8d9e1</color>
@@ -19,16 +69,13 @@
     <!-- 选择城市 -->
     <color name="gray_weak">#f2f1f7</color>
     <!-- 蓝色背景 -->
-    <color name="blue_light">#993b5197</color>
     <color name="blue_light_ten">#193b5197</color>
     <!-- 红色背景 -->
-    <color name="red">#e41d34</color>
+    <color name="red">#FF8C8C</color>
     <color name="red_light">#B3e41d34</color>
     <!-- 首页背景 -->
     <color name="bg_home">#4c121220</color>
     <color name="bg_home1">#4c313131</color>
-    <!-- 洗车指数 -->
-    <color name="blue_bg">#3a5197</color>
     <!-- 车友圈用户名字体颜色 -->
     <color name="article_user_name">#3a5195</color>
     <!-- 常规字体颜色 -->
@@ -45,10 +92,9 @@
     <color name="black1">#000000</color>
     <color name="white_light">#CCFFFFFF</color>
     
-    
-    <color name="circle_color">#323a45</color>
-    <color name="ring_color">#14b9d6</color>
-
+    <!-- 最外层圆环颜色 -->
+    <color name="ring_color">#50B7DE</color>
+    <color name="ring_bg_color">#e6f4f5</color>
     <!-- 二维码 -->
     <color name="transparent">#00000000</color>
     <color name="viewfinder_mask">#60000000</color>

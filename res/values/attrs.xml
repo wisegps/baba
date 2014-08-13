@@ -6,5 +6,9 @@
         <attr name="strokeWidth" format="dimension"/>
         <attr name="circleColor" format="color"/>
         <attr name="ringColor" format="color"/>
-    </declare-styleable>    
+    </declare-styleable>
+    <declare-styleable name="CircleImageView">
+        <attr name="border_width" format="dimension" />
+        <attr name="border_color" format="color" />
+    </declare-styleable>
 </resources>

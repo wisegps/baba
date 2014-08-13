@@ -8,7 +8,7 @@
     	android:id="@+id/ll_main"
 	    android:layout_width="fill_parent"
 	    android:layout_height="@dimen/title_hight"
-        android:background="@drawable/nav_bg">
+        android:background="@color/title_back">
         <ImageView 
             android:layout_width="40dp"
             android:layout_height="40dp"

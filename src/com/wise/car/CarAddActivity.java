@@ -4,10 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.Variable;
+
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
+
+import data.CarData;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +37,7 @@ public class CarAddActivity extends Activity{
 	private static final int add_car = 1;
 	TextView tv_models;
 	EditText et_nick_name,et_obj_name;
+	CarData carNewData = new CarData();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +76,7 @@ public class CarAddActivity extends Activity{
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case add_car:
-				System.out.println(msg.obj.toString());
+				jsonCar(msg.obj.toString());
 				break;
 
 			default:
@@ -77,49 +85,91 @@ public class CarAddActivity extends Activity{
 		}		
 	};
 	
+	private void jsonCar(String str){
+		try {
+			JSONObject jsonObject = new JSONObject(str);
+			if(jsonObject.getString("status_code").equals("0")){
+				int obj_id = jsonObject.getInt("obj_id");
+				carNewData.setObj_id(obj_id);
+				Variable.carDatas.add(carNewData);
+				Toast.makeText(CarAddActivity.this, "车辆添加成功", Toast.LENGTH_SHORT).show();
+				setResult(3);
+				finish();
+			}else{
+				Toast.makeText(CarAddActivity.this, "添加失败", Toast.LENGTH_SHORT).show();
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			setResult(3);
+			finish();
+		}
+	}
+	
 	private void addCar(){
 		String nick_name = et_nick_name.getText().toString().trim();
 		if(nick_name.equals("")){
 			Toast.makeText(CarAddActivity.this, "车辆名称不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		if(carBrank.equals("")){
+		if(car_brand.equals("")){
 			Toast.makeText(CarAddActivity.this, "车型不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		String obj_name = et_obj_name.getText().toString().trim();
 		String url = Constant.BaseUrl + "vehicle/simple?auth_code=" + Variable.auth_code;
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		List<NameValuePair> params = new ArrayList<NameValuePair>();		
+
+        carNewData.setObj_name(obj_name);
+        carNewData.setNick_name(nick_name);
+        carNewData.setCar_brand(car_brand);
+        carNewData.setCar_series(car_series);
+        carNewData.setCar_type(car_type);
+        carNewData.setCar_brand_id(car_brand_id);
+        carNewData.setCar_series_id(car_series_id);
+        carNewData.setCar_type_id(car_type_id);
+		
         params.add(new BasicNameValuePair("cust_id", Variable.cust_id));
         params.add(new BasicNameValuePair("obj_name", obj_name));
         params.add(new BasicNameValuePair("nick_name", nick_name));
-        params.add(new BasicNameValuePair("car_brand", carBrank));
-        params.add(new BasicNameValuePair("car_series", carSeries));
-        params.add(new BasicNameValuePair("car_type", carType));
-        params.add(new BasicNameValuePair("car_brand_id", carBrankId));
-        params.add(new BasicNameValuePair("car_series_id", carSeriesId));
-        params.add(new BasicNameValuePair("car_type_id", carTypeId));
+        params.add(new BasicNameValuePair("car_brand", car_brand));
+        params.add(new BasicNameValuePair("car_series", car_series));
+        params.add(new BasicNameValuePair("car_type", car_type));
+        params.add(new BasicNameValuePair("car_brand_id", car_brand_id));
+        params.add(new BasicNameValuePair("car_series_id", car_series_id));
+        params.add(new BasicNameValuePair("car_type_id", car_type_id));
         new Thread(new NetThread.postDataThread(handler, url, params, add_car)).start();
+        
+        
 	}
-	String carBrank;
-	String carBrankId;
-	String carSeries;
-	String carSeriesId;
-	String carType;
-	String carTypeId;
+	String car_brand;
+	String car_brand_id;
+	String car_series;
+	String car_series_id;
+	String car_type;
+	String car_type_id;
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if(resultCode == 1){
-			carBrank = data.getStringExtra("brank");
-			carBrankId = data.getStringExtra("brankId");
-            carSeries = data.getStringExtra("series");
-            carSeriesId = data.getStringExtra("seriesId");
-            carType = data.getStringExtra("type");
-            carTypeId = data.getStringExtra("typeId");
+			car_brand = data.getStringExtra("brank");
+			car_brand_id = data.getStringExtra("brankId");
+			car_series = data.getStringExtra("series");
+			car_series_id = data.getStringExtra("seriesId");
+			car_type = data.getStringExtra("type");
+			car_type_id = data.getStringExtra("typeId");
             
-            tv_models.setText(carSeries + carType);
+            tv_models.setText(car_series + car_type);
 		}
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 }

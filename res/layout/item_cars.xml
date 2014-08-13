@@ -1,99 +1,99 @@
-<LinearLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical">
-    <customView.SlidingView 
+    android:orientation="vertical" >
+    <customView.SlidingView
         android:id="@+id/sv"
         android:layout_width="fill_parent"
-        android:layout_height="80dp">        
+        android:layout_height="80dp" >
         <RelativeLayout
             android:id="@+id/rl_car"
-	        android:layout_width="fill_parent"
-	        android:layout_height="80dp" 
-	        android:paddingLeft="@dimen/margins"
-            android:background="@color/gray_light" >
-            <Button 
-	            android:id="@+id/bt_bind"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_centerVertical="true"
-	            android:layout_alignParentRight="true"
-	            android:background="@drawable/bt_green"
-	            android:layout_marginRight="10dp"
-	            android:textColor="@color/white"
-	            android:text="绑定智能配件"/>
-	        <ImageView
-	         	android:id="@+id/iv_icon"
-	         	android:layout_width="@dimen/image_width"
-	            android:layout_height="@dimen/image_width"
-	            android:layout_centerVertical="true"
-	            android:layout_marginRight="10dp"
-	         	android:contentDescription="@string/app_name"
-	         	android:src="@drawable/icon_car" />
-	        <LinearLayout 
-	            android:layout_centerVertical="true"
-	            android:layout_toRightOf="@id/iv_icon"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:orientation="vertical">
-	            <TextView
-			         android:id="@+id/tv_name"
-			         android:layout_width="wrap_content"
-			         android:layout_height="wrap_content"            
-			         android:textSize="@dimen/main"
-			         android:textColor="@color/blue"
-			         android:text="沙河西路加油站" />
-	            <TextView
-	                android:layout_marginTop="@dimen/margins"
-			         android:layout_width="wrap_content"
-			         android:layout_height="wrap_content"            
-			         android:textSize="@dimen/content"
-			         android:textColor="@color/blue"
-			         android:layout_marginRight="@dimen/margins"
-			         android:text="粤B12345" />
-	        </LinearLayout>
-	    </RelativeLayout>        
-        <LinearLayout 
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:background="@color/white"
+            android:paddingLeft="@dimen/margins" >
+            <Button
+                android:id="@+id/bt_bind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/bg_bt_green"
+                android:text="绑定智能配件"
+                android:textColor="@color/white"
+                android:textSize="@dimen/main" />
+            <ImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="@dimen/image_width"
+                android:layout_height="@dimen/image_width"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/icon_car" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/iv_icon"
+                android:orientation="vertical" >
+                <TextView
+                    android:id="@+id/tv_serial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="沙河西路加油站"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/main" />
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/margins"
+                    android:layout_marginTop="@dimen/margins"
+                    android:text="粤B12345"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/content" />
+            </LinearLayout>
+        </RelativeLayout>
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="80dp">        
-            <TextView 
+            android:layout_height="80dp" >
+            <TextView
                 android:id="@+id/tv_remove"
-	             android:layout_width="wrap_content"
-	             android:paddingLeft="@dimen/double_margins"
-	             android:paddingRight="@dimen/double_margins"
-	             android:layout_marginRight="2dp"
-	             android:layout_height="fill_parent"
-	             android:text="解除\n绑定"
-	             android:textColor="@color/white"
-	             android:background="@color/red"
-	             android:gravity="center">                        
-	        </TextView>
-	        <TextView 
-	            android:id="@+id/tv_update"
-	             android:layout_width="wrap_content"
-	             android:paddingLeft="@dimen/double_margins"
-	             android:paddingRight="@dimen/double_margins"
-	             android:layout_marginRight="2dp"
-	             android:layout_height="fill_parent"
-	             android:text="修改\n终端"
-	             android:textColor="@color/white"
-	             android:background="@color/red"
-	             android:gravity="center">                        
-	        </TextView>
-	        <TextView 
-	             android:id="@+id/tv_del"
-	             android:layout_width="wrap_content"
-	             android:paddingLeft="@dimen/double_margins"
-	             android:paddingRight="@dimen/double_margins"
-	             android:layout_height="fill_parent"
-	             android:text="删除"
-	             android:textColor="@color/white"
-	             android:background="@color/red"
-	             android:gravity="center">                        
-	        </TextView>
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginRight="1dp"
+                android:background="@drawable/bg_blue_car"
+                android:gravity="center"
+                android:paddingLeft="@dimen/double_margins"
+                android:paddingRight="@dimen/double_margins"
+                android:text="解除\n绑定"
+                android:textColor="@color/white" >
+            </TextView>
+            <TextView
+                android:id="@+id/tv_update"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginRight="1dp"
+                android:background="@drawable/bg_blue_car"
+                android:gravity="center"
+                android:paddingLeft="@dimen/double_margins"
+                android:paddingRight="@dimen/double_margins"
+                android:text="修改\n终端"
+                android:textColor="@color/white" >
+            </TextView>
+            <TextView
+                android:id="@+id/tv_del"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:background="@drawable/bg_pink"
+                android:gravity="center"
+                android:paddingLeft="@dimen/double_margins"
+                android:paddingRight="@dimen/double_margins"
+                android:text="删除"
+                android:textColor="@color/white" >
+            </TextView>
         </LinearLayout>
     </customView.SlidingView>
 </LinearLayout>

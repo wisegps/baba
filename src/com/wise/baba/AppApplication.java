@@ -2,12 +2,11 @@ package com.wise.baba;
 
 import java.util.LinkedList;
 import java.util.List;
+import pubclas.GetSystem;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
-
 import com.baidu.mapapi.BMapManager;
 
 /**
@@ -15,7 +14,7 @@ import com.baidu.mapapi.BMapManager;
  * @author honesty
  */
 public class AppApplication extends Application {
-    private static final String TAG = "WawcApplication";
+    private static final String TAG = "AppApplication";
     private List<Activity> activityList = new LinkedList<Activity>();
     private static AppApplication instance;
 	
@@ -34,13 +33,13 @@ public class AppApplication extends Application {
     public void onCreate() {
 	    super.onCreate();
 		mInstance = this;
-		Log.e(TAG, "WawcApplication onCreate");
+		GetSystem.myLog(TAG, "onCreate");
 		initEngineManager(this);
 	}
 	
 	public void initEngineManager(Context context) {
         if (mBMapManager == null) {
-            Log.e(TAG, "mBMapManager实例化");
+        	GetSystem.myLog(TAG, "mBMapManager实例化");
             mBMapManager = new BMapManager(context);
         }
         if (!mBMapManager.init(strKey,null)) {

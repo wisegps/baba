@@ -1,0 +1,178 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tc="http://schemas.android.com/apk/res/com.wise.baba"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/navy"
+        android:textSize="@dimen/main" />
+	<RelativeLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_margin="@dimen/double_margins">	    
+	    <com.wise.state.TasksCompletedView
+	        android:id="@+id/tasks_view"
+	        android:layout_width="fill_parent"
+	        android:layout_height="140dp"
+	        tc:radius="55dp"
+	        tc:circleColor="@color/ring_bg_color"
+	        tc:ringColor="@color/ring_color"
+	        tc:strokeWidth="15dp" />
+	    <LinearLayout 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerInParent="true"
+	        android:gravity="center_horizontal"
+	        android:orientation="vertical">
+	        <TextView 
+	            android:id="@+id/tv_title"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textColor="@color/navy"
+	            android:text="上次体检"/>
+	        <LinearLayout 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:orientation="horizontal">
+	            <TextView
+	                android:id="@+id/tv_score" 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:textSize="@dimen/bigs_number"
+		            android:text="80"/>
+	            <TextView 
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:textColor="@color/navy"
+		            android:text="分"/>
+	        </LinearLayout>
+	        <TextView 
+	            android:id="@+id/tv_xx"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textColor="@color/blue_press"
+	            android:text="今日限行"/>
+	    </LinearLayout>
+	</RelativeLayout>
+    <LinearLayout
+        android:id="@+id/ll_fee"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginBottom="@dimen/margins"
+        android:orientation="horizontal" >
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center_horizontal"
+                android:text="本月里程"
+                android:textColor="@color/navy"
+                android:textSize="@dimen/content" />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal" >
+                <TextView
+                    android:id="@+id/tv_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/big_number" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="km"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/content" />
+            </LinearLayout>
+        </LinearLayout>
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="fill_parent"
+            android:background="@color/line" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center_horizontal"
+                android:text="本月油耗"
+                android:textColor="@color/navy"
+                android:textSize="@dimen/content" />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal" >
+                <TextView
+                    android:id="@+id/tv_fuel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/big_number" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="L"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/content" />
+            </LinearLayout>
+        </LinearLayout>
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="fill_parent"
+            android:background="@color/line" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:gravity="center_horizontal"
+                android:text="本月花费"
+                android:textColor="@color/navy"
+                android:textSize="@dimen/content" />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal" >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="￥"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/content" />
+                <TextView
+                    android:id="@+id/tv_fee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/big_number" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

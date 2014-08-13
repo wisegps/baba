@@ -7,12 +7,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
   	<wheel.widget.WheelView android:id="@+id/data_year"
         android:layout_height="140dp"
-        android:layout_width="70dp"/>   
+        android:layout_width="100dp"/>   
     <wheel.widget.WheelView android:id="@+id/data_month"
         android:layout_height="140dp"
-        android:layout_width="50dp"/>
+        android:layout_width="70dp"/>
     <wheel.widget.WheelView android:id="@+id/data_day"
         android:layout_height="140dp"
-        android:layout_width="50dp"
+        android:layout_width="70dp"
         android:layout_marginRight="10dp"/>
 </LinearLayout>

@@ -1,0 +1,21 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="35dp"
+    android:background="@color/yellow_bg"
+    android:orientation="horizontal" >
+    <customView.AlwaysMarqueeTextView
+        android:id="@+id/tv_message"
+        android:layout_width="fill_parent"
+        android:layout_height="35dp"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="@dimen/margins"
+        android:paddingLeft="@dimen/margins"
+        android:background="@color/blue_bg"
+        android:textColor="@color/navy"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:singleLine="true"/>
+</LinearLayout>

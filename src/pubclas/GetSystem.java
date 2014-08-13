@@ -23,6 +23,7 @@ import com.baidu.mapapi.navi.NaviPara;
 import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.wise.baba.R;
 import data.TimeData;
+import data.WeekData;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -30,57 +31,39 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.text.format.Time;
 import android.util.Log;
-import android.util.TypedValue;
 
 public class GetSystem {
 	private static final String TAG = "GetSystem";
 
-	public static void Log(String TAG, String Message) {
+	public static void myLog(String TAG, String Message) {
 		Log.d(TAG, Message);
 	}
-
-	/**
-	 * 获取gps状态
-	 * 
-	 * @param mContext
-	 * @return
-	 */
-	public static boolean GPSSettings(Context mContext) {
-		LocationManager alm = (LocationManager) mContext
-				.getSystemService(Context.LOCATION_SERVICE);
-		if (alm.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
-			return true;
-		} else {
-			return false;
-			// Intent myIntent = new Intent(Settings.ACTION_SECURITY_SETTINGS);
-			// mContext.startActivity(myIntent);
-		}
+	/**获取当前时间**/
+	public static String GetNowTime() {
+		Time time = new Time();
+		time.setToNow();
+		String year = ChangeTime(time.year);
+		String month = ChangeTime(time.month + 1);
+		String day = ChangeTime(time.monthDay);
+		String minute = ChangeTime(time.minute);
+		String hour = ChangeTime(time.hour);
+		String sec = ChangeTime(time.second);
+		String str = year + "-" + month + "-" + day + " " + hour + ":" + minute
+				+ ":" + sec;
+		return str;
 	}
-
-	/**
-	 * 检测网络
-	 * 
-	 * @param context
-	 * @return
-	 */
-	public static boolean checkNetWorkStatus(Context context) {
-		boolean result;
-		ConnectivityManager cm = (ConnectivityManager) context
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo netinfo = cm.getActiveNetworkInfo();
-		if (netinfo != null && netinfo.isConnected()) {
-			result = true;
-		} else {
-			result = false;
-		}
-		return result;
+	/**返回当前日期**/
+	public static String GetNowDay() {
+		Time time = new Time();
+		time.setToNow();
+		String year = ChangeTime(time.year);
+		String month = ChangeTime(time.month + 1);
+		String day = ChangeTime(time.monthDay);
+		String str = year + "-" + month + "-" + day;
+		return str;
 	}
-
 	/**
 	 * 返回当前月份
 	 * 
@@ -91,17 +74,18 @@ public class GetSystem {
 		time.setToNow();
 		String year = ChangeTime(time.year);
 		String month = ChangeTime(time.month + 1);
-		String str = year + "-" + month;
+		String day = ChangeTime(time.monthDay);
+		String s_month = year + "-" + month;
+		String s_day = year + "-" + month + "-" + day;
 		TimeData timeData = new TimeData();
-		timeData.setDate(str);
 		timeData.setYear(year);
-		timeData.setMonth("" + (time.month + 1));
+		timeData.setMonth(s_month);
+		timeData.setDay(s_day);
 		return timeData;
 	}
 
 	/**
 	 * 调整时间格式
-	 * 
 	 * @param 9
 	 * @return 09
 	 */
@@ -113,6 +97,25 @@ public class GetSystem {
 			str = "" + i;
 		}
 		return str;
+	}
+	/**车务提醒**/
+	public static int getWeekOfDate(String Date) {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(sdf.parse(Date));
+			int intWeek = calendar.get(Calendar.DAY_OF_WEEK) - 2;
+			if(intWeek == -2){
+				return 5;
+			}else if(intWeek == -1){
+				return 6;
+			}else{
+				return intWeek;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 	/**
@@ -134,6 +137,27 @@ public class GetSystem {
 			return "";
 		}
 	}
+	/**获取某一天在这个星期的起始和结束时间**/
+	public static WeekData getWeek(String str) {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(sdf.parse(str));
+			int dayofweek = cal.get(Calendar.DAY_OF_WEEK) - 1;
+			if (dayofweek == 0)
+				dayofweek = 7;
+			cal.add(Calendar.DATE, -dayofweek + 1);
+
+			WeekData weekData = new WeekData();
+			weekData.setFristDay(sdf.format(cal.getTime()));
+			cal.add(Calendar.DATE, 6);
+			weekData.setLastDay(sdf.format(cal.getTime()));
+			return weekData;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	/**
 	 * 获取指定月份
@@ -152,9 +176,8 @@ public class GetSystem {
 			nowDate.add(Calendar.MONTH, number);
 			String Date = sdf.format(nowDate.getTime());
 			TimeData timeData = new TimeData();
-			timeData.setDate(Date);
 			timeData.setYear("" + nowDate.get(Calendar.YEAR));
-			timeData.setMonth("" + (nowDate.get(Calendar.MONTH) + 1));
+			timeData.setMonth(Date);
 			return timeData;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -258,6 +281,14 @@ public class GetSystem {
 		}
 		return myDate;
 	}
+	
+	public static String jsTime(int Second){
+		if(Second > 60*60*24){
+			return "" + Second/(60*60*24);
+		}else{
+			return "1";
+		}
+	}
 
 	/**
 	 * 计算间隔时间
@@ -267,11 +298,13 @@ public class GetSystem {
 	 */
 	public static String ProcessTime(int Second) {
 		if (Second < 60) {
-			return Second + "秒";
-		} else if (Second < 3600) {
-			return Second / 60 + "分钟";
+			//小于60秒
+			return "1分";
+		} else if(Second < 60*60){
+			//小于一个小时
+			return (Second/60) + "分钟";
 		} else {
-			return Second / (60 * 60) + "小时";
+			return (Second / 3600) + "小时" ;
 		}
 	}
 
@@ -281,7 +314,7 @@ public class GetSystem {
 	 * @param time
 	 * @return
 	 */
-	public static String sortHomeTime(String time) {
+	public static String sortHomeTime1(String time) {
 		if (time == null || time.equals("")) {
 			return "";
 		}
@@ -299,6 +332,23 @@ public class GetSystem {
 			e.printStackTrace();
 			return "";
 		}
+	}
+	
+	public static String getTime(String sk_time){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {			
+			Time time = new Time();
+			time.setToNow();
+			String minute = ChangeTime(time.minute);
+			String hour = ChangeTime(time.hour);			
+			java.util.Date begin = sdf.parse("2014-08-06 " + sk_time + ":00");
+			java.util.Date end = sdf.parse("2014-08-06 " + hour + ":" + minute + ":00");
+			int l = (int) ((end.getTime() - begin.getTime()) / 1000);
+			return ProcessTime(Math.abs(l)) + "前更新";
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 	/**
@@ -408,20 +458,14 @@ public class GetSystem {
 			int quality) {
 		File file = new File(path);
 		if (!file.exists()) {
-			System.out.println("创建文件夹");
 			file.mkdirs();// 创建文件夹
 		}
 		String fileName = path + name;
-		System.out
-				.println(fileName + ",bitmap.getWidth()=" + bitmap.getWidth());
 		FileOutputStream b = null;
 		try {
 			b = new FileOutputStream(fileName);
-			System.out.println(name.substring(name.lastIndexOf(".") + 1,
-					name.length()));
 			if (name.substring(name.lastIndexOf(".") + 1, name.length())
 					.equals("png")) {
-				System.out.println("png");
 				bitmap.compress(Bitmap.CompressFormat.PNG, quality, b);// 把数据写入文件
 			} else {
 				bitmap.compress(Bitmap.CompressFormat.JPEG, quality, b);// 把数据写入文件
@@ -491,9 +535,9 @@ public class GetSystem {
 	 * @param time
 	 * @return
 	 */
-	public static boolean isTimeOut(String time) {
+	public static int isTimeOut(String time) {
 		if (time == null || time.equals("")) {
-			return false;
+			return 0;
 		}
 		if (time.length() == 10) {
 			time = time + " 00:00:00";
@@ -502,41 +546,15 @@ public class GetSystem {
 		try {
 			java.util.Date begin = sdf.parse(time);
 			java.util.Date end = sdf.parse(GetNowTime());
-			return end.getTime() >= begin.getTime();
+			return (int) ((begin.getTime() - end.getTime()) / 1000);
 		} catch (ParseException e) {
 			e.printStackTrace();
-			return false;
+			return 0;
 		}
 	}
 
-	public static String GetNowTime() {
-		Time time = new Time();
-		time.setToNow();
-		String year = ChangeTime(time.year);
-		String month = ChangeTime(time.month + 1);
-		String day = ChangeTime(time.monthDay);
-		String minute = ChangeTime(time.minute);
-		String hour = ChangeTime(time.hour);
-		String sec = ChangeTime(time.second);
-		String str = year + "-" + month + "-" + day + " " + hour + ":" + minute
-				+ ":" + sec;
-		return str;
-	}
-
-	/*
-	 * 计算车友圈头部标题高度
-	 * 
-	 * @param context
-	 */
-	public static int vehicleTitleHeight(Activity activity) {
-		// 获取屏幕高0.19
-		int width = (int) (activity.getWindowManager().getDefaultDisplay()
-				.getWidth() * 0.19);
-		// 像素转dip
-		int dip = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-				width, activity.getResources().getDisplayMetrics());
-		return dip;
-	}
+	
+	
 
 	/**
 	 * 分享
@@ -554,8 +572,7 @@ public class GetSystem {
 		oks.setAddress("");
 		oks.setTitle(Title);
 		oks.setTitleUrl(mapUrl);
-		Log.d(TAG, Content + " (来自@我爱我车,点击下载http://dl.wisegps.cn/ )");
-		oks.setText(Content + " (来自@我爱我车,点击下载http://dl.wisegps.cn/ )");
+		oks.setText(Content + " (来自@叭叭,点击下载http://dl.bibibaba.cn/ )");
 		oks.setImagePath(imagePath);
 		// oks.setImageUrl("http://img.appgo.cn/imgs/sharesdk/content/2013/07/25/1374723172663.jpg");
 		oks.setUrl("http://www.sharesdk.cn");

@@ -367,7 +367,6 @@ public class WheelView extends View {
 			
 				int old = currentItem;
 				currentItem = index;
-				System.out.println("index = " + index + " , currentItem = " + currentItem);
 				notifyChangingListeners(old, currentItem);
 			
 				invalidate();

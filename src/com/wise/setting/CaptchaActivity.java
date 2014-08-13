@@ -12,6 +12,7 @@ import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
 
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import android.app.Activity;
@@ -62,6 +63,8 @@ public class CaptchaActivity extends Activity{
 		et_pwd_again = (EditText)findViewById(R.id.et_pwd_again);
 		Button bt_Submit = (Button)findViewById(R.id.bt_Submit);
 		bt_Submit.setOnClickListener(onClickListener);
+		TextView tv_send_captcha = (TextView)findViewById(R.id.tv_send_captcha);
+		tv_send_captcha.setOnClickListener(onClickListener);
 		TextView tv_account = (TextView)findViewById(R.id.tv_account);
 		Intent intent = getIntent();
 		isPhone = intent.getBooleanExtra("isPhone", true);
@@ -90,6 +93,9 @@ public class CaptchaActivity extends Activity{
 				}else{
 					Submit();
 				}
+				break;
+			case R.id.tv_send_captcha:
+				//GetCaptcha();
 				break;
 			}
 		}		
@@ -224,5 +230,15 @@ public class CaptchaActivity extends Activity{
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 			new Thread(new NetThread.putDataThread(handler, url, params, reset_pwd)).start();
 		}
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 }

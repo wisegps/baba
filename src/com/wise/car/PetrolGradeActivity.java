@@ -3,14 +3,14 @@ package com.wise.car;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,13 +31,14 @@ public class PetrolGradeActivity extends Activity {
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.petrol_grade);
 		petrolGrade = (ListView) findViewById(R.id.petrol_grade_lv);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
-		petrolGradeList.add("90#");
-		petrolGradeList.add("93#(京92#)");
-		petrolGradeList.add("97#(京95#)");
 		petrolGradeList.add("0#");
+		petrolGradeList.add("90#");
+		petrolGradeList.add("93#(92#)");
+		petrolGradeList.add("97#(95#)");
 		myAdapter = new MyAdapter();
 		petrolGrade.setAdapter(myAdapter);
 		petrolGrade.setOnItemClickListener(new OnItemClickListener() {
@@ -85,5 +86,15 @@ public class PetrolGradeActivity extends Activity {
 		class ViewHolder{
 			TextView petRolName = null;
 		}
+	}
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 }

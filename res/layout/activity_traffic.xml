@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_huise">
+    android:background="@color/white">
     <RelativeLayout
         android:id="@+id/ll_top"
         android:layout_width="fill_parent"

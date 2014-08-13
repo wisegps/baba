@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/gray_bg"
     android:orientation="vertical" >
     <!-- 选择省份 -->
     <RelativeLayout
@@ -37,6 +37,7 @@
         android:numColumns="4"
         android:listSelector="@drawable/bg_item_selector"
         android:stretchMode="columnWidth"
+        android:background="@color/white"
         android:horizontalSpacing="10dp"/>
     <View 
         android:layout_width="fill_parent"
@@ -52,7 +53,7 @@
 	        android:layout_height="fill_parent"
 	        android:layout_weight="1"
 	        android:scrollbars="none"
-	        android:divider="@color/gray"
+	        android:divider="@color/blue_line"
 	        android:dividerHeight="0.5dip" >
 	    </ListView>
 	    <ListView
@@ -61,7 +62,7 @@
 	        android:layout_height="fill_parent"
 	        android:layout_weight="1"
 	        android:scrollbars="none"
-	        android:divider="@color/gray"
+	        android:divider="@color/blue_line"
 	        android:dividerHeight="0.5dip" >
 	    </ListView>
     </LinearLayout>

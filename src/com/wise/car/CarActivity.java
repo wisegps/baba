@@ -3,17 +3,16 @@ package com.wise.car;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
+import pubclas.JsonData;
 import pubclas.NetThread;
 import pubclas.Variable;
 
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import customView.SlidingView;
 import data.CarData;
@@ -24,6 +23,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -50,6 +50,8 @@ public class CarActivity extends Activity{
 	ListView lv_cars;
 	CarAdapter carAdapter;
 	
+	boolean isRefresh = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,14 +66,16 @@ public class CarActivity extends Activity{
         carAdapter = new CarAdapter();
 		lv_cars.setAdapter(carAdapter);
 		lv_cars.setOnItemClickListener(onItemClickListener);
-		getData();
+		if(Variable.carDatas.size() == 0){
+			getData();
+		}
 	}
 	OnClickListener onClickListener = new OnClickListener() {		
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.iv_back:
-				finish();
+				onBack();
 				break;
 			}
 		}
@@ -82,10 +86,12 @@ public class CarActivity extends Activity{
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case get_data:
-				jsonCarInfo(msg.obj.toString());
+				Variable.carDatas.clear();
+				Variable.carDatas.addAll(JsonData.jsonCarInfo(msg.obj.toString()));
+				carAdapter.notifyDataSetChanged();
 				break;
 			case remove_device:
-				jsonRemove(msg.obj.toString());
+				jsonRemove(msg.obj.toString(),msg.arg1);
 				break;
 			case delete_car:
 				jsonDelete(msg.obj.toString());
@@ -93,11 +99,14 @@ public class CarActivity extends Activity{
 			}
 		}		
 	};
-	private void jsonRemove(String str){
+	private void jsonRemove(String str,int index){
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			if(jsonObject.getString("status_code").equals("0")){
+				//TODO 刷新
 				Toast.makeText(CarActivity.this, "解除绑定成功", Toast.LENGTH_SHORT).show();
+				Variable.carDatas.get(index).setDevice_id("");
+				carAdapter.notifyDataSetChanged();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -110,6 +119,7 @@ public class CarActivity extends Activity{
 				Toast.makeText(CarActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
 				Variable.carDatas.remove(index);
 				carAdapter.notifyDataSetChanged();
+				isRefresh = true;
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -119,9 +129,8 @@ public class CarActivity extends Activity{
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			System.out.println("arg2 = " + arg2);
 			if(arg2 == Variable.carDatas.size()){
-				startActivity(new Intent(CarActivity.this, CarAddActivity.class));
+				startActivityForResult(new Intent(CarActivity.this, CarAddActivity.class),2);
 			}else{
 				
 			}
@@ -130,92 +139,6 @@ public class CarActivity extends Activity{
 	private void getData(){
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/vehicle?auth_code=" + Variable.auth_code;
 		new Thread(new NetThread.GetDataThread(handler, url, get_data)).start();
-	}
-	private void jsonCarInfo(String str){
-		try {
-			Variable.carDatas.clear();
-			JSONArray jsonArray = new JSONArray(str);
-			for(int i = 0 ; i < jsonArray.length() ; i++){
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				CarData carData = new CarData();
-				carData.setObj_id(jsonObject.getInt("obj_id"));
-				carData.setNick_name(jsonObject.getString("nick_name"));
-				if(jsonObject.opt("device_id") == null){
-					carData.setCheck(false);
-					carData.setDevice_id("");
-				}else{
-					if(jsonObject.opt("device_id").equals("0")){
-						carData.setCheck(false);
-						carData.setDevice_id("");
-					}else{
-						carData.setCheck(true);
-						carData.setDevice_id(jsonObject.getString("device_id"));
-					}
-				}
-				carData.setCar_brand(jsonObject.getString("car_brand"));
-				carData.setCar_brand_id(jsonObject.getString("car_brand_id"));
-				carData.setCar_series(jsonObject.getString("car_series"));
-				carData.setCar_series_id(jsonObject.getString("car_series_id"));
-				carData.setCar_type(jsonObject.getString("car_type"));
-				carData.setCar_type_id(jsonObject.getString("car_type_id"));
-				if(jsonObject.opt("annual_inspect_date") != null){
-					carData.setAnnual_inspect_date(jsonObject.getString("annual_inspect_date").substring(0, 10));
-				}
-				if(jsonObject.opt("buy_date") != null){
-					carData.setBuy_date(jsonObject.getString("buy_date").substring(0, 10));
-				}
-				if(jsonObject.opt("engine_no") != null){
-					carData.setEngine_no(jsonObject.getString("engine_no"));
-				}
-				if(jsonObject.opt("frame_no") != null){
-					carData.setFrame_no(jsonObject.getString("frame_no"));
-				}
-				if(jsonObject.opt("reg_no") != null){
-					carData.setRegNo(jsonObject.getString("reg_no"));
-				}
-				if(jsonObject.opt("gas_no") != null){
-					carData.setGas_no(jsonObject.getString("gas_no"));
-				}
-				if(jsonObject.opt("insurance_company") != null){
-					carData.setInsurance_company(jsonObject.getString("insurance_company"));
-				}
-				if(jsonObject.opt("insurance_date") != null){
-					carData.setInsurance_date(jsonObject.getString("insurance_date").substring(0, 10));
-				}
-				if(jsonObject.opt("insurance_tel") != null){
-					carData.setInsurance_tel(jsonObject.getString("insurance_tel"));
-				}
-				if(jsonObject.opt("insurance_no") != null){
-					carData.setInsurance_no(jsonObject.getString("insurance_no"));
-				}
-				if(jsonObject.opt("maintain_company") != null){
-					carData.setMaintain_company(jsonObject.getString("maintain_company"));
-				}
-				if(jsonObject.opt("maintain_last_date") != null){
-					carData.setMaintain_last_date(jsonObject.getString("maintain_last_date").substring(0, 10));
-				}
-				if(jsonObject.opt("maintain_last_mileage") != null){
-					carData.setMaintain_last_mileage(jsonObject.getString("maintain_last_mileage"));
-				}
-				if(jsonObject.opt("maintain_tel") != null){
-					carData.setMaintain_tel(jsonObject.getString("maintain_tel"));
-				}
-				
-				String vio_citys = jsonObject.getString("vio_citys");
-				vio_citys = "[{vio_location:\"GD_SZ\",vio_city_name:\"深圳\"},{vio_location:\"GD_CZ\",vio_city_name:\"潮州\"}]";
-				JSONArray jsonArray2 = new JSONArray(vio_citys);
-				for(int j = 0 ; j < jsonArray2.length() ; j++){
-					JSONObject jsonObject2 = jsonArray2.getJSONObject(j);
-					String vio_city_name = jsonObject2.getString("vio_city_name");
-					String vio_location = jsonObject2.getString("vio_location");
-					System.out.println(vio_city_name + "," + vio_location);
-				}
-				Variable.carDatas.add(carData);
-			}
-			carAdapter.notifyDataSetChanged();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
 	}
 	int index;
 	
@@ -241,6 +164,7 @@ public class CarActivity extends Activity{
 	            holder = new ViewHolder();
 	            holder.iv_icon = (ImageView)convertView.findViewById(R.id.iv_icon);
 	            holder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+	            holder.tv_serial = (TextView) convertView.findViewById(R.id.tv_serial);
 	            holder.tv_update = (TextView) convertView.findViewById(R.id.tv_update);
 	            holder.tv_remove = (TextView) convertView.findViewById(R.id.tv_remove);
 	            holder.tv_del = (TextView) convertView.findViewById(R.id.tv_del);
@@ -251,13 +175,15 @@ public class CarActivity extends Activity{
 			}else{
 				holder = (ViewHolder) convertView.getTag();
 			}
-			if(new File(Constant.VehicleLogoPath+Variable.carDatas.get(position).getCar_brand() + ".png").exists()){
-				Bitmap image = BitmapFactory.decodeFile(Constant.VehicleLogoPath+Variable.carDatas.get(position).getCar_brand() + ".png");
+			final CarData carData = Variable.carDatas.get(position);
+			if(new File(Constant.VehicleLogoPath + carData.getCar_brand() + ".png").exists()){
+				Bitmap image = BitmapFactory.decodeFile(Constant.VehicleLogoPath + carData.getCar_brand() + ".png");
 				holder.iv_icon.setImageBitmap(image);
 			}else{
-				holder.iv_icon.setImageResource(R.drawable.body_nothing_icon);				
+				holder.iv_icon.setImageResource(R.drawable.icon_car_moren);				
 			}
-			holder.tv_name.setText(Variable.carDatas.get(position).getNick_name());
+			holder.tv_name.setText(carData.getNick_name());
+			holder.tv_serial.setText(carData.getCar_series());
 			holder.rl_car.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {
@@ -270,33 +196,15 @@ public class CarActivity extends Activity{
 				@Override
 				public void onClick(View v) {
 					index = position;
-					String url = Constant.BaseUrl + "vehicle/" + Variable.carDatas.get(position).getObj_id() + "?auth_code=" + Variable.auth_code;
+					String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id() + "?auth_code=" + Variable.auth_code;
 				    new Thread(new NetThread.DeleteThread(handler, url, delete_car)).start();	                    
 				}
 			});
 			holder.sv.ScorllRestFast();
-			if(Variable.carDatas.get(position).isCheck()){
-				holder.bt_bind.setVisibility(View.GONE);
-				holder.tv_update.setVisibility(View.VISIBLE);
-				holder.tv_remove.setVisibility(View.VISIBLE);
-				holder.tv_update.setOnClickListener(new OnClickListener() {					
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent(CarActivity.this,DevicesAddActivity.class);
-						intent.putExtra("car_id", Variable.carDatas.get(position).getObj_id());
-						startActivityForResult(intent, 2);
-					}
-				});
-				holder.tv_remove.setOnClickListener(new OnClickListener() {					
-					@Override
-					public void onClick(View v) {
-						String url = Constant.BaseUrl + "vehicle/" + Variable.carDatas.get(position).getObj_id() + "/device?auth_code=" + Variable.auth_code;
-						List<NameValuePair> params = new ArrayList<NameValuePair>();
-						params.add(new BasicNameValuePair("device_id","0"));
-						new Thread(new NetThread.putDataThread(handler,url, params, remove_device)).start();
-					}
-				});
-			}else{
+			
+			if(carData.getDevice_id() == null || 
+					carData.getDevice_id().equals("") || 
+					carData.getDevice_id().equals("0")){
 				holder.tv_update.setVisibility(View.GONE);
 				holder.tv_remove.setVisibility(View.GONE);
 				holder.bt_bind.setVisibility(View.VISIBLE);
@@ -304,8 +212,31 @@ public class CarActivity extends Activity{
 					@Override
 					public void onClick(View v) {
 						Intent intent = new Intent(CarActivity.this,DevicesAddActivity.class);
-						intent.putExtra("car_id", Variable.carDatas.get(position).getObj_id());
+						intent.putExtra("car_id", carData.getObj_id());
+						intent.putExtra("isBind", true);
 						startActivityForResult(intent, 2);
+					}
+				});
+			}else{
+				holder.bt_bind.setVisibility(View.GONE);
+				holder.tv_update.setVisibility(View.VISIBLE);
+				holder.tv_remove.setVisibility(View.VISIBLE);
+				holder.tv_update.setOnClickListener(new OnClickListener() {					
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(CarActivity.this,DevicesAddActivity.class);
+						intent.putExtra("car_id", carData.getObj_id());
+						intent.putExtra("isBind", false);
+						startActivityForResult(intent, 2);
+					}
+				});
+				holder.tv_remove.setOnClickListener(new OnClickListener() {					
+					@Override
+					public void onClick(View v) {
+						String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id() + "/device?auth_code=" + Variable.auth_code;
+						List<NameValuePair> params = new ArrayList<NameValuePair>();
+						params.add(new BasicNameValuePair("device_id","0"));
+						new Thread(new NetThread.putDataThread(handler,url, params, remove_device,position)).start();
 					}
 				});
 			}
@@ -313,7 +244,7 @@ public class CarActivity extends Activity{
 			return convertView;
 		}
 		private class ViewHolder {
-	        TextView tv_name,tv_update,tv_del,tv_remove;
+	        TextView tv_name,tv_serial,tv_update,tv_del,tv_remove;
 	        ImageView iv_icon;
 	        Button bt_bind;
 	        SlidingView sv;
@@ -324,11 +255,38 @@ public class CarActivity extends Activity{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(resultCode == 2){
+		if(resultCode == 1){
 			//绑定车辆信息成功
 			carAdapter.notifyDataSetChanged();
 		}else if(resultCode == 3){
 			getData();
+			isRefresh = true;
 		}
+	}
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			onBack();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	private void onBack(){
+		if(isRefresh){
+			//发广播
+			Intent intent = new Intent(Constant.A_RefreshHomeCar);
+            sendBroadcast(intent);
+		}
+		finish();
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 }

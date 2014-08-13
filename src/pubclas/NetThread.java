@@ -2,10 +2,8 @@ package pubclas;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -23,9 +21,6 @@ import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -44,6 +39,7 @@ public class NetThread {
 		Handler handler;
 		String url;
 		int what;
+		int index = 0;
 		/**
 		 * Get获取数据
 		 * @param handler
@@ -55,11 +51,17 @@ public class NetThread {
 			this.url = url;
 			this.what =what;
 		}
+		public GetDataThread(Handler handler,String url,int what,int index){
+			this.handler = handler;
+			this.url = url;
+			this.what = what;
+			this.index = index;
+		}
 		@Override
 		public void run() {
 			super.run();
 			try {
-				Log.d(TAG, url);
+				GetSystem.myLog(TAG, url);
 				URL myURL = new URL(url);
 				URLConnection httpsConn = (URLConnection) myURL.openConnection();
 				if (httpsConn != null) {
@@ -74,17 +76,18 @@ public class NetThread {
 					}
 					String data = new String(baos.toByteArray(), "UTF-8");				
 					inputStream.close();
-					//insr.close();
 					
 					Message message = new Message();
 					message.what = what;
 					message.obj = data;
+					message.arg1 = index;
 					handler.sendMessage(message);
 				}else{
 					Log.d(TAG, "URLConnection");
 					Message message = new Message();
 					message.what = what;
 					message.obj = "";
+					message.arg1 = index;
 					handler.sendMessage(message);
 				}
 			}catch (Exception e) {
@@ -92,6 +95,7 @@ public class NetThread {
 				Message message = new Message();
 				message.what = what;
 				message.obj = "";
+				message.arg1 = index;
 				handler.sendMessage(message);
 			}
 		}
@@ -101,6 +105,8 @@ public class NetThread {
 		Handler handler;
 		String url;
 		int what;
+		int index = 0;
+		
 		List<NameValuePair> parms;
 		public putDataThread(Handler handler,String url,List<NameValuePair> parms,int what){
 			this.handler = handler;
@@ -108,11 +114,18 @@ public class NetThread {
 			this.what =what;
 			this.parms = parms;
 		}
+		public putDataThread(Handler handler,String url,List<NameValuePair> parms,int what,int index){
+			this.handler = handler;
+			this.url = url;
+			this.what = what;
+			this.index = index;
+			this.parms = parms;
+		}
 		@Override
 		public void run() {
 			super.run();
 			try {
-			    System.out.println(url);
+				GetSystem.myLog(TAG, url);
 				BasicHttpParams httpParams = new BasicHttpParams();  
 			    HttpConnectionParams.setConnectionTimeout(httpParams, 10000);  
 			    HttpConnectionParams.setSoTimeout(httpParams, 10000); 
@@ -132,11 +145,13 @@ public class NetThread {
 					}
 					Message message = new Message();
 					message.what = what;
+					message.arg1 = index;
 					message.obj = sb.toString();
 					handler.sendMessage(message);
 		        }else{
 		        	Message message = new Message();
 					message.what = what;
+					message.arg1 = index;
 					message.obj = "";
 					handler.sendMessage(message);
 		        }
@@ -144,6 +159,7 @@ public class NetThread {
 				e.printStackTrace();	
 				Message message = new Message();
 				message.what = what;
+				message.arg1 = index;
 				message.obj = "";
 				handler.sendMessage(message);
 			}
@@ -216,7 +232,7 @@ public class NetThread {
 		@Override
 		public void run() {
 			super.run();
-			//Log.d(TAG, url);
+			GetSystem.myLog(TAG, url);
 			HttpPost httpPost = new HttpPost(url);
 			try {
 				 httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
@@ -224,15 +240,15 @@ public class NetThread {
 				 client.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 20000);
 				 client.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 20000);
 				 HttpResponse httpResponse = client.execute(httpPost);
+				 Log.d(TAG, "状态" +httpResponse.getStatusLine().getStatusCode());
 				 if(httpResponse.getStatusLine().getStatusCode() == 200){
 					 String strResult = EntityUtils.toString(httpResponse.getEntity());
-                     Message message = new Message();
+					 Message message = new Message();
 					 message.what = what;
 					 message.arg1 = index;
 					 message.obj = strResult;
 					 handler.sendMessage(message);	
-				 }else{
-					 Log.d(TAG, "状态" +httpResponse.getStatusLine().getStatusCode());					 
+				 }else{					 
 					 Message message = new Message();
 					 message.what = what;
 					 message.arg1 = index;

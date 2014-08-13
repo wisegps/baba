@@ -5,10 +5,13 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import data.CarData;
 import data.RemindData;
 import pubclas.Constant;
+import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
 import android.app.Activity;
@@ -25,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,6 +40,8 @@ public class RemindListActivity extends Activity {
     private static final String TAG = "RemindActivity";
     private static final int get_remind = 1;
     
+    TextView tv_name,tv_date;
+    LinearLayout ll_frist;
     List<RemindData> remindDatas = new ArrayList<RemindData>();
     RemindAdapter remindAdapter;
     
@@ -44,6 +50,10 @@ public class RemindListActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_car_remind);
+        ll_frist = (LinearLayout)findViewById(R.id.ll_frist);
+        ll_frist.setOnClickListener(onClickListener);
+        tv_name = (TextView)findViewById(R.id.tv_name);
+		tv_date = (TextView)findViewById(R.id.tv_date);
         ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
         iv_back.setOnClickListener(onClickListener);
         ImageView iv_add = (ImageView) findViewById(R.id.iv_add);
@@ -65,9 +75,22 @@ public class RemindListActivity extends Activity {
             super.handleMessage(msg);
             switch (msg.what) {
             case get_remind:
-            	System.out.println(msg.obj.toString());
             	jsonRemind(msg.obj.toString());
             	remindAdapter.notifyDataSetChanged();
+            	if(remindDatas.size() > 0){
+            		RemindData remindData = remindDatas.get(0);
+            		ll_frist.setVisibility(View.VISIBLE);
+            		String title = "距离" + getCarName(remindData.getObj_id()) + Constant.items_note_type[remindData.getRemind_type()];
+            		tv_name.setText(title);            		
+            		int count_time = GetSystem.isTimeOut(remindData.getRemind_time());
+            		if(count_time > 0){
+            			tv_date.setText(GetSystem.jsTime(count_time));
+            		}else{
+            			tv_date.setText("0");
+            		}
+            	}else{
+            		ll_frist.setVisibility(View.GONE);
+            	}
             	break;
             }
         }
@@ -80,7 +103,13 @@ public class RemindListActivity extends Activity {
                 finish();
                 break;
             case R.id.iv_add:
-            	startActivity(new Intent(RemindListActivity.this, RemindAddActivity.class));
+            	startActivityForResult(new Intent(RemindListActivity.this, RemindAddActivity.class),2);
+            	break;
+            case R.id.ll_frist:
+            	Intent intent = new Intent(RemindListActivity.this, RemindActivity.class);
+    			intent.putExtra("isNeedGetData", false);
+    			intent.putExtra("remindData", remindDatas.get(0));
+    			startActivityForResult(intent, 2);
             	break;
             }
         }
@@ -90,6 +119,7 @@ public class RemindListActivity extends Activity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			Intent intent = new Intent(RemindListActivity.this, RemindActivity.class);
+			intent.putExtra("isNeedGetData", false);
 			intent.putExtra("remindData", remindDatas.get(arg2));
 			startActivityForResult(intent, 2);
 		}
@@ -99,10 +129,12 @@ public class RemindListActivity extends Activity {
     		remindDatas.clear();
 			JSONArray jsonArray = new JSONArray(str);
 			for(int i = 0 ; i < jsonArray.length() ; i++){
+				
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String remind_time = jsonObject.getString("remind_time").substring(0, 10);
 				RemindData remindData = new RemindData();
 				remindData.setCreate_time(jsonObject.getString("create_time"));
-				remindData.setRemind_time(jsonObject.getString("remind_time").substring(0, 10));
+				remindData.setRemind_time(remind_time);
 				remindData.setContent(jsonObject.getString("content"));
 				remindData.setRepeat_type(jsonObject.getInt("repeat_type"));
 				remindData.setRemind_way(jsonObject.getInt("remind_way"));
@@ -110,7 +142,13 @@ public class RemindListActivity extends Activity {
 				remindData.setObj_id(jsonObject.getInt("obj_id"));
 				remindData.setRemind_type(jsonObject.getInt("remind_type"));
 				remindData.setReminder_id(jsonObject.getString("reminder_id"));
-				System.out.println(remindData.toString());
+				remindData.setUrl(jsonObject.getString("url"));
+				int count_time = GetSystem.isTimeOut(remind_time);
+				if(count_time > 0){
+					remindData.setCount_time(GetSystem.jsTime(count_time));
+				}else{
+					remindData.setCount_time("");
+				}
 				remindDatas.add(remindData);
 			}
 		} catch (JSONException e) {
@@ -121,7 +159,7 @@ public class RemindListActivity extends Activity {
     private String getObj_name(int Obj_id){
     	for(CarData carData : Variable.carDatas){
     		if(carData.getObj_id() == Obj_id){
-    			return carData.getObj_name();
+    			return carData.getNick_name();
     		}
     	}
     	return "";
@@ -150,19 +188,51 @@ public class RemindListActivity extends Activity {
 	            holder.tv_remind_type = (TextView) convertView.findViewById(R.id.tv_remind_type);
 	            holder.tv_obj_name = (TextView) convertView.findViewById(R.id.tv_obj_name);
 	            holder.tv_remind_time = (TextView) convertView.findViewById(R.id.tv_remind_time);
+	            holder.tv_date = (TextView) convertView.findViewById(R.id.tv_date);
+	            holder.tv_day = (TextView) convertView.findViewById(R.id.tv_day);
+	            holder.tv_remind_mileage = (TextView) convertView.findViewById(R.id.tv_remind_mileage);
+	            holder.tv_mileage = (TextView) convertView.findViewById(R.id.tv_mileage);
+	            holder.tv_mileage_unit = (TextView) convertView.findViewById(R.id.tv_mileage_unit);
 	            holder.iv_icon = (ImageView) convertView.findViewById(R.id.iv_icon);
-	            convertView.setTag(holder);
+	            convertView.setTag(holder);				
 			}else{
 				holder = (ViewHolder) convertView.getTag();
-			}			
-			holder.tv_remind_type.setText(Constant.items_note_type[remindDatas.get(arg0).getRemind_type()]);
-			holder.tv_obj_name.setText(getObj_name(remindDatas.get(arg0).getObj_id()));
-			holder.tv_remind_time.setText(remindDatas.get(arg0).getRemind_time());
+			}
+			RemindData remindData = remindDatas.get(arg0);
+			holder.tv_remind_type.setText(Constant.items_note_type[remindData.getRemind_type()]);
+			holder.tv_obj_name.setText(getObj_name(remindData.getObj_id()));
+			holder.tv_remind_time.setText(remindData.getRemind_time());
+			String Count_time = remindData.getCount_time();
+			if(Count_time.equals("")){
+				holder.tv_date.setText("");
+				holder.tv_day.setText("已过期");
+				holder.tv_day.setTextColor(getResources().getColor(R.color.pink));
+				holder.tv_mileage.setVisibility(View.GONE);
+				holder.tv_mileage_unit.setVisibility(View.GONE);
+				holder.tv_remind_mileage.setVisibility(View.GONE);
+			}else{
+				holder.tv_date.setText(remindDatas.get(arg0).getCount_time());
+				holder.tv_day.setText("天");
+				holder.tv_day.setTextColor(getResources().getColor(R.color.navy));
+				if(remindDatas.get(arg0).getRemind_type() == 2){
+					//保养里程提醒
+					holder.tv_remind_mileage.setText(remindDatas.get(arg0).getMileage() + "KM");
+					holder.tv_remind_mileage.setVisibility(View.VISIBLE);
+					holder.tv_mileage.setVisibility(View.VISIBLE);
+					holder.tv_mileage_unit.setVisibility(View.VISIBLE);
+					holder.tv_mileage.setText(String.valueOf(remindDatas.get(arg0).getMileage()));
+				}else{
+					holder.tv_mileage.setVisibility(View.GONE);
+					holder.tv_mileage_unit.setVisibility(View.GONE);
+					holder.tv_remind_mileage.setVisibility(View.GONE);
+				}
+			}
 			holder.iv_icon.setBackgroundResource(Constant.items_note_type_image[remindDatas.get(arg0).getRemind_type()]);
 			return convertView;
 		}
 		private class ViewHolder {
-	        TextView tv_remind_type,tv_obj_name,tv_remind_time;
+	        TextView tv_remind_type,tv_obj_name,tv_remind_time,tv_date,tv_day,tv_remind_mileage,
+	        			tv_mileage,tv_mileage_unit;
 	        ImageView iv_icon;
 	    }
     }
@@ -170,8 +240,28 @@ public class RemindListActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	super.onActivityResult(requestCode, resultCode, data);
     	if(resultCode == 2){
-    		System.out.println("刷新");
+    		getData();
+    	}if(resultCode == 3){
     		getData();
     	}
     }
+    /**得到车辆对应的位置**/
+	private String getCarName(int Obj_id){
+		for(int i = 0 ; i < Variable.carDatas.size() ; i++){
+			if(Variable.carDatas.get(i).getObj_id() == Obj_id){
+				return Variable.carDatas.get(i).getNick_name();
+			}
+		}
+		return "";
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 }

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg_huise"
+    android:background="@color/gray_bg"
     android:orientation="vertical" >
     <RelativeLayout 
     	android:id="@+id/ll_main"
@@ -31,19 +31,29 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-        <TextView
-            android:id="@+id/tv_sms"
+        <RelativeLayout 
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/margins"
-            android:paddingTop="@dimen/double_margins"
-            android:paddingBottom="@dimen/double_margins"
-            android:textSize="@dimen/main"
-            android:text="我的消息"
-            android:paddingRight="@dimen/margins"
-            android:drawableRight="@drawable/btn_right"
-            android:textColor="@color/color_blue" 
-            android:background="@drawable/bg_white"/>
+            android:layout_height="wrap_content">            
+	        <TextView
+	            android:id="@+id/tv_sms"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:padding="@dimen/double_margins"
+	            android:textSize="@dimen/main"
+	            android:text="我的信息"
+	            android:drawableRight="@drawable/btn_right"
+	            android:textColor="@color/navy" 
+	            android:background="@drawable/bg_white"/>
+	        <ImageView 
+		        android:id="@+id/iv_noti"
+	            android:layout_centerVertical="true"
+	            android:layout_alignParentRight="true"
+	            android:layout_marginRight="40dp"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:visibility="gone"
+	            android:src="@drawable/small_red_dot"/>
+        </RelativeLayout>
 		<View 
             android:layout_width="fill_parent"
             android:layout_height="0.5dp"
@@ -53,29 +63,35 @@
             android:text="我的收藏"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/margins"
-            android:paddingTop="@dimen/double_margins"
-            android:paddingBottom="@dimen/double_margins"
+            android:padding="@dimen/double_margins"
             android:textSize="@dimen/main"
-            android:paddingRight="@dimen/margins"
             android:drawableRight="@drawable/btn_right"
-            android:textColor="@color/color_blue" 
+            android:textColor="@color/navy" 
             android:background="@drawable/bg_white"/>
-        
-        <TextView
-            android:id="@+id/tv_traffic"
-            android:layout_marginTop="@dimen/margins"
-            android:text="查询违章"
+        <RelativeLayout 
+	        android:layout_marginTop="@dimen/margins"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/margins"
-            android:paddingTop="@dimen/double_margins"
-            android:paddingBottom="@dimen/double_margins"
-            android:textSize="@dimen/main"
-            android:paddingRight="@dimen/margins"
-            android:drawableRight="@drawable/btn_right"
-            android:textColor="@color/color_blue" 
-            android:background="@drawable/bg_white"/>
+            android:layout_height="wrap_content">
+	        <TextView
+	            android:id="@+id/tv_traffic"
+	            android:text="查询违章"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:padding="@dimen/double_margins"
+	            android:textSize="@dimen/main"
+	            android:drawableRight="@drawable/btn_right"
+	            android:textColor="@color/navy" 
+	            android:background="@drawable/bg_white"/>
+	        <ImageView 
+		        android:id="@+id/iv_vio"
+	            android:layout_centerVertical="true"
+	            android:layout_alignParentRight="true"
+	            android:layout_marginRight="40dp"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:visibility="gone"
+	            android:src="@drawable/small_red_dot"/>
+        </RelativeLayout>
         <View 
             android:layout_width="fill_parent"
             android:layout_height="0.5dp"
@@ -85,13 +101,10 @@
             android:text="车务提醒"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/margins"
-            android:paddingTop="@dimen/double_margins"
-            android:paddingBottom="@dimen/double_margins"
+            android:padding="@dimen/double_margins"
             android:textSize="@dimen/main"
-            android:paddingRight="@dimen/margins"
             android:drawableRight="@drawable/btn_right"
-            android:textColor="@color/color_blue" 
+            android:textColor="@color/navy" 
             android:background="@drawable/bg_white"/>		
         <TextView
             android:id="@+id/tv_set"
@@ -99,13 +112,10 @@
             android:layout_marginTop="@dimen/margins"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/margins"
-            android:paddingTop="@dimen/double_margins"
-            android:paddingBottom="@dimen/double_margins"
+            android:padding="@dimen/double_margins"
             android:textSize="@dimen/main"
-            android:paddingRight="@dimen/margins"
             android:drawableRight="@drawable/btn_right"
-            android:textColor="@color/color_blue" 
+            android:textColor="@color/navy" 
             android:background="@drawable/bg_white"/>
     </LinearLayout>
 </LinearLayout>

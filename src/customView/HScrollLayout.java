@@ -1,8 +1,5 @@
 package customView;
 
-/**
- * 自定义首页滑动控件
- */
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -12,11 +9,18 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 
+/**
+ * 高度为子控件
+ * 无限滑动
+ * 首页车辆滑动，车辆费用明细
+ * @author Administrator
+ *
+ */
 public class HScrollLayout extends ViewGroup {
     //private static final String TAG = "HScrollLayout";
     private VelocityTracker velocityTracker;// 判断手势
     private static final int SNAP_VELOCITY = 600; // 滑动速度
-    private int mCurScreen = 0; // 当前所在屏幕
+    public int mCurScreen = 0; // 当前所在屏幕
     private float downMotionX; // 按下x坐标
     OnViewChangeListener mOnViewChangeListener;
     Scroller scroller;
@@ -109,8 +113,7 @@ public class HScrollLayout extends ViewGroup {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        //Log.d(TAG, "onTouchEvent = " + event.getAction());
+    public boolean onTouchEvent(MotionEvent event) {    	
         float x = event.getX();
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
@@ -179,6 +182,11 @@ public class HScrollLayout extends ViewGroup {
         }
         return true;
     }
+        
+    boolean isNeedOnFinish = false;
+    public void isNeedOnFinish(boolean isNeedOnFinish){
+    	this.isNeedOnFinish = isNeedOnFinish;
+    }
 
     /**
      * 跳转到那个屏幕
@@ -189,10 +197,25 @@ public class HScrollLayout extends ViewGroup {
         if (whichScreen > (getChildCount() - 1)) {
             addView();
         }
-        whichScreen = Math.max(0, Math.min(whichScreen, (getChildCount() - 1)));// 防止输入不再范围内的数字
+        final int hichScreen = Math.max(0, Math.min(whichScreen, (getChildCount() - 1)));// 防止输入不再范围内的数字
         if (getScrollX() != getWidth() * whichScreen) {// 时候需要移动
-            int delta = whichScreen * getWidth() - getScrollX(); // 还有多少没有显示
+            final int delta = whichScreen * getWidth() - getScrollX(); // 还有多少没有显示
             scroller.startScroll(getScrollX(), 0, delta, 0, Math.abs(delta) * 2);// 滚动完剩下的距离
+            
+            if(isNeedOnFinish){
+            	new Thread(new Runnable() {
+    				@Override
+    				public void run() {
+    					try {
+    						Thread.sleep(Math.abs(delta) * 2);
+    						mOnViewChangeListener.OnFinish(hichScreen);
+    					} catch (InterruptedException e) {
+    						e.printStackTrace();
+    					}
+    				}
+    			}).start();
+            }
+            
             mCurScreen = whichScreen;
             invalidate();
             if (mOnViewChangeListener != null) {
@@ -203,9 +226,10 @@ public class HScrollLayout extends ViewGroup {
     public void snapFastToScreen(int whichScreen){
         whichScreen = Math.max(0, Math.min(whichScreen, (getChildCount() - 1)));// 防止输入不再范围内的数字
         if (getScrollX() != getWidth() * whichScreen) {// 时候需要移动
-            int delta = whichScreen * getWidth() - getScrollX(); // 还有多少没有显示
-            scroller.startScroll(getScrollX(), 0, delta, 0);// 滚动完剩下的距离            
+            //int delta = whichScreen * getWidth() - getScrollX(); // 还有多少没有显示
+            //scroller.startScroll(getScrollX(), 0, delta, 0);// 滚动完剩下的距离            
             mCurScreen = whichScreen;
+            scrollTo(getWidth() * whichScreen, 0);
             invalidate();
             if (mOnViewChangeListener != null) {
                 mOnViewChangeListener.OnViewChange(whichScreen);

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg_huise"
+    android:background="@color/gray_bg"
     android:orientation="vertical" >
     <RelativeLayout 
     	android:id="@+id/ll_main"
@@ -32,10 +32,12 @@
 	    android:layout_height="wrap_content"
 	    android:layout_marginTop="50dp"
 	    android:textSize="@dimen/main"
+	    android:textColor="@color/blue_account"
 	    android:padding="@dimen/margins"
 	    android:layout_marginLeft="@dimen/margins"
 	    android:layout_marginRight="@dimen/margins"	    
 	    android:background="@drawable/et_back"
+	    android:singleLine="true"
 	    android:hint="请输入账号"/>
 	<EditText 
 	    android:id="@+id/et_pwd"
@@ -44,6 +46,7 @@
 	    android:layout_marginTop="10dp"
 	    android:textSize="@dimen/main"
 	    android:padding="10dp"
+	    android:textColor="@color/blue_account"
 	    android:layout_marginLeft="@dimen/margins"
 	    android:layout_marginRight="@dimen/margins"	    
 	    android:background="@drawable/et_back"
@@ -61,7 +64,7 @@
 	    	android:paddingLeft="22dp"
 	    	android:paddingRight="12dp"
 	    	android:layout_marginTop="@dimen/margins"
-	    	android:textColor="@color/blue"
+	    	android:textColor="@color/blue_login"
 	    	android:textSize="@dimen/main"
 	        android:text="注册"/>
 	    <TextView 
@@ -74,16 +77,26 @@
 	    	android:paddingLeft="12dp"
 	    	android:paddingRight="12dp"
 	    	android:layout_marginTop="@dimen/margins"
-	    	android:textColor="@color/blue"
+	    	android:textColor="@color/blue_login"
 	    	android:textSize="@dimen/main"
 	        android:text="忘记密码？"/>
 	</RelativeLayout>
+	<TextView 
+	    android:id="@+id/tv_note"
+	    android:layout_marginTop="80dp"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_horizontal"
+	    android:textSize="@dimen/main"
+	    android:textColor="@color/pink"
+	    android:visibility="invisible"
+	    android:text="账号密码错误!"/>
 	<Button 
 	    android:id="@+id/bt_login"
+	    android:layout_marginTop="20dp"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:padding="@dimen/margins"
-	    android:layout_marginTop="80dp"
 	    android:layout_marginLeft="@dimen/margins"
 	    android:layout_marginRight="@dimen/margins"
 	    android:background="@drawable/bg_bt_yellow"

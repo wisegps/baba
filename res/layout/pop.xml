@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_white_shade"
     android:orientation="horizontal" >
     <ListView 
         android:id="@+id/lv_pop"

@@ -3,22 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#FFFFFF" >
+    android:background="@color/gray_bg">
     <RelativeLayout
         android:id="@+id/new_car_choice_information_top"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/title_hight"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/nav_bg">
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="@dimen/title_width"
-            android:layout_height="@dimen/title_image"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/nav_back" />
-
+        android:background="@color/title_back">
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="fill_parent"
@@ -29,9 +19,16 @@
             android:text="车辆品牌"
             android:textColor="@color/white"
             android:textSize="@dimen/head" />
+        <ImageView 
+            android:id="@+id/iv_back"
+	        android:layout_width="@dimen/title_hight"
+	        android:layout_height="@dimen/title_hight"
+	        android:layout_marginLeft="@dimen/margins"
+	        android:padding="@dimen/margins"
+	        android:layout_centerVertical="true"
+	        android:src="@drawable/nav_back"/>
     </RelativeLayout>
     <!-- 品牌 -->
-
     <RelativeLayout
         android:id="@+id/rl_brand"
         android:layout_width="fill_parent"
@@ -39,9 +36,7 @@
         android:layout_below="@id/new_car_choice_information_top"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" >
-
         <!-- 自定义搜索 栏 -->
-
         <com.wise.car.ClearEditText
             android:id="@+id/cet_key"
             android:layout_width="fill_parent"
@@ -51,7 +46,7 @@
             android:drawableLeft="@drawable/toolbar_icon_search"
             android:hint="请输入关键字"
             android:singleLine="true"
-            android:textColor="@color/common"
+            android:textColor="@color/navy"
             android:textSize="@dimen/content" />
 
         <RelativeLayout
@@ -80,9 +75,7 @@
                 android:textColor="#ffffffff"
                 android:textSize="30.0dip"
                 android:visibility="invisible" />
-
             <!-- 右边字母索引 -->
-
             <com.wise.car.SideBar
                 android:id="@+id/sidrbar"
                 android:layout_width="30.0dip"
@@ -91,9 +84,7 @@
                 android:layout_centerVertical="true" />
         </RelativeLayout>
     </RelativeLayout>
-
     <!-- 车型 -->
-
     <ListView
         android:id="@+id/lv_modles"
         android:layout_width="fill_parent"

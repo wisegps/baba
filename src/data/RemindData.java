@@ -1,7 +1,9 @@
 package data;
 
 import java.io.Serializable;
+
 public class RemindData implements Serializable{
+	
 	String create_time;
 	String remind_time;
 	String content;
@@ -11,6 +13,9 @@ public class RemindData implements Serializable{
 	int obj_id;
 	int remind_type;
 	String reminder_id;
+	String count_time;
+	String url;
+	
 	public String getCreate_time() {
 		return create_time;
 	}
@@ -64,13 +69,27 @@ public class RemindData implements Serializable{
 	}
 	public void setReminder_id(String reminder_id) {
 		this.reminder_id = reminder_id;
+	}	
+	public String getCount_time() {
+		return count_time;
 	}
+	public void setCount_time(String count_time) {
+		this.count_time = count_time;
+	}	
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	
 	@Override
 	public String toString() {
 		return "RemindData [create_time=" + create_time + ", remind_time="
 				+ remind_time + ", content=" + content + ", repeat_type="
 				+ repeat_type + ", remind_way=" + remind_way + ", mileage="
 				+ mileage + ", obj_id=" + obj_id + ", remind_type="
-				+ remind_type + ", reminder_id=" + reminder_id + "]";
-	}    	
+				+ remind_type + ", reminder_id=" + reminder_id
+				+ ", count_time=" + count_time + "]";
+	}	   	
 }

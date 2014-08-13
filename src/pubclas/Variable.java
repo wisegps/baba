@@ -12,18 +12,16 @@ import data.ProvinceModel;
  * @author honesty
  */
 public class Variable{
-    /**
-     * auth_code
-     */
+    /**auth_code**/
     public static String auth_code;
-    /**
-     * cust_id
-     */
+    /**cust_id**/
     public static String cust_id;
-    /**
-     * 用户名称
-     */
+    /**用户名称**/
     public static String cust_name;
+    /**通知数目**/
+    public static int noti_count = 0;
+    /**违章数目**/
+    public static int vio_count = 0;
     /**
      * 当前位置
      */
@@ -32,6 +30,7 @@ public class Variable{
      * 当前定位城市
      */
     public static String City = "";
+    public static String Province = "";
     /**
      * 当前经度
      */

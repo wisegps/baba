@@ -11,6 +11,7 @@ import pubclas.NetThread;
 import sql.DBExcute;
 import sql.DBHelper;
 
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 
 import xlist.XListView;
@@ -26,6 +27,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -48,6 +50,7 @@ public class InsuranceActivity extends Activity implements
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_insurance);
         Intent intent = getIntent();
         isNeedPhone = intent.getBooleanExtra("isNeedPhone", false);
@@ -239,5 +242,15 @@ public class InsuranceActivity extends Activity implements
         public void setService_phone(String service_phone) {
             this.service_phone = service_phone;
         }
+    }
+    @Override
+    protected void onResume() {
+    	super.onResume();
+		MobclickAgent.onResume(this);
+    }
+    @Override
+    protected void onPause() {
+    	super.onPause();
+		MobclickAgent.onPause(this);
     }
 }

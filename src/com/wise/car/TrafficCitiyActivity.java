@@ -12,6 +12,8 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.Variable;
+
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import data.CharacterParser;
 import data.CityData;
@@ -21,10 +23,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -61,7 +63,7 @@ public class TrafficCitiyActivity extends Activity {
 	ProvinceAdapter provinceAdapter;
 	ChooseAdapter chooseAdapter;
 	List<CityData> cityDatas;
-	List<CityData> chooseCityDatas = new ArrayList<CityData>();
+	List<CityData> chooseCityDatas;
 	
 	int index = 0;
 
@@ -69,6 +71,8 @@ public class TrafficCitiyActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_traffic_city);
+
+		chooseCityDatas = (List<CityData>)getIntent().getSerializableExtra("cityDatas");
 		lv_provnice = (ListView) findViewById(R.id.lv_provnice);
 		lv_city = (ListView) findViewById(R.id.lv_city);
 		gv_choose_city = (GridView)findViewById(R.id.gv_choose_city);
@@ -76,8 +80,6 @@ public class TrafficCitiyActivity extends Activity {
 		gv_choose_city.setAdapter(chooseAdapter);
 		iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-
-		//citys = getIntent().getStringArrayListExtra("citys");		
 		
 		characterParser = new CharacterParser().getInstance();
 		comparator = new PinyinComparator();
@@ -117,6 +119,22 @@ public class TrafficCitiyActivity extends Activity {
 			}
 		});
 		
+		gv_choose_city.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				for(CityData cityData : cityDatas){
+					if(cityData.getCityName().equals(chooseCityDatas.get(arg2).getCityName())){
+						cityData.setCheck(false);
+						cityAdapter.notifyDataSetChanged();
+						break;
+					}
+				}
+				chooseCityDatas.remove(arg2);
+				chooseAdapter.notifyDataSetChanged();				
+			}
+		});
+		
 		if(Variable.provinceDatas == null) {
 			String jsonData = dBExcute.selectIllegal(TrafficCitiyActivity.this);
 			if(jsonData == null){
@@ -146,10 +164,7 @@ public class TrafficCitiyActivity extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.iv_back:
-				Intent intent = new Intent();
-				intent.putExtra("cityDatas", (Serializable)chooseCityDatas);
-				setResult(2, intent);
-				TrafficCitiyActivity.this.finish();
+				back();
 				break;
 			}
 		}
@@ -186,8 +201,6 @@ public class TrafficCitiyActivity extends Activity {
 				}
 			}
 			
-		}else{
-			System.out.println("citys为空");
 		}
 		cityAdapter = new CityAdapter(cityDatas);
 		lv_city.setAdapter(cityAdapter);
@@ -293,9 +306,9 @@ public class TrafficCitiyActivity extends Activity {
 			}
 			holder.tv_name.setText(provinceDatas.get(position).getProvinceName());
 			if(index == position){
-				holder.tv_name.setBackgroundColor(Color.GRAY);
+				holder.tv_name.setBackgroundResource(R.color.blue_bg_traffic);
 			}else{
-				holder.tv_name.setBackgroundColor(Color.WHITE);
+				holder.tv_name.setBackgroundResource(R.color.white);
 			}
 			return convertView;
 		}
@@ -337,7 +350,7 @@ public class TrafficCitiyActivity extends Activity {
 			CityData cityData = cityDatas.get(position);
 			if(cityData.isCheck()){
 				holder.tv_name.setText(cityDatas.get(position).getCityName());
-				holder.tv_name.setBackgroundResource(R.color.gray_light);
+				holder.tv_name.setBackgroundResource(R.color.blue_bg_traffic);
 			}else{
 				holder.tv_name.setText(cityDatas.get(position).getCityName());
 				holder.tv_name.setBackgroundResource(R.color.white);
@@ -380,4 +393,27 @@ public class TrafficCitiyActivity extends Activity {
             TextView tv_item_hot;
         }
     }
+	private void back(){
+		Intent intent = new Intent();
+		intent.putExtra("cityDatas", (Serializable)chooseCityDatas);
+		setResult(2, intent);
+		TrafficCitiyActivity.this.finish();
+	}
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			back();
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 }

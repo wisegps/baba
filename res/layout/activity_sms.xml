@@ -3,56 +3,92 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/gray">
+    android:background="@color/gray_bg">
     <RelativeLayout
-        android:id="@+id/rl_topmenu"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/title_hight"
-        android:background="@drawable/nav_bg">
-		<ImageView
-            android:id="@+id/iv_sms"
-            android:layout_width="@dimen/title_width"
-            android:layout_height="@dimen/title_image"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/side_left"/>
+        android:background="@color/title_back">
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"
-            android:text="我的消息"
+            android:text="通知"
             android:textColor="@color/white"
             android:textSize="@dimen/head"/>
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margins"
+            android:padding="@dimen/margins"
+            android:src="@drawable/nav_back" />
 	</RelativeLayout>
-	<RelativeLayout 
+	<LinearLayout 
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <RelativeLayout 
-            android:id="@+id/rl_Note"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <ImageView 
-                android:id="@+id/iv_nothing"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/body_nothing_icon"/>
-            <TextView 
-                android:layout_below="@id/iv_nothing"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="@dimen/main"
-                android:layout_centerHorizontal="true"
-                android:text="没有消息记录"/>
-        </RelativeLayout>        
-        <xlist.XListView 
-            android:id="@+id/lv_sms"
-            android:visibility="gone"
-            android:divider="@null"
-            android:listSelector="@drawable/bg_item_selector"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"/> 
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/margins">
+        <TextView 
+            android:id="@+id/tv_1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/main"
+            android:padding="@dimen/margins"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_border_left_press"
+            android:text="车务"/>
+        <TextView 
+            android:id="@+id/tv_2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/main"
+            android:padding="@dimen/margins"
+            android:textColor="@color/Green"
+            android:background="@drawable/bg_border_center"
+            android:text="故障"/>
+        <TextView 
+            android:id="@+id/tv_3"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/main"
+            android:padding="@dimen/margins"
+            android:textColor="@color/Green"
+            android:background="@drawable/bg_border_center"
+            android:text="报警"/>
+        <TextView 
+            android:id="@+id/tv_4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/main"
+            android:padding="@dimen/margins"
+            android:textColor="@color/Green"
+            android:background="@drawable/bg_border_center"
+            android:text="违章"/>
+        <TextView 
+            android:id="@+id/tv_0"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/main"
+            android:padding="@dimen/margins"
+            android:textColor="@color/Green"
+            android:background="@drawable/bg_border_right"
+            android:text="其他"/>
+    </LinearLayout>
+	<customView.HScrollLayout
+          xmlns:android="http://schemas.android.com/apk/res/android"    
+          android:id="@+id/hsl_sms"
+          android:layout_width="fill_parent"   
+          android:layout_height="fill_parent">            
+    </customView.HScrollLayout>
 </LinearLayout>

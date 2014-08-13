@@ -95,8 +95,8 @@ public class UpdateManager {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				double logVersion = Double.valueOf(jsonArray.getJSONObject(i).getString("version"));
 				if(logVersion > version){
-					Log.d(TAG, jsonArray.getJSONObject(i).getString("log"));
-					log += "<p>" + jsonArray.getJSONObject(i).getString("log").replace("\r\n", "</p><p>") + "</p>";
+					String logs = jsonArray.getJSONObject(i).getString("log");
+					log += "<p>" + logs.replace("\\r\\n", "</p><p>") + "</p>";
 				}				
 			}
 		} catch (Exception e) {

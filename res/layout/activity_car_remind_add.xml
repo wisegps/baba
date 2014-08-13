@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_huise">
+    android:background="@color/gray_bg">
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="@dimen/title_hight"
@@ -37,7 +37,8 @@
 	</RelativeLayout>
 	<ScrollView 
 	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent">
+	    android:layout_height="fill_parent"
+	    android:scrollbars="none">
 	    <LinearLayout 
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
@@ -134,8 +135,7 @@
 	            <EditText 
 	                android:id="@+id/et_content"
 	                android:layout_width="fill_parent"
-	                android:layout_height="wrap_content"
-	                android:inputType="number"/>
+	                android:layout_height="wrap_content"/>
 	        </LinearLayout>
 	        <LinearLayout 
 	            android:layout_marginTop="@dimen/margins"
@@ -149,6 +149,7 @@
 	                android:layout_height="wrap_content"
 	                android:textColor="@color/blue"
 	                android:textSize="@dimen/main"
+	                android:padding="@dimen/margins"
 	                android:gravity="center_horizontal"/>	            
 	            <View 
 			        android:layout_width="fill_parent"
@@ -160,31 +161,45 @@
 	                android:orientation="horizontal">
 	                <wheel.widget.WheelView android:id="@+id/data_year"
 				        android:layout_height="140dp"
-				        android:layout_width="100dp"/>   
+				        android:layout_width="80dp"/>   
 				    <wheel.widget.WheelView android:id="@+id/data_month"
 				        android:layout_height="140dp"
-				        android:layout_width="80dp"/>
+				        android:layout_width="60dp"/>
 				    <wheel.widget.WheelView android:id="@+id/data_day"
 				        android:layout_height="140dp"
-				        android:layout_width="80dp"
+				        android:layout_width="60dp"/>
+				    <wheel.widget.WheelView android:id="@+id/data_week"
+				        android:layout_height="140dp"
+				        android:layout_width="fill_parent"
 				        android:layout_marginRight="10dp"/>
 	            </LinearLayout>
 	            <View 
 			        android:layout_width="fill_parent"
 			        android:layout_height="0.5dp"
 			        android:background="@color/line"/>
-	            <TextView 
+	            <TextView
+	                android:id="@+id/tv_before_note" 
 	                android:layout_width="fill_parent"
 	                android:layout_height="wrap_content"
 	                android:gravity="center_horizontal"
 	                android:textSize="@dimen/main"
 	                android:textColor="@color/color_blue"
 	                android:padding="@dimen/margins"
-	                android:text="提醒  提前三天"/>
+	                android:text="提醒 提前三天"/>
 	            <View 
 			        android:layout_width="fill_parent"
 			        android:layout_height="0.5dp"
 			        android:background="@color/line"/>
+	            <TextView 
+	                android:id="@+id/tv_before0"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:gravity="center_horizontal"
+	                android:textSize="@dimen/main"
+	                android:textColor="@color/color_blue"
+	                android:background="@drawable/bg_white"
+	                android:padding="@dimen/margins"
+	                android:text="不提前"/>
 	            <TextView 
 	                android:id="@+id/tv_before1"
 	                android:layout_width="fill_parent"
@@ -214,7 +229,17 @@
 	                android:textColor="@color/color_blue"
 	                android:padding="@dimen/margins"
 	                android:background="@drawable/bg_white"
-	                android:text="提前七天"/>
+	                android:text="提前一周"/>
+	            <TextView 
+	                android:id="@+id/tv_before30"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:gravity="center_horizontal"
+	                android:textSize="@dimen/main"
+	                android:textColor="@color/color_blue"
+	                android:padding="@dimen/margins"
+	                android:background="@drawable/bg_white"
+	                android:text="提前一个月"/>
 	        </LinearLayout>
 	    </LinearLayout>
 	</ScrollView>

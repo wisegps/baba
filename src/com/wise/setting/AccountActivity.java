@@ -24,14 +24,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import customView.PopView;
 import customView.PopView.OnItemClickListener;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.Config;
@@ -49,12 +53,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class AccountActivity extends Activity implements OnUploadProcessListener{
-
 	private static final int get_customer = 1;
-
+	private static final int set_sex = 2;
+	private static final int set_birth = 3;
 	TextView tv_phone,tv_name, tv_email, tv_sex,tv_birth;
 	ImageView iv_pic;
 	RequestQueue mQueue;
+	String birth;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +83,7 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 		tv_birth.setOnClickListener(onClickListener);
 		TextView tv_update_pwd = (TextView)findViewById(R.id.tv_update_pwd);
 		tv_update_pwd.setOnClickListener(onClickListener);
-		GetCustomer();
+		jsonCustomer();
 		OpenDateDialog.SetCustomDateListener(new OpenDateDialogListener() {			
 			@Override
 			public void OnDateChange(String Date, int index) {
@@ -89,7 +94,8 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			        params.add(new BasicNameValuePair("field_name", "birth"));
 			        params.add(new BasicNameValuePair("field_type", "Date"));
 			        params.add(new BasicNameValuePair("field_value", Date));
-			        new Thread(new NetThread.putDataThread(handler, url, params, 0)).start();
+			        new Thread(new NetThread.putDataThread(handler, url, params, set_birth)).start();
+			        birth = Date;
 			        tv_birth.setText(Date);
 					break;
 				}
@@ -105,7 +111,10 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 				finish();
 				break;
 			case R.id.tv_name:
-				startActivityForResult(new Intent(AccountActivity.this,NameActivity.class), 1);
+				String name = tv_name.getText().toString().trim();
+				Intent intent2 = new Intent(AccountActivity.this,NameActivity.class);
+				intent2.putExtra("name", name);
+				startActivityForResult(intent2, 1);
 				break;
 			case R.id.tv_sex:
 				setSex();
@@ -116,18 +125,20 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			case R.id.tv_phone:
 				Intent intent = new Intent(AccountActivity.this, RegisterActivity.class);
 				intent.putExtra("mark", 3);
+				intent.putExtra("phone", tv_phone.getText().toString().trim());
 				startActivityForResult(intent, 1);
 				break;
 			case R.id.tv_email:
 				Intent intent1 = new Intent(AccountActivity.this, RegisterActivity.class);
 				intent1.putExtra("mark", 4);
+				intent1.putExtra("email", tv_email.getText().toString().trim());
 				startActivityForResult(intent1, 1);
 				break;
 			case R.id.iv_pic:
 				picPop();
 				break;
 			case R.id.tv_birth:
-				OpenDateDialog.ShowDate(AccountActivity.this, R.id.tv_birth);
+				OpenDateDialog.ShowDate(AccountActivity.this, R.id.tv_birth,birth);
 				break;
 			}
 		}
@@ -138,27 +149,27 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
+			case set_sex:
+				//修改性别刷新
+				GetCustomer();
+				break;
 			case get_customer:
 				jsonCustomer(msg.obj.toString());
 				break;
-
-			case 0:
-				System.out.println(msg.obj.toString());
+			case set_birth:
+				//修改生日后刷新
+				GetCustomer();
 				break;
 			}
 		}
 	};
-
-	private void GetCustomer() {
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-				+ "?auth_code=" + Variable.auth_code;
-		new Thread(new NetThread.GetDataThread(handler, url, get_customer))
-				.start();
-	}
-	String birth;
-	private void jsonCustomer(String str) {
+	
+	private void jsonCustomer() {
 		try {
-			JSONObject jsonObject = new JSONObject(str);
+			SharedPreferences preferences = getSharedPreferences(
+					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+			String customer = preferences.getString(Constant.sp_customer + Variable.cust_id, "");
+			JSONObject jsonObject = new JSONObject(customer);
 			tv_phone.setText(jsonObject.getString("mobile"));
 			tv_name.setText(jsonObject.getString("cust_name"));
 			tv_email.setText(jsonObject.getString("email"));
@@ -198,7 +209,7 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 				        params.add(new BasicNameValuePair("field_name", "sex"));
 				        params.add(new BasicNameValuePair("field_type", "Number"));
 				        params.add(new BasicNameValuePair("field_value", String.valueOf(which)));
-				        new Thread(new NetThread.putDataThread(handler, url, params, 0)).start();
+				        new Thread(new NetThread.putDataThread(handler, url, params, set_sex)).start();
 				        switch (which) {
 						case 0:
 							tv_sex.setText("男");
@@ -215,7 +226,7 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 		List<String> items = new ArrayList<String>();
 		items.add("拍照");
 		items.add("从手机相册中选取");
-		PopView popView = new PopView(this);
+		final PopView popView = new PopView(this);
 		popView.initView(findViewById(R.id.iv_pic));
 		popView.setData(items);
 		popView.SetOnItemClickListener(new OnItemClickListener() {			
@@ -225,6 +236,7 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 				case 0:
 					Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 					startActivityForResult(intent1, 1);
+					popView.dismiss();
 					break;
 
 				case 1:
@@ -234,7 +246,8 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 	                /* 使用Intent.ACTION_GET_CONTENT这个Action */ 
 	                intent.setAction(Intent.ACTION_GET_CONTENT);  
 	                /* 取得相片后返回本画面 */ 
-	                startActivityForResult(intent, 9); 
+	                startActivityForResult(intent, 9);
+	                popView.dismiss();
 					break;
 				}
 			}
@@ -244,7 +257,6 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		System.out.println("requestCode = " + requestCode + ",resultCode = " + resultCode);
 		if(requestCode == 9){
 			Uri uri = data.getData(); 
             Log.e("uri", uri.toString()); 
@@ -270,6 +282,8 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			}else{
 				tv_email.setText(account);
 			}
+			
+			GetCustomer();
 			break;
 		case Activity.RESULT_OK:
 			String sdStatus = Environment.getExternalStorageState();
@@ -283,15 +297,48 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			break;
 		}
 	}
+	/**修改完手机或邮箱后刷新本地数据**/
+	private void GetCustomer() {
+		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
+				+ "?auth_code=" + Variable.auth_code;
+		new Thread(new NetThread.GetDataThread(handler, url, get_customer))
+				.start();
+	}
+	private void jsonCustomer(String str) {
+		try {
+			JSONObject jsonObject = new JSONObject(str);
+			String mobile = jsonObject.getString("mobile");
+			String email = jsonObject.getString("email");
+			String password = jsonObject.getString("password");
+			Variable.cust_name = jsonObject.getString("cust_name");
+			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+	        Editor editor = preferences.edit();
+	        editor.putString(Constant.sp_customer + Variable.cust_id, str);
+	        editor.putString(Constant.sp_pwd, password);
+			if(mobile.equals("")){
+		        editor.putString(Constant.sp_account, email);
+			}else{
+				editor.putString(Constant.sp_account, mobile);
+			}
+	        editor.commit();
+		} catch (JSONException e) {
+			e.printStackTrace();
+			finish();
+		}
+	}
+	
 	private void UpdateBitmap(Bitmap bitmap){
+		File filePath = new File(Constant.userIconPath);
+        if (!filePath.exists()) {
+			filePath.mkdirs();
+		}		
+		bitmap = BlurImage.scaleImage(bitmap, 150);
 		bitmap = BlurImage.getSquareBitmap(bitmap);
-        FileOutputStream b = null;
-        File file = new File("/sdcard/myImage/");
-        file.mkdirs();// 创建文件夹
-        String fileName = "/sdcard/myImage/111.jpg";
+        FileOutputStream b = null;        
+        String fileName = Constant.userIconPath + Variable.cust_id + ".png";
         try {
             b = new FileOutputStream(fileName);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// 把数据写入文件
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, b);// 把数据写入文件
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
@@ -303,7 +350,9 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
             }
         }
         iv_pic.setImageBitmap(bitmap);
+        
         String url = Constant.BaseUrl + "upload_image?auth_code=" + Variable.auth_code;
+        //String url = "http://baba-img.oss-cn-hangzhou.aliyuncs.com";
         UploadUtil.getInstance().setOnUploadProcessListener(AccountActivity.this);
         UploadUtil.getInstance().uploadFile(fileName, "image", url, new HashMap<String, String>());
 	}
@@ -326,11 +375,20 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 
 	@Override
 	public void onUploadDone(int responseCode, String message) {
-		System.out.println("message = " + message);
 		jsonUpdatePic(message);
 	}
 	@Override
 	public void onUploadProcess(int uploadSize) {}
 	@Override
 	public void initUpload(int fileSize) {}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 }

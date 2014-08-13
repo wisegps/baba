@@ -4,12 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import pubclas.Constant;
+import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,6 +37,7 @@ import android.widget.ImageView;
 
 public class NameActivity extends Activity{
 	private static final int update_name = 1;
+	private static final int get_customer = 2;
 	EditText et_name;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +48,9 @@ public class NameActivity extends Activity{
 		iv_back.setOnClickListener(onClickListener);
 		Button bt_sure = (Button)findViewById(R.id.bt_sure);
 		bt_sure.setOnClickListener(onClickListener);
+		String name = getIntent().getStringExtra("name");
 		et_name = (EditText)findViewById(R.id.et_name);
+		et_name.setText(name);
 	}
 	OnClickListener onClickListener = new OnClickListener(){
 		@Override
@@ -54,10 +72,13 @@ public class NameActivity extends Activity{
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case update_name:
-				System.out.println("update name : " + msg.obj.toString());
+				String url = Constant.BaseUrl + "customer/" + Variable.cust_id
+				+ "?auth_code=" + Variable.auth_code;
+					new Thread(new NetThread.GetDataThread(handler, url, get_customer))
+				.start();
 				break;
-
-			default:
+			case get_customer:
+				jsonCustomer(msg.obj.toString());
 				break;
 			}
 		}		
@@ -69,12 +90,31 @@ public class NameActivity extends Activity{
 		}
 		Intent data = new Intent();
 		data.putExtra("name", name);
-		setResult(0, data);
+		setResult(1, data);
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/field?auth_code=" + Variable.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("field_name", "cust_name"));
         params.add(new BasicNameValuePair("field_type", "String"));
         params.add(new BasicNameValuePair("field_value", name));
         new Thread(new NetThread.putDataThread(handler, url, params, update_name)).start();
+	}
+	
+	/**获取个人信息**/
+	private void jsonCustomer(String str) {
+		SharedPreferences preferences1 = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+        Editor editor1 = preferences1.edit();
+        editor1.putString(Constant.sp_customer + Variable.cust_id, str);
+        editor1.commit();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 }

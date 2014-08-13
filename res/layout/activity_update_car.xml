@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_huise">
+    android:background="@color/gray_bg">
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="@dimen/title_hight"
@@ -56,7 +56,7 @@
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
-			            android:textColor="@color/blue"
+			            android:textColor="@color/navy"
 					    android:padding="10dp"   
 			            android:text="车辆名称："/>
 			        <EditText
@@ -64,7 +64,7 @@
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/main"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 					    android:background="@null"
 					    android:padding="10dp"/>
 			    </LinearLayout>
@@ -81,14 +81,14 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"  
-					    android:textColor="@color/blue" 
-			            android:text="车牌号："/>
+					    android:textColor="@color/navy" 
+			            android:text="车牌号：    "/>
 			        <EditText
 			            android:id="@+id/et_obj_name"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/main"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 					    android:background="@null"
 					    android:padding="10dp"/>
 			    </LinearLayout>
@@ -105,14 +105,14 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"  
-					    android:textColor="@color/blue" 
-			            android:text="车型:"/>
+					    android:textColor="@color/navy" 
+			            android:text="车型：        "/>
 				    <TextView 
 				        android:id="@+id/tv_models"
 			            android:layout_width="fill_parent"
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
-			            android:textColor="@color/blue"
+			            android:textColor="@color/navy"
 					    android:padding="10dp"/>
 		        </LinearLayout>
 		        <View 
@@ -128,14 +128,14 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
-			            android:text="汽油标号:"/>
+					    android:textColor="@color/navy"
+			            android:text="汽油标号："/>
 				    <TextView 
 				        android:id="@+id/tv_gas_no"
 			            android:layout_width="fill_parent"
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
-			            android:textColor="@color/blue"
+			            android:textColor="@color/navy"
 					    android:padding="10dp"/>
 		        </LinearLayout>
 		    </LinearLayout>		    
@@ -154,14 +154,14 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 			            android:text="违章城市："/>
 			        <TextView
 			            android:id="@+id/tv_city"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/main"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 					    android:padding="10dp" />
 			    </LinearLayout>
 			    <View 
@@ -177,15 +177,15 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp" 
-					    android:textColor="@color/blue"  
-			            android:text="车架号："/>
+					    android:textColor="@color/navy"  
+			            android:text="车架号：    "/>
 			        <EditText
 			            android:id="@+id/et_frame_no"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 					    android:background="@null"
 					    android:hint="选填"/>
 			    </LinearLayout>
@@ -202,7 +202,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 			            android:text="发送机号："/>
 			        <EditText
 			            android:id="@+id/et_engine_no"
@@ -210,7 +210,7 @@
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 					    android:background="@null"
 					    android:hint="选填"/>
 			    </LinearLayout>
@@ -227,7 +227,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 			            android:text="登记证号："/>
 			        <EditText
 			            android:id="@+id/et_regist_no"
@@ -235,7 +235,7 @@
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 					    android:background="@null"
 					    android:hint="选填"/>
 			    </LinearLayout>
@@ -255,7 +255,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 			            android:text="保险公司："/>
 			        <TextView 
 			            android:id="@+id/tv_insurance_company"
@@ -263,7 +263,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 			            android:text="太平洋保险"/>
 			    </LinearLayout>
 			    <View 
@@ -279,7 +279,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 			            android:text="联系电话："/>
 			        <EditText
 			            android:id="@+id/et_insurance_tel"
@@ -287,7 +287,7 @@
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 					    android:background="@null"
 					    android:text="100000"/>
 			    </LinearLayout>
@@ -304,7 +304,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 			            android:text="保险时间："/>
 			        <TextView 
 			            android:id="@+id/tv_insurance_date"
@@ -312,7 +312,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"/>
+					    android:textColor="@color/navy"/>
 			    </LinearLayout>
 			    <View 
 			        android:layout_width="fill_parent"
@@ -327,15 +327,15 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp" 
-					    android:textColor="@color/blue"  
-			            android:text="保单号："/>
+					    android:textColor="@color/navy"  
+			            android:text="保单号：    "/>
 			        <EditText
 			            android:id="@+id/et_insurance_no"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 					    android:background="@null"/>
 			    </LinearLayout>
 		    </LinearLayout>
@@ -354,15 +354,15 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
-			            android:text="购车4s店："/>
+					    android:textColor="@color/navy"
+			            android:text="购车4S店："/>
 			        <TextView 
 			            android:id="@+id/tv_maintain_company"
 			            android:layout_width="fill_parent"
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 			            android:text="太平洋保险"/>
 			    </LinearLayout>
 			    <View 
@@ -378,7 +378,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 			            android:text="联系电话："/>
 			        <EditText
 			            android:id="@+id/et_maintain_tel"
@@ -386,7 +386,7 @@
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 					    android:background="@null"/>
 			    </LinearLayout>
 			    <View 
@@ -402,7 +402,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 			            android:text="购车时间："/>
 			        <TextView 
 			            android:id="@+id/tv_buy_date"
@@ -410,7 +410,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"   
-			            android:textColor="@color/blue"/>
+			            android:textColor="@color/navy"/>
 			    </LinearLayout>
 			    <View 
 			        android:layout_width="fill_parent"
@@ -425,7 +425,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-					    android:textColor="@color/blue"
+					    android:textColor="@color/navy"
 			            android:text="年检时间："/>
 			        <TextView 
 			            android:id="@+id/tv_year_check"
@@ -433,7 +433,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/main"
 					    android:padding="10dp"
-			            android:textColor="@color/blue"/>
+			            android:textColor="@color/navy"/>
 			    </LinearLayout>
 		    </LinearLayout>
 	    </LinearLayout>

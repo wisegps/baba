@@ -1,10 +1,8 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/white"
-    android:orientation="vertical" >
-
+    android:background="@color/gray_bg">
     <RelativeLayout
         android:id="@+id/ll_main"
         android:layout_width="fill_parent"
@@ -27,7 +25,8 @@
 	        android:layout_centerVertical="true"
 	        android:src="@drawable/nav_back"/>
     </RelativeLayout>
-	<LinearLayout 
+	<LinearLayout
+	    android:layout_below="@id/ll_main"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:padding="@dimen/margins"
@@ -35,19 +34,44 @@
 	    <TextView
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_marginTop="5dp"
 	        android:textSize="@dimen/content"
-	    	android:textColor="@color/common"
+	        android:layout_marginTop="@dimen/margins"
+	    	android:textColor="@color/navy"
 	        android:text="你的注册马上就要成功了，请输入以下近基本信息" />
-		<LinearLayout 
+	    <LinearLayout 
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
+		    android:layout_marginTop="@dimen/margins"
 		    android:gravity="center_vertical"
 		    android:orientation="horizontal">		    
 		    <TextView
 		        android:layout_width="100dp"
 		        android:layout_height="wrap_content"
-		        android:textColor="@color/blue"
+		        android:textColor="@color/navy"
+		        android:textSize="@dimen/main"
+		        android:text="昵称："/>		    
+		    <EditText
+			    android:id="@+id/et_cust_name"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:textSize="@dimen/main"
+			    android:padding="@dimen/margins"
+			    android:layout_marginLeft="@dimen/margins"
+			    android:layout_marginRight="@dimen/margins"	    
+			    android:background="@drawable/et_back"
+			    android:textColor="@color/blue_account"
+			    android:hint="请输入昵称"/>
+		</LinearLayout>
+		<LinearLayout 
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="@dimen/margins"
+		    android:gravity="center_vertical"
+		    android:orientation="horizontal">		    
+		    <TextView
+		        android:layout_width="100dp"
+		        android:layout_height="wrap_content"
+		        android:textColor="@color/navy"
 		        android:textSize="@dimen/main"
 		        android:text="出生年份："/>		    
 		    <Spinner 
@@ -58,12 +82,13 @@
 		<LinearLayout 
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
+		    android:layout_marginTop="@dimen/margins"
 		    android:gravity="center_vertical"
 		    android:orientation="horizontal">		    
 		    <TextView
 		        android:layout_width="100dp"
 		        android:layout_height="wrap_content"
-		        android:textColor="@color/blue"
+		        android:textColor="@color/navy"
 		        android:textSize="@dimen/main"
 		        android:text="性别："/>
 		    <RadioGroup
@@ -76,13 +101,13 @@
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:checked="true"
-		            android:textColor="@color/common"
+		            android:textColor="@color/navy"
 		            android:text="男" />	
 		        <RadioButton
 		            android:id="@+id/rb_woman"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:textColor="@color/common"
+		            android:textColor="@color/navy"
 		            android:text="女" />
 		    </RadioGroup>
 		</LinearLayout>
@@ -90,11 +115,13 @@
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
 		    android:gravity="center_vertical"
+		    android:layout_marginTop="@dimen/margins"
+		    android:layout_marginBottom="@dimen/margins"
 		    android:orientation="horizontal">		    
 		    <TextView
 		        android:layout_width="100dp"
 		        android:layout_height="wrap_content"
-		        android:textColor="@color/blue"
+		        android:textColor="@color/navy"
 		        android:textSize="@dimen/main"
 		        android:text="身份："/>
 		    <RadioGroup
@@ -107,19 +134,19 @@
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:checked="true"
-		            android:textColor="@color/common"
+		            android:textColor="@color/navy"
 		            android:text="无车" />	
 		        <RadioButton
 		            android:id="@+id/rb_car"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:textColor="@color/common"
+		            android:textColor="@color/navy"
 		            android:text="车主" />
 		        <RadioButton
 		            android:id="@+id/rb_service"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:textColor="@color/common"
+		            android:textColor="@color/navy"
 		            android:text="服务商" />
 		    </RadioGroup>
 		</LinearLayout>
@@ -129,16 +156,21 @@
 		    android:layout_height="wrap_content"
 		    android:gravity="center_vertical"
 		    android:orientation="horizontal"
-		    android:visibility="gone">		    
+		    android:visibility="gone">
 		    <TextView
 		        android:layout_width="100dp"
 		        android:layout_height="wrap_content"
-		        android:textColor="@color/blue"
+		        android:textColor="@color/navy"
 		        android:textSize="@dimen/main"
 		        android:text="车型："/>
-		    <Spinner 
+		    <TextView
+		        android:id="@+id/tv_model"
 		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"/>
+		        android:layout_height="wrap_content"
+		        android:textColor="@color/navy"
+		        android:textSize="@dimen/content"
+		        android:background="@drawable/et_back"
+		        android:text="点击选择车型"/>
 		</LinearLayout>
 		<LinearLayout 
 		    android:id="@+id/ll_type"
@@ -150,7 +182,7 @@
 		    <TextView
 		        android:layout_width="100dp"
 		        android:layout_height="wrap_content"
-		        android:textColor="@color/blue"
+		        android:textColor="@color/navy"
 		        android:textSize="@dimen/main"
 		        android:text="类型："/>
 		    <Spinner 
@@ -158,15 +190,19 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"/>
 		</LinearLayout>
-	    <Button
-	        android:id="@+id/bt_enter"
-	        android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:padding="@dimen/margins"
-		    android:layout_marginTop="5dp"
-		    android:background="@drawable/bt_yellow"
-		    android:textSize="@dimen/bt"
-		    android:textColor="@color/white"
-	        android:text="进入系统" />	        
-	</LinearLayout>
-</LinearLayout>
+	</LinearLayout>	
+    <Button
+        android:id="@+id/bt_enter"
+        android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:padding="@dimen/margins"
+	    android:layout_marginLeft="@dimen/margins"
+	    android:layout_marginRight="@dimen/margins"
+	    android:layout_marginBottom="50dp"
+	    android:layout_alignParentBottom="true"
+	    android:layout_marginTop="5dp"
+	    android:background="@drawable/bg_bt_yellow"
+	    android:textSize="@dimen/bt"
+	    android:textColor="@color/white"
+        android:text="进入系统" />
+</RelativeLayout>

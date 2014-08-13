@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:textColor="@color/common"/>
+            android:textColor="@color/navy"/>
         
         <TextView
             android:id="@+id/tv_phone"
@@ -29,7 +29,6 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf ="@id/tv_name"
             android:layout_marginLeft="@dimen/margins"
-            android:textColor="@color/common_inactive"
-            android:text="沙河西路加油站" />
+            android:textColor="@color/common_inactive"/>
     </RelativeLayout>
 </LinearLayout>

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_huise">
+    android:background="@color/gray_bg">
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="@dimen/title_hight"
@@ -46,6 +46,7 @@
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:textSize="@dimen/main"
+	            android:textColor="@color/navy"
 	            android:text="车辆名称"/>
 	        <EditText
 	            android:id="@+id/et_nick_name"
@@ -55,12 +56,14 @@
 			    android:layout_marginTop="10dp"
 			    android:padding="10dp"   
 			    android:background="@drawable/et_back"
+			    android:textColor="@color/navy"
 			    android:hint="必填"/>
 	        <TextView 
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:textSize="@dimen/main"
 			    android:layout_marginTop="10dp"
+			    android:textColor="@color/navy"
 	            android:text="车牌号"/>
 	        <EditText
 	            android:id="@+id/et_obj_name"
@@ -70,6 +73,7 @@
 			    android:layout_marginTop="10dp"
 			    android:padding="10dp"   
 			    android:background="@drawable/et_back"
+			    android:textColor="@color/navy"
 			    android:hint="选填"/>
 	        <LinearLayout 
 	            android:layout_width="fill_parent"
@@ -81,13 +85,15 @@
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:textSize="@dimen/main"
-				    android:padding="10dp"   
+				    android:padding="10dp"
+				    android:textColor="@color/navy"
 		            android:text="车型:"/>
 			    <TextView 
 			        android:id="@+id/tv_models"
 		            android:layout_width="fill_parent"
 		            android:layout_height="wrap_content"
 		            android:textSize="@dimen/main"
+		            android:textColor="@color/navy"
 				    android:padding="10dp"/>
 	        </LinearLayout>
 	    </LinearLayout>

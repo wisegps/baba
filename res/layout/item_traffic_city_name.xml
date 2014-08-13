@@ -2,13 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#FFFFFF"
     android:orientation="vertical">
     <TextView
         android:id="@+id/tv_name" 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/common"
+        android:textColor="@color/navy"
         android:textSize="@dimen/content"
         android:padding="@dimen/margins"
         android:background="@drawable/bg_item_selector"/>

@@ -12,6 +12,8 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
+
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import data.AdressData;
 import android.app.Activity;
@@ -51,7 +53,6 @@ public class DealAddressActivity extends Activity {
         adressAdapter.setOnCollectListener(new OnCollectListener() {
             @Override
             public void OnCollect(int index) {
-                System.out.println("收藏:" + index);
                 adressDatas.get(index).setIs_collect(true);
                 adressAdapter.notifyDataSetChanged();
             }
@@ -79,7 +80,6 @@ public class DealAddressActivity extends Activity {
         iv_activity_dealadress_back.setOnClickListener(onClickListener);
         Type = getIntent().getIntExtra("Type", 1);
         String city = getIntent().getStringExtra("city");
-        Log.d(TAG, "Type = " + Type);
         GetDealAdress(city);
     }
 
@@ -112,10 +112,7 @@ public class DealAddressActivity extends Activity {
     private void GetDealAdress(String city) {
         String LocationCity;
         if(city == null || city.equals("")){
-            SharedPreferences preferences = getSharedPreferences(
-                    Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-            LocationCity = preferences
-                    .getString(Constant.LocationCity, "深圳");
+            LocationCity = Variable.City;
         }else{
             LocationCity = city;
         }
@@ -172,5 +169,15 @@ public class DealAddressActivity extends Activity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	MobclickAgent.onResume(this);
+    }
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	MobclickAgent.onPause(this);
     }
 }

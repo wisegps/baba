@@ -2,42 +2,40 @@ package com.wise.baba;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import nadapter.CollectionAdapter;
 import nadapter.CollectionAdapter.CollectionItemListener;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
+import customView.WaitLinearLayout;
+import customView.WaitLinearLayout.OnFinishListener;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
-
 import sql.DBExcute;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
-
-
 import data.AdressData;
-
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.app.Activity;
 
+/**收藏**/
 public class CollectionActivity extends Activity implements IXListViewListener{
-	private static final String TAG = "Fragment_collection";
+	
     private static final int frist_getdata = 1;
-    private static final int load_getdata = 2;
+    private static final int refresh_getdata = 2;
+    private static final int load_getdata = 3;
     
     RelativeLayout rl_Note;
+    WaitLinearLayout ll_wait;
     private XListView lv_collection;
     private CollectionAdapter collectionAdapter;
     
@@ -51,24 +49,29 @@ public class CollectionActivity extends Activity implements IXListViewListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_collection);
 		rl_Note = (RelativeLayout)findViewById(R.id.rl_Note);
+		ll_wait = (WaitLinearLayout)findViewById(R.id.ll_wait);
+		ll_wait.setOnFinishListener(onFinishListener);
+        
+        ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
+        iv_back.setOnClickListener(onClickListener);
         
         lv_collection = (XListView)findViewById(R.id.lv_collection);        
         collectionAdapter = new CollectionAdapter(CollectionActivity.this,adressDatas);
         collectionAdapter.setCollectionItem(collectionItemListener);
-        lv_collection.setAdapter(collectionAdapter);
-        
-        ImageView iv_menu = (ImageView)findViewById(R.id.iv_menu);
-        iv_menu.setOnClickListener(onClickListener);
-        
+        lv_collection.setAdapter(collectionAdapter);        
         lv_collection.setPullRefreshEnable(true);
         lv_collection.setPullLoadEnable(true);
         lv_collection.setXListViewListener(this);
+        lv_collection.setOnFinishListener(onFinishListener);
+        lv_collection.setBottomFinishListener(onFinishListener);
         
         if(isGetDataUrl()){
             //服务器取数据
             isGetDB = false;
+            ll_wait.startWheel();
             String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/favorite?auth_code=" + Variable.auth_code;
             new Thread(new NetThread.GetDataThread(handler, url, frist_getdata)).start();
         }else{
@@ -79,54 +82,77 @@ public class CollectionActivity extends Activity implements IXListViewListener{
         }
 	}
 	
+	String refresh = "";
+	String load = "";
+	
 	Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
             case frist_getdata:
+            	ll_wait.runFast(0);
+				refresh = msg.obj.toString();
                 dBExcute.DeleteDB(CollectionActivity.this, "delete from " + Constant.TB_Collection + " where Cust_id=" + Variable.cust_id);
                 adressDatas.clear();
-                adressDatas.addAll(jsonCollectionData(msg.obj.toString()));
+                break;
+            case refresh_getdata:
+            	refresh = msg.obj.toString();
+				lv_collection.runFast(1);
+            	break;
+            case load_getdata:
+            	lv_collection.runBottomFast(2);
+            	load = msg.obj.toString();
+                break;
+            }
+        }       
+    };
+    
+    OnClickListener onClickListener = new OnClickListener() {        
+        @Override
+        public void onClick(View v) {
+            switch(v.getId()){
+            case R.id.iv_back:
+                finish();
+                break;
+            }
+        }
+    };
+    
+    OnFinishListener onFinishListener = new OnFinishListener() {		
+		@Override
+		public void OnFinish(int index) {
+			if(index == 0){
+				adressDatas.addAll(jsonCollectionData(refresh));
                 collectionAdapter.notifyDataSetChanged();
                 if(adressDatas.size() > 0){
                     isNothingNote(false);
                 }else{
                     isNothingNote(true);
                 }
-                onLoad();
-                break;
-
-            case load_getdata:
-                List<AdressData> ads = jsonCollectionData(msg.obj.toString());
+			}else if(index == 1){
+				dBExcute.DeleteDB(CollectionActivity.this, "delete from " + Constant.TB_Collection + " where Cust_id=" + Variable.cust_id);
+                adressDatas.clear();
+				adressDatas.addAll(0,jsonCollectionData(refresh));
+				collectionAdapter.notifyDataSetChanged();
+			}else if(index == 2){
+                List<AdressData> ads = jsonCollectionData(load);
                 adressDatas.addAll(ads);
                 onLoad();
                 if(ads.size() == 0){//没有数据，取消上拉加载
+                	collectionAdapter.notifyDataSetChanged();
                     lv_collection.setPullLoadEnable(false);
                 }else{
                     collectionAdapter.notifyDataSetChanged();
                 }
-                break;
-            }
-        }       
-    };
-    
-    OnClickListener onClickListener = new OnClickListener() {
-        
-        @Override
-        public void onClick(View v) {
-            switch(v.getId()){
-            case R.id.iv_menu:
-                //ActivityFactory.A.LeftMenu();
-                break;
-            }
-        }
-    };
+			}
+            onLoad();
+		}
+	};
     
     CollectionItemListener collectionItemListener = new CollectionItemListener() {        
         @Override
         public void Delete(int position) {
-            System.out.println(position);
             String url = Constant.BaseUrl + "favorite/" + adressDatas.get(position).get_id() + "?auth_code=" + Variable.auth_code;
             //删除服务器记录
             new Thread(new NetThread.DeleteThread(handler, url, 999)).start();
@@ -156,7 +182,7 @@ public class CollectionActivity extends Activity implements IXListViewListener{
     };   
 
     private void isNothingNote(boolean isNote){
-        Log.d(TAG, ""+isNote);
+    	ll_wait.setVisibility(View.GONE);
         if(isNote){
             rl_Note.setVisibility(View.VISIBLE);
             lv_collection.setVisibility(View.GONE);
@@ -211,27 +237,30 @@ public class CollectionActivity extends Activity implements IXListViewListener{
 	
 	@Override
 	public void onRefresh() {
+		refresh = "";
+		lv_collection.startHeaderWheel();
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/favorite?auth_code=" + Variable.auth_code;
-        new Thread(new NetThread.GetDataThread(handler, url, frist_getdata)).start();
+        new Thread(new NetThread.GetDataThread(handler, url, refresh_getdata)).start();
 	}
 	@Override
 	public void onLoadMore() {
-		Log.e("上拉加载","上拉加载");
         if(isGetDB){//读取数据库
             getCollectionDatas(Toal, pageSize);
             collectionAdapter.notifyDataSetChanged();
             onLoad();
         }else{//读取服务器
-            System.out.println("读取服务器数据");
             if(adressDatas.size() != 0){
                 int id = adressDatas.get(adressDatas.size() - 1).get_id();
                 String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/favorite?auth_code=" + Variable.auth_code + "&&min_id=" + id;
                 new Thread(new NetThread.GetDataThread(handler, url, load_getdata)).start();
+                lv_collection.startBottomWheel();
             }           
         }
 	}
 	
 	private void onLoad() {
+		lv_collection.refreshHeaderView();
+		lv_collection.refreshBottomView();
         lv_collection.stopRefresh();
         lv_collection.stopLoadMore();
         lv_collection.setRefreshTime(GetSystem.GetNowTime());
@@ -242,7 +271,6 @@ public class CollectionActivity extends Activity implements IXListViewListener{
      * @param pageSize 一次读取多少条
      */
     private void getCollectionDatas(int start,int pageSize) {
-        System.out.println("start = " + start);
         List<AdressData> datas = dBExcute.getPageDatas(CollectionActivity.this, "select * from " + Constant.TB_Collection + " where Cust_id=? order by favorite_id desc limit ?,?", new String[]{Variable.cust_id,String.valueOf(start),String.valueOf(pageSize)});
         adressDatas.addAll(datas);
         Toal += datas.size();//记录位置

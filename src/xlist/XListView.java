@@ -10,6 +10,8 @@ package xlist;
 
 import com.wise.baba.R;
 
+import customView.WaitLinearLayout.OnFinishListener;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -18,6 +20,7 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -38,7 +41,7 @@ public class XListView extends ListView implements OnScrollListener {
 	// header view content, use it to calculate the Header's height. And hide it
 	// when disable pull refresh.
 	private RelativeLayout mHeaderViewContent;
-	private TextView mHeaderTimeView;
+	//private TextView mHeaderTimeView;
 	private int mHeaderViewHeight; // header view's height
 	private boolean mEnablePullRefresh = true;
 	private boolean mPullRefreshing = false; // is refreashing.
@@ -90,10 +93,10 @@ public class XListView extends ListView implements OnScrollListener {
 
 		// init header view
 		mHeaderView = new XListViewHeader(context);
-		mHeaderViewContent = (RelativeLayout) mHeaderView
-				.findViewById(R.id.xlistview_header_content);
-		mHeaderTimeView = (TextView) mHeaderView
-				.findViewById(R.id.xlistview_header_time);
+		if (isInEditMode()) { return; }
+		mHeaderViewContent = (RelativeLayout) mHeaderView.findViewById(R.id.xlistview_header_content);
+		//mHeaderTimeView = (TextView) mHeaderView.findViewById(R.id.xlistview_header_time);
+		
 		addHeaderView(mHeaderView);
 
 		// init footer view
@@ -157,6 +160,7 @@ public class XListView extends ListView implements OnScrollListener {
 			});
 		}
 	}
+	
 
 	/**
 	 * stop refresh, reset header view.
@@ -184,7 +188,35 @@ public class XListView extends ListView implements OnScrollListener {
 	 * @param time
 	 */
 	public void setRefreshTime(String time) {
-		mHeaderTimeView.setText(time);
+		//mHeaderTimeView.setText(time);
+	}
+	
+	public void runFast(int i){
+		mHeaderView.ll_top_wait.runFast(i);
+	}
+	public void setOnFinishListener(OnFinishListener onFinishListener){
+		mHeaderView.ll_top_wait.setOnFinishListener(onFinishListener);
+	}
+	/**重置顶部view**/
+	public void refreshHeaderView(){
+		mHeaderView.ll_top_wait.refreshView();
+	}
+	/**开始顶部滚轮**/
+	public void startHeaderWheel(){
+		mHeaderView.ll_top_wait.startWheel();
+	}
+	
+	public void runBottomFast(int i){
+		mFooterView.ll_bottom_wait.runFast(i);
+	}
+	public void setBottomFinishListener(OnFinishListener onFinishListener){
+		mFooterView.ll_bottom_wait.setOnFinishListener(onFinishListener);
+	}
+	public void refreshBottomView(){
+		mFooterView.ll_bottom_wait.refreshView();
+	}
+	public void startBottomWheel(){
+		mFooterView.ll_bottom_wait.startWheel();
 	}
 
 	private void invokeOnScrolling() {

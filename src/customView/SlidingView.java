@@ -79,7 +79,7 @@ public class SlidingView extends ViewGroup{
      * 子控件有点击事件会触发move，up事件，否者只会触发down事件
      */
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {    	
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
         float x = ev.getX();
         switch (ev.getAction()) {
         case MotionEvent.ACTION_DOWN:
@@ -99,31 +99,30 @@ public class SlidingView extends ViewGroup{
 
     float lastX = 0;
     float lastY = 0;
-    
+    boolean isSlide = false;
     @Override
     public boolean onTouchEvent(MotionEvent event) {    	
         float x = event.getX();
         float y = event.getY();
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
-        	System.out.println("ACTION_DOWN");
             addVelocityTracker(event);
             lastX = x;
             lastY = y;
             break;
 
         case MotionEvent.ACTION_MOVE:
-        	System.out.println("ACTION_MOVE");
             int xDiff = (int) Math.abs(x - lastX);//水平方向移动绝对值
             int yDiff = (int) Math.abs(y - lastY);//垂直方向移动绝对值
-//            if(yDiff > xDiff){//list滑动
-//                System.out.println("list滑动");
-//            }else{//水平滑动
-                System.out.println("水平滑动");
-                getParent().requestDisallowInterceptTouchEvent(true);
+            if(yDiff > xDiff){//list滑动
+            	//if(!isSlide){
+                    //getParent().requestDisallowInterceptTouchEvent(false);
+            	//}
+            }else{//水平滑动
+            	isSlide = true;
+                //getParent().requestDisallowInterceptTouchEvent(true);
                 addVelocityTracker(event);
                 int deltax = (int) (lastX - x);
-                System.out.println("deltax = " + deltax);
                 if(deltax < 0){//向右
                     if(getScrollX() > 0){
                         int ScrollX = - getScrollX();
@@ -136,21 +135,19 @@ public class SlidingView extends ViewGroup{
                     }
                 }
                 lastX = x;
-            //}
+            }
             break;
         case MotionEvent.ACTION_UP:
-        	System.out.println("ACTION_UP");
             eventCancel();
             break;
         case MotionEvent.ACTION_CANCEL:
-        	System.out.println("ACTION_CANCEL");
             eventCancel();
             break;
         }
         return true;
     }
     private void eventCancel(){
-        getParent().requestDisallowInterceptTouchEvent(false);
+        //getParent().requestDisallowInterceptTouchEvent(false);
         int velocityX = getScrollVelocity();
         if(velocityX > SNAP_VELOCITY){//向右划
             scrollRight();

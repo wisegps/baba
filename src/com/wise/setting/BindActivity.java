@@ -16,6 +16,7 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qzone.QZone;
 
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import android.app.Activity;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,6 +44,7 @@ public class BindActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_bind);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
@@ -74,7 +77,6 @@ public class BindActivity extends Activity{
 				break;
 
 			case bind:
-				System.out.println("bind = " + msg.obj.toString());
 				setResult(0);
 				finish();				
 				break;
@@ -122,5 +124,15 @@ public class BindActivity extends Activity{
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 }

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/white"
+    android:background="@color/gray_bg"
     android:orientation="vertical" >
     <RelativeLayout 
     	android:id="@+id/ll_main"
@@ -32,14 +32,14 @@
 	    android:layout_height="wrap_content"
 	    android:textSize="@dimen/content"
 	    android:gravity="center_horizontal"
-	    android:textColor="@color/blue"
+	    android:textColor="@color/navy"
 	    android:text="我们已经发送验证码以下号码"/>
 	<TextView 
 	    android:id="@+id/tv_account"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:textSize="@dimen/content"
-	    android:textColor="@color/blue"
+	    android:textColor="@color/navy"
 	    android:gravity="center_horizontal"/>
 	<EditText 
 	    android:id="@+id/et_captcha"
@@ -51,7 +51,8 @@
 	    android:layout_height="wrap_content"
 	    android:background="@drawable/et_back"
 	    android:textSize="@dimen/content"
-	    android:textColor="@color/common"
+	    android:textColor="@color/blue_account"
+	    android:inputType="number"
 	    android:hint="请输入验证码"/>
 	<EditText 
 	    android:id="@+id/et_pwd"
@@ -63,7 +64,7 @@
 	    android:layout_height="wrap_content"
 	    android:background="@drawable/et_back"
 	    android:textSize="@dimen/content"
-	    android:textColor="@color/common"
+	    android:textColor="@color/blue_account"
 	    android:inputType="textWebPassword"
 	    android:hint="请输入登录密码"/>
 	<EditText 
@@ -76,7 +77,7 @@
 	    android:layout_height="wrap_content"
 	    android:background="@drawable/et_back"
 	    android:textSize="@dimen/content"
-	    android:textColor="@color/common"
+	    android:textColor="@color/blue_account"
 	    android:inputType="textWebPassword"
 	    android:hint="请再次输入登录密码"/>
 	<Button 
@@ -93,11 +94,12 @@
 	    android:text="下一步"/>
 	
 	<TextView 
+	    android:id="@+id/tv_send_captcha"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_marginTop="30dp"
 	    android:textSize="@dimen/content"
-	    android:textColor="@color/blue"
+	    android:textColor="@color/blue_press"
 	    android:gravity="center_horizontal"
 	    android:text="收不到验证码？"/>		
 </LinearLayout>

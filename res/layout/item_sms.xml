@@ -7,25 +7,26 @@
     <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"        
-        android:background="@color/white">
+        android:background="@color/Green_collection">
         <RelativeLayout 
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:background="@color/gray_light"
-	        android:padding="@dimen/margins">
+	        android:padding="15dp">
 	        <TextView
 	            android:id="@+id/tv_new_time" 
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:text="2013-06-21"
+	            android:layout_alignParentRight="true"
 	            android:textSize="@dimen/content"
-	            android:textColor="@color/common"/>
+	            android:textColor="@color/blue_sms"/>
 	        <TextView 
 	            android:id="@+id/tv_new_Regnum"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_centerVertical="true"
-	            android:layout_alignParentRight="true"
+	            android:textColor="@color/navy"
+	            android:textSize="@dimen/content"
 	            android:text="终端消息"/>
 	    </RelativeLayout>
     </LinearLayout>    
@@ -34,17 +35,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@color/white"
-        android:padding="@dimen/margins">
+        android:padding="15dp">
         <TextView
             android:id="@+id/tv_new_content" 
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="违章地点：广深高速"
             android:textSize="@dimen/content"
-            android:textColor="@color/common"/>
-    </LinearLayout>    
-    <View 
-        android:layout_width="fill_parent"
-        android:background="@color/gray"
-        android:layout_height="@dimen/double_margins"/> 
+            android:textColor="@color/navy"/>
+    </LinearLayout>
 </LinearLayout>

@@ -19,12 +19,12 @@ public class CarData {
     public String engine_no;//发送机
     public String frame_no;//车架号
 	private String regNo;//登记证
-    private String vio_city_name;  //违章城市名
     private String gas_no;
     private String insurance_tel;
     private String maintain_tel;
     private String nick_name;
     private String insurance_no;
+    private String limit;
     /**
      * 保险公司
      */
@@ -47,11 +47,9 @@ public class CarData {
     
 	public String obj_name;
 	private String maintain_last_date;
-	private String vio_location = "";   //违章城市代码
 	private String logoPath;
 	private String device_id;
 	private String serial;
-	public boolean isCheck;  //是否选中
 	public int Type;		//布局控制
 	public String Adress;  //车辆位置
 	public String gps_time; //定位时间
@@ -76,12 +74,6 @@ public class CarData {
 	}
 	public void setCar_type_id(String car_type_id) {
 		this.car_type_id = car_type_id;
-	}
-	public String getVio_city_name() {
-		return vio_city_name;
-	}
-	public void setVio_city_name(String vio_city_name) {
-		this.vio_city_name = vio_city_name;
 	}
 	public String getGas_no() {
 		return gas_no;
@@ -197,14 +189,6 @@ public class CarData {
     public void setBuy_date(String buy_date) {
         this.buy_date = buy_date;
     }	
-	public boolean isCheck() {
-		return isCheck;
-	}
-	public void setCheck(boolean isCheck) {
-		this.isCheck = isCheck;
-	}
-	
-	
     public String getMaintain_last_date() {
 		return maintain_last_date;
 	}
@@ -234,12 +218,6 @@ public class CarData {
 	}
 	public void setRegNo(String regNo) {
 		this.regNo = regNo;
-	}
-	public String getVio_location() {
-		return vio_location;
-	}
-	public void setVio_location(String vio_location) {
-		this.vio_location = vio_location;
 	}	
 	public String getDevice_id() {
         return device_id;
@@ -284,6 +262,12 @@ public class CarData {
 	}
 	public void setInsurance_no(String insurance_no) {
 		this.insurance_no = insurance_no;
+	}	
+	public String getLimit() {
+		return limit;
+	}
+	public void setLimit(String limit) {
+		this.limit = limit;
 	}
 	@Override
 	public String toString() {
@@ -292,22 +276,20 @@ public class CarData {
 				+ car_series + ", car_series_id=" + car_series_id
 				+ ", car_type=" + car_type + ", car_type_id=" + car_type_id
 				+ ", engine_no=" + engine_no + ", frame_no=" + frame_no
-				+ ", regNo=" + regNo + ", vio_city_name=" + vio_city_name
-				+ ", gas_no=" + gas_no + ", insurance_tel=" + insurance_tel
-				+ ", maintain_tel=" + maintain_tel + ", nick_name=" + nick_name
-				+ ", insurance_no=" + insurance_no + ", insurance_company="
+				+ ", regNo=" + regNo + ", gas_no=" + gas_no
+				+ ", insurance_tel=" + insurance_tel + ", maintain_tel="
+				+ maintain_tel + ", nick_name=" + nick_name + ", insurance_no="
+				+ insurance_no + ", limit=" + limit + ", insurance_company="
 				+ insurance_company + ", insurance_date=" + insurance_date
 				+ ", annual_inspect_date=" + annual_inspect_date
 				+ ", maintain_company=" + maintain_company
 				+ ", maintain_last_mileage=" + maintain_last_mileage
 				+ ", maintain_next_mileage=" + maintain_next_mileage
 				+ ", buy_date=" + buy_date + ", obj_name=" + obj_name
-				+ ", maintain_last_date=" + maintain_last_date
-				+ ", vio_location=" + vio_location + ", logoPath=" + logoPath
-				+ ", device_id=" + device_id + ", serial=" + serial
-				+ ", isCheck=" + isCheck + ", Type=" + Type + ", Adress="
-				+ Adress + ", gps_time=" + gps_time + ", Lat=" + Lat + ", Lon="
-				+ Lon + ", vio_citys=" + vio_citys + ", vio_citys_code="
-				+ vio_citys_code + "]";
-	}	       
+				+ ", maintain_last_date=" + maintain_last_date + ", logoPath="
+				+ logoPath + ", device_id=" + device_id + ", serial=" + serial
+				+ ", Type=" + Type + ", Adress=" + Adress + ", gps_time="
+				+ gps_time + ", Lat=" + Lat + ", Lon=" + Lon + ", vio_citys="
+				+ vio_citys + ", vio_citys_code=" + vio_citys_code + "]";
+	}			       
 }

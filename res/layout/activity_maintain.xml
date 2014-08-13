@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/gray_bg">
+    <RelativeLayout
+        android:id="@+id/choice_maintain_top"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/title_hight"
+        android:background="@color/title_back"
+        android:gravity="center" >
+        <TextView
+            android:id="@+id/my_vechile_edit"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="4S店"
+            android:textColor="@color/white"
+            android:textSize="@dimen/head" />
+        
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margins"
+            android:padding="@dimen/margins"
+            android:src="@drawable/nav_back" />
+    </RelativeLayout>
+    <ListView
+        android:id="@+id/maintain_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="#00000000"
+        android:divider="@color/gray"
+        android:dividerHeight="0.5dip"
+        android:scrollingCache="false" >
+    </ListView>
+</LinearLayout>

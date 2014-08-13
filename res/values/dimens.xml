@@ -11,6 +11,8 @@
     <dimen name="double_margins">20dp</dimen>
     <!-- 圆角 -->
     <dimen name="corners">5dp</dimen>
+    <dimen name="bigs_number">30sp</dimen>
+    <dimen name="big_number">24sp</dimen>
     <!-- 头部字体 -->
     <dimen name="head">22sp</dimen>
 	<!-- 标题文字 -->

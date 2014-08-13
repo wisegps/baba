@@ -15,11 +15,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
+/**弹出List PopView**/
 public class PopView {
 	
 	private Context mContext;
 	ListView lv_pop;
 	OnItemClickListener onItemClickListener;
+	PopupWindow mPopupWindow;
 	
 	public PopView(Context context){
 		mContext = context;
@@ -27,7 +29,7 @@ public class PopView {
 	public void initView(View v){
 		LayoutInflater mLayoutInflater = LayoutInflater.from(mContext);
         View popunwindwow = mLayoutInflater.inflate(R.layout.pop,null);
-        PopupWindow mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.FILL_PARENT,
+        mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
         //mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
         mPopupWindow.setAnimationStyle(R.style.AnimHead);
@@ -35,8 +37,10 @@ public class PopView {
         mPopupWindow.setFocusable(true);
         mPopupWindow.setOutsideTouchable(true);
         mPopupWindow.showAtLocation(v, Gravity.BOTTOM, 0, 0);
-        
         lv_pop = (ListView)popunwindwow.findViewById(R.id.lv_pop);
+	}
+	public void dismiss(){
+        mPopupWindow.dismiss();
 	}
 	public void setData(List<String> items){
 		lv_pop.setAdapter(new ItemAdapter(items));

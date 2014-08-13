@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" 
+    android:orientation="horizontal"
+    android:background="@color/Green_Light"
+    android:gravity="right">
+    <TextView
+        android:id="@+id/tv_title_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margins"
+        android:text="本月花费:"
+        android:textColor="@color/white"
+        android:textSize="@dimen/main" />
+    <TextView
+        android:id="@+id/tv_title_fee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/margins"
+        android:paddingBottom="@dimen/margins"
+        android:paddingRight="@dimen/margins"
+        android:text="79.00"
+        android:textColor="@color/white"
+        android:textSize="@dimen/title" />
+</LinearLayout>

@@ -141,6 +141,7 @@ public class UploadUtil {
 			conn.setDoOutput(true); // 允许输出流
 			conn.setUseCaches(false); // 不允许使用缓存
 			conn.setRequestMethod("POST"); // 请求方式
+			//conn.setRequestMethod("PUT"); // 请求方式
 			conn.setRequestProperty("Charset", CHARSET); // 设置编码
 			conn.setRequestProperty("connection", "keep-alive");
 			conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
@@ -184,9 +185,9 @@ public class UploadUtil {
 			sb.append(PREFIX).append(BOUNDARY).append(LINE_END);
 			sb.append("Content-Disposition:form-data; name=\"" + fileKey
 					+ "\"; filename=\"" + file.getName() + "\"" + LINE_END);
-			sb.append("Content-Type:image/pjpeg" + LINE_END); // 这里配置的Content-type很重要的 ，用于服务器端辨别文件的类型的
+			//sb.append("Content-Type:image/pjpeg" + LINE_END); // 这里配置的Content-type很重要的 ，用于服务器端辨别文件的类型的
+			sb.append("Content-Type:image/jpg" + LINE_END); // 这里配置的Content-type很重要的 ，用于服务器端辨别文件的类型的
 			sb.append(LINE_END);
-			System.out.println(sb.toString());
 			params = sb.toString();
 			sb = null;
 			
@@ -234,15 +235,28 @@ public class UploadUtil {
 				//sendMessage(UPLOAD_SUCCESS_CODE, "上传结果："+ result);
 				return;
 			} else {
+				System.out.println("上传失败");
 				Log.e(TAG, "request error");
+				InputStream input = conn.getInputStream();
+				StringBuffer sb1 = new StringBuffer();
+				int ss;
+				while ((ss = input.read()) != -1) {
+					sb1.append((char) ss);
+				}
+				result = sb1.toString();
+				Log.e(TAG, "result : " + result);
 				sendMessage(UPLOAD_SERVER_ERROR_CODE,"上传失败：code=" + res);
 				return;
 			}
 		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			System.out.println("上传失败 MalformedURLException");
 			sendMessage(UPLOAD_SERVER_ERROR_CODE,"上传失败：error=" + e.getMessage());
 			e.printStackTrace();
 			return;
 		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("上传失败 IOException");
 			sendMessage(UPLOAD_SERVER_ERROR_CODE,"上传失败：error=" + e.getMessage());
 			e.printStackTrace();
 			return;

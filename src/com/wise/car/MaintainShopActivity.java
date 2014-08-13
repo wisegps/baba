@@ -12,6 +12,8 @@ import pubclas.NetThread;
 import pubclas.Variable;
 import sql.DBExcute;
 import sql.DBHelper;
+
+import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -24,6 +26,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -44,14 +47,15 @@ public class MaintainShopActivity extends Activity {
 	private MyHandler myHandler = null;
 	private static final int getMaintainShopCode = 2;
 	private List<String[]> MaintainList = new ArrayList<String[]>();
-	private ImageView choiceMaintainCancle = null;
+	private ImageView iv_back = null;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.choice_maintain);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.activity_maintain);
 		maintainList = (ListView) findViewById(R.id.maintain_list);
-		choiceMaintainCancle = (ImageView) findViewById(R.id.choice_maintain_cancle);
-		choiceMaintainCancle.setOnClickListener(new ClickListener());
+		iv_back = (ImageView) findViewById(R.id.iv_back);
+		iv_back.setOnClickListener(new ClickListener());
 		intent = getIntent();
 		brank = (String) intent.getStringExtra("brank");
 		city = (String) intent.getStringExtra("city");
@@ -111,7 +115,7 @@ public class MaintainShopActivity extends Activity {
 	class ClickListener implements OnClickListener{
 		public void onClick(View v) {
 			switch(v.getId()){
-			case R.id.choice_maintain_cancle:
+			case R.id.iv_back:
 				MaintainShopActivity.this.finish();
 				break;
 			}
@@ -144,5 +148,14 @@ public class MaintainShopActivity extends Activity {
 			}
 		});
 	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 }
-

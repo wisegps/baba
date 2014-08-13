@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_huise">
-    <LinearLayout 
+    android:background="@color/gray_bg">
+    <LinearLayout
+        android:id="@+id/ll_top" 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -42,7 +43,7 @@
 		            android:layout_width="fill_parent"
 		            android:layout_height="wrap_content"
 		            android:background="@color/gray_light"
-		            android:textColor="@color/common"
+		            android:textColor="@color/navy"
 		            android:padding="@dimen/margins"
 		            android:textSize="@dimen/content"
 		            android:text="请扫描终端的二维码或者输入对应的序列号进行绑定"/>       
@@ -61,7 +62,7 @@
 		        <TextView
 		            android:text="序列号" 
 		            android:layout_weight="2"
-		            android:textColor="@color/common"
+		            android:textColor="@color/navy"
 		            android:textSize="@dimen/content"
 		            android:layout_width="fill_parent"
 		            android:layout_height="wrap_content"/>
@@ -82,6 +83,7 @@
 		                android:id="@+id/et_serial"
 	                    android:layout_toLeftOf="@id/iv_serial"
 	                    android:background="@null"
+	                    android:textColor="@color/navy"
 	                    android:layout_centerVertical="true"
 		                android:layout_width="fill_parent"
 		                android:layout_height="wrap_content"/>         
@@ -103,8 +105,8 @@
 		        <TextView
 		            android:text="SIM卡号" 
 		            android:layout_weight="2"
-		            android:textColor="@color/common"
 		            android:textSize="@dimen/content"
+		            android:textColor="@color/navy"
 		            android:layout_width="fill_parent"
 		            android:layout_height="wrap_content"/>
 		        <EditText 
@@ -113,7 +115,7 @@
 		            android:background="@null"
 		            android:maxLength="11"
 		            android:inputType="phone"
-		            android:textColor="@color/common"
+		            android:textColor="@color/navy"
 		            android:textSize="@dimen/content"
 		            android:layout_width="fill_parent"
 		            android:layout_height="wrap_content"/>
@@ -124,7 +126,8 @@
 	            android:background="@drawable/body_line"/>
 		</LinearLayout>
     </LinearLayout>
-    <LinearLayout 
+    <LinearLayout
+        android:id="@+id/ll_bottom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -136,6 +139,7 @@
             android:layout_weight="1"
             android:textColor="@color/white"
             android:textSize="@dimen/main"
+            android:visibility="gone"
             android:text="购买终端"/>        
         <Button
             android:id="@+id/iv_add"
@@ -143,7 +147,36 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/white"
-            android:textSize="@dimen/main"
+            android:textSize="@dimen/bt"
+            android:background="@drawable/bg_green"
             android:text="绑定终端"/>
     </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rl_wait"
+        android:layout_below="@id/ll_top"
+        android:layout_above="@id/ll_bottom"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true">
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+	        android:layout_centerInParent="true">
+            <customView.WaitLinearLayout
+		        android:id="@+id/ll_wait"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content">        
+		    </customView.WaitLinearLayout>
+		    <TextView
+		        android:id="@+id/tv_note"
+		        android:layout_marginTop="@dimen/margins"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textSize="@dimen/content"
+		        android:textColor="@color/navy"
+		        android:text="终端添加中"/>
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

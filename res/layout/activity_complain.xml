@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg_huise">
+    android:background="@color/white">
     <LinearLayout 
         android:id="@+id/ll_top"
         android:layout_width="fill_parent"
@@ -19,7 +19,7 @@
 		         android:layout_centerInParent="true"
 		         android:text="违章吐槽"
 		         android:gravity="center"
-		         android:textSize="@dimen/title"
+		         android:textSize="@dimen/head"
 		         android:textColor="@color/white" />
 	        <ImageView 
 	            android:id="@+id/iv_back"
@@ -31,15 +31,16 @@
 		        android:src="@drawable/nav_back"/>
 		</RelativeLayout>
 		<TextView
+		    android:id="@+id/tv_adress"
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content"
 		    android:textSize="@dimen/main"
-		    android:textColor="@color/blue"
+		    android:textColor="@color/navy"
 		    android:paddingTop="@dimen/margins"
 		    android:paddingBottom="@dimen/margins"
 		    android:paddingRight="@dimen/double_margins"
 		    android:paddingLeft="@dimen/double_margins"
-		    android:background="@drawable/bg_qianlan"
+		    android:background="@color/Green_Lights"
 		    android:text="广深高速600米"/>
 		<LinearLayout
 	        android:layout_width="fill_parent"
@@ -50,9 +51,9 @@
 	            android:layout_height="wrap_content"
 	            android:paddingTop="@dimen/margins"
 		    	android:paddingBottom="@dimen/margins"
-		    	android:paddingRight="@dimen/double_margins"
+		    	android:paddingRight="@dimen/margins"
 		    	android:paddingLeft="@dimen/double_margins"
-	            android:textColor="@color/common"
+	            android:textColor="@color/navy"
 	            android:textSize="@dimen/main"
 	            android:text="人次"/>
 	        <TextView
@@ -60,49 +61,70 @@
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_marginRight="30dp"
-	            android:textColor="@color/common"
+	            android:textColor="@color/blue"
 	            android:textSize="@dimen/content"
-	            android:text="50"/>
+	            android:text="0"/>
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:padding="@dimen/margins"
-	            android:textColor="@color/common"
+	            android:textColor="@color/navy"
 	            android:textSize="@dimen/content"
 	            android:text="吐槽"/>
 	        <TextView
+	            android:id="@+id/tv_total_complain"
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
-	            android:textColor="@color/common"
+	            android:textColor="@color/blue"
 	            android:textSize="@dimen/content"
-	            android:text="2"/>
+	            android:text="0"/>
 	    </LinearLayout>
     </LinearLayout>
+    <View
+        android:id="@+id/v_line"
+        android:layout_below="@id/ll_top"
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="#D3DCE0" />
     <RelativeLayout
         android:id="@+id/rl_bottom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/title_back"
+        android:background="@color/Green_Light"
         android:layout_alignParentBottom="true">
-        <Button
-            android:id="@+id/bt_send"
+        <TextView
+            android:id="@+id/tv_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentRight="true"  
+            android:textSize="@dimen/main"
+            android:textColor="@color/white"
+            android:padding="@dimen/margins"    
             android:text="发布"/>
         <EditText 
             android:id="@+id/et_complain"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margins"
+            android:layout_marginRight="@dimen/margins"
+            android:background="@drawable/et_back"
             android:hint="欢迎吐槽"
-            android:layout_toLeftOf="@id/bt_send"/>
+            android:layout_toLeftOf="@id/tv_send"/>
     </RelativeLayout>
-    <ListView 
-        android:id="@+id/lv_complain"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/ll_top"
-        android:layout_above="@id/rl_bottom"></ListView>
+    <customView.WaitLinearLayout
+        android:id="@+id/ll_wait"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">        
+    </customView.WaitLinearLayout>
+    <xlist.XListView 
+       android:id="@+id/lv_complain"
+       android:visibility="gone"
+       android:listSelector="@drawable/bg_item_selector"
+       android:layout_width="fill_parent"
+       android:layout_height="fill_parent"
+       android:layout_below="@id/v_line"
+       android:layout_above="@id/rl_bottom"/>
 </RelativeLayout>

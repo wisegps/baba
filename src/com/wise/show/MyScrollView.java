@@ -130,7 +130,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 			int scrollY = myScrollView.getScrollY();
 			// 如果当前的滚动位置和上次相同，表示已停止滚动
 			if (scrollY == lastScrollY) {
-				System.out.println("已停止滚动");
 				// 当滚动的最底部，并且当前没有正在下载的任务时，开始加载下一页的图片
 				if (scrollViewHeight + scrollY >= scrollLayout.getHeight()
 						&& taskCollection.isEmpty()) {
@@ -138,7 +137,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				}
 				myScrollView.checkVisibility();
 			} else {
-				System.out.println("滚动");
 				lastScrollY = scrollY;
 				Message message = new Message();
 				message.obj = myScrollView;
@@ -235,10 +233,8 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				String imageUrl = (String) imageView.getTag(R.string.image_url);
 				Bitmap bitmap = imageLoader.getBitmapFromMemoryCache(imageUrl);
 				if (bitmap != null) {
-					System.out.println("加载缓存里的图片");
 					imageView.setImageBitmap(bitmap);
 				} else {
-					System.out.println("加载图片");
 					LoadImageTask task = new LoadImageTask(imageView);
 					task.execute(imageUrl);
 				}
@@ -266,7 +262,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				String imageUrl = (String) v.getTag(R.string.image_url);
 				Bitmap bitmap = imageLoader.getBitmapFromMemoryCache(imageUrl);
 				if (bitmap != null) {
-					System.out.println("imageUrl = " + imageUrl);
 					Intent intent = new Intent(mContext, PicActivity.class);
 					intent.putExtra("imageUrl", imageUrl);
 					mContext.startActivity(intent);
@@ -385,7 +380,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				iv_pic.setTag(R.string.image_url, mImageUrl);
 				imageViewList.add(iv_pic);
 				
-				System.out.println("view.getHeight() = " + view.getHeight() + " , imageHeight = " + imageHeight);
 				findColumnToAdd(iv_pic, imageHeight + 50).addView(view);
 				
 				//ImageView imageView = new ImageView(getContext());

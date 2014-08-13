@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg_huise"
+    android:background="@color/gray_bg"
     android:orientation="vertical" >
     <RelativeLayout 
     	android:id="@+id/ll_main"
@@ -44,7 +44,7 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:textSize="@dimen/content"
-		    android:textColor="@color/blue"
+		    android:textColor="@color/navy"
 		    android:text="旧密码"/>
 	    <EditText 
 	        android:id="@+id/et_pwd"
@@ -53,12 +53,13 @@
 	        android:layout_marginTop="5dp"
 	        android:padding="10dp"
 	        android:background="@drawable/et_back"
-	        android:textColor="@color/blue"/>
+	        android:inputType="textWebPassword"
+	        android:textColor="@color/navy"/>
 	    <TextView 
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:textSize="@dimen/content"
-		    android:textColor="@color/blue"
+		    android:textColor="@color/navy"
 		    android:layout_marginTop="10dp"
 		    android:text="新密码"/>
 	    <EditText 
@@ -68,12 +69,13 @@
 	        android:background="@drawable/et_back"
 	        android:padding="10dp"
 	        android:layout_marginTop="5dp"
-	        android:textColor="@color/blue"/>
+	        android:inputType="textWebPassword"
+	        android:textColor="@color/navy"/>
 	    <TextView 
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:textSize="@dimen/content"
-		    android:textColor="@color/blue"
+		    android:textColor="@color/navy"
 		    android:layout_marginTop="10dp"
 		    android:text="再次输入新密码"/>
 	    <EditText 
@@ -83,6 +85,7 @@
 	        android:background="@drawable/et_back"
 	        android:padding="10dp"
 	        android:layout_marginTop="5dp"
-	        android:textColor="@color/blue"/>
+	        android:inputType="textWebPassword"
+	        android:textColor="@color/navy"/>
 	</LinearLayout>
 </LinearLayout>
