@@ -39,7 +39,7 @@
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
 	            android:padding="@dimen/double_margins"
-	            android:textSize="@dimen/main"
+	            android:textSize="@dimen/content"
 	            android:text="我的信息"
 	            android:drawableRight="@drawable/btn_right"
 	            android:textColor="@color/navy" 
@@ -64,7 +64,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/double_margins"
-            android:textSize="@dimen/main"
+            android:textSize="@dimen/content"
             android:drawableRight="@drawable/btn_right"
             android:textColor="@color/navy" 
             android:background="@drawable/bg_white"/>
@@ -78,7 +78,7 @@
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
 	            android:padding="@dimen/double_margins"
-	            android:textSize="@dimen/main"
+	            android:textSize="@dimen/content"
 	            android:drawableRight="@drawable/btn_right"
 	            android:textColor="@color/navy" 
 	            android:background="@drawable/bg_white"/>
@@ -102,7 +102,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/double_margins"
-            android:textSize="@dimen/main"
+            android:textSize="@dimen/content"
             android:drawableRight="@drawable/btn_right"
             android:textColor="@color/navy" 
             android:background="@drawable/bg_white"/>		
@@ -113,7 +113,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/double_margins"
-            android:textSize="@dimen/main"
+            android:textSize="@dimen/content"
             android:drawableRight="@drawable/btn_right"
             android:textColor="@color/navy" 
             android:background="@drawable/bg_white"/>

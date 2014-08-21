@@ -48,13 +48,11 @@ public class FaultDetectionActivity extends Activity{
 	private static final int getFault = 3;
 	/**刷新分数**/
 	private static final int refresh_score = 4;
-	/**获取限行**/
-	private static final int Get_carLimit = 5;
+	
 	TextView tv_name;
 	TextView tv_guzhang ,tv_guzhang_icon , tv_dianyuan,tv_dianyuan_icon,
 				tv_jinqi,tv_jinqi_icon, tv_daisu,tv_daisu_icon,
 				tv_lengque,tv_lengque_icon,tv_paifang,tv_paifang_icon;
-	RelativeLayout rl_no_device;
 	LinearLayout ll_fault;
 	ImageView iv_left,iv_right;
 	
@@ -74,7 +72,6 @@ public class FaultDetectionActivity extends Activity{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fault_detection);
 		initView();
-		rl_no_device = (RelativeLayout)findViewById(R.id.rl_no_device);
 		ll_fault = (LinearLayout)findViewById(R.id.ll_fault);
 		iv_right = (ImageView)findViewById(R.id.iv_right);
 		iv_right.setOnClickListener(onClickListener);
@@ -88,7 +85,6 @@ public class FaultDetectionActivity extends Activity{
 				mCurrentProgress = -1;
 				index = view;
 				fristSetLeftRight();
-				initViewIsDevice();
 				getSpHistoryData(index);
 			}			
 			@Override
@@ -107,22 +103,8 @@ public class FaultDetectionActivity extends Activity{
 			public void run() {
 				hs_car.snapFastToScreen(index);
 				getSpHistoryData(index);
-				initViewIsDevice();
 			}
 		}, 50);
-	}
-	
-	private void initViewIsDevice(){
-		if(Variable.carDatas != null && Variable.carDatas.size() != 0){
-			String Device_id = Variable.carDatas.get(index).getDevice_id();
-			if (Device_id == null || Device_id.equals("")) {
-				rl_no_device.setVisibility(View.VISIBLE);
-				ll_fault.setVisibility(View.INVISIBLE);
-			}else{
-				rl_no_device.setVisibility(View.GONE);
-				ll_fault.setVisibility(View.VISIBLE);
-			}
-		}
 	}
 	
 	private void fristSetLeftRight(){
@@ -258,9 +240,6 @@ public class FaultDetectionActivity extends Activity{
 			case refresh_score:				
 				carViews.get(msg.arg1).getTv_score().setText(String.valueOf(mCurrentProgress));
 				break;
-			case Get_carLimit:
-				jsonCarLinit(msg.obj.toString(),msg.arg1);
-				break;
 			}
 		}		
 	};
@@ -276,13 +255,12 @@ public class FaultDetectionActivity extends Activity{
 			hs_car.addView(v);
 			TasksCompletedView mTasksView = (TasksCompletedView) v.findViewById(R.id.tasks_view);
 			mTasksView.setOnClickListener(onClickListener);
-			TextView tv_score = (TextView) v.findViewById(R.id.tv_score);
-			TextView tv_xx_detection = (TextView) v.findViewById(R.id.tv_xx_detection);			
+			TextView tv_score = (TextView) v.findViewById(R.id.tv_score);		
+			TextView tv_title = (TextView) v.findViewById(R.id.tv_title);			
 
 			CarView carView = new CarView();
 			carView.setmTasksView(mTasksView);
 			carView.setTv_score(tv_score);
-			carView.setTv_xx_detection(tv_xx_detection);
 			carViews.add(carView);
 
 
@@ -293,6 +271,7 @@ public class FaultDetectionActivity extends Activity{
 			if (result.equals("")) {// 未体检过
 				carView.getmTasksView().setProgress(100);
 				tv_score.setText("0");
+				tv_title.setText("未体检过");
 			} else {
 				try {
 					JSONObject jsonObject = new JSONObject(result);
@@ -313,195 +292,232 @@ public class FaultDetectionActivity extends Activity{
 		}
 		CarData carData = Variable.carDatas.get(index);
 		tv_name.setText(carData.getNick_name());
-		if(carData.getLimit() == null){
-			//获取限行信息
-			if(Variable.City == null || carData.getObj_name() == null || Variable.City.equals("") || carData.getObj_name().equals("")){
-				
-			}else{
-				try {
-					String url = Constant.BaseUrl + "base/ban?city="
-		                    + URLEncoder.encode(Variable.City, "UTF-8")
-		                    + "&obj_name=" + URLEncoder.encode(carData.getObj_name(), "UTF-8");
-		            new NetThread.GetDataThread(handler, url,Get_carLimit,index).start();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}			
-		}else{
-			carViews.get(index).getTv_xx_detection().setText(carData.getLimit());
-		}
-		SharedPreferences preferences = getSharedPreferences(
-				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-		String result = preferences.getString(Constant.sp_health_score
-				+ Variable.carDatas.get(index).getObj_id(), "");
-		if (result.equals("")) {// 未体检过
+//		if(carData.getLimit() == null){
+//			//获取限行信息
+//			if(Variable.City == null || carData.getObj_name() == null || Variable.City.equals("") || carData.getObj_name().equals("")){
+//				
+//			}else{
+//				try {
+//					String url = Constant.BaseUrl + "base/ban?city="
+//		                    + URLEncoder.encode(Variable.City, "UTF-8")
+//		                    + "&obj_name=" + URLEncoder.encode(carData.getObj_name(), "UTF-8");
+//		            new NetThread.GetDataThread(handler, url,Get_carLimit,index).start();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}			
+//		}else{
+//			carViews.get(index).getTv_xx_detection().setText(carData.getLimit());
+//		}
+		
+		String Device_id = carData.getDevice_id();
+		if (Device_id == null || Device_id.equals("")) {
 			carViews.get(index).getmTasksView().setProgress(100);
 			carViews.get(index).getTv_score().setText(String.valueOf(0));
 			
-			tv_guzhang.setText("无故障码");
+			tv_guzhang.setText("未绑定");
 			tv_guzhang.setTextColor(getResources().getColor(R.color.blue_press));
 			Drawable drawable= getResources().getDrawable(R.drawable.icon_guzhang_normal);
 			drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
 			tv_guzhang_icon.setCompoundDrawables(drawable,null,null,null);
 			
-			tv_dianyuan.setText("蓄电池状态良好");
+			tv_dianyuan.setText("未绑定");
 			tv_dianyuan.setTextColor(getResources().getColor(R.color.blue_press));
 			drawable= getResources().getDrawable(R.drawable.icon_dianyuan_normal);
 			drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
 			tv_dianyuan_icon.setCompoundDrawables(drawable,null,null,null);
 			
-			tv_jinqi.setText("节气门开度良好");
+			tv_jinqi.setText("未绑定");
 			tv_jinqi.setTextColor(getResources().getColor(R.color.blue_press));
 			drawable= getResources().getDrawable(R.drawable.icon_jinqi_normal);
 			drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
 			tv_jinqi_icon.setCompoundDrawables(drawable,null,null,null);
 			
-			tv_daisu.setText("怠速稳定");
+			tv_daisu.setText("未绑定");
 			tv_daisu.setTextColor(getResources().getColor(R.color.blue_press));
 			drawable= getResources().getDrawable(R.drawable.icon_daisu_normal);
 			drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
 			tv_daisu_icon.setCompoundDrawables(drawable,null,null,null);
 			
-			tv_lengque.setText("水温正常");
+			tv_lengque.setText("未绑定");
 			tv_lengque.setTextColor(getResources().getColor(R.color.blue_press));
 			drawable= getResources().getDrawable(R.drawable.icon_lengque_normal);
 			drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
 			tv_lengque_icon.setCompoundDrawables(drawable,null,null,null);
 			
-			tv_paifang.setText("三元催化剂状态良好");
+			tv_paifang.setText("未绑定");
 			tv_paifang.setTextColor(getResources().getColor(R.color.blue_press));
 			drawable= getResources().getDrawable(R.drawable.icon_paifang_normal);
 			drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
 			tv_paifang_icon.setCompoundDrawables(drawable,null,null,null);
-			
-		} else {
-			try {
-				JSONObject jsonObject = new JSONObject(result);
-				//健康指数
-				int health_score = jsonObject.getInt("health_score");
-				carViews.get(index).getTv_score().setText(String.valueOf(health_score));
-				carViews.get(index).getmTasksView().setProgress(health_score);
+		}else{
+			SharedPreferences preferences = getSharedPreferences(
+					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+			String result = preferences.getString(Constant.sp_health_score
+					+ Variable.carDatas.get(index).getObj_id(), "");
+			if (result.equals("")) {// 未体检过
+				carViews.get(index).getmTasksView().setProgress(100);
+				carViews.get(index).getTv_score().setText(String.valueOf(0));
 				
-				JSONArray jsonErrArray = jsonObject.getJSONArray("active_obd_err");
-				if(jsonErrArray.length() > 0){
-					String url = Constant.BaseUrl + "device/fault_desc?auth_code=" + Variable.auth_code;
-					List<NameValuePair> params = new ArrayList<NameValuePair>();
-			        params.add(new BasicNameValuePair("brand", "大众"));
-			        params.add(new BasicNameValuePair("obd_err", jsonObject.getString("active_obd_err")));
-			        new Thread(new NetThread.postDataThread(handler, url, params, getFault)).start();					
-				}else{
-					tv_guzhang.setText("无故障码");
-					tv_guzhang.setTextColor(getResources().getColor(R.color.blue_press));
-					Drawable drawable= getResources().getDrawable(R.drawable.icon_guzhang_normal);
-					drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-					tv_guzhang_icon.setCompoundDrawables(drawable,null,null,null);
-				}
+				tv_guzhang.setText("无故障码");
+				tv_guzhang.setTextColor(getResources().getColor(R.color.blue_press));
+				Drawable drawable= getResources().getDrawable(R.drawable.icon_guzhang_normal);
+				drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+				tv_guzhang_icon.setCompoundDrawables(drawable,null,null,null);
 				
-				//电源系统
-				boolean if_dpdy_err = !jsonObject.getBoolean("if_dpdy_err");	
-				dpdy_content = jsonObject.getString("dpdy_content");
-				if(if_dpdy_err){
-					tv_dianyuan.setText("蓄电池状态良好");
-					tv_dianyuan.setTextColor(getResources().getColor(R.color.blue_press));
-					Drawable drawable= getResources().getDrawable(R.drawable.icon_dianyuan_normal);
-					drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-					tv_dianyuan_icon.setCompoundDrawables(drawable,null,null,null);
-				}else{
-					tv_dianyuan.setText("蓄电池状态异常");
-					tv_dianyuan.setTextColor(getResources().getColor(R.color.yellow));
-					Drawable drawable= getResources().getDrawable(R.drawable.icon_dianyuan_abnormal);
-					drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-					tv_dianyuan_icon.setCompoundDrawables(drawable,null,null,null);
+				tv_dianyuan.setText("蓄电池状态良好");
+				tv_dianyuan.setTextColor(getResources().getColor(R.color.blue_press));
+				drawable= getResources().getDrawable(R.drawable.icon_dianyuan_normal);
+				drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+				tv_dianyuan_icon.setCompoundDrawables(drawable,null,null,null);
+				
+				tv_jinqi.setText("节气门开度良好");
+				tv_jinqi.setTextColor(getResources().getColor(R.color.blue_press));
+				drawable= getResources().getDrawable(R.drawable.icon_jinqi_normal);
+				drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+				tv_jinqi_icon.setCompoundDrawables(drawable,null,null,null);
+				
+				tv_daisu.setText("怠速稳定");
+				tv_daisu.setTextColor(getResources().getColor(R.color.blue_press));
+				drawable= getResources().getDrawable(R.drawable.icon_daisu_normal);
+				drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+				tv_daisu_icon.setCompoundDrawables(drawable,null,null,null);
+				
+				tv_lengque.setText("水温正常");
+				tv_lengque.setTextColor(getResources().getColor(R.color.blue_press));
+				drawable= getResources().getDrawable(R.drawable.icon_lengque_normal);
+				drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+				tv_lengque_icon.setCompoundDrawables(drawable,null,null,null);
+				
+				tv_paifang.setText("三元催化剂状态良好");
+				tv_paifang.setTextColor(getResources().getColor(R.color.blue_press));
+				drawable= getResources().getDrawable(R.drawable.icon_paifang_normal);
+				drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+				tv_paifang_icon.setCompoundDrawables(drawable,null,null,null);
+				
+			} else {
+				try {
+					JSONObject jsonObject = new JSONObject(result);
+					//健康指数
+					int health_score = jsonObject.getInt("health_score");
+					carViews.get(index).getTv_score().setText(String.valueOf(health_score));
+					carViews.get(index).getmTasksView().setProgress(health_score);
+					
+					JSONArray jsonErrArray = jsonObject.getJSONArray("active_obd_err");
+					if(jsonErrArray.length() > 0){
+						String url = Constant.BaseUrl + "device/fault_desc?auth_code=" + Variable.auth_code;
+						List<NameValuePair> params = new ArrayList<NameValuePair>();
+				        params.add(new BasicNameValuePair("brand", "大众"));
+				        params.add(new BasicNameValuePair("obd_err", jsonObject.getString("active_obd_err")));
+				        new Thread(new NetThread.postDataThread(handler, url, params, getFault)).start();					
+					}else{
+						tv_guzhang.setText("无故障码");
+						tv_guzhang.setTextColor(getResources().getColor(R.color.blue_press));
+						Drawable drawable= getResources().getDrawable(R.drawable.icon_guzhang_normal);
+						drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+						tv_guzhang_icon.setCompoundDrawables(drawable,null,null,null);
+					}
+					
+					//电源系统
+					boolean if_dpdy_err = !jsonObject.getBoolean("if_dpdy_err");	
+					dpdy_content = jsonObject.getString("dpdy_content");
+					if(if_dpdy_err){
+						tv_dianyuan.setText("蓄电池状态良好");
+						tv_dianyuan.setTextColor(getResources().getColor(R.color.blue_press));
+						Drawable drawable= getResources().getDrawable(R.drawable.icon_dianyuan_normal);
+						drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+						tv_dianyuan_icon.setCompoundDrawables(drawable,null,null,null);
+					}else{
+						tv_dianyuan.setText("蓄电池状态异常");
+						tv_dianyuan.setTextColor(getResources().getColor(R.color.yellow));
+						Drawable drawable= getResources().getDrawable(R.drawable.icon_dianyuan_abnormal);
+						drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+						tv_dianyuan_icon.setCompoundDrawables(drawable,null,null,null);
+					}
+					//进气系统
+					boolean if_jqmkd_err = !jsonObject.getBoolean("if_jqmkd_err");
+					jqmkd_content = jsonObject.getString("jqmkd_content");
+					if(if_jqmkd_err){
+						tv_jinqi.setText("节气门开度良好");
+						tv_jinqi.setTextColor(getResources().getColor(R.color.blue_press));
+						Drawable drawable= getResources().getDrawable(R.drawable.icon_jinqi_normal);
+						drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+						tv_jinqi_icon.setCompoundDrawables(drawable,null,null,null);
+					}else{
+						tv_jinqi.setText("节气门开度异常");
+						tv_jinqi.setTextColor(getResources().getColor(R.color.yellow));
+						Drawable drawable= getResources().getDrawable(R.drawable.icon_jinqi_abnormal);
+						drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+						tv_jinqi_icon.setCompoundDrawables(drawable,null,null,null);
+					}
+					//怠速控制系统
+					boolean if_fdjzs_err = !jsonObject.getBoolean("if_fdjzs_err");
+					fdjzs_content = jsonObject.getString("fdjzs_content");
+					if(if_fdjzs_err){
+						tv_daisu.setText("怠速稳定");
+						tv_daisu.setTextColor(getResources().getColor(R.color.blue_press));
+						Drawable drawable= getResources().getDrawable(R.drawable.icon_daisu_normal);
+						drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+						tv_daisu_icon.setCompoundDrawables(drawable,null,null,null);
+					}else{
+						tv_daisu.setText("怠速异常");
+						tv_daisu.setTextColor(getResources().getColor(R.color.yellow));
+						Drawable drawable= getResources().getDrawable(R.drawable.icon_daisu_abnormal);
+						drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+						tv_daisu_icon.setCompoundDrawables(drawable,null,null,null);
+					}
+					//冷却系统
+					boolean if_sw_err = !jsonObject.getBoolean("if_sw_err");
+					sw_content = jsonObject.getString("sw_content");
+					if(if_sw_err){
+						tv_lengque.setText("水温正常");
+						tv_lengque.setTextColor(getResources().getColor(R.color.blue_press));
+						Drawable drawable= getResources().getDrawable(R.drawable.icon_lengque_normal);
+						drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+						tv_lengque_icon.setCompoundDrawables(drawable,null,null,null);
+					}else{
+						tv_lengque.setText("水温异常");
+						tv_lengque.setTextColor(getResources().getColor(R.color.yellow));
+						Drawable drawable= getResources().getDrawable(R.drawable.icon_lengque_abnormal);
+						drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+						tv_lengque_icon.setCompoundDrawables(drawable,null,null,null);
+					}
+					//排放系统
+					boolean if_chqwd_err = !jsonObject.getBoolean("if_chqwd_err");
+					chqwd_content = jsonObject.getString("chqwd_content");
+					if(if_chqwd_err){
+						tv_paifang.setText("三元催化剂状态良好");
+						tv_paifang.setTextColor(getResources().getColor(R.color.blue_press));
+						Drawable drawable= getResources().getDrawable(R.drawable.icon_paifang_normal);
+						drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+						tv_paifang_icon.setCompoundDrawables(drawable,null,null,null);
+					}else{
+						tv_paifang.setText("三元催化剂状态异常");
+						tv_paifang.setTextColor(getResources().getColor(R.color.yellow));
+						Drawable drawable= getResources().getDrawable(R.drawable.icon_paifang_abnormal);
+						drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+						tv_paifang_icon.setCompoundDrawables(drawable,null,null,null);
+					}
+					//获取历史消息
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				//进气系统
-				boolean if_jqmkd_err = !jsonObject.getBoolean("if_jqmkd_err");
-				jqmkd_content = jsonObject.getString("jqmkd_content");
-				if(if_jqmkd_err){
-					tv_jinqi.setText("节气门开度良好");
-					tv_jinqi.setTextColor(getResources().getColor(R.color.blue_press));
-					Drawable drawable= getResources().getDrawable(R.drawable.icon_jinqi_normal);
-					drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-					tv_jinqi_icon.setCompoundDrawables(drawable,null,null,null);
-				}else{
-					tv_jinqi.setText("节气门开度异常");
-					tv_jinqi.setTextColor(getResources().getColor(R.color.yellow));
-					Drawable drawable= getResources().getDrawable(R.drawable.icon_jinqi_abnormal);
-					drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-					tv_jinqi_icon.setCompoundDrawables(drawable,null,null,null);
-				}
-				//怠速控制系统
-				boolean if_fdjzs_err = !jsonObject.getBoolean("if_fdjzs_err");
-				fdjzs_content = jsonObject.getString("fdjzs_content");
-				if(if_fdjzs_err){
-					tv_daisu.setText("怠速稳定");
-					tv_daisu.setTextColor(getResources().getColor(R.color.blue_press));
-					Drawable drawable= getResources().getDrawable(R.drawable.icon_daisu_normal);
-					drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-					tv_daisu_icon.setCompoundDrawables(drawable,null,null,null);
-				}else{
-					tv_daisu.setText("怠速异常");
-					tv_daisu.setTextColor(getResources().getColor(R.color.yellow));
-					Drawable drawable= getResources().getDrawable(R.drawable.icon_daisu_abnormal);
-					drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-					tv_daisu_icon.setCompoundDrawables(drawable,null,null,null);
-				}
-				//冷却系统
-				boolean if_sw_err = !jsonObject.getBoolean("if_sw_err");
-				sw_content = jsonObject.getString("sw_content");
-				if(if_sw_err){
-					tv_lengque.setText("水温正常");
-					tv_lengque.setTextColor(getResources().getColor(R.color.blue_press));
-					Drawable drawable= getResources().getDrawable(R.drawable.icon_lengque_normal);
-					drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-					tv_lengque_icon.setCompoundDrawables(drawable,null,null,null);
-				}else{
-					tv_lengque.setText("水温异常");
-					tv_lengque.setTextColor(getResources().getColor(R.color.yellow));
-					Drawable drawable= getResources().getDrawable(R.drawable.icon_lengque_abnormal);
-					drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-					tv_lengque_icon.setCompoundDrawables(drawable,null,null,null);
-				}
-				//排放系统
-				boolean if_chqwd_err = !jsonObject.getBoolean("if_chqwd_err");
-				chqwd_content = jsonObject.getString("chqwd_content");
-				if(if_chqwd_err){
-					tv_paifang.setText("三元催化剂状态良好");
-					tv_paifang.setTextColor(getResources().getColor(R.color.blue_press));
-					Drawable drawable= getResources().getDrawable(R.drawable.icon_paifang_normal);
-					drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-					tv_paifang_icon.setCompoundDrawables(drawable,null,null,null);
-				}else{
-					tv_paifang.setText("三元催化剂状态异常");
-					tv_paifang.setTextColor(getResources().getColor(R.color.yellow));
-					Drawable drawable= getResources().getDrawable(R.drawable.icon_paifang_abnormal);
-					drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-					tv_paifang_icon.setCompoundDrawables(drawable,null,null,null);
-				}
-				//获取历史消息
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
-		}
-	}
-	
-	/**解析车辆限行**/
-	private void jsonCarLinit(String result,int index) {
-        try {
-        	CarView carView = carViews.get(index);
-            JSONObject jsonObject = new JSONObject(result);
-            String limit = jsonObject.getString("limit");
-            carView.getTv_xx_detection().setText(limit);
-            Variable.carDatas.get(index).setLimit(limit);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-	
-	private class CarView {
-		TextView tv_xx_detection;
-		TextView tv_score;
-		TasksCompletedView mTasksView;
+		}	
 		
+	}
+		
+	private class CarView {
+		TextView tv_score;
+		TextView tv_title;
+		TasksCompletedView mTasksView;		
+		
+		public TextView getTv_title() {
+			return tv_title;
+		}
+		public void setTv_title(TextView tv_title) {
+			this.tv_title = tv_title;
+		}
 		public TasksCompletedView getmTasksView() {
 			return mTasksView;
 		}
@@ -514,16 +530,11 @@ public class FaultDetectionActivity extends Activity{
 		}
 		public void setTv_score(TextView tv_score) {
 			this.tv_score = tv_score;
-		}
-		public TextView getTv_xx_detection() {
-			return tv_xx_detection;
-		}
-		public void setTv_xx_detection(TextView tv_xx_detection) {
-			this.tv_xx_detection = tv_xx_detection;
 		}		
 	}
 	/**初始化数据**/
 	private void initVariable() {
+		j = 0;
 		mTotalProgress = 100;
 		mCurrentProgress = 100;
 		Interval = (mCurrentProgress - mTotalProgress)/Point;

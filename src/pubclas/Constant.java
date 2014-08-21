@@ -8,8 +8,18 @@ import android.os.Environment;
  * @author honesty
  */
 public class Constant {
-    /**url**/
+	/**在阿里云上url**/
+	public static String oss_url = "http://img.bibibaba.cn/";
+	//public static String oss_url = "http://baba-img.oss-cn-hangzhou.aliyuncs.com/photo/";
+	/**图片oss路径**/
+	public static String oss_path = "baba-img/photo";
+	/**accessId**/
+	public static String oss_accessId = "eJ3GLV07j9DD4LY5";
+	/**accessKey**/
+	public static String oss_accessKey = "iAxAHoAuG1ZYwjIRLfyYKK2oF9WcCe";
+    /**url,42.121.109.221:8002**/
     public static String BaseUrl = "http://42.121.109.221:8002/";	
+    //public static String BaseUrl = "http://api.bibibaba.cn/";	
     /**图片地址**/
     public static String ImageUrl = "http://img.wisegps.cn/logo/";
     /**图片路径存储地址**/
@@ -17,7 +27,11 @@ public class Constant {
     /**车品牌logo**/
     public static String VehicleLogoPath = BasePath + "vehicleLogo/";
     /**存放用户头像**/
-    public static String userIconPath = BasePath + "userIcon/";    
+    public static String userIconPath = BasePath + "userIcon/";
+    /**存放秀爱车图片**/
+    public static String VehiclePath = BasePath + "vehicle/";
+    /**秀爱车拍照存放地方**/
+    public static String TemporaryImage = "0.png";
 	/**获取版本信息用到**/
 	public static String PackageName = "com.wise.baba";
 	

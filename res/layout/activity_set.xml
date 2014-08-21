@@ -72,7 +72,7 @@
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_alignParentRight="true"
-	            android:textSize="@dimen/main"
+	            android:textSize="@dimen/content"
 	            android:textColor="@color/Green" 
 	            android:layout_centerVertical="true"
 	            android:drawableRight="@drawable/btn_right"
@@ -83,7 +83,7 @@
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
 	            android:padding="@dimen/double_margins"
-	            android:textSize="@dimen/main"
+	            android:textSize="@dimen/content"
 	            android:text="定位城市"
 	            android:textColor="@color/navy" />	        
 	    </RelativeLayout>    
@@ -97,7 +97,7 @@
 	        android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/double_margins"
-            android:textSize="@dimen/main"
+            android:textSize="@dimen/content"
             android:textColor="@color/navy" 
             android:background="@drawable/bg_white"/>
 	    <TextView
@@ -107,7 +107,7 @@
 	        android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/double_margins"
-            android:textSize="@dimen/main"
+            android:textSize="@dimen/content"
             android:textColor="@color/navy" 
             android:background="@drawable/bg_white"/>    
 	    <View 
@@ -120,7 +120,7 @@
 	        android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/double_margins"
-            android:textSize="@dimen/main"
+            android:textSize="@dimen/content"
             android:textColor="@color/navy" 
             android:background="@drawable/bg_white"/>
     </LinearLayout>

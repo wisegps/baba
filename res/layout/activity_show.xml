@@ -1,11 +1,10 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/white"
-    android:orientation="vertical" >
+    android:background="@color/white">
     <RelativeLayout 
-    	android:id="@+id/ll_main"
+    	android:id="@+id/rl_main"
 	    android:layout_width="fill_parent"
 	    android:layout_height="@dimen/title_hight"
         android:background="@color/title_back">
@@ -13,66 +12,101 @@
 	         android:layout_width="fill_parent"
 	         android:layout_height="wrap_content"
 	         android:layout_centerInParent="true"
-	         android:text="秀一下"
+	         android:text="车秀大厅"
 	         android:gravity="center"
 	         android:textSize="@dimen/title"
-	         android:textColor="@color/white" />
+	         android:textColor="@color/white" />	    
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margins"
+            android:padding="@dimen/margins"
+            android:src="@drawable/nav_back" />        
+        <ImageView 
+            android:id="@+id/iv_show_car"
+	        android:layout_width="@dimen/title_hight"
+	        android:layout_height="@dimen/title_hight"
+	        android:layout_alignParentRight="true"
+	        android:padding="@dimen/margins"
+	        android:layout_centerVertical="true"
+	        android:src="@drawable/nav_icon_pic_add"/>
+        <ImageView
+            android:layout_toLeftOf="@id/iv_show_car"
+	        android:layout_width="@dimen/title_hight"
+	        android:layout_height="@dimen/title_hight"
+	        android:padding="@dimen/margins"
+	        android:layout_centerVertical="true"
+	        android:src="@drawable/nav_icon_xiu_baobei"/>
 	</RelativeLayout>
-    <LinearLayout
+    <LinearLayout 
+        android:id="@+id/ll_bottom"
+        android:layout_alignParentBottom="true"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_card"
-        android:orientation="horizontal" >
-        <TextView
-            android:id="@+id/tv_service"
+        android:orientation="horizontal">		        
+		<Button
+            android:id="@+id/bt_show_car"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margins"
-            android:text="修一下服务商"
-            android:textColor="@color/common" />
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/bt"
+            android:background="@drawable/bg_green_lights"
+            android:text="秀爱车"/>        
+        <Button
+            android:id="@+id/bt_show_service"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/bt"
+            android:background="@drawable/bg_green"
+            android:text="秀服务"/>
     </LinearLayout>
-    <LinearLayout
+    <com.wise.show.RefreshableView
+        android:id="@+id/ll_refresh"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_card"
-        android:orientation="horizontal" >
-        <TextView
-            android:id="@+id/tv_car"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/margins"
-            android:text="修一下我的车"
-            android:textColor="@color/common" />
-    </LinearLayout>
-    <com.wise.show.MyScrollView
-	    android:id="@+id/my_scroll_view"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent" >	
-	    <LinearLayout
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:orientation="horizontal" >	
-	        <LinearLayout
-	            android:id="@+id/first_column"
-	            android:layout_width="0dp"
-	            android:layout_height="wrap_content"
-	            android:layout_weight="1"
-	            android:orientation="vertical" >
-	        </LinearLayout>	
-	        <LinearLayout
-	            android:id="@+id/second_column"
-	            android:layout_width="0dp"
-	            android:layout_height="wrap_content"
-	            android:layout_weight="1"
-	            android:orientation="vertical" >
-	        </LinearLayout>	
-	        <LinearLayout
-	            android:id="@+id/third_column"
-	            android:layout_width="0dp"
-	            android:layout_height="wrap_content"
-	            android:layout_weight="1"
-	            android:orientation="vertical" >
-	        </LinearLayout>
-	    </LinearLayout>
-	</com.wise.show.MyScrollView>
-</LinearLayout>
+        android:layout_height="fill_parent"
+        android:layout_above="@id/ll_bottom"
+        android:layout_below="@id/rl_main"
+        android:orientation="vertical" >
+        <com.wise.show.MyScrollView
+		    android:id="@+id/my_scroll_view"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent" >	
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="fill_parent"
+		        android:orientation="horizontal" >	
+		        <LinearLayout
+		            android:id="@+id/first_column"
+		            android:layout_width="0dp"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:orientation="vertical" >
+		        </LinearLayout>	
+		        <LinearLayout
+		            android:id="@+id/second_column"
+		            android:layout_width="0dp"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:orientation="vertical" >
+		        </LinearLayout>
+		    </LinearLayout>
+		</com.wise.show.MyScrollView>
+    </com.wise.show.RefreshableView>    
+	<TextView
+	    android:id="@+id/tv_time"
+	    android:layout_below="@id/rl_main"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:textSize="@dimen/main"
+	    android:textColor="@color/white"
+	    android:background="@color/Green"
+	    android:gravity="center_horizontal"
+	    android:visibility="gone"
+	    android:padding="5dp"
+	    android:text="2014-07-08"/>
+</RelativeLayout>

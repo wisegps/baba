@@ -2,7 +2,7 @@ package com.wise.show;
 
 public class Images {
 
-	public final static String[] imageUrls = new String[] {
+	public final static String[] imageUrls1 = new String[] {
 			"http://img.my.csdn.net/uploads/201309/01/1378037235_3453.jpg",
 			"http://img.my.csdn.net/uploads/201309/01/1378037235_7476.jpg",
 			"http://img.my.csdn.net/uploads/201309/01/1378037235_9280.jpg",

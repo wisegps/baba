@@ -82,28 +82,7 @@
         android:id="@+id/rl_content"
         android:layout_alignParentBottom="true"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <RelativeLayout
-            android:id="@+id/rl_no_device"
-            android:visibility="gone" 
-         	android:layout_centerInParent="true"
-            android:layout_width="264dp"
-            android:layout_height="162dp">                
-	         <ImageView
-	             android:id="@+id/iv_nothing"
-	             android:layout_width="fill_parent"
-	             android:layout_height="fill_parent"
-	             android:src="@drawable/icon_reminder" />	            
-	         <TextView
-	             android:layout_width="fill_parent"
-	             android:layout_height="wrap_content"
-	             android:gravity="center_horizontal"
-	             android:textColor="@color/white"
-	             android:textSize="@dimen/title" 
-	             android:layout_alignParentBottom="true"
-	             android:layout_marginBottom="25dp"
-	             android:text="没有绑定终端"/>
-        </RelativeLayout>
+        android:layout_height="wrap_content">        
         <LinearLayout
 	        android:id="@+id/ll_fault"
 	        android:layout_width="fill_parent"

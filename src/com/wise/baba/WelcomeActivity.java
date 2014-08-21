@@ -70,8 +70,6 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		
 		FeedbackAgent agent = new FeedbackAgent(this);
 		agent.sync();
-		MobclickAgent.setDebugMode(true);
-		MobclickAgent.updateOnlineConfig(getApplicationContext());
 	}
 	String strData = "";
 	Handler handler = new Handler() {
@@ -113,19 +111,26 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 	}
 	//解析登录
 	private void jsonLogin(String str){
-		try {
-			JSONObject jsonObject = new JSONObject(str);
-			if(jsonObject.getString("status_code").equals("0")){
-				Variable.cust_id = jsonObject.getString("cust_id");
-				Variable.auth_code = jsonObject.getString("auth_code");
-				setJpush();
-				GetCustomer();
-		        getData();		        
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
+		if(str.equals("")){
+			GetSystem.myLog(TAG, "网络连接异常");
 			isException = true;
-		}
+			TurnActivity();
+		}else{
+			try {
+				JSONObject jsonObject = new JSONObject(str);
+				if(jsonObject.getString("status_code").equals("0")){
+					Variable.cust_id = jsonObject.getString("cust_id");
+					Variable.auth_code = jsonObject.getString("auth_code");
+					setJpush();
+					GetCustomer();
+			        getData();		        
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+				isException = true;
+				TurnActivity();
+			}
+		}		
 	}
 	private void GetCustomer() {
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
@@ -194,8 +199,12 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
         }
     }
 	@Override
-	public void gotResult(int arg0, String arg1, Set<String> arg2) {}
+	public void gotResult(int arg0, String arg1, Set<String> arg2) {
+		GetSystem.myLog(TAG, "arg0 = " + arg0 + " , arg1 = " + arg1);
+	}
 	private void setJpush(){
+		JPushInterface.resumePush(getApplicationContext());
+		GetSystem.myLog(TAG, "setJpush");
         Set<String> tagSet = new LinkedHashSet<String>();
         tagSet.add(Variable.cust_id);
         //调用JPush API设置Tag

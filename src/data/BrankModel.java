@@ -1,10 +1,10 @@
 package data;
 
 public class BrankModel {
-	private String vehicleBrank = null;
-	private String vehicleLetter = null;
-	private String brankId = null;
-	private String logoUrl = null;
+	private String vehicleBrank;
+	private String vehicleLetter;
+	private String brankId;
+	private String logoUrl;
 	
 	public String getLogoUrl() {
 		return logoUrl;

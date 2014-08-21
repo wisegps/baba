@@ -48,7 +48,10 @@
             android:theme="@android:style/Theme.NoTitleBar"
             android:name=".WelcomeActivity" android:screenOrientation="portrait"
             android:label="@string/app_name" >
-            
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".MainActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".ServiceActivity" android:screenOrientation="portrait"></activity>
@@ -59,6 +62,9 @@
         <activity android:name=".FeedBackActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".AboutActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".SelectCityActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
+        <activity android:name=".TestActivity" android:screenOrientation="portrait">
+            
+        </activity>
         
         <activity android:name="com.wise.setting.SetActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.setting.LoginActivity" android:screenOrientation="portrait"></activity>
@@ -78,15 +84,16 @@
         <activity android:name="com.wise.state.FuelActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.state.FuelDetailsActivity" android:screenOrientation="portrait"></activity>        
         <activity android:name="com.wise.notice.NoticeActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.wise.notice.LetterActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
         
         <activity android:name="com.wise.state.TestActivity" android:screenOrientation="portrait">            
-             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+             
         </activity>
-        <activity android:name="com.wise.show.ShowActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.show.PicActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.wise.show.ShowActivity" android:screenOrientation="portrait">
+            
+        </activity>
+        <activity android:name="com.wise.show.ShowCarAcitivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.wise.show.PhotoActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
         <activity android:name="com.wise.car.CarActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.car.CarAddActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
         <activity android:name="com.wise.car.ModelsActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
@@ -99,7 +106,7 @@
         <activity android:name="com.wise.remind.RemindAddActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
         <activity android:name="com.wise.remind.CarRemindUpdateActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
         <activity android:name="com.wise.remind.RemindActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.remind.DealAddressActivity" android:screenOrientation="portrait"></activity>        
+        <activity android:name="com.wise.remind.DealAddressActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.violation.TrafficActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.violation.ComplainActivity" android:screenOrientation="portrait"  android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
         

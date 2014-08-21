@@ -1,21 +1,53 @@
-<LinearLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
-    <ImageView 
-        android:id="@+id/iv_pic"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/logo_sinaweibo"/>
-    <TextView 
-        android:id="@+id/tv_name"
+    android:layout_height="fill_parent">
+    <LinearLayout
+        android:id="@+id/ll_top" 
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
-    <Button 
-        android:id="@+id/bt_phone"
+        android:layout_height="80dp"
+        android:background="#000000">
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <com.wise.show.RefreshableView
+        android:layout_below="@id/ll_top"
+        android:id="@+id/refresh_root"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="拍照"/>
-</LinearLayout>
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+        <ScrollView
+            android:id="@+id/scroll_view_root"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+            <LinearLayout
+                android:id="@+id/linear_root"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical" >
+                <TextView 
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="123123"
+                    android:padding="20dp"/>
+                <TextView 
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="123123"
+                    android:padding="20dp"/>
+                <TextView 
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="123123"
+                    android:padding="20dp"/>
+                <TextView 
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="123123"
+                    android:padding="20dp"/>
+            </LinearLayout>
+        </ScrollView>
+    </com.wise.show.RefreshableView>
+</RelativeLayout>

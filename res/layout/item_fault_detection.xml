@@ -47,12 +47,11 @@
 		            android:textColor="@color/navy"
 		            android:text="分"/>
 	        </LinearLayout>	        
-	        <TextView 
-	            android:id="@+id/tv_xx_detection"
+	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:textColor="@color/blue_press"
-	            android:text="今日限行"/>
+	            android:text="点击体检"/>
 	    </LinearLayout>
 	</RelativeLayout>
 </LinearLayout>

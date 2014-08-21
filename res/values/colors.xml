@@ -42,7 +42,7 @@
     <!-- 油耗曲线 -->
     <color name="Green_curve_bg">#40D9F4F1</color>
     <color name="Green_curve_line">#90CEFA</color>
-    <!-- 绿色，油耗明细 -->
+    <!-- 绿色，油耗明细,问一下按钮 -->
     <color name="Green_Light">#68D2C6</color>
     <!-- 绿色，收藏,消息 -->
     <color name="Green_collection">#EDFAF8</color>
@@ -55,12 +55,16 @@
     <!-- 黄色，检测 -->
     <color name="yellow_dete">#F8B264</color>
     <color name="yellow_dete_press">#E49749</color>
+    <!-- 浅绿色背景,违章 -->
+    <color name="Green_Lights">#EDF8FC</color>
+    <!-- 车秀大厅 -->
+    <color name="show_bg">#4D7384</color>
+    
+    
     
     
     <!-- 蓝色-->
     <color name="blue">#53A5C4</color>
-    <!-- 浅绿色背景 -->
-    <color name="Green_Lights">#EDF8FC</color>
     
     <color name="gray">#d8d9e1</color>
     <color name="gray_lights">#80d8d9e1</color>
@@ -94,7 +98,7 @@
     
     <!-- 最外层圆环颜色 -->
     <color name="ring_color">#50B7DE</color>
-    <color name="ring_bg_color">#e6f4f5</color>
+    <color name="ring_bg_color">#76e6f4f5</color>
     <!-- 二维码 -->
     <color name="transparent">#00000000</color>
     <color name="viewfinder_mask">#60000000</color>

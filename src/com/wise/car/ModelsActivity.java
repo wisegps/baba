@@ -543,7 +543,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 						&& brankModelList.get(i).getLogoUrl() != null) {
 					if (imageDownload) {
 						logoImageIsExist(Constant.VehicleLogoPath,
-								brankModelList.get(i).getVehicleBrank(),
+								brankModelList.get(i).getBrankId(),
 								brankModelList.get(i).getLogoUrl());
 					} else {
 						continue;

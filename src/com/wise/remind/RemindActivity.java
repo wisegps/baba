@@ -169,10 +169,10 @@ public class RemindActivity extends Activity{
                 DealAddressActivity.class);
 		if(remindData.getRemind_type() == 1){
 	        intent.putExtra("Title", getString(R.string.inspection_title));
-	        intent.putExtra("Type", "1");
+	        intent.putExtra("Type", 1);
 		}else if(remindData.getRemind_type() == 0){
 	        intent.putExtra("Title", "驾照换证");
-	        intent.putExtra("Type", "0");
+	        intent.putExtra("Type", 2);
 		}
         startActivity(intent);
     }

@@ -58,17 +58,24 @@
 		        android:layout_alignParentBottom="true"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
-		        android:visibility="gone"
-		        android:orientation="horizontal">
-		        <Button 
+		        android:orientation="horizontal">		        
+				<Button
+		            android:id="@+id/bt_ask"
 		            android:layout_width="fill_parent"
 		            android:layout_height="wrap_content"
 		            android:layout_weight="1"
-		            android:text="问一下"/>
-		        <Button 
+		            android:textColor="@color/white"
+		            android:textSize="@dimen/bt"
+		            android:background="@drawable/bg_green_lights"
+		            android:text="问一下"/>        
+		        <Button
+		            android:id="@+id/bt_show"
 		            android:layout_width="fill_parent"
 		            android:layout_height="wrap_content"
 		            android:layout_weight="1"
+		            android:textColor="@color/white"
+		            android:textSize="@dimen/bt"
+		            android:background="@drawable/bg_green"
 		            android:text="秀一下"/>
 		    </LinearLayout>
 			<LinearLayout 

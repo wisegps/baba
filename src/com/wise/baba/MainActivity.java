@@ -116,9 +116,6 @@ public class MainActivity extends FragmentActivity {
 			case R.id.tv_search:
 				ShowSearchPop();
 				break;
-			case R.id.bt_service:
-				startActivity(new Intent(MainActivity.this, ShowActivity.class));
-				break;
 			case R.id.bt_car:
 				startActivity(new Intent(MainActivity.this, AskActivity.class));
 				break;

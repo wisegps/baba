@@ -352,7 +352,6 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
         iv_pic.setImageBitmap(bitmap);
         
         String url = Constant.BaseUrl + "upload_image?auth_code=" + Variable.auth_code;
-        //String url = "http://baba-img.oss-cn-hangzhou.aliyuncs.com";
         UploadUtil.getInstance().setOnUploadProcessListener(AccountActivity.this);
         UploadUtil.getInstance().uploadFile(fileName, "image", url, new HashMap<String, String>());
 	}

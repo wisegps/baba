@@ -176,8 +176,8 @@ public class CarActivity extends Activity{
 				holder = (ViewHolder) convertView.getTag();
 			}
 			final CarData carData = Variable.carDatas.get(position);
-			if(new File(Constant.VehicleLogoPath + carData.getCar_brand() + ".png").exists()){
-				Bitmap image = BitmapFactory.decodeFile(Constant.VehicleLogoPath + carData.getCar_brand() + ".png");
+			if(new File(Constant.VehicleLogoPath + carData.getCar_brand_id() + ".png").exists()){
+				Bitmap image = BitmapFactory.decodeFile(Constant.VehicleLogoPath + carData.getCar_brand_id() + ".png");
 				holder.iv_icon.setImageBitmap(image);
 			}else{
 				holder.iv_icon.setImageResource(R.drawable.icon_car_moren);				

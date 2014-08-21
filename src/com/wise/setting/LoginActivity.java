@@ -48,6 +48,8 @@ import android.widget.Toast;
  */
 public class LoginActivity extends Activity implements PlatformActionListener,
 		TagAliasCallback {
+	private static final String TAG = "LoginActivity";
+	
 	private final static int login_account = 1;
 	private static final int get_data = 3;
 	private final static int login = 4;
@@ -265,6 +267,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				// TODO 登录成功
 				Variable.cust_id = jsonObject.getString("cust_id");
 				Variable.auth_code = jsonObject.getString("auth_code");
+				JPushInterface.resumePush(getApplicationContext());
 				setJpush();
 		        getData();
 				setResult(1);
@@ -312,9 +315,12 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	}
 
 	@Override
-	public void gotResult(int arg0, String arg1, Set<String> arg2) {}
+	public void gotResult(int arg0, String arg1, Set<String> arg2) {
+		GetSystem.myLog(TAG, "arg0 = " + arg0 + " , arg1 = " + arg1);
+	}
 
 	private void setJpush() {
+		GetSystem.myLog(TAG, "设置推送");
 		Set<String> tagSet = new LinkedHashSet<String>();
 		tagSet.add(Variable.cust_id);
 		// 调用JPush API设置Tag

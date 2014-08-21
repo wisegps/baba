@@ -37,14 +37,14 @@ public class TestActivity extends Activity implements OnUploadProcessListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_test);
-		Button bt_phone = (Button) findViewById(R.id.bt_phone);
-		bt_phone.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-				startActivityForResult(intent1, 1);
-			}
-		});
+//		Button bt_phone = (Button) findViewById(R.id.bt_phone);
+//		bt_phone.setOnClickListener(new OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//				startActivityForResult(intent1, 1);
+//			}
+//		});
 	}
 
 	@Override

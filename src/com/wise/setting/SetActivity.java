@@ -211,7 +211,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 		        
 		        tv_login.setText(jsonObject.getString("cust_name"));
 		        String logo = jsonObject.getString("logo");
-				mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {
+		        mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {
 					@Override
 					public void onResponse(Bitmap response) {
 						GetSystem.saveImageSD(response, Constant.userIconPath, Variable.cust_id + ".png",100);

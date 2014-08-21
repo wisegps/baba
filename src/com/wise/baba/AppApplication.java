@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.widget.Toast;
+import cn.jpush.android.api.JPushInterface;
+
 import com.baidu.mapapi.BMapManager;
 
 /**

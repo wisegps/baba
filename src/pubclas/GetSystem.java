@@ -117,7 +117,7 @@ public class GetSystem {
 		}
 		return 0;
 	}
-
+	
 	/**
 	 * 解决时区问题
 	 * 
@@ -307,7 +307,34 @@ public class GetSystem {
 			return (Second / 3600) + "小时" ;
 		}
 	}
+	/**获取距当前时间间隙**/
+	public static int spacingNowTime(String Data){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			java.util.Date begin = sdf.parse(Data);
+			java.util.Date end = sdf.parse(GetNowTime());
+			int l = (int) ((end.getTime() - begin.getTime()) / 1000);
+			return l;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return 60;
+	}
+	/**实际显示的时间**/
+	public static String showData(int Second,String Data) {
+		if (Second < 60) {//小于60秒
+			return Second + "秒前";
+		} else if(Second < 60*60){//小于一个小时
+			return (Second/60) + "分钟前";
+		} else if(Second < 60*60*24){
+			return (Second / 3600) + "小时前" ;
+		} else if(Second < 60*60*24*30){
+			return (Second / 86400) + "天前" ;
+		}
+		return Data.substring(0, 10);
+	}
 
+	
 	/**
 	 * 首页时间显示
 	 * 

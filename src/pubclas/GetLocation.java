@@ -73,7 +73,6 @@ public class GetLocation {
 				Variable.Adress = location.getAddrStr();
 				Variable.City = city.substring(0, city.length() - 1);
 				Variable.Province = province.substring(0, province.length() - 1);
-				Variable.gpsTime = GetSystem.GetNowTime();
 	            //发送定位城市广播，选择城市用到
 	            Intent intent = new Intent(Constant.A_City);
 	            intent.putExtra("City", city.substring(0, city.length() - 1));

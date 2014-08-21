@@ -55,7 +55,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 			            android:textColor="@color/navy"
 					    android:padding="10dp"   
 			            android:text="车辆名称："/>
@@ -63,7 +63,7 @@
 			            android:id="@+id/et_nick_name"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/main"
+					    android:textSize="@dimen/content"
 					    android:textColor="@color/navy"
 					    android:background="@null"
 					    android:padding="10dp"/>
@@ -79,7 +79,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"  
 					    android:textColor="@color/navy" 
 			            android:text="车牌号：    "/>
@@ -87,7 +87,7 @@
 			            android:id="@+id/et_obj_name"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/main"
+					    android:textSize="@dimen/content"
 					    android:textColor="@color/navy"
 					    android:background="@null"
 					    android:padding="10dp"/>
@@ -103,7 +103,7 @@
 				    <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"  
 					    android:textColor="@color/navy" 
 			            android:text="车型：        "/>
@@ -111,7 +111,7 @@
 				        android:id="@+id/tv_models"
 			            android:layout_width="fill_parent"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 			            android:textColor="@color/navy"
 					    android:padding="10dp"/>
 		        </LinearLayout>
@@ -126,7 +126,7 @@
 				    <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="汽油标号："/>
@@ -134,7 +134,7 @@
 				        android:id="@+id/tv_gas_no"
 			            android:layout_width="fill_parent"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 			            android:textColor="@color/navy"
 					    android:padding="10dp"/>
 		        </LinearLayout>
@@ -152,7 +152,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="违章城市："/>
@@ -160,7 +160,7 @@
 			            android:id="@+id/tv_city"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/main"
+					    android:textSize="@dimen/content"
 					    android:textColor="@color/navy"
 					    android:padding="10dp" />
 			    </LinearLayout>
@@ -175,7 +175,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp" 
 					    android:textColor="@color/navy"  
 			            android:text="车架号：    "/>
@@ -183,7 +183,7 @@
 			            android:id="@+id/et_frame_no"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/main"
+					    android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 					    android:background="@null"
@@ -200,7 +200,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="发送机号："/>
@@ -208,7 +208,7 @@
 			            android:id="@+id/et_engine_no"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/main"
+					    android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 					    android:background="@null"
@@ -225,7 +225,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="登记证号："/>
@@ -233,7 +233,7 @@
 			            android:id="@+id/et_regist_no"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/main"
+					    android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 					    android:background="@null"
@@ -253,7 +253,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="保险公司："/>
@@ -261,7 +261,7 @@
 			            android:id="@+id/tv_insurance_company"
 			            android:layout_width="fill_parent"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="太平洋保险"/>
@@ -277,7 +277,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="联系电话："/>
@@ -285,7 +285,7 @@
 			            android:id="@+id/et_insurance_tel"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/main"
+					    android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 					    android:background="@null"
@@ -302,7 +302,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="保险时间："/>
@@ -310,7 +310,7 @@
 			            android:id="@+id/tv_insurance_date"
 			            android:layout_width="fill_parent"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"/>
 			    </LinearLayout>
@@ -325,7 +325,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp" 
 					    android:textColor="@color/navy"  
 			            android:text="保单号：    "/>
@@ -333,7 +333,7 @@
 			            android:id="@+id/et_insurance_no"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/main"
+					    android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 					    android:background="@null"/>
@@ -352,7 +352,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="购车4S店："/>
@@ -360,7 +360,7 @@
 			            android:id="@+id/tv_maintain_company"
 			            android:layout_width="fill_parent"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="太平洋保险"/>
@@ -376,7 +376,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="联系电话："/>
@@ -384,7 +384,7 @@
 			            android:id="@+id/et_maintain_tel"
 					    android:layout_width="fill_parent"
 					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/main"
+					    android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 					    android:background="@null"/>
@@ -400,7 +400,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="购车时间："/>
@@ -408,7 +408,7 @@
 			            android:id="@+id/tv_buy_date"
 			            android:layout_width="fill_parent"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"   
 			            android:textColor="@color/navy"/>
 			    </LinearLayout>
@@ -423,7 +423,7 @@
 			        <TextView 
 			            android:layout_width="wrap_content"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 			            android:text="年检时间："/>
@@ -431,7 +431,7 @@
 			            android:id="@+id/tv_year_check"
 			            android:layout_width="fill_parent"
 			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/main"
+			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 			            android:textColor="@color/navy"/>
 			    </LinearLayout>

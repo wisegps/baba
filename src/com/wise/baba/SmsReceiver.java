@@ -18,11 +18,12 @@ public class SmsReceiver extends BroadcastReceiver{
 	public void onReceive(Context context, Intent intent) {
 		    
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
-        	//System.out.println("JPush用户注册成功");
+        	System.out.println("JPush用户注册成功");
         } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
-        	//System.out.println("接受到推送下来的自定义消息");
+        	System.out.println("接受到推送下来的自定义消息");
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
-        	//TODO 确认消息发送，上传到自己服务器        	
+        	//TODO 确认消息发送，上传到自己服务器       
+        	System.out.println("确认消息发送，上传到自己服务器 ");
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
         	init(context,intent.getExtras());
         } else {

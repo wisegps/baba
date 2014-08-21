@@ -17,7 +17,7 @@ public class Variable{
     /**cust_id**/
     public static String cust_id;
     /**用户名称**/
-    public static String cust_name;
+    public static String cust_name = "";
     /**通知数目**/
     public static int noti_count = 0;
     /**违章数目**/
@@ -35,10 +35,6 @@ public class Variable{
      * 当前经度
      */
     public static double Lat = 0;
-    /**
-     * 定位时间
-     */
-    public static String gpsTime = "";
     /**
      * 当前未读
      */

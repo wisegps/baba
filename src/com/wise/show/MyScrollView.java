@@ -1,19 +1,16 @@
 package com.wise.show;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import pubclas.Constant;
+import com.aliyun.android.oss.model.OSSObject;
+import com.aliyun.android.oss.task.GetObjectTask;
 import com.wise.baba.R;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -21,14 +18,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,12 +39,12 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 	/**
 	 * 每页要加载的图片数量
 	 */
-	public static final int PAGE_SIZE = 15;
+	public static final int PAGE_SIZE = 20;
 
 	/**
 	 * 记录当前已加载到第几页
 	 */
-	private int page;
+	private int page = 0;
 
 	/**
 	 * 每一列的宽度
@@ -64,11 +60,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 	 * 当前第二列的高度
 	 */
 	private int secondColumnHeight;
-
-	/**
-	 * 当前第三列的高度
-	 */
-	private int thirdColumnHeight;
 
 	/**
 	 * 是否已加载过一次layout，这里onLayout中的初始化只需加载一次
@@ -89,11 +80,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 	 * 第二列的布局
 	 */
 	private LinearLayout secondColumn;
-
-	/**
-	 * 第三列的布局
-	 */
-	private LinearLayout thirdColumn;
 
 	/**
 	 * 记录所有正在下载或等待下载的任务。
@@ -118,8 +104,8 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 	/**
 	 * 记录所有界面上的图片，用以可以随时控制对图片的释放。
 	 */
-	private List<ImageView> imageViewList = new ArrayList<ImageView>();
-
+	//private List<ImageView> imageViewList = new ArrayList<ImageView>();
+	int textHeight = 45;
 	/**
 	 * 在Handler中进行图片可见性检查的判断，以及加载更多图片的操作。
 	 */
@@ -159,6 +145,8 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		taskCollection = new HashSet<LoadImageTask>();
 		setOnTouchListener(this);
 		mContext = context;
+		textHeight = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 36, getResources().getDisplayMetrics());
+		System.out.println("textHeight = " + textHeight);
 	}
 
 	/**
@@ -172,13 +160,13 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 			scrollLayout = getChildAt(0);
 			firstColumn = (LinearLayout) findViewById(R.id.first_column);
 			secondColumn = (LinearLayout) findViewById(R.id.second_column);
-			thirdColumn = (LinearLayout) findViewById(R.id.third_column);
 			columnWidth = firstColumn.getWidth();
 			loadOnce = true;
-			loadMoreImages();
+			System.out.println("columnWidth = " + columnWidth);
+			//loadMoreImages();
 		}
 	}
-
+	float lastY = 0;
 	/**
 	 * 监听用户的触屏事件，如果用户手指离开屏幕则开始进行滚动检测。
 	 */
@@ -188,58 +176,110 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 			Message message = new Message();
 			message.obj = this;
 			handler.sendMessageDelayed(message, 5);
+		}else if(event.getAction() == MotionEvent.ACTION_MOVE){
+			float nowY = event.getY();
+			if(nowY > lastY){
+				for(int i = 0 ; i < pViews.size() ; i++){
+					ImageView imageView = pViews.get(i).getIv_pic();
+					int border_bottom = (Integer) imageView.getTag(R.string.border_bottom);
+					int spanY = border_bottom - getScrollY();
+					if(spanY >= 0){
+						int position = (Integer) imageView.getTag(R.string.image_position);
+						if(onFlowClickListener != null){
+							onFlowClickListener.OnScrollPosition(imageDatas.get(position).getCreate_time());
+						}
+						break;
+					}
+				}
+			}else{
+				for(int i = 0 ; i < pViews.size() ; i++){
+					ImageView imageView = pViews.get(i).getIv_pic();
+					int border_bottom = (Integer) imageView.getTag(R.string.border_bottom);
+					int spanY = border_bottom - getScrollY();
+					if(spanY >= 0){
+						int position = (Integer) imageView.getTag(R.string.image_position);
+						if(onFlowClickListener != null){
+							onFlowClickListener.OnScrollPosition(imageDatas.get(position).getCreate_time());
+						}
+						break;
+					}
+				}
+			}
+			lastY = nowY;
 		}
 		return false;
+	}
+	List<ImageData> imageDatas = new ArrayList<ImageData>();
+	/**设置图片地址**/
+	public void setImages(List<ImageData> imageDatas){
+		this.imageDatas.addAll(imageDatas);
+		loadMoreImages();
+	}
+	/**添加刷新的图片列表**/
+	public void refreshImages(List<ImageData> imageDatas){
+		this.imageDatas.addAll(0, imageDatas);
+		//重新布局
+		firstColumn.removeAllViews();
+		secondColumn.removeAllViews();
+		page = 0;
+		loadMoreImages();
 	}
 
 	/**
 	 * 开始加载下一页的图片，每张图片都会开启一个异步线程去下载。
 	 */
-	public void loadMoreImages() {
+	public void loadMoreImages() {//加载图片
+		if (isInEditMode()) { return; }
 		if (hasSDCard()) {
 			int startIndex = page * PAGE_SIZE;
 			int endIndex = page * PAGE_SIZE + PAGE_SIZE;
-			if (startIndex < Images.imageUrls.length) {
-				Toast.makeText(getContext(), "正在加载...", Toast.LENGTH_SHORT)
-						.show();
-				if (endIndex > Images.imageUrls.length) {
-					endIndex = Images.imageUrls.length;
+			System.out.println("startIndex = " + startIndex + " , endIndex = " + endIndex + " , imageDatas.size() = " + imageDatas.size());
+			if (startIndex < imageDatas.size()) {
+				if (endIndex > imageDatas.size()) {
+					endIndex = imageDatas.size();
 				}
 				for (int i = startIndex; i < endIndex; i++) {
 					LoadImageTask task = new LoadImageTask();
 					taskCollection.add(task);
-					task.execute(Images.imageUrls[i]);
+					task.execute(String.valueOf(i));
 				}
 				page++;
 			} else {
-				Toast.makeText(getContext(), "已没有更多图片", Toast.LENGTH_SHORT)
-						.show();
+				if(onFlowClickListener != null){
+					onFlowClickListener.OnLoad();
+				}
 			}
 		} else {
 			Toast.makeText(getContext(), "未发现SD卡", Toast.LENGTH_SHORT).show();
 		}
 	}
+		
 
 	/**
 	 * 遍历imageViewList中的每张图片，对图片的可见性进行检查，如果图片已经离开屏幕可见范围，则将图片替换成一张空图。
 	 */
 	public void checkVisibility() {
-		for (int i = 0; i < imageViewList.size(); i++) {
-			ImageView imageView = imageViewList.get(i);
+		if(onFlowClickListener != null){
+			onFlowClickListener.OnScrollFinish();
+		}
+		for (int i = 0; i < pViews.size(); i++) {
+			ImageView imageView = pViews.get(i).getIv_pic();
 			int borderTop = (Integer) imageView.getTag(R.string.border_top);
 			int borderBottom = (Integer) imageView.getTag(R.string.border_bottom);
-			if (borderBottom > getScrollY() && borderTop < getScrollY() + scrollViewHeight) {
-				//TODO SHUAXIN
+			if (borderBottom > (getScrollY() - scrollViewHeight) && borderTop < getScrollY() + scrollViewHeight * 2) {
+				// TODO SHUAXIN
 				String imageUrl = (String) imageView.getTag(R.string.image_url);
+				String position = String.valueOf(imageView.getTag(R.string.image_position));
 				Bitmap bitmap = imageLoader.getBitmapFromMemoryCache(imageUrl);
 				if (bitmap != null) {
 					imageView.setImageBitmap(bitmap);
 				} else {
 					LoadImageTask task = new LoadImageTask(imageView);
-					task.execute(imageUrl);
+					task.execute(position);
 				}
 			} else {
-				imageView.setImageResource(R.drawable.empty_photo);
+				imageView.setImageBitmap(null);
+				//imageView.setImageResource(R.drawable.empty_photo);
 			}
 		}
 	}
@@ -253,28 +293,38 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		return Environment.MEDIA_MOUNTED.equals(Environment
 				.getExternalStorageState());
 	}
-	OnClickListener onClickListener = new OnClickListener() {
-		
+	//点击事件
+	OnClickListener onClickListener = new OnClickListener() {		
 		@Override
 		public void onClick(View v) {
+			System.out.println("onClickListener");
 			switch (v.getId()) {
-			case R.id.iv_pic:
-				String imageUrl = (String) v.getTag(R.string.image_url);
-				Bitmap bitmap = imageLoader.getBitmapFromMemoryCache(imageUrl);
-				if (bitmap != null) {
-					Intent intent = new Intent(mContext, PicActivity.class);
-					intent.putExtra("imageUrl", imageUrl);
-					mContext.startActivity(intent);
+			case R.id.iv_pic://点击事件
+				System.out.println("iv_pic");
+				if(onFlowClickListener != null){
+					int position = (Integer) v.getTag(R.string.image_position);
+					onFlowClickListener.OnClick(position);
 				} 
 				break;
 
 			case R.id.iv_praise:
-				String imageUrl1 = (String) v.getTag(R.string.image_url);
-				Toast.makeText(mContext, "你点击了：" + imageUrl1, Toast.LENGTH_SHORT).show();
+				System.out.println("iv_praise");
+				if(onFlowClickListener != null){
+					int position = (Integer) v.getTag(R.string.image_position);
+					onFlowClickListener.OnPraise(position);
+				}
 				break;
 			}
 		}
 	};
+	/**设置点赞状态**/
+	public void setPraise(int position){
+		pViews.get(position).getIv_praise().setImageResource(R.drawable.icon_xiu_zan_sel);
+	}
+	/**设置点赞数目**/
+	public void setPraiseCount(int position,int count){
+		pViews.get(position).getTv_praise().setText(String.valueOf(count));
+	}
 
 	/**
 	 * 异步下载图片的任务。
@@ -287,6 +337,7 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		 * 图片的URL地址
 		 */
 		private String mImageUrl;
+		int position;
 
 		/**
 		 * 可重复使用的ImageView
@@ -307,7 +358,8 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 
 		@Override
 		protected Bitmap doInBackground(String... params) {
-			mImageUrl = params[0];
+			position = Integer.valueOf(params[0]); //TODO 参数传错
+			mImageUrl = imageDatas.get(position).getSmall_pic_url();
 			Bitmap imageBitmap = imageLoader
 					.getBitmapFromMemoryCache(mImageUrl);
 			if (imageBitmap == null) {
@@ -348,7 +400,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 			}
 			return null;
 		}
-
 		/**
 		 * 向ImageView中添加一张图片
 		 * 
@@ -360,27 +411,64 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		 *            图片的高度
 		 */
 		private void addImage(Bitmap bitmap, int imageWidth, int imageHeight) {
-			LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(imageWidth, LayoutParams.WRAP_CONTENT);
-			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(imageWidth, imageHeight);  
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageWidth, imageHeight);
 			if (mImageView != null) {
 				mImageView.setImageBitmap(bitmap);
 			} else {
-				View view = LayoutInflater.from(getContext()).inflate( R.layout.item_pic, null);
+				View view = LayoutInflater.from(getContext()).inflate( R.layout.item_photo, null);
 				ImageView iv_praise = (ImageView)view.findViewById(R.id.iv_praise);
-				iv_praise.setPadding(5, 5, 5, 5);
 				iv_praise.setOnClickListener(onClickListener);
 				iv_praise.setTag(R.string.image_url, mImageUrl);
-				RelativeLayout rl_pic = (RelativeLayout)view.findViewById(R.id.rl_pic);
-				rl_pic.setLayoutParams(params1);
+				iv_praise.setTag(R.string.image_position, position);
+				
+				if(imageDatas.get(position).isCust_praise()){
+					iv_praise.setImageResource(R.drawable.icon_xiu_zan_sel);
+				}else{
+					iv_praise.setImageResource(R.drawable.icon_xiu_zan_nor);
+				}
+
+				TextView tv_series = (TextView)view.findViewById(R.id.tv_series);
+				TextView tv_praise = (TextView)view.findViewById(R.id.tv_praise);
+				ImageData imageData = getSeriesFromUrl(mImageUrl);
+				if(imageData != null){
+					tv_series.setText(imageData.getCar_series());
+					tv_praise.setText(String.valueOf(imageData.getPraise_count()));
+				}else{
+					tv_series.setText("");
+					tv_praise.setText("");
+				}
 				
 				ImageView iv_pic = (ImageView)view.findViewById(R.id.iv_pic);
 				iv_pic.setLayoutParams(params);
-				iv_pic.setPadding(5, 5, 5, 5);
 				iv_pic.setImageBitmap(bitmap);
 				iv_pic.setTag(R.string.image_url, mImageUrl);
-				imageViewList.add(iv_pic);
+				iv_pic.setTag(R.string.image_position, position);
+				iv_pic.setOnClickListener(onClickListener);
 				
-				findColumnToAdd(iv_pic, imageHeight + 50).addView(view);
+				photoView pView = new photoView();
+				pView.setIv_pic(iv_pic);
+				pView.setIv_praise(iv_praise);
+				pView.setTv_praise(tv_praise);
+				pViews.add(pView);
+				
+				findColumnToAdd(iv_pic, imageHeight + textHeight).addView(view);
+				
+//				View view = LayoutInflater.from(getContext()).inflate( R.layout.item_pic, null);
+//				ImageView iv_praise = (ImageView)view.findViewById(R.id.iv_praise);
+//				iv_praise.setPadding(5, 5, 5, 5);
+//				iv_praise.setOnClickListener(onClickListener);
+//				iv_praise.setTag(R.string.image_url, mImageUrl);
+//				RelativeLayout rl_pic = (RelativeLayout)view.findViewById(R.id.rl_pic);
+//				rl_pic.setLayoutParams(params1);
+//				
+//				ImageView iv_pic = (ImageView)view.findViewById(R.id.iv_pic);
+//				iv_pic.setLayoutParams(params);
+//				iv_pic.setPadding(5, 5, 5, 5);
+//				iv_pic.setImageBitmap(bitmap);
+//				iv_pic.setTag(R.string.image_url, mImageUrl);
+//				imageViewList.add(iv_pic);
+//				
+//				findColumnToAdd(iv_pic, imageHeight + 50).addView(view);
 				
 				//ImageView imageView = new ImageView(getContext());
 				//imageView.setLayoutParams(params);
@@ -392,8 +480,17 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				//imageView.setId(1);
 				//findColumnToAdd(imageView, imageHeight).addView(imageView);
 				//imageViewList.add(imageView);
-				//TODO SHUAXIN
+				//SHUAXIN
 			}
+		}
+		
+		private ImageData getSeriesFromUrl(String mImageUrl){
+			for(ImageData imageData : imageDatas){
+				if(imageData.getSmall_pic_url().equals(mImageUrl)){
+					return imageData;
+				}
+			}
+			return null;
 		}
 
 		/**
@@ -405,27 +502,15 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		 */
 		private LinearLayout findColumnToAdd(ImageView imageView,int imageHeight) {
 			if (firstColumnHeight <= secondColumnHeight) {
-				if (firstColumnHeight <= thirdColumnHeight) {
-					imageView.setTag(R.string.border_top, firstColumnHeight);
-					firstColumnHeight += imageHeight;
-					imageView.setTag(R.string.border_bottom, firstColumnHeight);
-					return firstColumn;
-				}
-				imageView.setTag(R.string.border_top, thirdColumnHeight);
-				thirdColumnHeight += imageHeight;
-				imageView.setTag(R.string.border_bottom, thirdColumnHeight);
-				return thirdColumn;
-			} else {
-				if (secondColumnHeight <= thirdColumnHeight) {
-					imageView.setTag(R.string.border_top, secondColumnHeight);
-					secondColumnHeight += imageHeight;
-					imageView.setTag(R.string.border_bottom, secondColumnHeight);
-					return secondColumn;
-				}
-				imageView.setTag(R.string.border_top, thirdColumnHeight);
-				thirdColumnHeight += imageHeight;
-				imageView.setTag(R.string.border_bottom, thirdColumnHeight);
-				return thirdColumn;
+				imageView.setTag(R.string.border_top, firstColumnHeight);
+				firstColumnHeight += imageHeight;
+				imageView.setTag(R.string.border_bottom, firstColumnHeight);
+				return firstColumn;
+			}else {
+				imageView.setTag(R.string.border_top, secondColumnHeight);
+				secondColumnHeight += imageHeight;
+				imageView.setTag(R.string.border_bottom, secondColumnHeight);
+				return secondColumn;
 			}
 		}
 
@@ -442,45 +527,20 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 			} else {
 				Log.d("TAG", "has no sdcard");
 			}
-			HttpURLConnection con = null;
-			FileOutputStream fos = null;
-			BufferedOutputStream bos = null;
-			BufferedInputStream bis = null;
+			int lastSlashIndex = imageUrl.lastIndexOf("/");
+			String imageName = imageUrl.substring(lastSlashIndex + 1);
+			GetObjectTask task = new GetObjectTask(Constant.oss_path, imageName,Constant.oss_accessId, Constant.oss_accessKey);
+			OSSObject obj = task.getResult();
 			File imageFile = null;
 			try {
-				URL url = new URL(imageUrl);
-				con = (HttpURLConnection) url.openConnection();
-				con.setConnectTimeout(5 * 1000);
-				con.setReadTimeout(15 * 1000);
-				con.setDoInput(true);
-				con.setDoOutput(true);
-				bis = new BufferedInputStream(con.getInputStream());
 				imageFile = new File(getImagePath(imageUrl));
-				fos = new FileOutputStream(imageFile);
-				bos = new BufferedOutputStream(fos);
-				byte[] b = new byte[1024];
-				int length;
-				while ((length = bis.read(b)) != -1) {
-					bos.write(b, 0, length);
-					bos.flush();
-				}
+	            FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
+	            fileOutputStream.write(obj.getData());
+	            fileOutputStream.close();	            
 			} catch (Exception e) {
 				e.printStackTrace();
-			} finally {
-				try {
-					if (bis != null) {
-						bis.close();
-					}
-					if (bos != null) {
-						bos.close();
-					}
-					if (con != null) {
-						con.disconnect();
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 			}
+
 			if (imageFile != null) {
 				Bitmap bitmap = ImageLoader.decodeSampledBitmapFromResource(
 						imageFile.getPath(), columnWidth);
@@ -500,8 +560,7 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		private String getImagePath(String imageUrl) {
 			int lastSlashIndex = imageUrl.lastIndexOf("/");
 			String imageName = imageUrl.substring(lastSlashIndex + 1);
-			String imageDir = Environment.getExternalStorageDirectory()
-					.getPath() + "/PhotoWallFalls/";
+			String imageDir = Constant.VehiclePath;
 			File file = new File(imageDir);
 			if (!file.exists()) {
 				file.mkdirs();
@@ -510,5 +569,40 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 			return imagePath;
 		}
 	}
-
+	List<photoView> pViews = new ArrayList<photoView>();
+	class photoView{
+		ImageView iv_pic;
+		ImageView iv_praise;
+		TextView tv_praise;
+		public ImageView getIv_pic() {
+			return iv_pic;
+		}
+		public void setIv_pic(ImageView iv_pic) {
+			this.iv_pic = iv_pic;
+		}
+		public ImageView getIv_praise() {
+			return iv_praise;
+		}
+		public void setIv_praise(ImageView iv_praise) {
+			this.iv_praise = iv_praise;
+		}
+		public TextView getTv_praise() {
+			return tv_praise;
+		}
+		public void setTv_praise(TextView tv_praise) {
+			this.tv_praise = tv_praise;
+		}		
+	};
+	
+	OnFlowClickListener onFlowClickListener;
+	public void setOnFlowClickListener(OnFlowClickListener onFlowClickListener){
+		this.onFlowClickListener = onFlowClickListener;
+	}
+	public interface OnFlowClickListener{
+		public void OnPraise(int position);
+		public void OnClick(int position);
+		public void OnLoad();
+		public void OnScrollPosition(String Time);
+		public void OnScrollFinish();
+	}
 }

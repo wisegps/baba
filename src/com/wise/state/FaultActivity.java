@@ -24,6 +24,8 @@ import com.wise.car.DevicesAddActivity;
 import com.wise.notice.NoticeFragment;
 import com.wise.notice.NoticeFragment.BtnListener;
 import com.wise.setting.LoginActivity;
+import com.wise.show.ShowActivity;
+
 import customView.AlwaysMarqueeTextView;
 import customView.HScrollLayout;
 import customView.NoticeScrollTextView;
@@ -47,6 +49,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -109,7 +112,8 @@ public class FaultActivity extends FragmentActivity {
 			intent.putExtras(getIntent().getExtras());
 			startActivity(intent);
 		}
-		
+		Button bt_show = (Button)findViewById(R.id.bt_show);
+		bt_show.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		tv_city = (TextView) findViewById(R.id.tv_city);
@@ -188,6 +192,9 @@ public class FaultActivity extends FragmentActivity {
 				break;
 			case R.id.iv_menu:
 				startActivity(new Intent(FaultActivity.this, MoreActivity.class));
+				break;
+			case R.id.bt_show:
+				startActivity(new Intent(FaultActivity.this, ShowActivity.class));
 				break;
 			case R.id.tasks_view:
 				GetSystem.myLog(TAG, "tasks_view : Variable.carDatas.size() = " + Variable.carDatas.size());
@@ -439,27 +446,34 @@ public class FaultActivity extends FragmentActivity {
 			carView.setTv_title(tv_title);
 			carView.setTv_xx(tv_xx);
 			carViews.add(carView);
-
+			
 			tv_name.setText(Variable.carDatas.get(i).getCar_series() + "("
 					+ Variable.carDatas.get(i).getNick_name() + ")");
-			String result = preferences.getString(Constant.sp_health_score
-					+ Variable.carDatas.get(i).getObj_id(), "");
-			if (result.equals("")) {// 未体检过
+			String Device_id = Variable.carDatas.get(i).getDevice_id();
+			if (Device_id == null || Device_id.equals("")) {
 				carView.getmTasksView().setProgress(100);
 				tv_score.setText("0");
-				tv_title.setText("未体检过");
-			} else {
-				try {
-					JSONObject jsonObject = new JSONObject(result);
-					//健康指数
-					int health_score = jsonObject.getInt("health_score");
-					carView.getmTasksView().setProgress(health_score);
-					tv_score.setText(String.valueOf(health_score));
-					tv_title.setText("上次体检");
-				} catch (Exception e) {
-					e.printStackTrace();
+				tv_title.setText("未绑定终端");
+			}else{
+				String result = preferences.getString(Constant.sp_health_score
+						+ Variable.carDatas.get(i).getObj_id(), "");
+				if (result.equals("")) {// 未体检过
+					carView.getmTasksView().setProgress(100);
+					tv_score.setText("0");
+					tv_title.setText("未体检过");
+				} else {
+					try {
+						JSONObject jsonObject = new JSONObject(result);
+						//健康指数
+						int health_score = jsonObject.getInt("health_score");
+						carView.getmTasksView().setProgress(health_score);
+						tv_score.setText(String.valueOf(health_score));
+						tv_title.setText("上次体检");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
-			}
+			}			
 		}
 		hs_car.snapToScreen(index);
 	}

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -63,10 +64,11 @@ public class NetThread {
 			try {
 				GetSystem.myLog(TAG, url);
 				URL myURL = new URL(url);
-				URLConnection httpsConn = (URLConnection) myURL.openConnection();
+				//URLConnection httpsConn = (URLConnection) myURL.openConnection();
+				HttpURLConnection httpsConn = (HttpURLConnection) myURL.openConnection();
 				if (httpsConn != null) {
-					httpsConn.setConnectTimeout(20*1000);
-					httpsConn.setReadTimeout(20*1000);
+					httpsConn.setConnectTimeout(5*1000);
+					httpsConn.setReadTimeout(5*1000);
 			        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					InputStream inputStream = httpsConn.getInputStream();
 					byte[] buffer = new byte[1024];

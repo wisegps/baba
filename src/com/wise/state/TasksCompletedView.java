@@ -83,19 +83,20 @@ public class TasksCompletedView extends View {
 
 		mXCenter = getWidth() / 2;
 		mYCenter = getHeight() / 2;
-		canvas.drawCircle(mXCenter, mYCenter, mRingRadius, mRingBgPaint);
 		
-		if (mProgress > 0 ) {
+		if (mProgress >= 0 ) {
 			RectF oval = new RectF();
 			oval.left = (mXCenter - mRingRadius);
 			oval.top = (mYCenter - mRingRadius);
 			oval.right = mRingRadius * 2 + (mXCenter - mRingRadius);
 			oval.bottom = mRingRadius * 2 + (mYCenter - mRingRadius);
 			if(!isGreen){
+				System.out.println(""+indexOf(mProgress));
 				int[] color = colors[indexOf(mProgress)];
-				//mRingPaint.setColor(Color.rgb(color[0], color[1], color[2]));
-				mRingPaint.setColor(Color.argb(76, color[0], color[1], color[2]));
+				mRingBgPaint.setColor(Color.argb(76,color[0], color[1], color[2]));
+				mRingPaint.setColor(Color.rgb(color[0], color[1], color[2]));
 			}
+			canvas.drawCircle(mXCenter, mYCenter, mRingRadius, mRingBgPaint);
 			canvas.drawArc(oval, -90, ((float)mProgress / mTotalProgress) * 360, false, mRingPaint);
 		}
 	}	
@@ -112,10 +113,47 @@ public class TasksCompletedView extends View {
 	}
 	
 	private int indexOf(int progress){
-		return (mTotalProgress - progress)/2;
+		return (mTotalProgress - progress)/3;
 	}
 	
+	
 	int[][] colors = {
+			{83,181,220},
+			{87,185,201},
+			{91,189,185},
+			{99,192,163},
+			{106,195,149},
+			{111,197,134},
+			{116,199,117},
+			{122,203,100},
+			{126,206,85},
+			{133,208,66},
+			{142,205,65},
+			{156,197,69},
+			{171,188,73},
+			{185,182,79},			
+			{206,170,82},
+			{221,165,86},			
+			{235,156,90},
+			{241,152,92},
+			{245,149,91},
+			{245,145,93},			
+			{245,143,94},
+			{247,140,94},
+			{247,138,97},
+			{248,136,98},			
+			{247,133,96},
+			{249,130,96},
+			{248,127,96},
+			{250,126,98},			
+			{252,123,101},
+			{251,120,102},
+			{251,118,101},
+			{252,116,102},
+			{254,106,104},
+			{255,105,105}
+	};
+	int[][] colors1 = {
 			{83,181,220},
 			{85,183,218},
 			{87,185,201},
@@ -165,6 +203,7 @@ public class TasksCompletedView extends View {
 			{251,120,102},
 			{251,118,101},
 			{252,116,102},
-			{254,106,104}
+			{254,106,104},
+			{255,105,105}
 	};
 }

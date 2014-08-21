@@ -30,18 +30,20 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
- * 车务提醒
+ * 车务提醒列表
  * @author honesty
  */
 public class RemindListActivity extends Activity {
     private static final String TAG = "RemindActivity";
     private static final int get_remind = 1;
     
-    TextView tv_name,tv_date;
+    TextView tv_name,tv_date,tv_date_last,tv_date_next;
     LinearLayout ll_frist;
+    RelativeLayout rl_Note;
     List<RemindData> remindDatas = new ArrayList<RemindData>();
     RemindAdapter remindAdapter;
     
@@ -50,8 +52,11 @@ public class RemindListActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_car_remind);
+        rl_Note = (RelativeLayout)findViewById(R.id.rl_Note);
         ll_frist = (LinearLayout)findViewById(R.id.ll_frist);
         ll_frist.setOnClickListener(onClickListener);
+        tv_date_last = (TextView)findViewById(R.id.tv_date_last);
+        tv_date_next = (TextView)findViewById(R.id.tv_date_next);
         tv_name = (TextView)findViewById(R.id.tv_name);
 		tv_date = (TextView)findViewById(R.id.tv_date);
         ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
@@ -78,6 +83,7 @@ public class RemindListActivity extends Activity {
             	jsonRemind(msg.obj.toString());
             	remindAdapter.notifyDataSetChanged();
             	if(remindDatas.size() > 0){
+            		rl_Note.setVisibility(View.GONE);
             		RemindData remindData = remindDatas.get(0);
             		ll_frist.setVisibility(View.VISIBLE);
             		String title = "距离" + getCarName(remindData.getObj_id()) + Constant.items_note_type[remindData.getRemind_type()];
@@ -86,10 +92,14 @@ public class RemindListActivity extends Activity {
             		if(count_time > 0){
             			tv_date.setText(GetSystem.jsTime(count_time));
             		}else{
-            			tv_date.setText("0");
+            			tv_date.setText("已过期");
+            			tv_date.setTextColor(getResources().getColor(R.color.pink));
+            			tv_date_last.setVisibility(View.GONE);
+            			tv_date_next.setVisibility(View.GONE);
             		}
             	}else{
             		ll_frist.setVisibility(View.GONE);
+            		rl_Note.setVisibility(View.VISIBLE);
             	}
             	break;
             }
@@ -138,7 +148,20 @@ public class RemindListActivity extends Activity {
 				remindData.setContent(jsonObject.getString("content"));
 				remindData.setRepeat_type(jsonObject.getInt("repeat_type"));
 				remindData.setRemind_way(jsonObject.getInt("remind_way"));
-				remindData.setMileage(jsonObject.getInt("mileage"));
+				
+				if(jsonObject.opt("mileage") == null || jsonObject.opt("cur_mileage") == null){
+					remindData.setMileage(0);
+				}else{
+					int mileage = jsonObject.getInt("mileage");
+					int cur_mileage = jsonObject.getInt("cur_mileage");
+					int LeftMileage = mileage - cur_mileage;
+					if(LeftMileage > 0){
+						remindData.setMileage(LeftMileage);
+					}else{
+						remindData.setMileage(0);
+					}
+				}
+				
 				remindData.setObj_id(jsonObject.getInt("obj_id"));
 				remindData.setRemind_type(jsonObject.getInt("remind_type"));
 				remindData.setReminder_id(jsonObject.getString("reminder_id"));

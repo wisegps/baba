@@ -80,8 +80,8 @@ public class BrankAdapter extends BaseAdapter{
 					viewHolder.tvLetter.setVisibility(View.GONE);
 				}
 				viewHolder.tvTitle.setText(this.brankKList.get(position).getVehicleBrank());
-				if(new File(Constant.VehicleLogoPath+this.brankKList.get(position).getVehicleBrank() + ".png").exists()){
-					Bitmap image = BitmapFactory.decodeFile(Constant.VehicleLogoPath+this.brankKList.get(position).getVehicleBrank() + ".png");
+				if(new File(Constant.VehicleLogoPath+this.brankKList.get(position).getBrankId() + ".png").exists()){
+					Bitmap image = BitmapFactory.decodeFile(Constant.VehicleLogoPath+this.brankKList.get(position).getBrankId() + ".png");
 					viewHolder.logo.setImageBitmap(image);
 				}else{
 					viewHolder.logo.setImageResource(R.drawable.body_nothing_icon);

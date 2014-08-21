@@ -148,6 +148,7 @@
             android:layout_weight="1"
             android:textColor="@color/white"
             android:textSize="@dimen/bt"
+            android:padding="@dimen/margins"
             android:background="@drawable/bg_green"
             android:text="绑定终端"/>
     </LinearLayout>
