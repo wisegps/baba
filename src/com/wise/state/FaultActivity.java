@@ -363,7 +363,7 @@ public class FaultActivity extends FragmentActivity {
 						.start();
 				// 获取gps信息
 				String gpsUrl = Constant.BaseUrl + "device/" + device_id
-						+ "/active_gps_data?auth_code=" + Variable.auth_code + "&update_time=2014-08-20%2019:06:43";
+						+ "/active_gps_data?auth_code=" + Variable.auth_code + "&update_time=2014-01-01%2019:06:43";
 				new NetThread.GetDataThread(handler, gpsUrl, get_gps, index).start();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -391,7 +391,7 @@ public class FaultActivity extends FragmentActivity {
 	/** 获取GPS信息 **/
 	private void jsonGps(String str, int index) {
 		try {
-			JSONObject jsonObject = new JSONObject(str);
+			JSONObject jsonObject = new JSONObject(str).getJSONObject("active_gps_data");
 			double lat = jsonObject.getDouble("lat");
 			double lon = jsonObject.getDouble("lon");
 			String gpsTime = jsonObject.getString("gps_time");

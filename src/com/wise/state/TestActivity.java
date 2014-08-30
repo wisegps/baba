@@ -11,7 +11,7 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-import pubclas.BlurImage;
+import pubclas.Blur;
 import pubclas.Constant;
 import pubclas.OssUploadUtil;
 import pubclas.OssUploadUtil.OnUploadProcessListener;
@@ -66,8 +66,8 @@ public class TestActivity extends Activity implements OnUploadProcessListener {
 		if (!filePath.exists()) {
 			filePath.mkdirs();
 		}
-		bitmap = BlurImage.scaleImage(bitmap, 150);
-		bitmap = BlurImage.getSquareBitmap(bitmap);
+		bitmap = Blur.scaleImage(bitmap, 150);
+		bitmap = Blur.getSquareBitmap(bitmap);
 		FileOutputStream b = null;
 		String fileName = Constant.userIconPath + "100.png";
 		try {

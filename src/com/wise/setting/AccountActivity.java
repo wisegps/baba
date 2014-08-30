@@ -13,7 +13,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pubclas.BlurImage;
+import pubclas.Blur;
 import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.UploadUtil;
@@ -332,8 +332,8 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
         if (!filePath.exists()) {
 			filePath.mkdirs();
 		}		
-		bitmap = BlurImage.scaleImage(bitmap, 150);
-		bitmap = BlurImage.getSquareBitmap(bitmap);
+		bitmap = Blur.scaleImage(bitmap, 150);
+		bitmap = Blur.getSquareBitmap(bitmap);
         FileOutputStream b = null;        
         String fileName = Constant.userIconPath + Variable.cust_id + ".png";
         try {

@@ -17,16 +17,20 @@
     <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
+        android:orientation="horizontal"
+	    android:paddingTop="5dp"
+        android:gravity="center">
+        <ImageView 
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/icon_place"/>
         <TextView 
 	        android:id="@+id/tv_adress"
-	        android:paddingTop="5dp"
-	        android:visibility="invisible"
+	        android:visibility="visible"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:gravity="center_horizontal"
-	        android:drawableLeft="@drawable/icon_place"
-	        android:drawablePadding="@dimen/margins"
+	        android:gravity="center"
+	        android:text="andfasdfasdfsadf"
 	        android:singleLine="true"
 	        android:textColor="@color/navy_light"/>
     </LinearLayout>

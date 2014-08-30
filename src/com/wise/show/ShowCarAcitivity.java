@@ -12,7 +12,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pubclas.BlurImage;
+import pubclas.Blur;
 import pubclas.Constant;
 import pubclas.GetLocation;
 import pubclas.GetSystem;
@@ -87,7 +87,7 @@ public class ShowCarAcitivity extends Activity{
 		int heightPixels=metrics.heightPixels;
 		int newWidth = widthPixels > heightPixels ? heightPixels : widthPixels;		
 		String image = getIntent().getStringExtra("image");
-		bitmap = BlurImage.decodeSampledBitmapFromPath(image, newWidth, newWidth);
+		bitmap = Blur.decodeSampledBitmapFromPath(image, newWidth, newWidth);
 		
 		ImageView iv_car = (ImageView)findViewById(R.id.iv_car);
 		iv_car.setImageBitmap(bitmap);
@@ -220,7 +220,7 @@ public class ShowCarAcitivity extends Activity{
 				big_pic = Variable.cust_id + (System.currentTimeMillis() + 1) + ".png";
 				
 				//存大图像
-				bitmap = BlurImage.scaleImage(bitmap, newWidth);
+				bitmap = Blur.scaleImage(bitmap, newWidth);
 								
 				FileOutputStream bigOutputStream = null;        
 		        final String bigFile = Constant.VehiclePath + big_pic;
@@ -239,7 +239,7 @@ public class ShowCarAcitivity extends Activity{
 		        }
 		        
 		        //存小图像
-				bitmap = BlurImage.scaleImage(bitmap, newWidth/3);
+				bitmap = Blur.scaleImage(bitmap, newWidth/3);
 				FileOutputStream smallOutputStream = null;        
 				final String smallFile = Constant.VehiclePath + small_pic;
 				try {
