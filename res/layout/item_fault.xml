@@ -21,8 +21,8 @@
 	    android:paddingTop="5dp"
         android:gravity="center">
         <ImageView 
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:src="@drawable/icon_place"/>
         <TextView 
 	        android:id="@+id/tv_adress"
@@ -30,7 +30,6 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:gravity="center"
-	        android:text="andfasdfasdfsadf"
 	        android:singleLine="true"
 	        android:textColor="@color/navy_light"/>
     </LinearLayout>
