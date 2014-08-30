@@ -4,7 +4,6 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.wise.baba.AppApplication;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -20,7 +19,6 @@ public class GetLocation {
 		mContext = context;
 		mLocationClient = new LocationClient(mContext); // 声明LocationClient类
 		mLocationClient.registerLocationListener(myListener); // 注册监听函数
-		mLocationClient.setAK(AppApplication.strKey);
 		SetOption();
 		mLocationClient.start();
 	}

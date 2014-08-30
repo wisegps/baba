@@ -210,13 +210,23 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		return false;
 	}
 	List<ImageData> imageDatas = new ArrayList<ImageData>();
-	/**设置图片地址**/
-	public void setImages(List<ImageData> imageDatas){
+	/**重置数据**/
+	public void resetImages(List<ImageData> imageDatas){
+		this.imageDatas.clear();
+		this.imageDatas.addAll(imageDatas);
+		//重新布局
+		firstColumn.removeAllViews();
+		secondColumn.removeAllViews();
+		page = 0;
+		loadMoreImages();
+	}
+	/**加载更多**/
+	public void addFootImages(List<ImageData> imageDatas){
 		this.imageDatas.addAll(imageDatas);
 		loadMoreImages();
 	}
-	/**添加刷新的图片列表**/
-	public void refreshImages(List<ImageData> imageDatas){
+	/**加载最新**/
+	public void addHeadImages(List<ImageData> imageDatas){
 		this.imageDatas.addAll(0, imageDatas);
 		//重新布局
 		firstColumn.removeAllViews();
@@ -267,7 +277,7 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 			int borderTop = (Integer) imageView.getTag(R.string.border_top);
 			int borderBottom = (Integer) imageView.getTag(R.string.border_bottom);
 			if (borderBottom > (getScrollY() - scrollViewHeight) && borderTop < getScrollY() + scrollViewHeight * 2) {
-				// TODO SHUAXIN
+				//SHUAXIN
 				String imageUrl = (String) imageView.getTag(R.string.image_url);
 				String position = String.valueOf(imageView.getTag(R.string.image_position));
 				Bitmap bitmap = imageLoader.getBitmapFromMemoryCache(imageUrl);
@@ -358,7 +368,7 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 
 		@Override
 		protected Bitmap doInBackground(String... params) {
-			position = Integer.valueOf(params[0]); //TODO 参数传错
+			position = Integer.valueOf(params[0]);
 			mImageUrl = imageDatas.get(position).getSmall_pic_url();
 			Bitmap imageBitmap = imageLoader
 					.getBitmapFromMemoryCache(mImageUrl);
@@ -416,6 +426,15 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				mImageView.setImageBitmap(bitmap);
 			} else {
 				View view = LayoutInflater.from(getContext()).inflate( R.layout.item_photo, null);
+				//需要先判断放到那一列
+				int column = findMinColumn();
+				if(column == 0){
+					//靠左边的一列
+					view.setPadding(6, 6, 3, 3);
+				}else{
+					//靠右边的一列
+					view.setPadding(3, 6, 6, 3);
+				}
 				ImageView iv_praise = (ImageView)view.findViewById(R.id.iv_praise);
 				iv_praise.setOnClickListener(onClickListener);
 				iv_praise.setTag(R.string.image_url, mImageUrl);
@@ -511,6 +530,14 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				secondColumnHeight += imageHeight;
 				imageView.setTag(R.string.border_bottom, secondColumnHeight);
 				return secondColumn;
+			}
+		}
+		
+		private int findMinColumn(){
+			if (firstColumnHeight <= secondColumnHeight) {
+				return 0;
+			}else{
+				return 1;
 			}
 		}
 

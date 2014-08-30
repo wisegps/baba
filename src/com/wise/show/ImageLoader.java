@@ -2,7 +2,7 @@ package com.wise.show;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.LruCache;
+import android.support.v4.util.LruCache;
 
 /**
  * 对图片进行管理的工具类。
@@ -29,7 +29,7 @@ public class ImageLoader {
 		mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
 			@Override
 			protected int sizeOf(String key, Bitmap bitmap) {
-				return bitmap.getByteCount();
+				return bitmap.getRowBytes() * bitmap.getHeight();
 			}
 		};
 	}

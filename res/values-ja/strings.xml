@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">叭叭</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+	<string name="cancle">取消</string>
+	
+    <!-- 车务提醒 -->
+    <string name="car_remind">车务提醒</string>
+    <string name="update_date">修改时间</string>
+    <string name="deal_adress">处理地点</string>
+    <string name="call_insurance">拨打保险公司电话</string>
+    <string name="call_fours">拨打4S店电话</string>
+    <string name="go_my_car">去我的爱车设置</string>
+    <string name="inspection">车辆年检提醒</string>
+    <string name="inspection_title">车辆年检</string>
+    <string name="inspection_content">(需于%s前年检)</string>
+    <string name="renewal">车辆续保提醒</string>
+    <string name="renewal_content">(需于%s前续保)</string>
+    <string name="maintenance">车辆保养提醒</string>
+    <string name="maintenance_content">(离下次保养还有%skm)</string>
+    <string name="examined">驾照年审提醒</string>
+    <string name="examined_title">驾照年审</string>
+    <string name="examined_content">(需于%s前年审)</string>
+    <string name="replacement">驾照换证提醒</string>
+    <string name="replacement_title">驾照换证</string>
+    <string name="replacement_content">(需于%s前换证)</string>
+    
+    <!-- 车辆违章 -->
+    <string name="total_score">累计扣分: %s分</string>
+    <string name="total_fine">累计罚款: %s元</string>
+    
+    <string name="border_top">Border Top</string>
+    <string name="border_bottom">Border Bottom</string>    
+    <string name="image_url">Image Url</string>
+    
+    <string name="choice_brank">选择品牌</string>
+    <string name="choice_series">选择车型</string>
+    <string name="choice_type">选择车款</string>
+    <string name="dialog_title">数据加载</string>
+    <string name="dialog_message">加载中...</string>
+</resources>

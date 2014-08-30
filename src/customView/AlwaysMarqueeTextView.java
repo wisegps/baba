@@ -17,7 +17,6 @@ public class AlwaysMarqueeTextView extends TextView {
 		super(context, attrs, defStyle);
 	}
 	@Override
-	@ExportedProperty(category = "focus")
 	public boolean isFocused() {
 		return true;
 	}

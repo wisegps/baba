@@ -5,7 +5,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:background="@color/gray_bg">
-    <customView.SlidingMenuView
+    <customView.ParentSlide
         android:id="@+id/smv_content"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
@@ -63,6 +63,7 @@
 		            android:id="@+id/bt_ask"
 		            android:layout_width="fill_parent"
 		            android:layout_height="wrap_content"
+		            android:padding="@dimen/margins"
 		            android:layout_weight="1"
 		            android:textColor="@color/white"
 		            android:textSize="@dimen/bt"
@@ -72,6 +73,7 @@
 		            android:id="@+id/bt_show"
 		            android:layout_width="fill_parent"
 		            android:layout_height="wrap_content"
+		            android:padding="@dimen/margins"
 		            android:layout_weight="1"
 		            android:textColor="@color/white"
 		            android:textSize="@dimen/bt"
@@ -224,5 +226,5 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical"></LinearLayout>
-    </customView.SlidingMenuView>        	
+    </customView.ParentSlide>        	
 </LinearLayout>

@@ -28,7 +28,7 @@ import customView.AlwaysMarqueeTextView;
 import customView.HScrollLayout;
 import customView.NoticeScrollTextView;
 import customView.OnViewChangeListener;
-import customView.SlidingMenuView;
+import customView.ParentSlide;
 import data.CarData;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -82,7 +82,7 @@ public class FaultTestActivity extends FragmentActivity {
 	TextView tv_city, tv_weather_time, tv_weather, tv_advice, tv_joy, tv_happy_time;
 	int index = 0;
 	private FragmentManager fragmentManager;
-	SlidingMenuView smv_content;
+	ParentSlide smv_content;
 	NoticeScrollTextView nstv_message;
 	HScrollLayout hs_car;
 	MyBroadCastReceiver myBroadCastReceiver;
@@ -122,7 +122,7 @@ public class FaultTestActivity extends FragmentActivity {
 		ImageView iv_menu = (ImageView) findViewById(R.id.iv_menu);
 		iv_menu.setOnClickListener(onClickListener);
 
-		smv_content = (SlidingMenuView) findViewById(R.id.smv_content);
+		smv_content = (ParentSlide) findViewById(R.id.smv_content);
 		nstv_message = (NoticeScrollTextView) findViewById(R.id.nstv_message);
 		hs_car = (HScrollLayout) findViewById(R.id.hs_car);
 		fragmentManager = getSupportFragmentManager();

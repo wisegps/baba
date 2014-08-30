@@ -39,7 +39,16 @@ public class DyActivity extends Activity{
 		TextView tv_dpdy_range = (TextView)findViewById(R.id.tv_dpdy_range);
 		tv_dpdy_range.setText(dpdy_range);
 		TextView tv_lt_dpdy = (TextView)findViewById(R.id.tv_lt_dpdy);
-		tv_lt_dpdy.setText(lt_dpdy);
+		//判断数据是否正常
+		if(lt_dpdy.equals("null")){
+			tv_lt_dpdy.setText("未检测数据");
+		}else{
+			try {
+				tv_lt_dpdy.setText(String.format("%.2f",Double.valueOf(lt_dpdy)));
+			} catch (Exception e) {
+				tv_lt_dpdy.setText("未检测数据");
+			}
+		}
 		TextView tv_if_dpdy_err = (TextView)findViewById(R.id.tv_if_dpdy_err);
 		if(if_dpdy_err){
 			tv_if_dpdy_err.setText("状态良好");
@@ -48,8 +57,18 @@ public class DyActivity extends Activity{
 			tv_if_dpdy_err.setText("状态异常");
 			tv_if_dpdy_err.setTextColor(getResources().getColor(R.color.yellow));
 		}
-		TextView tv_dpdy = (TextView)findViewById(R.id.tv_dpdy);
-		tv_dpdy.setText(dpdy);
+		TextView tv_dpdy = (TextView)findViewById(R.id.tv_dpdy);		
+		//判断数据是否正常
+		if(dpdy.equals("null")){
+			tv_dpdy.setText("未检测数据");
+		}else{
+			try {
+				tv_dpdy.setText(String.format("%.2f",Double.valueOf(dpdy)));
+			} catch (Exception e) {
+				tv_dpdy.setText("未检测数据");
+			}
+		}
+		
 		TextView tv_if_lt_dpdy_err = (TextView)findViewById(R.id.tv_if_lt_dpdy_err);
 		if(if_lt_dpdy_err){
 			tv_if_lt_dpdy_err.setText("状态良好");

@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +45,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -77,6 +80,7 @@ public class PhotoActivity extends Activity{
 	String logo = "";
 	/**是否修改了点赞状态**/
 	boolean isPraises = false;
+	int textHeight = 45;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +101,12 @@ public class PhotoActivity extends Activity{
 		position = getIntent().getIntExtra("position", 0);
 		
 		lv_comments = (ListView)findViewById(R.id.lv_comments);
-		View v = LayoutInflater.from(this).inflate(R.layout.view_header, null);
+		View v = LayoutInflater.from(this).inflate(R.layout.view_photo_header, null);
 		lv_comments.addHeaderView(v, null, false);
 		photoAdapter = new PhotoAdapter();
 		lv_comments.setAdapter(photoAdapter);
 		lv_comments.setOnScrollListener(onScrollListener);
+		lv_comments.setOnItemLongClickListener(onItemLongClickListener);
 		
 		TextView tv_share = (TextView)v.findViewById(R.id.tv_share);
 		tv_share.setOnClickListener(onClickListener);
@@ -138,6 +143,7 @@ public class PhotoActivity extends Activity{
 		String url = Constant.BaseUrl + "photo/" + imageData.getPhoto_id() + "?auth_code=" + Variable.auth_code;
 		new NetThread.GetDataThread(handler, url, getPhoto).start();
 		getLogo();
+		textHeight = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
 	}
 	OnClickListener onClickListener = new OnClickListener() {		
 		@Override
@@ -147,7 +153,13 @@ public class PhotoActivity extends Activity{
 				updatePhotoInfo();
 				break;
 			case R.id.iv_more:
-				showMenu();
+				if(cust_id == null || cust_id.equals("0")){
+					//没读取到数据
+				}else if(cust_id.equals(Variable.cust_id)){
+					//自己不能给自己私信
+				}else{
+					showMenu();
+				}
 				break;
 			case R.id.tv_send://发表评论
 				sendComments();
@@ -190,6 +202,39 @@ public class PhotoActivity extends Activity{
 				break;
 			}
 		}		
+	};
+	
+	OnItemLongClickListener onItemLongClickListener = new OnItemLongClickListener() {
+		@Override
+		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+				final int arg2, long arg3) {
+			final PhotoData photoData = photoDatas.get(arg2);
+			if(photoData.getCust_id().equals(Variable.cust_id)){
+				
+			}else{
+				LayoutInflater mLayoutInflater = LayoutInflater.from(PhotoActivity.this);
+		        View popunwindwow = mLayoutInflater.inflate(R.layout.item_menu_horizontal,null);
+		        TextView tv_item_letter = (TextView)popunwindwow.findViewById(R.id.tv_item_letter);
+		        tv_item_letter.setOnClickListener(new OnClickListener() {				
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(PhotoActivity.this, LetterActivity.class);
+						intent.putExtra("cust_id", photoData.getCust_id());
+						intent.putExtra("cust_name", photoData.getCust_name());
+						startActivity(intent);
+						mPopupWindow.dismiss();					
+					}
+				});
+		        mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+		        mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
+		        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+		        mPopupWindow.setFocusable(true);
+		        mPopupWindow.setOutsideTouchable(true);
+		        //TODO SHUAXIN
+		        mPopupWindow.showAsDropDown(arg1, widthPixels/2, - (textHeight + arg1.getHeight())/2);
+			}
+			return false;
+		}
 	};
 	
 	OnScrollListener onScrollListener = new OnScrollListener() {		
@@ -351,7 +396,7 @@ public class PhotoActivity extends Activity{
 	
 	private void updatePhotoInfo(){
 		if(isPraises){
-			//TODO 如果修改了点赞的状态，需要传回点赞的数目和自己是否点赞
+			//如果修改了点赞的状态，需要传回点赞的数目和自己是否点赞
 			Intent intent = new Intent();
 			intent.putExtra("position", position);
 			intent.putExtra("Praise_count", imageData.getPraise_count());
@@ -534,11 +579,12 @@ public class PhotoActivity extends Activity{
 						iv_car_logo.setImageBitmap(response);
 					}
 				}, 0, 0, Config.RGB_565, null));
-			}			
+			}
 			tv_adress.setText(jsonObject.getString("city"));
 			cust_name = jsonObject.getString("cust_name");
 			tv_persion.setText(cust_name);
 			tv_content.setText(jsonObject.getString("content"));
+			tv_see.setText(jsonObject.getString("saw_count"));
 			int sex = jsonObject.getInt("sex");
 			if(sex == 0){
 				iv_sex.setImageResource(R.drawable.icon_man);
@@ -618,11 +664,12 @@ public class PhotoActivity extends Activity{
 			e.printStackTrace();
 		}
 	}
+	int widthPixels;
 	/**计算设置图片的宽高**/
 	private void setImageWidthHeight(Bitmap bitmap){
 		DisplayMetrics metrics=new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		int widthPixels=metrics.widthPixels;
+		widthPixels=metrics.widthPixels;
 		
 		double ratio = bitmap.getWidth() / (widthPixels * 1.0);
 		int scaledHeight = (int) (bitmap.getHeight() / ratio);
@@ -633,7 +680,7 @@ public class PhotoActivity extends Activity{
 	PopupWindow mPopupWindow;
 	private void showMenu(){
 		LayoutInflater mLayoutInflater = LayoutInflater.from(PhotoActivity.this);
-        View popunwindwow = mLayoutInflater.inflate(R.layout.item_menu,null);
+        View popunwindwow = mLayoutInflater.inflate(R.layout.item_menu_vertical,null);
         TextView tv_letter = (TextView)popunwindwow.findViewById(R.id.tv_letter);
         tv_letter.setOnClickListener(onClickListener);
         mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,

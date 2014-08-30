@@ -136,6 +136,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/content"
 			            android:textColor="@color/navy"
+			            android:drawableRight="@drawable/btn_right"
 					    android:padding="10dp"/>
 		        </LinearLayout>
 		    </LinearLayout>		    
@@ -162,6 +163,7 @@
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/content"
 					    android:textColor="@color/navy"
+					    android:drawableRight="@drawable/btn_right"
 					    android:padding="10dp" />
 			    </LinearLayout>
 			    <View 
@@ -263,8 +265,8 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/content"
 					    android:padding="10dp"
-					    android:textColor="@color/navy"
-			            android:text="太平洋保险"/>
+					    android:drawableRight="@drawable/btn_right"
+					    android:textColor="@color/navy"/>
 			    </LinearLayout>
 			    <View 
 			        android:layout_width="fill_parent"
@@ -363,7 +365,7 @@
 			            android:textSize="@dimen/content"
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
-			            android:text="太平洋保险"/>
+			            android:drawableRight="@drawable/btn_right"/>
 			    </LinearLayout>
 			    <View 
 			        android:layout_width="fill_parent"

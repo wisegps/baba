@@ -76,6 +76,12 @@ public class SmsActivity extends Activity implements IXListViewListener{
 			    finish();
 			}
 		});
+		int type = getIntent().getIntExtra("type", 0);
+		if(type == 0){
+			index_view = 4;
+		}else{
+			index_view = type - 1;
+		}
 		hsl_sms = (HScrollLayout) findViewById(R.id.hsl_sms);
 		hsl_sms.setOnViewChangeListener(new OnViewChangeListener() {			
 			@Override
@@ -90,6 +96,12 @@ public class SmsActivity extends Activity implements IXListViewListener{
 			public void OnFinish(int index) {}
 		});
 		showSms();
+		handler.postDelayed(new Runnable() {			
+			@Override
+			public void run() {
+				hsl_sms.snapFastToScreen(index_view);
+			}
+		}, 50);
 	}
 	
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
@@ -207,7 +219,6 @@ public class SmsActivity extends Activity implements IXListViewListener{
 				getSms();
 			}
 		}
-		hsl_sms.snapToScreen(index_view);
 	}
 	
 	private void getSms(){

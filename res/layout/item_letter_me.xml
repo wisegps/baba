@@ -1,0 +1,47 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res/com.wise.baba" 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/margins">
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="@dimen/small"
+        android:textColor="@color/navy_light"
+        android:layout_marginBottom="@dimen/margins"
+        android:visibility="gone"/>
+    <RelativeLayout 
+    	android:gravity="center_vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <customView.CircleImageView 
+	        android:id="@+id/iv_me"
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
+	        android:layout_alignParentRight="true"
+	        android:layout_marginLeft="@dimen/margins"
+	        android:layout_centerVertical="true"
+	        android:src="@drawable/icon_car"
+	        app:border_width="1dp"
+	        app:border_color="@color/white" />
+	    <TextView
+	        android:id="@+id/tv_me_content" 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="@dimen/margins"
+	        android:paddingRight="@dimen/margins"
+	        android:layout_toLeftOf="@id/iv_me"
+	        android:textSize="@dimen/content"
+	        android:textColor="@color/navy"
+	        android:layout_centerVertical="true"
+	        android:gravity="center_vertical"
+	        android:background="@drawable/chat_i_shuru"
+	        android:text="你是专门修宝马的吗"/>
+    </RelativeLayout>    
+</LinearLayout>

@@ -91,7 +91,6 @@ public class TasksCompletedView extends View {
 			oval.right = mRingRadius * 2 + (mXCenter - mRingRadius);
 			oval.bottom = mRingRadius * 2 + (mYCenter - mRingRadius);
 			if(!isGreen){
-				System.out.println(""+indexOf(mProgress));
 				int[] color = colors[indexOf(mProgress)];
 				mRingBgPaint.setColor(Color.argb(76,color[0], color[1], color[2]));
 				mRingPaint.setColor(Color.rgb(color[0], color[1], color[2]));

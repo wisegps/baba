@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
+import pubclas.Judge;
 import pubclas.NetThread;
 import pubclas.Variable;
 import cn.jpush.android.api.JPushInterface;
@@ -102,14 +103,14 @@ public class SetActivity extends Activity implements TagAliasCallback{
 				finish();
 				break;
 			case R.id.rl_login:
-				if(Variable.cust_id == null){
+				if(!Judge.isLogin()){
 					startActivityForResult(new Intent(SetActivity.this, LoginActivity.class), 1);
 				}else{
 					startActivity(new Intent(SetActivity.this, AccountActivity.class));
 				}
 				break;
 			case R.id.tv_car:
-				if(Variable.cust_id == null){
+				if(!Judge.isLogin()){
 					startActivity(new Intent(SetActivity.this, LoginActivity.class));
 				}else{
 					startActivity(new Intent(SetActivity.this, CarActivity.class));

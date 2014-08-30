@@ -1,6 +1,5 @@
 package com.wise.state;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
@@ -14,7 +13,6 @@ import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import com.wise.car.DevicesAddActivity;
-
 import customView.FaultDeletionView;
 import customView.OnViewChangeListener;
 import data.CarData;
@@ -164,9 +162,9 @@ public class FaultDetectionActivity extends Activity{
 						intent.putExtra("name", "蓄电池电压");
 						intent.putExtra("range", jsonObject.getString("dpdy_range"));
 						intent.putExtra("if_err", !jsonObject.getBoolean("if_dpdy_err"));
-						intent.putExtra("current", String.format("%.2f",jsonObject.getDouble("dpdy")));
+						intent.putExtra("current", jsonObject.getString("dpdy"));
 						intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_dpdy_err"));
-						intent.putExtra("lt", String.format("%.2f",jsonObject.getDouble("lt_dpdy")));
+						intent.putExtra("lt", jsonObject.getString("lt_dpdy"));
 						intent.putExtra("url", jsonObject.getString("dpdy_content"));
 						startActivity(intent);
 						break;
@@ -175,9 +173,9 @@ public class FaultDetectionActivity extends Activity{
 						intent.putExtra("name", "节气门开度");
 						intent.putExtra("range", jsonObject.getString("jqmkd_range"));
 						intent.putExtra("if_err", !jsonObject.getBoolean("if_jqmkd_err"));
-						intent.putExtra("current", String.format("%.2f",jsonObject.getDouble("jqmkd")));
+						intent.putExtra("current", jsonObject.getString("jqmkd"));
 						intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_jqmkd_err"));
-						intent.putExtra("lt", String.format("%.2f",jsonObject.getDouble("lt_jqmkd")));
+						intent.putExtra("lt", jsonObject.getString("lt_jqmkd"));
 						intent.putExtra("url", jsonObject.getString("jqmkd_content"));
 						startActivity(intent);
 						break;
@@ -186,9 +184,9 @@ public class FaultDetectionActivity extends Activity{
 						intent.putExtra("name", "怠速状态");
 						intent.putExtra("range", jsonObject.getString("fdjzs_range"));
 						intent.putExtra("if_err", !jsonObject.getBoolean("if_fdjzs_err"));
-						intent.putExtra("current", String.format("%.2f",jsonObject.getDouble("fdjzs")));
+						intent.putExtra("current", jsonObject.getString("fdjzs"));
 						intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_fdjzs_err"));
-						intent.putExtra("lt", String.format("%.2f",jsonObject.getDouble("lt_fdjzs")));
+						intent.putExtra("lt", jsonObject.getString("lt_fdjzs"));
 						intent.putExtra("url", jsonObject.getString("fdjzs_content"));
 						startActivity(intent);  
 						break;
@@ -197,9 +195,9 @@ public class FaultDetectionActivity extends Activity{
 						intent.putExtra("name", "水温状态");
 						intent.putExtra("range", jsonObject.getString("sw_range"));
 						intent.putExtra("if_err", !jsonObject.getBoolean("if_sw_err"));
-						intent.putExtra("current", String.format("%.2f",jsonObject.getDouble("sw")));
+						intent.putExtra("current", jsonObject.getString("sw"));
 						intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_sw_err"));
-						intent.putExtra("lt", String.format("%.2f",jsonObject.getDouble("lt_sw")));
+						intent.putExtra("lt", jsonObject.getString("lt_sw"));
 						intent.putExtra("url", jsonObject.getString("sw_content"));
 						startActivity(intent);
 						break;
@@ -208,9 +206,9 @@ public class FaultDetectionActivity extends Activity{
 						intent.putExtra("name", "三元催化剂状态");
 						intent.putExtra("range", jsonObject.getString("chqwd_range"));
 						intent.putExtra("if_err", !jsonObject.getBoolean("if_chqwd_err"));
-						intent.putExtra("current", String.format("%.2f",jsonObject.getDouble("chqwd")));
+						intent.putExtra("current", jsonObject.getString("chqwd"));
 						intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_chqwd_err"));
-						intent.putExtra("lt", String.format("%.2f",jsonObject.getDouble("lt_chqwd")));
+						intent.putExtra("lt", jsonObject.getString("lt_chqwd"));
 						intent.putExtra("url", jsonObject.getString("chqwd_content"));
 						startActivity(intent);
 						break;
@@ -292,23 +290,6 @@ public class FaultDetectionActivity extends Activity{
 		}
 		CarData carData = Variable.carDatas.get(index);
 		tv_name.setText(carData.getNick_name());
-//		if(carData.getLimit() == null){
-//			//获取限行信息
-//			if(Variable.City == null || carData.getObj_name() == null || Variable.City.equals("") || carData.getObj_name().equals("")){
-//				
-//			}else{
-//				try {
-//					String url = Constant.BaseUrl + "base/ban?city="
-//		                    + URLEncoder.encode(Variable.City, "UTF-8")
-//		                    + "&obj_name=" + URLEncoder.encode(carData.getObj_name(), "UTF-8");
-//		            new NetThread.GetDataThread(handler, url,Get_carLimit,index).start();
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}			
-//		}else{
-//			carViews.get(index).getTv_xx_detection().setText(carData.getLimit());
-//		}
 		
 		String Device_id = carData.getDevice_id();
 		if (Device_id == null || Device_id.equals("")) {
@@ -353,7 +334,7 @@ public class FaultDetectionActivity extends Activity{
 		}else{
 			SharedPreferences preferences = getSharedPreferences(
 					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-			String result = preferences.getString(Constant.sp_health_score
+			result = preferences.getString(Constant.sp_health_score
 					+ Variable.carDatas.get(index).getObj_id(), "");
 			if (result.equals("")) {// 未体检过
 				carViews.get(index).getmTasksView().setProgress(100);

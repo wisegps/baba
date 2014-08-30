@@ -82,7 +82,12 @@
         <activity android:name="com.wise.state.FaultActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.state.FaultTestActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.state.FuelActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.state.FuelDetailsActivity" android:screenOrientation="portrait"></activity>        
+        <activity android:name="com.wise.state.FuelDetailsActivity" android:screenOrientation="portrait"></activity>  
+        <activity android:name="com.wise.state.DriveActivity" android:screenOrientation="portrait"></activity>  
+        <activity android:name="com.wise.state.FuelRankActivity" android:screenOrientation="portrait"></activity>  
+        <activity android:name="com.wise.state.DriveRankActivity" android:screenOrientation="portrait"></activity>  
+        
+        
         <activity android:name="com.wise.notice.NoticeActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.notice.LetterActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
         
@@ -103,12 +108,20 @@
         <activity android:name="com.wise.car.PetrolGradeActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.car.InsuranceActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.car.MaintainShopActivity" android:screenOrientation="portrait"></activity>        
+        <activity android:name="com.wise.car.CarLocationActivity" android:screenOrientation="portrait">
+            
+            
+        </activity>        
+        
         <activity android:name="com.wise.remind.RemindAddActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
         <activity android:name="com.wise.remind.CarRemindUpdateActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
         <activity android:name="com.wise.remind.RemindActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.remind.DealAddressActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.violation.TrafficActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.violation.ComplainActivity" android:screenOrientation="portrait"  android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
+        <activity android:name="com.wise.violation.ShortProvincesActivity" android:screenOrientation="portrait"  android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
+            
+        </activity>
         
         <activity android:name=".AskActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".AskInfoActivity" android:screenOrientation="portrait"></activity>
@@ -202,7 +215,8 @@
 		        <action android:name="cn.jpush.android.intent.REGISTRATION" />
 		        <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
 		        <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />		        
-		        <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />		        
+		        <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
+		        <action android:name="cn.jpush.android.intent.CONNECTION" />	        
 		        <category android:name="com.wise.baba" />
 		    </intent-filter>
 		</receiver>
@@ -222,8 +236,13 @@
         <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default"/>
         <!-- Required. AppKey copied from Portal -->
         <meta-data android:name="JPUSH_APPKEY" android:value="b69c5983ae1ee0c30005dac9"/>
+        <!-- meta-data android:name="JPUSH_APPKEY" android:value="dac9b50affaff5884ce442ac"/-->
         
         <meta-data android:value="53dca363fd98c5e436026949" android:name="UMENG_APPKEY"></meta-data>
 		<meta-data android:value="Channel ID" android:name="UMENG_CHANNEL"/>
+		
+		<meta-data  
+	        android:name="com.baidu.lbsapi.API_KEY"  
+	        android:value="0QNTY4tnP9Tv6ghXpGa6XXOm" />
     </application>
 </manifest>

@@ -2,6 +2,10 @@ package com.wise.baba;
 
 import java.util.List;
 import org.json.JSONObject;
+
+import pubclas.Constant;
+
+import com.wise.notice.LetterActivity;
 import com.wise.notice.SmsActivity;
 import com.wise.remind.RemindListActivity;
 import com.wise.violation.TrafficActivity;
@@ -12,22 +16,36 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 public class SmsReceiver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		    
+		Log.d("smsReceiver", intent.getAction());
+		
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
         	System.out.println("JPush用户注册成功");
         } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
         	System.out.println("接受到推送下来的自定义消息");
-        } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
+        } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {        	
         	//TODO 确认消息发送，上传到自己服务器       
         	System.out.println("确认消息发送，上传到自己服务器 ");
+        	Intent intent1 = new Intent(Constant.A_ReceiverLetter);
+        	String extras = intent.getExtras().getString(JPushInterface.EXTRA_EXTRA);
+        	intent1.putExtra("extras", extras);
+        	context.sendBroadcast(intent1);
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
+        	//在这里可以自己写代码去定义用户点击后的行为
         	init(context,intent.getExtras());
         } else {
-        	//System.out.println("Unhandled intent - " + intent.getAction());
+        	
+        }
+        if(JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())){
+        	System.out.println("自定义消息");
+        }
+        if(JPushInterface.ACTION_CONNECTION_CHANGE.equals(intent.getAction())){
+        	 boolean connected = intent.getBooleanExtra(JPushInterface.EXTRA_CONNECTION_CHANGE, false);
+        	System.out.println("connected = " + connected);
         }
 	}
 	
@@ -65,6 +83,11 @@ public class SmsReceiver extends BroadcastReceiver{
 			}else if(msg_type == 4){//违章界面
 				Intent intent = new Intent(context, TrafficActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+		        context.startActivity(intent);
+			}else if(msg_type == 0){//私信界面
+				Intent intent = new Intent(context, LetterActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+				intent.putExtra("cust_id", jsonObject.getString("friend_id"));
 		        context.startActivity(intent);
 			}else{//消息界面
 				Intent intent = new Intent(context, SmsActivity.class);

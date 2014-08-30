@@ -17,10 +17,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 import sharesdk.OnekeyShare;
+import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.NaviPara;
-import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.wise.baba.R;
 import data.TimeData;
 import data.WeekData;
@@ -207,6 +207,7 @@ public class GetSystem {
 			return null;
 		}
 	}
+	
 
 	public static String GetNextYear(String Date, int year) {
 		try {
@@ -307,6 +308,18 @@ public class GetSystem {
 			return (Second / 3600) + "小时" ;
 		}
 	}
+	public static int spacingTime(String lastTime , String nextTime){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			java.util.Date begin = sdf.parse(lastTime);
+			java.util.Date end = sdf.parse(nextTime);
+			int l = (int) ((end.getTime() - begin.getTime()) / 1000);
+			return l;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
 	/**获取距当前时间间隙**/
 	public static int spacingNowTime(String Data){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -377,6 +390,8 @@ public class GetSystem {
 		}
 		return "";
 	}
+	
+	
 
 	/**
 	 * 调用百度地图导航
@@ -387,7 +402,7 @@ public class GetSystem {
 	 * @param str1
 	 * @param str2
 	 */
-	public static void FindCar(Activity mActivity, GeoPoint pt1, GeoPoint pt2,
+	public static void FindCar(Activity mActivity, LatLng pt1, LatLng pt2,
 			String str1, String str2) {
 		NaviPara para = new NaviPara();
 		para.startPoint = pt1; // 起点坐标

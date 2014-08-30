@@ -1,15 +1,13 @@
 package nadapter;
 
 import java.util.List;
-
 import pubclas.Variable;
 
+import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.NaviPara;
-import com.baidu.platform.comapi.basestruct.GeoPoint;
 import com.wise.baba.R;
-
 import customView.SlidingView;
 import data.AdressData;
 import android.app.Activity;
@@ -140,12 +138,8 @@ public class CollectionAdapter extends BaseAdapter {
     }
 
     public void startNavi(double goLat, double goLon) {
-        int lat = (int) (currentLat * 1E6);
-        int lon = (int) (currentLon * 1E6);
-        GeoPoint pt1 = new GeoPoint(lat, lon);
-        lat = (int) (goLat * 1E6);
-        lon = (int) (goLon * 1E6);
-        GeoPoint pt2 = new GeoPoint(lat, lon);
+        LatLng pt1 = new LatLng(currentLat, currentLon);
+        LatLng pt2 = new LatLng(goLat, goLon);
         // 构建 导航参数
         NaviPara para = new NaviPara();
         para.startPoint = pt1;

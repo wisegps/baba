@@ -12,15 +12,34 @@
         android:gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:textColor="@color/navy"
+        android:text="我的爱车"
         android:textSize="@dimen/main" />
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+        <TextView 
+	        android:id="@+id/tv_adress"
+	        android:paddingTop="5dp"
+	        android:visibility="invisible"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_horizontal"
+	        android:drawableLeft="@drawable/icon_place"
+	        android:drawablePadding="@dimen/margins"
+	        android:singleLine="true"
+	        android:textColor="@color/navy_light"/>
+    </LinearLayout>
+    
 	<RelativeLayout 
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:layout_margin="@dimen/double_margins">	    
 	    <com.wise.state.TasksCompletedView
 	        android:id="@+id/tasks_view"
-	        android:layout_width="fill_parent"
+	        android:layout_width="140dp"
 	        android:layout_height="140dp"
+	        android:layout_centerHorizontal="true"
 	        tc:radius="55dp"
 	        tc:circleColor="@color/ring_bg_color"
 	        tc:ringColor="@color/ring_color"
@@ -60,14 +79,19 @@
 	            android:textColor="@color/blue_press"
 	            android:text="今日限行"/>
 	    </LinearLayout>
+	    <ImageView 
+	        android:id="@+id/iv_location"
+	        android:layout_width="30dp"
+	        android:layout_height="30dp"
+	        android:layout_alignParentRight="true"/>
 	</RelativeLayout>
     <LinearLayout
-        android:id="@+id/ll_fee"
         android:layout_width="fill_parent"
         android:layout_height="60dp"
         android:layout_marginBottom="@dimen/margins"
         android:orientation="horizontal" >
         <LinearLayout
+            android:id="@+id/ll_distance"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -105,6 +129,7 @@
             android:layout_height="fill_parent"
             android:background="@color/line" />
         <LinearLayout
+            android:id="@+id/ll_fuel_rank"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -142,6 +167,7 @@
             android:layout_height="fill_parent"
             android:background="@color/line" />
         <LinearLayout
+            android:id="@+id/ll_fee"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

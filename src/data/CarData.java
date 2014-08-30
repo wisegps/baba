@@ -53,8 +53,8 @@ public class CarData {
 	public int Type;		//布局控制
 	public String Adress;  //车辆位置
 	public String gps_time; //定位时间
-	public String Lat; 
-	public String Lon;
+	public double Lat; 
+	public double Lon;
 	public ArrayList<String> vio_citys;
 	public ArrayList<String> vio_citys_code;
 	public String getCar_brand_id() {
@@ -201,16 +201,16 @@ public class CarData {
     public void setAdress(String adress) {
         Adress = adress;
     }    
-    public String getLat() {
+    public double getLat() {
         return Lat;
     }
-    public void setLat(String lat) {
+    public void setLat(double lat) {
         Lat = lat;
     }
-    public String getLon() {
+    public double getLon() {
         return Lon;
     }
-    public void setLon(String lon) {
+    public void setLon(double lon) {
         Lon = lon;
     }
     public String getRegNo() {

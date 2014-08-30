@@ -6,16 +6,14 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
 import sql.DBExcute;
 
-import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.R;
-
 import data.AdressData;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -158,9 +156,11 @@ public class AdressAdapter extends BaseAdapter{
 		holder.iv_location.setOnClickListener(new OnClickListener() {				
 			@Override
 			public void onClick(View v) {
-				GeoPoint point = new GeoPoint((int) (Variable.Lat * 1E6),(int) (Variable.Lon * 1E6));
-                GeoPoint point1 = new GeoPoint((int) (adressData.getLat() * 1E6),(int) (adressData.getLon() * 1E6));
-                GetSystem.FindCar(mActivity, point, point1, "point", "point1");
+				LatLng pt1 = new LatLng(Variable.Lat, Variable.Lon);
+				LatLng pt2 = new LatLng(adressData.getLat(), adressData.getLon());
+				//GeoPoint point = new GeoPoint((int) (Variable.Lat * 1E6),(int) (Variable.Lon * 1E6));
+				//LatLng point1 = new GeoPoint((int) (adressData.getLat() * 1E6),(int) (adressData.getLon() * 1E6));
+                GetSystem.FindCar(mActivity, pt1, pt2, "point", "point1");
 			}
 		});
         //拨打电话

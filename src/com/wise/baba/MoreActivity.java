@@ -1,8 +1,12 @@
 package com.wise.baba;
 
 import org.json.JSONObject;
+
+import pubclas.Judge;
 import pubclas.Variable;
 import cn.jpush.android.api.JPushInterface;
+
+import com.wise.notice.LetterActivity;
 import com.wise.notice.NoticeActivity;
 import com.wise.notice.SmsActivity;
 import com.wise.remind.RemindListActivity;
@@ -51,16 +55,15 @@ public class MoreActivity extends Activity{
 				int msg_type = jsonObject.getInt("msg_type");
 				if(msg_type == 1){//提醒界面
 			        Intent intent = new Intent(MoreActivity.this, RemindListActivity.class);
-			        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 			        startActivity(intent);
 				}else if(msg_type == 4){//违章界面
 					Intent intent = new Intent(MoreActivity.this, TrafficActivity.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 			        startActivity(intent);
-				}else{//消息界面
-					Intent intent = new Intent(MoreActivity.this, SmsActivity.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-			        startActivity(intent);
+				}else{//跳转到通知界面
+					Intent nIntent = new Intent(MoreActivity.this, NoticeActivity.class);
+					nIntent.putExtra("isSpecify", isSpecify);
+					nIntent.putExtras(intent1.getExtras());
+					startActivity(nIntent);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -75,26 +78,34 @@ public class MoreActivity extends Activity{
 			case R.id.iv_back:
 				finish();
 				break;
-			case R.id.tv_sms:
-				if(isLogin()){
+			case R.id.tv_sms:				
+				if(Judge.isLogin()){
 					Variable.noti_count = 0;
 					startActivity(new Intent(MoreActivity.this, NoticeActivity.class));
+				}else{
+					startActivity(new Intent(MoreActivity.this, LoginActivity.class));
 				}
 				break;
 			case R.id.tv_collection:
-				if(isLogin()){
+				if(Judge.isLogin()){
 					startActivity(new Intent(MoreActivity.this, CollectionActivity.class));
+				}else{
+					startActivity(new Intent(MoreActivity.this, LoginActivity.class));
 				}
 				break;
 			case R.id.tv_remind:
-				if(isLogin()){
+				if(Judge.isLogin()){
 					startActivity(new Intent(MoreActivity.this, RemindListActivity.class));
+				}else{
+					startActivity(new Intent(MoreActivity.this, LoginActivity.class));
 				}
 				break;
 			case R.id.tv_traffic:
-				if(isLogin()){
+				if(Judge.isLogin()){
 					Variable.vio_count = 0;
 					startActivity(new Intent(MoreActivity.this, TrafficActivity.class));
+				}else{
+					startActivity(new Intent(MoreActivity.this, LoginActivity.class));
 				}
 				break;
 			case R.id.tv_set:
@@ -103,13 +114,7 @@ public class MoreActivity extends Activity{
 			}
 		}
 	};
-	private boolean isLogin(){
-		if(Variable.cust_id == null){
-			startActivity(new Intent(MoreActivity.this, LoginActivity.class));
-			return false;
-		}
-		return true;
-	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
