@@ -19,7 +19,7 @@ public class DBHelper extends SQLiteOpenHelper{
 	private static final String CREATE_TB_Collection = "create table " + Constant.TB_Collection + "(_id integer primary key autoincrement,Cust_id text,favorite_id text,name text,address text,tel text,lon text,lat text,Content text)";
 	//我的消息
 	private static final String CREATE_TB_Sms = "create table " + Constant.TB_Sms + "(_id integer primary key autoincrement,cust_id text,noti_id int,message text)";
-	
+	/**违章城市**/
 	private static final String CREATE_TB_IllegalCity = "create table " + Constant.TB_IllegalCity + "(_id integer primary key autoincrement,json_data text)";
 	public DBHelper(Context context){
 		super(context,DB_NAME,null,VERSION);

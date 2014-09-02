@@ -284,7 +284,8 @@ public class FaultActivity extends FragmentActivity {
 						intent.putExtra("car_id", Variable.carDatas.get(index).getObj_id());
 						startActivityForResult(intent, 2);
 					} else {
-						Intent Intent = new Intent(FaultActivity.this,FuelRankActivity.class);
+						Intent Intent = new Intent(FaultActivity.this,
+								FuelActivity.class);
 						Intent.putExtra("index_car", index);
 						startActivity(Intent);
 					}
@@ -353,12 +354,18 @@ public class FaultActivity extends FragmentActivity {
 
 		} else {
 			try {
+				String Gas_no = "";
+				if(carData.getGas_no() == null || carData.getGas_no().equals("")){
+					Gas_no = "93#(92#)";
+				}else{
+					Gas_no = carData.getGas_no();
+				}
 				// 获取当前月的数据
 				String url = Constant.BaseUrl + "device/" + device_id
 						+ "/total?auth_code=" + Variable.auth_code
 						+ "&start_day=" + startMonth + "&end_day=" + endMonth
 						+ "&city=" + URLEncoder.encode(Variable.City, "UTF-8")
-						+ "&gas_no=93#(92#)";
+						+ "&gas_no=" + Gas_no;
 				new NetThread.GetDataThread(handler, url, getData, index)
 						.start();
 				// 获取gps信息
@@ -536,12 +543,9 @@ public class FaultActivity extends FragmentActivity {
 		hs_car.removeAllViews();
 		carViews.clear();
 		for (int i = 0; i < Variable.carDatas.size(); i++) {
-			View v = LayoutInflater.from(this).inflate(R.layout.item_fault,
-					null);
+			View v = LayoutInflater.from(this).inflate(R.layout.item_fault,null);
 			hs_car.addView(v);
-			ImageView iv_location = (ImageView) v
-					.findViewById(R.id.iv_location);
-			iv_location.setOnClickListener(onClickListener);
+			LinearLayout ll_adress = (LinearLayout)v.findViewById(R.id.ll_adress);
 			TextView tv_score = (TextView) v.findViewById(R.id.tv_score);
 			TextView tv_title = (TextView) v.findViewById(R.id.tv_title);
 			TasksCompletedView mTasksView = (TasksCompletedView) v
@@ -562,6 +566,7 @@ public class FaultActivity extends FragmentActivity {
 			tv_adress.setOnClickListener(onClickListener);
 
 			CarView carView = new CarView();
+			carView.setLl_adress(ll_adress);
 			carView.setmTasksView(mTasksView);
 			carView.setTv_distance(tv_distance);
 			carView.setTv_fee(tv_fee);
@@ -851,6 +856,7 @@ public class FaultActivity extends FragmentActivity {
 	List<CarView> carViews = new ArrayList<CarView>();
 
 	private class CarView {
+		LinearLayout ll_adress;
 		TextView tv_distance;
 		TextView tv_adress;
 		TextView tv_fee;
@@ -859,7 +865,15 @@ public class FaultActivity extends FragmentActivity {
 		TextView tv_title;
 		TextView tv_xx;
 		TasksCompletedView mTasksView;
-		
+				
+		public LinearLayout getLl_adress() {
+			return ll_adress;
+		}
+
+		public void setLl_adress(LinearLayout ll_adress) {
+			this.ll_adress = ll_adress;
+		}
+
 		public TextView getTv_adress() {
 			return tv_adress;
 		}
@@ -1035,7 +1049,7 @@ public class FaultActivity extends FragmentActivity {
 					showTime = gpsTime.substring(5, 16);
 				}
 				//TODO 显示时间 	
-				carViews.get(index).getTv_adress().setVisibility(View.VISIBLE);
+				carViews.get(index).getLl_adress().setVisibility(View.VISIBLE);
 				carViews.get(index).getTv_adress().setText(result.getAddress() + "  " + showTime);
 			}
 		}

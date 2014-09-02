@@ -109,6 +109,12 @@ public class SmsActivity extends Activity implements IXListViewListener{
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
 			List<SmsData> smsDatas = smsViews.get(index_view).getSmsDatas();
 			if(arg2 !=0 || arg2 != (smsDatas.size()+1)){
+				if(smsDatas != null){
+					System.out.println("arg2 = " + arg2);
+					System.out.println("smsDatas.get(arg2 -1) = " + smsDatas.get(arg2 -1).toString());
+				}else{
+					System.out.println("smsDatas 为空");
+				}
 			    String Type = smsDatas.get(arg2 -1).getMsg_type();
 	            if(Type.equals("0")){
 	                
@@ -464,6 +470,7 @@ public class SmsActivity extends Activity implements IXListViewListener{
 	            holder.tv_new_content = (TextView) convertView.findViewById(R.id.tv_new_content);
 	            holder.tv_new_time = (TextView)convertView.findViewById(R.id.tv_new_time);
 	            holder.tv_new_Regnum = (TextView)convertView.findViewById(R.id.tv_new_Regnum);
+	            holder.v_line = (View)convertView.findViewById(R.id.v_line);
 	            convertView.setTag(holder);
 	        } else {
 	            holder = (ViewHolder) convertView.getTag();
@@ -494,11 +501,17 @@ public class SmsActivity extends Activity implements IXListViewListener{
 	            holder.tv_new_Regnum.setText("车辆报警");
 	        }else if (Type.equals("4")){
                 holder.tv_new_Regnum.setText("违章提醒");
-            }
+            }	        
+	        if(position == (smsDatas.size() - 1)){
+	        	holder.v_line.setVisibility(View.VISIBLE);
+	        }else{
+	        	holder.v_line.setVisibility(View.GONE);
+	        }
 	        return convertView;
 	    }
 	    private class ViewHolder {
 	        TextView tv_new_Regnum,tv_new_content,tv_new_time;
+	        View v_line;
 	    }
 	}
 	

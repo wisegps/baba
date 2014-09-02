@@ -16,7 +16,7 @@ import android.widget.Scroller;
  *
  */
 public class ParentSlide extends ViewGroup {
-	private static String TAG = "ParentSlide";
+	//private static String TAG = "ParentSlide";
     
     private VelocityTracker velocityTracker;// 判断手势
     private static final int SNAP_VELOCITY = 600; // 滑动速度
@@ -100,7 +100,7 @@ public class ParentSlide extends ViewGroup {
     	 * 点击false，移动不超过指定距离，false，false(认为是在点击)| ture(滑动)
     	 * (疑点，返回true和false)事件被onTouch接受
     	 */
-    	Log.d(TAG, "onInterceptTouchEvent = " + ev.getAction());    	
+    	//Log.d(TAG, "onInterceptTouchEvent = " + ev.getAction());    	
     	//TODO 移动
         boolean xMoved = false; 
         final float x = ev.getX();
@@ -114,7 +114,7 @@ public class ParentSlide extends ViewGroup {
         	/**判断上一次的状况，这么做是为了让子控件先判断滑动状态**/
         	if(mTouchState == TOUCH_STATE_SCROLLING){
         		mTouchState = TOUCH_STATE_REST;
-        		Log.d(TAG, "onInterceptTouchEvent = true");
+        		//Log.d(TAG, "onInterceptTouchEvent = true");
         		return true;
         	}
             final int xDiff = (int) Math.abs(x - mLastMotionX);
@@ -130,7 +130,7 @@ public class ParentSlide extends ViewGroup {
         	mTouchState = TOUCH_STATE_REST;
         	break;
         }
-        Log.d(TAG, "onInterceptTouchEvent = false");
+        //Log.d(TAG, "onInterceptTouchEvent = false");
         return false;
     }
 
@@ -142,7 +142,7 @@ public class ParentSlide extends ViewGroup {
     	 * false:
     	 * 按下后事件被消费
     	 */
-    	Log.d(TAG, "onTouchEvent = " + event.getAction());
+    	//Log.d(TAG, "onTouchEvent = " + event.getAction());
         float x = event.getX();
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:

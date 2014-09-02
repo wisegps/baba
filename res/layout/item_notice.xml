@@ -5,12 +5,13 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_white"
-    android:padding="@dimen/double_margins" >
+    android:padding="@dimen/margins" >
     <customView.CircleImageView 
         android:id="@+id/iv_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginRight="@dimen/double_margins"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/margins"
         android:contentDescription="@string/app_name"
         app:border_width="1dp"
         android:src="@drawable/icon_xx_notice"
@@ -59,9 +60,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margins"
                 android:layout_toLeftOf="@id/tv_time"
-                android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:singleLine="true"
                 android:text="没有最新的通知"
                 android:textColor="@color/blue_noti"

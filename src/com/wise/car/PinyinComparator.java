@@ -1,22 +1,22 @@
 package com.wise.car;
 
 import java.util.Comparator;
-import data.BrankModel;
+import data.BrandData;
 
 /**
  * 根据拼音排序
  */
-public class PinyinComparator implements Comparator<BrankModel> {
+public class PinyinComparator implements Comparator<BrandData> {
 
-	public int compare(BrankModel o1, BrankModel o2) {
-		if (o1.getVehicleLetter().equals("@")
-				|| o2.getVehicleLetter().equals("#")) {
+	public int compare(BrandData o1, BrandData o2) {
+		if (o1.getLetter().equals("@")
+				|| o2.getLetter().equals("#")) {
 			return -1;
-		} else if (o1.getVehicleLetter().equals("#")
-				|| o2.getVehicleLetter().equals("@")) {
+		} else if (o1.getLetter().equals("#")
+				|| o2.getLetter().equals("@")) {
 			return 1;
 		} else {
-			return o1.getVehicleLetter().compareTo(o2.getVehicleLetter());
+			return o1.getLetter().compareTo(o2.getLetter());
 		}
 	}
 }

@@ -27,6 +27,13 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical" >
+                
+			    <TextView 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:textSize="@dimen/main"
+			        android:textColor="@color/navy"
+			        android:text="sdsaf"/>
                 <TextView 
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"

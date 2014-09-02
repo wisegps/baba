@@ -149,68 +149,101 @@ public class FaultDetectionActivity extends Activity{
 				finish();
 			}else{
 				try {
+					String Device_id = Variable.carDatas.get(index).getDevice_id();
+					Intent intent2 = new Intent(FaultDetectionActivity.this,DevicesAddActivity.class);
 					Intent intent = new Intent(FaultDetectionActivity.this, DyActivity.class);
 					JSONObject jsonObject = new JSONObject(result);
 					switch (v.getId()) {
 					case R.id.rl_guzhang:
-						Intent intent1 = new Intent(FaultDetectionActivity.this, FaultDetailActivity.class);
-						intent1.putExtra("fault_content", fault_content);
-						startActivity(intent1);
+						if (Device_id == null || Device_id.equals("")) {
+							intent.putExtra("car_id", Variable.carDatas.get(index).getObj_id());
+							startActivityForResult(intent2, 2);
+						}else{
+							Intent intent1 = new Intent(FaultDetectionActivity.this, FaultDetailActivity.class);
+							intent1.putExtra("fault_content", fault_content);
+							startActivity(intent1);
+						}
+						
 						break;
 					case R.id.rl_dianyuan:
-						intent.putExtra("title", "电源系统");
-						intent.putExtra("name", "蓄电池电压");
-						intent.putExtra("range", jsonObject.getString("dpdy_range"));
-						intent.putExtra("if_err", !jsonObject.getBoolean("if_dpdy_err"));
-						intent.putExtra("current", jsonObject.getString("dpdy"));
-						intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_dpdy_err"));
-						intent.putExtra("lt", jsonObject.getString("lt_dpdy"));
-						intent.putExtra("url", jsonObject.getString("dpdy_content"));
-						startActivity(intent);
+						if (Device_id == null || Device_id.equals("")) {
+							intent.putExtra("car_id", Variable.carDatas.get(index).getObj_id());
+							startActivityForResult(intent2, 2);
+						}else{
+							intent.putExtra("title", "电源系统");
+							intent.putExtra("name", "蓄电池电压");
+							intent.putExtra("range", jsonObject.getString("dpdy_range"));
+							intent.putExtra("if_err", !jsonObject.getBoolean("if_dpdy_err"));
+							intent.putExtra("current", jsonObject.getString("dpdy"));
+							intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_dpdy_err"));
+							intent.putExtra("lt", jsonObject.getString("lt_dpdy"));
+							intent.putExtra("url", jsonObject.getString("dpdy_content"));
+							startActivity(intent);
+						}						
 						break;
-					case R.id.rl_jinqi:						
-						intent.putExtra("title", "进气系统");
-						intent.putExtra("name", "节气门开度");
-						intent.putExtra("range", jsonObject.getString("jqmkd_range"));
-						intent.putExtra("if_err", !jsonObject.getBoolean("if_jqmkd_err"));
-						intent.putExtra("current", jsonObject.getString("jqmkd"));
-						intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_jqmkd_err"));
-						intent.putExtra("lt", jsonObject.getString("lt_jqmkd"));
-						intent.putExtra("url", jsonObject.getString("jqmkd_content"));
-						startActivity(intent);
+					case R.id.rl_jinqi:
+						if (Device_id == null || Device_id.equals("")) {
+							intent.putExtra("car_id", Variable.carDatas.get(index).getObj_id());
+							startActivityForResult(intent2, 2);
+						}else{
+							intent.putExtra("title", "进气系统");
+							intent.putExtra("name", "节气门开度");
+							intent.putExtra("range", jsonObject.getString("jqmkd_range"));
+							intent.putExtra("if_err", !jsonObject.getBoolean("if_jqmkd_err"));
+							intent.putExtra("current", jsonObject.getString("jqmkd"));
+							intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_jqmkd_err"));
+							intent.putExtra("lt", jsonObject.getString("lt_jqmkd"));
+							intent.putExtra("url", jsonObject.getString("jqmkd_content"));
+							startActivity(intent);
+						}						
 						break;
 					case R.id.rl_daisu:
-						intent.putExtra("title", "怠速控制系统");
-						intent.putExtra("name", "怠速状态");
-						intent.putExtra("range", jsonObject.getString("fdjzs_range"));
-						intent.putExtra("if_err", !jsonObject.getBoolean("if_fdjzs_err"));
-						intent.putExtra("current", jsonObject.getString("fdjzs"));
-						intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_fdjzs_err"));
-						intent.putExtra("lt", jsonObject.getString("lt_fdjzs"));
-						intent.putExtra("url", jsonObject.getString("fdjzs_content"));
-						startActivity(intent);  
+						if (Device_id == null || Device_id.equals("")) {
+							intent.putExtra("car_id", Variable.carDatas.get(index).getObj_id());
+							startActivityForResult(intent2, 2);
+						}else{
+							intent.putExtra("title", "怠速控制系统");
+							intent.putExtra("name", "怠速状态");
+							intent.putExtra("range", jsonObject.getString("fdjzs_range"));
+							intent.putExtra("if_err", !jsonObject.getBoolean("if_fdjzs_err"));
+							intent.putExtra("current", jsonObject.getString("fdjzs"));
+							intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_fdjzs_err"));
+							intent.putExtra("lt", jsonObject.getString("lt_fdjzs"));
+							intent.putExtra("url", jsonObject.getString("fdjzs_content"));
+							startActivity(intent);
+						}						
 						break;
 					case R.id.rl_lengque:
-						intent.putExtra("title", "冷却系统");
-						intent.putExtra("name", "水温状态");
-						intent.putExtra("range", jsonObject.getString("sw_range"));
-						intent.putExtra("if_err", !jsonObject.getBoolean("if_sw_err"));
-						intent.putExtra("current", jsonObject.getString("sw"));
-						intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_sw_err"));
-						intent.putExtra("lt", jsonObject.getString("lt_sw"));
-						intent.putExtra("url", jsonObject.getString("sw_content"));
-						startActivity(intent);
+						if (Device_id == null || Device_id.equals("")) {
+							intent.putExtra("car_id", Variable.carDatas.get(index).getObj_id());
+							startActivityForResult(intent2, 2);
+						}else{
+							intent.putExtra("title", "冷却系统");
+							intent.putExtra("name", "水温状态");
+							intent.putExtra("range", jsonObject.getString("sw_range"));
+							intent.putExtra("if_err", !jsonObject.getBoolean("if_sw_err"));
+							intent.putExtra("current", jsonObject.getString("sw"));
+							intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_sw_err"));
+							intent.putExtra("lt", jsonObject.getString("lt_sw"));
+							intent.putExtra("url", jsonObject.getString("sw_content"));
+							startActivity(intent);
+						}						
 						break;
 					case R.id.rl_paifang:
-						intent.putExtra("title", "排放系统");
-						intent.putExtra("name", "三元催化剂状态");
-						intent.putExtra("range", jsonObject.getString("chqwd_range"));
-						intent.putExtra("if_err", !jsonObject.getBoolean("if_chqwd_err"));
-						intent.putExtra("current", jsonObject.getString("chqwd"));
-						intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_chqwd_err"));
-						intent.putExtra("lt", jsonObject.getString("lt_chqwd"));
-						intent.putExtra("url", jsonObject.getString("chqwd_content"));
-						startActivity(intent);
+						if (Device_id == null || Device_id.equals("")) {
+							intent.putExtra("car_id", Variable.carDatas.get(index).getObj_id());
+							startActivityForResult(intent2, 2);
+						}else{
+							intent.putExtra("title", "排放系统");
+							intent.putExtra("name", "三元催化剂状态");
+							intent.putExtra("range", jsonObject.getString("chqwd_range"));
+							intent.putExtra("if_err", !jsonObject.getBoolean("if_chqwd_err"));
+							intent.putExtra("current", jsonObject.getString("chqwd"));
+							intent.putExtra("if_lt_err", !jsonObject.getBoolean("if_lt_chqwd_err"));
+							intent.putExtra("lt", jsonObject.getString("lt_chqwd"));
+							intent.putExtra("url", jsonObject.getString("chqwd_content"));
+							startActivity(intent);
+						}						
 						break;
 					}
 				} catch (Exception e) {

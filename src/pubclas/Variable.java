@@ -57,6 +57,4 @@ public class Variable{
     public static List<IllegalCity> illegalList;
     
     public static List<ProvinceModel> illegalProvinceList;
-    
-    public static List<ProvinceData> provinceDatas;
 }

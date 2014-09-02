@@ -13,6 +13,7 @@ import pubclas.Variable;
 
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
+import com.wise.setting.NameActivity;
 
 import data.CarData;
 import android.app.Activity;
@@ -111,7 +112,11 @@ public class CarAddActivity extends Activity{
 			Toast.makeText(CarAddActivity.this, "车辆名称不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		if(car_brand.equals("")){
+		if(nick_name.getBytes().length > 16){
+			Toast.makeText(CarAddActivity.this, "车辆名称太长,请重新输入", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if(car_brand == null || car_brand.equals("")){
 			Toast.makeText(CarAddActivity.this, "车型不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -141,12 +146,12 @@ public class CarAddActivity extends Activity{
         
         
 	}
-	String car_brand;
-	String car_brand_id;
-	String car_series;
-	String car_series_id;
-	String car_type;
-	String car_type_id;
+	String car_brand = "";
+	String car_brand_id = "";
+	String car_series = "";
+	String car_series_id = "";
+	String car_type = "";
+	String car_type_id = "";
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

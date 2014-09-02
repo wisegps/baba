@@ -34,6 +34,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class NameActivity extends Activity{
 	private static final int update_name = 1;
@@ -86,6 +87,10 @@ public class NameActivity extends Activity{
 	private void updateName(){
 		String name = et_name.getText().toString().trim();
 		if(name.equals("")){
+			return;
+		}
+		if(name.getBytes().length > 16){
+			Toast.makeText(NameActivity.this, "昵称太长,请重新输入", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		Intent data = new Intent();
