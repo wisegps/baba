@@ -12,7 +12,9 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginLeft="@dimen/margins"
-        android:src="@drawable/icon_car"/>
+        android:src="@drawable/icon_car"
+        app:border_width="1dp"
+        app:border_color="@color/white" />
     <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -59,6 +61,7 @@
             android:text="flasdjfosdf"/>
         <RelativeLayout
             android:layout_marginBottom="@dimen/margins" 
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent">
             <ImageView

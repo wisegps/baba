@@ -51,12 +51,12 @@ public class CarUpdateActivity extends Activity{
 	
 	List<CityData> chooseCityDatas = new ArrayList<CityData>();
 
-	String car_brand;
-	String car_brand_id;
-	String car_series;
-	String car_series_id;
-	String car_type;
-	String car_type_id;
+	String car_brand = "";
+	String car_brand_id = "";
+	String car_series = "";
+	String car_series_id = "";
+	String car_type = "";
+	String car_type_id = "";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +94,9 @@ public class CarUpdateActivity extends Activity{
 				startActivityForResult(new Intent(CarUpdateActivity.this, InsuranceActivity.class),2);
 				break;
 			case R.id.tv_maintain_company:
-				Intent intent = new Intent(CarUpdateActivity.this, MaintainShopActivity.class);
+				Intent intent = new Intent(CarUpdateActivity.this, FoursActivity.class);
 				intent.putExtra("city", Variable.City);
-				intent.putExtra("brank", carData.getCar_brand());
+				intent.putExtra("brank", car_brand);
 				startActivityForResult(intent,2);
 				break;
 			case R.id.tv_insurance_date:

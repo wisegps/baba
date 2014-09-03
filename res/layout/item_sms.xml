@@ -44,4 +44,9 @@
             android:textSize="@dimen/content"
             android:textColor="@color/navy"/>
     </LinearLayout>
+    <View
+        android:id="@+id/v_line"
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/line" />
 </LinearLayout>

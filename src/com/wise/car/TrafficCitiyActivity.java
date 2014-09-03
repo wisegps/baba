@@ -64,6 +64,8 @@ public class TrafficCitiyActivity extends Activity {
 	ChooseAdapter chooseAdapter;
 	List<CityData> cityDatas;
 	List<CityData> chooseCityDatas;
+	/**省份列表**/
+	List<ProvinceData> provinceDatas;
 	
 	int index = 0;
 
@@ -135,28 +137,26 @@ public class TrafficCitiyActivity extends Activity {
 			}
 		});
 		
-		if(Variable.provinceDatas == null) {
-			String jsonData = dBExcute.selectIllegal(TrafficCitiyActivity.this);
-			if(jsonData == null){
-				myDialog = ProgressDialog.show(TrafficCitiyActivity.this,
-						getString(R.string.dialog_title),
-						getString(R.string.dialog_message));
-				myDialog.setCancelable(true);
-				new Thread(new NetThread.GetDataThread(handler, Constant.BaseUrl
-						+ "violation/city?cuth_code=" + Variable.auth_code, 0))
-						.start();
-			}else{
-				// 解析数据 并且更新
-				Variable.provinceDatas = parseJson(jsonData);
-				provinceAdapter = new ProvinceAdapter(Variable.provinceDatas);
-				lv_provnice.setAdapter(provinceAdapter);
-				showCity(0);
-			}	
-		} else {		
-			provinceAdapter = new ProvinceAdapter(Variable.provinceDatas);
+		String jsonData = dBExcute.selectIllegal(TrafficCitiyActivity.this);
+		if(jsonData == null){
+			myDialog = ProgressDialog.show(TrafficCitiyActivity.this,
+					getString(R.string.dialog_title),
+					getString(R.string.dialog_message));
+			myDialog.setCancelable(true);
+			new Thread(new NetThread.GetDataThread(handler, Constant.BaseUrl
+					+ "violation/city?cuth_code=" + Variable.auth_code, 0))
+					.start();
+		}else{
+			// 解析数据 并且更新
+			provinceDatas = parseJson(jsonData);
+			provinceAdapter = new ProvinceAdapter(provinceDatas);
 			lv_provnice.setAdapter(provinceAdapter);
 			showCity(0);
-		}
+			new Thread(new NetThread.GetDataThread(handler, Constant.BaseUrl
+					+ "violation/city?cuth_code=" + Variable.auth_code, 0))
+					.start();
+		}	
+		
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -177,10 +177,12 @@ public class TrafficCitiyActivity extends Activity {
 				ContentValues values = new ContentValues();
 				values.put("json_data", msg.obj.toString());
 				dBExcute.InsertDB(TrafficCitiyActivity.this, values,Constant.TB_IllegalCity);
-				Variable.provinceDatas = parseJson(msg.obj.toString());
-				provinceAdapter = new ProvinceAdapter(Variable.provinceDatas);
+				provinceDatas = parseJson(msg.obj.toString());
+				provinceAdapter = new ProvinceAdapter(provinceDatas);
 				lv_provnice.setAdapter(provinceAdapter);
-				myDialog.dismiss();
+				if(myDialog != null){
+					myDialog.dismiss();
+				}
 				showCity(0);
 			}
 		}
@@ -190,7 +192,7 @@ public class TrafficCitiyActivity extends Activity {
 	 * @param index
 	 */
 	private void showCity(int index){
-		cityDatas = Variable.provinceDatas.get(index).getIllegalCityList();				
+		cityDatas = provinceDatas.get(index).getIllegalCityList();				
 		if(chooseCityDatas != null){
 			for(int j = 0 ; j < cityDatas.size() ; j++){
 				for(int i = 0 ; i < chooseCityDatas.size() ; i++){

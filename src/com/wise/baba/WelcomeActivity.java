@@ -99,7 +99,9 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 	private void getLogin() {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		//13138154075
 		String sp_account = preferences.getString(Constant.sp_account, "");
+		//e10adc3949ba59abbe56e057f20f883e
 		String sp_pwd = preferences.getString(Constant.sp_pwd, "");
 		new WaitThread().start();
 		if (sp_account.equals("")) {

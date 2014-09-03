@@ -55,6 +55,7 @@
 			</RelativeLayout>	
 		    <LinearLayout 
 		        android:id="@+id/ll_bottom"
+		        android:visibility="gone"
 		        android:layout_alignParentBottom="true"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"

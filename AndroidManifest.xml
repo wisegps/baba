@@ -107,11 +107,9 @@
         <activity android:name="com.wise.car.TrafficCitiyActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.car.PetrolGradeActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.car.InsuranceActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.car.MaintainShopActivity" android:screenOrientation="portrait"></activity>        
-        <activity android:name="com.wise.car.CarLocationActivity" android:screenOrientation="portrait">
-            
-            
-        </activity>        
+        <activity android:name="com.wise.car.FoursActivity" android:screenOrientation="portrait"></activity>        
+        <activity android:name="com.wise.car.CarLocationActivity" android:screenOrientation="portrait"></activity>        
+        <activity android:name="com.wise.car.BarcodeActivity" android:screenOrientation="portrait"></activity>        
         
         <activity android:name="com.wise.remind.RemindAddActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
         <activity android:name="com.wise.remind.CarRemindUpdateActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>

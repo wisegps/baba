@@ -4,13 +4,12 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/bg_item_selector"
-    >
+    android:background="@drawable/bg_item_selector">
     <TextView
         android:id="@+id/petrol_name" 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margins"
-        android:textColor="@color/common"
-        />
+        android:textSize="@dimen/content"
+        android:textColor="@color/navy"/>
 </LinearLayout>

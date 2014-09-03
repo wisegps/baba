@@ -14,19 +14,21 @@
         android:textColor="@color/navy"
         android:text="我的爱车"
         android:textSize="@dimen/main" />
-    <LinearLayout 
+    <LinearLayout
+        android:id="@+id/ll_adress" 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+	    android:visibility="invisible"
 	    android:paddingTop="5dp"
         android:gravity="center">
         <ImageView 
             android:layout_width="15dp"
             android:layout_height="15dp"
+            android:layout_marginRight="5dp"
             android:src="@drawable/icon_place"/>
         <TextView 
 	        android:id="@+id/tv_adress"
-	        android:visibility="visible"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:gravity="center"

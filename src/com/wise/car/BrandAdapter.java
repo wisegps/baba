@@ -8,7 +8,7 @@ import java.util.List;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import com.wise.baba.R;
-import data.BrankModel;
+import data.BrandData;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,14 +21,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class BrankAdapter extends BaseAdapter{
+public class BrandAdapter extends BaseAdapter{
 	private Context context;
-	private List<BrankModel> brankKList;
+	private List<BrandData> brankKList;
 	ViewHolder viewHolder = null;
 	private static final int showLogo = 1;
 	Bitmap bitmap;
 	Handler handler;
-	public BrankAdapter(Context context,List<BrankModel> brankKList){
+	public BrandAdapter(Context context,List<BrandData> brankKList){
 		this.context = context;
 		this.brankKList = brankKList;
 		this.handler = handler;
@@ -38,7 +38,7 @@ public class BrankAdapter extends BaseAdapter{
 	 * 当ListView数据发生变化时,调用此方法来更新ListView
 	 * @param list
 	 */
-	public void updateListView(List<BrankModel> list){
+	public void updateListView(List<BrandData> list){
 		this.brankKList = list;
 		notifyDataSetChanged();
 	}
@@ -57,7 +57,7 @@ public class BrankAdapter extends BaseAdapter{
 		return position;
 	}
 	public View getView(int position, View convertView, ViewGroup parent) {
-		final BrankModel mContent = brankKList.get(position);
+		final BrandData mContent = brankKList.get(position);
 		if (convertView == null) {
 			viewHolder = new ViewHolder();
 			convertView = LayoutInflater.from(context).inflate(R.layout.brank_adapter_list, null);
@@ -75,16 +75,16 @@ public class BrankAdapter extends BaseAdapter{
 				//如果当前位置等于该分类首字母的Char的位置 ，则认为是第一次出现
 				if(position == getPositionForSection(section)){
 					viewHolder.tvLetter.setVisibility(View.VISIBLE);
-					viewHolder.tvLetter.setText(this.brankKList.get(position).getVehicleLetter());
+					viewHolder.tvLetter.setText(this.brankKList.get(position).getLetter());
 				}else{
 					viewHolder.tvLetter.setVisibility(View.GONE);
 				}
-				viewHolder.tvTitle.setText(this.brankKList.get(position).getVehicleBrank());
-				if(new File(Constant.VehicleLogoPath+this.brankKList.get(position).getBrankId() + ".png").exists()){
-					Bitmap image = BitmapFactory.decodeFile(Constant.VehicleLogoPath+this.brankKList.get(position).getBrankId() + ".png");
+				viewHolder.tvTitle.setText(this.brankKList.get(position).getBrand());
+				if(new File(Constant.VehicleLogoPath+this.brankKList.get(position).getId() + ".png").exists()){
+					Bitmap image = BitmapFactory.decodeFile(Constant.VehicleLogoPath+this.brankKList.get(position).getId() + ".png");
 					viewHolder.logo.setImageBitmap(image);
 				}else{
-					viewHolder.logo.setImageResource(R.drawable.body_nothing_icon);
+					viewHolder.logo.setImageResource(R.drawable.icon_car_moren);
 					if(!"".equals(this.brankKList.get(position).getLogoUrl()) && this.brankKList.get(position).getLogoUrl() != null){
 //						String logoName = getLogoForPosition(position);
 //						if(position == getLogoPositionForSection(logoName)){
@@ -119,7 +119,7 @@ public class BrankAdapter extends BaseAdapter{
 	 * 根据ListView的当前位置获取分类的首字母的Char ascii值
 	 */
 	public int getSectionForPosition(int position) {
-		return brankKList.get(position).getVehicleLetter().charAt(0);
+		return brankKList.get(position).getLetter().charAt(0);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class BrankAdapter extends BaseAdapter{
 	 */
 	public int getPositionForSection(int section) {
 		for (int i = 0; i < getCount(); i++) {
-			String sortStr = brankKList.get(i).getVehicleLetter();
+			String sortStr = brankKList.get(i).getLetter();
 			char firstChar = sortStr.toUpperCase().charAt(0);
 			if (firstChar == section) {
 				return i;
