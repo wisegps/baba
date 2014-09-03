@@ -88,6 +88,10 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		iv_back.setOnClickListener(onClickListener);
 		platformQQ = ShareSDK.getPlatform(LoginActivity.this, QZone.NAME);
 		platformSina = ShareSDK.getPlatform(LoginActivity.this, SinaWeibo.NAME);
+		SharedPreferences preferences = getSharedPreferences(
+				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		String sp_account = preferences.getString(Constant.sp_account, "");
+		et_account.setText(sp_account);
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {

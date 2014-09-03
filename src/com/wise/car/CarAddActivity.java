@@ -112,10 +112,6 @@ public class CarAddActivity extends Activity{
 			Toast.makeText(CarAddActivity.this, "车辆名称不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		if(nick_name.getBytes().length > 16){
-			Toast.makeText(CarAddActivity.this, "车辆名称太长,请重新输入", Toast.LENGTH_SHORT).show();
-			return;
-		}
 		if(car_brand == null || car_brand.equals("")){
 			Toast.makeText(CarAddActivity.this, "车型不能为空", Toast.LENGTH_SHORT).show();
 			return;

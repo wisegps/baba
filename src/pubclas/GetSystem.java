@@ -38,7 +38,9 @@ public class GetSystem {
 	private static final String TAG = "GetSystem";
 
 	public static void myLog(String TAG, String Message) {
-		Log.d(TAG, Message);
+		if(Constant.isLog){
+			Log.d(TAG, Message);
+		}
 	}
 	/**获取当前时间**/
 	public static String GetNowTime() {

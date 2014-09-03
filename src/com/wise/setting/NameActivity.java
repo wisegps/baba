@@ -4,17 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import pubclas.Constant;
-import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
-
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import android.app.Activity;
@@ -22,9 +14,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,7 +23,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 public class NameActivity extends Activity{
 	private static final int update_name = 1;
@@ -62,7 +50,6 @@ public class NameActivity extends Activity{
 				break;
 			case R.id.bt_sure:				
 				updateName();
-				finish();
 				break;
 			}
 		}		
@@ -89,10 +76,7 @@ public class NameActivity extends Activity{
 		if(name.equals("")){
 			return;
 		}
-		if(name.getBytes().length > 16){
-			Toast.makeText(NameActivity.this, "昵称太长,请重新输入", Toast.LENGTH_SHORT).show();
-			return;
-		}
+		
 		Intent data = new Intent();
 		data.putExtra("name", name);
 		setResult(1, data);
@@ -102,6 +86,8 @@ public class NameActivity extends Activity{
         params.add(new BasicNameValuePair("field_type", "String"));
         params.add(new BasicNameValuePair("field_value", name));
         new Thread(new NetThread.putDataThread(handler, url, params, update_name)).start();
+
+		finish();
 	}
 	
 	/**获取个人信息**/

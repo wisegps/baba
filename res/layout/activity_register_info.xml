@@ -60,6 +60,7 @@
 			    android:layout_marginRight="@dimen/margins"	    
 			    android:background="@drawable/et_back"
 			    android:textColor="@color/blue_account"
+			    android:maxLength="11"
 			    android:hint="请输入昵称"/>
 		</LinearLayout>
 		<LinearLayout 

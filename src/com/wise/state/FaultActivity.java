@@ -406,10 +406,8 @@ public class FaultActivity extends FragmentActivity {
 			Variable.carDatas.get(index).setLat(lat);
 			Variable.carDatas.get(index).setLon(lon);
 			Variable.carDatas.get(index).setGps_time(GetSystem.ChangeTimeZone(gpsTime.substring(0, 19).replace("T", " ")));
-			System.out.println("解析位置");
 			mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
 					.location(latLng));
-			// TODO 地理位置
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -988,7 +986,6 @@ public class FaultActivity extends FragmentActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			System.out.println("action");
 			if (action.equals(Constant.A_RefreshHomeCar)) {
 				initDataView();
 				getTotalData();
@@ -998,7 +995,6 @@ public class FaultActivity extends FragmentActivity {
 				getCounter();
 				noticeFragment.ResetNotice();
 			} else if (action.equals(Constant.A_LoginOut)) {
-				System.out.println("A_LoginOut");
 				setLoginView();
 				String url = Constant.BaseUrl + "customer/0/tips";
 				getMessage(url);
@@ -1028,12 +1024,9 @@ public class FaultActivity extends FragmentActivity {
 	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
 		@Override
 		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
-			System.out.println("onGetReverseGeoCodeResult");
 			if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
 				//没有检索到结果
-				System.out.println("没有检索到结果");
 			}else{
-				System.out.println(result.getAddress());
 				Variable.carDatas.get(index).setAdress(result.getAddress());
 				String gpsTime = Variable.carDatas.get(index).getGps_time();
 				String gpsData = gpsTime.substring(0, 10);//取出日期
@@ -1055,7 +1048,7 @@ public class FaultActivity extends FragmentActivity {
 		}
 		@Override
 		public void onGetGeoCodeResult(GeoCodeResult arg0) {
-			System.out.println("onGetGeoCodeResult");
+			
 		}
 	};
 }

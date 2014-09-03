@@ -112,7 +112,7 @@ public class CarRemindUpdateActivity extends Activity{
 		int Date = Integer.valueOf(remind_time.substring(8, 10)) - 1;
 		setDate(year,Month,Date);
 		setRemind(remindData.getRemind_type());
-		et_mileage.setText(String.valueOf(remindData.getMileage()));
+		et_mileage.setText(String.valueOf(remindData.getMileages()));
 		et_content.setText(remindData.getContent());
 	}
 	/**得到车辆对应的位置**/

@@ -201,11 +201,6 @@ public class RegisterInfoActivity extends Activity {
 			Toast.makeText(RegisterInfoActivity.this, "昵称不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		//中文和英文
-		if(cust_name.getBytes().length > 16){
-			Toast.makeText(RegisterInfoActivity.this, "昵称太长,请重新输入", Toast.LENGTH_SHORT).show();
-			return;
-		}
 		String url = Constant.BaseUrl + "customer/register?auth_code=127a154df2d7850c4232542b4faa2c3d";
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
         if(isPhone){

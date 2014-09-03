@@ -148,7 +148,20 @@ public class RemindActivity extends Activity{
 			remindData.setContent(jsonObject.getString("content"));
 			remindData.setRepeat_type(jsonObject.getInt("repeat_type"));
 			remindData.setRemind_way(jsonObject.getInt("remind_way"));
-			remindData.setMileage(jsonObject.getInt("mileage"));
+			
+			if(jsonObject.opt("mileage") == null){
+				remindData.setMileages(0);
+			}else{
+				int mileage = jsonObject.getInt("mileage");
+				remindData.setMileages(mileage);
+			}
+			if(jsonObject.opt("cur_mileage") == null){
+				remindData.setCur_mileage(0);
+			}else{
+				int cur_mileage = jsonObject.getInt("cur_mileage");
+				remindData.setCur_mileage(cur_mileage);
+			}
+			
 			remindData.setObj_id(jsonObject.getInt("obj_id"));
 			remindData.setRemind_type(jsonObject.getInt("remind_type"));
 			remindData.setReminder_id(jsonObject.getString("reminder_id"));
@@ -165,14 +178,16 @@ public class RemindActivity extends Activity{
 	}
 	
 	private void ToDealAdress() {
-        Intent intent = new Intent(RemindActivity.this,
-                DealAddressActivity.class);
+		System.out.println(remindData.toString());
+        Intent intent = new Intent(RemindActivity.this,DealAddressActivity.class);
 		if(remindData.getRemind_type() == 1){
 	        intent.putExtra("Title", getString(R.string.inspection_title));
 	        intent.putExtra("Type", 1);
 		}else if(remindData.getRemind_type() == 0){
 	        intent.putExtra("Title", "驾照换证");
 	        intent.putExtra("Type", 2);
+		}else if(remindData.getRemind_type() == 5){
+			return;
 		}
         startActivity(intent);
     }

@@ -12,8 +12,12 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
+import cn.jpush.android.util.s;
+
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
+import com.wise.baba.R.string;
+
 import customView.EnergyCurveView;
 import customView.FanView;
 import customView.FanView.OnViewRotateListener;
@@ -113,7 +117,7 @@ public class FuelActivity extends Activity {
 				RangeData rangeData = rangeDatas.get(rotateRanges);
 				tv_speed_text.setText(rangeData.getSpeed_text());
 				tv_speed_avg_fuel.setText("平均油耗："+rangeData.getAvg_fuel());
-				tv_speed_fuel.setText("油耗："+rangeData.getFuel() + "L");
+				tv_speed_fuel.setText("油耗："+rangeData.getFuel());
 			}
 		});
 	}
@@ -298,11 +302,15 @@ public class FuelActivity extends Activity {
 			String total_distance = jsonObject.getString("total_distance");
 			String total_fuel = String.format("%.0f",
 					jsonObject.getDouble("total_fuel"));
-			String avg_fuel = String.format("%.1f",
-					jsonObject.getDouble("avg_fuel"));
+			String avg_fuel = jsonObject.getString("avg_fuel");
+			if(avg_fuel.equals("NaN") || avg_fuel.equals("null")){
+				avg_fuel = "0";
+			}else{
+				avg_fuel = String.format("%.1f",jsonObject.getDouble("avg_fuel"));
+			}
 			tv_distance.setText(total_distance);
 			tv_fuel.setText(total_fuel);
-			tv_avg_fuel.setText((avg_fuel.equals("null")) ? "0" : avg_fuel);
+			tv_avg_fuel.setText(avg_fuel);
 			tv_money.setText(total_fee);
 			// 周月，需要画图
 			if (index != 0) {
@@ -329,72 +337,96 @@ public class FuelActivity extends Activity {
 			JSONObject jsonObject2 = jsonObject.getJSONObject("pie");
 			
 			JSONObject idle = jsonObject2.getJSONObject("idle_range");
-			int percent = idle.getInt("percent");
-			if(percent > 0){
-				RangeData rangeData = new RangeData();
-				rangeData.setSpeed_text(idle.getString("speed_text"));
-				rangeData.setAvg_fuel(idle.getString("avg_fuel"));
-				rangeData.setPercent(percent);
-				rangeData.setFuel(idle.getDouble("fuel"));
-				rangeDatas.add(rangeData);
-				percents.add(percent);
-			}			
+			String spercent = idle.getString("percent");
+			if(spercent.equals("null")){
+				
+			}else{
+				int percent = idle.getInt("percent");
+				if(percent > 0){
+					RangeData rangeData = new RangeData();
+					rangeData.setSpeed_text(idle.getString("speed_text"));
+					rangeData.setAvg_fuel(idle.getString("avg_fuel"));
+					rangeData.setPercent(percent);
+					rangeData.setFuel(idle.getString("fuel"));
+					rangeDatas.add(rangeData);
+					percents.add(percent);
+				}
+			}						
 			
 			JSONObject speed1 = jsonObject2.getJSONObject("speed1_range");
-			int percent1 = speed1.getInt("percent");
-			if(percent1 > 0){
-				RangeData rangeData1 = new RangeData();
-				rangeData1.setSpeed_text(speed1.getString("speed_text"));
-				rangeData1.setAvg_fuel(speed1.getString("avg_fuel"));
-				rangeData1.setPercent(percent1);
-				rangeData1.setFuel(speed1.getDouble("fuel"));
-				rangeDatas.add(rangeData1);
-				percents.add(percent1);
+			String spercent1 = speed1.getString("percent");
+			if(spercent1.equals("null")){
+				
+			}else{
+				int percent1 = speed1.getInt("percent");
+				if(percent1 > 0){
+					RangeData rangeData1 = new RangeData();
+					rangeData1.setSpeed_text(speed1.getString("speed_text"));
+					rangeData1.setAvg_fuel(speed1.getString("avg_fuel"));
+					rangeData1.setPercent(percent1);
+					rangeData1.setFuel(speed1.getString("fuel"));
+					rangeDatas.add(rangeData1);
+					percents.add(percent1);
+				}
 			}			
 			
 			JSONObject speed2 = jsonObject2.getJSONObject("speed2_range");
-			int percent2 = speed2.getInt("percent");
-			if(percent2 > 0){
-				RangeData rangeData2 = new RangeData();
-				rangeData2.setSpeed_text(speed2.getString("speed_text"));
-				rangeData2.setAvg_fuel(speed2.getString("avg_fuel"));
-				rangeData2.setPercent(percent2);
-				rangeData2.setFuel(speed2.getDouble("fuel"));
-				rangeDatas.add(rangeData2);
-				percents.add(percent2);
-			}			
+			String spercent2 = speed2.getString("percent");
+			if(spercent2.equals("null")){
+				
+			}else{
+				int percent2 = speed2.getInt("percent");
+				if(percent2 > 0){
+					RangeData rangeData2 = new RangeData();
+					rangeData2.setSpeed_text(speed2.getString("speed_text"));
+					rangeData2.setAvg_fuel(speed2.getString("avg_fuel"));
+					rangeData2.setPercent(percent2);
+					rangeData2.setFuel(speed2.getString("fuel"));
+					rangeDatas.add(rangeData2);
+					percents.add(percent2);
+				}
+			}						
 			
 			JSONObject speed3 = jsonObject2.getJSONObject("speed3_range");
-			int percent3 = speed3.getInt("percent");
-			if(percent3 > 0){
-				RangeData rangeData3 = new RangeData();
-				rangeData3.setSpeed_text(speed3.getString("speed_text"));
-				rangeData3.setAvg_fuel(speed3.getString("avg_fuel"));
-				rangeData3.setPercent(percent3);
-				rangeData3.setFuel(speed3.getDouble("fuel"));
-				rangeDatas.add(rangeData3);
-				percents.add(percent3);
-			}			
+			String spercent3 = speed3.getString("percent");
+			if(spercent3.equals("null")){
+				
+			}else{
+				int percent3 = speed3.getInt("percent");
+				if(percent3 > 0){
+					RangeData rangeData3 = new RangeData();
+					rangeData3.setSpeed_text(speed3.getString("speed_text"));
+					rangeData3.setAvg_fuel(speed3.getString("avg_fuel"));
+					rangeData3.setPercent(percent3);
+					rangeData3.setFuel(speed3.getString("fuel"));
+					rangeDatas.add(rangeData3);
+					percents.add(percent3);
+				}
+			}						
 			
 			JSONObject speed4 = jsonObject2.getJSONObject("speed4_range");
-			int percent4 = speed4.getInt("percent");
-			if(percent4 > 0){
-				RangeData rangeData4 = new RangeData();
-				rangeData4.setSpeed_text(speed4.getString("speed_text"));
-				rangeData4.setAvg_fuel(speed4.getString("avg_fuel"));
-				rangeData4.setPercent(percent4);
-				rangeData4.setFuel(speed4.getDouble("fuel"));
-				rangeDatas.add(rangeData4);
-				percents.add(percent4);
-			}
-			
+			String spercent4 = speed4.getString("percent");
+			if(spercent4.equals("null")){
+				
+			}else{
+				int percent4 = speed4.getInt("percent");
+				if(percent4 > 0){
+					RangeData rangeData4 = new RangeData();
+					rangeData4.setSpeed_text(speed4.getString("speed_text"));
+					rangeData4.setAvg_fuel(speed4.getString("avg_fuel"));
+					rangeData4.setPercent(percent4);
+					rangeData4.setFuel(speed4.getString("fuel"));
+					rangeDatas.add(rangeData4);
+					percents.add(percent4);
+				}
+			}			
 			
 			fv.setDatas(percents,0);
 			if(percents.size() > 0){
 				RangeData rangeData = rangeDatas.get(0);
 				tv_speed_text.setText(rangeData.getSpeed_text());
 				tv_speed_avg_fuel.setText("平均油耗："+rangeData.getAvg_fuel());
-				tv_speed_fuel.setText("油耗："+rangeData.getFuel() + "L");
+				tv_speed_fuel.setText("油耗："+rangeData.getFuel());
 			}else{
 				tv_speed_text.setText("");
 				tv_speed_avg_fuel.setText("");
@@ -409,7 +441,7 @@ public class FuelActivity extends Activity {
 		String speed_text;
 		int percent;
 		String avg_fuel;
-		double fuel;
+		String fuel;
 		public String getSpeed_text() {
 			return speed_text;
 		}
@@ -428,10 +460,10 @@ public class FuelActivity extends Activity {
 		public void setAvg_fuel(String avg_fuel) {
 			this.avg_fuel = avg_fuel;
 		}
-		public double getFuel() {
+		public String getFuel() {
 			return fuel;
 		}
-		public void setFuel(double fuel) {
+		public void setFuel(String fuel) {
 			this.fuel = fuel;
 		}		
 	}
