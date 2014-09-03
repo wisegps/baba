@@ -9,7 +9,8 @@ public class RemindData implements Serializable{
 	String content;
 	int repeat_type;
 	int remind_way;
-	int mileage;
+	int cur_mileage;
+	int mileages;
 	int obj_id;
 	int remind_type;
 	String reminder_id;
@@ -46,12 +47,18 @@ public class RemindData implements Serializable{
 	public void setRemind_way(int remind_way) {
 		this.remind_way = remind_way;
 	}
-	public int getMileage() {
-		return mileage;
+	public int getCur_mileage() {
+		return cur_mileage;
 	}
-	public void setMileage(int mileage) {
-		this.mileage = mileage;
+	public void setCur_mileage(int cur_mileage) {
+		this.cur_mileage = cur_mileage;
 	}
+	public int getMileages() {
+		return mileages;
+	}
+	public void setMileages(int mileages) {
+		this.mileages = mileages;
+	}	
 	public int getObj_id() {
 		return obj_id;
 	}
@@ -82,14 +89,14 @@ public class RemindData implements Serializable{
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
 	@Override
 	public String toString() {
 		return "RemindData [create_time=" + create_time + ", remind_time="
 				+ remind_time + ", content=" + content + ", repeat_type="
-				+ repeat_type + ", remind_way=" + remind_way + ", mileage="
-				+ mileage + ", obj_id=" + obj_id + ", remind_type="
-				+ remind_type + ", reminder_id=" + reminder_id
-				+ ", count_time=" + count_time + "]";
-	}	   	
+				+ repeat_type + ", remind_way=" + remind_way + ", cur_mileage="
+				+ cur_mileage + ", mileages=" + mileages + ", obj_id=" + obj_id
+				+ ", remind_type=" + remind_type + ", reminder_id="
+				+ reminder_id + ", count_time=" + count_time + ", url=" + url
+				+ "]";
+	}	
 }

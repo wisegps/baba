@@ -91,6 +91,9 @@ public class RemindListActivity extends Activity {
             		int count_time = GetSystem.isTimeOut(remindData.getRemind_time());
             		if(count_time > 0){
             			tv_date.setText(GetSystem.jsTime(count_time));
+            			tv_date.setTextColor(getResources().getColor(R.color.blue_press));
+            			tv_date_last.setVisibility(View.VISIBLE);
+            			tv_date_next.setVisibility(View.VISIBLE);
             		}else{
             			tv_date.setText("已过期");
             			tv_date.setTextColor(getResources().getColor(R.color.pink));
@@ -149,17 +152,17 @@ public class RemindListActivity extends Activity {
 				remindData.setRepeat_type(jsonObject.getInt("repeat_type"));
 				remindData.setRemind_way(jsonObject.getInt("remind_way"));
 				
-				if(jsonObject.opt("mileage") == null || jsonObject.opt("cur_mileage") == null){
-					remindData.setMileage(0);
+				if(jsonObject.opt("mileage") == null){
+					remindData.setMileages(0);
 				}else{
 					int mileage = jsonObject.getInt("mileage");
+					remindData.setMileages(mileage);
+				}
+				if(jsonObject.opt("cur_mileage") == null){
+					remindData.setCur_mileage(0);
+				}else{
 					int cur_mileage = jsonObject.getInt("cur_mileage");
-					int LeftMileage = mileage - cur_mileage;
-					if(LeftMileage > 0){
-						remindData.setMileage(LeftMileage);
-					}else{
-						remindData.setMileage(0);
-					}
+					remindData.setCur_mileage(cur_mileage);
 				}
 				
 				remindData.setObj_id(jsonObject.getInt("obj_id"));
@@ -239,11 +242,15 @@ public class RemindListActivity extends Activity {
 				holder.tv_day.setTextColor(getResources().getColor(R.color.navy));
 				if(remindDatas.get(arg0).getRemind_type() == 2){
 					//保养里程提醒
-					holder.tv_remind_mileage.setText(remindDatas.get(arg0).getMileage() + "KM");
+					holder.tv_remind_mileage.setText(remindDatas.get(arg0).getCur_mileage() + "KM");
 					holder.tv_remind_mileage.setVisibility(View.VISIBLE);
 					holder.tv_mileage.setVisibility(View.VISIBLE);
 					holder.tv_mileage_unit.setVisibility(View.VISIBLE);
-					holder.tv_mileage.setText(String.valueOf(remindDatas.get(arg0).getMileage()));
+					if((remindDatas.get(arg0).getMileages() - remindDatas.get(arg0).getCur_mileage()) > 0){
+						holder.tv_mileage.setText(String.valueOf(remindDatas.get(arg0).getMileages() - remindDatas.get(arg0).getCur_mileage()));
+					}else{
+						holder.tv_mileage.setText("0");
+					}
 				}else{
 					holder.tv_mileage.setVisibility(View.GONE);
 					holder.tv_mileage_unit.setVisibility(View.GONE);

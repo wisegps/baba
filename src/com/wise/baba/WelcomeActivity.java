@@ -54,6 +54,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		ShareSDK.initSDK(this);
 		setContentView(R.layout.activity_welcome);
+		clearData();
 		GetSystem.myLog(TAG, "onCreate");
 		Intent intent = getIntent();
 		
@@ -126,6 +127,9 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 					setJpush();
 					GetCustomer();
 			        getData();		        
+				}else{
+					isLogin = false;
+					TurnActivity();
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -144,24 +148,24 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
         Editor editor1 = preferences1.edit();
         editor1.putString(Constant.sp_customer + Variable.cust_id, str);
         editor1.commit();
-		try {
-			JSONObject jsonObject = new JSONObject(str);
-			String mobile = jsonObject.getString("mobile");
-			String email = jsonObject.getString("email");
-			String password = jsonObject.getString("password");
-			Variable.cust_name = jsonObject.getString("cust_name");
-			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-	        Editor editor = preferences.edit();
-	        editor.putString(Constant.sp_pwd, password);			
-			if(mobile.equals("")){
-		        editor.putString(Constant.sp_account, email);
-			}else{
-				editor.putString(Constant.sp_account, mobile);
-			}
-	        editor.commit();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			JSONObject jsonObject = new JSONObject(str);
+//			String mobile = jsonObject.getString("mobile");
+//			String email = jsonObject.getString("email");
+//			String password = jsonObject.getString("password");
+//			Variable.cust_name = jsonObject.getString("cust_name");
+//			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+//	        Editor editor = preferences.edit();
+//	        editor.putString(Constant.sp_pwd, password);			
+//			if(mobile.equals("")){
+//		        editor.putString(Constant.sp_account, email);
+//			}else{
+//				editor.putString(Constant.sp_account, mobile);
+//			}
+//	        editor.commit();
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
 	}
 	
 	private void getData(){
@@ -264,5 +268,11 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
+	}
+	/**清空数据**/
+	private void clearData(){
+		Variable.auth_code = null;
+		Variable.cust_id = null;
+		Variable.cust_name = "";
 	}
 }

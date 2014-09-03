@@ -66,6 +66,7 @@
 					    android:textSize="@dimen/content"
 					    android:textColor="@color/navy"
 					    android:background="@null"
+					    android:maxLength="11"
 					    android:padding="10dp"/>
 			    </LinearLayout>
 			    <View 

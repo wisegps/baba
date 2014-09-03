@@ -75,8 +75,7 @@
 	        android:layout_height="wrap_content"
 	        android:textSize="@dimen/main"
 	        android:gravity="center_horizontal"
-	        android:textColor="@color/navy"
-	        android:text="距离粤B12345车辆年检"/>
+	        android:textColor="@color/navy"/>
 	    <LinearLayout 
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"

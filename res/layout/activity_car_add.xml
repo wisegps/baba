@@ -55,6 +55,7 @@
 			    android:textSize="@dimen/main"
 			    android:layout_marginTop="10dp"
 			    android:padding="10dp"   
+			    android:maxLength="11"
 			    android:background="@drawable/et_back"
 			    android:textColor="@color/navy"
 			    android:hint="必填"/>

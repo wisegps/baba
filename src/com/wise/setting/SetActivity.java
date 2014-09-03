@@ -186,24 +186,13 @@ public class SetActivity extends Activity implements TagAliasCallback{
 	        Editor editor1 = preferences1.edit();
 	        editor1.putString(Constant.sp_customer + Variable.cust_id, str);
 	        editor1.commit();
-		}		
+		}	
+		//TODO customer里的密码没变更
 		try {
 			JSONObject jsonObject = new JSONObject(str);			
 			if(jsonObject.opt("status_code") == null){
 				bt_login_out.setVisibility(View.VISIBLE);
-				String mobile = jsonObject.getString("mobile");
-				String email = jsonObject.getString("email");
-				String password = jsonObject.getString("password");
 				Variable.cust_name = jsonObject.getString("cust_name");
-				SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-		        Editor editor = preferences.edit();
-		        editor.putString(Constant.sp_pwd, password);			
-				if(mobile.equals("")){
-			        editor.putString(Constant.sp_account, email);
-				}else{
-					editor.putString(Constant.sp_account, mobile);
-				}
-		        editor.commit();
 		        
 		        Bitmap bimage = BitmapFactory.decodeFile(Constant.userIconPath + Variable.cust_id + ".png");
 		        if(bimage != null){
