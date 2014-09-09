@@ -102,12 +102,11 @@ public class TrafficCitiyActivity extends Activity {
 						Toast.makeText(TrafficCitiyActivity.this, "最多只能添加2个城市", Toast.LENGTH_SHORT).show();
 						return;
 					}
-
-					//"abbr": "粤",
 					//广东只需要添加一个城市
-					if(cityDatas.get(arg2).getAbbr().equals("粤")){
-						for(CityData cityData : chooseCityDatas){
-							if(cityData.getAbbr().equals("粤")){
+					if(cityDatas.get(arg2).getProvince().equals("广东")){
+						for(CityData cityData : chooseCityDatas){							
+							System.out.println(cityData.toString());
+							if(cityData.getProvince().equals("广东")){
 								Toast.makeText(TrafficCitiyActivity.this, "广东省内只需要添加1个城市即可", Toast.LENGTH_SHORT).show();
 								return;
 							}
@@ -238,7 +237,6 @@ public class TrafficCitiyActivity extends Activity {
 				for (int i = 0; i < jsonArray.length(); i++) {
 					CityData illegalCity = new CityData();
 					JSONObject jsonObject3 = jsonArray.getJSONObject(i);
-					illegalCity.setAbbr(jsonObject3.getString("abbr"));
 					illegalCity.setCityCode(jsonObject3.getString("city_code"));
 					illegalCity.setCityName(jsonObject3.getString("city_name"));
 					illegalCity.setEngine(jsonObject3.getInt("engine"));

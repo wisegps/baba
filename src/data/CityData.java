@@ -4,7 +4,6 @@ import java.io.Serializable;
 public class CityData implements Serializable{
 	private String cityName;  //违章城市
 	private String cityCode;   //违章城市代码
-	private String abbr;     //城市简称
 	private String province;     //省份
 	private int engine;   //是否需要发动机号
 	private int engineno;   //需要发动机号多少位
@@ -31,12 +30,6 @@ public class CityData implements Serializable{
 	}
 	public void setCityCode(String cityCode) {
 		this.cityCode = cityCode;
-	}
-	public String getAbbr() {
-		return abbr;
-	}
-	public void setAbbr(String abbr) {
-		this.abbr = abbr;
 	}	
 	public boolean isCheck() {
 		return isCheck;
@@ -83,7 +76,7 @@ public class CityData implements Serializable{
 	@Override
 	public String toString() {
 		return "CityData [cityName=" + cityName + ", cityCode=" + cityCode
-				+ ", abbr=" + abbr + ", engine=" + engine + ", engineno="
+				+ ", engine=" + engine + ", engineno="
 				+ engineno + ", frame=" + frame + ", frameno=" + frameno
 				+ ", regist=" + regist + ", registno=" + registno
 				+ ", isCheck=" + isCheck + "]";
