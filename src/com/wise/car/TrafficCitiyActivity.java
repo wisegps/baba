@@ -102,6 +102,17 @@ public class TrafficCitiyActivity extends Activity {
 						Toast.makeText(TrafficCitiyActivity.this, "最多只能添加2个城市", Toast.LENGTH_SHORT).show();
 						return;
 					}
+
+					//"abbr": "粤",
+					//广东只需要添加一个城市
+					if(cityDatas.get(arg2).getAbbr().equals("粤")){
+						for(CityData cityData : chooseCityDatas){
+							if(cityData.getAbbr().equals("粤")){
+								Toast.makeText(TrafficCitiyActivity.this, "广东省内只需要添加1个城市即可", Toast.LENGTH_SHORT).show();
+								return;
+							}
+						}
+					}
 					cityDatas.get(arg2).setCheck(true);
 					cityAdapter.notifyDataSetChanged();
 					//添加
@@ -113,8 +124,9 @@ public class TrafficCitiyActivity extends Activity {
 							break;
 						}
 					}
-					if(isNeed){
+					if(isNeed){						
 						chooseCityDatas.add(cityDatas.get(arg2));
+						System.out.println(cityDatas.get(arg2).toString());
 						chooseAdapter.notifyDataSetChanged();
 					}
 				}				
@@ -235,6 +247,7 @@ public class TrafficCitiyActivity extends Activity {
 					illegalCity.setRegistno(jsonObject3.getInt("registno"));
 					illegalCity.setFrame(jsonObject3.getInt("class"));
 					illegalCity.setFrameno(jsonObject3.getInt("classno"));
+					illegalCity.setProvince(province);
 					illegalCityList.add(illegalCity);
 				}
 				provinceModel.setIllegalCityList(illegalCityList);

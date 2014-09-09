@@ -274,6 +274,7 @@
 		    </LinearLayout>
 		    <LinearLayout
 		        android:id="@+id/ll_chart" 
+		        android:layout_marginTop="@dimen/margins"
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:orientation="vertical">
@@ -286,7 +287,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/content"
 			            android:textColor="@color/Green"
-			            android:layout_marginLeft="@dimen/margins"
+			            android:layout_marginLeft="@dimen/double_margins"
 			            android:text="L/100KM"/>
 			        <TextView 
 			            android:id="@+id/tv_chart_title"
@@ -294,7 +295,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/content"
 			            android:textColor="@color/Green"
-			            android:layout_marginRight="@dimen/margins"
+			            android:layout_marginRight="@dimen/double_margins"
 			            android:layout_alignParentRight="true"
 			            android:text="百公里驾驶油耗月曲线"/>
 			    </RelativeLayout>		                
@@ -303,38 +304,45 @@
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"/>
 		    </LinearLayout>
-		    <TextView 
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:textSize="@dimen/main"
-		        android:textColor="@color/navy"
-		        android:layout_marginTop="@dimen/double_margins"
-		        android:text="速度平均油耗图"/>
-		    <customView.FanView 
-		        android:id="@+id/fv"
-		        android:layout_marginTop="@dimen/double_margins"
-		        android:layout_marginBottom="@dimen/double_margins"
+		    <LinearLayout
+		        android:id="@+id/ll_fv" 
 		        android:layout_width="fill_parent"
-		        android:layout_height="fill_parent"/>
-		    <TextView 
-		        android:id="@+id/tv_speed_text"
-		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:textSize="@dimen/main"
-		        android:textColor="@color/navy"/>
-		    <TextView 
-		        android:id="@+id/tv_speed_avg_fuel"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:textSize="@dimen/main"
-		        android:textColor="@color/navy"/>
-		    <TextView 
-		        android:id="@+id/tv_speed_fuel"
-		        android:layout_marginBottom="@dimen/double_margins"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:textSize="@dimen/main"
-		        android:textColor="@color/navy"/>
+		        android:gravity="center_horizontal"
+		        android:orientation="vertical">
+		        <TextView 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:textSize="@dimen/main"
+			        android:textColor="@color/Green"
+			        android:layout_marginTop="@dimen/double_margins"
+			        android:text="速度平均油耗图"/>
+			    <customView.FanView 
+			        android:id="@+id/fv"
+			        android:layout_marginTop="@dimen/double_margins"
+			        android:layout_marginBottom="@dimen/double_margins"
+			        android:layout_width="fill_parent"
+			        android:layout_height="fill_parent"/>
+			    <TextView 
+			        android:id="@+id/tv_speed_text"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:textSize="@dimen/main"
+			        android:textColor="@color/navy"/>
+			    <TextView 
+			        android:id="@+id/tv_speed_avg_fuel"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:textSize="@dimen/main"
+			        android:textColor="@color/navy"/>
+			    <TextView 
+			        android:id="@+id/tv_speed_fuel"
+			        android:layout_marginBottom="@dimen/double_margins"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:textSize="@dimen/main"
+			        android:textColor="@color/navy"/>
+		    </LinearLayout>		    
         </LinearLayout>
     </ScrollView>    
 </RelativeLayout>

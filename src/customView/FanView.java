@@ -54,29 +54,38 @@ public class FanView extends View {
 		setMeasuredDimension(Width*2, Width*2);
 	}
 	int startRange = 0;
-	List<Integer> Datas;
+	
 	/**
 	 * 
 	 * @param Datas
 	 * @param position 指定那个位置
 	 */
-	public void setDatas(List<Integer> Datas,int position){
+	public void setDatas(List<com.wise.state.FuelActivity.RangeData> Datas,int position){
 		rangeDatas.clear();
 		RecordAngle = -90;
 		currentRotateRanges = 0;
 		startRange = 0;
-		this.Datas = Datas;
+		
 		//把百分比转成对应的度数
 		for(int i = 0 ; i < Datas.size() ; i++){
-			RangeData rangeData = new RangeData();			
-			if(i == (Datas.size() - 1)){
+			RangeData rangeData = new RangeData();
+			String text = Datas.get(i).getSpeed_text();
+			int index = text.indexOf("(");
+			if(index != -1){
+				text = text.substring(0, index);
+			}
+			if(i == (Datas.size() - 1)){				
 				rangeData.setStartRanges(startRange);
+				rangeData.setStartRotateRanges(startRange);
 				rangeData.setAnges(360 - startRange);
+				rangeData.setText(text);
 				rangeDatas.add(rangeData);
 			}else{
-				int range = Datas.get(i) * 360/100;
+				int range = Datas.get(i).getPercent() * 360/100;
 				rangeData.setStartRanges(startRange);
+				rangeData.setStartRotateRanges(startRange);
 				rangeData.setAnges(range);
+				rangeData.setText(text);
 				rangeDatas.add(rangeData);
 				startRange += range;
 			}
@@ -85,13 +94,11 @@ public class FanView extends View {
 			this.OnTouchIndex = position;
 			RangeData rangeData = rangeDatas.get(OnTouchIndex);		
 			int centerRanges = (rangeData.getAnges() / 2 + rangeData.getStartRanges())%360;
-			System.out.println("centerRanges = " + centerRanges);
 			if (centerRanges > 180) {
 				rotateRanges = 180 - centerRanges;
 			} else {
 				rotateRanges = 180 - centerRanges;
 			}
-			System.out.println("rotateRanges = " + rotateRanges);
 			// 重新计算位置
 			jsRotate(rotateRanges);
 			RecordAngle = (RecordAngle + rotateRanges) % 360;			
@@ -101,7 +108,22 @@ public class FanView extends View {
 	List<RangeData> rangeDatas = new ArrayList<RangeData>();
 	class RangeData{
 		int startRanges;
+		int startRotateRanges;
 		int anges;
+		String text;
+				
+		public String getText() {
+			return text;
+		}
+		public void setText(String text) {
+			this.text = text;
+		}
+		public int getStartRotateRanges() {
+			return startRotateRanges;
+		}
+		public void setStartRotateRanges(int startRotateRanges) {
+			this.startRotateRanges = startRotateRanges;
+		}
 		public int getStartRanges() {
 			return startRanges;
 		}
@@ -130,22 +152,6 @@ public class FanView extends View {
 		postInvalidate();
 	}
 	
-	private void setPosition(int positon){
-		this.OnTouchIndex = positon;
-		RangeData rangeData = rangeDatas.get(OnTouchIndex);		
-		int centerRanges = (rangeData.getAnges() / 2 + rangeData.getStartRanges())%360;
-		System.out.println("centerRanges = " + centerRanges);
-		if (centerRanges > 180) {
-			rotateRanges = 180 - centerRanges;
-		} else {
-			rotateRanges = 180 - centerRanges;
-		}
-		System.out.println("rotateRanges = " + rotateRanges);
-		// 重新计算位置
-		jsRotate(rotateRanges);
-		RecordAngle = (RecordAngle + rotateRanges) % 360;
-		postInvalidate();
-	}
 	Paint p = new Paint();
 
 	@Override
@@ -186,8 +192,18 @@ public class FanView extends View {
 						onViewRotateListener.viewRotate(OnTouchIndex);
 					}
 				}
-			}			
+			}
 			canvas.drawArc(oval, startAngle, rangeData.getAnges(), true, p);
+			//写字
+			int nowCenterRanges = (rangeData.getAnges() / 2 + startAngle + 90)%360;
+			double nowX = Width + Width * Math.sin(nowCenterRanges*Math.PI/180)*0.6;
+			double nowY = Width - Width * Math.cos(nowCenterRanges*Math.PI/180)*0.6;
+			p.setColor(Color.RED);
+			p.setTextSize(30);
+			String str = rangeData.getText();
+			int w = (int) p.measureText(str)/2;
+			canvas.drawText(str, (float)nowX - w, (float)nowY, p);
+
 			startAngle += rangeData.getAnges();
 		}
 		p.setColor(Color.WHITE);
@@ -240,13 +256,11 @@ public class FanView extends View {
 			if(OnTouchIndex != -1){
 				RangeData rangeData = rangeDatas.get(OnTouchIndex);		
 				int centerRanges = (rangeData.getAnges() / 2 + rangeData.getStartRanges())%360;
-				System.out.println("centerRanges = " + centerRanges);
 				if (centerRanges > 180) {
 					rotateRanges = 180 - centerRanges;
 				} else {
 					rotateRanges = 180 - centerRanges;
 				}
-				System.out.println("rotateRanges = " + rotateRanges);
 				// 重新计算位置
 				jsRotate(rotateRanges);
 				isRotate = true;
@@ -260,13 +274,11 @@ public class FanView extends View {
 			if(OnTouchIndex != -1){
 				RangeData rangeData = rangeDatas.get(OnTouchIndex);		
 				int centerRanges = (rangeData.getAnges() / 2 + rangeData.getStartRanges())%360;
-				System.out.println("centerRanges = " + centerRanges);
 				if (centerRanges > 180) {
 					rotateRanges = 180 - centerRanges;
 				} else {
 					rotateRanges = 180 - centerRanges;
 				}
-				System.out.println("rotateRanges = " + rotateRanges);
 				// 重新计算位置
 				jsRotate(rotateRanges);
 				isRotate = true;
@@ -276,7 +288,7 @@ public class FanView extends View {
 		}
 		return true;
 	}
-
+	/**计算旋转后的角度**/
 	private void jsRotate(int rotate) {
 		for (int i = 0; i < rangeDatas.size(); i++) {
 			RangeData rangeData = rangeDatas.get(i);
@@ -287,6 +299,13 @@ public class FanView extends View {
 				newRanges += 360;
 			}
 			rangeData.setStartRanges(newRanges);
+		}
+	}
+	/**重置旋转中的角度**/
+	private void resetRotate(){
+		for (int i = 0; i < rangeDatas.size(); i++) {
+			RangeData rangeData = rangeDatas.get(i);
+			rangeData.setStartRotateRanges(rangeData.getStartRanges());
 		}
 	}
 
@@ -309,6 +328,7 @@ public class FanView extends View {
 							isRotate = false;
 							RecordAngle = (RecordAngle + rotateRanges) % 360;
 							currentRotateRanges = 0;
+							resetRotate();
 						}else{
 							currentRotateRanges += AveRotate;							
 						}
@@ -321,6 +341,7 @@ public class FanView extends View {
 							//TODO 矫正下
 							RecordAngle = (RecordAngle + rotateRanges) % 360;
 							currentRotateRanges = 0;
+							resetRotate();
 						}else{
 							currentRotateRanges -= AveRotate;	//每次旋转1读
 						}						

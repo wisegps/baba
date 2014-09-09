@@ -40,7 +40,7 @@ import android.widget.TextView;
  *
  */
 public class FaultDetectionActivity extends Activity{
-	
+	private static final String TAG = "FaultDetectionActivity";
 	private static final int getData = 1;
 	private static final int refresh = 2;
 	private static final int getFault = 3;
@@ -96,7 +96,7 @@ public class FaultDetectionActivity extends Activity{
 
 		fristSetLeftRight();
 		initDataView();	
-		handler.postDelayed(new Runnable() {			
+		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
 				hs_car.snapFastToScreen(index);
@@ -292,6 +292,7 @@ public class FaultDetectionActivity extends Activity{
 			CarView carView = new CarView();
 			carView.setmTasksView(mTasksView);
 			carView.setTv_score(tv_score);
+			carView.setTv_title(tv_title);
 			carViews.add(carView);
 
 
@@ -310,6 +311,7 @@ public class FaultDetectionActivity extends Activity{
 					int health_score = jsonObject.getInt("health_score");
 					carView.getmTasksView().setProgress(health_score);
 					tv_score.setText(String.valueOf(health_score));
+					tv_title.setText("健康指数");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -554,7 +556,7 @@ public class FaultDetectionActivity extends Activity{
 		Interval = (mCurrentProgress - mTotalProgress)/Point;
 		carViews.get(index).getmTasksView().setProgress(100);
 		carViews.get(index).getTv_score().setText(String.valueOf(mCurrentProgress));
-		//TODO 初始化数据
+		//始化数据
 		tv_guzhang.setText("故障检测中...");
 		tv_guzhang.setTextColor(getResources().getColor(R.color.blue_press));
 		Drawable drawable= getResources().getDrawable(R.drawable.icon_guzhang_normal);
@@ -817,8 +819,10 @@ public class FaultDetectionActivity extends Activity{
 			//体检结果存起来
 			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 	        Editor editor = preferences.edit();
-	        editor.putString(Constant.sp_health_score + Variable.carDatas.get(index).getObj_id(), str);
+	        editor.putString(Constant.sp_health_score + Variable.carDatas.get(index).getObj_id(), str);	        
 	        editor.commit();
+	        carViews.get(index).getTv_title().setText("健康指数");
+	        //TODO  
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -843,5 +847,19 @@ public class FaultDetectionActivity extends Activity{
 	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(resultCode == 1){//绑定终端返回
+			initDataView();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					hs_car.snapFastToScreen(index);
+					getSpHistoryData(index);
+				}
+			}, 50);
+		}
 	}
 }

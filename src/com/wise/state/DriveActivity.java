@@ -117,28 +117,41 @@ public class DriveActivity extends Activity{
 		}
 	}
 	private void jsonData(String Data){
-		try {
-			JSONObject jsonObject = new JSONObject(Data);
-			int drive_score = jsonObject.getInt("drive_score");
-			int safe_score = jsonObject.getInt("safe_score");
-			int eco_score = jsonObject.getInt("eco_score");
-			int env_score = jsonObject.getInt("env_score");
-			String drive_advice = jsonObject.getString("drive_advice");
-			String total_fee = jsonObject.getString("total_fee");
-			String total_distance = jsonObject.getString("total_distance");
-			String total_fuel = jsonObject.getString("total_fuel");
-			String avg_fuel = jsonObject.getString("avg_fuel");
-			mTasksView.setProgress(drive_score);
-			tv_advice.setText(drive_advice);
-			tv_safe.setText(""+safe_score);
-			tv_eco.setText(""+eco_score);
-			tv_env.setText(""+env_score);
-			tv_distance.setText(total_distance);
-			tv_fuel.setText(total_fuel);
-			tv_avg_fuel.setText(avg_fuel.equals("null")? "0":avg_fuel);
-			tv_drive.setText(""+drive_score);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		System.out.println("Data = " + Data);
+		if(Data.equals("")){
+			mTasksView.setProgress(0);
+			tv_advice.setText("");
+			tv_safe.setText(""+0);
+			tv_eco.setText(""+0);
+			tv_env.setText(""+0);
+			tv_distance.setText(""+0);
+			tv_fuel.setText(""+0);
+			tv_avg_fuel.setText(""+0);
+			tv_drive.setText(""+0);
+		}else{
+			try {
+				JSONObject jsonObject = new JSONObject(Data);
+				int drive_score = jsonObject.getInt("drive_score");
+				int safe_score = jsonObject.getInt("safe_score");
+				int eco_score = jsonObject.getInt("eco_score");
+				int env_score = jsonObject.getInt("env_score");
+				String drive_advice = jsonObject.getString("drive_advice");
+				String total_fee = jsonObject.getString("total_fee");
+				String total_distance = jsonObject.getString("total_distance");
+				String total_fuel = jsonObject.getString("total_fuel");
+				String avg_fuel = jsonObject.getString("avg_fuel");
+				mTasksView.setProgress(drive_score);
+				tv_advice.setText(drive_advice);
+				tv_safe.setText(""+safe_score);
+				tv_eco.setText(""+eco_score);
+				tv_env.setText(""+env_score);
+				tv_distance.setText(total_distance);
+				tv_fuel.setText(total_fuel);
+				tv_avg_fuel.setText(avg_fuel.equals("null")? "0":avg_fuel);
+				tv_drive.setText(""+drive_score);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}		
 	}
 }

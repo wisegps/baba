@@ -199,11 +199,10 @@ public class FaultActivity extends FragmentActivity {
 		intentFilter.addAction(Constant.A_RefreshHomeCar);
 		intentFilter.addAction(Constant.A_LoginOut);
 		registerReceiver(myBroadCastReceiver, intentFilter);
-		getWeather();
+		//getWeather();
 		new CycleNstvThread().start();
 		// getVersion();
 
-		UpdateConfig.setDebug(true);
 		UmengUpdateAgent.update(this);
 	}
 
@@ -439,7 +438,9 @@ public class FaultActivity extends FragmentActivity {
 		}
 	}
 
-	/** 获取天气 **/
+	/**获取天气 
+	 * onResume里获取，应为在设置页面改了城市后需要刷新
+	 **/
 	private void getWeather() {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
@@ -541,6 +542,7 @@ public class FaultActivity extends FragmentActivity {
 		hs_car.removeAllViews();
 		carViews.clear();
 		for (int i = 0; i < Variable.carDatas.size(); i++) {
+			GetSystem.myLog(TAG, Variable.carDatas.get(i).toString());
 			View v = LayoutInflater.from(this).inflate(R.layout.item_fault,null);
 			hs_car.addView(v);
 			LinearLayout ll_adress = (LinearLayout)v.findViewById(R.id.ll_adress);
@@ -653,6 +655,7 @@ public class FaultActivity extends FragmentActivity {
 	protected void onResume() {
 		super.onResume();
 		setNotiView();
+		getWeather();
 		MobclickAgent.onResume(this);
 	}
 
@@ -944,8 +947,7 @@ public class FaultActivity extends FragmentActivity {
 			// 修改车辆信息
 			initDataView();
 		} else if (requestCode == 0) {
-			// 修改城市返回
-			getWeather();
+			//修改城市返回,在onResume里刷新了城市
 		} else if (requestCode == 1) {
 			// 体检返回重新布局
 			initDataView();
@@ -987,6 +989,7 @@ public class FaultActivity extends FragmentActivity {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			if (action.equals(Constant.A_RefreshHomeCar)) {
+				GetSystem.myLog(TAG, "A_RefreshHomeCar");
 				initDataView();
 				getTotalData();
 				String url = Constant.BaseUrl + "customer/" + Variable.cust_id
@@ -1027,23 +1030,27 @@ public class FaultActivity extends FragmentActivity {
 			if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
 				//没有检索到结果
 			}else{
-				Variable.carDatas.get(index).setAdress(result.getAddress());
-				String gpsTime = Variable.carDatas.get(index).getGps_time();
-				String gpsData = gpsTime.substring(0, 10);//取出日期
-				String nowData = GetSystem.GetNowDay();
-				String showTime = "";
-				if(gpsData.equals(nowData)){
-					showTime = gpsTime.substring(11, 16);
-				}else if(gpsData.equals(GetSystem.GetNextData(nowData, -1))){
-					showTime = "昨天"+gpsTime.substring(11, 16);
-				}else if(gpsData.equals(GetSystem.GetNextData(nowData, -2))){
-					showTime = "前天"+gpsTime.substring(11, 16);
-				}else{
-					showTime = gpsTime.substring(5, 16);
-				}
-				//TODO 显示时间 	
-				carViews.get(index).getLl_adress().setVisibility(View.VISIBLE);
-				carViews.get(index).getTv_adress().setText(result.getAddress() + "  " + showTime);
+				try {
+					Variable.carDatas.get(index).setAdress(result.getAddress());
+					String gpsTime = Variable.carDatas.get(index).getGps_time();
+					String gpsData = gpsTime.substring(0, 10);//取出日期
+					String nowData = GetSystem.GetNowDay();
+					String showTime = "";
+					if(gpsData.equals(nowData)){
+						showTime = gpsTime.substring(11, 16);
+					}else if(gpsData.equals(GetSystem.GetNextData(nowData, -1))){
+						showTime = "昨天"+gpsTime.substring(11, 16);
+					}else if(gpsData.equals(GetSystem.GetNextData(nowData, -2))){
+						showTime = "前天"+gpsTime.substring(11, 16);
+					}else{
+						showTime = gpsTime.substring(5, 16);
+					}
+					//TODO 显示时间 	
+					carViews.get(index).getLl_adress().setVisibility(View.VISIBLE);
+					carViews.get(index).getTv_adress().setText(result.getAddress() + "  " + showTime);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}				
 			}
 		}
 		@Override

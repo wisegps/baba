@@ -8,7 +8,7 @@ import android.os.Environment;
  * @author honesty
  */
 public class Constant {
-	public static boolean isLog = true;
+	public static boolean isLog = false;
 	/**在阿里云上url**/
 	public static String oss_url = "http://img.bibibaba.cn/";
 	//public static String oss_url = "http://baba-img.oss-cn-hangzhou.aliyuncs.com/photo/";
@@ -19,8 +19,8 @@ public class Constant {
 	/**accessKey**/
 	public static String oss_accessKey = "iAxAHoAuG1ZYwjIRLfyYKK2oF9WcCe";
     /**url,42.121.109.221:8002**/
-    public static String BaseUrl = "http://42.121.109.221:8002/";	
-    //public static String BaseUrl = "http://api.bibibaba.cn/";	
+    //public static String BaseUrl = "http://42.121.109.221:8002/";	
+    public static String BaseUrl = "http://api.bibibaba.cn/";	
     /**图片地址**/
     public static String ImageUrl = "http://img.wisegps.cn/logo/";
     /**图片路径存储地址**/

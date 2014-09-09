@@ -9,6 +9,7 @@ import cn.jpush.android.api.TagAliasCallback;
 import cn.sharesdk.framework.ShareSDK;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
+import com.umeng.update.UpdateConfig;
 import com.wise.state.FaultActivity;
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
@@ -68,7 +69,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		ll_wait.startWheel();
 		
 		getLogin();
-		
+		MobclickAgent.setDebugMode(true);
+		UpdateConfig.setDebug(true);
 		FeedbackAgent agent = new FeedbackAgent(this);
 		agent.sync();
 	}
@@ -100,9 +102,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 	private void getLogin() {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-		//13138154075
 		String sp_account = preferences.getString(Constant.sp_account, "");
-		//e10adc3949ba59abbe56e057f20f883e
 		String sp_pwd = preferences.getString(Constant.sp_pwd, "");
 		new WaitThread().start();
 		if (sp_account.equals("")) {
@@ -269,10 +269,11 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		super.onPause();
 		MobclickAgent.onPause(this);
 	}
-	/**清空数据**/
+	/**清空静态数据**/
 	private void clearData(){
 		Variable.auth_code = null;
 		Variable.cust_id = null;
 		Variable.cust_name = "";
+		Variable.carDatas.clear();
 	}
 }

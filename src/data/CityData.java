@@ -5,6 +5,7 @@ public class CityData implements Serializable{
 	private String cityName;  //违章城市
 	private String cityCode;   //违章城市代码
 	private String abbr;     //城市简称
+	private String province;     //省份
 	private int engine;   //是否需要发动机号
 	private int engineno;   //需要发动机号多少位
 	private int frame;  //是否需要车架号
@@ -12,6 +13,13 @@ public class CityData implements Serializable{
 	private int regist;   //是否需要登记证号
 	private int registno;  //需要登记证号多少位
 	private boolean isCheck;
+		
+	public String getProvince() {
+		return province;
+	}
+	public void setProvince(String province) {
+		this.province = province;
+	}
 	public String getCityName() {
 		return cityName;
 	}

@@ -3,21 +3,15 @@ package com.wise.state;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
-import cn.jpush.android.util.s;
-
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
-import com.wise.baba.R.string;
-
 import customView.EnergyCurveView;
 import customView.FanView;
 import customView.FanView.OnViewRotateListener;
@@ -49,7 +43,7 @@ public class FuelActivity extends Activity {
 
 	EnergyCurveView ecv_fuel;
 	private DisplayMetrics dm = new DisplayMetrics();
-	LinearLayout ll_chart;
+	LinearLayout ll_chart,ll_fv;
 	private TasksCompletedView mTasksView;
 	TextView tv_date, tv_money;
 	TextView tv_month, tv_week, tv_day;
@@ -77,6 +71,7 @@ public class FuelActivity extends Activity {
 		tv_speed_avg_fuel = (TextView)findViewById(R.id.tv_speed_avg_fuel);
 		tv_speed_fuel = (TextView)findViewById(R.id.tv_speed_fuel);
 		ll_chart = (LinearLayout) findViewById(R.id.ll_chart);
+		ll_fv = (LinearLayout) findViewById(R.id.ll_fv);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		TextView tv_name = (TextView) findViewById(R.id.tv_name);
@@ -300,6 +295,18 @@ public class FuelActivity extends Activity {
 			String total_fee = String.format("%.0f",
 					jsonObject.getDouble("total_fee"));
 			String total_distance = jsonObject.getString("total_distance");
+			
+			if(total_fee.equals("0") && total_distance.equals("0")){
+				ll_chart.setVisibility(View.GONE);
+				ll_fv.setVisibility(View.GONE);
+			}else{
+				if(index == 0){
+					ll_chart.setVisibility(View.GONE);
+				}else{
+					ll_chart.setVisibility(View.VISIBLE);
+				}
+				ll_fv.setVisibility(View.VISIBLE);
+			}
 			String total_fuel = String.format("%.0f",
 					jsonObject.getDouble("total_fuel"));
 			String avg_fuel = jsonObject.getString("avg_fuel");
@@ -333,7 +340,7 @@ public class FuelActivity extends Activity {
 			}
 			//TODO 画饼图
 			rangeDatas.clear();
-			List<Integer> percents = new ArrayList<Integer>();
+			
 			JSONObject jsonObject2 = jsonObject.getJSONObject("pie");
 			
 			JSONObject idle = jsonObject2.getJSONObject("idle_range");
@@ -349,7 +356,6 @@ public class FuelActivity extends Activity {
 					rangeData.setPercent(percent);
 					rangeData.setFuel(idle.getString("fuel"));
 					rangeDatas.add(rangeData);
-					percents.add(percent);
 				}
 			}						
 			
@@ -366,7 +372,6 @@ public class FuelActivity extends Activity {
 					rangeData1.setPercent(percent1);
 					rangeData1.setFuel(speed1.getString("fuel"));
 					rangeDatas.add(rangeData1);
-					percents.add(percent1);
 				}
 			}			
 			
@@ -383,7 +388,6 @@ public class FuelActivity extends Activity {
 					rangeData2.setPercent(percent2);
 					rangeData2.setFuel(speed2.getString("fuel"));
 					rangeDatas.add(rangeData2);
-					percents.add(percent2);
 				}
 			}						
 			
@@ -400,7 +404,6 @@ public class FuelActivity extends Activity {
 					rangeData3.setPercent(percent3);
 					rangeData3.setFuel(speed3.getString("fuel"));
 					rangeDatas.add(rangeData3);
-					percents.add(percent3);
 				}
 			}						
 			
@@ -417,12 +420,11 @@ public class FuelActivity extends Activity {
 					rangeData4.setPercent(percent4);
 					rangeData4.setFuel(speed4.getString("fuel"));
 					rangeDatas.add(rangeData4);
-					percents.add(percent4);
 				}
 			}			
 			
-			fv.setDatas(percents,0);
-			if(percents.size() > 0){
+			fv.setDatas(rangeDatas,0);
+			if(rangeDatas.size() > 0){
 				RangeData rangeData = rangeDatas.get(0);
 				tv_speed_text.setText(rangeData.getSpeed_text());
 				tv_speed_avg_fuel.setText("平均油耗："+rangeData.getAvg_fuel());
@@ -437,7 +439,7 @@ public class FuelActivity extends Activity {
 		}
 	}
 	List<RangeData> rangeDatas = new ArrayList<RangeData>();
-	class RangeData{
+	public class RangeData{
 		String speed_text;
 		int percent;
 		String avg_fuel;

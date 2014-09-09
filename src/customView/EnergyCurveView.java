@@ -20,7 +20,7 @@ import android.view.View;
 public class EnergyCurveView extends View{
 	
 	Context context;
-	/**画布宽度(去掉边距)**/
+	/**x轴长 画布宽度(去掉边距)**/
 	private float realWidth = 300;
 	/**画布高度**/
 	private float realHeight = 150;
@@ -28,13 +28,15 @@ public class EnergyCurveView extends View{
 	private double scale = 0.6;
 	/**字体大小，用来控制画布的边距**/
 	int fontSize;
+	/**边距**/
+	int padding = 20;
 	
 	/**y轴最高刻度 距离 y轴绘制的间距**/
 	private static final float WEIGHT = 30;
 	/**距离x轴的边距**/
 	private static final float spacing_x = 30;
 	/**距离左边的间距**/
-	private static int SPACING = 35;
+	private static int SPACING = 60;
 	private ArrayList<PointF> points = new ArrayList<PointF>(); // 有消耗的电量时间点
 	private float spacingOfX; // X间距
 	private float spacingOfY; // Y间距,每一度的间距
@@ -72,30 +74,29 @@ public class EnergyCurveView extends View{
 		paint.setAntiAlias(true);
 		//TODO 绘制
 		float value = maxEnergy.value/5;
-		//mGradientHeight
 		//y轴
-		canvas.drawLine(SPACING, 0, SPACING, realHeight, paint);
+		canvas.drawLine(SPACING+padding, 0, SPACING+padding, realHeight, paint);
 		//x轴
-		canvas.drawLine(SPACING, realHeight, SPACING + realWidth, realHeight, paint);
+		canvas.drawLine(SPACING+padding, realHeight, SPACING+padding + realWidth, realHeight, paint);
 		float xSpacing = (realWidth - fontSize - spacing_x)/6;
         paint.setTextSize(fontSize);
         if((stop - start + 1)%7 == 0){
         	int sp = (stop - start + 1)/7;
         	for(int i = 0 ; i <= 6 ; i++){//水平刻度
     		    String Date = (i * sp ) + sp + "" ;
-    		    canvas.drawText(Date,spacing_x + SPACING + i * xSpacing - fontSize/2,realHeight + (int)(fontSize * 1.5),paint);
+    		    canvas.drawText(Date,padding +spacing_x + SPACING + i * xSpacing - fontSize/2,realHeight + (int)(fontSize * 1.5),paint);
             }
         }else{
         	if((stop - start) < 7){
         		float xSpacing1 = (realWidth - fontSize - spacing_x)/(stop - start);
         		for(int i = 0 ; i < (stop - start + 1) ; i++){
-            		float x = fontSize + spacing_x + i*xSpacing1;
+            		float x = fontSize + spacing_x + i*xSpacing1+padding;
         		    canvas.drawText("" + (start + i),x,realHeight + (int)(fontSize * 1.5),paint);
             	}
         	}else{
         		int value1 = (stop - start)/7 + 1;
         		for(int i = 0 ; i < 7 ; i++){
-            		float x = fontSize + spacing_x + i*xSpacing - fontSize/2;
+            		float x = padding+fontSize + spacing_x + i*xSpacing - fontSize/2;
         		    canvas.drawText(""+(int)(value1 * i),x,realHeight + (int)(fontSize * 1.5),paint);
             	}
         	}        	
@@ -106,11 +107,11 @@ public class EnergyCurveView extends View{
 			paint.setStyle(Paint.Style.FILL);//设置填满  
 			paint.setStrokeWidth(3);
 			float y = realHeight - (value * i) * spacingOfY; //竖字Y轴坐标
-			canvas.drawText(""+(int)(value * i), fontSize/2,y + fontSize/2,paint);//Y轴坐标
+			canvas.drawText(""+(int)(value * i),padding + fontSize/2,y + fontSize/2,paint);//Y轴坐标
 			
 			Path path = new Path();
-			path.moveTo(SPACING, y);       
-			path.lineTo(SPACING + realWidth,y);
+			path.moveTo(padding+SPACING, y);       
+			path.lineTo(padding+SPACING + realWidth,y);
 			paint.setStyle(Paint.Style.STROKE);
 			paint.setStrokeWidth(1);
 			PathEffect effects = new DashPathEffect(new float[]{4,8},1);
@@ -150,7 +151,8 @@ public class EnergyCurveView extends View{
 	/**传入手机的分辨率**/
 	public void setViewWidth(int width) {
 		this.width = width;
-		realWidth = (int) (width - fontSize * 3);
+		padding = fontSize;
+		realWidth = (int) (width - fontSize * 3 - padding * 2);
 		realHeight = (float) (width * scale) - fontSize * 2;
 	}
 
@@ -167,7 +169,7 @@ public class EnergyCurveView extends View{
 			float f = energys.get(i).value;
 			float y = (realHeight - f * spacingOfY);
 			
-			float x = (i * spacingOfX + SPACING + spacing_x);
+			float x = (i * spacingOfX + SPACING + spacing_x + padding);
 			PointF point = new PointF(x, y);
 			points.add(point);
 		}
