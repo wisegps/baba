@@ -78,15 +78,24 @@ public class JsonData {
 				JSONArray jsonArray2 = new JSONArray(jsonObject.getString("vio_citys"));
 				ArrayList<String> vio_citys = new ArrayList<String>();
 				ArrayList<String> vio_citys_code = new ArrayList<String>();
+				ArrayList<String> provinces = new ArrayList<String>();
 				for(int j = 0 ; j < jsonArray2.length() ; j++){
 					JSONObject jsonObject2 = jsonArray2.getJSONObject(j);
 					String vio_city_name = jsonObject2.getString("vio_city_name");
 					String vio_location = jsonObject2.getString("vio_location");
+					String province = "";
+					if(jsonObject2.opt("province") == null){
+						
+					}else{
+						province = jsonObject2.getString("province");
+					}
 					vio_citys.add(vio_city_name);
 					vio_citys_code.add(vio_location);
+					provinces.add(province);
 				}
 				carData.setVio_citys(vio_citys);
 				carData.setVio_citys_code(vio_citys_code);
+				carData.setProvince(provinces);
 				carDatas.add(carData);
 			}
 			return carDatas;

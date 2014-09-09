@@ -295,6 +295,7 @@ public class CarUpdateActivity extends Activity{
 			CityData cityData = new CityData();
 			cityData.setCityName(carData.getVio_citys().get(i));
 			cityData.setCityCode(carData.getVio_citys_code().get(i));
+			cityData.setProvince(carData.getProvince().get(i));
 			chooseCityDatas.add(cityData);
 		}
 		tv_city.setText(citys);

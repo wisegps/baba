@@ -57,6 +57,7 @@ public class CarData {
 	public double Lon;
 	public ArrayList<String> vio_citys;
 	public ArrayList<String> vio_citys_code;
+	public ArrayList<String> province;
 	public String getCar_brand_id() {
 		return car_brand_id;
 	}
@@ -269,6 +270,12 @@ public class CarData {
 	public void setLimit(String limit) {
 		this.limit = limit;
 	}
+	public ArrayList<String> getProvince() {
+		return province;
+	}
+	public void setProvince(ArrayList<String> province) {
+		this.province = province;
+	}
 	@Override
 	public String toString() {
 		return "CarData [obj_id=" + obj_id + ", car_brand=" + car_brand
@@ -290,6 +297,7 @@ public class CarData {
 				+ logoPath + ", device_id=" + device_id + ", serial=" + serial
 				+ ", Type=" + Type + ", Adress=" + Adress + ", gps_time="
 				+ gps_time + ", Lat=" + Lat + ", Lon=" + Lon + ", vio_citys="
-				+ vio_citys + ", vio_citys_code=" + vio_citys_code + "]";
-	}			       
+				+ vio_citys + ", vio_citys_code=" + vio_citys_code
+				+ ", province=" + province + "]";
+	}				       
 }
