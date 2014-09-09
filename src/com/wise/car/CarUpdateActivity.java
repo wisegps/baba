@@ -15,6 +15,8 @@ import pubclas.Variable;
 
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
+import com.wise.violation.ShortProvincesActivity;
+
 import data.CarData;
 import data.CityData;
 import android.app.Activity;
@@ -25,6 +27,7 @@ import android.os.Message;
 import android.view.View.OnClickListener;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -117,6 +120,11 @@ public class CarUpdateActivity extends Activity {
 				break;
 			case R.id.tv_year_check:
 				ShowDate(year_check);
+				break;
+			case R.id.choose_car_number:
+				Intent intent2 = new Intent(CarUpdateActivity.this,
+						ShortProvincesActivity.class);
+				startActivityForResult(intent2, 3);
 				break;
 			}
 		}
@@ -325,6 +333,8 @@ public class CarUpdateActivity extends Activity {
 		tv_city.setText(citys);
 	}
 
+	Button btn_choose_car_nub;
+
 	private void init() {
 		ll_engine = (LinearLayout) findViewById(R.id.ll_engine);
 		ll_frame = (LinearLayout) findViewById(R.id.ll_frame);
@@ -355,6 +365,9 @@ public class CarUpdateActivity extends Activity {
 		tv_buy_date.setOnClickListener(onClickListener);
 		tv_year_check = (TextView) findViewById(R.id.tv_year_check);
 		tv_year_check.setOnClickListener(onClickListener);
+
+		btn_choose_car_nub = (Button) findViewById(R.id.choose_car_number);
+		btn_choose_car_nub.setOnClickListener(onClickListener);
 	}
 
 	private String jsonList(List<CityData> chooseCityDatas) {
