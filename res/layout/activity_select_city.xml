@@ -43,15 +43,15 @@
         android:paddingRight="@dimen/margins"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:background="@color/gray_weak"
-        android:textColor="@color/common_inactive"
+        android:background="@color/Green_collection"
+        android:textColor="@color/navy_light"
         android:text="当前定位"/>
 	<TextView 
         android:id="@+id/tv_activity_select_city_location"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/margins"
-        android:textColor="@color/common"
+        android:textColor="@color/navy"
         android:background="@drawable/bg_item_selector"
         android:text="正在定位..."/>
     <FrameLayout
@@ -78,8 +78,8 @@
 		        android:paddingRight="@dimen/margins"
 		        android:paddingTop="5dp"
 		        android:paddingBottom="5dp"
-		        android:background="@color/gray_weak"
-		        android:textColor="@color/common_inactive"
+		        android:background="@color/Green_collection"
+		        android:textColor="@color/navy_light"
 		        android:text="热门城市"/>
 		</LinearLayout>
         <!-- 点击字母显示 -->
