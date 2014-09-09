@@ -12,14 +12,14 @@
         android:paddingRight="@dimen/margins"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:background="@color/gray_weak"
-        android:textColor="@color/common_inactive"
+        android:background="@color/Green_collection"
+        android:textColor="@color/navy_light"
         android:text="hhhh"/>
     <TextView
         android:id="@+id/tv_item_select_city"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/margins"
-        android:textColor="@color/common"
+        android:textColor="@color/navy"
         android:text="深圳市" />
 </LinearLayout>

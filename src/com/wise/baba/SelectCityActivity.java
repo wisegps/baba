@@ -14,11 +14,9 @@ import pubclas.Variable;
 import sql.DBExcute;
 import sql.DBHelper;
 import com.wise.car.ClearEditText;
-import com.wise.car.FoursActivity;
 import com.wise.car.SideBar;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;
 import com.wise.state.FaultActivity;
-
 import data.CharacterParser;
 import android.app.Activity;
 import android.app.ProgressDialog;

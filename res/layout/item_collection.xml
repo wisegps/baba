@@ -94,8 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:textColor="@color/navy" 
-                android:textSize="@dimen/content"
+                android:textColor="@color/navy"
                 android:text="电话" />
             <ImageView 
                 android:id="@+id/iv_tel"
