@@ -1,4 +1,5 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:tc="http://schemas.android.com/apk/res/com.wise.baba"
     android:layout_width="fill_parent"
@@ -39,7 +40,8 @@
 	<RelativeLayout 
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_margin="@dimen/double_margins">	    
+	    android:layout_marginTop="@dimen/double_margins"
+	    android:layout_marginBottom="@dimen/double_margins">	    
 	    <com.wise.state.TasksCompletedView
 	        android:id="@+id/tasks_view"
 	        android:layout_width="140dp"

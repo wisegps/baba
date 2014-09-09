@@ -9,8 +9,9 @@ import android.os.Environment;
  * @author honesty
  */
 public class Constant {
-	public static boolean isLog = true;
-	/** 在阿里云上url **/
+
+	public static boolean isLog = false;
+	/**在阿里云上url**/
 	public static String oss_url = "http://img.bibibaba.cn/";
 	// public static String oss_url =
 	// "http://baba-img.oss-cn-hangzhou.aliyuncs.com/photo/";
@@ -20,6 +21,7 @@ public class Constant {
 	public static String oss_accessId = "eJ3GLV07j9DD4LY5";
 	/** accessKey **/
 	public static String oss_accessKey = "iAxAHoAuG1ZYwjIRLfyYKK2oF9WcCe";
+
 	/** url,42.121.109.221:8002 **/
 	public static String BaseUrl = "http://42.121.109.221:8002/";
 	// public static String BaseUrl = "http://api.bibibaba.cn/";

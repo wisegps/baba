@@ -190,18 +190,6 @@ public class DevicesAddActivity extends Activity {
 		}
 	}
 
-	/**
-	 * 更新数据库里的数据
-	 */
-	private void updateDBData() {
-		DBExcute dbExcute = new DBExcute();
-		ContentValues values = new ContentValues();
-		values.put("device_id", device_id);
-		values.put("serial", et_serial.getText().toString().trim());
-		dbExcute.UpdateDB(this, values, "obj_id=?", new String[] { String.valueOf(car_id) },
-				Constant.TB_Vehicle);
-	}
-
 	private void showToast() {
 		if(isBind){
 			Toast.makeText(DevicesAddActivity.this, "绑定终端失败", Toast.LENGTH_SHORT).show();
@@ -325,9 +313,7 @@ public class DevicesAddActivity extends Activity {
 			et_serial.setText(result);
 		}
 	};
-	private void init(){
-		
-	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();

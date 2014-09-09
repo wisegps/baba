@@ -2,13 +2,9 @@ package com.wise.notice;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import cn.jpush.android.api.JPushInterface;
-
-import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.notice.NoticeFragment.BtnListener;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -49,6 +45,7 @@ public class NoticeActivity extends FragmentActivity{
 			        startActivity(intent);
 				}else{//消息界面
 					Intent intent = new Intent(NoticeActivity.this, SmsActivity.class);
+					intent.putExtra("type", msg_type);
 			        startActivity(intent);
 				}
 			} catch (JSONException e) {

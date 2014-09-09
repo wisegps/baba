@@ -17,7 +17,7 @@ import android.widget.Scroller;
  * 
  */
 public class HScrollLayout extends ViewGroup {
-	private static String TAG = "HScrollLayout";
+	//private static String TAG = "HScrollLayout";
 
 	private VelocityTracker velocityTracker;// 判断手势
 	private static final int SNAP_VELOCITY = 600; // 滑动速度
@@ -87,7 +87,7 @@ public class HScrollLayout extends ViewGroup {
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		Log.d(TAG, "onInterceptTouchEvent = " + ev.getAction());
+		//Log.d(TAG, "onInterceptTouchEvent = " + ev.getAction());
 		boolean xMoved = false;
 		final float x = ev.getX();
 		switch (ev.getAction()) {
@@ -99,18 +99,16 @@ public class HScrollLayout extends ViewGroup {
 		case MotionEvent.ACTION_MOVE:
 			final int xDiff = (int) Math.abs(x - mLastMotionX);
 			xMoved = xDiff > mTouchSlop;
-			Log.d(TAG, "onInterceptTouchEvent : xDiff = " + xDiff
-					+ " , touchSlop = " + mTouchSlop);
 			//往右划 ,且在最后一屏
 			if ((mLastMotionX - x) >= 0 && mCurScreen == getChildCount() - 1) {
-				Log.d(TAG, "onInterceptTouchEvent 往右划 ,且在最后一屏");
+				//Log.d(TAG, "onInterceptTouchEvent 往右划 ,且在最后一屏");
 				return false;
 			} else {
 				if(xMoved){
-					Log.d(TAG, "父控件停止感应");
+					//Log.d(TAG, "父控件停止感应");
 					getParent().requestDisallowInterceptTouchEvent(true);
 				}else{
-					Log.d(TAG, "没移动到指定距离");
+					//Log.d(TAG, "没移动到指定距离");
 				}
 			}
 			break;
@@ -118,13 +116,13 @@ public class HScrollLayout extends ViewGroup {
 
 			break;
 		}
-		Log.d(TAG, "onInterceptTouchEvent = " + xMoved);
+		//Log.d(TAG, "onInterceptTouchEvent = " + xMoved);
 		return xMoved;
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		Log.d(TAG, "onTouchEvent = " + event.getAction());
+		//Log.d(TAG, "onTouchEvent = " + event.getAction());
 		float x = event.getX();
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:

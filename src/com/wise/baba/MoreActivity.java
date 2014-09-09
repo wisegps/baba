@@ -1,14 +1,10 @@
 package com.wise.baba;
 
 import org.json.JSONObject;
-
 import pubclas.Judge;
 import pubclas.Variable;
 import cn.jpush.android.api.JPushInterface;
-
-import com.wise.notice.LetterActivity;
 import com.wise.notice.NoticeActivity;
-import com.wise.notice.SmsActivity;
 import com.wise.remind.RemindListActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.setting.SetActivity;

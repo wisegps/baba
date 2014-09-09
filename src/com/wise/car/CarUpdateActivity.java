@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 /**
@@ -41,7 +42,8 @@ public class CarUpdateActivity extends Activity{
 	private final int year_check = 3;
 	private final int update = 4;
 
-	EditText et_nick_name,et_obj_name,et_engine_no,et_frame_no,et_regist_no,
+	LinearLayout ll_engine , ll_frame;
+	EditText et_nick_name,et_obj_name,et_engine_no,et_frame_no,
 			et_insurance_tel,et_insurance_no,et_maintain_tel;
 	TextView tv_models,tv_gas_no,tv_city,tv_insurance_company,tv_insurance_date,tv_maintain_company,
 			tv_buy_date,tv_year_check;
@@ -139,10 +141,9 @@ public class CarUpdateActivity extends Activity{
 
 		String engine_no = et_engine_no.getText().toString();
 		String frame_no = et_frame_no.getText().toString();
-		String regist_no = et_regist_no.getText().toString();
 		
 		for(CityData cityData : chooseCityDatas){
-			//TODO 发送机号
+			//发送机号
 			if(cityData.getEngine() == 0){
 				
 			}else{
@@ -170,22 +171,6 @@ public class CarUpdateActivity extends Activity{
 				}else{
 					if(frame_no.length() < cityData.getFrameno()){
 						Toast.makeText(CarUpdateActivity.this, "需要车架号的" +cityData.getFrameno()+"位", Toast.LENGTH_SHORT).show();
-						return;
-					}
-				}
-			}
-			//登记证号
-			if(cityData.getRegist() == 0){
-				
-			}else{
-				if(cityData.getRegistno() == 0){//全部
-					if(regist_no.length() == 0){
-						Toast.makeText(CarUpdateActivity.this, "需要完整的登记证号", Toast.LENGTH_SHORT).show();
-						return;
-					}
-				}else{
-					if(regist_no.length() < cityData.getRegistno()){
-						Toast.makeText(CarUpdateActivity.this, "需要登记证号的" +cityData.getRegistno()+"位", Toast.LENGTH_SHORT).show();
 						return;
 					}
 				}
@@ -222,7 +207,7 @@ public class CarUpdateActivity extends Activity{
 		carNewData.setVio_citys_code(vio_citys_code);
 		carNewData.setEngine_no(engine_no);
 		carNewData.setFrame_no(frame_no);
-		carNewData.setRegNo(regist_no);
+		carNewData.setRegNo("");
 		carNewData.setInsurance_company(insurance_company);
 		carNewData.setInsurance_tel(insurance_tel);
 		carNewData.setInsurance_date(insurance_date);
@@ -244,7 +229,7 @@ public class CarUpdateActivity extends Activity{
         params.add(new BasicNameValuePair("vio_citys", jsonList(chooseCityDatas)));
         params.add(new BasicNameValuePair("engine_no", engine_no));
         params.add(new BasicNameValuePair("frame_no", frame_no));
-        params.add(new BasicNameValuePair("reg_no", regist_no));
+        params.add(new BasicNameValuePair("reg_no", ""));
         params.add(new BasicNameValuePair("insurance_company", insurance_company));
         params.add(new BasicNameValuePair("insurance_tel", insurance_tel));
         params.add(new BasicNameValuePair("insurance_date", insurance_date));
@@ -296,7 +281,6 @@ public class CarUpdateActivity extends Activity{
 		
 		et_engine_no.setText(carData.getEngine_no());
 		et_frame_no.setText(carData.getFrame_no());
-		et_regist_no.setText(carData.getRegNo());
 		tv_insurance_company.setText(carData.getInsurance_company());
 		et_insurance_tel.setText(carData.getInsurance_tel());
 		tv_insurance_date.setText(carData.getInsurance_date());
@@ -316,6 +300,8 @@ public class CarUpdateActivity extends Activity{
 		tv_city.setText(citys);
 	}
 	private void init(){
+		ll_engine = (LinearLayout)findViewById(R.id.ll_engine);
+		ll_frame = (LinearLayout)findViewById(R.id.ll_frame);
 		ImageView iv_save = (ImageView)findViewById(R.id.iv_save);
 		iv_save.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
@@ -330,7 +316,6 @@ public class CarUpdateActivity extends Activity{
 		tv_city.setOnClickListener(onClickListener);
 		et_engine_no = (EditText)findViewById(R.id.et_engine_no);
 		et_frame_no = (EditText)findViewById(R.id.et_frame_no);
-		et_regist_no = (EditText)findViewById(R.id.et_regist_no);
 		tv_insurance_company = (TextView)findViewById(R.id.tv_insurance_company);
 		tv_insurance_company.setOnClickListener(onClickListener);
 		et_insurance_tel = (EditText)findViewById(R.id.et_insurance_tel);
@@ -352,9 +337,14 @@ public class CarUpdateActivity extends Activity{
 				JSONObject jsonObject = new JSONObject();
 				jsonObject.put("vio_city_name", chooseCityDatas.get(i).getCityName());
 				jsonObject.put("vio_location", chooseCityDatas.get(i).getCityCode());
+				jsonObject.put("province", chooseCityDatas.get(i).getProvince());
 				jsonArray.put(jsonObject);
+				//TODO 增加省份
 			}
-			String jsonString = jsonArray.toString().replaceAll("\"vio_city_name\":", "vio_city_name:").replaceAll("\"vio_location\":", "vio_location:");
+			String jsonString = jsonArray.toString().replaceAll("\"vio_city_name\":", "vio_city_name:")
+													.replaceAll("\"vio_location\":", "vio_location:")
+													.replaceAll("\"province\":", "province:");
+			System.out.println("jsonString = " + jsonString);
 			return jsonString;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -380,39 +370,89 @@ public class CarUpdateActivity extends Activity{
 				city += cityData.getCityName() + " " ;
 			}
 			tv_city.setText(city);
-			
+
+			boolean isEngine = false;
 			for(CityData cityData : chooseCityDatas){
-				//TODO 发送机号
-				if(cityData.getEngine() == 0){
-					et_engine_no.setHint("选填");
-				}else{
-					if(cityData.getEngineno() == 0){//全部
-						et_engine_no.setHint("需要完整的发送机号");
-					}else{
-						et_engine_no.setHint("需要发送机号的" +cityData.getEngineno()+"位");
-					}
-				}
-				//车架号
-				if(cityData.getFrame() == 0){
-					et_frame_no.setHint("选填");
-				}else{
-					if(cityData.getFrameno() == 0){//全部
-						et_frame_no.setHint("需要完整的车架号");
-					}else{
-						et_frame_no.setHint("需要车架号的" +cityData.getFrameno()+"位");
-					}
-				}
-				//登记证号
-				if(cityData.getRegist() == 0){
-					et_regist_no.setHint("选填");
-				}else{
-					if(cityData.getRegistno() == 0){//全部
-						et_regist_no.setHint("需要完整的登记证号");
-					}else{
-						et_regist_no.setHint("需要登记证号的" +cityData.getRegistno()+"位");
-					}
+				if(cityData.getEngine() != 0){
+					isEngine = true;
+					break;
 				}
 			}
+			if(isEngine){//发送机号
+				ll_engine.setVisibility(View.VISIBLE);
+				boolean isNeedAllEngine = false;
+				int Engineno = 0;
+				for(CityData cityData : chooseCityDatas){
+					if(cityData.getEngineno() == 0){//全部
+						isNeedAllEngine = true;
+					}else{
+						if(cityData.getEngineno() > Engineno){
+							Engineno = cityData.getEngineno();
+						}
+					}
+				}
+				if(isNeedAllEngine){
+					et_engine_no.setHint("需要完整的发送机号");
+				}else{
+					et_engine_no.setHint("需要发送机号的" +Engineno+"位");
+				}
+			}else{
+				//选填，隐藏
+				ll_engine.setVisibility(View.GONE);
+			}
+			
+			boolean isFrame = false;
+			for(CityData cityData : chooseCityDatas){
+				if(cityData.getFrame() != 0){
+					isFrame = true;
+					break;
+				}
+			}
+			if(isFrame){//发送机号
+				ll_frame.setVisibility(View.VISIBLE);
+				boolean isNeedAllFrame = false;
+				int Frameno = 0;
+				for(CityData cityData : chooseCityDatas){
+					if(cityData.getFrameno() == 0){//全部
+						isNeedAllFrame = true;
+					}else{
+						if(cityData.getFrameno() > Frameno){
+							Frameno = cityData.getFrameno();
+						}
+					}
+				}
+				if(isNeedAllFrame){
+					et_frame_no.setHint("需要完整的车架号");
+				}else{
+					et_frame_no.setHint("需要车架号的" +Frameno+"位");
+				}
+			}else{
+				//选填，隐藏
+				ll_frame.setVisibility(View.GONE);
+			}
+			
+//			for(CityData cityData : chooseCityDatas){
+//				//发送机号
+//				if(cityData.getEngine() == 0){
+//					et_engine_no.setHint("选填");
+//				}else{
+//					if(cityData.getEngineno() == 0){//全部
+//						et_engine_no.setHint("需要完整的发送机号");
+//					}else{
+//						et_engine_no.setHint("需要发送机号的" +cityData.getEngineno()+"位");
+//					}
+//				}
+//				//车架号
+//				if(cityData.getFrame() == 0){
+//					et_frame_no.setHint("选填");
+//				}else{
+//					if(cityData.getFrameno() == 0){//全部
+//						et_frame_no.setHint("需要完整的车架号");
+//					}else{
+//						et_frame_no.setHint("需要车架号的" +cityData.getFrameno()+"位");
+//					}
+//				}
+//			}
 			
 		}else if(resultCode == 3){//汽油标号返回
 			tv_gas_no.setText(data.getStringExtra("result"));

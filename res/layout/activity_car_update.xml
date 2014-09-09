@@ -90,6 +90,7 @@
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/content"
 					    android:textColor="@color/navy"
+					    android:maxLength="11"
 					    android:background="@null"
 					    android:padding="10dp"/>
 			    </LinearLayout>
@@ -114,6 +115,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/content"
 			            android:textColor="@color/navy"
+			            android:singleLine="true"
 					    android:padding="10dp"/>
 		        </LinearLayout>
 		        <View 
@@ -167,78 +169,70 @@
 					    android:drawableRight="@drawable/btn_right"
 					    android:padding="10dp" />
 			    </LinearLayout>
-			    <View 
-			        android:layout_width="fill_parent"
-			        android:layout_height="0.5dp"
-			        android:background="@color/line"/>
-		        <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp" 
-					    android:textColor="@color/navy"  
-			            android:text="车架号：    "/>
-			        <EditText
-			            android:id="@+id/et_frame_no"
-					    android:layout_width="fill_parent"
-					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-					    android:background="@null"
-					    android:hint="选填"/>
-			    </LinearLayout>
-			    <View 
-			        android:layout_width="fill_parent"
-			        android:layout_height="0.5dp"
-			        android:background="@color/line"/>
-			    <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-			            android:text="发送机号："/>
-			        <EditText
-			            android:id="@+id/et_engine_no"
-					    android:layout_width="fill_parent"
-					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-					    android:background="@null"
-					    android:hint="选填"/>
-			    </LinearLayout>
 			    <LinearLayout
-			        android:visibility="gone" 
+			        android:id="@+id/ll_frame" 
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-			            android:text="登记证号："/>
-			        <EditText
-			            android:id="@+id/et_regist_no"
-					    android:layout_width="fill_parent"
-					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-					    android:background="@null"
-					    android:hint="选填"/>
+			        android:orientation="vertical">
+			        <View 
+				        android:layout_width="fill_parent"
+				        android:layout_height="0.5dp"
+				        android:background="@color/line"/>
+			        <LinearLayout 
+				        android:layout_width="fill_parent"
+				        android:layout_height="wrap_content"
+				        android:orientation="horizontal">
+				        <TextView 
+				            android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"
+				            android:textSize="@dimen/content"
+						    android:padding="10dp" 
+						    android:textColor="@color/navy"  
+				            android:text="车架号：    "/>
+				        <EditText
+				            android:id="@+id/et_frame_no"
+						    android:layout_width="fill_parent"
+						    android:layout_height="wrap_content"
+						    android:textSize="@dimen/content"
+						    android:padding="10dp"
+						    android:textColor="@color/navy"
+						    android:background="@null"
+						    android:hint="选填"/>
+				    </LinearLayout>
 			    </LinearLayout>
+			    
+			    <LinearLayout
+			        android:id="@+id/ll_engine" 
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:orientation="vertical">
+			        <View 
+				        android:layout_width="fill_parent"
+				        android:layout_height="0.5dp"
+				        android:background="@color/line"/>
+				    <LinearLayout 
+				        android:layout_width="fill_parent"
+				        android:layout_height="wrap_content"
+				        android:orientation="horizontal">
+				        <TextView 
+				            android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"
+				            android:textSize="@dimen/content"
+						    android:padding="10dp"
+						    android:textColor="@color/navy"
+				            android:text="发送机号："/>
+				        <EditText
+				            android:id="@+id/et_engine_no"
+						    android:layout_width="fill_parent"
+						    android:layout_height="wrap_content"
+						    android:textSize="@dimen/content"
+						    android:padding="10dp"
+						    android:textColor="@color/navy"
+						    android:background="@null"
+						    android:hint="选填"/>
+				    </LinearLayout>
+			    </LinearLayout>
+			    
 		    </LinearLayout>
 		    <LinearLayout 
 		        android:layout_width="fill_parent"
@@ -289,7 +283,8 @@
 					    android:padding="10dp"
 					    android:textColor="@color/navy"
 					    android:background="@null"
-					    android:text="100000"/>
+					    android:singleLine="true"
+					    android:maxLength="15"/>
 			    </LinearLayout>
 			    <View 
 			        android:layout_width="fill_parent"
@@ -335,6 +330,7 @@
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/content"
 					    android:padding="10dp"
+					    android:singleLine="true"
 					    android:textColor="@color/navy"
 					    android:background="@null"/>
 			    </LinearLayout>
@@ -362,6 +358,7 @@
 			            android:layout_height="wrap_content"
 			            android:textSize="@dimen/content"
 					    android:padding="10dp"
+					    android:singleLine="true"
 					    android:textColor="@color/navy"
 			            android:drawableRight="@drawable/btn_right"/>
 			    </LinearLayout>
@@ -386,6 +383,7 @@
 					    android:layout_height="wrap_content"
 					    android:textSize="@dimen/content"
 					    android:padding="10dp"
+					    android:singleLine="true"
 					    android:textColor="@color/navy"
 					    android:background="@null"/>
 			    </LinearLayout>
