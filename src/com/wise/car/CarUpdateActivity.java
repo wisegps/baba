@@ -20,17 +20,25 @@ import com.wise.violation.ShortProvincesActivity;
 import data.CarData;
 import data.CityData;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.View.OnClickListener;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -121,14 +129,42 @@ public class CarUpdateActivity extends Activity {
 			case R.id.tv_year_check:
 				ShowDate(year_check);
 				break;
-			case R.id.choose_car_number:
+			case R.id.btn_choose:
 				Intent intent2 = new Intent(CarUpdateActivity.this,
 						ShortProvincesActivity.class);
 				startActivityForResult(intent2, 3);
 				break;
+			case R.id.image_help_1:// 帮助图片显示
+				// TODO
+				helpPopView();
+				break;
+			case R.id.image_help_2:
+				helpPopView();
+				break;
 			}
 		}
 	};
+
+	private void helpPopView() {
+		LayoutInflater inflater = LayoutInflater.from(CarUpdateActivity.this);
+		final View mView = inflater.inflate(R.layout.help_image, null);
+		final PopupWindow pop = new PopupWindow(mView,
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, false);
+		pop.setOutsideTouchable(true);
+		pop.setFocusable(true);
+		pop.update();
+		pop.setBackgroundDrawable(new BitmapDrawable());
+		pop.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
+		mView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (pop.isShowing()) {
+					pop.dismiss();
+				}
+			}
+		});
+	}
+
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -203,7 +239,8 @@ public class CarUpdateActivity extends Activity {
 			}
 		}
 
-		String obj_name = et_obj_name.getText().toString();
+		String obj_name = choose_car_province.getText()
+				+ et_obj_name.getText().toString();
 		String gas_no = tv_gas_no.getText().toString();
 		String insurance_company = tv_insurance_company.getText().toString();
 		String insurance_tel = et_insurance_tel.getText().toString();
@@ -307,7 +344,13 @@ public class CarUpdateActivity extends Activity {
 		car_type_id = carData.getCar_type_id();
 
 		et_nick_name.setText(carData.getNick_name());
-		et_obj_name.setText(carData.getObj_name());
+		if (carData.getObj_name() != null && !carData.getObj_name().equals("")) {
+			et_obj_name.setText(carData.getObj_name().substring(1,
+					carData.getObj_name().length()));
+			choose_car_province.setText(carData.getObj_name().substring(0, 1));
+		} else {
+			et_obj_name.setText(carData.getObj_name());
+		}
 		tv_models.setText(carData.getCar_series() + carData.getCar_type());
 		tv_gas_no.setText(carData.getGas_no());
 
@@ -333,7 +376,8 @@ public class CarUpdateActivity extends Activity {
 		tv_city.setText(citys);
 	}
 
-	Button btn_choose_car_nub;
+	ImageButton btn_choose_car_nub, btn_help_1, btn_help_2;
+	TextView choose_car_province;
 
 	private void init() {
 		ll_engine = (LinearLayout) findViewById(R.id.ll_engine);
@@ -365,9 +409,15 @@ public class CarUpdateActivity extends Activity {
 		tv_buy_date.setOnClickListener(onClickListener);
 		tv_year_check = (TextView) findViewById(R.id.tv_year_check);
 		tv_year_check.setOnClickListener(onClickListener);
-
-		btn_choose_car_nub = (Button) findViewById(R.id.choose_car_number);
+		// 省份添加
+		choose_car_province = (TextView) findViewById(R.id.choose_car_province);
+		btn_choose_car_nub = (ImageButton) findViewById(R.id.btn_choose);
 		btn_choose_car_nub.setOnClickListener(onClickListener);
+		// 车架号和发送号help图标
+		btn_help_1 = (ImageButton) findViewById(R.id.image_help_1);
+		btn_help_2 = (ImageButton) findViewById(R.id.image_help_2);
+		btn_help_1.setOnClickListener(onClickListener);
+		btn_help_2.setOnClickListener(onClickListener);
 	}
 
 	private String jsonList(List<CityData> chooseCityDatas) {
@@ -507,6 +557,8 @@ public class CarUpdateActivity extends Activity {
 		} else if (resultCode == 5) {// 4s店返回
 			tv_maintain_company.setText(data.getStringExtra("maintain_name"));
 			et_maintain_tel.setText(data.getStringExtra("maintain_phone"));
+		} else if (resultCode == 6) {// 返回所选省份
+			choose_car_province.setText(data.getStringExtra("province"));
 		}
 	}
 
