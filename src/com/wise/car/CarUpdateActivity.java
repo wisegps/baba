@@ -463,6 +463,7 @@ public class CarUpdateActivity extends Activity {
 			String city = "";
 			for (CityData cityData : chooseCityDatas) {
 				city += cityData.getCityName() + " ";
+				System.out.println(cityData.toString());
 			}
 			tv_city.setText(city);
 
