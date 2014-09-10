@@ -5,9 +5,7 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.UpdateManager;
-
 import com.umeng.update.UmengUpdateAgent;
-import com.wise.state.FaultActivity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -46,7 +44,7 @@ public class AboutActivity extends Activity{
 				//Dialog = ProgressDialog.show(AboutActivity.this,"提示","号码提交中",true);
 				//Dialog.setCancelable(true);
 				//getVersion();
-				UmengUpdateAgent.update(AboutActivity.this);
+				UmengUpdateAgent.forceUpdate(AboutActivity.this);
 				break;
 			}
 		}
