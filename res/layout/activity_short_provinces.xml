@@ -9,6 +9,7 @@
         android:layout_height="@dimen/title_hight"
         android:background="@color/title_back" >
         <TextView
+            android:id="@+id/car_number_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

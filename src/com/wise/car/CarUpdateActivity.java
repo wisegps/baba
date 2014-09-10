@@ -376,8 +376,9 @@ public class CarUpdateActivity extends Activity {
 		tv_city.setText(citys);
 	}
 
-	ImageButton btn_choose_car_nub, btn_help_1, btn_help_2;
+	ImageButton btn_help_1, btn_help_2;
 	TextView choose_car_province;
+	LinearLayout choose_province;
 
 	private void init() {
 		ll_engine = (LinearLayout) findViewById(R.id.ll_engine);
@@ -411,8 +412,8 @@ public class CarUpdateActivity extends Activity {
 		tv_year_check.setOnClickListener(onClickListener);
 		// 省份添加
 		choose_car_province = (TextView) findViewById(R.id.choose_car_province);
-		btn_choose_car_nub = (ImageButton) findViewById(R.id.btn_choose);
-		btn_choose_car_nub.setOnClickListener(onClickListener);
+		choose_province = (LinearLayout) findViewById(R.id.btn_choose);
+		choose_province.setOnClickListener(onClickListener);
 		// 车架号和发送号help图标
 		btn_help_1 = (ImageButton) findViewById(R.id.image_help_1);
 		btn_help_2 = (ImageButton) findViewById(R.id.image_help_2);

@@ -98,6 +98,7 @@
                         android:textSize="@dimen/content" />
 
                     <LinearLayout
+                        android:id="@+id/btn_choose"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:orientation="horizontal" >
@@ -112,7 +113,6 @@
                             android:textSize="@dimen/content" />
 
                         <ImageButton
-                            android:id="@+id/btn_choose"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:adjustViewBounds="true"
