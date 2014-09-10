@@ -1,439 +1,549 @@
-<LinearLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/gray_bg">
+    android:background="@color/gray_bg"
+    android:orientation="vertical" >
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="@dimen/title_hight"
-        android:background="@color/title_back">        
+        android:background="@color/title_back" >
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"
             android:text="爱车信息"
             android:textColor="@color/white"
-            android:textSize="@dimen/head"/>
-        <ImageView 
+            android:textSize="@dimen/head" />
+
+        <ImageView
             android:id="@+id/iv_save"
-	        android:layout_width="@dimen/title_hight"
-	        android:layout_height="@dimen/title_hight"
-	        android:layout_alignParentRight="true"
-	        android:layout_marginRight="@dimen/margins"
-	        android:padding="@dimen/margins"
-	        android:layout_centerVertical="true"
-	        android:src="@drawable/nav_ok"/>
-		<ImageView 
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margins"
+            android:padding="@dimen/margins"
+            android:src="@drawable/nav_ok" />
+
+        <ImageView
             android:id="@+id/iv_back"
-	        android:layout_width="@dimen/title_hight"
-	        android:layout_height="@dimen/title_hight"
-	        android:layout_marginLeft="@dimen/margins"
-	        android:padding="@dimen/margins"
-	        android:layout_centerVertical="true"
-	        android:src="@drawable/nav_back"/>
-	</RelativeLayout>
-	<ScrollView 
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent">
-	    <LinearLayout 
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:padding="10dp"	        
-	        android:orientation="vertical">
-	        <LinearLayout 
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-				android:background="@drawable/et_back"
-				android:layout_marginTop="10dp"
-		        android:orientation="vertical">
-		        <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-			            android:textColor="@color/navy"
-					    android:padding="10dp"   
-			            android:text="车辆名称："/>
-			        <EditText
-			            android:id="@+id/et_nick_name"
-					    android:layout_width="fill_parent"
-					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/content"
-					    android:textColor="@color/navy"
-					    android:background="@null"
-					    android:maxLength="11"
-					    android:padding="10dp"/>
-			    </LinearLayout>
-			    <View 
-			        android:layout_width="fill_parent"
-			        android:layout_height="0.5dp"
-			        android:background="@color/line"/>
-			    <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"  
-					    android:textColor="@color/navy" 
-			            android:text="车牌号：    "/>
-			        <EditText
-			            android:id="@+id/et_obj_name"
-					    android:layout_width="fill_parent"
-					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/content"
-					    android:textColor="@color/navy"
-					    android:maxLength="11"
-					    android:background="@null"
-					    android:padding="10dp"/>
-			    </LinearLayout>
-			    <View 
-			        android:layout_width="fill_parent"
-			        android:layout_height="0.5dp"
-			        android:background="@color/line"/>
-			    <LinearLayout 
-		            android:layout_width="fill_parent"
-		            android:layout_height="fill_parent"
-		            android:orientation="horizontal">	            
-				    <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"  
-					    android:textColor="@color/navy" 
-			            android:text="车型：        "/>
-				    <TextView 
-				        android:id="@+id/tv_models"
-			            android:layout_width="fill_parent"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-			            android:textColor="@color/navy"
-			            android:singleLine="true"
-					    android:padding="10dp"/>
-		        </LinearLayout>
-		        <View 
-			        android:layout_width="fill_parent"
-			        android:layout_height="0.5dp"
-			        android:background="@color/line"/>
-		        <LinearLayout 
-		            android:layout_width="fill_parent"
-		            android:layout_height="fill_parent"
-		            android:orientation="horizontal">	            
-				    <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-			            android:text="汽油标号："/>
-				    <TextView 
-				        android:id="@+id/tv_gas_no"
-			            android:layout_width="fill_parent"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-			            android:textColor="@color/navy"
-			            android:drawableRight="@drawable/btn_right"
-					    android:padding="10dp"/>
-		        </LinearLayout>
-		    </LinearLayout>		    
-		    <LinearLayout 
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-				android:background="@drawable/et_back"
-				android:layout_marginTop="10dp"
-		        android:orientation="vertical">
-		        <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-			            android:text="违章城市："/>
-			        <TextView
-			            android:id="@+id/tv_city"
-					    android:layout_width="fill_parent"
-					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/content"
-					    android:textColor="@color/navy"
-					    android:drawableRight="@drawable/btn_right"
-					    android:padding="10dp" />
-			    </LinearLayout>
-			    <LinearLayout
-			        android:id="@+id/ll_frame" 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="vertical">
-			        <View 
-				        android:layout_width="fill_parent"
-				        android:layout_height="0.5dp"
-				        android:background="@color/line"/>
-			        <LinearLayout 
-				        android:layout_width="fill_parent"
-				        android:layout_height="wrap_content"
-				        android:orientation="horizontal">
-				        <TextView 
-				            android:layout_width="wrap_content"
-				            android:layout_height="wrap_content"
-				            android:textSize="@dimen/content"
-						    android:padding="10dp" 
-						    android:textColor="@color/navy"  
-				            android:text="车架号：    "/>
-				        <EditText
-				            android:id="@+id/et_frame_no"
-						    android:layout_width="fill_parent"
-						    android:layout_height="wrap_content"
-						    android:textSize="@dimen/content"
-						    android:padding="10dp"
-						    android:textColor="@color/navy"
-						    android:background="@null"
-						    android:hint="选填"/>
-				    </LinearLayout>
-			    </LinearLayout>
-			    
-			    <LinearLayout
-			        android:id="@+id/ll_engine" 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="vertical">
-			        <View 
-				        android:layout_width="fill_parent"
-				        android:layout_height="0.5dp"
-				        android:background="@color/line"/>
-				    <LinearLayout 
-				        android:layout_width="fill_parent"
-				        android:layout_height="wrap_content"
-				        android:orientation="horizontal">
-				        <TextView 
-				            android:layout_width="wrap_content"
-				            android:layout_height="wrap_content"
-				            android:textSize="@dimen/content"
-						    android:padding="10dp"
-						    android:textColor="@color/navy"
-				            android:text="发送机号："/>
-				        <EditText
-				            android:id="@+id/et_engine_no"
-						    android:layout_width="fill_parent"
-						    android:layout_height="wrap_content"
-						    android:textSize="@dimen/content"
-						    android:padding="10dp"
-						    android:textColor="@color/navy"
-						    android:background="@null"
-						    android:hint="选填"/>
-				    </LinearLayout>
-			    </LinearLayout>
-			    
-		    </LinearLayout>
-		    <LinearLayout 
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-				android:background="@drawable/et_back"
-				android:layout_marginTop="10dp"
-		        android:orientation="vertical">
-		        <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-			            android:text="保险公司："/>
-			        <TextView 
-			            android:id="@+id/tv_insurance_company"
-			            android:layout_width="fill_parent"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:drawableRight="@drawable/btn_right"
-					    android:textColor="@color/navy"/>
-			    </LinearLayout>
-			    <View 
-			        android:layout_width="fill_parent"
-			        android:layout_height="0.5dp"
-			        android:background="@color/line"/>
-			    <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-			            android:text="联系电话："/>
-			        <EditText
-			            android:id="@+id/et_insurance_tel"
-					    android:layout_width="fill_parent"
-					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-					    android:background="@null"
-					    android:singleLine="true"
-					    android:maxLength="15"/>
-			    </LinearLayout>
-			    <View 
-			        android:layout_width="fill_parent"
-			        android:layout_height="0.5dp"
-			        android:background="@color/line"/>
-			    <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-			            android:text="保险时间："/>
-			        <TextView 
-			            android:id="@+id/tv_insurance_date"
-			            android:layout_width="fill_parent"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"/>
-			    </LinearLayout>
-			    <View 
-			        android:layout_width="fill_parent"
-			        android:layout_height="0.5dp"
-			        android:background="@color/line"/>
-			    <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp" 
-					    android:textColor="@color/navy"  
-			            android:text="保单号：    "/>
-			        <EditText
-			            android:id="@+id/et_insurance_no"
-					    android:layout_width="fill_parent"
-					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:singleLine="true"
-					    android:textColor="@color/navy"
-					    android:background="@null"/>
-			    </LinearLayout>
-		    </LinearLayout>
-		    <LinearLayout 
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-				android:background="@drawable/et_back"
-				android:layout_marginTop="10dp"
-		        android:orientation="vertical">
-		        <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-			            android:text="购车4S店："/>
-			        <TextView 
-			            android:id="@+id/tv_maintain_company"
-			            android:layout_width="fill_parent"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:singleLine="true"
-					    android:textColor="@color/navy"
-			            android:drawableRight="@drawable/btn_right"/>
-			    </LinearLayout>
-			    <View 
-			        android:layout_width="fill_parent"
-			        android:layout_height="0.5dp"
-			        android:background="@color/line"/>
-			    <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-			            android:text="联系电话："/>
-			        <EditText
-			            android:id="@+id/et_maintain_tel"
-					    android:layout_width="fill_parent"
-					    android:layout_height="wrap_content"
-					    android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:singleLine="true"
-					    android:textColor="@color/navy"
-					    android:background="@null"/>
-			    </LinearLayout>
-			    <View 
-			        android:layout_width="fill_parent"
-			        android:layout_height="0.5dp"
-			        android:background="@color/line"/>
-			    <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-			            android:text="购车时间："/>
-			        <TextView 
-			            android:id="@+id/tv_buy_date"
-			            android:layout_width="fill_parent"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"   
-			            android:textColor="@color/navy"/>
-			    </LinearLayout>
-			    <View 
-			        android:layout_width="fill_parent"
-			        android:layout_height="0.5dp"
-			        android:background="@color/line"/>
-			    <LinearLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:orientation="horizontal">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-					    android:textColor="@color/navy"
-			            android:text="年检时间："/>
-			        <TextView 
-			            android:id="@+id/tv_year_check"
-			            android:layout_width="fill_parent"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-					    android:padding="10dp"
-			            android:textColor="@color/navy"/>
-			    </LinearLayout>
-		    </LinearLayout>
-	    </LinearLayout>
-	</ScrollView>
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margins"
+            android:padding="@dimen/margins"
+            android:src="@drawable/nav_back" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/et_back"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="车辆名称："
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <EditText
+                        android:id="@+id/et_nick_name"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:maxLength="11"
+                        android:padding="10dp"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="车牌号：    "
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/choose_car_province"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:hint="省份"
+                            android:textColor="@color/navy"
+                            android:textSize="@dimen/content" />
+
+                        <ImageButton
+                            android:id="@+id/btn_choose"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:background="@null"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/body_icon_pulldown" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/et_obj_name"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:maxLength="11"
+                        android:padding="10dp"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="车型：        "
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <TextView
+                        android:id="@+id/tv_models"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="汽油标号："
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <TextView
+                        android:id="@+id/tv_gas_no"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/btn_right"
+                        android:padding="10dp"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/et_back"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="违章城市："
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <TextView
+                        android:id="@+id/tv_city"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/btn_right"
+                        android:padding="10dp"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_frame"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/line" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="车架号：    "
+                            android:textColor="@color/navy"
+                            android:textSize="@dimen/content" />
+
+                        <EditText
+                            android:id="@+id/et_frame_no"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:hint="选填"
+                            android:padding="10dp"
+                            android:textColor="@color/navy"
+                            android:textSize="@dimen/content" />
+
+                        <ImageButton
+                            android:id="@+id/image_help_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:background="@null"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/help" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_engine"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/line" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="发送机号："
+                            android:textColor="@color/navy"
+                            android:textSize="@dimen/content" />
+
+                        <EditText
+                            android:id="@+id/et_engine_no"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:hint="选填"
+                            android:padding="10dp"
+                            android:textColor="@color/navy"
+                            android:textSize="@dimen/content" />
+
+                        <ImageButton
+                            android:id="@+id/image_help_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:adjustViewBounds="true"
+                            android:background="@null"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/help" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/et_back"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="保险公司："
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <TextView
+                        android:id="@+id/tv_insurance_company"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/btn_right"
+                        android:padding="10dp"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="联系电话："
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <EditText
+                        android:id="@+id/et_insurance_tel"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:maxLength="15"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="保险时间："
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <TextView
+                        android:id="@+id/tv_insurance_date"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="保单号：    "
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <EditText
+                        android:id="@+id/et_insurance_no"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/et_back"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="购车4S店："
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <TextView
+                        android:id="@+id/tv_maintain_company"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/btn_right"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="联系电话："
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <EditText
+                        android:id="@+id/et_maintain_tel"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="购车时间："
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <TextView
+                        android:id="@+id/tv_buy_date"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="年检时间："
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <TextView
+                        android:id="@+id/tv_year_check"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

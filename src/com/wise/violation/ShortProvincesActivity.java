@@ -2,6 +2,7 @@ package com.wise.violation;
 
 import com.wise.baba.R;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,17 +25,22 @@ public class ShortProvincesActivity extends Activity {
 		gv_provices.setAdapter(new ProvincesAdapter());
 		gv_provices.setOnItemClickListener(onItemClickListener);
 	}
+
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			System.out.println("arg2 = " + provinces[arg2]);
+			String province = provinces[arg2];
+			Intent intent = new Intent();
+			intent.putExtra("province", province);
+			ShortProvincesActivity.this.setResult(6, intent);
+			ShortProvincesActivity.this.finish();
 		}
 	};
 
-	private String[] provinces = { "京", "津", "沪", "渝", "冀",
-	"豫", "云", "辽", "黑", "湘", "皖", "鲁", "新", "苏", "浙", "赣", "鄂", "桂", "甘", "晋",
-			"蒙", "陕", "吉", "闽", "贵", "粤", "青", "藏", "川", "宁", "琼" };
+	private String[] provinces = { "京", "津", "沪", "渝", "冀", "豫", "云", "辽", "黑",
+			"湘", "皖", "鲁", "新", "苏", "浙", "赣", "鄂", "桂", "甘", "晋", "蒙", "陕",
+			"吉", "闽", "贵", "粤", "青", "藏", "川", "宁", "琼" };
 
 	class ProvincesAdapter extends BaseAdapter {
 		LayoutInflater inflater = LayoutInflater
