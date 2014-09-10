@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -16,6 +17,8 @@ import android.widget.AdapterView.OnItemClickListener;
 
 /** 省份简称 **/
 public class ShortProvincesActivity extends Activity {
+	TextView car_title;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,6 +27,14 @@ public class ShortProvincesActivity extends Activity {
 		GridView gv_provices = (GridView) findViewById(R.id.gv_provices);
 		gv_provices.setAdapter(new ProvincesAdapter());
 		gv_provices.setOnItemClickListener(onItemClickListener);
+
+		car_title = (TextView) findViewById(R.id.car_number_name);
+		car_title.setText("请选择车辆地区");
+		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				ShortProvincesActivity.this.finish();
+			}
+		});
 	}
 
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
