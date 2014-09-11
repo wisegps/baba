@@ -1,13 +1,18 @@
 package com.wise.car;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
+import pubclas.GetSystem;
 import pubclas.JsonData;
 import pubclas.NetThread;
 import pubclas.Variable;
@@ -15,6 +20,7 @@ import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import customView.SlidingView;
+import data.BrandData;
 import data.CarData;
 import android.app.Activity;
 import android.content.Intent;
@@ -38,39 +44,45 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 /**
  * 车辆列表
+ * 
  * @author honesty
- *
+ * 
  */
-public class CarActivity extends Activity{
+public class CarActivity extends Activity {
 	private static final int get_data = 1;
 	private static final int remove_device = 2;
 	private static final int delete_car = 3;
+	private static final int get_image = 4;
 	ListView lv_cars;
 	CarAdapter carAdapter;
-	
+
 	boolean isRefresh = false;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car);
-		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
+		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		lv_cars = (ListView)findViewById(R.id.lv_cars);
+		lv_cars = (ListView) findViewById(R.id.lv_cars);
 		LayoutInflater mLayoutInflater = LayoutInflater.from(this);
-        View foot_view = mLayoutInflater.inflate(R.layout.foot_view,null);
-        lv_cars.addFooterView(foot_view);
-        carAdapter = new CarAdapter();
+		View foot_view = mLayoutInflater.inflate(R.layout.foot_view, null);
+		lv_cars.addFooterView(foot_view);
+		carAdapter = new CarAdapter();
 		lv_cars.setAdapter(carAdapter);
 		lv_cars.setOnItemClickListener(onItemClickListener);
-		if(Variable.carDatas.size() == 0){
+		if (Variable.carDatas.size() == 0) {
 			getData();
+		} else {
+			new GetImageThread().start();
 		}
 	}
-	OnClickListener onClickListener = new OnClickListener() {		
+
+	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
@@ -80,31 +92,38 @@ public class CarActivity extends Activity{
 			}
 		}
 	};
-	Handler handler = new Handler(){
+	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case get_data:
 				Variable.carDatas.clear();
-				Variable.carDatas.addAll(JsonData.jsonCarInfo(msg.obj.toString()));
+				Variable.carDatas.addAll(JsonData.jsonCarInfo(msg.obj
+						.toString()));
+				carAdapter.notifyDataSetChanged();
+				new GetImageThread().start();
+				break;
+			case get_image:
 				carAdapter.notifyDataSetChanged();
 				break;
 			case remove_device:
-				jsonRemove(msg.obj.toString(),msg.arg1);
+				jsonRemove(msg.obj.toString(), msg.arg1);
 				break;
 			case delete_car:
 				jsonDelete(msg.obj.toString());
 				break;
 			}
-		}		
+		}
 	};
-	private void jsonRemove(String str,int index){
+
+	private void jsonRemove(String str, int index) {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-			if(jsonObject.getString("status_code").equals("0")){
-				//TODO 刷新
-				Toast.makeText(CarActivity.this, "解除绑定成功", Toast.LENGTH_SHORT).show();
+			if (jsonObject.getString("status_code").equals("0")) {
+				// TODO 刷新
+				Toast.makeText(CarActivity.this, "解除绑定成功", Toast.LENGTH_SHORT)
+						.show();
 				Variable.carDatas.get(index).setDevice_id("");
 				carAdapter.notifyDataSetChanged();
 			}
@@ -112,11 +131,13 @@ public class CarActivity extends Activity{
 			e.printStackTrace();
 		}
 	}
-	private void jsonDelete(String str){
+
+	private void jsonDelete(String str) {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-			if(jsonObject.getString("status_code").equals("0")){
-				Toast.makeText(CarActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+			if (jsonObject.getString("status_code").equals("0")) {
+				Toast.makeText(CarActivity.this, "删除成功", Toast.LENGTH_SHORT)
+						.show();
 				Variable.carDatas.remove(index);
 				carAdapter.notifyDataSetChanged();
 				isRefresh = true;
@@ -125,144 +146,177 @@ public class CarActivity extends Activity{
 			e.printStackTrace();
 		}
 	}
+
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			if(arg2 == Variable.carDatas.size()){
-				startActivityForResult(new Intent(CarActivity.this, CarAddActivity.class),2);
-			}else{
-				
+			if (arg2 == Variable.carDatas.size()) {
+				startActivityForResult(new Intent(CarActivity.this,
+						CarAddActivity.class), 2);
+			} else {
+
 			}
 		}
 	};
-	private void getData(){
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/vehicle?auth_code=" + Variable.auth_code;
+
+	private void getData() {
+		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
+				+ "/vehicle?auth_code=" + Variable.auth_code;
 		new Thread(new NetThread.GetDataThread(handler, url, get_data)).start();
 	}
+
 	int index;
-	
-	class CarAdapter extends BaseAdapter{
-		private LayoutInflater layoutInflater = LayoutInflater.from(CarActivity.this);
+
+	class CarAdapter extends BaseAdapter {
+		private LayoutInflater layoutInflater = LayoutInflater
+				.from(CarActivity.this);
+
 		@Override
 		public int getCount() {
 			return Variable.carDatas.size();
 		}
+
 		@Override
 		public Object getItem(int arg0) {
 			return Variable.carDatas.get(arg0);
 		}
+
 		@Override
 		public long getItemId(int position) {
 			return position;
 		}
+
 		@Override
-		public View getView(final int position, View convertView, ViewGroup parent) {
+		public View getView(final int position, View convertView,
+				ViewGroup parent) {
 			ViewHolder holder = null;
-			if(convertView == null){
+			if (convertView == null) {
 				convertView = layoutInflater.inflate(R.layout.item_cars, null);
-	            holder = new ViewHolder();
-	            holder.iv_icon = (ImageView)convertView.findViewById(R.id.iv_icon);
-	            holder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-	            holder.tv_serial = (TextView) convertView.findViewById(R.id.tv_serial);
-	            holder.tv_update = (TextView) convertView.findViewById(R.id.tv_update);
-	            holder.tv_remove = (TextView) convertView.findViewById(R.id.tv_remove);
-	            holder.tv_del = (TextView) convertView.findViewById(R.id.tv_del);
-	            holder.bt_bind = (Button) convertView.findViewById(R.id.bt_bind);
-	            holder.sv = (SlidingView) convertView.findViewById(R.id.sv);
-	            holder.rl_car = (RelativeLayout) convertView.findViewById(R.id.rl_car);
-	            convertView.setTag(holder);
-			}else{
+				holder = new ViewHolder();
+				holder.iv_icon = (ImageView) convertView
+						.findViewById(R.id.iv_icon);
+				holder.tv_name = (TextView) convertView
+						.findViewById(R.id.tv_name);
+				holder.tv_serial = (TextView) convertView
+						.findViewById(R.id.tv_serial);
+				holder.tv_update = (TextView) convertView
+						.findViewById(R.id.tv_update);
+				holder.tv_remove = (TextView) convertView
+						.findViewById(R.id.tv_remove);
+				holder.tv_del = (TextView) convertView
+						.findViewById(R.id.tv_del);
+				holder.bt_bind = (Button) convertView
+						.findViewById(R.id.bt_bind);
+				holder.sv = (SlidingView) convertView.findViewById(R.id.sv);
+				holder.rl_car = (RelativeLayout) convertView
+						.findViewById(R.id.rl_car);
+				convertView.setTag(holder);
+			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 			final CarData carData = Variable.carDatas.get(position);
-			if(new File(Constant.VehicleLogoPath + carData.getCar_brand_id() + ".png").exists()){
-				Bitmap image = BitmapFactory.decodeFile(Constant.VehicleLogoPath + carData.getCar_brand_id() + ".png");
+			if (new File(Constant.VehicleLogoPath + carData.getCar_brand_id()
+					+ ".png").exists()) {
+				Bitmap image = BitmapFactory
+						.decodeFile(Constant.VehicleLogoPath
+								+ carData.getCar_brand_id() + ".png");
 				holder.iv_icon.setImageBitmap(image);
-			}else{
-				holder.iv_icon.setImageResource(R.drawable.icon_car_moren);				
+			} else {
+				holder.iv_icon.setImageResource(R.drawable.icon_car_moren);
 			}
 			holder.tv_name.setText(carData.getNick_name());
 			holder.tv_serial.setText(carData.getCar_series());
-			holder.rl_car.setOnClickListener(new OnClickListener() {				
+			holder.rl_car.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(CarActivity.this,CarUpdateActivity.class);
+					Intent intent = new Intent(CarActivity.this,
+							CarUpdateActivity.class);
 					intent.putExtra("index", position);
 					startActivityForResult(intent, 2);
 				}
 			});
-			holder.tv_del.setOnClickListener(new OnClickListener() {					
+			holder.tv_del.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					index = position;
-					String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id() + "?auth_code=" + Variable.auth_code;
-				    new Thread(new NetThread.DeleteThread(handler, url, delete_car)).start();	                    
+					String url = Constant.BaseUrl + "vehicle/"
+							+ carData.getObj_id() + "?auth_code="
+							+ Variable.auth_code;
+					new Thread(new NetThread.DeleteThread(handler, url,
+							delete_car)).start();
 				}
 			});
 			holder.sv.ScorllRestFast();
-			
-			if(carData.getDevice_id() == null || 
-					carData.getDevice_id().equals("") || 
-					carData.getDevice_id().equals("0")){
+
+			if (carData.getDevice_id() == null
+					|| carData.getDevice_id().equals("")
+					|| carData.getDevice_id().equals("0")) {
 				holder.tv_update.setVisibility(View.GONE);
 				holder.tv_remove.setVisibility(View.GONE);
 				holder.bt_bind.setVisibility(View.VISIBLE);
-				holder.bt_bind.setOnClickListener(new OnClickListener() {					
+				holder.bt_bind.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						Intent intent = new Intent(CarActivity.this,DevicesAddActivity.class);
+						Intent intent = new Intent(CarActivity.this,
+								DevicesAddActivity.class);
 						intent.putExtra("car_id", carData.getObj_id());
 						intent.putExtra("isBind", true);
 						startActivityForResult(intent, 2);
 					}
 				});
-			}else{
+			} else {
 				holder.bt_bind.setVisibility(View.GONE);
 				holder.tv_update.setVisibility(View.VISIBLE);
 				holder.tv_remove.setVisibility(View.VISIBLE);
-				holder.tv_update.setOnClickListener(new OnClickListener() {					
+				holder.tv_update.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						Intent intent = new Intent(CarActivity.this,DevicesAddActivity.class);
+						Intent intent = new Intent(CarActivity.this,
+								DevicesAddActivity.class);
 						intent.putExtra("car_id", carData.getObj_id());
 						intent.putExtra("isBind", false);
 						startActivityForResult(intent, 2);
 					}
 				});
-				holder.tv_remove.setOnClickListener(new OnClickListener() {					
+				holder.tv_remove.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id() + "/device?auth_code=" + Variable.auth_code;
+						String url = Constant.BaseUrl + "vehicle/"
+								+ carData.getObj_id() + "/device?auth_code="
+								+ Variable.auth_code;
 						List<NameValuePair> params = new ArrayList<NameValuePair>();
-						params.add(new BasicNameValuePair("device_id","0"));
-						new Thread(new NetThread.putDataThread(handler,url, params, remove_device,position)).start();
+						params.add(new BasicNameValuePair("device_id", "0"));
+						new Thread(new NetThread.putDataThread(handler, url,
+								params, remove_device, position)).start();
 					}
 				});
 			}
 
 			return convertView;
 		}
+
 		private class ViewHolder {
-	        TextView tv_name,tv_serial,tv_update,tv_del,tv_remove;
-	        ImageView iv_icon;
-	        Button bt_bind;
-	        SlidingView sv;
-	        RelativeLayout rl_car;
-	    }
+			TextView tv_name, tv_serial, tv_update, tv_del, tv_remove;
+			ImageView iv_icon;
+			Button bt_bind;
+			SlidingView sv;
+			RelativeLayout rl_car;
+		}
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(resultCode == 1){
-			//绑定车辆信息成功
+		if (resultCode == 1) {
+			// 绑定车辆信息成功
 			carAdapter.notifyDataSetChanged();
-		}else if(resultCode == 3){
+		} else if (resultCode == 3) {
 			getData();
 			isRefresh = true;
 		}
 	}
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -271,22 +325,104 @@ public class CarActivity extends Activity{
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	private void onBack(){
-		if(isRefresh){
-			//发广播
+
+	private void onBack() {
+		if (isRefresh) {
+			// 发广播
 			Intent intent = new Intent(Constant.A_RefreshHomeCar);
-            sendBroadcast(intent);
+			sendBroadcast(intent);
 		}
 		finish();
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		MobclickAgent.onResume(this);
 	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
+	}
+
+	/** 检测本地是否有图片并下载 **/
+	class GetImageThread extends Thread {
+		@Override
+		public void run() {
+			super.run();
+			// 得到车辆信息
+			String result = NetThread.getData(Constant.BaseUrl
+					+ "base/car_brand");
+			List<BrandData> brandDatas = new ArrayList<BrandData>();
+			if (!result.equals("")) {
+				try {
+					JSONArray jsonArray = new JSONArray(result);
+					for (int i = 0; i < jsonArray.length(); i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						BrandData brandData = new BrandData();
+						brandData.setBrand(jsonObject.getString("name"));
+						brandData.setId(jsonObject.getString("id"));
+						if (jsonObject.opt("url_icon") != null) {
+							brandData.setLogoUrl(jsonObject
+									.getString("url_icon"));
+						} else {
+							brandData.setLogoUrl("");
+						}
+						brandDatas.add(brandData);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			for (CarData carData : Variable.carDatas) {
+				if (new File(Constant.VehicleLogoPath
+						+ carData.getCar_brand_id() + ".png").exists()) {
+
+				} else {
+					// 获取图片
+					for (BrandData brandData : brandDatas) {
+						if (brandData.getId().equals(carData.getCar_brand_id())) {
+							// 从网上获取图片
+							Bitmap bitmap = GetSystem
+									.getBitmapFromURL(Constant.ImageUrl
+											+ brandData.getLogoUrl());
+							if (bitmap != null) {
+								String imagePath = Constant.VehicleLogoPath
+										+ carData.getCar_brand_id() + ".png";
+								File filePath = new File(Constant.VehicleLogoPath);
+								if (!filePath.exists()) {
+									filePath.mkdirs();
+								}
+								createImage(imagePath, bitmap);
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// 向SD卡中添加图片
+	public void createImage(String fileName, Bitmap bitmap) {
+		FileOutputStream b = null;
+		try {
+			b = new FileOutputStream(fileName);
+			bitmap.compress(Bitmap.CompressFormat.PNG, 100, b);// 把数据写入文件
+			Message msg = new Message();
+			msg.what = get_image;
+			handler.sendMessage(msg);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				b.flush();
+				b.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
