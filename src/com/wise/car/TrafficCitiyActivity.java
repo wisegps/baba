@@ -15,6 +15,8 @@ import pubclas.Variable;
 
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
+
+import data.CarData;
 import data.CharacterParser;
 import data.CityData;
 import data.ProvinceData;
@@ -237,16 +239,30 @@ public class TrafficCitiyActivity extends Activity {
 				for (int i = 0; i < jsonArray.length(); i++) {
 					CityData illegalCity = new CityData();
 					JSONObject jsonObject3 = jsonArray.getJSONObject(i);
-					illegalCity.setCityCode(jsonObject3.getString("city_code"));
+					String city_code = jsonObject3.getString("city_code");
+					int engine = jsonObject3.getInt("engine");
+					int engineno = jsonObject3.getInt("engineno");
+					int frame = jsonObject3.getInt("class");
+					int frameno = jsonObject3.getInt("classno");
+					illegalCity.setCityCode(city_code);
 					illegalCity.setCityName(jsonObject3.getString("city_name"));
-					illegalCity.setEngine(jsonObject3.getInt("engine"));
-					illegalCity.setEngineno(jsonObject3.getInt("engineno"));
+					illegalCity.setEngine(engine);
+					illegalCity.setEngineno(engineno);
 					illegalCity.setRegist(jsonObject3.getInt("regist"));
 					illegalCity.setRegistno(jsonObject3.getInt("registno"));
-					illegalCity.setFrame(jsonObject3.getInt("class"));
-					illegalCity.setFrameno(jsonObject3.getInt("classno"));
+					illegalCity.setFrame(frame);
+					illegalCity.setFrameno(frameno);
 					illegalCity.setProvince(province);
 					illegalCityList.add(illegalCity);
+					//
+					for(CityData cityData : chooseCityDatas){
+						if(cityData.getCityCode().equals(city_code)){
+							cityData.setEngine(engine);
+							cityData.setEngineno(engineno);
+							cityData.setFrame(frame);
+							cityData.setFrameno(frameno);
+						}
+					}
 				}
 				provinceModel.setIllegalCityList(illegalCityList);
 				provinceModel.setProvinceName(province);

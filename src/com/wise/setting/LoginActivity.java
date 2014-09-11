@@ -208,8 +208,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 						+ URLEncoder.encode(cust_name, "UTF-8") + "&provice="
 						+ URLEncoder.encode(Variable.Province, "UTF-8")
 						+ "&city=" + URLEncoder.encode(Variable.City, "UTF-8") + "&logo=" + logo + "&remark=";
-				new Thread(new NetThread.GetDataThread(handler, url, login_sso))
-						.start();
+				new NetThread.GetDataThread(handler, url, login_sso).start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
