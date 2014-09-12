@@ -30,15 +30,25 @@
             android:src="@drawable/nav_back" />
     </RelativeLayout>
 
-    <GridView
-        android:id="@+id/gv_provices"
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@color/blue_light_ten"
-        android:horizontalSpacing="0.5dp"
-        android:listSelector="@drawable/bg_item_selector"
-        android:numColumns="4"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="0.5dp" />
+        android:orientation="vertical" >
+
+        <GridView
+            android:id="@+id/gv_provices"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:horizontalSpacing="0.5dp"
+            android:listSelector="@drawable/bg_item_selector"
+            android:numColumns="4"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="0.5dp" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="0.5dp" />
+    </LinearLayout>
 
 </LinearLayout>
