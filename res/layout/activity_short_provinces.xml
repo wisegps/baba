@@ -4,10 +4,12 @@
     android:layout_height="fill_parent"
     android:background="@color/white"
     android:orientation="vertical" >
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="@dimen/title_hight"
         android:background="@color/title_back" >
+
         <TextView
             android:id="@+id/car_number_name"
             android:layout_width="fill_parent"
@@ -17,6 +19,7 @@
             android:text="关于叭叭"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
+
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="@dimen/title_hight"
@@ -26,13 +29,16 @@
             android:padding="@dimen/margins"
             android:src="@drawable/nav_back" />
     </RelativeLayout>
-    <GridView 
+
+    <GridView
         android:id="@+id/gv_provices"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:numColumns="4"
+        android:background="@color/blue_light_ten"
+        android:horizontalSpacing="0.5dp"
         android:listSelector="@drawable/bg_item_selector"
+        android:numColumns="4"
         android:stretchMode="columnWidth"
-        android:background="@color/white"
-        android:horizontalSpacing="10dp"/>
+        android:verticalSpacing="0.5dp" />
+
 </LinearLayout>
