@@ -54,12 +54,12 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 	/**
 	 * 当前第一列的高度
 	 */
-	private int firstColumnHeight;
+	private int firstColumnHeight = 0;
 
 	/**
 	 * 当前第二列的高度
 	 */
-	private int secondColumnHeight;
+	private int secondColumnHeight = 0;
 
 	/**
 	 * 是否已加载过一次layout，这里onLayout中的初始化只需加载一次
@@ -104,7 +104,7 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 	/**
 	 * 记录所有界面上的图片，用以可以随时控制对图片的释放。
 	 */
-	//private List<ImageView> imageViewList = new ArrayList<ImageView>();
+	List<photoView> pViews = new ArrayList<photoView>();
 	int textHeight = 45;
 	/**
 	 * 在Handler中进行图片可见性检查的判断，以及加载更多图片的操作。
@@ -146,7 +146,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		setOnTouchListener(this);
 		mContext = context;
 		textHeight = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 36, getResources().getDisplayMetrics());
-		System.out.println("textHeight = " + textHeight);
 	}
 
 	/**
@@ -162,8 +161,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 			secondColumn = (LinearLayout) findViewById(R.id.second_column);
 			columnWidth = firstColumn.getWidth();
 			loadOnce = true;
-			System.out.println("columnWidth = " + columnWidth);
-			//loadMoreImages();
 		}
 	}
 	float lastY = 0;
@@ -217,6 +214,9 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		//重新布局
 		firstColumn.removeAllViews();
 		secondColumn.removeAllViews();
+		firstColumnHeight = 0;
+		secondColumnHeight = 0;
+		pViews.clear();
 		page = 0;
 		loadMoreImages();
 	}
@@ -243,13 +243,13 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		if (hasSDCard()) {
 			int startIndex = page * PAGE_SIZE;
 			int endIndex = page * PAGE_SIZE + PAGE_SIZE;
-			System.out.println("startIndex = " + startIndex + " , endIndex = " + endIndex + " , imageDatas.size() = " + imageDatas.size());
 			if (startIndex < imageDatas.size()) {
 				if (endIndex > imageDatas.size()) {
 					endIndex = imageDatas.size();
 				}
 				for (int i = startIndex; i < endIndex; i++) {
 					LoadImageTask task = new LoadImageTask();
+					//TODO 更新
 					taskCollection.add(task);
 					task.execute(String.valueOf(i));
 				}
@@ -289,7 +289,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				}
 			} else {
 				imageView.setImageBitmap(null);
-				//imageView.setImageResource(R.drawable.empty_photo);
 			}
 		}
 	}
@@ -307,10 +306,8 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 	OnClickListener onClickListener = new OnClickListener() {		
 		@Override
 		public void onClick(View v) {
-			System.out.println("onClickListener");
 			switch (v.getId()) {
 			case R.id.iv_pic://点击事件
-				System.out.println("iv_pic");
 				if(onFlowClickListener != null){
 					int position = (Integer) v.getTag(R.string.image_position);
 					onFlowClickListener.OnClick(position);
@@ -318,7 +315,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				break;
 
 			case R.id.iv_praise:
-				System.out.println("iv_praise");
 				if(onFlowClickListener != null){
 					int position = (Integer) v.getTag(R.string.image_position);
 					onFlowClickListener.OnPraise(position);
@@ -471,35 +467,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				pViews.add(pView);
 				
 				findColumnToAdd(iv_pic, imageHeight + textHeight).addView(view);
-				
-//				View view = LayoutInflater.from(getContext()).inflate( R.layout.item_pic, null);
-//				ImageView iv_praise = (ImageView)view.findViewById(R.id.iv_praise);
-//				iv_praise.setPadding(5, 5, 5, 5);
-//				iv_praise.setOnClickListener(onClickListener);
-//				iv_praise.setTag(R.string.image_url, mImageUrl);
-//				RelativeLayout rl_pic = (RelativeLayout)view.findViewById(R.id.rl_pic);
-//				rl_pic.setLayoutParams(params1);
-//				
-//				ImageView iv_pic = (ImageView)view.findViewById(R.id.iv_pic);
-//				iv_pic.setLayoutParams(params);
-//				iv_pic.setPadding(5, 5, 5, 5);
-//				iv_pic.setImageBitmap(bitmap);
-//				iv_pic.setTag(R.string.image_url, mImageUrl);
-//				imageViewList.add(iv_pic);
-//				
-//				findColumnToAdd(iv_pic, imageHeight + 50).addView(view);
-				
-				//ImageView imageView = new ImageView(getContext());
-				//imageView.setLayoutParams(params);
-				//imageView.setImageBitmap(bitmap);
-				//imageView.setScaleType(ScaleType.FIT_XY);
-				//imageView.setPadding(5, 5, 5, 5);
-				//imageView.setTag(R.string.image_url, mImageUrl);
-				//imageView.setOnClickListener(onClickListener);
-				//imageView.setId(1);
-				//findColumnToAdd(imageView, imageHeight).addView(imageView);
-				//imageViewList.add(imageView);
-				//SHUAXIN
 			}
 		}
 		
@@ -596,7 +563,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 			return imagePath;
 		}
 	}
-	List<photoView> pViews = new ArrayList<photoView>();
 	class photoView{
 		ImageView iv_pic;
 		ImageView iv_praise;

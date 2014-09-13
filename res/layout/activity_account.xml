@@ -41,7 +41,7 @@
             android:layout_centerVertical="true"
             android:text="头像"
             android:textColor="@color/navy"
-            android:textSize="@dimen/main" />
+            android:textSize="@dimen/content" />
         <customView.CircleImageView
             android:id="@+id/iv_pic"
             android:layout_width="50dp"
@@ -71,7 +71,7 @@
         	android:paddingBottom="@dimen/margins"
         	android:paddingRight="30dp"
             android:textColor="@color/navy"
-            android:textSize="@dimen/main" />
+            android:textSize="@dimen/content" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
             android:padding="10dp"
             android:text="手机"
             android:textColor="@color/navy"
-            android:textSize="@dimen/main" />
+            android:textSize="@dimen/content" />
     </RelativeLayout>
 
     <View
@@ -100,9 +100,8 @@
             android:drawablePadding="@dimen/margins"
             android:gravity="right"
             android:padding="10dp"
-            android:text="张三"
             android:textColor="@color/navy"
-            android:textSize="@dimen/main" />
+            android:textSize="@dimen/content" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -111,7 +110,7 @@
             android:padding="10dp"
             android:text="昵称"
             android:textColor="@color/navy"
-            android:textSize="@dimen/main" />
+            android:textSize="@dimen/content" />
     </RelativeLayout>
 
     <View
@@ -135,7 +134,7 @@
             android:gravity="right"
             android:padding="10dp"
             android:textColor="@color/navy"
-            android:textSize="@dimen/main" />
+            android:textSize="@dimen/content" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -144,7 +143,7 @@
             android:padding="10dp"
             android:text="邮箱"
             android:textColor="@color/navy"
-            android:textSize="@dimen/main" />
+            android:textSize="@dimen/content" />
     </RelativeLayout>
 
     <View
@@ -168,7 +167,7 @@
             android:gravity="right"
             android:padding="10dp"
             android:textColor="@color/navy"
-            android:textSize="@dimen/main" />
+            android:textSize="@dimen/content" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -177,7 +176,7 @@
             android:padding="10dp"
             android:text="性别"
             android:textColor="@color/navy"
-            android:textSize="@dimen/main" />
+            android:textSize="@dimen/content" />
     </RelativeLayout>
 
     <View
@@ -201,7 +200,7 @@
             android:drawableRight="@drawable/btn_right"
             android:drawablePadding="@dimen/margins"
             android:textColor="@color/navy"
-            android:textSize="@dimen/main" />
+            android:textSize="@dimen/content" />
 
         <TextView
             android:layout_width="fill_parent"
@@ -210,7 +209,7 @@
             android:padding="10dp"
             android:text="生日"
             android:textColor="@color/navy"
-            android:textSize="@dimen/main" />
+            android:textSize="@dimen/content" />
     </RelativeLayout>
 
     <TextView
@@ -224,6 +223,6 @@
         android:padding="10dp"
         android:text="修改密码"
         android:textColor="@color/navy"
-        android:textSize="@dimen/main" />
+        android:textSize="@dimen/content" />
 
 </LinearLayout>
