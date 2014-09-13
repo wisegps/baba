@@ -51,7 +51,7 @@ public class ShortProvincesActivity extends Activity {
 
 	private String[] provinces = { "京", "津", "沪", "渝", "冀", "豫", "云", "辽", "黑",
 			"湘", "皖", "鲁", "新", "苏", "浙", "赣", "鄂", "桂", "甘", "晋", "蒙", "陕",
-			"吉", "闽", "贵", "粤", "青", "藏", "川", "宁", "琼" };
+			"吉", "闽", "贵", "粤", "青", "藏", "川", "宁", "琼", "" };
 
 	class ProvincesAdapter extends BaseAdapter {
 		LayoutInflater inflater = LayoutInflater
@@ -85,6 +85,8 @@ public class ShortProvincesActivity extends Activity {
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
+			holder.tv_province.setBackgroundColor(getResources().getColor(
+					R.color.white));
 			holder.tv_province.setText(provinces[position]);
 			return convertView;
 		}
