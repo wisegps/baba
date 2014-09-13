@@ -21,7 +21,6 @@ public class Constant {
 	public static String oss_accessKey = "iAxAHoAuG1ZYwjIRLfyYKK2oF9WcCe";
 
 	/** url,42.121.109.221:8002 **/
-	//public static String BaseUrl = "http://42.121.109.221:8002/";
 	public static String BaseUrl = "http://api.bibibaba.cn/";
 	/** 图片地址 **/
 	public static String ImageUrl = "http://img.wisegps.cn/logo/";

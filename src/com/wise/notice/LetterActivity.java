@@ -176,8 +176,7 @@ public class LetterActivity extends Activity implements IXListViewListener{
 			}
 		}		
 	};
-	OnFinishListener onFinishListener = new OnFinishListener() {
-		
+	OnFinishListener onFinishListener = new OnFinishListener() {		
 		@Override
 		public void OnFinish(int index) {
 			// Auto-generated method stub
