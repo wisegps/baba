@@ -71,7 +71,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		getLogin();
 		MobclickAgent.setDebugMode(true);
 		//打印更新日志，正式发布去掉
-		UpdateConfig.setDebug(true);
+		//UpdateConfig.setDebug(true);
 		FeedbackAgent agent = new FeedbackAgent(this);
 		agent.sync();
 	}

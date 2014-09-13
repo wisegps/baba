@@ -324,6 +324,9 @@ public class SelectCityActivity extends Activity {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem,
                     int visibleItemCount, int totalItemCount) {
+            	if(cityDatas.size() == 0){
+            		return;
+            	}
                 if (firstVisibleItem != 0) {
                     String letter = cityDatas.get(firstVisibleItem)
                             .getFirst_letter();
