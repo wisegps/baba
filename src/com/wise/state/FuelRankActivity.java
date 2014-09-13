@@ -12,9 +12,6 @@ import pubclas.NetThread;
 import pubclas.Variable;
 import com.wise.baba.R;
 import com.wise.notice.LetterActivity;
-import com.wise.show.PhotoActivity;
-import com.wise.state.FaultDetailActivity.FaultData;
-
 import customView.CircleImageView;
 import android.app.Activity;
 import android.content.Intent;
@@ -47,10 +44,7 @@ public class FuelRankActivity extends Activity{
 	String month = "month";
 	String all = "all";
 	List<FuelData> fuelDatas = new ArrayList<FuelData>();
-	
-	int Type_month = 1;
-	int Type_all = 2;
-	
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,7 +62,7 @@ public class FuelRankActivity extends Activity{
 		fuelAdapter = new FuelAdapter();
 		lv_fuel.setAdapter(fuelAdapter);
 		lv_fuel.setOnScrollListener(onScrollListener);
-		getData(month,Type_month);
+		getData(month);
 	}
 	OnClickListener onClickListener = new OnClickListener() {		
 		@Override
@@ -81,13 +75,13 @@ public class FuelRankActivity extends Activity{
 				setBg();
 				tv_month.setBackgroundResource(R.drawable.bg_border_left_press);
 				tv_month.setTextColor(getResources().getColor(R.color.white));
-				getData(month,Type_month);
+				getData(month);
 				break;
 			case R.id.tv_total:
 				setBg();
 				tv_total.setBackgroundResource(R.drawable.bg_border_right_press);
 				tv_total.setTextColor(getResources().getColor(R.color.white));
-				getData(all,Type_all);
+				getData(all);
 				break;
 			}
 		}
@@ -107,9 +101,9 @@ public class FuelRankActivity extends Activity{
 			}
 		}		
 	};
-	private void getData(String data,int Type){
+	private void getData(String data){
 		String url = Constant.BaseUrl + "device/fuel_rank/" + data + "?auth_code=" + Variable.auth_code;
-		new NetThread.GetDataThread(handler, url, getData,Type).start();
+		new NetThread.GetDataThread(handler, url, getData).start();
 	}
 	private void jsonData(String Restult,int Type){
 		try {
@@ -118,15 +112,8 @@ public class FuelRankActivity extends Activity{
 			for(int i = 0 ; i < jsonArray.length() ; i++){
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				FuelData fuelData = new FuelData();
-				fuelData.setType(Type);
 				fuelData.setAvg_fuel(jsonObject.getDouble("avg_fuel"));
-				if(Type == Type_month){
-					fuelData.setEst_fuel(jsonObject.getDouble("est_fuel"));
-					fuelData.setDriver_score(0);
-				}else{
-					fuelData.setEst_fuel(0);
-					fuelData.setDriver_score(jsonObject.getInt("driver_score"));
-				}
+				fuelData.setEst_fuel(jsonObject.getDouble("est_fuel"));				
 				fuelData.setMileage(jsonObject.getInt("mileage"));
 				fuelData.setCust_id(jsonObject.getInt("cust_id"));
 				fuelData.setCust_name(jsonObject.getString("cust_name"));
@@ -183,11 +170,7 @@ public class FuelRankActivity extends Activity{
 			}
 			final FuelData fuelData = fuelDatas.get(position);
 			viewHolder.tv_name.setText(fuelData.getCust_name());
-			if(fuelData.getType() == Type_month){
-				viewHolder.tv_est.setText("里程" + fuelData.getMileage() + "km 油耗" +fuelData.getAvg_fuel() + "L/100km");
-			}else{
-				viewHolder.tv_est.setText("里程" + fuelData.getMileage() + "km 平均得分" +fuelData.getDriver_score());
-			}
+			viewHolder.tv_est.setText("里程" + fuelData.getMileage() + "km 油耗" +fuelData.getAvg_fuel() + "L/100km");
 			viewHolder.tv_avg.setText(fuelData.getCar_type() + " (" +fuelData.getAvg_fuel() + "L/100km)");
 			//读取用户对应的图片
 			if(new File(Constant.userIconPath + fuelData.getCust_id() + ".png").exists()){
@@ -219,22 +202,14 @@ public class FuelRankActivity extends Activity{
 	}
 	
 	class FuelData{
-		int Type;
 		int cust_id;
 		int mileage;
-		int driver_score;
 		double avg_fuel;
 		double est_fuel;
 		String cust_name;
 		String logo;
 		String car_type;		
 		
-		public int getType() {
-			return Type;
-		}
-		public void setType(int type) {
-			Type = type;
-		}
 		public int getCust_id() {
 			return cust_id;
 		}
@@ -276,12 +251,6 @@ public class FuelRankActivity extends Activity{
 		}
 		public void setCar_type(String car_type) {
 			this.car_type = car_type;
-		}
-		public int getDriver_score() {
-			return driver_score;
-		}
-		public void setDriver_score(int driver_score) {
-			this.driver_score = driver_score;
 		}		
 	}
 	

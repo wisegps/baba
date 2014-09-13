@@ -405,6 +405,7 @@ public class FaultActivity extends FragmentActivity {
 			Variable.carDatas.get(index).setLat(lat);
 			Variable.carDatas.get(index).setLon(lon);
 			Variable.carDatas.get(index).setGps_time(GetSystem.ChangeTimeZone(gpsTime.substring(0, 19).replace("T", " ")));
+			GetSystem.myLog(TAG, "lat = " + lat + " , Lon = " + lon);
 			mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
 					.location(latLng));
 		} catch (JSONException e) {
@@ -1031,6 +1032,7 @@ public class FaultActivity extends FragmentActivity {
 				//没有检索到结果
 			}else{
 				try {
+					GetSystem.myLog(TAG, "获取位置信息");
 					Variable.carDatas.get(index).setAdress(result.getAddress());
 					String gpsTime = Variable.carDatas.get(index).getGps_time();
 					String gpsData = gpsTime.substring(0, 10);//取出日期

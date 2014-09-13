@@ -6,10 +6,7 @@
     <RelativeLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/double_margins"
-        android:paddingBottom="@dimen/double_margins"
-        android:paddingLeft="@dimen/margins"
-        android:paddingRight="@dimen/margins">
+        android:padding="@dimen/margins">
         <TextView
             android:id="@+id/tv_day" 
             android:layout_width="wrap_content"
@@ -29,8 +26,8 @@
         <LinearLayout 
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/double_margins"
-            android:layout_marginRight="@dimen/double_margins"
+            android:layout_marginLeft="@dimen/margins"
+            android:layout_marginRight="@dimen/margins"
             android:orientation="vertical"
             android:layout_toLeftOf="@id/tv_total_fee"
             android:layout_toRightOf="@id/tv_day">
