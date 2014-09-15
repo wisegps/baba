@@ -185,6 +185,10 @@ public class RemindAddActivity extends Activity {
 				ll_car.setVisibility(View.VISIBLE);
 				ll_mileage.setVisibility(View.GONE);
 				ll_content.setVisibility(View.GONE);
+				if (Variable.carDatas.size() == 0 || Variable.carDatas == null) {
+					Toast.makeText(RemindAddActivity.this, "您还没有添加爱车",
+							Toast.LENGTH_SHORT).show();
+				}
 			}
 		}
 
