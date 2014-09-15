@@ -39,67 +39,70 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class RemindAddActivity extends Activity{
-	
+public class RemindAddActivity extends Activity {
+
 	private static final int save = 1;
 	String remind_way = "2";
 	String remind_time;
-	Spinner s_type,s_car,s_mode;
-	TextView tv_before0, tv_before1 , tv_before3 , tv_before7 , tv_before30,tv_remind_time,tv_before_note;
-	EditText et_mileage,et_content;
-	LinearLayout ll_car,ll_mileage,ll_content;
-	
+	Spinner s_type, s_car, s_mode;
+	TextView tv_before0, tv_before1, tv_before3, tv_before7, tv_before30,
+			tv_remind_time, tv_before_note;
+	EditText et_mileage, et_content;
+	LinearLayout ll_car, ll_mileage, ll_content;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_remind_add);
-		ll_car = (LinearLayout)findViewById(R.id.ll_car);
-		ll_mileage = (LinearLayout)findViewById(R.id.ll_mileage);
-		ll_content = (LinearLayout)findViewById(R.id.ll_content);
-		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
+		ll_car = (LinearLayout) findViewById(R.id.ll_car);
+		ll_mileage = (LinearLayout) findViewById(R.id.ll_mileage);
+		ll_content = (LinearLayout) findViewById(R.id.ll_content);
+		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		ImageView iv_ok = (ImageView)findViewById(R.id.iv_ok);
+		ImageView iv_ok = (ImageView) findViewById(R.id.iv_ok);
 		iv_ok.setOnClickListener(onClickListener);
-		
-		tv_before_note = (TextView)findViewById(R.id.tv_before_note);
-		tv_before0 = (TextView)findViewById(R.id.tv_before0);
+
+		tv_before_note = (TextView) findViewById(R.id.tv_before_note);
+		tv_before0 = (TextView) findViewById(R.id.tv_before0);
 		tv_before0.setOnClickListener(onClickListener);
-		tv_before1 = (TextView)findViewById(R.id.tv_before1);
+		tv_before1 = (TextView) findViewById(R.id.tv_before1);
 		tv_before1.setOnClickListener(onClickListener);
-		tv_before3 = (TextView)findViewById(R.id.tv_before3);
+		tv_before3 = (TextView) findViewById(R.id.tv_before3);
 		tv_before3.setOnClickListener(onClickListener);
-		tv_before7 = (TextView)findViewById(R.id.tv_before7);
+		tv_before7 = (TextView) findViewById(R.id.tv_before7);
 		tv_before7.setOnClickListener(onClickListener);
-		tv_before30 = (TextView)findViewById(R.id.tv_before30);
+		tv_before30 = (TextView) findViewById(R.id.tv_before30);
 		tv_before30.setOnClickListener(onClickListener);
-		et_mileage = (EditText)findViewById(R.id.et_mileage);
-		et_content = (EditText)findViewById(R.id.et_content);
-		tv_remind_time = (TextView)findViewById(R.id.tv_remind_time);
-		
-		s_type = (Spinner)findViewById(R.id.s_type);
+		et_mileage = (EditText) findViewById(R.id.et_mileage);
+		et_content = (EditText) findViewById(R.id.et_content);
+		tv_remind_time = (TextView) findViewById(R.id.tv_remind_time);
+
+		s_type = (Spinner) findViewById(R.id.s_type);
 		ArrayAdapter<String> type = new ArrayAdapter<String>(
-				RemindAddActivity.this,
-				android.R.layout.simple_spinner_item, Constant.items_note_type);
+				RemindAddActivity.this, android.R.layout.simple_spinner_item,
+				Constant.items_note_type);
 		type.setDropDownViewResource(R.layout.drop_down_item);
 		s_type.setAdapter(type);
 		s_type.setOnItemSelectedListener(onTypeItemSelectedListener);
-		s_car = (Spinner)findViewById(R.id.s_car);
+		s_car = (Spinner) findViewById(R.id.s_car);
 		ArrayAdapter<String> car = new ArrayAdapter<String>(
-				RemindAddActivity.this,
-				android.R.layout.simple_spinner_item, getCars());
+				RemindAddActivity.this, android.R.layout.simple_spinner_item,
+				getCars());
 		car.setDropDownViewResource(R.layout.drop_down_item);
 		s_car.setAdapter(car);
-		s_mode = (Spinner)findViewById(R.id.s_mode);
+		s_mode = (Spinner) findViewById(R.id.s_mode);
 		ArrayAdapter<String> mode = new ArrayAdapter<String>(
-				RemindAddActivity.this,
-				android.R.layout.simple_spinner_item, Constant.items_note_mode);
+				RemindAddActivity.this, android.R.layout.simple_spinner_item,
+				Constant.items_note_mode);
 		mode.setDropDownViewResource(R.layout.drop_down_item);
 		s_mode.setAdapter(mode);
 		setDate();
 	}
-	OnClickListener onClickListener = new OnClickListener() {		
+
+	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
@@ -142,7 +145,7 @@ public class RemindAddActivity extends Activity{
 			}
 		}
 	};
-	Handler handler = new Handler(){
+	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
@@ -150,7 +153,7 @@ public class RemindAddActivity extends Activity{
 			case save:
 				try {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
-					if(jsonObject.getString("status_code").equals("0")){
+					if (jsonObject.getString("status_code").equals("0")) {
 						setResult(3);
 						finish();
 					}
@@ -159,80 +162,113 @@ public class RemindAddActivity extends Activity{
 				}
 				break;
 			}
-		}		
+		}
 	};
-	
+
 	OnItemSelectedListener onTypeItemSelectedListener = new OnItemSelectedListener() {
 		@Override
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			if(arg2 == 0){//驾照换证
+			if (arg2 == 0) {// 驾照换证
 				ll_car.setVisibility(View.GONE);
-				ll_mileage.setVisibility(View.GONE);				
-				ll_content.setVisibility(View.GONE);				
-			}else if(arg2 == 5){//通用提醒
+				ll_mileage.setVisibility(View.GONE);
+				ll_content.setVisibility(View.GONE);
+			} else if (arg2 == 5) {// 通用提醒
 				ll_car.setVisibility(View.GONE);
-				ll_mileage.setVisibility(View.GONE);				
-				ll_content.setVisibility(View.VISIBLE);		
-			}else if(arg2 == 2){//车辆保养
+				ll_mileage.setVisibility(View.GONE);
+				ll_content.setVisibility(View.VISIBLE);
+			} else if (arg2 == 2) {// 车辆保养
 				ll_car.setVisibility(View.VISIBLE);
-				ll_mileage.setVisibility(View.VISIBLE);		
-				ll_content.setVisibility(View.GONE);		
-			}else{
+				ll_mileage.setVisibility(View.VISIBLE);
+				ll_content.setVisibility(View.GONE);
+			} else {
 				ll_car.setVisibility(View.VISIBLE);
 				ll_mileage.setVisibility(View.GONE);
 				ll_content.setVisibility(View.GONE);
 			}
 		}
+
 		@Override
-		public void onNothingSelected(AdapterView<?> arg0) {}
+		public void onNothingSelected(AdapterView<?> arg0) {
+		}
 	};
-	private void save(){
-		String mileage = et_mileage.getText().toString().trim();		
-		String url = Constant.BaseUrl + "reminder?auth_code=" + Variable.auth_code;
+
+	private void save() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("cust_id", Variable.cust_id));
-        params.add(new BasicNameValuePair("remind_type", String.valueOf(s_type.getSelectedItemPosition())));
-        params.add(new BasicNameValuePair("obj_id", String.valueOf(Variable.carDatas.get(s_car.getSelectedItemPosition()).getObj_id())));
-        params.add(new BasicNameValuePair("mileage", mileage.equals("")?"0":mileage));
-        params.add(new BasicNameValuePair("remind_way", remind_way));
-        params.add(new BasicNameValuePair("repeat_type", String.valueOf(s_mode.getSelectedItemPosition())));
-        params.add(new BasicNameValuePair("content", et_content.getText().toString().trim()));
-        params.add(new BasicNameValuePair("remind_time", remind_time));
-        new Thread(new NetThread.postDataThread(handler, url, params, save)).start();
+		if (s_type.getSelectedItemPosition() != 0
+				&& s_type.getSelectedItemPosition() != 5) {
+			if (Variable.carDatas.size() != 0 && Variable.carDatas != null) {
+				params.add(new BasicNameValuePair("obj_id", String
+						.valueOf(Variable.carDatas.get(
+								s_car.getSelectedItemPosition()).getObj_id())));
+			} else {
+				Toast.makeText(RemindAddActivity.this, "您还没有添加爱车",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
+		} else {
+			params.add(new BasicNameValuePair("obj_id", "0"));
+		}
+		String mileage = et_mileage.getText().toString().trim();
+		String url = Constant.BaseUrl + "reminder?auth_code="
+				+ Variable.auth_code;
+		params.add(new BasicNameValuePair("cust_id", Variable.cust_id));
+		params.add(new BasicNameValuePair("remind_type", String.valueOf(s_type
+				.getSelectedItemPosition())));
+		params.add(new BasicNameValuePair("mileage", mileage.equals("") ? "0"
+				: mileage));
+		params.add(new BasicNameValuePair("remind_way", remind_way));
+		params.add(new BasicNameValuePair("repeat_type", String.valueOf(s_mode
+				.getSelectedItemPosition())));
+		params.add(new BasicNameValuePair("content", et_content.getText()
+				.toString().trim()));
+		params.add(new BasicNameValuePair("remind_time", remind_time));
+		new Thread(new NetThread.postDataThread(handler, url, params, save))
+				.start();
 	}
-	private void setWhite(){
+
+	private void setWhite() {
 		tv_before0.setBackgroundResource(R.drawable.bg_white);
 		tv_before1.setBackgroundResource(R.drawable.bg_white);
 		tv_before3.setBackgroundResource(R.drawable.bg_white);
 		tv_before7.setBackgroundResource(R.drawable.bg_white);
 		tv_before30.setBackgroundResource(R.drawable.bg_white);
 	}
-	private List<String> getCars(){
+
+	private List<String> getCars() {
 		List<String> strs = new ArrayList<String>();
-		for(CarData carData : Variable.carDatas){
+		for (CarData carData : Variable.carDatas) {
 			strs.add(carData.getNick_name());
 		}
 		return strs;
 	}
+
 	OnWheelScrollListener onWheelScrollListener = new OnWheelScrollListener() {
 		@Override
-		public void onScrollingStarted(WheelView wheel) {}		
+		public void onScrollingStarted(WheelView wheel) {
+		}
+
 		@Override
 		public void onScrollingFinished(WheelView wheel) {
-			remind_time = (curYear + year.getCurrentItem()) + "-" + GetSystem.ChangeTime(month.getCurrentItem()+1) + "-" + GetSystem.ChangeTime(day.getCurrentItem()+1);
-			tv_remind_time.setText("日期 "+remind_time);
-	        updateDays(year, month, day);
-	        updateWeek();
+			remind_time = (curYear + year.getCurrentItem()) + "-"
+					+ GetSystem.ChangeTime(month.getCurrentItem() + 1) + "-"
+					+ GetSystem.ChangeTime(day.getCurrentItem() + 1);
+			tv_remind_time.setText("日期 " + remind_time);
+			updateDays(year, month, day);
+			updateWeek();
 		}
 	};
-	OnWheelScrollListener onDateWheelScrollListener = new OnWheelScrollListener() {		
+	OnWheelScrollListener onDateWheelScrollListener = new OnWheelScrollListener() {
 		@Override
-		public void onScrollingStarted(WheelView wheel) {}		
+		public void onScrollingStarted(WheelView wheel) {
+		}
+
 		@Override
 		public void onScrollingFinished(WheelView wheel) {
-			remind_time = (curYear + year.getCurrentItem()) + "-" + GetSystem.ChangeTime(month.getCurrentItem()+1) + "-" + GetSystem.ChangeTime(day.getCurrentItem()+1);
-			tv_remind_time.setText("日期 "+remind_time);
+			remind_time = (curYear + year.getCurrentItem()) + "-"
+					+ GetSystem.ChangeTime(month.getCurrentItem() + 1) + "-"
+					+ GetSystem.ChangeTime(day.getCurrentItem() + 1);
+			tv_remind_time.setText("日期 " + remind_time);
 			updateWeek();
 		}
 	};
@@ -241,124 +277,152 @@ public class RemindAddActivity extends Activity{
 	WheelView month;
 	WheelView day;
 	WheelView week;
-    String weeks[] = new String[] {"星期一", "星期二", "星期三", "星期四", "星期五","星期六", "星期日"};
-	private void setDate(){
-        year = (WheelView) findViewById(R.id.data_year);
+	String weeks[] = new String[] { "星期一", "星期二", "星期三", "星期四", "星期五", "星期六",
+			"星期日" };
+
+	private void setDate() {
+		year = (WheelView) findViewById(R.id.data_year);
 		month = (WheelView) findViewById(R.id.data_month);
-        day = (WheelView) findViewById(R.id.data_day);
-        week = (WheelView) findViewById(R.id.data_week);
-        Calendar calendar = Calendar.getInstance();
-    	// year
-    	curYear = calendar.get(Calendar.YEAR);
-        year.setViewAdapter(new DateNumericAdapter(RemindAddActivity.this, curYear, curYear + 10, 0));
-        year.setCurrentItem(0);
-        year.addScrollingListener(onWheelScrollListener);
-    	// month
-        int curMonth = calendar.get(Calendar.MONTH);
-        String months[] = new String[] {"1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"};
-        month.setViewAdapter(new DateArrayAdapter(RemindAddActivity.this, months, curMonth));
-        month.setCurrentItem(curMonth);
-        month.addScrollingListener(onWheelScrollListener);        
-        //day
-        day.addScrollingListener(onDateWheelScrollListener);
-        updateFristDays(year, month, day,(calendar.get(Calendar.DAY_OF_MONTH) - 1));
-        
-        remind_time = (curYear + year.getCurrentItem()) + "-" + GetSystem.ChangeTime(month.getCurrentItem()+1) + "-" + GetSystem.ChangeTime(day.getCurrentItem()+1);
-		tv_remind_time.setText("日期 "+remind_time);
-        //week
+		day = (WheelView) findViewById(R.id.data_day);
+		week = (WheelView) findViewById(R.id.data_week);
+		Calendar calendar = Calendar.getInstance();
+		// year
+		curYear = calendar.get(Calendar.YEAR);
+		year.setViewAdapter(new DateNumericAdapter(RemindAddActivity.this,
+				curYear, curYear + 10, 0));
+		year.setCurrentItem(0);
+		year.addScrollingListener(onWheelScrollListener);
+		// month
+		int curMonth = calendar.get(Calendar.MONTH);
+		String months[] = new String[] { "1月", "2月", "3月", "4月", "5月", "6月",
+				"7月", "8月", "9月", "10月", "11月", "12月" };
+		month.setViewAdapter(new DateArrayAdapter(RemindAddActivity.this,
+				months, curMonth));
+		month.setCurrentItem(curMonth);
+		month.addScrollingListener(onWheelScrollListener);
+		// day
+		day.addScrollingListener(onDateWheelScrollListener);
+		updateFristDays(year, month, day,
+				(calendar.get(Calendar.DAY_OF_MONTH) - 1));
+
+		remind_time = (curYear + year.getCurrentItem()) + "-"
+				+ GetSystem.ChangeTime(month.getCurrentItem() + 1) + "-"
+				+ GetSystem.ChangeTime(day.getCurrentItem() + 1);
+		tv_remind_time.setText("日期 " + remind_time);
+		// week
 		updateWeek();
 	}
-	private void updateFristDays(WheelView year, WheelView month, WheelView day,int date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(calendar.get(Calendar.YEAR) + year.getCurrentItem(), month.getCurrentItem(), 1);
-        int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        day.setViewAdapter(new DateNumericAdapter(RemindAddActivity.this, 1, maxDays, calendar.get(Calendar.DAY_OF_MONTH) - 1));
-        int curDay = Math.min(maxDays, date);
-        day.setCurrentItem(curDay);
-    }
-	private void updateWeek(){
-        week.setViewAdapter(new DateArrayAdapter(RemindAddActivity.this, weeks, GetSystem.getWeekOfDate(remind_time)));
-        week.setCurrentItem(GetSystem.getWeekOfDate(remind_time));
+
+	private void updateFristDays(WheelView year, WheelView month,
+			WheelView day, int date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(calendar.get(Calendar.YEAR) + year.getCurrentItem(),
+				month.getCurrentItem(), 1);
+		int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		day.setViewAdapter(new DateNumericAdapter(RemindAddActivity.this, 1,
+				maxDays, calendar.get(Calendar.DAY_OF_MONTH) - 1));
+		int curDay = Math.min(maxDays, date);
+		day.setCurrentItem(curDay);
 	}
+
+	private void updateWeek() {
+		week.setViewAdapter(new DateArrayAdapter(RemindAddActivity.this, weeks,
+				GetSystem.getWeekOfDate(remind_time)));
+		week.setCurrentItem(GetSystem.getWeekOfDate(remind_time));
+	}
+
 	/**
-     * Updates day wheel. Sets max days according to selected month and year
-     */
+	 * Updates day wheel. Sets max days according to selected month and year
+	 */
 	private void updateDays(WheelView year, WheelView month, WheelView day) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(calendar.get(Calendar.YEAR) + year.getCurrentItem(), month.getCurrentItem(), 1);
-        int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        day.setViewAdapter(new DateNumericAdapter(RemindAddActivity.this, 1, maxDays, calendar.get(Calendar.DAY_OF_MONTH) - 1));
-        int curDay = Math.min(maxDays, day.getCurrentItem());
-        day.setCurrentItem(curDay);
-    }
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(calendar.get(Calendar.YEAR) + year.getCurrentItem(),
+				month.getCurrentItem(), 1);
+		int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		day.setViewAdapter(new DateNumericAdapter(RemindAddActivity.this, 1,
+				maxDays, calendar.get(Calendar.DAY_OF_MONTH) - 1));
+		int curDay = Math.min(maxDays, day.getCurrentItem());
+		day.setCurrentItem(curDay);
+	}
+
 	/**
-     * Adapter for numeric wheels. Highlights the current value.
-     */
-    private static class DateNumericAdapter extends NumericWheelAdapter {
-        // Index of current item
-        int currentItem;
-        // Index of item to be highlighted
-        int currentValue;        
-        /**
-         * Constructor
-         */
-        public DateNumericAdapter(Context context, int minValue, int maxValue, int current) {
-            super(context, minValue, maxValue);
-            this.currentValue = current;
-            setTextSize(20);
-        }        
-        @Override
-        protected void configureTextView(TextView view) {
-            super.configureTextView(view);
-            if (currentItem == currentValue) {
-                //view.setTextColor(0xFF0000F0);
-            }
-            view.setTypeface(Typeface.SANS_SERIF);
-        }        
-        @Override
-        public View getItem(int index, View cachedView, ViewGroup parent) {
-            currentItem = index;
-            return super.getItem(index, cachedView, parent);
-        }
-    }    
-    /**
-     * Adapter for string based wheel. Highlights the current value.
-     */
-    private static class DateArrayAdapter extends ArrayWheelAdapter<String> {
-        // Index of current item
-        int currentItem;
-        // Index of item to be highlighted
-        int currentValue;        
-        /**
-         * Constructor
-         */
-        public DateArrayAdapter(Context context, String[] items, int current) {
-            super(context, items);
-            this.currentValue = current;
-            setTextSize(20);
-        }        
-        @Override
-        protected void configureTextView(TextView view) {
-            super.configureTextView(view);
-            if (currentItem == currentValue) {
-                //view.setTextColor(0xFF0000F0);
-            }
-            view.setTypeface(Typeface.SANS_SERIF);
-        }        
-        @Override
-        public View getItem(int index, View cachedView, ViewGroup parent) {
-            currentItem = index;
-            return super.getItem(index, cachedView, parent);
-        }
-    }
-    @Override
-    protected void onResume() {
-    	super.onResume();
-    	MobclickAgent.onResume(this);
-    }
-    @Override
-    protected void onPause() {
-    	super.onPause();
-    	MobclickAgent.onPause(this);
-    }
+	 * Adapter for numeric wheels. Highlights the current value.
+	 */
+	private static class DateNumericAdapter extends NumericWheelAdapter {
+		// Index of current item
+		int currentItem;
+		// Index of item to be highlighted
+		int currentValue;
+
+		/**
+		 * Constructor
+		 */
+		public DateNumericAdapter(Context context, int minValue, int maxValue,
+				int current) {
+			super(context, minValue, maxValue);
+			this.currentValue = current;
+			setTextSize(20);
+		}
+
+		@Override
+		protected void configureTextView(TextView view) {
+			super.configureTextView(view);
+			if (currentItem == currentValue) {
+				// view.setTextColor(0xFF0000F0);
+			}
+			view.setTypeface(Typeface.SANS_SERIF);
+		}
+
+		@Override
+		public View getItem(int index, View cachedView, ViewGroup parent) {
+			currentItem = index;
+			return super.getItem(index, cachedView, parent);
+		}
+	}
+
+	/**
+	 * Adapter for string based wheel. Highlights the current value.
+	 */
+	private static class DateArrayAdapter extends ArrayWheelAdapter<String> {
+		// Index of current item
+		int currentItem;
+		// Index of item to be highlighted
+		int currentValue;
+
+		/**
+		 * Constructor
+		 */
+		public DateArrayAdapter(Context context, String[] items, int current) {
+			super(context, items);
+			this.currentValue = current;
+			setTextSize(20);
+		}
+
+		@Override
+		protected void configureTextView(TextView view) {
+			super.configureTextView(view);
+			if (currentItem == currentValue) {
+				// view.setTextColor(0xFF0000F0);
+			}
+			view.setTypeface(Typeface.SANS_SERIF);
+		}
+
+		@Override
+		public View getItem(int index, View cachedView, ViewGroup parent) {
+			currentItem = index;
+			return super.getItem(index, cachedView, parent);
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 }
