@@ -170,6 +170,7 @@ public class FuelActivity extends Activity {
 					Month = GetSystem.GetNextMonth(Month, -1).getMonth();
 					tv_date.setText(Month);
 					getData(Month + "-01", Month + "-31");
+					GetSystem.getMonthLastDay(Month);
 					iv_right.setVisibility(View.VISIBLE);
 				} else if (index == 0) {
 					Day = GetSystem.GetNextData(Day, -1);
