@@ -23,86 +23,95 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-public class NameActivity extends Activity{
+public class NameActivity extends Activity {
 	private static final int update_name = 1;
 	private static final int get_customer = 2;
 	EditText et_name;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_name);
-		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
+		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		Button bt_sure = (Button)findViewById(R.id.bt_sure);
+		Button bt_sure = (Button) findViewById(R.id.bt_sure);
 		bt_sure.setOnClickListener(onClickListener);
 		String name = getIntent().getStringExtra("name");
-		et_name = (EditText)findViewById(R.id.et_name);
+		et_name = (EditText) findViewById(R.id.et_name);
 		et_name.setText(name);
 	}
-	OnClickListener onClickListener = new OnClickListener(){
+
+	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.iv_back:
 				finish();
 				break;
-			case R.id.bt_sure:				
+			case R.id.bt_sure:
 				updateName();
 				break;
 			}
-		}		
+		}
 	};
-	Handler handler = new Handler(){
+	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case update_name:
 				String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-				+ "?auth_code=" + Variable.auth_code;
-					new Thread(new NetThread.GetDataThread(handler, url, get_customer))
-				.start();
+						+ "?auth_code=" + Variable.auth_code;
+				new Thread(new NetThread.GetDataThread(handler, url,
+						get_customer)).start();
 				break;
 			case get_customer:
 				jsonCustomer(msg.obj.toString());
 				break;
 			}
-		}		
+		}
 	};
-	private void updateName(){
+
+	private void updateName() {
 		String name = et_name.getText().toString().trim();
-		if(name.equals("")){
+		if (name.equals("")) {
+			Toast.makeText(NameActivity.this, "昵称不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		
+
 		Intent data = new Intent();
 		data.putExtra("name", name);
 		setResult(1, data);
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/field?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
+				+ "/field?auth_code=" + Variable.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("field_name", "cust_name"));
-        params.add(new BasicNameValuePair("field_type", "String"));
-        params.add(new BasicNameValuePair("field_value", name));
-        new Thread(new NetThread.putDataThread(handler, url, params, update_name)).start();
+		params.add(new BasicNameValuePair("field_name", "cust_name"));
+		params.add(new BasicNameValuePair("field_type", "String"));
+		params.add(new BasicNameValuePair("field_value", name));
+		new Thread(new NetThread.putDataThread(handler, url, params,
+				update_name)).start();
 
 		finish();
 	}
-	
-	/**获取个人信息**/
+
+	/** 获取个人信息 **/
 	private void jsonCustomer(String str) {
-		SharedPreferences preferences1 = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-        Editor editor1 = preferences1.edit();
-        editor1.putString(Constant.sp_customer + Variable.cust_id, str);
-        editor1.commit();
+		SharedPreferences preferences1 = getSharedPreferences(
+				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		Editor editor1 = preferences1.edit();
+		editor1.putString(Constant.sp_customer + Variable.cust_id, str);
+		editor1.commit();
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		MobclickAgent.onResume(this);
 	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();

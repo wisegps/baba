@@ -35,7 +35,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:paddingLeft="@dimen/margins"
-	        android:paddingRight="@dimen/margins"
+	        android:paddingRight="15dp"
 	        android:layout_toLeftOf="@id/iv_me"
 	        android:textSize="@dimen/content"
 	        android:textColor="@color/navy"

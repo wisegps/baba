@@ -36,9 +36,9 @@
 	        android:layout_height="wrap_content"
 	        android:textSize="@dimen/content"
 	        android:textColor="@color/navy"
-	        android:gravity="center_vertical"
 	        android:paddingLeft="@dimen/margins"
 	        android:paddingRight="@dimen/margins"
+	        android:gravity="center_vertical"
 	        android:background="@drawable/chat_duifang_shuru"
 	        android:text="你是专门修宝马的吗"/>
     </LinearLayout>    

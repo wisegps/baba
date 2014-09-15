@@ -149,12 +149,12 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
         Editor editor1 = preferences1.edit();
         editor1.putString(Constant.sp_customer + Variable.cust_id, str);
         editor1.commit();
-//		try {
-//			JSONObject jsonObject = new JSONObject(str);
+		try {
+			JSONObject jsonObject = new JSONObject(str);
 //			String mobile = jsonObject.getString("mobile");
 //			String email = jsonObject.getString("email");
 //			String password = jsonObject.getString("password");
-//			Variable.cust_name = jsonObject.getString("cust_name");
+			Variable.cust_name = jsonObject.getString("cust_name");
 //			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 //	        Editor editor = preferences.edit();
 //	        editor.putString(Constant.sp_pwd, password);			
@@ -164,9 +164,9 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 //				editor.putString(Constant.sp_account, mobile);
 //			}
 //	        editor.commit();
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void getData(){

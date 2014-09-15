@@ -178,7 +178,6 @@ public class RemindActivity extends Activity{
 	}
 	
 	private void ToDealAdress() {
-		System.out.println(remindData.toString());
         Intent intent = new Intent(RemindActivity.this,DealAddressActivity.class);
 		if(remindData.getRemind_type() == 1){
 	        intent.putExtra("Title", getString(R.string.inspection_title));

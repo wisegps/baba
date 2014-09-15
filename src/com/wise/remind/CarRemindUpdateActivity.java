@@ -262,13 +262,6 @@ public class CarRemindUpdateActivity extends Activity{
         params.add(new BasicNameValuePair("content", ""));
         params.add(new BasicNameValuePair("remind_time", remind_time));
         new Thread(new NetThread.putDataThread(handler, url, params, save)).start();
-//        System.out.println(String.valueOf(s_type.getSelectedItemPosition()));
-//        System.out.println(String.valueOf(Variable.carDatas.get(s_car.getSelectedItemPosition()).getObj_id()));
-//        System.out.println(mileage.equals("")?"0":mileage);
-//        System.out.println(remind_way);
-//        System.out.println(String.valueOf(s_mode.getSelectedItemPosition()));
-//        System.out.println("content");
-//        System.out.println(remind_time);
 	}
 	private void setWhite(){
 		tv_before0.setBackgroundResource(R.drawable.bg_white);

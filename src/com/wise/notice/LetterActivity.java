@@ -206,6 +206,7 @@ public class LetterActivity extends Activity implements IXListViewListener{
 		LetterData letterData = new LetterData();
 		letterData.setContent(content);
 		letterData.setType(1);
+		letterData.setSend_time(GetSystem.GetNowTime());
 		letterDatas.add(letterData);
 		letterAdapter.notifyDataSetChanged();
 		lv_letter.setSelection(lv_letter.getBottom());
@@ -274,9 +275,7 @@ public class LetterActivity extends Activity implements IXListViewListener{
 			String customer = preferences.getString(Constant.sp_customer + Variable.cust_id, "");
 			try {
 				JSONObject jsonObject = new JSONObject(customer);
-				if(jsonObject.opt("status_code") == null){
-					meLogo = jsonObject.getString("logo");
-				}
+				meLogo = jsonObject.getString("logo");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

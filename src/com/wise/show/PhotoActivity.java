@@ -69,7 +69,8 @@ public class PhotoActivity extends Activity{
 	RequestQueue mQueue;
 	ListView lv_comments;
 	TextView tv_time,tv_persion,tv_content,tv_adress,tv_praise,tv_see,tv_people;
-	ImageView iv_back,iv_persion_icon,iv_car_logo,iv_sex,iv_pic;
+	ImageView iv_back,iv_car_logo,iv_sex,iv_pic;
+	CircleImageView iv_persion_icon;
 	EditText et_comments;
 	ImageData imageData;
 	int position = 0;
@@ -130,7 +131,7 @@ public class PhotoActivity extends Activity{
 			tv_praise.setCompoundDrawables(drawable,null,null,null);
 		}
 		tv_see = (TextView)v.findViewById(R.id.tv_see);
-		iv_persion_icon = (ImageView)v.findViewById(R.id.iv_persion_icon);
+		iv_persion_icon = (CircleImageView)v.findViewById(R.id.iv_persion_icon);
 		iv_car_logo = (ImageView)v.findViewById(R.id.iv_car_logo);
 		iv_sex = (ImageView)v.findViewById(R.id.iv_sex);
 		iv_pic = (ImageView)v.findViewById(R.id.iv_pic);
@@ -139,7 +140,7 @@ public class PhotoActivity extends Activity{
 		Bitmap bitmap = imageLoader.getBitmapFromMemoryCache(imageUrl);
         setImageWidthHeight(bitmap);
 		iv_pic.setImageBitmap(bitmap);
-		
+		/**获取大图片**/
 		String url = Constant.BaseUrl + "photo/" + imageData.getPhoto_id() + "?auth_code=" + Variable.auth_code;
 		new NetThread.GetDataThread(handler, url, getPhoto).start();
 		getLogo();
@@ -187,7 +188,6 @@ public class PhotoActivity extends Activity{
 				break;
 			case getBigImage:
 	            //显示图片
-				System.out.println("显示图片");
 	            Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath + imageName);
 	            iv_pic.setImageBitmap(image);
 				break;
@@ -208,7 +208,7 @@ public class PhotoActivity extends Activity{
 		@Override
 		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 				final int arg2, long arg3) {
-			final PhotoData photoData = photoDatas.get(arg2);
+			final PhotoData photoData = photoDatas.get(arg2 - 1);//去掉头部
 			if(photoData.getCust_id().equals(Variable.cust_id)){
 				
 			}else{
@@ -299,8 +299,15 @@ public class PhotoActivity extends Activity{
 		public void run() {
 			super.run();
 			Bitmap bitmap = GetSystem.getBitmapFromURL(photoDatas.get(position).getIcon());
-			GetSystem.saveImageSD(bitmap, Constant.userIconPath, photoDatas.get(position).getCust_id() + ".png",100);
-			photoThreadId.remove(position);
+			if(bitmap != null){
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, photoDatas.get(position).getCust_id() + ".png",100);
+			}
+			for(int i = 0 ; i < photoThreadId.size() ; i++){
+				if(photoThreadId.get(i) == position){
+					photoThreadId.remove(i);
+					break;
+				}
+			}
 			Message message = new Message();
 			message.what = getPersionImage;
 			handler.sendMessage(message);
@@ -322,7 +329,6 @@ public class PhotoActivity extends Activity{
 	}
 	/**判断点赞**/
 	private void jsonPraise(String result){
-		System.out.println(result);
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if(jsonObject.getInt("status_code") == 0){
@@ -391,6 +397,12 @@ public class PhotoActivity extends Activity{
 			pairs.add(new BasicNameValuePair("content", comments));
 			pairs.add(new BasicNameValuePair("reply", reply));
 			new NetThread.putDataThread(handler, url, pairs, setComments).start();
+			GetSystem.myLog(TAG, "url = " + url);
+			GetSystem.myLog(TAG, "Variable.cust_id = " + Variable.cust_id);
+			GetSystem.myLog(TAG, "Variable.cust_name = " + Variable.cust_name);
+			GetSystem.myLog(TAG, "logo = " + logo);
+			GetSystem.myLog(TAG, "comments = " + comments);
+			GetSystem.myLog(TAG, "reply = " + reply);
 		}
 	}
 	
@@ -466,12 +478,14 @@ public class PhotoActivity extends Activity{
 			if(new File(Constant.userIconPath + photoData.getCust_id() + ".png").exists()){
 				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + photoData.getCust_id() + ".png");
 				holder.iv_logo.setImageBitmap(image);
+			}else{
+				holder.iv_logo.setImageResource(R.drawable.icon_add);
 			}
 			holder.iv_comments.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {
 					if(tv_people == null){
-						System.out.println("tv_people 为空");
+						
 					}else{
 						reply = photoData.getCust_name();
 						tv_people.setText(photoData.getCust_name() + ":");
@@ -554,14 +568,16 @@ public class PhotoActivity extends Activity{
 				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + cust_id + ".png");
 				iv_persion_icon.setImageBitmap(image);
 			}else{
-				//获取用户头像
-				mQueue.add(new ImageRequest(icon, new Response.Listener<Bitmap>() {
-					@Override
-					public void onResponse(Bitmap response) {
-						GetSystem.saveImageSD(response, Constant.userIconPath, cust_id + ".png",100);
-						iv_persion_icon.setImageBitmap(response);
-					}
-				}, 0, 0, Config.RGB_565, null));
+				if(!icon.equals("")){
+					//获取用户头像
+					mQueue.add(new ImageRequest(icon, new Response.Listener<Bitmap>() {
+						@Override
+						public void onResponse(Bitmap response) {
+							GetSystem.saveImageSD(response, Constant.userIconPath, cust_id + ".png",100);
+							iv_persion_icon.setImageBitmap(response);
+						}
+					}, 0, 0, Config.RGB_565, null));
+				}				
 			}
 			
 			//车辆品牌
@@ -651,15 +667,18 @@ public class PhotoActivity extends Activity{
 		String imagePath = imageDir + imageName;
 		return imagePath;
 	}
+	//获取头像地址和名称
 	private void getLogo(){
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		String customer = preferences.getString(Constant.sp_customer + Variable.cust_id, "");
 		try {
+			GetSystem.myLog(TAG, "customer = " + customer);
 			JSONObject jsonObject = new JSONObject(customer);
-			if(jsonObject.opt("status_code") == null){
-				logo = jsonObject.getString("logo");
-			}
+			logo = jsonObject.getString("logo");
+			Variable.cust_name = jsonObject.getString("cust_name");
+			GetSystem.myLog(TAG, "logo = " + logo);
+			GetSystem.myLog(TAG, "Variable.cust_name = " + Variable.cust_name);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

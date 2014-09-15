@@ -214,11 +214,9 @@ public class RefreshableView extends LinearLayout {
 	 * 结束刷新事件
 	 */
 	private void finishRefresh() {
-		Log.i(TAG, "执行了=====finishRefresh");
 		LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) this.refreshView
 				.getLayoutParams();
 		int i = lp.topMargin;
-		System.out.println("i = " + i + " , refreshTargetTop = " + refreshTargetTop);
 		scroller.startScroll(0, 0, 0, refreshTargetTop - i);
 		invalidate();
 		isRefreshing = false;

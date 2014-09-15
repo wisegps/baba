@@ -202,7 +202,6 @@ public class GetSystem {
 			calendar.set(Calendar.YEAR, nowDate.get(Calendar.YEAR));   
 			calendar.set(Calendar.MONTH, nowDate.get(Calendar.MONTH));   
 			int endday = calendar.getActualMaximum(calendar.DAY_OF_MONTH);
-			System.out.println(Month + "-" + endday);
 			return Month + "-" + endday;
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -471,7 +470,6 @@ public class GetSystem {
 	 */
 	public static Bitmap getBitmapFromURL(String Path) {
 		try {
-			Log.d(TAG, Path);
 			URL url = new URL(Path);
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
