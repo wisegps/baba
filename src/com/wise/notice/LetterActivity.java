@@ -494,6 +494,7 @@ public class LetterActivity extends Activity implements IXListViewListener{
 						LetterData letterData = new LetterData();
 						letterData.setContent(content);
 						letterData.setType(0);
+						letterData.setSend_time(GetSystem.GetNowTime());
 						letterDatas.add(letterData);
 						letterAdapter.notifyDataSetChanged();
 						lv_letter.setSelection(lv_letter.getBottom());
