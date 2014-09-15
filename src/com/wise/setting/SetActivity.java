@@ -92,8 +92,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 		
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
 				+ "?auth_code=" + Variable.auth_code;
-		new Thread(new NetThread.GetDataThread(handler, url, get_customer))
-				.start();
+		new NetThread.GetDataThread(handler, url, get_customer).start();
 	}
 	OnClickListener onClickListener = new OnClickListener() {		
 		@Override
@@ -193,7 +192,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 			if(jsonObject.opt("status_code") == null){
 				bt_login_out.setVisibility(View.VISIBLE);
 				Variable.cust_name = jsonObject.getString("cust_name");
-		        
+		        GetSystem.myLog(TAG, "cust_name = " + Variable.cust_name);
 		        Bitmap bimage = BitmapFactory.decodeFile(Constant.userIconPath + Variable.cust_id + ".png");
 		        if(bimage != null){
 		        	iv_logo.setImageBitmap(bimage);
@@ -241,8 +240,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 		if(resultCode == 1){
 			String url = Constant.BaseUrl + "customer/" + Variable.cust_id
 					+ "?auth_code=" + Variable.auth_code;
-			new Thread(new NetThread.GetDataThread(handler, url, get_customer))
-					.start();
+			new NetThread.GetDataThread(handler, url, get_customer).start();
 		}else if(resultCode == 2){
 			tv_city.setText(Variable.City);
 		}

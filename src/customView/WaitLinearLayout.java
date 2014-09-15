@@ -112,7 +112,6 @@ public class WaitLinearLayout extends LinearLayout{
 					if(i > leftWidth){
 						iv_wheel.clearAnimation();
 						isRun = false;
-						System.out.println("isFirst = " + isFirst);
 						if(onFinishListener != null){
 							if(isFirst){
 								onFinishListener.OnFinish(index);

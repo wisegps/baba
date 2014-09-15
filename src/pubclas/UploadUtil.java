@@ -112,9 +112,9 @@ public class UploadUtil {
 			return;
 		}
 
-		Log.i(TAG, "请求的URL=" + RequestURL);
-		Log.i(TAG, "请求的fileName=" + file.getName());
-		Log.i(TAG, "请求的fileKey=" + fileKey);
+		//Log.i(TAG, "请求的URL=" + RequestURL);
+		//Log.i(TAG, "请求的fileName=" + file.getName());
+		//Log.i(TAG, "请求的fileKey=" + fileKey);
 		new Thread(new Runnable() {  //开启线程上传文件
 			@Override
 			public void run() {
@@ -191,7 +191,7 @@ public class UploadUtil {
 			params = sb.toString();
 			sb = null;
 			
-			Log.i(TAG, file.getName()+"=" + params+"##");
+			//Log.i(TAG, file.getName()+"=" + params+"##");
 			dos.write(params.getBytes());
 			/**上传文件*/
 			InputStream is = new FileInputStream(file);
@@ -235,7 +235,6 @@ public class UploadUtil {
 				//sendMessage(UPLOAD_SUCCESS_CODE, "上传结果："+ result);
 				return;
 			} else {
-				System.out.println("上传失败");
 				Log.e(TAG, "request error");
 				InputStream input = conn.getInputStream();
 				StringBuffer sb1 = new StringBuffer();
@@ -250,13 +249,11 @@ public class UploadUtil {
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			System.out.println("上传失败 MalformedURLException");
 			sendMessage(UPLOAD_SERVER_ERROR_CODE,"上传失败：error=" + e.getMessage());
 			e.printStackTrace();
 			return;
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("上传失败 IOException");
 			sendMessage(UPLOAD_SERVER_ERROR_CODE,"上传失败：error=" + e.getMessage());
 			e.printStackTrace();
 			return;

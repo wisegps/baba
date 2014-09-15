@@ -4,19 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-
-import javax.crypto.Mac;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
 import pubclas.Blur;
 import pubclas.Constant;
-import pubclas.OssUploadUtil;
-import pubclas.OssUploadUtil.OnUploadProcessListener;
-import pubclas.Variable;
-
 import com.aliyun.android.oss.OSSClient;
 import com.aliyun.android.oss.task.Task;
 import com.wise.baba.R;
@@ -25,14 +14,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 
-public class TestActivity extends Activity implements OnUploadProcessListener {
+public class TestActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -117,25 +101,6 @@ public class TestActivity extends Activity implements OnUploadProcessListener {
 	private void initOss(){
 		
 		
-	}
-
-
-	@Override
-	public void onUploadDone(int responseCode, String message) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onUploadProcess(int uploadSize) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void initUpload(int fileSize) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

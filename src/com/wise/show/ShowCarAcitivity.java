@@ -275,7 +275,6 @@ public class ShowCarAcitivity extends Activity{
         while (baos.toByteArray().length / 1024 > 100) {   
             baos.reset();  
             options -= 10;  
-            System.out.println("options = " + options);
             bmp.compress(Bitmap.CompressFormat.JPEG, options, baos);  
         }  
         try {  
@@ -299,11 +298,9 @@ public class ShowCarAcitivity extends Activity{
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		String customer = preferences.getString(Constant.sp_customer + Variable.cust_id, "");
 		try {
-			JSONObject jsonObject = new JSONObject(customer);			
-			if(jsonObject.opt("status_code") == null){
-				logo = jsonObject.getString("logo");
-				sex = jsonObject.getString("sex");
-			}
+			JSONObject jsonObject = new JSONObject(customer);
+			logo = jsonObject.getString("logo");
+			sex = jsonObject.getString("sex");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

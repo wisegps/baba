@@ -315,7 +315,9 @@ public class FuelRankActivity extends Activity{
 		public void run() {
 			super.run();
 			Bitmap bitmap = GetSystem.getBitmapFromURL(fuelDatas.get(position).getLogo());
-			GetSystem.saveImageSD(bitmap, Constant.userIconPath, fuelDatas.get(position).getCust_id() + ".png",100);
+			if(bitmap != null){
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, fuelDatas.get(position).getCust_id() + ".png",100);
+			}
 			photoThreadId.remove(position);
 			Message message = new Message();
 			message.what = getPersionImage;

@@ -93,12 +93,6 @@ public final class ViewfinderView extends View {
 			canvas.drawRect(frame.left + 2, middle - 1, frame.right - 1,
 					middle + 2, paint);
 
-			System.out.println(frame.left + 2);
-			System.out.println(middle - 1);
-			System.out.println(frame.right - 1);
-			System.out.println(middle + 2);
-			System.out.println(middle + 3);
-
 			Rect targetRect = new Rect(frame.left + 2, frame.bottom + 10,
 					frame.right - 1, frame.bottom + 40);
 			Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);

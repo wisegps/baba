@@ -24,12 +24,12 @@ public class SmsReceiver extends BroadcastReceiver{
 		Log.d("smsReceiver", intent.getAction());
 		
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
-        	System.out.println("JPush用户注册成功");
+        	//("JPush用户注册成功");
         } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
-        	System.out.println("接受到推送下来的自定义消息");
+        	//("接受到推送下来的自定义消息");
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {        	
         	//TODO 确认消息发送，上传到自己服务器       
-        	System.out.println("确认消息发送，上传到自己服务器 ");
+        	//("确认消息发送，上传到自己服务器 ");
         	Intent intent1 = new Intent(Constant.A_ReceiverLetter);
         	String extras = intent.getExtras().getString(JPushInterface.EXTRA_EXTRA);
         	intent1.putExtra("extras", extras);
@@ -41,11 +41,10 @@ public class SmsReceiver extends BroadcastReceiver{
         	
         }
         if(JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())){
-        	System.out.println("自定义消息");
+        	//("自定义消息");
         }
         if(JPushInterface.ACTION_CONNECTION_CHANGE.equals(intent.getAction())){
         	 boolean connected = intent.getBooleanExtra(JPushInterface.EXTRA_CONNECTION_CHANGE, false);
-        	System.out.println("connected = " + connected);
         }
 	}
 	

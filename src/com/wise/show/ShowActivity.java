@@ -110,8 +110,7 @@ public class ShowActivity extends Activity {
 				String url = Constant.BaseUrl + "photo?auth_code="
 						+ Variable.auth_code + "&cust_id=" + Variable.cust_id
 						+ "&max_id=" + Photo_id + getBeauty();
-				new NetThread.GetDataThread(handler, url, getRefreshImage)
-						.start();
+				new NetThread.GetDataThread(handler, url, getRefreshImage).start();
 			} else {
 				getFristImages();
 				Toast.makeText(ShowActivity.this, "图片获取中...",
@@ -121,7 +120,6 @@ public class ShowActivity extends Activity {
 
 		@Override
 		public void onRefreshOver() {
-			System.out.println("刷新完毕");
 			List<ImageData> iDatas = jsonImages(refresh);
 			imageDatas.addAll(0, iDatas);
 			my_scroll_view.addHeadImages(iDatas);
@@ -229,7 +227,6 @@ public class ShowActivity extends Activity {
 				isLoading = false;
 				List<ImageData> Datas = jsonImages(msg.obj.toString());
 				imageDatas.addAll(Datas);
-				System.out.println("imageDatas.size() = " + imageDatas.size());
 				my_scroll_view.addFootImages(Datas);
 				break;
 			case praise:
@@ -245,7 +242,6 @@ public class ShowActivity extends Activity {
 
 	/** 判断点赞 **/
 	private void jsonPraise(String result, int position) {
-		System.out.println(result);
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if (jsonObject.getInt("status_code") == 0) {
@@ -305,9 +301,7 @@ public class ShowActivity extends Activity {
 				+ Variable.cust_id, "");
 		try {
 			JSONObject jsonObject = new JSONObject(customer);
-			if (jsonObject.opt("status_code") == null) {
-				logo = jsonObject.getString("logo");
-			}
+			logo = jsonObject.getString("logo");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -314,7 +314,9 @@ public class DriveRankActivity extends Activity{
 		public void run() {
 			super.run();
 			Bitmap bitmap = GetSystem.getBitmapFromURL(driveDatas.get(position).getLogo());
-			GetSystem.saveImageSD(bitmap, Constant.userIconPath, driveDatas.get(position).getCust_id() + ".png",100);
+			if(bitmap != null){
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, driveDatas.get(position).getCust_id() + ".png",100);
+			}
 			photoThreadId.remove(position);
 			Message message = new Message();
 			message.what = getPersionImage;

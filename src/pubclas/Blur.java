@@ -13,7 +13,6 @@ public class Blur {
 	 * @return
 	 */
 	public static Bitmap getSquareBitmap(Bitmap bitmap) {
-		System.out.println("");
 		int imageWidth = bitmap.getWidth();
 		int imageHeight = bitmap.getHeight();
 		int y = 0;
@@ -47,7 +46,6 @@ public class Blur {
 		BitmapFactory.decodeFile(Path, options);
 		// 调用上面定义的方法计算inSampleSize值
 		options.inSampleSize = calculateInSampleSize(options, reqWidth,reqHeight);
-		System.out.println("inSampleSize = " + calculateInSampleSize(options, reqWidth,reqHeight));
 		// 使用获取到的inSampleSize值再次解析图片
 		options.inJustDecodeBounds = false;
 		return BitmapFactory.decodeFile(Path, options);
@@ -79,7 +77,6 @@ public class Blur {
 		// 源图片的高度和宽度
 		final int height = options.outHeight;
 		final int width = options.outWidth;
-		System.out.println("height = " + height + " , width = " + width + " , reqWidth = " + reqWidth);
 		int inSampleSize = 1;
 		if (height > width) {// 竖着拍
 			if (height > reqHeight || width > reqWidth) {
