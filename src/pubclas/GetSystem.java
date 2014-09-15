@@ -186,7 +186,11 @@ public class GetSystem {
 			return null;
 		}
 	}
-	
+	/**
+	 * 获取某月最后一天
+	 * @param Month
+	 * @return
+	 */
 	public static String getMonthLastDay(String Month){
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
@@ -195,9 +199,9 @@ public class GetSystem {
 			nowDate.get(Calendar.YEAR);
 			
 			Calendar calendar = Calendar.getInstance();
-			//calendar.set(Calendar.YEAR, nowDate.get(Calendar.YEAR));   
-			//calendar.set(Calendar.MONTH, nowDate.get(Calendar.MONTH));   
-			int endday = calendar.getActualMaximum(nowDate.DAY_OF_MONTH);
+			calendar.set(Calendar.YEAR, nowDate.get(Calendar.YEAR));   
+			calendar.set(Calendar.MONTH, nowDate.get(Calendar.MONTH));   
+			int endday = calendar.getActualMaximum(calendar.DAY_OF_MONTH);
 			System.out.println(Month + "-" + endday);
 			return Month + "-" + endday;
 		} catch (Exception e) {
@@ -350,7 +354,7 @@ public class GetSystem {
 			java.util.Date end = sdf.parse(GetNowTime());
 			int l = (int) ((end.getTime() - begin.getTime()) / 1000);
 			return l;
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return 60;

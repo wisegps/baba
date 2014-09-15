@@ -106,8 +106,7 @@ public class TrafficCitiyActivity extends Activity {
 					}
 					//广东只需要添加一个城市
 					if(cityDatas.get(arg2).getProvince().equals("广东")){
-						for(CityData cityData : chooseCityDatas){							
-							System.out.println(cityData.toString());
+						for(CityData cityData : chooseCityDatas){
 							if(cityData.getProvince().equals("广东")){
 								Toast.makeText(TrafficCitiyActivity.this, "广东省内只需要添加1个城市即可", Toast.LENGTH_SHORT).show();
 								return;
@@ -127,7 +126,6 @@ public class TrafficCitiyActivity extends Activity {
 					}
 					if(isNeed){						
 						chooseCityDatas.add(cityDatas.get(arg2));
-						System.out.println(cityDatas.get(arg2).toString());
 						chooseAdapter.notifyDataSetChanged();
 					}
 				}				

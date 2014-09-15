@@ -215,7 +215,6 @@ public class LetterActivity extends Activity implements IXListViewListener{
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if(jsonObject.getInt("status_code") == 0){
-				System.out.println("发送成功");
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -488,7 +487,6 @@ public class LetterActivity extends Activity implements IXListViewListener{
 			String action = intent.getAction();
 			if (action.equals(Constant.A_ReceiverLetter)) {
 				String extras = intent.getStringExtra("extras");
-				System.out.println("extras = " + extras);
 	            try {
 					JSONObject jsonObject = new JSONObject(extras);
 					if(cust_id.equals(jsonObject.getString("friend_id"))){

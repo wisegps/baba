@@ -86,7 +86,6 @@ public class FoursActivity extends Activity {
 		cursor.close();
 		reader.close();
 		
-		System.out.println("url");
 		String urlCity = "";
 		String urlBrank = "";
 		

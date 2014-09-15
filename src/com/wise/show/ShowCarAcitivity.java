@@ -37,11 +37,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Paint.Join;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -258,10 +254,10 @@ public class ShowCarAcitivity extends Activity{
 				
 				//上传大图图片到阿里云
 				PutObjectTask bigTask = new PutObjectTask(Constant.oss_path, big_pic, "image/jpg", bigFile,Constant.oss_accessId, Constant.oss_accessKey);
-				System.out.println(bigTask.getResult());
+				bigTask.getResult();
 				//上传小图图图片到阿里云
 				PutObjectTask smallTask = new PutObjectTask(Constant.oss_path, small_pic, "image/jpg", smallFile,Constant.oss_accessId, Constant.oss_accessKey);
-				System.out.println(smallTask.getResult());
+				smallTask.getResult();
 				
 				Message message = new Message();
 				message.what = putOss;

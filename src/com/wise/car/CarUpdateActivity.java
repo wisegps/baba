@@ -439,7 +439,6 @@ public class CarUpdateActivity extends Activity {
 					.replaceAll("\"vio_city_name\":", "vio_city_name:")
 					.replaceAll("\"vio_location\":", "vio_location:")
 					.replaceAll("\"province\":", "province:");
-			System.out.println("jsonString = " + jsonString);
 			return jsonString;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -464,7 +463,6 @@ public class CarUpdateActivity extends Activity {
 			String city = "";
 			for (CityData cityData : chooseCityDatas) {
 				city += cityData.getCityName() + " ";
-				System.out.println(cityData.toString());
 			}
 			tv_city.setText(city);
 

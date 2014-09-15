@@ -301,7 +301,7 @@ public class ShowActivity extends Activity{
 					popView.dismiss();
 					break;
 
-				case 1:
+				case 1://从图库获取
 					Intent intent1 = new Intent(); 
 	                /* 开启Pictures画面Type设定为image */ 
 	                intent1.setType("image/*"); 
@@ -319,10 +319,12 @@ public class ShowActivity extends Activity{
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode == 9){
-			Uri uri = data.getData();
-            Intent intent = new Intent(ShowActivity.this, ShowCarAcitivity.class);
-			intent.putExtra("image", getPath(uri));
-	        startActivity(intent);
+			if(data != null){
+				Uri uri = data.getData();
+	            Intent intent = new Intent(ShowActivity.this, ShowCarAcitivity.class);
+				intent.putExtra("image", getPath(uri));
+		        startActivity(intent);
+			}			
 	        return;
 		}
 		if(resultCode == 1){
@@ -338,7 +340,7 @@ public class ShowActivity extends Activity{
 	        startActivity(intent);
 	        return;
 		}
-		if(resultCode == 1){
+		if(resultCode == 2){
 			//TODO 相片详细界面点赞返回
 			int position = data.getIntExtra("position", 0);
 			int Praise_count = data.getIntExtra("Praise_count", 0);

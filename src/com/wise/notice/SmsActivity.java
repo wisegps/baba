@@ -108,13 +108,7 @@ public class SmsActivity extends Activity implements IXListViewListener{
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
 			List<SmsData> smsDatas = smsViews.get(index_view).getSmsDatas();
-			if(arg2 !=0 || arg2 != (smsDatas.size()+1)){
-				if(smsDatas != null){
-					System.out.println("arg2 = " + arg2);
-					System.out.println("smsDatas.get(arg2 -1) = " + smsDatas.get(arg2 -1).toString());
-				}else{
-					System.out.println("smsDatas 为空");
-				}
+			if(arg2 !=0 || arg2 != (smsDatas.size()+1)){				
 			    String Type = smsDatas.get(arg2 -1).getMsg_type();
 	            if(Type.equals("0")){
 	                
