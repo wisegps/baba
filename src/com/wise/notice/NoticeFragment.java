@@ -96,7 +96,6 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	}
 	/**清空通知**/
 	public void ClearNotice(){
-		System.out.println("ClearNotice");
 		noticeDatas.clear();
 		noticeAdapter.notifyDataSetChanged();
 	}
@@ -129,7 +128,6 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	
 	private void itemClick(int position){
 		NoticeData noticeData = noticeDatas.get(position);
-		System.out.println("friend_type = " + noticeData.friend_type);
 		switch (noticeData.friend_type) {
 		case 1://秀爱车				
 			break;
@@ -155,7 +153,6 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	/**点击私信**/
 	private void clickLetter(int position){
 		NoticeData noticeData = noticeDatas.get(position);
-		System.out.println(noticeData.toString());
 		Intent intent = new Intent(getActivity(), LetterActivity.class);
 		intent.putExtra("cust_id", noticeData.getFriend_id());
 		intent.putExtra("cust_name", noticeData.getFriend_name());

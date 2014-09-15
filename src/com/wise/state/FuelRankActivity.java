@@ -257,7 +257,6 @@ public class FuelRankActivity extends Activity{
 	OnScrollListener onScrollListener = new OnScrollListener() {		
 		@Override
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
-			System.out.println("scrollState = " + scrollState);
 			switch (scrollState) {
 			case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL://触摸状态
 				break;

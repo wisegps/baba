@@ -337,17 +337,15 @@ public class ShowActivity extends Activity {
 					startActivityForResult(intent, 1);
 					popView.dismiss();
 					break;
-
-				case 1:
-					Intent intent1 = new Intent();
-					/* 开启Pictures画面Type设定为image */
-					intent1.setType("image/*");
-					/* 使用Intent.ACTION_GET_CONTENT这个Action */
-					intent1.setAction(Intent.ACTION_GET_CONTENT);
-					/* 取得相片后返回本画面 */
-					startActivityForResult(intent1, 9);
-					popView.dismiss();
-					break;
+				case 1://从图库获取
+					Intent intent1 = new Intent(); 
+	                /* 开启Pictures画面Type设定为image */ 
+	                intent1.setType("image/*"); 
+	                /* 使用Intent.ACTION_GET_CONTENT这个Action */ 
+	                intent1.setAction(Intent.ACTION_GET_CONTENT);  
+	                /* 取得相片后返回本画面 */ 
+	                startActivityForResult(intent1, 9);
+	                popView.dismiss();
 				}
 			}
 		});
@@ -356,13 +354,14 @@ public class ShowActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == 9) {
-			Uri uri = data.getData();
-			Intent intent = new Intent(ShowActivity.this,
-					ShowCarAcitivity.class);
-			intent.putExtra("image", getPath(uri));
-			startActivity(intent);
-			return;
+		if(requestCode == 9){
+			if(data != null){
+				Uri uri = data.getData();
+	            Intent intent = new Intent(ShowActivity.this, ShowCarAcitivity.class);
+				intent.putExtra("image", getPath(uri));
+		        startActivity(intent);
+			}			
+	        return;
 		}
 		if (resultCode == 1) {
 			// TODO 登录返回,刷新数据
@@ -379,8 +378,8 @@ public class ShowActivity extends Activity {
 			startActivity(intent);
 			return;
 		}
-		if (resultCode == 1) {
-			// TODO 相片详细界面点赞返回
+		if(resultCode == 2){
+			//TODO 相片详细界面点赞返回
 			int position = data.getIntExtra("position", 0);
 			int Praise_count = data.getIntExtra("Praise_count", 0);
 			imageDatas.get(position).setCust_praise(

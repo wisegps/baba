@@ -401,7 +401,7 @@ public class PhotoActivity extends Activity{
 			intent.putExtra("position", position);
 			intent.putExtra("Praise_count", imageData.getPraise_count());
 			intent.putExtra("isCust_praise", imageData.isCust_praise());
-			setResult(1, intent);
+			setResult(2, intent);
 		}else{
 			finish();
 		}

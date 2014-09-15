@@ -136,7 +136,7 @@ public class FuelActivity extends Activity {
 				setBg();
 				tv_month.setBackgroundResource(R.drawable.bg_border_right_press);
 				tv_month.setTextColor(getResources().getColor(R.color.white));
-				getData(Month + "-01", Month + "-31");
+				getData(Month + "-01", GetSystem.getMonthLastDay(Month));
 				tv_chart_title.setText("百公里驾驶油耗月曲线");
 				iv_right.setVisibility(View.GONE);
 				break;
@@ -169,7 +169,7 @@ public class FuelActivity extends Activity {
 				if (index == 2) {
 					Month = GetSystem.GetNextMonth(Month, -1).getMonth();
 					tv_date.setText(Month);
-					getData(Month + "-01", Month + "-31");
+					getData(Month + "-01", GetSystem.getMonthLastDay(Month));
 					GetSystem.getMonthLastDay(Month);
 					iv_right.setVisibility(View.VISIBLE);
 				} else if (index == 0) {
@@ -190,8 +190,8 @@ public class FuelActivity extends Activity {
 				if (index == 2) {
 					Month = GetSystem.GetNextMonth(Month, 1).getMonth();
 					tv_date.setText(Month);
-					getData(Month + "-01", Month + "-31");
-					boolean isMax = GetSystem.maxTime(Month + "-31"
+					getData(Month + "-01", GetSystem.getMonthLastDay(Month));
+					boolean isMax = GetSystem.maxTime(GetSystem.getMonthLastDay(Month)
 							+ " 00:00:00", GetSystem.GetNowMonth().getDay()
 							+ " 00:00:00");
 					if (isMax) {
@@ -475,7 +475,7 @@ public class FuelActivity extends Activity {
 		index = 2;
 		Month = GetSystem.GetNowMonth().getMonth();
 		tv_date.setText(Month);
-		getData(Month + "-01", Month + "-31");
+		getData(Month + "-01", GetSystem.getMonthLastDay(Month));
 	}
 
 	private void setBg() {

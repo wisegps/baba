@@ -12,7 +12,6 @@ import pubclas.Judge;
 import pubclas.NetThread;
 import pubclas.UpdateManager;
 import pubclas.Variable;
-
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -22,7 +21,6 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
-import com.umeng.update.UpdateConfig;
 import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.baba.SelectCityActivity;
@@ -176,7 +174,7 @@ public class FaultActivity extends FragmentActivity {
 		});
 		String Month = GetSystem.GetNowMonth().getMonth();
 		startMonth = Month + "-01";
-		endMonth = Month + "-31";
+		endMonth = GetSystem.getMonthLastDay(Month);
 		// 未登录
 		if (Judge.isLogin()) {
 			GetSystem.myLog(TAG, "Variable.carDatas.size() = "

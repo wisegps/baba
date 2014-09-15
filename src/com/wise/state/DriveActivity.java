@@ -117,7 +117,6 @@ public class DriveActivity extends Activity{
 		}
 	}
 	private void jsonData(String Data){
-		System.out.println("Data = " + Data);
 		if(Data.equals("")){
 			mTasksView.setProgress(0);
 			tv_advice.setText("");
