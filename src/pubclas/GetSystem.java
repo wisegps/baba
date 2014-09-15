@@ -186,6 +186,26 @@ public class GetSystem {
 			return null;
 		}
 	}
+	
+	public static String getMonthLastDay(String Month){
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+			Calendar nowDate = Calendar.getInstance();
+			nowDate.setTime(sdf.parse(Month));
+			nowDate.get(Calendar.YEAR);
+			
+			Calendar calendar = Calendar.getInstance();
+			//calendar.set(Calendar.YEAR, nowDate.get(Calendar.YEAR));   
+			//calendar.set(Calendar.MONTH, nowDate.get(Calendar.MONTH));   
+			int endday = calendar.getActualMaximum(nowDate.DAY_OF_MONTH);
+			System.out.println(Month + "-" + endday);
+			return Month + "-" + endday;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return Month + "-31";
+	}
 
 	/**
 	 * 获取指定天
