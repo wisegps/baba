@@ -112,11 +112,11 @@ public class ShowActivity extends Activity {
 						+ "&max_id=" + Photo_id + getBeauty();
 				new NetThread.GetDataThread(handler, url, getRefreshImage)
 						.start();
-			} 
-			// else {
-			// Toast.makeText(ShowActivity.this, "fasdv ", Toast.LENGTH_SHORT)
-			// .show();
-			// }
+			} else {
+				getFristImages();
+				Toast.makeText(ShowActivity.this, "图片获取中...",
+						Toast.LENGTH_SHORT).show();
+			}
 		}
 
 		@Override
