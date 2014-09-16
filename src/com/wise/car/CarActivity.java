@@ -163,7 +163,7 @@ public class CarActivity extends Activity {
 	private void getData() {
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
 				+ "/vehicle?auth_code=" + Variable.auth_code;
-		new Thread(new NetThread.GetDataThread(handler, url, get_data)).start();
+		new NetThread.GetDataThread(handler, url, get_data).start();
 	}
 
 	int index;

@@ -212,10 +212,6 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 				}
 			}
 		});
-		progressDialog = ProgressDialog.show(ModelsActivity.this,
-				getString(R.string.dialog_title),
-				getString(R.string.dialog_message));
-		progressDialog.setCancelable(true);
 		getDate(carBrankTitle, Constant.BaseUrl + "base/car_brand",GET_BRANK);		
 	}
 	Handler handler = new Handler(){

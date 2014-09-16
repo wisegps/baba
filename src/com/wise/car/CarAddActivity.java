@@ -6,15 +6,13 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
+import pubclas.JsonData;
 import pubclas.NetThread;
 import pubclas.Variable;
-
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-import com.wise.setting.NameActivity;
-
 import data.CarData;
 import android.app.Activity;
 import android.content.Intent;
@@ -36,9 +34,14 @@ import android.widget.Toast;
 public class CarAddActivity extends Activity{
 	private static final String TAG = "CarAddActivity";
 	private static final int add_car = 1;
+	private static final int update_user = 2;
+	private static final int update_car = 3;
+	private static final int get_data = 4;
 	TextView tv_models;
 	EditText et_nick_name,et_obj_name;
 	CarData carNewData = new CarData();
+	boolean fastTrack = false;
+	String device_id = "";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,8 @@ public class CarAddActivity extends Activity{
 		iv_add.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
+		fastTrack = getIntent().getBooleanExtra("fastTrack", false);
+		device_id = getIntent().getStringExtra("device_id");
 	}
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
@@ -80,22 +85,68 @@ public class CarAddActivity extends Activity{
 				jsonCar(msg.obj.toString());
 				break;
 
-			default:
+			case update_user:
+				try {
+					String status_code = new JSONObject(msg.obj.toString()).getString("status_code");
+					if (status_code.equals("0")) {
+						// 绑定车辆
+						String url = Constant.BaseUrl + "vehicle/" + car_id
+								+ "/device?auth_code=" + Variable.auth_code;
+						List<NameValuePair> params = new ArrayList<NameValuePair>();
+						params.add(new BasicNameValuePair("device_id",device_id));
+						new NetThread.putDataThread(handler,url, params, update_car).start();
+					} else {
+						
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				break;
+			case update_car:
+				try {
+					String status_code = new JSONObject(msg.obj.toString()).getString("status_code");
+					if (status_code.equals("0")) {
+						//TODO 快速注册完毕
+						String url = Constant.BaseUrl + "customer/" + Variable.cust_id
+								+ "/vehicle?auth_code=" + Variable.auth_code;
+						new NetThread.GetDataThread(handler, url, get_data).start();						
+					}else{
+						
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				break;
+			case get_data:
+				Variable.carDatas.clear();
+				Variable.carDatas.addAll(JsonData.jsonCarInfo(msg.obj.toString()));
+				Intent intent = new Intent(Constant.A_RefreshHomeCar);
+	            sendBroadcast(intent);
+	            finish();
+				AppApplication.getActivityInstance().exit();
 				break;
 			}
 		}		
 	};
-	
+	int car_id = 0;
 	private void jsonCar(String str){
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			if(jsonObject.getString("status_code").equals("0")){
-				int obj_id = jsonObject.getInt("obj_id");
-				carNewData.setObj_id(obj_id);
-				Variable.carDatas.add(carNewData);
-				Toast.makeText(CarAddActivity.this, "车辆添加成功", Toast.LENGTH_SHORT).show();
-				setResult(3);
-				finish();
+				car_id = jsonObject.getInt("obj_id");
+				if(fastTrack){
+					//终端和用户,车辆信息绑定
+					String url_sim = Constant.BaseUrl + "device/" + device_id + "/customer?auth_code=" + Variable.auth_code;
+					List<NameValuePair> paramSim = new ArrayList<NameValuePair>();
+					paramSim.add(new BasicNameValuePair("cust_id",Variable.cust_id));
+					new NetThread.putDataThread(handler,url_sim, paramSim, update_user).start();
+				}else{
+					carNewData.setObj_id(car_id);
+					Variable.carDatas.add(carNewData);
+					Toast.makeText(CarAddActivity.this, "车辆添加成功", Toast.LENGTH_SHORT).show();
+					setResult(3);
+					finish();
+				}				
 			}else{
 				Toast.makeText(CarAddActivity.this, "添加失败", Toast.LENGTH_SHORT).show();
 			}
@@ -138,8 +189,7 @@ public class CarAddActivity extends Activity{
         params.add(new BasicNameValuePair("car_brand_id", car_brand_id));
         params.add(new BasicNameValuePair("car_series_id", car_series_id));
         params.add(new BasicNameValuePair("car_type_id", car_type_id));
-        new Thread(new NetThread.postDataThread(handler, url, params, add_car)).start();
-        
+        new NetThread.postDataThread(handler, url, params, add_car).start();        
         
 	}
 	String car_brand = "";

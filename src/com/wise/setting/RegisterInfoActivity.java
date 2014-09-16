@@ -15,12 +15,22 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qzone.QZone;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.car.CarAddActivity;
 import com.wise.car.ModelsActivity;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -46,7 +56,10 @@ import android.widget.Toast;
  * 
  */
 public class RegisterInfoActivity extends Activity {
+	
+	private static String TAG = "RegisterInfoActivity";
 	private static final int save = 1;
+	private static final int get_customer = 2;
 	
 	private String[] items = { "销售", "售后", "保险", "理赔", "代办", "维修", "保养" };
 	LinearLayout ll_models, ll_type;
@@ -54,11 +67,13 @@ public class RegisterInfoActivity extends Activity {
 	EditText et_cust_name;
 	TextView tv_model;
 	boolean isPhone = true;
+	boolean fastTrack = false;
 	String pwd = "";
 	String account = "";
 	String cust_type = "0";
 	String sex = "0";
 	String platform = "";	
+	String device_id = "";	
 
 	String carBrank = "";
 	String carBrankId = "";
@@ -94,9 +109,11 @@ public class RegisterInfoActivity extends Activity {
 		getYear();
 		Intent intent = getIntent();
 		isPhone = intent.getBooleanExtra("isPhone", true);
+		fastTrack = intent.getBooleanExtra("fastTrack", false);
 		pwd = intent.getStringExtra("pwd");
 		account = intent.getStringExtra("account");
 		platform = intent.getStringExtra("platform");
+		device_id = intent.getStringExtra("device_id");
 		
 		if(platform == null || platform.equals("")){
 			
@@ -135,6 +152,9 @@ public class RegisterInfoActivity extends Activity {
 			switch (msg.what) {
 			case save:
 				jsonSave(msg.obj.toString());
+				break;
+			case get_customer:
+				jsonCustomer(msg.obj.toString());
 				break;
 			}
 		}		
@@ -238,15 +258,37 @@ public class RegisterInfoActivity extends Activity {
         	}
         }
         params.add(new BasicNameValuePair("remark", ""));
-        new Thread(new NetThread.postDataThread(handler, url, params, save)).start();
+        new NetThread.postDataThread(handler, url, params, save).start();
 	}
 	private void jsonSave(String str){
 		try {
+			GetSystem.myLog(TAG, str);
 			JSONObject jsonObject = new JSONObject(str);
 			String status_code = jsonObject.getString("status_code");
 			if(status_code.equals("0")){
-				Toast.makeText(RegisterInfoActivity.this, "注册成功，请登录", Toast.LENGTH_SHORT).show();
-				AppApplication.getActivityInstance().exit();
+				if(fastTrack){
+					//TODO 注册成功，把数据处理好
+					Variable.cust_id = jsonObject.getString("cust_id");
+					//存储账号密码
+					SharedPreferences preferences = getSharedPreferences(
+							Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+					Editor editor = preferences.edit();
+					editor.putString(Constant.sp_account, account);
+					editor.putString(Constant.sp_pwd, GetSystem.getM5DEndo(pwd));
+					editor.commit();
+					//设置
+					String url = Constant.BaseUrl + "customer/" + Variable.cust_id
+							+ "?auth_code=" + Variable.auth_code;
+					new NetThread.GetDataThread(handler, url, get_customer).start();
+					
+					Intent intent = new Intent(RegisterInfoActivity.this, CarAddActivity.class);
+					intent.putExtra("fastTrack", true);
+					intent.putExtra("device_id", device_id);
+					startActivity(intent);
+				}else{
+					Toast.makeText(RegisterInfoActivity.this, "注册成功，请登录", Toast.LENGTH_SHORT).show();
+					AppApplication.getActivityInstance().exit();
+				}				
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -272,5 +314,11 @@ public class RegisterInfoActivity extends Activity {
 	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
+	}
+	private void jsonCustomer(String str) {		
+		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+        Editor editor = preferences.edit();
+        editor.putString(Constant.sp_customer + Variable.cust_id, str);
+        editor.commit();	    
 	}
 }
