@@ -22,6 +22,7 @@ import android.os.Message;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,11 +43,13 @@ public class CarAddActivity extends Activity{
 	CarData carNewData = new CarData();
 	boolean fastTrack = false;
 	String device_id = "";
+	Button bt_jump;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		AppApplication.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_car_add);
 		et_nick_name = (EditText)findViewById(R.id.et_nick_name);
 		et_obj_name = (EditText)findViewById(R.id.et_obj_name);
@@ -54,9 +57,16 @@ public class CarAddActivity extends Activity{
 		tv_models.setOnClickListener(onClickListener);
 		ImageView iv_add = (ImageView)findViewById(R.id.iv_add);
 		iv_add.setOnClickListener(onClickListener);
+		bt_jump = (Button)findViewById(R.id.bt_jump);
+		bt_jump.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		fastTrack = getIntent().getBooleanExtra("fastTrack", false);
+		if(fastTrack){
+			bt_jump.setVisibility(View.VISIBLE);
+		}else{
+			bt_jump.setVisibility(View.GONE);
+		}
 		device_id = getIntent().getStringExtra("device_id");
 	}
 	OnClickListener onClickListener = new OnClickListener() {
@@ -71,6 +81,11 @@ public class CarAddActivity extends Activity{
 				break;
 			case R.id.iv_add:
 				addCar();
+				break;
+			case R.id.bt_jump:
+				//TODO 跳过
+				finish();
+				AppApplication.getActivityInstance().exit();
 				break;
 			}
 		}
@@ -122,7 +137,6 @@ public class CarAddActivity extends Activity{
 				Variable.carDatas.addAll(JsonData.jsonCarInfo(msg.obj.toString()));
 				Intent intent = new Intent(Constant.A_RefreshHomeCar);
 	            sendBroadcast(intent);
-	            finish();
 				AppApplication.getActivityInstance().exit();
 				break;
 			}
@@ -135,11 +149,15 @@ public class CarAddActivity extends Activity{
 			if(jsonObject.getString("status_code").equals("0")){
 				car_id = jsonObject.getInt("obj_id");
 				if(fastTrack){
+					Intent intent = new Intent(CarAddActivity.this, DevicesAddActivity.class);
+					intent.putExtra("fastTrack", true);
+					intent.putExtra("car_id", car_id);
+					startActivity(intent);
 					//终端和用户,车辆信息绑定
-					String url_sim = Constant.BaseUrl + "device/" + device_id + "/customer?auth_code=" + Variable.auth_code;
-					List<NameValuePair> paramSim = new ArrayList<NameValuePair>();
-					paramSim.add(new BasicNameValuePair("cust_id",Variable.cust_id));
-					new NetThread.putDataThread(handler,url_sim, paramSim, update_user).start();
+					//String url_sim = Constant.BaseUrl + "device/" + device_id + "/customer?auth_code=" + Variable.auth_code;
+					//List<NameValuePair> paramSim = new ArrayList<NameValuePair>();
+					//paramSim.add(new BasicNameValuePair("cust_id",Variable.cust_id));
+					//new NetThread.putDataThread(handler,url_sim, paramSim, update_user).start();
 				}else{
 					carNewData.setObj_id(car_id);
 					Variable.carDatas.add(carNewData);

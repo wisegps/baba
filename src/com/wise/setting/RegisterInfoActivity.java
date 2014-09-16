@@ -72,8 +72,7 @@ public class RegisterInfoActivity extends Activity {
 	String account = "";
 	String cust_type = "0";
 	String sex = "0";
-	String platform = "";	
-	String device_id = "";	
+	String platform = "";
 
 	String carBrank = "";
 	String carBrankId = "";
@@ -113,7 +112,6 @@ public class RegisterInfoActivity extends Activity {
 		pwd = intent.getStringExtra("pwd");
 		account = intent.getStringExtra("account");
 		platform = intent.getStringExtra("platform");
-		device_id = intent.getStringExtra("device_id");
 		
 		if(platform == null || platform.equals("")){
 			
@@ -283,7 +281,6 @@ public class RegisterInfoActivity extends Activity {
 					
 					Intent intent = new Intent(RegisterInfoActivity.this, CarAddActivity.class);
 					intent.putExtra("fastTrack", true);
-					intent.putExtra("device_id", device_id);
 					startActivity(intent);
 				}else{
 					Toast.makeText(RegisterInfoActivity.this, "注册成功，请登录", Toast.LENGTH_SHORT).show();

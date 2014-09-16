@@ -28,6 +28,16 @@
 		        android:padding="@dimen/margins"
 		        android:layout_centerVertical="true"
 		        android:src="@drawable/nav_back"/>
+			<TextView
+			    android:id="@+id/tv_jump"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerVertical="true"
+	            android:layout_marginRight="@dimen/margins"
+	            android:text="跳过"
+	            android:layout_alignParentRight="true"
+	            android:textColor="@color/white"
+	            android:textSize="@dimen/head"/>
 		</RelativeLayout>
 		<LinearLayout 
 		    android:id="@+id/ll_content"
