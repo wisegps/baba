@@ -317,8 +317,10 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		cursor.close();
 		db.close();
 	}
-	private void jsonBrands(String result){		
-		progressDialog.dismiss();
+	private void jsonBrands(String result){
+		if(progressDialog != null){
+			progressDialog.dismiss();
+		}
 		JSONArray jsonArray = null;
 		try {
 			jsonArray = new JSONArray(result);

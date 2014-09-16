@@ -52,7 +52,6 @@ public class CaptchaActivity extends Activity{
 	 */
 	int mark = 0;
 	String platform = "";
-	String device_id = "";
 	boolean fastTrack = false;
 	
 	@Override
@@ -76,7 +75,6 @@ public class CaptchaActivity extends Activity{
 		account = intent.getStringExtra("account");
 		mark = intent.getIntExtra("mark", 0);
 		platform = intent.getStringExtra("platform");
-		device_id = intent.getStringExtra("device_id");
 		fastTrack = intent.getBooleanExtra("fastTrack", false);
 		
 		tv_account.setText(account);
@@ -234,7 +232,6 @@ public class CaptchaActivity extends Activity{
 			intent.putExtra("isPhone", isPhone);
 			intent.putExtra("platform", platform);
 			intent.putExtra("fastTrack", fastTrack);
-			intent.putExtra("device_id", device_id);
 			startActivity(intent);
 		}else if(mark == 1){
 			//TODO 重置密码

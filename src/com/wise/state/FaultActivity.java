@@ -30,7 +30,6 @@ import com.wise.car.CarUpdateActivity;
 import com.wise.car.DevicesAddActivity;
 import com.wise.notice.NoticeFragment;
 import com.wise.notice.NoticeFragment.BtnListener;
-import com.wise.setting.CaptchaActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.setting.RegisterActivity;
 import com.wise.show.ShowActivity;
@@ -201,7 +200,7 @@ public class FaultActivity extends FragmentActivity {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									Intent intent = new Intent(FaultActivity.this, DevicesAddActivity.class);
+									Intent intent = new Intent(FaultActivity.this, RegisterActivity.class);
 									intent.putExtra("fastTrack", true);
 									startActivity(intent);
 								}

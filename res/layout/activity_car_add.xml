@@ -1,4 +1,4 @@
-<LinearLayout 
+<RelativeLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:background="@color/gray_bg">
     <RelativeLayout
+        android:id="@+id/rl_top"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/title_hight"
         android:background="@color/title_back">
@@ -34,7 +35,20 @@
 	        android:layout_centerVertical="true"
 	        android:src="@drawable/nav_back"/>
 	</RelativeLayout>
+	<Button
+        android:id="@+id/bt_jump"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/bt"
+        android:padding="@dimen/margins"
+        android:background="@drawable/bg_green"
+        android:visibility="gone"
+        android:text="跳过"/>
 	<ScrollView 
+	    android:layout_below="@id/rl_top"
+	    android:layout_above="@id/bt_jump"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent">
 	    <LinearLayout 
@@ -99,4 +113,4 @@
 	        </LinearLayout>
 	    </LinearLayout>
 	</ScrollView>
-</LinearLayout>
+</RelativeLayout>
