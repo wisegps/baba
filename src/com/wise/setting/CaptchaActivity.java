@@ -28,6 +28,7 @@ import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 /**
@@ -51,6 +52,8 @@ public class CaptchaActivity extends Activity{
 	 */
 	int mark = 0;
 	String platform = "";
+	String device_id = "";
+	boolean fastTrack = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,8 @@ public class CaptchaActivity extends Activity{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		AppApplication.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_captcha);
+		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
+		iv_back.setOnClickListener(onClickListener);
 		et_captcha = (EditText)findViewById(R.id.et_captcha);
 		et_pwd = (EditText)findViewById(R.id.et_pwd);
 		et_pwd_again = (EditText)findViewById(R.id.et_pwd_again);
@@ -71,6 +76,8 @@ public class CaptchaActivity extends Activity{
 		account = intent.getStringExtra("account");
 		mark = intent.getIntExtra("mark", 0);
 		platform = intent.getStringExtra("platform");
+		device_id = intent.getStringExtra("device_id");
+		fastTrack = intent.getBooleanExtra("fastTrack", false);
 		
 		tv_account.setText(account);
 		GetCaptcha();
@@ -96,6 +103,9 @@ public class CaptchaActivity extends Activity{
 				break;
 			case R.id.tv_send_captcha:
 				//GetCaptcha();
+				break;
+			case R.id.iv_back:
+				finish();
 				break;
 			}
 		}		
@@ -223,6 +233,8 @@ public class CaptchaActivity extends Activity{
 			intent.putExtra("account", account);
 			intent.putExtra("isPhone", isPhone);
 			intent.putExtra("platform", platform);
+			intent.putExtra("fastTrack", fastTrack);
+			intent.putExtra("device_id", device_id);
 			startActivity(intent);
 		}else if(mark == 1){
 			//TODO 重置密码

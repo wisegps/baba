@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.UpdateManager;
 import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
@@ -518,9 +517,6 @@ public class FaultTestActivity extends FragmentActivity {
             String VersonUrl = new JSONObject(result).getString("app_path");
             String logs = new JSONObject(result).getString("logs");
             if (logVersion > Version) {
-            	UpdateManager mUpdateManager = new UpdateManager(
-                        FaultTestActivity.this, VersonUrl, logs, Version);
-                mUpdateManager.checkUpdateInfo();
             }
         } catch (Exception e) {
             e.printStackTrace();

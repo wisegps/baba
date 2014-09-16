@@ -47,6 +47,8 @@ public class RegisterActivity extends Activity {
 	 */
 	int mark = 0;
 	String platform = "";
+	String device_id = "";
+	boolean fastTrack = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,8 @@ public class RegisterActivity extends Activity {
 		Intent intent = getIntent();
 		mark = intent.getIntExtra("mark", 0);
 		platform = intent.getStringExtra("platform");
+		device_id = intent.getStringExtra("device_id");
+		fastTrack = intent.getBooleanExtra("fastTrack", false);
 		if(mark == 0 || mark == 2){
 			tv_title.setText("注册");
 			bt_register.setText("注册");
@@ -211,6 +215,8 @@ public class RegisterActivity extends Activity {
 							intent.putExtra("isPhone", isPhone);
 							intent.putExtra("mark", mark);							
 							intent.putExtra("platform", platform);							
+							intent.putExtra("fastTrack", fastTrack);							
+							intent.putExtra("device_id", device_id);							
 							startActivityForResult(intent, 2);
 						}
 					}).setNegativeButton("取消", null)
