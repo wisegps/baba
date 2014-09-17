@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.JsonData;
@@ -46,6 +47,7 @@ public class DevicesAddActivity extends Activity {
 	private static final int update_user = 4;
 	private static final int update_car = 5;
 	private static final int get_data = 6;
+	private static final int update_serial = 7;
 
 	ImageView iv_serial;
 	Button iv_add;
@@ -61,6 +63,8 @@ public class DevicesAddActivity extends Activity {
 	String device_id;
 	/** 快速注册 **/
 	boolean fastTrack = false;
+
+	String old_device_id;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +93,12 @@ public class DevicesAddActivity extends Activity {
 		car_id = intent.getIntExtra("car_id", 0);
 		isBind = intent.getBooleanExtra("isBind", true);
 		fastTrack = intent.getBooleanExtra("fastTrack", false);
+		// TODO 接收并现实以前的终端值
+		old_device_id = intent.getStringExtra("old_device_id");
+		String url = Constant.BaseUrl + "/device/" + old_device_id
+				+ "?auth_code=" + Variable.auth_code;
+		new NetThread.GetDataThread(handler, url, update_serial).start();
+
 		if (fastTrack) {
 			tv_jump.setVisibility(View.VISIBLE);
 		} else {
@@ -208,6 +218,17 @@ public class DevicesAddActivity extends Activity {
 				Intent intent = new Intent(Constant.A_RefreshHomeCar);
 				sendBroadcast(intent);
 				AppApplication.getActivityInstance().exit();
+				break;
+			case update_serial:
+				try {
+					JSONObject json = new JSONObject(msg.obj.toString());
+					String sim_card = json.getString("sim");
+					String old_serial = json.getString("serial");
+					et_serial.setText(old_serial);
+					et_sim.setText(sim_card);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 				break;
 			}
 		}

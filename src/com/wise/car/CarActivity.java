@@ -276,6 +276,8 @@ public class CarActivity extends Activity {
 								DevicesAddActivity.class);
 						intent.putExtra("car_id", carData.getObj_id());
 						intent.putExtra("isBind", false);
+						// TODO 传以前终端的值
+						intent.putExtra("old_device_id", carData.getDevice_id());
 						startActivityForResult(intent, 2);
 					}
 				});
@@ -391,7 +393,8 @@ public class CarActivity extends Activity {
 							if (bitmap != null) {
 								String imagePath = Constant.VehicleLogoPath
 										+ carData.getCar_brand_id() + ".png";
-								File filePath = new File(Constant.VehicleLogoPath);
+								File filePath = new File(
+										Constant.VehicleLogoPath);
 								if (!filePath.exists()) {
 									filePath.mkdirs();
 								}
