@@ -53,6 +53,8 @@ import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +63,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -110,7 +113,7 @@ public class FaultActivity extends FragmentActivity {
 	String endMonth;
 	NoticeFragment noticeFragment;
 	private GeoCoder mGeoCoder = null;
-
+	int completed;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -126,6 +129,12 @@ public class FaultActivity extends FragmentActivity {
 			intent.putExtras(getIntent().getExtras());
 			startActivity(intent);
 		}
+		DisplayMetrics dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);		
+		int width = dm.widthPixels;
+		int twoCompleted = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 280, getResources().getDisplayMetrics());
+		completed = (width - twoCompleted)/3;
+		GetSystem.myLog(TAG, "width = " + width + " , twoCompleted = " + twoCompleted + " , completed = " + completed);
 		Button bt_show = (Button) findViewById(R.id.bt_show);
 		bt_show.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
@@ -250,7 +259,7 @@ public class FaultActivity extends FragmentActivity {
 					}
 				}
 				break;
-			case R.id.ll_fee:
+			case R.id.tcv_drive:
 				if (Variable.carDatas != null && Variable.carDatas.size() != 0) {
 					String Device_id = Variable.carDatas.get(index)
 							.getDevice_id();
@@ -261,32 +270,15 @@ public class FaultActivity extends FragmentActivity {
 								.getObj_id());
 						startActivityForResult(intent, 2);
 					} else {
-						Intent Intent = new Intent(FaultActivity.this,
-								FuelActivity.class);
-						Intent.putExtra("index_car", index);
-						startActivity(Intent);
-					}
-				}
-				break;
-			case R.id.ll_distance:
-				if (Variable.carDatas != null && Variable.carDatas.size() != 0) {
-					String Device_id = Variable.carDatas.get(index)
-							.getDevice_id();
-					if (Device_id == null || Device_id.equals("")) {
 						Intent intent = new Intent(FaultActivity.this,
-								DevicesAddActivity.class);
-						intent.putExtra("car_id", Variable.carDatas.get(index)
-								.getObj_id());
-						startActivityForResult(intent, 2);
-					} else {
-						Intent Intent = new Intent(FaultActivity.this,
 								DriveActivity.class);
-						Intent.putExtra("index_car", index);
-						startActivity(Intent);
+						intent.putExtra("index_car", index);
+						//TODO 刷新
+						startActivityForResult(intent, 2);
 					}
 				}
 				break;
-			case R.id.ll_fuel_rank:
+			case R.id.ll_fee:
 				if (Variable.carDatas != null && Variable.carDatas.size() != 0) {
 					String Device_id = Variable.carDatas.get(index)
 							.getDevice_id();
@@ -565,25 +557,22 @@ public class FaultActivity extends FragmentActivity {
 		hs_car.removeAllViews();
 		carViews.clear();
 		for (int i = 0; i < Variable.carDatas.size(); i++) {
-			GetSystem.myLog(TAG, Variable.carDatas.get(i).toString());
-			View v = LayoutInflater.from(this).inflate(R.layout.item_fault,
-					null);
+			View v = LayoutInflater.from(this).inflate(R.layout.item_fault,null);
 			hs_car.addView(v);
-			LinearLayout ll_adress = (LinearLayout) v
-					.findViewById(R.id.ll_adress);
+			RelativeLayout rl_left_complete = (RelativeLayout)v.findViewById(R.id.rl_left_complete);
+			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams					 
+			(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+			lp.setMargins(0, 0, completed, 0);
+			rl_left_complete.setLayoutParams(lp);			
+			
+			LinearLayout ll_adress = (LinearLayout) v.findViewById(R.id.ll_adress);
 			TextView tv_score = (TextView) v.findViewById(R.id.tv_score);
 			TextView tv_title = (TextView) v.findViewById(R.id.tv_title);
-			TasksCompletedView mTasksView = (TasksCompletedView) v
-					.findViewById(R.id.tasks_view);
+			TasksCompletedView mTasksView = (TasksCompletedView) v.findViewById(R.id.tasks_view);
+			
 			mTasksView.setOnClickListener(onClickListener);
 			LinearLayout ll_fee = (LinearLayout) v.findViewById(R.id.ll_fee);
 			ll_fee.setOnClickListener(onClickListener);
-			LinearLayout ll_distance = (LinearLayout) v
-					.findViewById(R.id.ll_distance);
-			ll_distance.setOnClickListener(onClickListener);
-			LinearLayout ll_fuel_rank = (LinearLayout) v
-					.findViewById(R.id.ll_fuel_rank);
-			ll_fuel_rank.setOnClickListener(onClickListener);
 			TextView tv_distance = (TextView) v.findViewById(R.id.tv_distance);
 			TextView tv_fee = (TextView) v.findViewById(R.id.tv_fee);
 			TextView tv_fuel = (TextView) v.findViewById(R.id.tv_fuel);
@@ -591,7 +580,11 @@ public class FaultActivity extends FragmentActivity {
 			TextView tv_xx = (TextView) v.findViewById(R.id.tv_xx);
 			TextView tv_adress = (TextView) v.findViewById(R.id.tv_adress);
 			tv_adress.setOnClickListener(onClickListener);
-
+			
+			TasksCompletedView tcv_drive = (TasksCompletedView) v.findViewById(R.id.tcv_drive);
+			tcv_drive.setOnClickListener(onClickListener);
+			TextView tv_drive = (TextView)v.findViewById(R.id.tv_drive);
+			
 			CarView carView = new CarView();
 			carView.setLl_adress(ll_adress);
 			carView.setmTasksView(mTasksView);
@@ -602,15 +595,19 @@ public class FaultActivity extends FragmentActivity {
 			carView.setTv_title(tv_title);
 			carView.setTv_xx(tv_xx);
 			carView.setTv_adress(tv_adress);
+			carView.setTcv_drive(tcv_drive);
+			carView.setTv_drive(tv_drive);
 			carViews.add(carView);
 
-			tv_name.setText(Variable.carDatas.get(i).getCar_series() + "("
-					+ Variable.carDatas.get(i).getNick_name() + ")");
+			tv_name.setText(Variable.carDatas.get(i).getCar_series() + "("+ Variable.carDatas.get(i).getNick_name() + ")");
 			String Device_id = Variable.carDatas.get(i).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
 				carView.getmTasksView().setProgress(100);
 				tv_score.setText("0");
 				tv_title.setText("未绑定终端");
+				
+				tcv_drive.setProgress(100);
+				tv_drive.setText("0");
 			} else {
 				String result = preferences.getString(Constant.sp_health_score
 						+ Variable.carDatas.get(i).getObj_id(), "");
@@ -626,6 +623,21 @@ public class FaultActivity extends FragmentActivity {
 						carView.getmTasksView().setProgress(health_score);
 						tv_score.setText(String.valueOf(health_score));
 						tv_title.setText("上次体检");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				/**驾驶信息**/
+				String drive = preferences.getString(Constant.sp_drive_score+ Variable.carDatas.get(i).getObj_id(), "");
+				if(drive.equals("")){
+					tcv_drive.setProgress(100);
+					tv_drive.setText("0");
+				}else{
+					try {
+						JSONObject jsonObject = new JSONObject(drive);
+						int drive_score = jsonObject.getInt("drive_score");
+						carView.getTcv_drive().setProgress(drive_score);
+						tv_drive.setText(String.valueOf(drive_score));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -873,78 +885,75 @@ public class FaultActivity extends FragmentActivity {
 		TextView tv_title;
 		TextView tv_xx;
 		TasksCompletedView mTasksView;
+		TasksCompletedView tcv_drive;
+		TextView tv_drive;
 
 		public LinearLayout getLl_adress() {
 			return ll_adress;
 		}
-
 		public void setLl_adress(LinearLayout ll_adress) {
 			this.ll_adress = ll_adress;
 		}
-
 		public TextView getTv_adress() {
 			return tv_adress;
 		}
-
 		public void setTv_adress(TextView tv_adress) {
 			this.tv_adress = tv_adress;
 		}
-
 		public TextView getTv_distance() {
 			return tv_distance;
 		}
-
 		public void setTv_distance(TextView tv_distance) {
 			this.tv_distance = tv_distance;
 		}
-
 		public TextView getTv_fee() {
 			return tv_fee;
 		}
-
 		public void setTv_fee(TextView tv_fee) {
 			this.tv_fee = tv_fee;
 		}
-
 		public TextView getTv_fuel() {
 			return tv_fuel;
 		}
-
 		public void setTv_fuel(TextView tv_fuel) {
 			this.tv_fuel = tv_fuel;
 		}
-
 		public TasksCompletedView getmTasksView() {
 			return mTasksView;
 		}
-
 		public void setmTasksView(TasksCompletedView mTasksView) {
 			this.mTasksView = mTasksView;
 		}
-
 		public TextView getTv_score() {
 			return tv_score;
 		}
-
 		public void setTv_score(TextView tv_score) {
 			this.tv_score = tv_score;
 		}
-
 		public TextView getTv_title() {
 			return tv_title;
 		}
-
 		public void setTv_title(TextView tv_title) {
 			this.tv_title = tv_title;
 		}
-
 		public TextView getTv_xx() {
 			return tv_xx;
 		}
-
 		public void setTv_xx(TextView tv_xx) {
 			this.tv_xx = tv_xx;
 		}
+		public TasksCompletedView getTcv_drive() {
+			return tcv_drive;
+		}
+		public void setTcv_drive(TasksCompletedView tcv_drive) {
+			this.tcv_drive = tcv_drive;
+		}
+		public TextView getTv_drive() {
+			return tv_drive;
+		}
+		public void setTv_drive(TextView tv_drive) {
+			this.tv_drive = tv_drive;
+		}		
 	}
 
 	@Override
@@ -958,6 +967,24 @@ public class FaultActivity extends FragmentActivity {
 		} else if (requestCode == 1) {
 			// 体检返回重新布局
 			initDataView();
+		}else if(requestCode == 2){
+			//TODO 驾驶习惯返回
+			/**驾驶信息**/
+			SharedPreferences preferences = getSharedPreferences(
+					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+			String drive = preferences.getString(Constant.sp_drive_score+ Variable.carDatas.get(index).getObj_id(), "");
+			if(drive.equals("")){
+				System.out.println("没有驾驶信息");
+			}else{
+				try {
+					JSONObject jsonObject = new JSONObject(drive);
+					int drive_score = jsonObject.getInt("drive_score");
+					carViews.get(index).getTcv_drive().setProgress(drive_score);
+					carViews.get(index).getTv_drive().setText(String.valueOf(drive_score));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -1055,7 +1082,7 @@ public class FaultActivity extends FragmentActivity {
 					} else {
 						showTime = gpsTime.substring(5, 16);
 					}
-					// TODO 显示时间
+					//显示时间
 					carViews.get(index).getLl_adress()
 							.setVisibility(View.VISIBLE);
 					carViews.get(index).getTv_adress()

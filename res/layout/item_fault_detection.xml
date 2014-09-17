@@ -15,10 +15,10 @@
 	        android:layout_centerInParent="true"
 	        android:layout_width="fill_parent"
 	        android:layout_height="140dp"
-	        tc:radius="55dp"
+	        tc:radius="60dp"
 	        tc:circleColor="@color/ring_bg_color"
 	        tc:ringColor="@color/ring_color"
-	        tc:strokeWidth="15dp" />
+	        tc:strokeWidth="10dp" />
 	    <LinearLayout 
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"

@@ -10,7 +10,10 @@ import pubclas.NetThread;
 import pubclas.Variable;
 import com.wise.baba.R;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,6 +34,11 @@ public class DriveActivity extends Activity{
 	TasksCompletedView mTasksView;
 	String Date = "";
 	String Device_id = "";
+	/**把第一次驾驶体检数据记下来**/
+	int frist = 1; 
+	int second = 2;
+	int index_car;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,12 +64,12 @@ public class DriveActivity extends Activity{
 		tv_drive = (TextView)findViewById(R.id.tv_drive);
 		
 		TextView tv_name = (TextView)findViewById(R.id.tv_name);
-		int index_car = getIntent().getIntExtra("index_car", 0);
+		index_car = getIntent().getIntExtra("index_car", 0);
 		tv_name.setText(Variable.carDatas.get(index_car).getNick_name());
 		Device_id = Variable.carDatas.get(index_car).getDevice_id();
 		Date = GetSystem.GetNowMonth().getDay();
 		tv_date.setText(Date);
-		getDriveData();
+		getDriveData(frist);
 	}
 	OnClickListener onClickListener = new OnClickListener() {		
 		@Override
@@ -73,13 +81,13 @@ public class DriveActivity extends Activity{
 			case R.id.iv_left:
 				Date = GetSystem.GetNextData(Date, -1);
 				tv_date.setText(Date);
-				getDriveData();
+				getDriveData(second);
 				iv_right.setVisibility(View.VISIBLE);
 				break;
 			case R.id.iv_right:
 				Date = GetSystem.GetNextData(Date, 1);
 				tv_date.setText(Date);
-				getDriveData();
+				getDriveData(second);
 				boolean isMax = GetSystem.maxTime(Date + " 00:00:00", GetSystem.GetNowMonth().getDay() + " 00:00:00");
 				if(isMax){
 					iv_right.setVisibility(View.GONE);
@@ -98,7 +106,7 @@ public class DriveActivity extends Activity{
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case getData:
-				jsonData(msg.obj.toString());
+				jsonData(msg.obj.toString(),msg.arg1);
 				break;
 
 			default:
@@ -107,16 +115,23 @@ public class DriveActivity extends Activity{
 		}			
 	};
 	/**获取驾驶习惯**/
-	private void getDriveData(){
+	private void getDriveData(int frist){
 		try {
 			String url = Constant.BaseUrl + "device/" + Device_id + "/day_drive?auth_code=" + Variable.auth_code + 
 						"&day=" + Date + "&city=" + URLEncoder.encode(Variable.City, "UTF-8") + "&gas_no=93#";
-			new NetThread.GetDataThread(handler, url, getData).start();
+			new NetThread.GetDataThread(handler, url, getData,frist).start();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 	}
-	private void jsonData(String Data){
+	private void jsonData(String Data,int arg1){
+		if(arg1 == frist){
+			//TODO 保存在本地
+			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+	        Editor editor = preferences.edit();
+	        editor.putString(Constant.sp_drive_score + Variable.carDatas.get(index_car).getObj_id(), Data);
+	        editor.commit();
+		}
 		if(Data.equals("")){
 			mTasksView.setProgress(0);
 			tv_advice.setText("");

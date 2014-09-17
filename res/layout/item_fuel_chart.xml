@@ -11,9 +11,9 @@
 	    <com.wise.state.TasksCompletedView
 	        android:id="@+id/tasks_view"
 	        android:layout_width="fill_parent"
-	        android:layout_height="140dip"
-	        tc:radius="55dip"
-	        tc:strokeWidth="15dip"
+	        android:layout_height="140dp"
+	        tc:radius="60dp"
+	        tc:strokeWidth="10dp"
 	        tc:circleColor="@color/ring_bg_color"
 	        tc:ringColor="@color/ring_color" />
 	    <LinearLayout 

@@ -72,6 +72,8 @@ public class Constant {
 	public static final String sp_province = "sp_province";
 	/** 存放体检 **/
 	public static final String sp_health_score = "sp_health_score";
+	/**存放驾驶信息**/
+	public static final String sp_drive_score = "sp_drive_score";
 	/** 存放个人信息 **/
 	public static final String sp_customer = "sp_customer";
 	/**
