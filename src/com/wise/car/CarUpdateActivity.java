@@ -28,6 +28,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
@@ -356,6 +357,7 @@ public class CarUpdateActivity extends Activity {
 
 		et_engine_no.setText(carData.getEngine_no());
 		et_frame_no.setText(carData.getFrame_no());
+
 		tv_insurance_company.setText(carData.getInsurance_company());
 		et_insurance_tel.setText(carData.getInsurance_tel());
 		tv_insurance_date.setText(carData.getInsurance_date());
@@ -374,6 +376,10 @@ public class CarUpdateActivity extends Activity {
 			chooseCityDatas.add(cityData);
 		}
 		tv_city.setText(citys);
+		if (citys != null && !citys.equals("")) {
+			ll_engine.setVisibility(View.VISIBLE);
+			ll_frame.setVisibility(View.VISIBLE);
+		}
 	}
 
 	ImageButton btn_help_1, btn_help_2;
@@ -383,6 +389,7 @@ public class CarUpdateActivity extends Activity {
 	private void init() {
 		ll_engine = (LinearLayout) findViewById(R.id.ll_engine);
 		ll_frame = (LinearLayout) findViewById(R.id.ll_frame);
+
 		ImageView iv_save = (ImageView) findViewById(R.id.iv_save);
 		iv_save.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
@@ -419,6 +426,7 @@ public class CarUpdateActivity extends Activity {
 		btn_help_2 = (ImageButton) findViewById(R.id.image_help_2);
 		btn_help_1.setOnClickListener(onClickListener);
 		btn_help_2.setOnClickListener(onClickListener);
+
 	}
 
 	private String jsonList(List<CityData> chooseCityDatas) {
