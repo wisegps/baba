@@ -108,8 +108,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="粤"
                             android:hint="省份"
+                            android:text="粤"
                             android:textColor="@color/navy"
                             android:textSize="@dimen/content" />
 
@@ -225,7 +225,8 @@
                     android:id="@+id/ll_frame"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+                    android:orientation="vertical"
+                    android:visibility="gone" >
 
                     <View
                         android:layout_width="fill_parent"
@@ -272,7 +273,8 @@
                     android:id="@+id/ll_engine"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+                    android:orientation="vertical"
+                    android:visibility="gone" >
 
                     <View
                         android:layout_width="fill_parent"
