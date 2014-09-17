@@ -260,7 +260,12 @@ public class FaultDetectionActivity extends Activity{
 			case getData:
 				result = msg.obj.toString();
 				jsonHealth(msg.obj.toString());
-				new Thread(new ProgressRunable(msg.arg1)).start();
+				//TODO 体检
+				if(mTotalProgress != 100){
+					new Thread(new ProgressRunable(msg.arg1)).start();
+				}else{
+					getSpHistoryData(index);
+				}
 				break;
 			case refresh:
 				refreshHealth(msg.arg1);
@@ -642,7 +647,10 @@ public class FaultDetectionActivity extends Activity{
 		}
 		@Override
 		public void run() {
+			System.out.println("mCurrentProgress = " + mCurrentProgress);
+			System.out.println("mTotalProgress = " + mTotalProgress);
 			while (mCurrentProgress > mTotalProgress) {
+				System.out.println("进来");
 				mCurrentProgress -= 1;				
 				carViews.get(index).getmTasksView().setProgress(mCurrentProgress);
 				Message message = new Message();
@@ -822,10 +830,9 @@ public class FaultDetectionActivity extends Activity{
 	        editor.putString(Constant.sp_health_score + Variable.carDatas.get(index).getObj_id(), str);	        
 	        editor.commit();
 	        carViews.get(index).getTv_title().setText("健康指数");
-	        //TODO  
 		} catch (JSONException e) {
 			e.printStackTrace();
-		}
+		}		
 	}
 	private void Back(){
 		Intent intent = new Intent();

@@ -70,8 +70,8 @@
 				        android:id="@+id/tasks_view"
 				        android:layout_width="fill_parent"
 				        android:layout_height="140dip"
-				        tc:radius="55dip"
-				        tc:strokeWidth="15dip"
+				        tc:radius="60dip"
+				        tc:strokeWidth="10dip"
 				        tc:circleColor="@color/ring_bg_color"
 				        tc:ringColor="@color/ring_color" />
 				    <LinearLayout 
