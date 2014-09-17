@@ -12,11 +12,8 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.Variable;
-
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
-
-import data.CarData;
 import data.CharacterParser;
 import data.CityData;
 import data.ProvinceData;

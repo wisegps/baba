@@ -2,33 +2,30 @@ package com.wise.car;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import nadapter.OpenDateDialog;
 import nadapter.OpenDateDialogListener;
 import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.Variable;
-
+import sql.DBExcute;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import com.wise.violation.ShortProvincesActivity;
-
 import data.CarData;
 import data.CityData;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
@@ -55,6 +52,7 @@ public class CarUpdateActivity extends Activity {
 	private final int buy_date = 2;
 	private final int year_check = 3;
 	private final int update = 4;
+	private final int get_traffic = 5;
 
 	LinearLayout ll_engine, ll_frame;
 	EditText et_nick_name, et_obj_name, et_engine_no, et_frame_no,
@@ -84,8 +82,8 @@ public class CarUpdateActivity extends Activity {
 		init();
 		setData();
 		setTime();
+		getTraffic();
 	}
-
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -173,6 +171,9 @@ public class CarUpdateActivity extends Activity {
 			switch (msg.what) {
 			case update:
 				jsonSave(msg.obj.toString());
+				break;
+			case get_traffic:
+				parseJson(msg.obj.toString());
 				break;
 			}
 		}
@@ -318,7 +319,6 @@ public class CarUpdateActivity extends Activity {
 
 	private void setTime() {
 		OpenDateDialog.SetCustomDateListener(new OpenDateDialogListener() {
-
 			@Override
 			public void OnDateChange(String Date, int index) {
 				switch (index) {
@@ -473,90 +473,7 @@ public class CarUpdateActivity extends Activity {
 				city += cityData.getCityName() + " ";
 			}
 			tv_city.setText(city);
-
-			boolean isEngine = false;
-			for (CityData cityData : chooseCityDatas) {
-				if (cityData.getEngine() != 0) {
-					isEngine = true;
-					break;
-				}
-			}
-			if (isEngine) {// 发送机号
-				ll_engine.setVisibility(View.VISIBLE);
-				boolean isNeedAllEngine = false;
-				int Engineno = 0;
-				for (CityData cityData : chooseCityDatas) {
-					if (cityData.getEngineno() == 0) {// 全部
-						isNeedAllEngine = true;
-					} else {
-						if (cityData.getEngineno() > Engineno) {
-							Engineno = cityData.getEngineno();
-						}
-					}
-				}
-				if (isNeedAllEngine) {
-					et_engine_no.setHint("需要完整的发送机号");
-				} else {
-					et_engine_no.setHint("需要发送机号的" + Engineno + "位");
-				}
-			} else {
-				// 选填，隐藏
-				ll_engine.setVisibility(View.GONE);
-			}
-
-			boolean isFrame = false;
-			for (CityData cityData : chooseCityDatas) {
-				if (cityData.getFrame() != 0) {
-					isFrame = true;
-					break;
-				}
-			}
-			if (isFrame) {// 车架号
-				ll_frame.setVisibility(View.VISIBLE);
-				boolean isNeedAllFrame = false;
-				int Frameno = 0;
-				for (CityData cityData : chooseCityDatas) {
-					if (cityData.getFrameno() == 0) {// 全部
-						isNeedAllFrame = true;
-					} else {
-						if (cityData.getFrameno() > Frameno) {
-							Frameno = cityData.getFrameno();
-						}
-					}
-				}
-				if (isNeedAllFrame) {
-					et_frame_no.setHint("需要完整的车架号");
-				} else {
-					et_frame_no.setHint("需要车架号的" + Frameno + "位");
-				}
-			} else {
-				// 选填，隐藏
-				ll_frame.setVisibility(View.GONE);
-			}
-
-			// for(CityData cityData : chooseCityDatas){
-			// //发送机号
-			// if(cityData.getEngine() == 0){
-			// et_engine_no.setHint("选填");
-			// }else{
-			// if(cityData.getEngineno() == 0){//全部
-			// et_engine_no.setHint("需要完整的发送机号");
-			// }else{
-			// et_engine_no.setHint("需要发送机号的" +cityData.getEngineno()+"位");
-			// }
-			// }
-			// //车架号
-			// if(cityData.getFrame() == 0){
-			// et_frame_no.setHint("选填");
-			// }else{
-			// if(cityData.getFrameno() == 0){//全部
-			// et_frame_no.setHint("需要完整的车架号");
-			// }else{
-			// et_frame_no.setHint("需要车架号的" +cityData.getFrameno()+"位");
-			// }
-			// }
-			// }
-
+			setNote();
 		} else if (resultCode == 3) {// 汽油标号返回
 			tv_gas_no.setText(data.getStringExtra("result"));
 		} else if (resultCode == 4) {// 保险公司返回
@@ -580,5 +497,110 @@ public class CarUpdateActivity extends Activity {
 	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
+	}
+	/**获取各个市违章信息**/
+	private void getTraffic(){
+		DBExcute dBExcute = new DBExcute();
+		String jsonData = dBExcute.selectIllegal(CarUpdateActivity.this);
+		if(jsonData == null){
+			String url = Constant.BaseUrl + "violation/city?cuth_code=" + Variable.auth_code;
+			new NetThread.GetDataThread(handler, url, get_traffic).start();
+		}else{
+			// 解析数据 并且更新
+			parseJson(jsonData);
+		}
+	}
+	public void parseJson(String jsonData) {
+		try {
+			JSONObject jsonObj = new JSONObject(jsonData);
+			JSONObject result = jsonObj.getJSONObject("result");
+			Iterator it = result.keys();
+			while (it.hasNext()) {				
+				String key = it.next().toString();
+				JSONObject jsonObject = result.getJSONObject(key);
+				JSONArray jsonArray = jsonObject.getJSONArray("citys"); // 城市
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject jsonObject3 = jsonArray.getJSONObject(i);
+					String city_code = jsonObject3.getString("city_code");
+					int engine = jsonObject3.getInt("engine");
+					int engineno = jsonObject3.getInt("engineno");
+					int frame = jsonObject3.getInt("class");
+					int frameno = jsonObject3.getInt("classno");
+					for(CityData cityData : chooseCityDatas){
+						if(cityData.getCityCode().equals(city_code)){
+							cityData.setEngine(engine);
+							cityData.setEngineno(engineno);
+							cityData.setFrame(frame);
+							cityData.setFrameno(frameno);
+						}
+					}
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		setNote();
+	}
+	/**设置提示**/
+	private void setNote(){
+		boolean isEngine = false;
+		for (CityData cityData : chooseCityDatas) {
+			if (cityData.getEngine() != 0) {
+				isEngine = true;
+				break;
+			}
+		}
+		if (isEngine) {// 发送机号
+			ll_engine.setVisibility(View.VISIBLE);
+			boolean isNeedAllEngine = false;
+			int Engineno = 0;
+			for (CityData cityData : chooseCityDatas) {
+				if (cityData.getEngineno() == 0) {// 全部
+					isNeedAllEngine = true;
+				} else {
+					if (cityData.getEngineno() > Engineno) {
+						Engineno = cityData.getEngineno();
+					}
+				}
+			}
+			if (isNeedAllEngine) {
+				et_engine_no.setHint("需要完整的发送机号");
+			} else {
+				et_engine_no.setHint("需要发送机号的" + Engineno + "位");
+			}
+		} else {
+			// 选填，隐藏
+			ll_engine.setVisibility(View.GONE);
+		}
+
+		boolean isFrame = false;
+		for (CityData cityData : chooseCityDatas) {
+			if (cityData.getFrame() != 0) {
+				isFrame = true;
+				break;
+			}
+		}
+		if (isFrame) {// 车架号
+			ll_frame.setVisibility(View.VISIBLE);
+			boolean isNeedAllFrame = false;
+			int Frameno = 0;
+			for (CityData cityData : chooseCityDatas) {
+				if (cityData.getFrameno() == 0) {// 全部
+					isNeedAllFrame = true;
+				} else {
+					if (cityData.getFrameno() > Frameno) {
+						Frameno = cityData.getFrameno();
+					}
+				}
+			}
+			if (isNeedAllFrame) {
+				et_frame_no.setHint("需要完整的车架号");
+			} else {
+				et_frame_no.setHint("需要车架号的" + Frameno + "位");
+			}
+		} else {
+			// 选填，隐藏
+			ll_frame.setVisibility(View.GONE);
+		}
 	}
 }
