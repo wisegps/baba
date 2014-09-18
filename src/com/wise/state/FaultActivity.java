@@ -134,7 +134,6 @@ public class FaultActivity extends FragmentActivity {
 		int width = dm.widthPixels;
 		int twoCompleted = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 280, getResources().getDisplayMetrics());
 		completed = (width - twoCompleted)/3;
-		GetSystem.myLog(TAG, "width = " + width + " , twoCompleted = " + twoCompleted + " , completed = " + completed);
 		Button bt_show = (Button) findViewById(R.id.bt_show);
 		bt_show.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
@@ -622,7 +621,7 @@ public class FaultActivity extends FragmentActivity {
 						int health_score = jsonObject.getInt("health_score");
 						carView.getmTasksView().setProgress(health_score);
 						tv_score.setText(String.valueOf(health_score));
-						tv_title.setText("上次体检");
+						tv_title.setText("健康指数");
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -653,6 +652,12 @@ public class FaultActivity extends FragmentActivity {
 		hs_car.removeAllViews();
 		View v = LayoutInflater.from(this).inflate(R.layout.item_fault, null);
 		hs_car.addView(v);
+		RelativeLayout rl_left_complete = (RelativeLayout)v.findViewById(R.id.rl_left_complete);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams					 
+		(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		lp.setMargins(0, 0, completed, 0);
+		rl_left_complete.setLayoutParams(lp);	
+		
 		TextView tv_score = (TextView) v.findViewById(R.id.tv_score);
 		TextView tv_title = (TextView) v.findViewById(R.id.tv_title);
 		TasksCompletedView mTasksView = (TasksCompletedView) v

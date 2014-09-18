@@ -42,11 +42,12 @@ public class FaultDetailActivity extends Activity{
 		tv_fault = (TextView)findViewById(R.id.tv_fault);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		fault_content = getIntent().getStringExtra("fault_content");		
+		fault_content = getIntent().getStringExtra("fault_content");
 		jsonData();
 		if(faultDatas.size() == 0){
-			rl_no_fault.setVisibility(View.GONE);
+			rl_no_fault.setVisibility(View.VISIBLE);
 		}else{
+			rl_no_fault.setVisibility(View.GONE);
 			FaultAdapter faultAdapter = new FaultAdapter();
 			lv_fault.setAdapter(faultAdapter);
 		}

@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
+import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
@@ -53,8 +54,9 @@ public class FaultDetectionActivity extends Activity{
 				tv_lengque,tv_lengque_icon,tv_paifang,tv_paifang_icon;
 	LinearLayout ll_fault;
 	ImageView iv_left,iv_right;
-	
+	/**体检返回分数**/
 	private int mTotalProgress = 100;
+	/**动画过程显示分数**/
 	private int mCurrentProgress = 100;
 	
 	private static final int Point = 6;
@@ -80,7 +82,7 @@ public class FaultDetectionActivity extends Activity{
 			@Override
 			public void OnViewChange(int view) {
 				//关闭线程
-				mCurrentProgress = -1;
+				mCurrent = 100;
 				index = view;
 				fristSetLeftRight();
 				getSpHistoryData(index);
@@ -101,6 +103,7 @@ public class FaultDetectionActivity extends Activity{
 			public void run() {
 				hs_car.snapFastToScreen(index);
 				getSpHistoryData(index);
+				getData(index);
 			}
 		}, 50);
 	}
@@ -260,12 +263,8 @@ public class FaultDetectionActivity extends Activity{
 			case getData:
 				result = msg.obj.toString();
 				jsonHealth(msg.obj.toString());
-				//TODO 体检
-				if(mTotalProgress != 100){
-					new Thread(new ProgressRunable(msg.arg1)).start();
-				}else{
-					getSpHistoryData(index);
-				}
+				//体检
+				new Thread(new ProgressRunable(msg.arg1)).start();
 				break;
 			case refresh:
 				refreshHealth(msg.arg1);
@@ -428,9 +427,10 @@ public class FaultDetectionActivity extends Activity{
 					if(jsonErrArray.length() > 0){
 						String url = Constant.BaseUrl + "device/fault_desc?auth_code=" + Variable.auth_code;
 						List<NameValuePair> params = new ArrayList<NameValuePair>();
-				        params.add(new BasicNameValuePair("brand", "大众"));
+						//TODO 刷新
+				        params.add(new BasicNameValuePair("brand", Variable.carDatas.get(index).getCar_brand()));
 				        params.add(new BasicNameValuePair("obd_err", jsonObject.getString("active_obd_err")));
-				        new Thread(new NetThread.postDataThread(handler, url, params, getFault)).start();					
+				        new NetThread.postDataThread(handler, url, params, getFault).start();					
 					}else{
 						tv_guzhang.setText("无故障码");
 						tv_guzhang.setTextColor(getResources().getColor(R.color.blue_press));
@@ -556,11 +556,11 @@ public class FaultDetectionActivity extends Activity{
 	/**初始化数据**/
 	private void initVariable() {
 		j = 0;
+		mCurrent = 0;
 		mTotalProgress = 100;
-		mCurrentProgress = 100;
-		Interval = (mCurrentProgress - mTotalProgress)/Point;
+		Interval = 30/Point;
 		carViews.get(index).getmTasksView().setProgress(100);
-		carViews.get(index).getTv_score().setText(String.valueOf(mCurrentProgress));
+		carViews.get(index).getTv_score().setText(String.valueOf(100));
 		//始化数据
 		tv_guzhang.setText("故障检测中...");
 		tv_guzhang.setTextColor(getResources().getColor(R.color.blue_press));
@@ -640,18 +640,20 @@ public class FaultDetectionActivity extends Activity{
 			handler.sendMessage(message);
 		}
 	}
+	int mCurrent = 0;
 	class ProgressRunable implements Runnable {
+		int count = 30;
 		int index;
 		public ProgressRunable(int index){
 			this.index = index;
 		}
 		@Override
 		public void run() {
-			System.out.println("mCurrentProgress = " + mCurrentProgress);
-			System.out.println("mTotalProgress = " + mTotalProgress);
-			while (mCurrentProgress > mTotalProgress) {
-				System.out.println("进来");
-				mCurrentProgress -= 1;				
+			//设置3s检测完毕
+			while (count > mCurrent) {
+				count--;
+				//计算 60 100分  间隔 40分  40/30
+				mCurrentProgress = (int) (100 - (100-mTotalProgress)*(1 - (float)count/30));
 				carViews.get(index).getmTasksView().setProgress(mCurrentProgress);
 				Message message = new Message();
 				message.what = refresh_score;
@@ -697,15 +699,14 @@ public class FaultDetectionActivity extends Activity{
 			JSONObject jsonObject = new JSONObject(result);
 			switch (j) {
 			case 1:
-				//故障码
+				//TODO 故障码
 				JSONArray jsonErrArray = jsonObject.getJSONArray("active_obd_err");
 				if(jsonErrArray.length() > 0){
 					String url = Constant.BaseUrl + "device/fault_desc?auth_code=" + Variable.auth_code;
 					List<NameValuePair> params = new ArrayList<NameValuePair>();
-			        params.add(new BasicNameValuePair("brand", "大众"));
+					params.add(new BasicNameValuePair("brand", Variable.carDatas.get(index).getCar_brand()));
 			        params.add(new BasicNameValuePair("obd_err", jsonObject.getString("active_obd_err")));
-			        //params.add(new BasicNameValuePair("obd_err", "[\"P1024\", \"P1025\"]"));
-			        new Thread(new NetThread.postDataThread(handler, url, params, getFault)).start();
+			        new NetThread.postDataThread(handler, url, params, getFault).start();
 					
 					
 					tv_guzhang.setText("有"+jsonErrArray.length() + "个故障");
@@ -821,9 +822,9 @@ public class FaultDetectionActivity extends Activity{
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			int health_score = jsonObject.getInt("health_score");			
+			//分数
 			mTotalProgress = health_score;
-			mCurrentProgress = 100;
-			Interval = (mCurrentProgress - mTotalProgress)/Point;
+			Interval = 30/Point;
 			//体检结果存起来
 			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 	        Editor editor = preferences.edit();

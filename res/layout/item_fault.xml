@@ -76,7 +76,7 @@
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:textColor="@color/navy"
-		            android:text="上次体检"/>
+		            android:text="健康指数"/>
 		        <LinearLayout 
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
@@ -93,12 +93,11 @@
 			            android:textColor="@color/navy"
 			            android:text="分"/>
 		        </LinearLayout>
-		        <TextView 
-		            android:id="@+id/tv_xx"
+		        <TextView
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:textColor="@color/blue_press"
-		            android:text="今日限行"/>
+		            android:text="点击体检"/>
 		    </LinearLayout>
 		</RelativeLayout>
 		<RelativeLayout 
@@ -123,7 +122,7 @@
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:textColor="@color/navy"
-		            android:text="驾驶得分"/>
+		            android:text="驾驶指数"/>
 		        <LinearLayout 
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
@@ -139,12 +138,13 @@
 			            android:layout_height="wrap_content"
 			            android:textColor="@color/navy"
 			            android:text="分"/>
-		        </LinearLayout>		        
+		        </LinearLayout>
 		        <TextView 
+		            android:id="@+id/tv_xx"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:textColor="@color/blue_press"
-		            android:visibility="gone"/>
+		            android:text="今日限行"/>
 		    </LinearLayout>
 		</RelativeLayout>
     </LinearLayout>	
