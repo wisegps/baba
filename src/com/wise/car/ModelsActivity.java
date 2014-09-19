@@ -104,6 +104,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 	public static final String carSeriesTitle = "carSeries"; // 数据库基础表车辆款式的标题字段
 	
 	boolean isNeedType = true;
+	boolean isNeedModel = true;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -114,19 +115,27 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		// 初始化控件
 		initViews();
 		isNeedType = getIntent().getBooleanExtra("isNeedType", true);
+		isNeedModel = getIntent().getBooleanExtra("isNeedModel", true);
 	}
 	/**选择品牌**/
 	OnItemClickListener onBrankClickListener = new OnItemClickListener() {
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
 			BrandData brankModel = (BrandData) lv_brand.getItemAtPosition(arg2);
 			carBrank = brankModel.getBrand();
 			carBrankId = brankModel.getId();
 			logoUrl = brankModel.getLogoUrl();
-			// 点击品牌列表 选择车型
-			getDate(carBrankTitle + carBrankId, Constant.BaseUrl
-					+ "base/car_series?pid=" + carBrankId, GET_SERIES);
+			if(isNeedModel){
+				// 点击品牌列表 选择车型
+				getDate(carBrankTitle + carBrankId, Constant.BaseUrl
+						+ "base/car_series?pid=" + carBrankId, GET_SERIES);
+			}else{
+				Intent intent = new Intent();
+				intent.putExtra("brank", carBrank);
+				intent.putExtra("brankId", carBrankId);
+				ModelsActivity.this.setResult(3, intent);
+				ModelsActivity.this.finish();
+			}
 		}
 	};
 	/**选择车型**/

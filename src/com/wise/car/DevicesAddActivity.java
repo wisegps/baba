@@ -64,8 +64,6 @@ public class DevicesAddActivity extends Activity {
 	/** 快速注册 **/
 	boolean fastTrack = false;
 
-	String old_device_id;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,7 +92,7 @@ public class DevicesAddActivity extends Activity {
 		isBind = intent.getBooleanExtra("isBind", true);
 		fastTrack = intent.getBooleanExtra("fastTrack", false);
 		// TODO 接收并现实以前的终端值
-		old_device_id = intent.getStringExtra("old_device_id");
+		String old_device_id = intent.getStringExtra("old_device_id");
 		String url = Constant.BaseUrl + "/device/" + old_device_id
 				+ "?auth_code=" + Variable.auth_code;
 		new NetThread.GetDataThread(handler, url, update_serial).start();
