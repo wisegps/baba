@@ -8,7 +8,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.CollectionActivity;
+import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
+import com.wise.notice.NoticeActivity;
+import com.wise.remind.RemindListActivity;
+import com.wise.violation.TrafficActivity;
+
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.JsonData;
@@ -49,12 +55,12 @@ import android.widget.Toast;
 public class LoginActivity extends Activity implements PlatformActionListener,
 		TagAliasCallback {
 	private static final String TAG = "LoginActivity";
-	
+
 	private final static int login_account = 1;
 	private static final int get_data = 3;
 	private final static int login = 4;
 	private final static int login_sso = 5;
-	
+
 	TextView tv_note;
 	EditText et_account, et_pwd;
 	Platform platformQQ;
@@ -71,7 +77,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		setContentView(R.layout.activity_login);
 		JPushInterface.init(getApplicationContext());
 		ShareSDK.initSDK(this);
-		tv_note = (TextView)findViewById(R.id.tv_note);
+		tv_note = (TextView) findViewById(R.id.tv_note);
 		et_account = (EditText) findViewById(R.id.et_account);
 		et_pwd = (EditText) findViewById(R.id.et_pwd);
 		Button bt_login = (Button) findViewById(R.id.bt_login);
@@ -147,10 +153,14 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				break;
 			case get_data:
 				Variable.carDatas.clear();
-				Variable.carDatas.addAll(JsonData.jsonCarInfo(msg.obj.toString()));
-				//发广播
+				Variable.carDatas.addAll(JsonData.jsonCarInfo(msg.obj
+						.toString()));
+				// 发广播
 				Intent intent = new Intent(Constant.A_RefreshHomeCar);
-	            sendBroadcast(intent);
+				sendBroadcast(intent);
+				// TODO 做出相应的跳转
+				Intent intent1 =LoginActivity.this.getIntent();
+				getActivityState(intent1);
 				break;
 			}
 		}
@@ -187,11 +197,30 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				getData();
 				setResult(1);
 				finish();
-			}else{
+			} else {
 				tv_note.setVisibility(View.VISIBLE);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
+		}
+	}
+
+	// 页面跳转方法，根据登录前传过来的跳转类型进行相应界面的跳转
+	private void getActivityState(Intent i) {
+		int state = i.getIntExtra("ActivityState", 0);
+		switch (state) {
+		case MoreActivity.SMS:
+			startActivity(new Intent(LoginActivity.this, NoticeActivity.class));
+			break;
+		case MoreActivity.COLLCETION:
+			startActivity(new Intent(LoginActivity.this, CollectionActivity.class));
+			break;
+		case MoreActivity.REMIND:
+			startActivity(new Intent(LoginActivity.this, RemindListActivity.class));
+			break;
+		case MoreActivity.TRAFFIC:
+			startActivity(new Intent(LoginActivity.this, TrafficActivity.class));
+			break;
 		}
 	}
 
@@ -207,7 +236,8 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 						+ login_id + "&cust_name="
 						+ URLEncoder.encode(cust_name, "UTF-8") + "&provice="
 						+ URLEncoder.encode(Variable.Province, "UTF-8")
-						+ "&city=" + URLEncoder.encode(Variable.City, "UTF-8") + "&logo=" + logo + "&remark=";
+						+ "&city=" + URLEncoder.encode(Variable.City, "UTF-8")
+						+ "&logo=" + logo + "&remark=";
 				new NetThread.GetDataThread(handler, url, login_sso).start();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -243,7 +273,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
-										//绑定
+										// 绑定
 										Intent intent = new Intent(
 												LoginActivity.this,
 												BindActivity.class);
@@ -255,7 +285,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
-											int which) {//注册
+											int which) {// 注册
 										Intent intent1 = new Intent(
 												LoginActivity.this,
 												RegisterActivity.class);
@@ -272,7 +302,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				Variable.auth_code = jsonObject.getString("auth_code");
 				JPushInterface.resumePush(getApplicationContext());
 				setJpush();
-		        getData();
+				getData();
 				setResult(1);
 				finish();
 			}
@@ -280,13 +310,13 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 			e.printStackTrace();
 		}
 	}
-	/**获取车辆信息**/
+
+	/** 获取车辆信息 **/
 	private void getData() {
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
 				+ "/vehicle?auth_code=" + Variable.auth_code;
 		new Thread(new NetThread.GetDataThread(handler, url, get_data)).start();
-	}	
-	
+	}
 
 	@Override
 	public void onCancel(Platform arg0, int arg1) {
@@ -330,11 +360,13 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		JPushInterface.setAliasAndTags(getApplicationContext(), null, tagSet,
 				this);
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		MobclickAgent.onResume(this);
 	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();
