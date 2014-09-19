@@ -8,7 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
-import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
@@ -35,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 /**
  * 车况检测
  * @author honesty
@@ -63,7 +63,7 @@ public class FaultDetectionActivity extends Activity{
 	int Interval  = 0;
 	String fault_content = "";
 	int index;
-	
+	boolean isCheck = false;
 	FaultDeletionView hs_car;
 	
 	@Override
@@ -272,8 +272,11 @@ public class FaultDetectionActivity extends Activity{
 			case getFault:
 				fault_content = msg.obj.toString();
 				break;
-			case refresh_score:				
+			case refresh_score:
 				carViews.get(msg.arg1).getTv_score().setText(String.valueOf(mCurrentProgress));
+				if(msg.arg2 == 0){
+					carViews.get(msg.arg1).getTv_detection_status().setText("点击体检");
+				}
 				break;
 			}
 		}		
@@ -291,12 +294,14 @@ public class FaultDetectionActivity extends Activity{
 			TasksCompletedView mTasksView = (TasksCompletedView) v.findViewById(R.id.tasks_view);
 			mTasksView.setOnClickListener(onClickListener);
 			TextView tv_score = (TextView) v.findViewById(R.id.tv_score);		
-			TextView tv_title = (TextView) v.findViewById(R.id.tv_title);			
+			TextView tv_title = (TextView) v.findViewById(R.id.tv_title);		
+			TextView tv_detection_status = (TextView) v.findViewById(R.id.tv_detection_status);		
 
 			CarView carView = new CarView();
 			carView.setmTasksView(mTasksView);
 			carView.setTv_score(tv_score);
 			carView.setTv_title(tv_title);
+			carView.setTv_detection_status(tv_detection_status);
 			carViews.add(carView);
 
 
@@ -304,6 +309,7 @@ public class FaultDetectionActivity extends Activity{
 					+ Variable.carDatas.get(i).getNick_name() + ")");
 			String result = preferences.getString(Constant.sp_health_score
 					+ Variable.carDatas.get(i).getObj_id(), "");
+			tv_detection_status.setText("点击体检");
 			if (result.equals("")) {// 未体检过
 				carView.getmTasksView().setProgress(100);
 				tv_score.setText("0");
@@ -427,7 +433,6 @@ public class FaultDetectionActivity extends Activity{
 					if(jsonErrArray.length() > 0){
 						String url = Constant.BaseUrl + "device/fault_desc?auth_code=" + Variable.auth_code;
 						List<NameValuePair> params = new ArrayList<NameValuePair>();
-						//TODO 刷新
 				        params.add(new BasicNameValuePair("brand", Variable.carDatas.get(index).getCar_brand()));
 				        params.add(new BasicNameValuePair("obd_err", jsonObject.getString("active_obd_err")));
 				        new NetThread.postDataThread(handler, url, params, getFault).start();					
@@ -531,8 +536,15 @@ public class FaultDetectionActivity extends Activity{
 	private class CarView {
 		TextView tv_score;
 		TextView tv_title;
+		TextView tv_detection_status;
 		TasksCompletedView mTasksView;		
 		
+		public TextView getTv_detection_status() {
+			return tv_detection_status;
+		}
+		public void setTv_detection_status(TextView tv_detection_status) {
+			this.tv_detection_status = tv_detection_status;
+		}
 		public TextView getTv_title() {
 			return tv_title;
 		}
@@ -561,6 +573,7 @@ public class FaultDetectionActivity extends Activity{
 		Interval = 30/Point;
 		carViews.get(index).getmTasksView().setProgress(100);
 		carViews.get(index).getTv_score().setText(String.valueOf(100));
+		carViews.get(index).getTv_detection_status().setText("体检中");
 		//始化数据
 		tv_guzhang.setText("故障检测中...");
 		tv_guzhang.setTextColor(getResources().getColor(R.color.blue_press));
@@ -631,15 +644,15 @@ public class FaultDetectionActivity extends Activity{
 	 * 总分100，得分60，到计时40；总共有6个点
 	 *
 	 */
-	class ProgressThread extends Thread{
-		@Override
-		public void run() {
-			super.run();
-			Message message = new Message();
-			message.what = refresh_score;
-			handler.sendMessage(message);
-		}
-	}
+//	class ProgressThread extends Thread{
+//		@Override
+//		public void run() {
+//			super.run();
+//			Message message = new Message();
+//			message.what = refresh_score;
+//			handler.sendMessage(message);
+//		}
+//	}
 	int mCurrent = 0;
 	class ProgressRunable implements Runnable {
 		int count = 30;
@@ -650,6 +663,7 @@ public class FaultDetectionActivity extends Activity{
 		@Override
 		public void run() {
 			//设置3s检测完毕
+			isCheck = true;
 			while (count > mCurrent) {
 				count--;
 				//计算 60 100分  间隔 40分  40/30
@@ -658,6 +672,7 @@ public class FaultDetectionActivity extends Activity{
 				Message message = new Message();
 				message.what = refresh_score;
 				message.arg1 = index;
+				message.arg2 = count;
 				handler.sendMessage(message);
 				i++;
 				if(i == Interval){
@@ -674,6 +689,7 @@ public class FaultDetectionActivity extends Activity{
 					e.printStackTrace();
 				}
 			}
+			isCheck = false;
 		}		
 	}
 	/**获取健康数据**/
@@ -684,6 +700,10 @@ public class FaultDetectionActivity extends Activity{
 			intent.putExtra("car_id", Variable.carDatas.get(index).getObj_id());
 			startActivityForResult(intent, 2);
 		}else{
+			if(isCheck){
+				Toast.makeText(FaultDetectionActivity.this, "体检进行中", Toast.LENGTH_SHORT).show();
+				return;
+			}
 			initVariable();
 			String url =Constant.BaseUrl + "device/" + Device_id + "/health_exam?auth_code=bba2204bcd4c1f87a19ef792f1f68404";
 			new Thread(new NetThread.GetDataThread(handler, url, getData,index)).start();
@@ -699,15 +719,13 @@ public class FaultDetectionActivity extends Activity{
 			JSONObject jsonObject = new JSONObject(result);
 			switch (j) {
 			case 1:
-				//TODO 故障码
 				JSONArray jsonErrArray = jsonObject.getJSONArray("active_obd_err");
 				if(jsonErrArray.length() > 0){
 					String url = Constant.BaseUrl + "device/fault_desc?auth_code=" + Variable.auth_code;
 					List<NameValuePair> params = new ArrayList<NameValuePair>();
 					params.add(new BasicNameValuePair("brand", Variable.carDatas.get(index).getCar_brand()));
 			        params.add(new BasicNameValuePair("obd_err", jsonObject.getString("active_obd_err")));
-			        new NetThread.postDataThread(handler, url, params, getFault).start();
-					
+			        new NetThread.postDataThread(handler, url, params, getFault).start();					
 					
 					tv_guzhang.setText("有"+jsonErrArray.length() + "个故障");
 					tv_guzhang.setTextColor(getResources().getColor(R.color.yellow));

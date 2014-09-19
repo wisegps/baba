@@ -701,4 +701,17 @@ public class PhotoActivity extends Activity{
         mPopupWindow.setOutsideTouchable(true);
         mPopupWindow.showAsDropDown(findViewById(R.id.iv_more), 0, 0);
 	}
+	
+	private void abc(String result){
+		try {
+			JSONObject jsonObject = new JSONObject(result);
+			JSONArray jsonArray = jsonObject.getJSONArray("data");
+			for(int i = 0 ; i < jsonArray.length() ; i++){
+				JSONObject json = jsonArray.getJSONObject(i);
+				String b_lat = json.getJSONObject("active_gps_data").getString("b_lat");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 }
