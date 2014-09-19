@@ -397,12 +397,6 @@ public class PhotoActivity extends Activity{
 			pairs.add(new BasicNameValuePair("content", comments));
 			pairs.add(new BasicNameValuePair("reply", reply));
 			new NetThread.putDataThread(handler, url, pairs, setComments).start();
-			GetSystem.myLog(TAG, "url = " + url);
-			GetSystem.myLog(TAG, "Variable.cust_id = " + Variable.cust_id);
-			GetSystem.myLog(TAG, "Variable.cust_name = " + Variable.cust_name);
-			GetSystem.myLog(TAG, "logo = " + logo);
-			GetSystem.myLog(TAG, "comments = " + comments);
-			GetSystem.myLog(TAG, "reply = " + reply);
 		}
 	}
 	
@@ -673,12 +667,9 @@ public class PhotoActivity extends Activity{
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		String customer = preferences.getString(Constant.sp_customer + Variable.cust_id, "");
 		try {
-			GetSystem.myLog(TAG, "customer = " + customer);
 			JSONObject jsonObject = new JSONObject(customer);
 			logo = jsonObject.getString("logo");
 			Variable.cust_name = jsonObject.getString("cust_name");
-			GetSystem.myLog(TAG, "logo = " + logo);
-			GetSystem.myLog(TAG, "Variable.cust_name = " + Variable.cust_name);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

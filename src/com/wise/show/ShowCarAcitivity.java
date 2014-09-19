@@ -324,12 +324,12 @@ public class ShowCarAcitivity extends Activity{
 		params.add(new BasicNameValuePair("small_pic_url", small_pic_url));
 		params.add(new BasicNameValuePair("big_pic_url", big_pic_url));
 		params.add(new BasicNameValuePair("content", content));
-		params.add(new BasicNameValuePair("if_beauty", String.valueOf(cb_girl.isChecked())));
+		params.add(new BasicNameValuePair("if_beauty", cb_girl.isChecked()?"1":"0"));
 		params.add(new BasicNameValuePair("lon", Lon));
 		params.add(new BasicNameValuePair("lat", Lat));
 		params.add(new BasicNameValuePair("city", AddrStr));
 		new NetThread.postDataThread(handler, url, params, postCloudStorage).start();
-		
+		GetSystem.myLog(url, ""+cb_girl.isChecked());
 	}	
 	
 	/**获取默认车型**/

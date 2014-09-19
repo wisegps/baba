@@ -12,6 +12,7 @@ import pubclas.Judge;
 import pubclas.NetThread;
 import pubclas.Variable;
 import com.wise.baba.R;
+import com.wise.car.ModelsActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.show.MyScrollView.OnFlowClickListener;
 import com.wise.show.RefreshableView.RefreshListener;
@@ -27,13 +28,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,7 +52,10 @@ public class ShowActivity extends Activity {
 	private static final int getRefreshImage = 4;
 
 	List<ImageData> imageDatas = new ArrayList<ImageData>();
-	TextView tv_time;
+	TextView tv_time,tv_title;
+	TextView tv_name,tv_ad,tv_dz,tv_bc,tv_bm,tv_all,tv_other;
+	LinearLayout ll_car_choose;
+	ImageView iv_choose;
 	MyScrollView my_scroll_view;
 	RefreshableView ll_refresh;
 	/** 个人头像路径 **/
@@ -56,7 +64,8 @@ public class ShowActivity extends Activity {
 	/** 是否正在加载图片 **/
 	boolean isLoading = false;
 	boolean is_beauty = false;
-	String beauty = "&if_beauty=true";
+	String beauty = "&if_beauty=1";
+	int car_brand_id = -1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +78,30 @@ public class ShowActivity extends Activity {
 		iv_beauty.setOnClickListener(onClickListener);
 		ImageView iv_show_car = (ImageView) findViewById(R.id.iv_show_car);
 		iv_show_car.setOnClickListener(onClickListener);
+		iv_choose = (ImageView) findViewById(R.id.iv_choose);
+		iv_choose.setOnClickListener(onClickListener);
 		ll_refresh = (RefreshableView) findViewById(R.id.ll_refresh);
 		ll_refresh.setRefreshListener(refreshListener);
 		my_scroll_view = (MyScrollView) findViewById(R.id.my_scroll_view);
 		my_scroll_view.setOnFlowClickListener(onFlowClickListener);
 		tv_time = (TextView) findViewById(R.id.tv_time);
+		tv_title = (TextView) findViewById(R.id.tv_title);
+		
+		ll_car_choose = (LinearLayout)findViewById(R.id.ll_car_choose);
+		tv_name = (TextView)findViewById(R.id.tv_name);
+		TextView tv_ad = (TextView)findViewById(R.id.tv_ad);
+		tv_ad.setOnClickListener(onClickListener);
+		TextView tv_dz = (TextView)findViewById(R.id.tv_dz);
+		tv_dz.setOnClickListener(onClickListener);
+		TextView tv_bc = (TextView)findViewById(R.id.tv_bc);
+		tv_bc.setOnClickListener(onClickListener);
+		TextView tv_bm = (TextView)findViewById(R.id.tv_bm);
+		tv_bm.setOnClickListener(onClickListener);
+		TextView tv_all = (TextView)findViewById(R.id.tv_all);
+		tv_all.setOnClickListener(onClickListener);
+		TextView tv_other = (TextView)findViewById(R.id.tv_other);
+		tv_other.setOnClickListener(onClickListener);
+		
 		Button bt_show_car = (Button) findViewById(R.id.bt_show_car);
 		bt_show_car.setOnClickListener(onClickListener);
 		getFristImages();
@@ -90,14 +118,63 @@ public class ShowActivity extends Activity {
 			case R.id.iv_show_car:
 				picPop();
 				break;
-
 			case R.id.iv_beauty:
-				is_beauty = true;
+				if(is_beauty){
+					is_beauty = false;
+					tv_title.setText("车秀大厅");
+				}else{
+					is_beauty = true;
+					tv_title.setText("车宝贝");
+				}
 				getFristImages();
+				break;
+			case R.id.iv_choose:
+				ll_car_choose.setVisibility(View.VISIBLE);
+				iv_choose.setVisibility(View.GONE);
+				break;
+			case R.id.tv_ad:
+				car_brand_id = 9;
+				tv_name.setText("奥迪");
+				hideChooseCar();
+				getFristImages();
+				break;
+			case R.id.tv_dz:
+				car_brand_id = 8;
+				tv_name.setText("大众");
+				hideChooseCar();
+				getFristImages();
+				break;
+			case R.id.tv_bc:
+				car_brand_id = 2;
+				tv_name.setText("奔驰");
+				hideChooseCar();
+				getFristImages();
+				break;
+			case R.id.tv_bm:
+				car_brand_id = 3;
+				tv_name.setText("宝马");
+				hideChooseCar();
+				getFristImages();
+				break;
+			case R.id.tv_all:
+				car_brand_id = -1;
+				tv_name.setText("所有车型");
+				hideChooseCar();
+				getFristImages();
+				break;
+			case R.id.tv_other:
+				Intent intent = new Intent(ShowActivity.this, ModelsActivity.class);
+				intent.putExtra("isNeedModel", false);
+				startActivityForResult(intent, 3);
+				hideChooseCar();
 				break;
 			}
 		}
 	};
+	private void hideChooseCar(){
+		ll_car_choose.setVisibility(View.GONE);
+		iv_choose.setVisibility(View.VISIBLE);
+	}
 	String refresh = "";
 	RefreshListener refreshListener = new RefreshListener() {
 		@Override
@@ -191,8 +268,8 @@ public class ShowActivity extends Activity {
 
 		@Override
 		public void OnScrollPosition(String Time) {
-			// TODO 滑动显示时间
-			tv_time.setVisibility(View.VISIBLE);
+			//滑动显示时间
+			tv_time.setVisibility(View.GONE);
 			tv_time.setText(Time.substring(0, 16).replace("T", " "));
 			handler.removeCallbacks(hideTime);
 		}
@@ -266,8 +343,14 @@ public class ShowActivity extends Activity {
 	/** 获取图片列表 **/
 	private void getFristImages() {
 		imageDatas.clear();
-		String url = Constant.BaseUrl + "photo?auth_code=" + Variable.auth_code
-				+ "&cust_id=" + Variable.cust_id + getBeauty();
+		String url;
+		if(car_brand_id == -1){
+			url = Constant.BaseUrl + "photo?auth_code=" + Variable.auth_code
+					+ "&cust_id=" + Variable.cust_id + getBeauty();
+		}else{
+			url = Constant.BaseUrl + "photo?auth_code=" + Variable.auth_code
+					+ "&car_brand_id=" + car_brand_id + "&cust_id=" + Variable.cust_id + getBeauty();
+		}
 		new NetThread.GetDataThread(handler, url, getFristImage).start();
 	}
 
@@ -348,6 +431,7 @@ public class ShowActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		System.out.println("requestCode = " + requestCode + " , resultCode = " + resultCode);
 		if(requestCode == 9){
 			if(data != null){
 				Uri uri = data.getData();
@@ -358,7 +442,7 @@ public class ShowActivity extends Activity {
 	        return;
 		}
 		if (resultCode == 1) {
-			// TODO 登录返回,刷新数据
+			//登录返回,刷新数据
 			imageDatas.clear();
 			getFristImages();
 			getLogo();
@@ -373,7 +457,7 @@ public class ShowActivity extends Activity {
 			return;
 		}
 		if(resultCode == 2){
-			//TODO 相片详细界面点赞返回
+			//相片详细界面点赞返回
 			int position = data.getIntExtra("position", 0);
 			int Praise_count = data.getIntExtra("Praise_count", 0);
 			imageDatas.get(position).setCust_praise(
@@ -382,6 +466,12 @@ public class ShowActivity extends Activity {
 			// 修改图片点赞状态
 			my_scroll_view.setPraise(position);
 			my_scroll_view.setPraiseCount(position, Praise_count);
+		}
+		if(requestCode == 3){
+			System.out.println("brank = " + data.getStringExtra("brank"));
+			tv_name.setText(data.getStringExtra("brank"));
+			car_brand_id = Integer.valueOf(data.getStringExtra("brankId"));
+			getFristImages();
 		}
 	}
 

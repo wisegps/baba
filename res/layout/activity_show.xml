@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:id="@+id/rl_main"
     android:background="@color/white">
     <RelativeLayout 
     	android:id="@+id/rl_main"
@@ -9,6 +10,7 @@
 	    android:layout_height="@dimen/title_hight"
         android:background="@color/title_back">
 	    <TextView
+	        android:id="@+id/tv_title"
 	         android:layout_width="fill_parent"
 	         android:layout_height="wrap_content"
 	         android:layout_centerInParent="true"
@@ -112,4 +114,76 @@
 	    android:visibility="gone"
 	    android:padding="5dp"
 	    android:text="2014-07-08"/>
+	<ImageView
+	    android:id="@+id/iv_choose" 
+	    android:layout_below="@id/tv_time"
+	    android:padding="@dimen/margins"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:src="@drawable/btn_carchoose_nor"/>
+	<LinearLayout
+	    android:id="@+id/ll_car_choose"
+	    android:layout_below="@id/tv_time"
+	    android:layout_margin="@dimen/margins" 
+	    android:layout_width="120dp"
+	    android:layout_height="wrap_content"
+	    android:visibility="gone"
+	    android:orientation="vertical"
+	    android:background="@drawable/btn_carchoose_sel">
+	    <TextView
+	        android:id="@+id/tv_name" 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/white"
+	        android:textSize="@dimen/content"
+	        android:text="所有车型"/>
+	    <TextView
+	        android:id="@+id/tv_ad"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/white"
+	        android:background="@drawable/bg_show"
+	        android:textSize="@dimen/content"
+	        android:text="奥迪"/>
+	    <TextView
+	        android:id="@+id/tv_dz"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/white"
+	        android:background="@drawable/bg_show"
+	        android:textSize="@dimen/content"
+	        android:text="大众"/>
+	    <TextView
+	        android:id="@+id/tv_bc" 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/white"
+	        android:background="@drawable/bg_show"
+	        android:textSize="@dimen/content"
+	        android:text="奔驰"/>
+	    <TextView
+	        android:id="@+id/tv_bm"  
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/white"
+	        android:background="@drawable/bg_show"
+	        android:textSize="@dimen/content"
+	        android:text="宝马"/>
+	    <TextView
+	        android:id="@+id/tv_all"  
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/white"
+	        android:background="@drawable/bg_show"
+	        android:textSize="@dimen/content"
+	        android:text="所有车型"/>
+	    <TextView 
+	        android:id="@+id/tv_other"  
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/white"
+	        android:background="@drawable/bg_show"
+	        android:textSize="@dimen/content"
+	        android:text="选择其他"/>
+	</LinearLayout>
 </RelativeLayout>
