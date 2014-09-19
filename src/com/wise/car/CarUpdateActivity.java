@@ -85,6 +85,7 @@ public class CarUpdateActivity extends Activity {
 		setTime();
 		getTraffic();
 	}
+
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -154,11 +155,13 @@ public class CarUpdateActivity extends Activity {
 		pop.setFocusable(true);
 		pop.update();
 		pop.setBackgroundDrawable(new BitmapDrawable());
+		// pop视图在布局中显示的位置
 		pop.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
 		mView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (pop.isShowing()) {
+					// 隐藏pop视图
 					pop.dismiss();
 				}
 			}
@@ -499,24 +502,27 @@ public class CarUpdateActivity extends Activity {
 		super.onPause();
 		MobclickAgent.onPause(this);
 	}
-	/**获取各个市违章信息**/
-	private void getTraffic(){
+
+	/** 获取各个市违章信息 **/
+	private void getTraffic() {
 		DBExcute dBExcute = new DBExcute();
 		String jsonData = dBExcute.selectIllegal(CarUpdateActivity.this);
-		if(jsonData == null){
-			String url = Constant.BaseUrl + "violation/city?cuth_code=" + Variable.auth_code;
+		if (jsonData == null) {
+			String url = Constant.BaseUrl + "violation/city?cuth_code="
+					+ Variable.auth_code;
 			new NetThread.GetDataThread(handler, url, get_traffic).start();
-		}else{
+		} else {
 			// 解析数据 并且更新
 			parseJson(jsonData);
 		}
 	}
+
 	public void parseJson(String jsonData) {
 		try {
 			JSONObject jsonObj = new JSONObject(jsonData);
 			JSONObject result = jsonObj.getJSONObject("result");
 			Iterator it = result.keys();
-			while (it.hasNext()) {				
+			while (it.hasNext()) {
 				String key = it.next().toString();
 				JSONObject jsonObject = result.getJSONObject(key);
 				JSONArray jsonArray = jsonObject.getJSONArray("citys"); // 城市
@@ -527,8 +533,8 @@ public class CarUpdateActivity extends Activity {
 					int engineno = jsonObject3.getInt("engineno");
 					int frame = jsonObject3.getInt("class");
 					int frameno = jsonObject3.getInt("classno");
-					for(CityData cityData : chooseCityDatas){
-						if(cityData.getCityCode().equals(city_code)){
+					for (CityData cityData : chooseCityDatas) {
+						if (cityData.getCityCode().equals(city_code)) {
 							cityData.setEngine(engine);
 							cityData.setEngineno(engineno);
 							cityData.setFrame(frame);
@@ -542,8 +548,9 @@ public class CarUpdateActivity extends Activity {
 		}
 		setNote();
 	}
-	/**设置提示**/
-	private void setNote(){
+
+	/** 设置提示 **/
+	private void setNote() {
 		boolean isEngine = false;
 		for (CityData cityData : chooseCityDatas) {
 			if (cityData.getEngine() != 0) {

@@ -22,6 +22,12 @@ public class MoreActivity extends Activity{
 	
 	ImageView iv_noti,iv_vio;
 	
+	public static final int SMS = 1;//传递信息页面跳转类型
+	public static final int COLLCETION = 2;//收藏
+	public static final int TRAFFIC = 3;//违章
+	public static final int REMIND = 4;//提醒
+//	public static final int SET = 5;//设置
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,7 +73,7 @@ public class MoreActivity extends Activity{
 		}
 		
 	}
-	OnClickListener onClickListener = new OnClickListener() {		
+	OnClickListener onClickListener = new OnClickListener() {	
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
@@ -79,21 +85,28 @@ public class MoreActivity extends Activity{
 					Variable.noti_count = 0;
 					startActivity(new Intent(MoreActivity.this, NoticeActivity.class));
 				}else{
-					startActivity(new Intent(MoreActivity.this, LoginActivity.class));
+					//TODO 传送类型跳转类型
+					Intent intent = new Intent(MoreActivity.this, LoginActivity.class);
+					intent.putExtra("ActivityState", SMS);
+					startActivity(intent);
 				}
 				break;
 			case R.id.tv_collection:
 				if(Judge.isLogin()){
 					startActivity(new Intent(MoreActivity.this, CollectionActivity.class));
 				}else{
-					startActivity(new Intent(MoreActivity.this, LoginActivity.class));
+					Intent intent = new Intent(MoreActivity.this, LoginActivity.class);
+					intent.putExtra("ActivityState", COLLCETION);
+					startActivity(intent);
 				}
 				break;
 			case R.id.tv_remind:
 				if(Judge.isLogin()){
 					startActivity(new Intent(MoreActivity.this, RemindListActivity.class));
 				}else{
-					startActivity(new Intent(MoreActivity.this, LoginActivity.class));
+					Intent intent = new Intent(MoreActivity.this, LoginActivity.class);
+					intent.putExtra("ActivityState", REMIND);
+					startActivity(intent);
 				}
 				break;
 			case R.id.tv_traffic:
@@ -101,7 +114,9 @@ public class MoreActivity extends Activity{
 					Variable.vio_count = 0;
 					startActivity(new Intent(MoreActivity.this, TrafficActivity.class));
 				}else{
-					startActivity(new Intent(MoreActivity.this, LoginActivity.class));
+					Intent intent = new Intent(MoreActivity.this, LoginActivity.class);
+					intent.putExtra("ActivityState", TRAFFIC);
+					startActivity(intent);
 				}
 				break;
 			case R.id.tv_set:
