@@ -31,4 +31,20 @@
         android:textColor="@color/white"
         android:textSize="@dimen/main"
         android:text="关注"/>
+    <View 
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/white"/>
+    <TextView
+        android:id="@+id/tv_Comments" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#CC50B7DE"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/main"
+        android:text="评论"/>
 </LinearLayout>

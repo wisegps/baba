@@ -175,6 +175,12 @@ public class PhotoActivity extends Activity{
 				startActivity(intent);
 				mPopupWindow.dismiss();
 				break;
+			case R.id.tv_Comments:
+				//TODO 回复
+				reply = "";
+				tv_people.setText("");
+				mPopupWindow.dismiss();
+				break;
 			}
 		}
 	};
@@ -693,6 +699,8 @@ public class PhotoActivity extends Activity{
         View popunwindwow = mLayoutInflater.inflate(R.layout.item_menu_vertical,null);
         TextView tv_letter = (TextView)popunwindwow.findViewById(R.id.tv_letter);
         tv_letter.setOnClickListener(onClickListener);
+        TextView tv_Comments = (TextView)popunwindwow.findViewById(R.id.tv_Comments);
+        tv_Comments.setOnClickListener(onClickListener);
         mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT);
         mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
@@ -700,18 +708,5 @@ public class PhotoActivity extends Activity{
         mPopupWindow.setFocusable(true);
         mPopupWindow.setOutsideTouchable(true);
         mPopupWindow.showAsDropDown(findViewById(R.id.iv_more), 0, 0);
-	}
-	
-	private void abc(String result){
-		try {
-			JSONObject jsonObject = new JSONObject(result);
-			JSONArray jsonArray = jsonObject.getJSONArray("data");
-			for(int i = 0 ; i < jsonArray.length() ; i++){
-				JSONObject json = jsonArray.getJSONObject(i);
-				String b_lat = json.getJSONObject("active_gps_data").getString("b_lat");
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-	}
+	}	
 }
