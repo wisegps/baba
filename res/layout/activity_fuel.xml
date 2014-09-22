@@ -3,12 +3,14 @@
     xmlns:tc="http://schemas.android.com/apk/res/com.wise.baba"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/white">
+    android:background="@color/white" >
+
     <RelativeLayout
         android:id="@+id/ll_top"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/title_hight"
         android:background="@color/title_back" >
+
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="fill_parent"
@@ -18,6 +20,7 @@
             android:text="我的车辆"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
+
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="@dimen/title_hight"
@@ -27,322 +30,376 @@
             android:padding="@dimen/margins"
             android:src="@drawable/nav_back" />
     </RelativeLayout>
+
     <Button
-         android:id="@+id/bt_FuelRank"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:padding="@dimen/margins"
-         android:textColor="@color/white"
-         android:textSize="@dimen/bt"
-         android:layout_alignParentBottom="true"
-         android:background="@drawable/bg_green"
-         android:text="油耗排行榜"/>
+        android:id="@+id/bt_FuelRank"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/bg_green"
+        android:padding="@dimen/margins"
+        android:text="油耗排行榜"
+        android:textColor="@color/white"
+        android:textSize="@dimen/bt" />
+
     <ScrollView
-        android:layout_below="@id/ll_top"
-        android:layout_above="@id/bt_FuelRank"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:scrollbars="none">
-        <LinearLayout 
+        android:layout_above="@id/bt_FuelRank"
+        android:layout_below="@id/ll_top"
+        android:scrollbars="none" >
+
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:orientation="vertical">
-            <LinearLayout 
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:orientation="horizontal"
-		        android:layout_margin="@dimen/margins">
-		        <TextView 
-		            android:id="@+id/tv_day"
-		            android:layout_width="0dp"
-		            android:layout_weight="1"
-		            android:layout_height="wrap_content"
-		            android:gravity="center_horizontal"
-		            android:textSize="@dimen/main"
-		            android:padding="@dimen/margins"
-		            android:textColor="@color/Green"
-		            android:background="@drawable/bg_border_left"
-		            android:text="日"/>
-		        <TextView 
-		            android:id="@+id/tv_week"
-		            android:layout_width="0dp"
-		            android:layout_weight="1"
-		            android:layout_height="wrap_content"
-		            android:gravity="center_horizontal"
-		            android:textSize="@dimen/main"
-		            android:padding="@dimen/margins"
-		            android:textColor="@color/Green"
-		            android:background="@drawable/bg_border_center"
-		            android:text="周"/>
-		        <TextView 
-		            android:id="@+id/tv_month"
-		            android:layout_width="0dp"
-		            android:layout_weight="1"
-		            android:layout_height="wrap_content"
-		            android:gravity="center_horizontal"
-		            android:textSize="@dimen/main"
-		            android:padding="@dimen/margins"
-		            android:textColor="@color/white"
-		            android:background="@drawable/bg_border_right_press"
-		            android:text="月"/>
-		    </LinearLayout>
-		    <View
-		        android:layout_width="fill_parent"
-		        android:layout_height="0.5dp"
-		        android:background="@color/line" />
-		    <TextView 
-		        android:id="@+id/tv_date"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:gravity="center_horizontal"
-		        android:textSize="@dimen/main"
-		        android:textColor="@color/Green"
-		        android:padding="@dimen/margins"
-		        android:text="2013-12"/>
-		    <RelativeLayout 
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content">
-		        <com.wise.state.TasksCompletedView
-			        android:id="@+id/tasks_view"
-			        android:layout_width="fill_parent"
-			        android:layout_height="140dip"
-			        tc:radius="60dip"
-			        tc:strokeWidth="10dip"
-			        tc:circleColor="@color/ring_bg_color"
-			        tc:ringColor="@color/ring_color" />
-			    <LinearLayout 
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:layout_centerInParent="true"
-			        android:gravity="center_horizontal"
-			        android:orientation="vertical">
-			        <TextView 
-			            android:id="@+id/tv_title"
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textColor="@color/navy"
-			            android:text="总花费"/>
-			        <LinearLayout 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:orientation="horizontal">
-			            <TextView 
-				            android:layout_width="wrap_content"
-				            android:layout_height="wrap_content"
-				            android:textColor="@color/navy"
-				            android:text="￥"/>
-			            <TextView
-			                android:id="@+id/tv_money" 
-				            android:layout_width="wrap_content"
-				            android:layout_height="wrap_content"
-				            android:textSize="@dimen/bigs_number"
-				            android:textColor="@color/navy"
-				            android:text="0"/>
-			        </LinearLayout>
-			    </LinearLayout>
-			    <ImageView 
-			        android:id="@+id/iv_left"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:layout_marginLeft="@dimen/double_margins"
-			        android:layout_alignParentBottom="true"
-			        android:padding="@dimen/double_margins"
-			        android:src="@drawable/btn_jiantou_lvse_you"/>
-			    <ImageView 
-			        android:id="@+id/iv_right"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:layout_marginRight="@dimen/double_margins"
-			        android:layout_alignParentRight="true"
-			        android:layout_alignParentBottom="true"
-			        android:padding="@dimen/double_margins"
-			        android:visibility="gone"
-			        android:src="@drawable/btn_jiantou_lvse_zuo"/>
-		    </RelativeLayout>
-		    <LinearLayout
-		        android:id="@+id/ll_total"
-		        android:layout_width="fill_parent"
-		        android:layout_marginTop="@dimen/margins"
-		        android:layout_height="50dp"
-		        android:orientation="horizontal">
-		        <LinearLayout
-		            android:id="@+id/ll_distance" 
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1"
-		            android:orientation="vertical">
-		            <TextView 
-		                android:layout_width="fill_parent"
-		                android:layout_height="wrap_content"
-		                android:textSize="@dimen/content"
-		                android:gravity="center_horizontal"
-		                android:textColor="@color/navy"
-		                android:text="总行驶"/>
-		            <LinearLayout 
-					    android:layout_width="fill_parent"
-					    android:layout_height="40dp"
-					    android:gravity="center_horizontal"
-					    android:orientation="horizontal">
-					    <TextView 
-					        android:id="@+id/tv_distance"
-					        android:layout_width="wrap_content"
-					        android:layout_height="wrap_content"
-					        android:textColor="@color/navy"
-					        android:textSize="24dp"
-					        android:text="0"/>
-					    <TextView 
-					        android:layout_width="wrap_content"
-					        android:layout_height="wrap_content"
-					        android:textColor="@color/navy"
-					        android:textSize="@dimen/content"
-					        android:text="km"/>
-					</LinearLayout>
-		        </LinearLayout>
-		        <View
-			        android:layout_width="0.5dp"
-			        android:layout_height="fill_parent"
-			        android:background="@color/line" />
-		        <LinearLayout 
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1"
-		            android:orientation="vertical">
-		            <TextView 
-		                android:layout_width="fill_parent"
-		                android:layout_height="wrap_content"
-		                android:textSize="@dimen/content"
-		                android:gravity="center_horizontal"
-		                android:textColor="@color/navy"
-		                android:text="总油耗"/>
-		            <LinearLayout 
-					    android:layout_width="fill_parent"
-					    android:layout_height="40dp"
-					    android:gravity="center_horizontal"
-					    android:orientation="horizontal">
-					    <TextView 
-					        android:id="@+id/tv_fuel"
-					        android:layout_width="wrap_content"
-					        android:layout_height="wrap_content"
-					        android:textColor="@color/navy"
-					        android:textSize="24dp"
-					        android:text="0"/>
-					    <TextView 
-					        android:layout_width="wrap_content"
-					        android:layout_height="wrap_content"
-					        android:textColor="@color/navy"
-					        android:textSize="@dimen/content"
-					        android:text="L"/>
-					</LinearLayout>
-		        </LinearLayout>
-		        <View
-			        android:layout_width="0.5dp"
-			        android:layout_height="fill_parent"
-			        android:background="@color/line" />
-		        <LinearLayout 
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1"
-		            android:orientation="vertical">
-		            <TextView 
-		                android:layout_width="fill_parent"
-		                android:layout_height="wrap_content"
-		                android:textSize="@dimen/content"
-		                android:gravity="center_horizontal"
-		                android:textColor="@color/navy"
-		                android:text="平均油耗"/>
-		            <LinearLayout 
-					    android:layout_width="fill_parent"
-					    android:layout_height="40dp"
-					    android:gravity="center_horizontal"
-					    android:orientation="horizontal">
-					    <TextView 
-					        android:id="@+id/tv_avg_fuel"
-					        android:layout_width="wrap_content"
-					        android:layout_height="wrap_content"
-					        android:textColor="@color/navy"
-					        android:textSize="24dp"
-					        android:text="0"/>
-					    <TextView 
-					        android:layout_width="wrap_content"
-					        android:layout_height="wrap_content"
-					        android:textColor="@color/navy"
-					        android:textSize="@dimen/content"
-					        android:text="L/100km"/>
-					</LinearLayout>
-		        </LinearLayout>
-		    </LinearLayout>
-		    <LinearLayout
-		        android:id="@+id/ll_chart" 
-		        android:layout_marginTop="@dimen/margins"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:orientation="vertical">
-		        <RelativeLayout 
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"
-			        android:layout_marginTop="@dimen/margins">
-			        <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-			            android:textColor="@color/Green"
-			            android:layout_marginLeft="@dimen/double_margins"
-			            android:text="L/100KM"/>
-			        <TextView 
-			            android:id="@+id/tv_chart_title"
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/content"
-			            android:textColor="@color/Green"
-			            android:layout_marginRight="@dimen/double_margins"
-			            android:layout_alignParentRight="true"
-			            android:text="百公里驾驶油耗月曲线"/>
-			    </RelativeLayout>		                
-			    <customView.EnergyCurveView
-			        android:id="@+id/ecv_fuel"
-			        android:layout_width="fill_parent"
-			        android:layout_height="wrap_content"/>
-		    </LinearLayout>
-		    <LinearLayout
-		        android:id="@+id/ll_fv" 
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:gravity="center_horizontal"
-		        android:orientation="vertical">
-		        <TextView 
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:textSize="@dimen/main"
-			        android:textColor="@color/Green"
-			        android:layout_marginTop="@dimen/double_margins"
-			        android:text="速度平均油耗图"/>
-			    <customView.FanView 
-			        android:id="@+id/fv"
-			        android:layout_marginTop="@dimen/double_margins"
-			        android:layout_marginBottom="@dimen/double_margins"
-			        android:layout_width="fill_parent"
-			        android:layout_height="fill_parent"/>
-			    <TextView 
-			        android:id="@+id/tv_speed_text"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:textSize="@dimen/main"
-			        android:textColor="@color/navy"/>
-			    <TextView 
-			        android:id="@+id/tv_speed_avg_fuel"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:textSize="@dimen/main"
-			        android:textColor="@color/navy"/>
-			    <TextView 
-			        android:id="@+id/tv_speed_fuel"
-			        android:layout_marginBottom="@dimen/double_margins"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:textSize="@dimen/main"
-			        android:textColor="@color/navy"/>
-		    </LinearLayout>		    
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margins"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/tv_day"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_border_left"
+                    android:gravity="center_horizontal"
+                    android:padding="@dimen/margins"
+                    android:text="日"
+                    android:textColor="@color/Green"
+                    android:textSize="@dimen/main" />
+
+                <TextView
+                    android:id="@+id/tv_week"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_border_center"
+                    android:gravity="center_horizontal"
+                    android:padding="@dimen/margins"
+                    android:text="周"
+                    android:textColor="@color/Green"
+                    android:textSize="@dimen/main" />
+
+                <TextView
+                    android:id="@+id/tv_month"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_border_right_press"
+                    android:gravity="center_horizontal"
+                    android:padding="@dimen/margins"
+                    android:text="月"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/main" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/line" />
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/margins"
+                android:text="2013-12"
+                android:textColor="@color/Green"
+                android:textSize="@dimen/main" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <com.wise.state.TasksCompletedView
+                    android:id="@+id/tasks_view"
+                    android:layout_width="fill_parent"
+                    android:layout_height="140dip"
+                    tc:circleColor="@color/ring_bg_color"
+                    tc:radius="60dip"
+                    tc:ringColor="@color/ring_color"
+                    tc:strokeWidth="10dip" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tv_title_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="总花费"
+                        android:textColor="@color/navy" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/tv_content_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="￥"
+                            android:textColor="@color/navy" />
+
+                        <TextView
+                            android:id="@+id/tv_money"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/navy"
+                            android:textSize="@dimen/bigs_number" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="@dimen/double_margins"
+                    android:padding="@dimen/double_margins"
+                    android:src="@drawable/btn_jiantou_lvse_you" />
+
+                <ImageView
+                    android:id="@+id/iv_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/double_margins"
+                    android:padding="@dimen/double_margins"
+                    android:src="@drawable/btn_jiantou_lvse_zuo"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_total"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="@dimen/margins"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:id="@+id/ll_distance"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tv_title_2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="总行驶"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/tv_distance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/navy"
+                            android:textSize="24dp" />
+
+                        <TextView
+                            android:id="@+id/tv_content_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="km"
+                            android:textColor="@color/navy"
+                            android:textSize="@dimen/content" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="fill_parent"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tv_title_3"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="总油耗"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/tv_fuel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/navy"
+                            android:textSize="24dp" />
+
+                        <TextView
+                            android:id="@+id/tv_content_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="L"
+                            android:textColor="@color/navy"
+                            android:textSize="@dimen/content" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="fill_parent"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:text="平均油耗"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/tv_avg_fuel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/navy"
+                            android:textSize="24dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="L/100km"
+                            android:textColor="@color/navy"
+                            android:textSize="@dimen/content" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_chart"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margins"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margins" >
+
+                    <TextView
+                        android:id="@+id/tv_chart_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/double_margins"
+                        android:text="L/100KM"
+                        android:textColor="@color/Green"
+                        android:textSize="@dimen/content" />
+
+                    <TextView
+                        android:id="@+id/tv_chart_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/double_margins"
+                        android:text="百公里驾驶油耗月曲线"
+                        android:textColor="@color/Green"
+                        android:textSize="@dimen/content" />
+                </RelativeLayout>
+
+                <customView.EnergyCurveView
+                    android:id="@+id/ecv_fuel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_fv"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/double_margins"
+                    android:text="速度平均油耗图"
+                    android:textColor="@color/Green"
+                    android:textSize="@dimen/main" />
+
+                <customView.FanView
+                    android:id="@+id/fv"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginBottom="@dimen/double_margins"
+                    android:layout_marginTop="@dimen/double_margins" />
+
+                <TextView
+                    android:id="@+id/tv_speed_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/main" />
+
+                <TextView
+                    android:id="@+id/tv_speed_avg_fuel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/main" />
+
+                <TextView
+                    android:id="@+id/tv_speed_fuel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/double_margins"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/main" />
+            </LinearLayout>
         </LinearLayout>
-    </ScrollView>    
+    </ScrollView>
+
 </RelativeLayout>

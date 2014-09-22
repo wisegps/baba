@@ -155,6 +155,7 @@
         android:layout_marginBottom="@dimen/margins"
         android:orientation="horizontal" >
         <LinearLayout
+            android:id="@+id/Liner_distance"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -193,6 +194,7 @@
             android:layout_height="fill_parent"
             android:background="@color/line" />
         <LinearLayout
+            android:id="@+id/Liner_fuel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -230,6 +232,7 @@
             android:layout_height="fill_parent"
             android:background="@color/line" />
         <LinearLayout
+            android:id="@+id/Liner_fee"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

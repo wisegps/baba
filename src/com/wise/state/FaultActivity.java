@@ -54,7 +54,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -283,24 +282,17 @@ public class FaultActivity extends FragmentActivity {
 					}
 				}
 				break;
-			case R.id.ll_fee:
-				if (Variable.carDatas != null && Variable.carDatas.size() != 0) {
-					String Device_id = Variable.carDatas.get(index)
-							.getDevice_id();
-					if (Device_id == null || Device_id.equals("")) {
-						Intent intent = new Intent(FaultActivity.this,
-								DevicesAddActivity.class);
-						intent.putExtra("car_id", Variable.carDatas.get(index)
-								.getObj_id());
-						startActivityForResult(intent, 2);
-					} else {
-						Intent Intent = new Intent(FaultActivity.this,
-								FuelActivity.class);
-						Intent.putExtra("index_car", index);
-						startActivity(Intent);
-					}
-				}
+			// TODO 油耗，花费，里程分别显示
+			case R.id.Liner_distance:
+				getDataOne(FaultActivity.DISTANCE);
 				break;
+			case R.id.Liner_fuel:
+				getDataOne(FaultActivity.FUEL);
+				break;
+			case R.id.Liner_fee:
+				getDataOne(FaultActivity.FEE);
+				break;
+
 			case R.id.tv_message:
 				nstvClick();
 				break;
@@ -314,6 +306,33 @@ public class FaultActivity extends FragmentActivity {
 			}
 		}
 	};
+
+	// 跳转类型
+	public static final int DISTANCE = 1;// 里程
+	public static final int FEE = 2;// 费用
+	public static final int FUEL = 3;// 油耗
+
+	// TODO 根据跳转类型进行（里程，花费，油耗）页面显示
+	private void getDataOne(int type) {
+		if (Variable.carDatas != null && Variable.carDatas.size() != 0) {
+			String Device_id = Variable.carDatas.get(index).getDevice_id();
+			if (Device_id == null || Device_id.equals("")) {
+				Intent intent = new Intent(FaultActivity.this,
+						DevicesAddActivity.class);
+				intent.putExtra("car_id", Variable.carDatas.get(index)
+						.getObj_id());
+				startActivityForResult(intent, 2);
+			} else {
+				Intent intent = new Intent(FaultActivity.this,
+						FuelActivity.class);
+				intent.putExtra("index_car", index);
+				// 传递跳转类型常量进行跳转
+				intent.putExtra("type", type);
+				startActivity(intent);
+			}
+		}
+	}
+
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -603,6 +622,12 @@ public class FaultActivity extends FragmentActivity {
 			TextView tv_name = (TextView) v.findViewById(R.id.tv_name);
 			TextView tv_xx = (TextView) v.findViewById(R.id.tv_xx);
 			TextView tv_adress = (TextView) v.findViewById(R.id.tv_adress);
+
+			// 监听事件
+			v.findViewById(R.id.Liner_distance).setOnClickListener(
+					onClickListener);
+			v.findViewById(R.id.Liner_fuel).setOnClickListener(onClickListener);
+			v.findViewById(R.id.Liner_fee).setOnClickListener(onClickListener);
 			tv_adress.setOnClickListener(onClickListener);
 
 			TasksCompletedView tcv_drive = (TasksCompletedView) v
