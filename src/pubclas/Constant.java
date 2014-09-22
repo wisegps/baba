@@ -9,7 +9,7 @@ import android.os.Environment;
  * @author honesty
  */
 public class Constant {
-	public static boolean isLog = false;
+	public static boolean isLog = true;
 	/**在阿里云上url**/
 	public static String oss_url = "http://img.bibibaba.cn/";
 	// public static String oss_url = "http://baba-img.oss-cn-hangzhou.aliyuncs.com/photo/";
