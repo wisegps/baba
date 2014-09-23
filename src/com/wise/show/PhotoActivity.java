@@ -242,7 +242,7 @@ public class PhotoActivity extends Activity {
 			photoData = photoDatas.get(position);
 		}
 		if (photoData.getCust_id().equals(Variable.cust_id)) {
-
+			Toast.makeText(PhotoActivity.this, "不能回复自己", Toast.LENGTH_SHORT).show();
 		} else {
 			LayoutInflater mLayoutInflater = LayoutInflater
 					.from(PhotoActivity.this);
