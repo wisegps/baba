@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.Variable;
@@ -17,6 +20,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -28,6 +32,8 @@ import android.widget.Toast;
 public class NameActivity extends Activity {
 	private static final int update_name = 1;
 	private static final int get_customer = 2;
+	private static final int exist = 3;
+
 	EditText et_name;
 
 	@Override
@@ -71,30 +77,50 @@ public class NameActivity extends Activity {
 			case get_customer:
 				jsonCustomer(msg.obj.toString());
 				break;
+			case exist:
+				updateName(msg.obj.toString());
+				break;
 			}
 		}
 	};
 
+	String name_1;
+
 	private void updateName() {
-		String name = et_name.getText().toString().trim();
-		if (name.equals("")) {
-			Toast.makeText(NameActivity.this, "昵称不能为空", Toast.LENGTH_SHORT).show();
+		name_1 = et_name.getText().toString().trim();
+		if (name_1.equals("")) {
+			Toast.makeText(NameActivity.this, "昵称不能为空", Toast.LENGTH_SHORT)
+					.show();
 			return;
 		}
+		String url = Constant.BaseUrl + "exists?query_type=5&value=" + name_1;
+		new Thread(new NetThread.GetDataThread(handler, url, exist)).start();
+	}
 
-		Intent data = new Intent();
-		data.putExtra("name", name);
-		setResult(1, data);
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-				+ "/field?auth_code=" + Variable.auth_code;
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("field_name", "cust_name"));
-		params.add(new BasicNameValuePair("field_type", "String"));
-		params.add(new BasicNameValuePair("field_value", name));
-		new Thread(new NetThread.putDataThread(handler, url, params,
-				update_name)).start();
+	private void updateName(String str) {
+		try {
+			JSONObject json = new JSONObject(str);
+			if (!json.getBoolean("exist")) {
+				Intent data = new Intent();
+				data.putExtra("name", name_1);
+				setResult(1, data);
+				String url = Constant.BaseUrl + "customer/" + Variable.cust_id
+						+ "/field?auth_code=" + Variable.auth_code;
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("field_name", "cust_name"));
+				params.add(new BasicNameValuePair("field_type", "String"));
+				params.add(new BasicNameValuePair("field_value", name_1));
+				new Thread(new NetThread.putDataThread(handler, url, params,
+						update_name)).start();
+				finish();
+			} else {
+				Toast.makeText(NameActivity.this, "昵称已存在", Toast.LENGTH_SHORT)
+						.show();
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
-		finish();
 	}
 
 	/** 获取个人信息 **/
