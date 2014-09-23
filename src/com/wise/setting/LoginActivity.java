@@ -159,7 +159,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				Intent intent = new Intent(Constant.A_RefreshHomeCar);
 				sendBroadcast(intent);
 				// TODO 做出相应的跳转
-				Intent intent1 =LoginActivity.this.getIntent();
+				Intent intent1 = LoginActivity.this.getIntent();
 				getActivityState(intent1);
 				break;
 			}
@@ -213,10 +213,12 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 			startActivity(new Intent(LoginActivity.this, NoticeActivity.class));
 			break;
 		case MoreActivity.COLLCETION:
-			startActivity(new Intent(LoginActivity.this, CollectionActivity.class));
+			startActivity(new Intent(LoginActivity.this,
+					CollectionActivity.class));
 			break;
 		case MoreActivity.REMIND:
-			startActivity(new Intent(LoginActivity.this, RemindListActivity.class));
+			startActivity(new Intent(LoginActivity.this,
+					RemindListActivity.class));
 			break;
 		case MoreActivity.TRAFFIC:
 			startActivity(new Intent(LoginActivity.this, TrafficActivity.class));

@@ -8,15 +8,17 @@
     android:padding="@dimen/margins"
     android:background="@color/white"
     android:orientation="vertical">
-    <TextView 
+
+    <TextView
         android:id="@+id/tv_time"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textSize="@dimen/small"
-        android:textColor="@color/navy_light"
         android:layout_marginBottom="@dimen/margins"
-        android:visibility="gone"/>
+        android:gravity="center_horizontal"
+        android:textColor="@color/navy_light"
+        android:textSize="@dimen/small"
+        android:visibility="gone" />
+
     <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

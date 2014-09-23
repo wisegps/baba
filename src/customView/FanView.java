@@ -2,6 +2,9 @@ package customView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.wise.state.FaultActivity;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -60,7 +63,7 @@ public class FanView extends View {
 	 * @param Datas
 	 * @param position 指定那个位置
 	 */
-	public void setDatas(List<com.wise.state.FuelActivity.RangeData> Datas,int position){
+	public void setDatas(List<com.wise.state.FuelActivity.RangeData> Datas,int position,int type){
 		rangeDatas.clear();
 		RecordAngle = -90;
 		currentRotateRanges = 0;
@@ -69,10 +72,17 @@ public class FanView extends View {
 		//把百分比转成对应的度数
 		for(int i = 0 ; i < Datas.size() ; i++){
 			RangeData rangeData = new RangeData();
-			String text = Datas.get(i).getSpeed_text();
-			int index = text.indexOf("(");
-			if(index != -1){
-				text = text.substring(0, index);
+			String text = "";
+			if(type == FaultActivity.FUEL){
+				text = Datas.get(i).getSpeed_text();
+				int index = text.indexOf("(");
+				if(index != -1){
+					text = text.substring(0, index);
+				}
+			}else if(type == FaultActivity.DISTANCE){
+				text = Datas.get(i).getDistance();
+			}else {
+				text = Datas.get(i).getFee();
 			}
 			if(i == (Datas.size() - 1)){				
 				rangeData.setStartRanges(startRange);
@@ -194,7 +204,7 @@ public class FanView extends View {
 				}
 			}
 			canvas.drawArc(oval, startAngle, rangeData.getAnges(), true, p);
-			//写字
+			//TODO 写字
 			int nowCenterRanges = (rangeData.getAnges() / 2 + startAngle + 90)%360;
 			double nowX = Width + Width * Math.sin(nowCenterRanges*Math.PI/180)*0.6;
 			double nowY = Width - Width * Math.cos(nowCenterRanges*Math.PI/180)*0.6;
@@ -203,7 +213,6 @@ public class FanView extends View {
 			String str = rangeData.getText();
 			int w = (int) p.measureText(str)/2;
 			canvas.drawText(str, (float)nowX - w, (float)nowY, p);
-
 			startAngle += rangeData.getAnges();
 		}
 		p.setColor(Color.WHITE);
