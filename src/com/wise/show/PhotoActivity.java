@@ -479,7 +479,7 @@ public class PhotoActivity extends Activity{
 				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + photoData.getCust_id() + ".png");
 				holder.iv_logo.setImageBitmap(image);
 			}else{
-				holder.iv_logo.setImageResource(R.drawable.icon_add);
+				holder.iv_logo.setImageResource(R.drawable.icon_people_no);
 			}
 			holder.iv_comments.setOnClickListener(new OnClickListener() {				
 				@Override

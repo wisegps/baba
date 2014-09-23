@@ -115,12 +115,9 @@ public class SlidingView extends ViewGroup{
             int xDiff = (int) Math.abs(x - lastX);//水平方向移动绝对值
             int yDiff = (int) Math.abs(y - lastY);//垂直方向移动绝对值
             if(yDiff > xDiff){//list滑动
-            	//if(!isSlide){
-                    //getParent().requestDisallowInterceptTouchEvent(false);
-            	//}
+            	
             }else{//水平滑动
             	isSlide = true;
-                //getParent().requestDisallowInterceptTouchEvent(true);
                 addVelocityTracker(event);
                 int deltax = (int) (lastX - x);
                 if(deltax < 0){//向右
@@ -147,7 +144,6 @@ public class SlidingView extends ViewGroup{
         return true;
     }
     private void eventCancel(){
-        //getParent().requestDisallowInterceptTouchEvent(false);
         int velocityX = getScrollVelocity();
         if(velocityX > SNAP_VELOCITY){//向右划
             scrollRight();

@@ -42,6 +42,8 @@ public class RefreshableView extends LinearLayout {
 	private boolean isRefreshing = false;
 
 	private Context mContext;
+	//标识
+	private int index = 0;
 
 	public RefreshableView(Context context) {
 		super(context);
@@ -76,7 +78,7 @@ public class RefreshableView extends LinearLayout {
 		@Override
 		public void OnFinish(int index) {			
 			if (refreshListener != null) {
-				refreshListener.onRefreshOver();
+				refreshListener.onRefreshOver(index);
 				ll_wait.refreshView();
 				finishRefresh();
 				isRefreshing = true;
@@ -86,7 +88,7 @@ public class RefreshableView extends LinearLayout {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-
+		Log.d(TAG, "onTouchEvent = " +  event.getAction());
 		int y = (int) event.getRawY();
 
 		switch (event.getAction()) {
@@ -96,6 +98,7 @@ public class RefreshableView extends LinearLayout {
 			break;
 
 		case MotionEvent.ACTION_MOVE:
+			getParent().requestDisallowInterceptTouchEvent(true);
 			// y移动坐标
 			int m = y - lastY;
 			if (((m < 6) && (m > -1)) || (!isDragging)) {
@@ -106,7 +109,9 @@ public class RefreshableView extends LinearLayout {
 			break;
 
 		case MotionEvent.ACTION_UP:
-			Log.i(TAG, "ACTION_UP");
+			fling();
+			break;
+		case MotionEvent.ACTION_CANCEL:
 			fling();
 			break;
 		}
@@ -117,7 +122,7 @@ public class RefreshableView extends LinearLayout {
 	 * up事件处理
 	 */
 	private void fling() {
-		// TODO Auto-generated method stub
+		getParent().requestDisallowInterceptTouchEvent(false);
 		LinearLayout.LayoutParams lp = (LayoutParams) refreshView.getLayoutParams();
 		if (lp.topMargin > 0) {// 拉到了触发可刷新事件
 			refresh();
@@ -206,8 +211,9 @@ public class RefreshableView extends LinearLayout {
 		this.isRefreshEnabled = b;
 	}
 
-	public void setRefreshListener(RefreshListener listener) {
+	public void setRefreshListener(RefreshListener listener,int index) {
 		this.refreshListener = listener;
+		this.index = index;
 	}
 
 	/**
@@ -293,6 +299,6 @@ public class RefreshableView extends LinearLayout {
 	 */
 	public interface RefreshListener {
 		public void onRefresh();
-		public void onRefreshOver();
+		public void onRefreshOver(int index);
 	}
 }

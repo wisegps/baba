@@ -12,6 +12,7 @@ import com.aliyun.android.oss.task.GetObjectTask;
 import com.wise.baba.R;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
@@ -35,7 +36,7 @@ import android.widget.Toast;
  * @author guolin
  */
 public class MyScrollView extends ScrollView implements OnTouchListener {
-
+	private static final String TAG = "MyScrollView";
 	/**
 	 * 每页要加载的图片数量
 	 */
@@ -49,7 +50,7 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 	/**
 	 * 每一列的宽度
 	 */
-	private int columnWidth;
+	private int columnWidth = 0;
 
 	/**
 	 * 当前第一列的高度
@@ -94,7 +95,7 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 	/**
 	 * MyScrollView布局的高度。
 	 */
-	private static int scrollViewHeight;
+	private static int scrollViewHeight = 0;
 
 	/**
 	 * 记录上垂直方向的滚动距离。
@@ -109,7 +110,7 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 	/**
 	 * 在Handler中进行图片可见性检查的判断，以及加载更多图片的操作。
 	 */
-	private static Handler handler = new Handler() {
+	private Handler handler = new Handler() {
 
 		public void handleMessage(android.os.Message msg) {
 			MyScrollView myScrollView = (MyScrollView) msg.obj;
@@ -120,6 +121,7 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				if (scrollViewHeight + scrollY >= scrollLayout.getHeight()
 						&& taskCollection.isEmpty()) {
 					myScrollView.loadMoreImages();
+					System.out.println("滚动到底部");
 				}
 				myScrollView.checkVisibility();
 			} else {
@@ -155,54 +157,64 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		super.onLayout(changed, l, t, r, b);
 		if (changed && !loadOnce) {
-			scrollViewHeight = getHeight();
-			scrollLayout = getChildAt(0);
 			firstColumn = (LinearLayout) findViewById(R.id.first_column);
 			secondColumn = (LinearLayout) findViewById(R.id.second_column);
-			columnWidth = firstColumn.getWidth();
+			if(firstColumn != null){
+				columnWidth = firstColumn.getWidth();
+				System.out.println("columnWidth = " + columnWidth);
+			}
 			loadOnce = true;
 		}
 	}
+	@Override
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		if(getHeight() > scrollViewHeight){
+			scrollLayout = getChildAt(0);
+			scrollViewHeight = getHeight();
+		}
+	}	
+	
 	float lastY = 0;
 	/**
 	 * 监听用户的触屏事件，如果用户手指离开屏幕则开始进行滚动检测。
 	 */
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		if (event.getAction() == MotionEvent.ACTION_UP) {
+		if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
 			Message message = new Message();
 			message.obj = this;
 			handler.sendMessageDelayed(message, 5);
 		}else if(event.getAction() == MotionEvent.ACTION_MOVE){
-			float nowY = event.getY();
-			if(nowY > lastY){
-				for(int i = 0 ; i < pViews.size() ; i++){
-					ImageView imageView = pViews.get(i).getIv_pic();
-					int border_bottom = (Integer) imageView.getTag(R.string.border_bottom);
-					int spanY = border_bottom - getScrollY();
-					if(spanY >= 0){
-						int position = (Integer) imageView.getTag(R.string.image_position);
-						if(onFlowClickListener != null){
-							onFlowClickListener.OnScrollPosition(imageDatas.get(position).getCreate_time());
-						}
-						break;
-					}
-				}
-			}else{
-				for(int i = 0 ; i < pViews.size() ; i++){
-					ImageView imageView = pViews.get(i).getIv_pic();
-					int border_bottom = (Integer) imageView.getTag(R.string.border_bottom);
-					int spanY = border_bottom - getScrollY();
-					if(spanY >= 0){
-						int position = (Integer) imageView.getTag(R.string.image_position);
-						if(onFlowClickListener != null){
-							onFlowClickListener.OnScrollPosition(imageDatas.get(position).getCreate_time());
-						}
-						break;
-					}
-				}
-			}
-			lastY = nowY;
+//			float nowY = event.getY();
+//			if(nowY > lastY){
+//				for(int i = 0 ; i < pViews.size() ; i++){
+//					ImageView imageView = pViews.get(i).getIv_pic();
+//					int border_bottom = (Integer) imageView.getTag(R.string.border_bottom);
+//					int spanY = border_bottom - getScrollY();
+//					if(spanY >= 0){
+//						int position = (Integer) imageView.getTag(R.string.image_position);
+//						if(onFlowClickListener != null){
+//							onFlowClickListener.OnScrollPosition(imageDatas.get(position).getCreate_time());
+//						}
+//						break;
+//					}
+//				}
+//			}else{
+//				for(int i = 0 ; i < pViews.size() ; i++){
+//					ImageView imageView = pViews.get(i).getIv_pic();
+//					int border_bottom = (Integer) imageView.getTag(R.string.border_bottom);
+//					int spanY = border_bottom - getScrollY();
+//					if(spanY >= 0){
+//						int position = (Integer) imageView.getTag(R.string.image_position);
+//						if(onFlowClickListener != null){
+//							onFlowClickListener.OnScrollPosition(imageDatas.get(position).getCreate_time());
+//						}
+//						break;
+//					}
+//				}
+//			}
+//			lastY = nowY;
 		}
 		return false;
 	}
@@ -246,18 +258,18 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		if (hasSDCard()) {
 			int startIndex = page * PAGE_SIZE;
 			int endIndex = page * PAGE_SIZE + PAGE_SIZE;
+			//System.out.println("startIndex = " + startIndex + "endIndex = " + endIndex);
 			if (startIndex < imageDatas.size()) {
 				if (endIndex > imageDatas.size()) {
 					endIndex = imageDatas.size();
 				}
 				for (int i = startIndex; i < endIndex; i++) {
 					LoadImageTask task = new LoadImageTask();
-					//TODO 更新
 					taskCollection.add(task);
 					task.execute(String.valueOf(i));
 				}
 				page++;
-			} else {
+			} else {//TODO 加载
 				if(onFlowClickListener != null){
 					onFlowClickListener.OnLoad();
 				}
@@ -275,10 +287,12 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		if(onFlowClickListener != null){
 			onFlowClickListener.OnScrollFinish();
 		}
+		//System.out.println("scrollViewHeight = " + scrollViewHeight);
 		for (int i = 0; i < pViews.size(); i++) {
 			ImageView imageView = pViews.get(i).getIv_pic();
 			int borderTop = (Integer) imageView.getTag(R.string.border_top);
 			int borderBottom = (Integer) imageView.getTag(R.string.border_bottom);
+			//System.out.println("i = " + i + " , borderTop = " + borderTop + " , borderBottom = " + borderBottom + " , getScrollY() = " + getScrollY());
 			if (borderBottom > (getScrollY() - scrollViewHeight) && borderTop < getScrollY() + scrollViewHeight * 2) {
 				//SHUAXIN
 				String imageUrl = (String) imageView.getTag(R.string.image_url);
@@ -455,6 +469,19 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 					tv_series.setText("");
 					tv_praise.setText("");
 				}
+				//性别
+				ImageView iv_sex = (ImageView)view.findViewById(R.id.iv_sex);
+				if(imageData.isSex()){
+					iv_sex.setImageResource(R.drawable.icon_man);
+				}else{
+					iv_sex.setImageResource(R.drawable.icon_woman);
+				}
+				//TODO Logo
+				ImageView iv_logo = (ImageView)view.findViewById(R.id.iv_logo);
+				if(new File(Constant.VehicleLogoPath + imageData.getCar_brand_id() + ".png").exists()){
+					Bitmap image = BitmapFactory.decodeFile(Constant.VehicleLogoPath + imageData.getCar_brand_id() + ".png");
+					iv_logo.setImageBitmap(image);
+				}				
 				
 				ImageView iv_pic = (ImageView)view.findViewById(R.id.iv_pic);
 				iv_pic.setLayoutParams(params);

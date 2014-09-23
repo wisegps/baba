@@ -10,6 +10,22 @@ public class ImageData implements Serializable{
 	private int photo_id;
 	private int praise_count;
 	private String small_pic_url;
+	private boolean sex;
+	private String car_brand_id;	
+	
+	public boolean isSex() {
+		return sex;
+	}
+	public void setSex(boolean sex) {
+		this.sex = sex;
+	}	
+	public String getCar_brand_id() {
+		return car_brand_id;
+	}
+
+	public void setCar_brand_id(String car_brand_id) {
+		this.car_brand_id = car_brand_id;
+	}
 
 	public boolean isCust_praise() {
 		return cust_praise;

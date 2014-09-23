@@ -26,7 +26,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
@@ -209,7 +208,7 @@ public class CarUpdateActivity extends Activity {
 			if (cityData.getEngine() == 0) {
 
 			} else {
-				if (cityData.getEngineno() == 0) {// 全部
+				if (cityData.getEngineno() == 1) {// 全部
 					if (engine_no.length() == 0) {
 						Toast.makeText(CarUpdateActivity.this, "需要完整的发送机号",
 								Toast.LENGTH_SHORT).show();
@@ -228,7 +227,7 @@ public class CarUpdateActivity extends Activity {
 			if (cityData.getFrame() == 0) {
 
 			} else {
-				if (cityData.getFrameno() == 0) {// 全部
+				if (cityData.getFrameno() == 1) {// 全部
 					if (frame_no.length() == 0) {
 						Toast.makeText(CarUpdateActivity.this, "需要完整的车架号",
 								Toast.LENGTH_SHORT).show();
@@ -563,7 +562,7 @@ public class CarUpdateActivity extends Activity {
 			boolean isNeedAllEngine = false;
 			int Engineno = 0;
 			for (CityData cityData : chooseCityDatas) {
-				if (cityData.getEngineno() == 0) {// 全部
+				if (cityData.getEngineno() == 1) {// 全部
 					isNeedAllEngine = true;
 				} else {
 					if (cityData.getEngineno() > Engineno) {
@@ -593,7 +592,7 @@ public class CarUpdateActivity extends Activity {
 			boolean isNeedAllFrame = false;
 			int Frameno = 0;
 			for (CityData cityData : chooseCityDatas) {
-				if (cityData.getFrameno() == 0) {// 全部
+				if (cityData.getFrameno() == 1) {// 全部
 					isNeedAllFrame = true;
 				} else {
 					if (cityData.getFrameno() > Frameno) {

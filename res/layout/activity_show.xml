@@ -43,68 +43,56 @@
 	        android:layout_centerVertical="true"
 	        android:src="@drawable/nav_icon_xiu_baobei"/>
 	</RelativeLayout>
-    <LinearLayout 
-        android:id="@+id/ll_bottom"
-        android:layout_alignParentBottom="true"
+	<LinearLayout
+	    android:id="@+id/ll_menu" 
+	    android:layout_below="@id/rl_main"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">		        
-		<Button
-            android:id="@+id/bt_show_car"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/margins"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/margins">
+        <TextView 
+            android:id="@+id/tv_car"
+            android:layout_width="0dp"
             android:layout_weight="1"
-            android:textColor="@color/white"
-            android:textSize="@dimen/bt"
-            android:background="@drawable/bg_green_lights"
-            android:text="秀爱车"/>        
-        <Button
-            android:id="@+id/bt_show_service"
-            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/main"
             android:padding="@dimen/margins"
-            android:layout_weight="1"
             android:textColor="@color/white"
-            android:textSize="@dimen/bt"
-            android:background="@drawable/bg_green"
-            android:text="秀服务"/>
+            android:background="@drawable/bg_border_left_press"
+            android:text="秀爱车"/>
+        <TextView 
+            android:id="@+id/tv_baby"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/main"
+            android:padding="@dimen/margins"
+            android:textColor="@color/Green"
+            android:background="@drawable/bg_border_center"
+            android:text="秀宝贝"/>
+        <TextView 
+            android:id="@+id/tv_scenery"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/main"
+            android:padding="@dimen/margins"
+            android:textColor="@color/Green"
+            android:background="@drawable/bg_border_right"
+            android:text="秀风景"/>
     </LinearLayout>
-    <com.wise.show.RefreshableView
-        android:id="@+id/ll_refresh"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@id/ll_bottom"
-        android:layout_below="@id/rl_main"
-        android:orientation="vertical" >
-        <com.wise.show.MyScrollView
-		    android:id="@+id/my_scroll_view"
-		    android:layout_width="match_parent"
-		    android:layout_height="match_parent" >	
-		    <LinearLayout
-		        android:layout_width="match_parent"
-		        android:layout_height="fill_parent"
-		        android:orientation="horizontal" >	
-		        <LinearLayout
-		            android:id="@+id/first_column"
-		            android:layout_width="0dp"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1"
-		            android:orientation="vertical" >
-		        </LinearLayout>	
-		        <LinearLayout
-		            android:id="@+id/second_column"
-		            android:layout_width="0dp"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1"
-		            android:orientation="vertical" >
-		        </LinearLayout>
-		    </LinearLayout>
-		</com.wise.show.MyScrollView>
-    </com.wise.show.RefreshableView>    
+    <customView.ParentSlide   
+          android:id="@+id/hsl_photo"
+          android:layout_below="@id/ll_menu"
+          android:layout_width="fill_parent"   
+          android:layout_height="fill_parent">            
+    </customView.ParentSlide>    
 	<TextView
 	    android:id="@+id/tv_time"
-	    android:layout_below="@id/rl_main"
+	    android:layout_below="@id/ll_menu"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:textSize="@dimen/main"

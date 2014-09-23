@@ -1,4 +1,5 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -26,7 +27,21 @@
 	            android:layout_centerVertical="true"
 	            android:textColor="@color/white"
 	            android:textSize="@dimen/main"
+	            android:visibility="gone"
 	            android:text="宝马X3"/>
+	        <ImageView
+	            android:id="@+id/iv_logo"
+	            android:layout_width="20dp"
+	            android:layout_height="20dp"
+	            android:layout_centerVertical="true"
+	            android:layout_toRightOf="@id/tv_series"/>
+	        <ImageView
+	            android:id="@+id/iv_sex"
+	            android:layout_width="20dp"
+	            android:layout_height="20dp"
+	            android:layout_centerVertical="true"
+	            android:src="@drawable/icon_man"
+	            android:layout_toRightOf="@id/iv_logo"/>
 	        <TextView
 	            android:id="@+id/tv_praise" 
 	            android:layout_width="wrap_content"

@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
+import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
@@ -271,6 +272,7 @@ public class FaultDetectionActivity extends Activity{
 				break;
 			case getFault:
 				fault_content = msg.obj.toString();
+				GetSystem.myLog(TAG, "fault_content = " + fault_content);
 				break;
 			case refresh_score:
 				carViews.get(msg.arg1).getTv_score().setText(String.valueOf(mCurrentProgress));
@@ -726,7 +728,7 @@ public class FaultDetectionActivity extends Activity{
 					params.add(new BasicNameValuePair("brand", Variable.carDatas.get(index).getCar_brand()));
 			        params.add(new BasicNameValuePair("obd_err", jsonObject.getString("active_obd_err")));
 			        new NetThread.postDataThread(handler, url, params, getFault).start();					
-					
+					GetSystem.myLog(TAG, jsonObject.getString("active_obd_err"));
 					tv_guzhang.setText("有"+jsonErrArray.length() + "个故障");
 					tv_guzhang.setTextColor(getResources().getColor(R.color.yellow));
 					Drawable drawable= getResources().getDrawable(R.drawable.icon_guzhang_abnormal);
