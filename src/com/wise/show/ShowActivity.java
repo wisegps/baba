@@ -16,6 +16,8 @@ import com.wise.car.ModelsActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.show.MyScrollView.OnFlowClickListener;
 import com.wise.show.RefreshableView.RefreshListener;
+import customView.OnViewChangeListener;
+import customView.ParentSlide;
 import customView.PopView;
 import customView.PopView.OnItemClickListener;
 import android.app.Activity;
@@ -28,17 +30,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,14 +49,14 @@ public class ShowActivity extends Activity {
 	private static final int getNextImage = 2;
 	private static final int praise = 3;
 	private static final int getRefreshImage = 4;
-
-	List<ImageData> imageDatas = new ArrayList<ImageData>();
+	
+	TextView tv_car,tv_baby;
 	TextView tv_time,tv_title;
 	TextView tv_name,tv_ad,tv_dz,tv_bc,tv_bm,tv_all,tv_other;
 	LinearLayout ll_car_choose;
 	ImageView iv_choose;
-	MyScrollView my_scroll_view;
-	RefreshableView ll_refresh;
+	
+	ParentSlide hsl_photo;
 	/** 个人头像路径 **/
 	String logo = "";
 	int page_count = 20;
@@ -66,6 +65,8 @@ public class ShowActivity extends Activity {
 	boolean is_beauty = false;
 	String beauty = "&if_beauty=1";
 	int car_brand_id = -1;
+	/**当前所处位置**/
+	int index = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,19 +75,17 @@ public class ShowActivity extends Activity {
 		setContentView(R.layout.activity_show);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		ImageView iv_beauty = (ImageView) findViewById(R.id.iv_beauty);
-		iv_beauty.setOnClickListener(onClickListener);
 		ImageView iv_show_car = (ImageView) findViewById(R.id.iv_show_car);
 		iv_show_car.setOnClickListener(onClickListener);
 		iv_choose = (ImageView) findViewById(R.id.iv_choose);
 		iv_choose.setOnClickListener(onClickListener);
-		ll_refresh = (RefreshableView) findViewById(R.id.ll_refresh);
-		ll_refresh.setRefreshListener(refreshListener);
-		my_scroll_view = (MyScrollView) findViewById(R.id.my_scroll_view);
-		my_scroll_view.setOnFlowClickListener(onFlowClickListener);
 		tv_time = (TextView) findViewById(R.id.tv_time);
 		tv_title = (TextView) findViewById(R.id.tv_title);
-		
+		hsl_photo = (ParentSlide)findViewById(R.id.hsl_photo);
+		tv_car = (TextView)findViewById(R.id.tv_car);
+		tv_car.setOnClickListener(onClickListener);
+		tv_baby = (TextView)findViewById(R.id.tv_baby);
+		tv_baby.setOnClickListener(onClickListener);		
 		ll_car_choose = (LinearLayout)findViewById(R.id.ll_car_choose);
 		tv_name = (TextView)findViewById(R.id.tv_name);
 		TextView tv_ad = (TextView)findViewById(R.id.tv_ad);
@@ -100,12 +99,79 @@ public class ShowActivity extends Activity {
 		TextView tv_all = (TextView)findViewById(R.id.tv_all);
 		tv_all.setOnClickListener(onClickListener);
 		TextView tv_other = (TextView)findViewById(R.id.tv_other);
-		tv_other.setOnClickListener(onClickListener);
-		
-		Button bt_show_car = (Button) findViewById(R.id.bt_show_car);
-		bt_show_car.setOnClickListener(onClickListener);
-		getFristImages();
+		tv_other.setOnClickListener(onClickListener);		
 		getLogo();
+		setWaterFalls();
+		hsl_photo.setOnViewChangeListener(new OnViewChangeListener() {			
+			@Override
+			public void OnViewChange(int view) {
+				// TODO Auto-generated method stub
+				index = view;
+				if(viewDatas.get(index).getImageDatas().size() == 0){
+					getFristImages();
+				}
+				switch (index) {
+				case 0:			
+					is_beauty = false;
+					setBg();
+					tv_car.setBackgroundResource(R.drawable.bg_border_left_press);
+					tv_car.setTextColor(getResources().getColor(R.color.white));		
+					break;
+				case 1:
+					is_beauty = true;
+					setBg();
+					tv_baby.setBackgroundResource(R.drawable.bg_border_center_press);
+					tv_baby.setTextColor(getResources().getColor(R.color.white));
+					break;
+				}
+			}			
+			@Override
+			public void OnLastView() {}			
+			@Override
+			public void OnFinish(int index) {}
+		});
+	}
+	
+	private void setWaterFalls(){
+		for(int i = 0 ; i < 3 ; i++){
+			ViewData viewData = new ViewData();
+			View view_waterfalls = LayoutInflater.from(this).inflate(R.layout.item_waterfalls, null);
+			hsl_photo.addView(view_waterfalls);			
+			MyScrollView myScrollView = (MyScrollView) view_waterfalls.findViewById(R.id.my_scroll_view);
+			myScrollView.setOnFlowClickListener(onFlowClickListener);
+			RefreshableView ll_refresh = (RefreshableView) findViewById(R.id.ll_refresh);
+			ll_refresh.setRefreshListener(refreshListener,index);			
+			viewData.setMyScrollView(myScrollView);
+			viewData.setLl_refresh(ll_refresh);
+			viewData.setImageDatas(new ArrayList<ImageData>());
+			viewDatas.add(viewData);
+		}
+		getFristImages();
+	}
+	
+	List<ViewData> viewDatas = new ArrayList<ViewData>();
+	class ViewData{
+		MyScrollView myScrollView;
+		RefreshableView ll_refresh;
+		List<ImageData> imageDatas;
+		public MyScrollView getMyScrollView() {
+			return myScrollView;
+		}
+		public void setMyScrollView(MyScrollView myScrollView) {
+			this.myScrollView = myScrollView;
+		}
+		public RefreshableView getLl_refresh() {
+			return ll_refresh;
+		}
+		public void setLl_refresh(RefreshableView ll_refresh) {
+			this.ll_refresh = ll_refresh;
+		}
+		public List<ImageData> getImageDatas() {
+			return imageDatas;
+		}
+		public void setImageDatas(List<ImageData> imageDatas) {
+			this.imageDatas = imageDatas;
+		}		
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -117,16 +183,6 @@ public class ShowActivity extends Activity {
 				break;
 			case R.id.iv_show_car:
 				picPop();
-				break;
-			case R.id.iv_beauty:
-				if(is_beauty){
-					is_beauty = false;
-					tv_title.setText("车秀大厅");
-				}else{
-					is_beauty = true;
-					tv_title.setText("车宝贝");
-				}
-				getFristImages();
 				break;
 			case R.id.iv_choose:
 				ll_car_choose.setVisibility(View.VISIBLE);
@@ -168,9 +224,23 @@ public class ShowActivity extends Activity {
 				startActivityForResult(intent, 3);
 				hideChooseCar();
 				break;
+			case R.id.tv_car:
+				hsl_photo.snapToScreen(0);
+				break;
+			case R.id.tv_baby:
+				hsl_photo.snapToScreen(1);
+				break;
 			}
 		}
 	};
+	private void setBg(){
+		//tv_0.setTextColor(getResources().getColor(R.color.Green));
+		//tv_0.setBackgroundResource(R.drawable.bg_border_right);
+		tv_car.setTextColor(getResources().getColor(R.color.Green));
+		tv_car.setBackgroundResource(R.drawable.bg_border_left);
+		tv_baby.setTextColor(getResources().getColor(R.color.Green));
+		tv_baby.setBackgroundResource(R.drawable.bg_border_center);
+	}
 	private void hideChooseCar(){
 		ll_car_choose.setVisibility(View.GONE);
 		iv_choose.setVisibility(View.VISIBLE);
@@ -179,27 +249,26 @@ public class ShowActivity extends Activity {
 	RefreshListener refreshListener = new RefreshListener() {
 		@Override
 		public void onRefresh() {
-			// 下拉刷新
+			//TODO 加标记 下拉刷新
 			refresh = "";
 			int Photo_id;
-			if (imageDatas.size() != 0) {
-				Photo_id = imageDatas.get(0).getPhoto_id();
+			if (viewDatas.get(index).getImageDatas().size() != 0) {
+				Photo_id = viewDatas.get(index).getImageDatas().get(0).getPhoto_id();
 				String url = Constant.BaseUrl + "photo?auth_code="
 						+ Variable.auth_code + "&cust_id=" + Variable.cust_id
 						+ "&max_id=" + Photo_id + getBeauty();
-				new NetThread.GetDataThread(handler, url, getRefreshImage).start();
+				new NetThread.GetDataThread(handler, url, getRefreshImage,index).start();
 			} else {
 				getFristImages();
 				Toast.makeText(ShowActivity.this, "图片获取中...",
 						Toast.LENGTH_SHORT).show();
 			}
 		}
-
 		@Override
-		public void onRefreshOver() {
+		public void onRefreshOver(int index) {
 			List<ImageData> iDatas = jsonImages(refresh);
-			imageDatas.addAll(0, iDatas);
-			my_scroll_view.addHeadImages(iDatas);
+			viewDatas.get(index).getImageDatas().addAll(0, iDatas);
+			viewDatas.get(index).getMyScrollView().addHeadImages(iDatas);
 		}
 	};
 
@@ -207,7 +276,7 @@ public class ShowActivity extends Activity {
 		@Override
 		public void OnPraise(int position) {// 点赞
 			if (Judge.isLogin()) {
-				ImageData imageData = imageDatas.get(position);
+				ImageData imageData = viewDatas.get(index).getImageDatas().get(position);
 				if (!imageData.isCust_praise()) {
 					int Photo_id = imageData.getPhoto_id();
 					String url = Constant.BaseUrl + "photo/" + Photo_id
@@ -231,15 +300,13 @@ public class ShowActivity extends Activity {
 		@Override
 		public void OnClick(int position) {// 点击图片
 			if (Judge.isLogin()) {
-				Intent intent = new Intent(ShowActivity.this,
-						PhotoActivity.class);
-				intent.putExtra("imageData", imageDatas.get(position));
+				Intent intent = new Intent(ShowActivity.this,PhotoActivity.class);
+				intent.putExtra("imageData", viewDatas.get(index).getImageDatas().get(position));
 				intent.putExtra("position", position);
 				startActivityForResult(intent, 1);
 			} else {
 				// 没有登录则跳转到登录
-				startActivityForResult(new Intent(ShowActivity.this,
-						LoginActivity.class), 1);
+				startActivityForResult(new Intent(ShowActivity.this,LoginActivity.class), 1);
 			}
 		}
 
@@ -250,18 +317,17 @@ public class ShowActivity extends Activity {
 			if (isLoading) {
 				return;
 			}
-			if (imageDatas != null && imageDatas.size() != 0) {
-				int i = imageDatas.size() % page_count; // 取余
+			if (viewDatas.get(index).getImageDatas() != null && viewDatas.get(index).getImageDatas().size() != 0) {
+				int i = viewDatas.get(index).getImageDatas().size() % page_count; // 取余
 				if (i == 0) {
 					isLoading = true;
-					int Photo_id = imageDatas.get(imageDatas.size() - 1)
+					int Photo_id = viewDatas.get(index).getImageDatas().get(viewDatas.get(index).getImageDatas().size() - 1)
 							.getPhoto_id();
 					String url = Constant.BaseUrl + "photo?auth_code="
 							+ Variable.auth_code + "&cust_id="
 							+ Variable.cust_id + "&min_id=" + Photo_id
 							+ getBeauty();
-					new NetThread.GetDataThread(handler, url, getNextImage)
-							.start();
+					new NetThread.GetDataThread(handler, url, getNextImage,index).start();
 				}
 			}
 		}
@@ -297,21 +363,22 @@ public class ShowActivity extends Activity {
 			switch (msg.what) {
 			case getFristImage:
 				List<ImageData> iDatas = jsonImages(msg.obj.toString());
-				imageDatas.addAll(iDatas);
-				my_scroll_view.resetImages(iDatas);
+				viewDatas.get(msg.arg1).getImageDatas().addAll(iDatas);
+				viewDatas.get(msg.arg1).getMyScrollView().resetImages(iDatas);
 				break;
 			case getNextImage:
+				//加载更多
 				isLoading = false;
 				List<ImageData> Datas = jsonImages(msg.obj.toString());
-				imageDatas.addAll(Datas);
-				my_scroll_view.addFootImages(Datas);
+				viewDatas.get(msg.arg1).getImageDatas().addAll(Datas);
+				viewDatas.get(msg.arg1).getMyScrollView().addFootImages(Datas);
 				break;
 			case praise:
 				jsonPraise(msg.obj.toString(), msg.arg1);
 				break;
 			case getRefreshImage:
 				refresh = msg.obj.toString();
-				ll_refresh.runFast();
+				viewDatas.get(msg.arg1).getLl_refresh().runFast();
 				break;
 			}
 		}
@@ -324,15 +391,14 @@ public class ShowActivity extends Activity {
 			if (jsonObject.getInt("status_code") == 0) {
 				// 点赞成功
 				// 考虑在连续点2次的情况
-				if (!imageDatas.get(position).isCust_praise()) {
-					imageDatas.get(position).setCust_praise(true);
+				if (!viewDatas.get(index).getImageDatas().get(position).isCust_praise()) {
+					viewDatas.get(index).getImageDatas().get(position).setCust_praise(true);
 					// 修改图片点赞状态
-					my_scroll_view.setPraise(position);
+					viewDatas.get(index).getMyScrollView().setPraise(position);
 					// 点赞次数+1;
-					int Praise_count = imageDatas.get(position)
-							.getPraise_count() + 1;
-					imageDatas.get(position).setPraise_count(Praise_count);
-					my_scroll_view.setPraiseCount(position, Praise_count);
+					int Praise_count = viewDatas.get(index).getImageDatas().get(position).getPraise_count() + 1;
+					viewDatas.get(index).getImageDatas().get(position).setPraise_count(Praise_count);
+					viewDatas.get(index).getMyScrollView().setPraiseCount(position, Praise_count);
 				}
 			}
 		} catch (Exception e) {
@@ -341,8 +407,8 @@ public class ShowActivity extends Activity {
 	}
 
 	/** 获取图片列表 **/
-	private void getFristImages() {
-		imageDatas.clear();
+	private void getFristImages() {		
+		viewDatas.get(index).getImageDatas().clear();
 		String url;
 		if(car_brand_id == -1){
 			url = Constant.BaseUrl + "photo?auth_code=" + Variable.auth_code
@@ -351,7 +417,7 @@ public class ShowActivity extends Activity {
 			url = Constant.BaseUrl + "photo?auth_code=" + Variable.auth_code
 					+ "&car_brand_id=" + car_brand_id + "&cust_id=" + Variable.cust_id + getBeauty();
 		}
-		new NetThread.GetDataThread(handler, url, getFristImage).start();
+		new NetThread.GetDataThread(handler, url, getFristImage,index).start();
 	}
 
 	/** 获取 **/
@@ -367,8 +433,9 @@ public class ShowActivity extends Activity {
 				imageData.setCreate_time(jsonObject.getString("create_time"));
 				imageData.setPhoto_id(jsonObject.getInt("photo_id"));
 				imageData.setPraise_count(jsonObject.getInt("praise_count"));
-				imageData.setSmall_pic_url(jsonObject
-						.getString("small_pic_url"));
+				imageData.setSmall_pic_url(jsonObject.getString("small_pic_url"));
+				imageData.setCar_brand_id(jsonObject.getString("car_brand_id"));				
+				imageData.setSex(jsonObject.getInt("sex") == 0 ? false : true);
 				Datas.add(imageData);
 			}
 		} catch (Exception e) {
@@ -443,7 +510,7 @@ public class ShowActivity extends Activity {
 		}
 		if (resultCode == 1) {
 			//登录返回,刷新数据
-			imageDatas.clear();
+			viewDatas.get(index).getImageDatas().clear();
 			getFristImages();
 			getLogo();
 			return;
@@ -460,12 +527,12 @@ public class ShowActivity extends Activity {
 			//相片详细界面点赞返回
 			int position = data.getIntExtra("position", 0);
 			int Praise_count = data.getIntExtra("Praise_count", 0);
-			imageDatas.get(position).setCust_praise(
+			viewDatas.get(index).getImageDatas().get(position).setCust_praise(
 					data.getBooleanExtra("isCust_praise", true));
-			imageDatas.get(position).setPraise_count(Praise_count);
+			viewDatas.get(index).getImageDatas().get(position).setPraise_count(Praise_count);
 			// 修改图片点赞状态
-			my_scroll_view.setPraise(position);
-			my_scroll_view.setPraiseCount(position, Praise_count);
+			viewDatas.get(index).getMyScrollView().setPraise(position);
+			viewDatas.get(index).getMyScrollView().setPraiseCount(position, Praise_count);
 		}
 		if(requestCode == 3){
 			System.out.println("brank = " + data.getStringExtra("brank"));

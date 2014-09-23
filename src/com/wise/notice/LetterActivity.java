@@ -467,7 +467,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				if (imageFriend != null) {
 					viewFriend.iv_friend.setImageBitmap(imageFriend);
 				} else {
-					viewFriend.iv_friend.setImageResource(R.drawable.icon_car);
+					viewFriend.iv_friend.setImageResource(R.drawable.icon_people_no);
 				}
 			} else {
 				viewMe.tv_me_content.setText(letterData.getContent());
@@ -487,7 +487,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				if (imageMe != null) {
 					viewMe.iv_me.setImageBitmap(imageMe);
 				} else {
-					viewMe.iv_me.setImageResource(R.drawable.icon_car);
+					viewMe.iv_me.setImageResource(R.drawable.icon_people_no);
 				}
 			}
 			return convertView;

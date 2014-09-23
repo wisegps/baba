@@ -2,16 +2,16 @@ package com.wise.baba;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.litepal.LitePalApplication;
 import com.baidu.mapapi.SDKInitializer;
 import pubclas.GetSystem;
 import android.app.Activity;
-import android.app.Application;
 
 /**
  * 初始化地图
  * @author honesty
  */
-public class AppApplication extends Application {
+public class AppApplication extends LitePalApplication {
     private static final String TAG = "AppApplication";
     private List<Activity> activityList = new LinkedList<Activity>();
     private static AppApplication instance;

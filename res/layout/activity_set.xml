@@ -48,7 +48,7 @@
                     android:layout_centerVertical="true"
                     android:contentDescription="@string/app_name"
                     app:border_width="1dp"
-                    android:src="@drawable/icon_add"
+                    android:src="@drawable/icon_people_no"
                     app:border_color="@color/white" />
 	        <TextView
 	            android:id="@+id/tv_login"
