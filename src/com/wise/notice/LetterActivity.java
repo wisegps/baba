@@ -467,7 +467,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				if (imageFriend != null) {
 					viewFriend.iv_friend.setImageBitmap(imageFriend);
 				} else {
-					viewFriend.iv_friend.setImageResource(R.drawable.icon_people_no);
+					viewFriend.iv_friend
+							.setImageResource(R.drawable.icon_people_no);
 				}
 			} else {
 				viewMe.tv_me_content.setText(letterData.getContent());
@@ -504,7 +505,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			popupWindow.setBackgroundDrawable(new BitmapDrawable());
 			popupWindow.setFocusable(true);
 			popupWindow.setOutsideTouchable(true);
-			popupWindow.showAsDropDown(v, 0, -100);
+			popupWindow.showAsDropDown(v, 0, -104);
 
 			popupWindow.getContentView().findViewById(R.id.letter_copy)
 					.setOnClickListener(click);
@@ -526,12 +527,10 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							Toast.LENGTH_SHORT).show();
 					break;
 				case R.id.letter_collection:// 收藏
-					Toast.makeText(LetterActivity.this, "收藏成功",
-							Toast.LENGTH_SHORT).show();
+
 					break;
 				case R.id.letter_share:// 分享
-					Toast.makeText(LetterActivity.this, "分享成功",
-							Toast.LENGTH_SHORT).show();
+
 					break;
 				}
 				if (popupWindow.isShowing()) {
