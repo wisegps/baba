@@ -56,20 +56,21 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/**相片信息，评论界面**/
-public class PhotoActivity extends Activity{
+/** 相片信息，评论界面 **/
+public class PhotoActivity extends Activity {
 	private static final String TAG = "PicActivity";
 	private static final int getPhoto = 1;
 	private static final int getBigImage = 2;
 	private static final int setComments = 3;
 	private static final int getPersionImage = 4;
-	/**点赞**/
+	/** 点赞 **/
 	private static final int praise = 5;
-	
+
 	RequestQueue mQueue;
 	ListView lv_comments;
-	TextView tv_time,tv_persion,tv_content,tv_adress,tv_praise,tv_see,tv_people;
-	ImageView iv_back,iv_car_logo,iv_sex,iv_pic;
+	TextView tv_time, tv_persion, tv_content, tv_adress, tv_praise, tv_see,
+			tv_people;
+	ImageView iv_back, iv_car_logo, iv_sex, iv_pic;
 	CircleImageView iv_persion_icon;
 	EditText et_comments;
 	ImageData imageData;
@@ -77,76 +78,86 @@ public class PhotoActivity extends Activity{
 	List<PhotoData> photoDatas = new ArrayList<PhotoData>();
 	PhotoAdapter photoAdapter;
 	ProgressDialog progressDialog;
-	/**个人头像路径**/
+	/** 个人头像路径 **/
 	String logo = "";
-	/**是否修改了点赞状态**/
+	/** 是否修改了点赞状态 **/
 	boolean isPraises = false;
 	int textHeight = 45;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_photo);
 		mQueue = Volley.newRequestQueue(this);
-		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
+		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		ImageView iv_more = (ImageView)findViewById(R.id.iv_more);
+		ImageView iv_more = (ImageView) findViewById(R.id.iv_more);
 		iv_more.setOnClickListener(onClickListener);
-		TextView tv_send = (TextView)findViewById(R.id.tv_send);
+		TextView tv_send = (TextView) findViewById(R.id.tv_send);
 		tv_send.setOnClickListener(onClickListener);
-		et_comments = (EditText)findViewById(R.id.et_comments);
-		tv_people = (TextView)findViewById(R.id.tv_people);
-		
+		et_comments = (EditText) findViewById(R.id.et_comments);
+		tv_people = (TextView) findViewById(R.id.tv_people);
+
 		imageData = (ImageData) getIntent().getSerializableExtra("imageData");
 		position = getIntent().getIntExtra("position", 0);
-		
-		lv_comments = (ListView)findViewById(R.id.lv_comments);
-		View v = LayoutInflater.from(this).inflate(R.layout.view_photo_header, null);
+
+		lv_comments = (ListView) findViewById(R.id.lv_comments);
+		View v = LayoutInflater.from(this).inflate(R.layout.view_photo_header,
+				null);
 		lv_comments.addHeaderView(v, null, false);
 		photoAdapter = new PhotoAdapter();
 		lv_comments.setAdapter(photoAdapter);
 		lv_comments.setOnScrollListener(onScrollListener);
 		lv_comments.setOnItemLongClickListener(onItemLongClickListener);
-		
-		TextView tv_share = (TextView)v.findViewById(R.id.tv_share);
+
+		TextView tv_share = (TextView) v.findViewById(R.id.tv_share);
 		tv_share.setOnClickListener(onClickListener);
-		tv_time = (TextView)v.findViewById(R.id.tv_time);
-		String Time = GetSystem.ChangeTimeZone(imageData.getCreate_time().replace("T", " ")
-				.substring(0, 19));
+		tv_time = (TextView) v.findViewById(R.id.tv_time);
+		String Time = GetSystem.ChangeTimeZone(imageData.getCreate_time()
+				.replace("T", " ").substring(0, 19));
 		tv_time.setText(Time);
-		tv_persion = (TextView)v.findViewById(R.id.tv_persion);
-		tv_content = (TextView)v.findViewById(R.id.tv_content);
-		tv_adress = (TextView)v.findViewById(R.id.tv_adress);
-		tv_praise = (TextView)v.findViewById(R.id.tv_praise);
-		tv_praise.setText(""+imageData.getPraise_count());
+		tv_persion = (TextView) v.findViewById(R.id.tv_persion);
+		tv_content = (TextView) v.findViewById(R.id.tv_content);
+		tv_adress = (TextView) v.findViewById(R.id.tv_adress);
+		tv_praise = (TextView) v.findViewById(R.id.tv_praise);
+		tv_praise.setText("" + imageData.getPraise_count());
 		tv_praise.setOnClickListener(onClickListener);
-		if(imageData.isCust_praise()){
-			Drawable drawable= getResources().getDrawable(R.drawable.icon_zan_reply);
-			drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-			tv_praise.setCompoundDrawables(drawable,null,null,null);
-		}else{
-			Drawable drawable= getResources().getDrawable(R.drawable.icon_zan_nor);
-			drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-			tv_praise.setCompoundDrawables(drawable,null,null,null);
+		if (imageData.isCust_praise()) {
+			Drawable drawable = getResources().getDrawable(
+					R.drawable.icon_zan_reply);
+			drawable.setBounds(0, 0, drawable.getMinimumWidth(),
+					drawable.getMinimumHeight());
+			tv_praise.setCompoundDrawables(drawable, null, null, null);
+		} else {
+			Drawable drawable = getResources().getDrawable(
+					R.drawable.icon_zan_nor);
+			drawable.setBounds(0, 0, drawable.getMinimumWidth(),
+					drawable.getMinimumHeight());
+			tv_praise.setCompoundDrawables(drawable, null, null, null);
 		}
-		tv_see = (TextView)v.findViewById(R.id.tv_see);
-		iv_persion_icon = (CircleImageView)v.findViewById(R.id.iv_persion_icon);
-		iv_car_logo = (ImageView)v.findViewById(R.id.iv_car_logo);
-		iv_sex = (ImageView)v.findViewById(R.id.iv_sex);
-		iv_pic = (ImageView)v.findViewById(R.id.iv_pic);
+		tv_see = (TextView) v.findViewById(R.id.tv_see);
+		iv_persion_icon = (CircleImageView) v
+				.findViewById(R.id.iv_persion_icon);
+		iv_car_logo = (ImageView) v.findViewById(R.id.iv_car_logo);
+		iv_sex = (ImageView) v.findViewById(R.id.iv_sex);
+		iv_pic = (ImageView) v.findViewById(R.id.iv_pic);
 		String imageUrl = imageData.getSmall_pic_url();
 		ImageLoader imageLoader = ImageLoader.getInstance();
 		Bitmap bitmap = imageLoader.getBitmapFromMemoryCache(imageUrl);
-        setImageWidthHeight(bitmap);
+		setImageWidthHeight(bitmap);
 		iv_pic.setImageBitmap(bitmap);
-		/**获取大图片**/
-		String url = Constant.BaseUrl + "photo/" + imageData.getPhoto_id() + "?auth_code=" + Variable.auth_code;
+		/** 获取大图片 **/
+		String url = Constant.BaseUrl + "photo/" + imageData.getPhoto_id()
+				+ "?auth_code=" + Variable.auth_code;
 		new NetThread.GetDataThread(handler, url, getPhoto).start();
 		getLogo();
-		textHeight = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
+		textHeight = (int) TypedValue.applyDimension(
+				TypedValue.COMPLEX_UNIT_DIP, 40, getResources()
+						.getDisplayMetrics());
 	}
-	OnClickListener onClickListener = new OnClickListener() {		
+
+	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
@@ -154,29 +165,30 @@ public class PhotoActivity extends Activity{
 				updatePhotoInfo();
 				break;
 			case R.id.iv_more:
-				if(cust_id == null || cust_id.equals("0")){
-					//没读取到数据
-				}else if(cust_id.equals(Variable.cust_id)){
-					//自己不能给自己私信
-				}else{
+				if (cust_id == null || cust_id.equals("0")) {
+					// 没读取到数据
+				} else if (cust_id.equals(Variable.cust_id)) {
+					// 自己不能给自己私信
+				} else {
 					showMenu();
 				}
 				break;
-			case R.id.tv_send://发表评论
+			case R.id.tv_send:// 发表评论
 				sendComments();
 				break;
-			case R.id.tv_praise://点赞
+			case R.id.tv_praise:// 点赞
 				praises();
 				break;
-			case R.id.tv_letter://私信
-				Intent intent = new Intent(PhotoActivity.this, LetterActivity.class);
+			case R.id.tv_letter:// 私信
+				Intent intent = new Intent(PhotoActivity.this,
+						LetterActivity.class);
 				intent.putExtra("cust_id", cust_id);
 				intent.putExtra("cust_name", cust_name);
 				startActivity(intent);
 				mPopupWindow.dismiss();
 				break;
 			case R.id.tv_Comments:
-				//TODO 回复
+				// TODO 回复
 				reply = "";
 				tv_people.setText("");
 				mPopupWindow.dismiss();
@@ -184,7 +196,7 @@ public class PhotoActivity extends Activity{
 			}
 		}
 	};
-	Handler handler = new Handler(){
+	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
@@ -193,9 +205,10 @@ public class PhotoActivity extends Activity{
 				jsonPhoto(msg.obj.toString());
 				break;
 			case getBigImage:
-	            //显示图片
-	            Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath + imageName);
-	            iv_pic.setImageBitmap(image);
+				// 显示图片
+				Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath
+						+ imageName);
+				iv_pic.setImageBitmap(image);
 				break;
 			case setComments:
 				jsonComments(msg.obj.toString());
@@ -203,113 +216,152 @@ public class PhotoActivity extends Activity{
 			case getPersionImage:
 				photoAdapter.notifyDataSetChanged();
 				break;
-			case praise://点赞
+			case praise:// 点赞
 				jsonPraise(msg.obj.toString());
 				break;
 			}
-		}		
+		}
 	};
-	
+
+	// TODO 长按监听，弹出提示框
 	OnItemLongClickListener onItemLongClickListener = new OnItemLongClickListener() {
 		@Override
 		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 				final int arg2, long arg3) {
-			final PhotoData photoData = photoDatas.get(arg2 - 1);//去掉头部
-			if(photoData.getCust_id().equals(Variable.cust_id)){
-				
-			}else{
-				LayoutInflater mLayoutInflater = LayoutInflater.from(PhotoActivity.this);
-		        View popunwindwow = mLayoutInflater.inflate(R.layout.item_menu_horizontal,null);
-		        TextView tv_item_letter = (TextView)popunwindwow.findViewById(R.id.tv_item_letter);
-		        tv_item_letter.setOnClickListener(new OnClickListener() {				
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent(PhotoActivity.this, LetterActivity.class);
-						intent.putExtra("cust_id", photoData.getCust_id());
-						intent.putExtra("cust_name", photoData.getCust_name());
-						startActivity(intent);
-						mPopupWindow.dismiss();					
-					}
-				});
-		        mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-		        mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
-		        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
-		        mPopupWindow.setFocusable(true);
-		        mPopupWindow.setOutsideTouchable(true);
-		        //TODO SHUAXIN
-		        mPopupWindow.showAsDropDown(arg1, widthPixels/2, - (textHeight + arg1.getHeight())/2);
-			}
-			return false;
+			replyPopWin(arg1, arg2, true);
+			return true;
 		}
 	};
-	
-	OnScrollListener onScrollListener = new OnScrollListener() {		
+
+	// TODO 弹出回复提示框
+	private void replyPopWin(View v, int position, boolean b) {
+		final PhotoData photoData;
+		if (b) {
+			photoData = photoDatas.get(position - 1);// 去掉头部
+		} else {
+			photoData = photoDatas.get(position);
+		}
+		if (photoData.getCust_id().equals(Variable.cust_id)) {
+			Toast.makeText(PhotoActivity.this, "不能回复自己", Toast.LENGTH_SHORT).show();
+		} else {
+			LayoutInflater mLayoutInflater = LayoutInflater
+					.from(PhotoActivity.this);
+			View popunwindwow = mLayoutInflater.inflate(
+					R.layout.item_menu_horizontal, null);
+			TextView tv_item_letter = (TextView) popunwindwow
+					.findViewById(R.id.tv_item_letter);
+			TextView tv_item_reply = (TextView) popunwindwow
+					.findViewById(R.id.tv_item_reply);
+
+			tv_item_reply.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					reply = photoData.getCust_name();
+					tv_people.setText("回复" + photoData.getCust_name() + ":");
+					mPopupWindow.dismiss();
+				}
+			});
+
+			tv_item_letter.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(PhotoActivity.this,
+							LetterActivity.class);
+					intent.putExtra("cust_id", photoData.getCust_id());
+					intent.putExtra("cust_name", photoData.getCust_name());
+					startActivity(intent);
+					mPopupWindow.dismiss();
+				}
+			});
+			mPopupWindow = new PopupWindow(popunwindwow,
+					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
+			mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+			mPopupWindow.setFocusable(true);
+			mPopupWindow.setOutsideTouchable(true);
+			mPopupWindow.showAsDropDown(v, widthPixels / 3,
+					-(textHeight + v.getHeight()) / 2);
+		}
+
+	}
+
+	OnScrollListener onScrollListener = new OnScrollListener() {
 		@Override
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
 			switch (scrollState) {
-			case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL://触摸状态
+			case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:// 触摸状态
 				break;
-			case OnScrollListener.SCROLL_STATE_FLING://滑动状态				
+			case OnScrollListener.SCROLL_STATE_FLING:// 滑动状态
 				break;
-			case OnScrollListener.SCROLL_STATE_IDLE://停止
-				//读取图片
+			case OnScrollListener.SCROLL_STATE_IDLE:// 停止
+				// 读取图片
 				getPersionImage();
 				break;
 			}
-		}		
+		}
+
 		@Override
 		public void onScroll(AbsListView view, int firstVisibleItem,
 				int visibleItemCount, int totalItemCount) {
-			
+
 		}
 	};
-	/**获取显示区域的图片**/
-	private void getPersionImage(){
+
+	/** 获取显示区域的图片 **/
+	private void getPersionImage() {
 		int start = lv_comments.getFirstVisiblePosition();
 		int stop = lv_comments.getLastVisiblePosition();
-		
-		for(int i = start ; i <= stop ; i++){
-			if(start == 0){
-				
-			}else{
-				//判断图片是否存在
-				if(new File(Constant.userIconPath + photoDatas.get(i - 1).getCust_id() + ".png").exists()){
-					
-				}else{
-					if(isThreadRun(i - 1)){
-						//如果图片正在读取则跳过
-					}else{
+
+		for (int i = start; i <= stop; i++) {
+			if (start == 0) {
+
+			} else {
+				// 判断图片是否存在
+				if (new File(Constant.userIconPath
+						+ photoDatas.get(i - 1).getCust_id() + ".png").exists()) {
+
+				} else {
+					if (isThreadRun(i - 1)) {
+						// 如果图片正在读取则跳过
+					} else {
 						photoThreadId.add(i - 1);
 						new ImageThread(i - 1).start();
 					}
 				}
-			}			
+			}
 		}
 	}
+
 	List<Integer> photoThreadId = new ArrayList<Integer>();
-	/**判断图片是否开启了线程正在读图**/
-	private boolean isThreadRun(int positon){
-		for(int i = 0 ; i < photoThreadId.size() ; i++){
-			if(positon == photoThreadId.get(i)){
+
+	/** 判断图片是否开启了线程正在读图 **/
+	private boolean isThreadRun(int positon) {
+		for (int i = 0; i < photoThreadId.size(); i++) {
+			if (positon == photoThreadId.get(i)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	class ImageThread extends Thread{
+
+	class ImageThread extends Thread {
 		int position;
-		public ImageThread(int position){
+
+		public ImageThread(int position) {
 			this.position = position;
 		}
+
 		@Override
 		public void run() {
 			super.run();
-			Bitmap bitmap = GetSystem.getBitmapFromURL(photoDatas.get(position).getIcon());
-			if(bitmap != null){
-				GetSystem.saveImageSD(bitmap, Constant.userIconPath, photoDatas.get(position).getCust_id() + ".png",100);
+			Bitmap bitmap = GetSystem.getBitmapFromURL(photoDatas.get(position)
+					.getIcon());
+			if (bitmap != null) {
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, photoDatas
+						.get(position).getCust_id() + ".png", 100);
 			}
-			for(int i = 0 ; i < photoThreadId.size() ; i++){
-				if(photoThreadId.get(i) == position){
+			for (int i = 0; i < photoThreadId.size(); i++) {
+				if (photoThreadId.get(i) == position) {
 					photoThreadId.remove(i);
 					break;
 				}
@@ -319,13 +371,15 @@ public class PhotoActivity extends Activity{
 			handler.sendMessage(message);
 		}
 	}
-	/**点赞**/
-	private void praises(){
-		if(imageData.isCust_praise()){
-			//已经点过攒
-		}else{
+
+	/** 点赞 **/
+	private void praises() {
+		if (imageData.isCust_praise()) {
+			// 已经点过攒
+		} else {
 			int Photo_id = imageData.getPhoto_id();
-			String url = Constant.BaseUrl + "photo/" + Photo_id + "/praise?auth_code=" + Variable.auth_code;
+			String url = Constant.BaseUrl + "photo/" + Photo_id
+					+ "/praise?auth_code=" + Variable.auth_code;
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("cust_id", Variable.cust_id));
 			pairs.add(new BasicNameValuePair("cust_name", Variable.cust_name));
@@ -333,41 +387,44 @@ public class PhotoActivity extends Activity{
 			new NetThread.putDataThread(handler, url, pairs, praise).start();
 		}
 	}
-	/**判断点赞**/
-	private void jsonPraise(String result){
+
+	/** 判断点赞 **/
+	private void jsonPraise(String result) {
 		try {
 			JSONObject jsonObject = new JSONObject(result);
-			if(jsonObject.getInt("status_code") == 0){
-				//点赞成功
-				//考虑在连续点2次的情况
-				if(!imageData.isCust_praise()){
+			if (jsonObject.getInt("status_code") == 0) {
+				// 点赞成功
+				// 考虑在连续点2次的情况
+				if (!imageData.isCust_praise()) {
 					isPraises = true;
 					imageData.setCust_praise(true);
-					//修改图片点赞状态
-					Drawable drawable= getResources().getDrawable(R.drawable.icon_zan_reply);
-					drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-					tv_praise.setCompoundDrawables(drawable,null,null,null);
-					//点赞次数+1;
+					// 修改图片点赞状态
+					Drawable drawable = getResources().getDrawable(
+							R.drawable.icon_zan_reply);
+					drawable.setBounds(0, 0, drawable.getMinimumWidth(),
+							drawable.getMinimumHeight());
+					tv_praise.setCompoundDrawables(drawable, null, null, null);
+					// 点赞次数+1;
 					int Praise_count = imageData.getPraise_count() + 1;
 					imageData.setPraise_count(Praise_count);
-					//刷新点赞数目
-					tv_praise.setText(""+imageData.getPraise_count());
+					// 刷新点赞数目
+					tv_praise.setText("" + imageData.getPraise_count());
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	/**解析发表评论**/
-	private void jsonComments(String result){
-		if(progressDialog != null){
+
+	/** 解析发表评论 **/
+	private void jsonComments(String result) {
+		if (progressDialog != null) {
 			progressDialog.dismiss();
 		}
 		try {
 			JSONObject jsonObject = new JSONObject(result);
-			if(jsonObject.getInt("status_code") == 0){
-				//发表成功
+			if (jsonObject.getInt("status_code") == 0) {
+				// 发表成功
 				PhotoData photoData = new PhotoData();
 				photoData.setContent(comments);
 				photoData.setCust_name(Variable.cust_name);
@@ -375,7 +432,7 @@ public class PhotoActivity extends Activity{
 				photoData.setCust_id(Variable.cust_id);
 				photoData.setReply(reply);
 				photoDatas.add(photoData);
-				photoAdapter.notifyDataSetChanged();				
+				photoAdapter.notifyDataSetChanged();
 
 				reply = "";
 				comments = "";
@@ -385,40 +442,46 @@ public class PhotoActivity extends Activity{
 			e.printStackTrace();
 		}
 	}
+
 	String comments = "";
 	String reply = "";
-	private void sendComments(){
+
+	private void sendComments() {
 		comments = et_comments.getText().toString().trim();
-		if(comments.equals("")){
-			Toast.makeText(PhotoActivity.this, "评论不能为空", Toast.LENGTH_SHORT).show();
+		if (comments.equals("")) {
+			Toast.makeText(PhotoActivity.this, "评论不能为空", Toast.LENGTH_SHORT)
+					.show();
 			return;
-		}else{
-			progressDialog = ProgressDialog.show(PhotoActivity.this, "提示","评论发送中");
+		} else {
+			progressDialog = ProgressDialog.show(PhotoActivity.this, "提示",
+					"评论发送中");
 			progressDialog.setCancelable(true);
-			String url = Constant.BaseUrl + "photo/" + imageData.getPhoto_id() + "/comment?auth_code=" + Variable.auth_code;
+			String url = Constant.BaseUrl + "photo/" + imageData.getPhoto_id()
+					+ "/comment?auth_code=" + Variable.auth_code;
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("cust_id", Variable.cust_id));
 			pairs.add(new BasicNameValuePair("cust_name", Variable.cust_name));
 			pairs.add(new BasicNameValuePair("icon", logo));
 			pairs.add(new BasicNameValuePair("content", comments));
 			pairs.add(new BasicNameValuePair("reply", reply));
-			new NetThread.putDataThread(handler, url, pairs, setComments).start();
+			new NetThread.putDataThread(handler, url, pairs, setComments)
+					.start();
 		}
 	}
-	
-	private void updatePhotoInfo(){
-		if(isPraises){
-			//如果修改了点赞的状态，需要传回点赞的数目和自己是否点赞
+
+	private void updatePhotoInfo() {
+		if (isPraises) {
+			// 如果修改了点赞的状态，需要传回点赞的数目和自己是否点赞
 			Intent intent = new Intent();
 			intent.putExtra("position", position);
 			intent.putExtra("Praise_count", imageData.getPraise_count());
 			intent.putExtra("isCust_praise", imageData.isCust_praise());
 			setResult(2, intent);
-		}else{
+		} else {
 			finish();
 		}
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -426,75 +489,91 @@ public class PhotoActivity extends Activity{
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
-	class PhotoAdapter extends BaseAdapter{
-		private LayoutInflater inflater = LayoutInflater.from(PhotoActivity.this);
+
+	class PhotoAdapter extends BaseAdapter {
+		private LayoutInflater inflater = LayoutInflater
+				.from(PhotoActivity.this);
+
 		@Override
 		public int getCount() {
 			return photoDatas.size();
 		}
+
 		@Override
 		public Object getItem(int arg0) {
 			return photoDatas.get(arg0);
 		}
+
 		@Override
 		public long getItemId(int position) {
 			return position;
 		}
+
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public View getView(final int position, View convertView,
+				ViewGroup parent) {
 			ViewHolder holder;
-			if(convertView == null){
-				convertView = inflater.inflate(R.layout.item_photo_comments, null);
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.item_photo_comments,
+						null);
 				holder = new ViewHolder();
-				holder.tv_name = (TextView)convertView.findViewById(R.id.tv_name);
-				holder.tv_time = (TextView)convertView.findViewById(R.id.tv_time);
-				holder.tv_content = (TextView)convertView.findViewById(R.id.tv_content);
-				holder.tv_span = (TextView)convertView.findViewById(R.id.tv_span);
-				holder.tv_to_name = (TextView)convertView.findViewById(R.id.tv_to_name);
-				holder.iv_comments = (ImageView)convertView.findViewById(R.id.iv_comments);
-				holder.iv_logo = (CircleImageView)convertView.findViewById(R.id.iv_logo);
+				holder.tv_name = (TextView) convertView
+						.findViewById(R.id.tv_name);
+				holder.tv_time = (TextView) convertView
+						.findViewById(R.id.tv_time);
+				holder.tv_content = (TextView) convertView
+						.findViewById(R.id.tv_content);
+				holder.tv_span = (TextView) convertView
+						.findViewById(R.id.tv_span);
+				holder.tv_to_name = (TextView) convertView
+						.findViewById(R.id.tv_to_name);
+				holder.iv_comments = (ImageView) convertView
+						.findViewById(R.id.iv_comments);
+				holder.iv_logo = (CircleImageView) convertView
+						.findViewById(R.id.iv_logo);
 				convertView.setTag(holder);
-			}else{
-				holder = (ViewHolder)convertView.getTag();
+			} else {
+				holder = (ViewHolder) convertView.getTag();
 			}
 			final PhotoData photoData = photoDatas.get(position);
 			holder.tv_content.setText(photoData.getContent());
-			if(photoData.getReply() == null || photoData.getReply().equals("")){
+			if (photoData.getReply() == null || photoData.getReply().equals("")) {
 				holder.tv_name.setText(photoData.getCust_name());
 				holder.tv_span.setVisibility(View.GONE);
 				holder.tv_to_name.setVisibility(View.GONE);
-				
-			}else{
+
+			} else {
 				holder.tv_name.setText(photoData.getCust_name());
 				holder.tv_span.setVisibility(View.VISIBLE);
 				holder.tv_to_name.setVisibility(View.VISIBLE);
 				holder.tv_to_name.setText(photoData.getReply());
 			}
-			//间隔时间
-			int spacingData = GetSystem.spacingNowTime(photoData.getCreate_time());			
-			holder.tv_time.setText(GetSystem.showData(spacingData, photoData.getCreate_time()));
-			//读取用户对应的图片
-			if(new File(Constant.userIconPath + photoData.getCust_id() + ".png").exists()){
-				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + photoData.getCust_id() + ".png");
+			// 间隔时间
+			int spacingData = GetSystem.spacingNowTime(photoData
+					.getCreate_time());
+			holder.tv_time.setText(GetSystem.showData(spacingData,
+					photoData.getCreate_time()));
+			// 读取用户对应的图片
+			if (new File(Constant.userIconPath + photoData.getCust_id()
+					+ ".png").exists()) {
+				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath
+						+ photoData.getCust_id() + ".png");
 				holder.iv_logo.setImageBitmap(image);
-			}else{
-				holder.iv_logo.setImageResource(R.drawable.icon_people_no);
+			} else {
+				holder.iv_logo.setImageResource(R.drawable.icon_add);
 			}
-			holder.iv_comments.setOnClickListener(new OnClickListener() {				
+			// TODO 回复点击监听
+			holder.iv_comments.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if(tv_people == null){
-						
-					}else{
-						reply = photoData.getCust_name();
-						tv_people.setText(photoData.getCust_name() + ":");
-					}
+					replyPopWin((View) (v.getParent().getParent().getParent()),
+							position, false);
 				}
 			});
 			return convertView;
 		}
-		private class ViewHolder{
+
+		private class ViewHolder {
 			TextView tv_name;
 			TextView tv_time;
 			TextView tv_content;
@@ -504,97 +583,123 @@ public class PhotoActivity extends Activity{
 			CircleImageView iv_logo;
 		}
 	}
-	private class PhotoData{
+
+	private class PhotoData {
 		private String cust_id;
 		private String cust_name;
 		private String icon;
 		private String content;
 		private String create_time;
 		private String reply;
+
 		public String getCust_id() {
 			return cust_id;
 		}
+
 		public void setCust_id(String cust_id) {
 			this.cust_id = cust_id;
 		}
+
 		public String getCust_name() {
 			return cust_name;
 		}
+
 		public void setCust_name(String cust_name) {
 			this.cust_name = cust_name;
 		}
+
 		public String getIcon() {
 			return icon;
 		}
+
 		public void setIcon(String icon) {
 			this.icon = icon;
 		}
+
 		public String getContent() {
 			return content;
 		}
+
 		public void setContent(String content) {
 			this.content = content;
 		}
+
 		public String getCreate_time() {
 			return create_time;
 		}
+
 		public void setCreate_time(String create_time) {
 			this.create_time = create_time;
-		}		
+		}
+
 		public String getReply() {
 			return reply;
 		}
+
 		public void setReply(String reply) {
 			this.reply = reply;
 		}
+
 		@Override
 		public String toString() {
 			return "PhotoData [cust_id=" + cust_id + ", cust_name=" + cust_name
 					+ ", icon=" + icon + ", content=" + content
 					+ ", create_time=" + create_time + "]";
-		}		
+		}
 	}
+
 	String imageName = "";
 	String cust_id = "";
 	String cust_name = "";
-	private void jsonPhoto(String result){
+
+	private void jsonPhoto(String result) {
 		try {
 			JSONObject jsonObject = new JSONObject(result);
-			//获取用户id
+			// 获取用户id
 			cust_id = jsonObject.getString("cust_id");
 			String icon = jsonObject.getString("icon");
-			//读取用户对应的图片
-			if(new File(Constant.userIconPath + cust_id + ".png").exists()){
-				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + cust_id + ".png");
+			// 读取用户对应的图片
+			if (new File(Constant.userIconPath + cust_id + ".png").exists()) {
+				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath
+						+ cust_id + ".png");
 				iv_persion_icon.setImageBitmap(image);
-			}else{
-				if(!icon.equals("")){
-					//获取用户头像
-					mQueue.add(new ImageRequest(icon, new Response.Listener<Bitmap>() {
-						@Override
-						public void onResponse(Bitmap response) {
-							GetSystem.saveImageSD(response, Constant.userIconPath, cust_id + ".png",100);
-							iv_persion_icon.setImageBitmap(response);
-						}
-					}, 0, 0, Config.RGB_565, null));
-				}				
+			} else {
+				if (!icon.equals("")) {
+					// 获取用户头像
+					mQueue.add(new ImageRequest(icon,
+							new Response.Listener<Bitmap>() {
+								@Override
+								public void onResponse(Bitmap response) {
+									GetSystem.saveImageSD(response,
+											Constant.userIconPath, cust_id
+													+ ".png", 100);
+									iv_persion_icon.setImageBitmap(response);
+								}
+							}, 0, 0, Config.RGB_565, null));
+				}
 			}
-			
-			//车辆品牌
+
+			// 车辆品牌
 			final int car_brand_id = jsonObject.getInt("car_brand_id");
-			//读取对应的图片
-			if(new File(Constant.VehicleLogoPath + car_brand_id + ".png").exists()){
-				Bitmap image = BitmapFactory.decodeFile(Constant.VehicleLogoPath + car_brand_id + ".png");
+			// 读取对应的图片
+			if (new File(Constant.VehicleLogoPath + car_brand_id + ".png")
+					.exists()) {
+				Bitmap image = BitmapFactory
+						.decodeFile(Constant.VehicleLogoPath + car_brand_id
+								+ ".png");
 				iv_car_logo.setImageBitmap(image);
-			}else{
+			} else {
 				String brand_logo_url = jsonObject.getString("brand_logo_url");
-				mQueue.add(new ImageRequest(brand_logo_url, new Response.Listener<Bitmap>() {
-					@Override
-					public void onResponse(Bitmap response) {
-						GetSystem.saveImageSD(response, Constant.VehicleLogoPath, car_brand_id + ".png",100);
-						iv_car_logo.setImageBitmap(response);
-					}
-				}, 0, 0, Config.RGB_565, null));
+				mQueue.add(new ImageRequest(brand_logo_url,
+						new Response.Listener<Bitmap>() {
+							@Override
+							public void onResponse(Bitmap response) {
+								GetSystem.saveImageSD(response,
+										Constant.VehicleLogoPath, car_brand_id
+												+ ".png", 100);
+								iv_car_logo.setImageBitmap(response);
+							}
+						}, 0, 0, Config.RGB_565, null));
 			}
 			tv_adress.setText(jsonObject.getString("city"));
 			cust_name = jsonObject.getString("cust_name");
@@ -602,50 +707,56 @@ public class PhotoActivity extends Activity{
 			tv_content.setText(jsonObject.getString("content"));
 			tv_see.setText(jsonObject.getString("saw_count"));
 			int sex = jsonObject.getInt("sex");
-			if(sex == 0){
+			if (sex == 0) {
 				iv_sex.setImageResource(R.drawable.icon_man);
-			}else{
+			} else {
 				iv_sex.setImageResource(R.drawable.icon_woman);
 			}
-			//读取大图片
+			// 读取大图片
 			final String imageUrl = jsonObject.getString("big_pic_url");
 			int lastSlashIndex = imageUrl.lastIndexOf("/");
-			imageName = imageUrl.substring(lastSlashIndex + 1);			
-			if(new File(getImagePath(imageUrl)).exists()){
-				Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath + imageName);
-	            iv_pic.setImageBitmap(image);
-			}else{
+			imageName = imageUrl.substring(lastSlashIndex + 1);
+			if (new File(getImagePath(imageUrl)).exists()) {
+				Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath
+						+ imageName);
+				iv_pic.setImageBitmap(image);
+			} else {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						GetObjectTask task = new GetObjectTask(Constant.oss_path, imageName,Constant.oss_accessId, Constant.oss_accessKey);
+						GetObjectTask task = new GetObjectTask(
+								Constant.oss_path, imageName,
+								Constant.oss_accessId, Constant.oss_accessKey);
 						OSSObject obj = task.getResult();
 						File imageFile = null;
 						try {
 							imageFile = new File(getImagePath(imageUrl));
-				            FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
-				            fileOutputStream.write(obj.getData());
-				            fileOutputStream.close();
-				            Message message = new Message();
-				            message.what = getBigImage;
-				            handler.sendMessage(message);
+							FileOutputStream fileOutputStream = new FileOutputStream(
+									imageFile);
+							fileOutputStream.write(obj.getData());
+							fileOutputStream.close();
+							Message message = new Message();
+							message.what = getBigImage;
+							handler.sendMessage(message);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
-				}).start();	
+				}).start();
 			}
-			
+
 			JSONArray jsonArray = jsonObject.getJSONArray("comments");
-			for(int i = 0 ; i < jsonArray.length() ; i++){
+			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject2 = jsonArray.getJSONObject(i);
 				PhotoData photoData = new PhotoData();
 				photoData.setCust_id(jsonObject2.getString("cust_id"));
 				photoData.setCust_name(jsonObject2.getString("cust_name"));
 				photoData.setIcon(jsonObject2.getString("icon"));
 				photoData.setContent(jsonObject2.getString("content"));
-				//实际时间
-				String data = GetSystem.ChangeTimeZone(jsonObject2.getString("create_time").replace("T", " ").substring(0, 19));
+				// 实际时间
+				String data = GetSystem.ChangeTimeZone(jsonObject2
+						.getString("create_time").replace("T", " ")
+						.substring(0, 19));
 				photoData.setCreate_time(data);
 				photoData.setReply(jsonObject2.getString("reply"));
 				photoDatas.add(photoData);
@@ -655,7 +766,8 @@ public class PhotoActivity extends Activity{
 			e.printStackTrace();
 		}
 	}
-	/**读取图片位置**/
+
+	/** 读取图片位置 **/
 	private String getImagePath(String imageUrl) {
 		int lastSlashIndex = imageUrl.lastIndexOf("/");
 		String imageName = imageUrl.substring(lastSlashIndex + 1);
@@ -667,11 +779,13 @@ public class PhotoActivity extends Activity{
 		String imagePath = imageDir + imageName;
 		return imagePath;
 	}
-	//获取头像地址和名称
-	private void getLogo(){
+
+	// 获取头像地址和名称
+	private void getLogo() {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-		String customer = preferences.getString(Constant.sp_customer + Variable.cust_id, "");
+		String customer = preferences.getString(Constant.sp_customer
+				+ Variable.cust_id, "");
 		try {
 			JSONObject jsonObject = new JSONObject(customer);
 			logo = jsonObject.getString("logo");
@@ -680,33 +794,42 @@ public class PhotoActivity extends Activity{
 			e.printStackTrace();
 		}
 	}
+
 	int widthPixels;
-	/**计算设置图片的宽高**/
-	private void setImageWidthHeight(Bitmap bitmap){
-		DisplayMetrics metrics=new DisplayMetrics();
+
+	/** 计算设置图片的宽高 **/
+	private void setImageWidthHeight(Bitmap bitmap) {
+		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		widthPixels=metrics.widthPixels;
-		
+		widthPixels = metrics.widthPixels;
+
 		double ratio = bitmap.getWidth() / (widthPixels * 1.0);
 		int scaledHeight = (int) (bitmap.getHeight() / ratio);
-		
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(widthPixels, scaledHeight);
+
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+				widthPixels, scaledHeight);
 		iv_pic.setLayoutParams(params);
 	}
+
 	PopupWindow mPopupWindow;
-	private void showMenu(){
-		LayoutInflater mLayoutInflater = LayoutInflater.from(PhotoActivity.this);
-        View popunwindwow = mLayoutInflater.inflate(R.layout.item_menu_vertical,null);
-        TextView tv_letter = (TextView)popunwindwow.findViewById(R.id.tv_letter);
-        tv_letter.setOnClickListener(onClickListener);
-        TextView tv_Comments = (TextView)popunwindwow.findViewById(R.id.tv_Comments);
-        tv_Comments.setOnClickListener(onClickListener);
-        mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT);
-        mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
-        mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setOutsideTouchable(true);
-        mPopupWindow.showAsDropDown(findViewById(R.id.iv_more), 0, 0);
-	}	
+
+	private void showMenu() {
+		LayoutInflater mLayoutInflater = LayoutInflater
+				.from(PhotoActivity.this);
+		View popunwindwow = mLayoutInflater.inflate(
+				R.layout.item_menu_vertical, null);
+		TextView tv_letter = (TextView) popunwindwow
+				.findViewById(R.id.tv_letter);
+		tv_letter.setOnClickListener(onClickListener);
+		TextView tv_Comments = (TextView) popunwindwow
+				.findViewById(R.id.tv_Comments);
+		tv_Comments.setOnClickListener(onClickListener);
+		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT);
+		mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
+		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+		mPopupWindow.setFocusable(true);
+		mPopupWindow.setOutsideTouchable(true);
+		mPopupWindow.showAsDropDown(findViewById(R.id.iv_more), 0, 0);
+	}
 }
