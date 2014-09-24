@@ -318,7 +318,12 @@ public class FuelRankActivity extends Activity{
 			if(bitmap != null){
 				GetSystem.saveImageSD(bitmap, Constant.userIconPath, fuelDatas.get(position).getCust_id() + ".png",100);
 			}
-			photoThreadId.remove(position);
+			for (int i = 0; i < photoThreadId.size(); i++) {
+				if (photoThreadId.get(i) == position) {
+					photoThreadId.remove(i);
+					break;
+				}
+			}
 			Message message = new Message();
 			message.what = getPersionImage;
 			handler.sendMessage(message);

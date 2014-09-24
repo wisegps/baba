@@ -260,7 +260,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + noticeData.getFriend_id() + ".png");
 					holder.iv_image.setImageBitmap(image);
 				}else{
-					holder.iv_image.setImageResource(R.drawable.icon_xx_notice);
+					holder.iv_image.setImageResource(R.drawable.icon_people_no);
 				}
 				break;
 			}
@@ -410,7 +410,12 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			if(bitmap != null){
 				GetSystem.saveImageSD(bitmap, Constant.userIconPath, noticeDatas.get(position).getFriend_id() + ".png",100);
 			}
-			photoThreadId.remove(position);
+			for (int i = 0; i < photoThreadId.size(); i++) {
+				if (photoThreadId.get(i) == position) {
+					photoThreadId.remove(i);
+					break;
+				}
+			}
 			Message message = new Message();
 			message.what = getFriendImage;
 			handler.sendMessage(message);
@@ -422,7 +427,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		refresh = "";
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
 				+ "/get_relations?auth_code=" + Variable.auth_code;
-		new Thread(new NetThread.GetDataThread(handler, url, refreshNotice)).start();
+		new NetThread.GetDataThread(handler, url, refreshNotice).start();
 	}
 
 	@Override

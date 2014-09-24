@@ -9,8 +9,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/margins"
         android:textSize="@dimen/main"
-        android:textColor="@color/navy"
-        android:drawableRight="@drawable/btn_right"/>
+        android:textColor="@color/navy"/>
     <View
         android:layout_width="fill_parent"
         android:layout_height="0.5dp"
@@ -20,6 +19,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/margins"
-        android:textSize="@dimen/main"
+        android:textSize="@dimen/content"
         android:textColor="@color/navy"/>
 </LinearLayout>

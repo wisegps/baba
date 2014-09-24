@@ -34,14 +34,6 @@
 	        android:padding="@dimen/margins"
 	        android:layout_centerVertical="true"
 	        android:src="@drawable/nav_icon_pic_add"/>
-        <ImageView
-            android:id="@+id/iv_beauty"
-            android:layout_toLeftOf="@id/iv_show_car"
-	        android:layout_width="@dimen/title_hight"
-	        android:layout_height="@dimen/title_hight"
-	        android:padding="@dimen/margins"
-	        android:layout_centerVertical="true"
-	        android:src="@drawable/nav_icon_xiu_baobei"/>
 	</RelativeLayout>
 	<LinearLayout
 	    android:id="@+id/ll_menu" 
