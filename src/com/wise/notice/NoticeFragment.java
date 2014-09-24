@@ -410,7 +410,12 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			if(bitmap != null){
 				GetSystem.saveImageSD(bitmap, Constant.userIconPath, noticeDatas.get(position).getFriend_id() + ".png",100);
 			}
-			photoThreadId.remove(position);
+			for (int i = 0; i < photoThreadId.size(); i++) {
+				if (photoThreadId.get(i) == position) {
+					photoThreadId.remove(i);
+					break;
+				}
+			}
 			Message message = new Message();
 			message.what = getFriendImage;
 			handler.sendMessage(message);
