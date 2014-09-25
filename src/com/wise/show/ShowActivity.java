@@ -208,7 +208,11 @@ public class ShowActivity extends Activity {
 				finish();
 				break;
 			case R.id.iv_show_car:
-				picPop();
+				if(Judge.isLogin()){
+					picPop();
+				}else{
+					startActivityForResult(new Intent(ShowActivity.this, LoginActivity.class), 1);
+				}				
 				break;
 			case R.id.iv_choose:
 				ll_car_choose.setVisibility(View.VISIBLE);
@@ -550,7 +554,9 @@ public class ShowActivity extends Activity {
 		}
 		if (resultCode == 1) {
 			//登录返回,刷新数据
-			viewDatas.get(index).getImageDatas().clear();
+			for(int i = 0 ; i < viewDatas.size() ; i++){
+				viewDatas.get(i).getImageDatas().clear();
+			}
 			getFristImages();
 			getLogo();
 			return;
