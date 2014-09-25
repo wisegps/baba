@@ -52,7 +52,7 @@
             android:padding="@dimen/margins"
             android:textColor="@color/white"
             android:background="@drawable/bg_border_left_press"
-            android:text="秀爱车"/>
+            android:text="爱车"/>
         <TextView 
             android:id="@+id/tv_baby"
             android:layout_width="0dp"
@@ -63,7 +63,7 @@
             android:padding="@dimen/margins"
             android:textColor="@color/Green"
             android:background="@drawable/bg_border_center"
-            android:text="秀宝贝"/>
+            android:text="美女"/>
         <TextView 
             android:id="@+id/tv_scenery"
             android:layout_width="0dp"
@@ -73,8 +73,30 @@
             android:textSize="@dimen/main"
             android:padding="@dimen/margins"
             android:textColor="@color/Green"
+            android:background="@drawable/bg_border_center"
+            android:text="美景"/>
+        <TextView 
+            android:id="@+id/tv_road"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/main"
+            android:padding="@dimen/margins"
+            android:textColor="@color/Green"
+            android:background="@drawable/bg_border_center"
+            android:text="路况"/>
+        <TextView 
+            android:id="@+id/tv_travel"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/main"
+            android:padding="@dimen/margins"
+            android:textColor="@color/Green"
             android:background="@drawable/bg_border_right"
-            android:text="秀风景"/>
+            android:text="旅游"/>
     </LinearLayout>
     <customView.ParentSlide   
           android:id="@+id/hsl_photo"

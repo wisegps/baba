@@ -143,10 +143,12 @@ public class PhotoActivity extends Activity {
 		iv_sex = (ImageView) v.findViewById(R.id.iv_sex);
 		iv_pic = (ImageView) v.findViewById(R.id.iv_pic);
 		String imageUrl = imageData.getSmall_pic_url();
+		image_path = imageUrl;
 		ImageLoader imageLoader = ImageLoader.getInstance();
 		Bitmap bitmap = imageLoader.getBitmapFromMemoryCache(imageUrl);
 		setImageWidthHeight(bitmap);
 		iv_pic.setImageBitmap(bitmap);
+		iv_pic.setOnClickListener(onClickListener);
 		/** 获取大图片 **/
 		String url = Constant.BaseUrl + "photo/" + imageData.getPhoto_id()
 				+ "?auth_code=" + Variable.auth_code;
@@ -163,6 +165,9 @@ public class PhotoActivity extends Activity {
 			switch (v.getId()) {
 			case R.id.iv_back:
 				updatePhotoInfo();
+				break;
+			case R.id.iv_pic:
+				turnImageDetails();
 				break;
 			case R.id.iv_more:
 				if (cust_id == null || cust_id.equals("0")) {
@@ -188,7 +193,7 @@ public class PhotoActivity extends Activity {
 				mPopupWindow.dismiss();
 				break;
 			case R.id.tv_Comments:
-				// TODO 回复
+				//回复
 				reply = "";
 				tv_people.setText("");
 				mPopupWindow.dismiss();
@@ -206,9 +211,9 @@ public class PhotoActivity extends Activity {
 				break;
 			case getBigImage:
 				// 显示图片
-				Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath
-						+ imageName);
+				Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath + imageName);
 				iv_pic.setImageBitmap(image);
+				image_path = imageUrl;
 				break;
 			case setComments:
 				jsonComments(msg.obj.toString());
@@ -223,7 +228,7 @@ public class PhotoActivity extends Activity {
 		}
 	};
 
-	// TODO 长按监听，弹出提示框
+	//长按监听，弹出提示框
 	OnItemLongClickListener onItemLongClickListener = new OnItemLongClickListener() {
 		@Override
 		public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
@@ -233,7 +238,7 @@ public class PhotoActivity extends Activity {
 		}
 	};
 
-	// TODO 弹出回复提示框
+	//弹出回复提示框
 	private void replyPopWin(View v, int position, boolean b) {
 		final PhotoData photoData;
 		if (b) {
@@ -242,7 +247,7 @@ public class PhotoActivity extends Activity {
 			photoData = photoDatas.get(position);
 		}
 		if (photoData.getCust_id().equals(Variable.cust_id)) {
-			Toast.makeText(PhotoActivity.this, "不能回复自己", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(PhotoActivity.this, "不能回复自己", Toast.LENGTH_SHORT).show();
 		} else {
 			LayoutInflater mLayoutInflater = LayoutInflater
 					.from(PhotoActivity.this);
@@ -562,7 +567,7 @@ public class PhotoActivity extends Activity {
 			} else {
 				holder.iv_logo.setImageResource(R.drawable.icon_add);
 			}
-			// TODO 回复点击监听
+			//回复点击监听
 			holder.iv_comments.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -651,7 +656,7 @@ public class PhotoActivity extends Activity {
 	String imageName = "";
 	String cust_id = "";
 	String cust_name = "";
-
+	String imageUrl;
 	private void jsonPhoto(String result) {
 		try {
 			JSONObject jsonObject = new JSONObject(result);
@@ -712,14 +717,15 @@ public class PhotoActivity extends Activity {
 			} else {
 				iv_sex.setImageResource(R.drawable.icon_woman);
 			}
-			// 读取大图片
-			final String imageUrl = jsonObject.getString("big_pic_url");
+			//TODO 读取大图片
+			imageUrl = jsonObject.getString("big_pic_url");
+			System.out.println("imageUrl = " + imageUrl);
 			int lastSlashIndex = imageUrl.lastIndexOf("/");
 			imageName = imageUrl.substring(lastSlashIndex + 1);
 			if (new File(getImagePath(imageUrl)).exists()) {
-				Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath
-						+ imageName);
+				Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath + imageName);
 				iv_pic.setImageBitmap(image);
+				image_path = imageUrl;
 			} else {
 				new Thread(new Runnable() {
 					@Override
@@ -766,6 +772,14 @@ public class PhotoActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
+	
+	/**跳转到图片显示界面**/
+	private void turnImageDetails(){
+		Intent intent = new Intent(PhotoActivity.this, ImageDetailsActivity.class);
+		intent.putExtra("image_path", getImagePath(image_path));
+		startActivity(intent);
+	}
+	String image_path = "";
 
 	/** 读取图片位置 **/
 	private String getImagePath(String imageUrl) {

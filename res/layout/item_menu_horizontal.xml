@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="60dp"
         android:orientation="horizontal" >
 
         <TextView
@@ -17,7 +17,9 @@
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
+            android:paddingTop="10dp"
             android:text="回复"
+            android:drawableTop="@drawable/icon_replay_white"
             android:textColor="@color/white"
             android:textSize="@dimen/main" />
 
@@ -34,12 +36,15 @@
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
+            android:paddingTop="10dp"
             android:text="私信"
+            android:drawableTop="@drawable/icon_pri_let"
             android:textColor="@color/white"
             android:textSize="@dimen/main" />
 
         <View
             android:layout_width="0.5dp"
+            android:visibility="gone"
             android:layout_height="fill_parent"
             android:background="@color/white" />
 
@@ -50,6 +55,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
+            android:visibility="gone"
             android:text="关注"
             android:textColor="@color/white"
             android:textSize="@dimen/main" />

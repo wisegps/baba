@@ -50,7 +50,7 @@ public class ShowActivity extends Activity {
 	private static final int praise = 3;
 	private static final int getRefreshImage = 4;
 	
-	TextView tv_car,tv_baby;
+	TextView tv_car,tv_baby,tv_scenery,tv_road,tv_travel;
 	TextView tv_time,tv_title;
 	TextView tv_name,tv_ad,tv_dz,tv_bc,tv_bm,tv_all,tv_other;
 	LinearLayout ll_car_choose;
@@ -67,6 +67,7 @@ public class ShowActivity extends Activity {
 	int car_brand_id = -1;
 	/**当前所处位置**/
 	int index = 0;
+	int photo_type = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,13 @@ public class ShowActivity extends Activity {
 		tv_car = (TextView)findViewById(R.id.tv_car);
 		tv_car.setOnClickListener(onClickListener);
 		tv_baby = (TextView)findViewById(R.id.tv_baby);
-		tv_baby.setOnClickListener(onClickListener);		
+		tv_baby.setOnClickListener(onClickListener);
+		tv_scenery = (TextView)findViewById(R.id.tv_scenery);
+		tv_scenery.setOnClickListener(onClickListener);
+		tv_road = (TextView)findViewById(R.id.tv_road);
+		tv_road.setOnClickListener(onClickListener);
+		tv_travel = (TextView)findViewById(R.id.tv_travel);
+		tv_travel.setOnClickListener(onClickListener);
 		ll_car_choose = (LinearLayout)findViewById(R.id.ll_car_choose);
 		tv_name = (TextView)findViewById(R.id.tv_name);
 		TextView tv_ad = (TextView)findViewById(R.id.tv_ad);
@@ -107,22 +114,41 @@ public class ShowActivity extends Activity {
 			public void OnViewChange(int view) {
 				// TODO Auto-generated method stub
 				index = view;
-				if(viewDatas.get(index).getImageDatas().size() == 0){
-					getFristImages();
-				}
 				switch (index) {
 				case 0:			
-					is_beauty = false;
+					photo_type = 1;
 					setBg();
 					tv_car.setBackgroundResource(R.drawable.bg_border_left_press);
 					tv_car.setTextColor(getResources().getColor(R.color.white));		
 					break;
 				case 1:
-					is_beauty = true;
+					photo_type = 2;
 					setBg();
 					tv_baby.setBackgroundResource(R.drawable.bg_border_center_press);
 					tv_baby.setTextColor(getResources().getColor(R.color.white));
 					break;
+				case 2:
+					photo_type = 3;
+					setBg();
+					tv_scenery.setBackgroundResource(R.drawable.bg_border_center_press);
+					tv_scenery.setTextColor(getResources().getColor(R.color.white));
+					break;
+				case 3:
+					photo_type = 4;
+					setBg();
+					tv_road.setBackgroundResource(R.drawable.bg_border_center_press);
+					tv_road.setTextColor(getResources().getColor(R.color.white));
+					break;
+				case 4:
+					photo_type = 5;
+					setBg();
+					tv_travel.setBackgroundResource(R.drawable.bg_border_right_press);
+					tv_travel.setTextColor(getResources().getColor(R.color.white));
+					break;
+				}
+
+				if(viewDatas.get(index).getImageDatas().size() == 0){
+					getFristImages();
 				}
 			}			
 			@Override
@@ -133,7 +159,7 @@ public class ShowActivity extends Activity {
 	}
 	
 	private void setWaterFalls(){
-		for(int i = 0 ; i < 3 ; i++){
+		for(int i = 0 ; i < 5 ; i++){
 			ViewData viewData = new ViewData();
 			View view_waterfalls = LayoutInflater.from(this).inflate(R.layout.item_waterfalls, null);
 			hsl_photo.addView(view_waterfalls);			
@@ -230,16 +256,29 @@ public class ShowActivity extends Activity {
 			case R.id.tv_baby:
 				hsl_photo.snapToScreen(1);
 				break;
+			case R.id.tv_scenery:
+				hsl_photo.snapToScreen(2);
+				break;
+			case R.id.tv_road:
+				hsl_photo.snapToScreen(3);
+				break;
+			case R.id.tv_travel:
+				hsl_photo.snapToScreen(4);
+				break;
 			}
 		}
 	};
 	private void setBg(){
-		//tv_0.setTextColor(getResources().getColor(R.color.Green));
-		//tv_0.setBackgroundResource(R.drawable.bg_border_right);
 		tv_car.setTextColor(getResources().getColor(R.color.Green));
 		tv_car.setBackgroundResource(R.drawable.bg_border_left);
 		tv_baby.setTextColor(getResources().getColor(R.color.Green));
 		tv_baby.setBackgroundResource(R.drawable.bg_border_center);
+		tv_scenery.setTextColor(getResources().getColor(R.color.Green));
+		tv_scenery.setBackgroundResource(R.drawable.bg_border_center);
+		tv_road.setTextColor(getResources().getColor(R.color.Green));
+		tv_road.setBackgroundResource(R.drawable.bg_border_center);
+		tv_travel.setTextColor(getResources().getColor(R.color.Green));
+		tv_travel.setBackgroundResource(R.drawable.bg_border_right);
 	}
 	private void hideChooseCar(){
 		ll_car_choose.setVisibility(View.GONE);
@@ -435,7 +474,7 @@ public class ShowActivity extends Activity {
 				imageData.setPraise_count(jsonObject.getInt("praise_count"));
 				imageData.setSmall_pic_url(jsonObject.getString("small_pic_url"));
 				imageData.setCar_brand_id(jsonObject.getString("car_brand_id"));				
-				imageData.setSex(jsonObject.getInt("sex") == 0 ? false : true);
+				imageData.setSex(jsonObject.getInt("sex") == 0 ? true : false);
 				Datas.add(imageData);
 			}
 		} catch (Exception e) {
@@ -462,7 +501,7 @@ public class ShowActivity extends Activity {
 		items.add("拍照");
 		items.add("从手机相册中选取");
 		final PopView popView = new PopView(this);
-		popView.initView(findViewById(R.id.ll_bottom));
+		popView.initView(findViewById(R.id.rl_main));
 		popView.setData(items);
 		popView.SetOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -504,6 +543,7 @@ public class ShowActivity extends Activity {
 				Uri uri = data.getData();
 	            Intent intent = new Intent(ShowActivity.this, ShowCarAcitivity.class);
 				intent.putExtra("image", getPath(uri));
+				intent.putExtra("photo_type", photo_type);
 		        startActivity(intent);
 			}			
 	        return;
@@ -516,10 +556,9 @@ public class ShowActivity extends Activity {
 			return;
 		}
 		if (resultCode == Activity.RESULT_OK) {
-			Intent intent = new Intent(ShowActivity.this,
-					ShowCarAcitivity.class);
-			intent.putExtra("image", Constant.VehiclePath
-					+ Constant.TemporaryImage);
+			Intent intent = new Intent(ShowActivity.this,ShowCarAcitivity.class);
+			intent.putExtra("image", Constant.VehiclePath + Constant.TemporaryImage);
+			intent.putExtra("photo_type", photo_type);
 			startActivity(intent);
 			return;
 		}
@@ -552,12 +591,8 @@ public class ShowActivity extends Activity {
 		return cursor.getString(column_index);
 	}
 
-	/** 如果是车宝贝返回 **/
+	/** 类型返回 **/
 	private String getBeauty() {
-		if (is_beauty) {
-			return beauty;
-		} else {
-			return "";
-		}
+		return "&photo_type=" + photo_type;
 	}
 }
