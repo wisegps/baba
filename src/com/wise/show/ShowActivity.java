@@ -112,7 +112,6 @@ public class ShowActivity extends Activity {
 		hsl_photo.setOnViewChangeListener(new OnViewChangeListener() {			
 			@Override
 			public void OnViewChange(int view) {
-				// TODO Auto-generated method stub
 				index = view;
 				switch (index) {
 				case 0:			
@@ -292,7 +291,7 @@ public class ShowActivity extends Activity {
 	RefreshListener refreshListener = new RefreshListener() {
 		@Override
 		public void onRefresh() {
-			//TODO 加标记 下拉刷新
+			//加标记 下拉刷新
 			refresh = "";
 			int Photo_id;
 			if (viewDatas.get(index).getImageDatas().size() != 0) {
@@ -524,14 +523,11 @@ public class ShowActivity extends Activity {
 					startActivityForResult(intent, 1);
 					popView.dismiss();
 					break;
-				case 1://从图库获取
-					Intent intent1 = new Intent(); 
-	                /* 开启Pictures画面Type设定为image */ 
-	                intent1.setType("image/*"); 
-	                /* 使用Intent.ACTION_GET_CONTENT这个Action */ 
-	                intent1.setAction(Intent.ACTION_GET_CONTENT);  
-	                /* 取得相片后返回本画面 */ 
-	                startActivityForResult(intent1, 9);
+				case 1://TODO 从图库获取 
+	                Intent i = new Intent(
+	                        Intent.ACTION_PICK,
+	                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);	  
+	                startActivityForResult(i, 9);
 	                popView.dismiss();
 				}
 			}
@@ -544,8 +540,10 @@ public class ShowActivity extends Activity {
 		System.out.println("requestCode = " + requestCode + " , resultCode = " + resultCode);
 		if(requestCode == 9){
 			if(data != null){
+				//TODO 获取图片路径
 				Uri uri = data.getData();
 	            Intent intent = new Intent(ShowActivity.this, ShowCarAcitivity.class);
+	            System.out.println("uri = "+getPath(uri));
 				intent.putExtra("image", getPath(uri));
 				intent.putExtra("photo_type", photo_type);
 		        startActivity(intent);
