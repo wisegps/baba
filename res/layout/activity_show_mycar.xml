@@ -80,19 +80,11 @@
 	    android:textColor="@color/Green"
 	    android:layout_marginLeft="@dimen/margins"
 	    android:layout_marginRight="@dimen/margins"/>
-	<CheckBox 
-	    android:id="@+id/cb_girl"
-	    android:layout_above="@id/et_content"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_marginLeft="@dimen/margins"
-	    android:text="照片是否包含美女"/>
 	<ImageView 
 	    android:id="@+id/iv_car"
-	    android:layout_above="@id/cb_girl"
+	    android:layout_above="@id/et_content"
 	    android:layout_below="@id/rl_series"
 	    android:layout_margin="@dimen/margins"
 	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:src="@drawable/timg"/>
+	    android:layout_height="wrap_content"/>
 </RelativeLayout>

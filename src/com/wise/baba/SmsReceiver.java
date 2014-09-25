@@ -2,16 +2,17 @@ package com.wise.baba;
 
 import java.util.List;
 import org.json.JSONObject;
-
 import pubclas.Constant;
-
 import com.wise.notice.LetterActivity;
 import com.wise.notice.SmsActivity;
 import com.wise.remind.RemindListActivity;
 import com.wise.violation.TrafficActivity;
 import cn.jpush.android.api.JPushInterface;
 import android.app.ActivityManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ActivityManager.RunningTaskInfo;
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,19 +22,72 @@ import android.util.Log;
 public class SmsReceiver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d("smsReceiver", intent.getAction());
-		
+		Log.d("smsReceiver", intent.getAction());		
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
         	//("JPush用户注册成功");
         } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
         	//("接受到推送下来的自定义消息");
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {        	
-        	//TODO 确认消息发送，上传到自己服务器       
-        	//("确认消息发送，上传到自己服务器 ");
-        	Intent intent1 = new Intent(Constant.A_ReceiverLetter);
-        	String extras = intent.getExtras().getString(JPushInterface.EXTRA_EXTRA);
-        	intent1.putExtra("extras", extras);
-        	context.sendBroadcast(intent1);
+        	//TODO 确认消息发送，上传到自己服务器 
+        	String result = intent.getExtras().getString(JPushInterface.EXTRA_EXTRA);
+        	//{"friend_id":222,"msg":"~~~~","url":"","msg_type":"0"}
+        	String msg = "";
+        	String friend_id = "";
+        	String msg_type = "";
+        	try {
+        		JSONObject jsonObject = new JSONObject(result);
+        		msg = jsonObject.getString("msg");
+        		friend_id = jsonObject.getString("friend_id");
+        		msg_type = jsonObject.getString("msg_type");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+        	if(msg_type.equals("0")){
+        		//boolean isTask = true;
+            	ActivityManager am = (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
+        		List<RunningTaskInfo> Infos = am.getRunningTasks(1);
+        		if(Infos.get(0).topActivity.getPackageName().equals("com.wise.baba")){
+        			if(Infos.get(0).topActivity.getClassName().equals("com.wise.notice.LetterActivity")){
+        				System.out.println("直接显示");
+        	        	Intent intent1 = new Intent(Constant.A_ReceiverLetter);
+        	        	String extras = intent.getExtras().getString(JPushInterface.EXTRA_EXTRA);
+        	        	intent1.putExtra("extras", extras);
+        	        	context.sendBroadcast(intent1);
+        			}else{ 
+        				//isTask = false;
+        				System.out.println("弹出提示框 true");
+        				NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);  
+        				Notification notification = new Notification();
+        		    	notification.icon = R.drawable.ic_launcher;
+        		    	notification.tickerText = "通知";
+        		    	notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        		    	notification.defaults |= Notification.DEFAULT_SOUND;
+        		    	Intent notificationIntent =new Intent(context, NotificationActivity.class); // 点击该通知后要跳转的Activity
+        		    	notificationIntent.putExtras(intent.getExtras());
+        		    	//notificationIntent.putExtra("isTask", true);
+        		    	intent.putExtra("cust_id", friend_id);
+        		    	PendingIntent contentItent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        		       	notification.setLatestEventInfo(context, "通知", msg, contentItent);
+        		    	nm.notify(19172449, notification);
+        			}
+        		}else{
+        			System.out.println("弹出提示框 false");
+        			NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);  
+    				Notification notification = new Notification();
+    		    	notification.icon = R.drawable.ic_launcher;
+    		    	notification.tickerText = "通知";
+    		    	notification.flags |= Notification.FLAG_AUTO_CANCEL;
+    		    	notification.defaults |= Notification.DEFAULT_SOUND;
+    		    	Intent notificationIntent =new Intent(context, WelcomeActivity.class); // 点击该通知后要跳转的Activity
+    		    	notificationIntent.putExtras(intent.getExtras());
+    		    	//notificationIntent.putExtra("isTask", false);
+    		    	notificationIntent.putExtra("isSpecify", true);
+    		    	notificationIntent.putExtras(intent.getExtras());
+    		    	PendingIntent contentItent = PendingIntent.getActivity(context, 0, notificationIntent, 0);    	
+    		    	notification.setLatestEventInfo(context, "通知", msg, contentItent);
+    		    	nm.notify(19172449, notification);
+        		}
+        	}        	        	
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
         	//在这里可以自己写代码去定义用户点击后的行为
         	init(context,intent.getExtras());
@@ -67,9 +121,7 @@ public class SmsReceiver extends BroadcastReceiver{
 			intent.putExtras(bundle);
 	        context.startActivity(intent);
 		}
-	}
-	
-	
+	}	
 	private void receivingNotification(Context context, Bundle bundle){
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
         try {

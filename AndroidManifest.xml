@@ -62,9 +62,8 @@
         <activity android:name=".FeedBackActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".AboutActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".SelectCityActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
-        <activity android:name=".TestActivity" android:screenOrientation="portrait">
-            
-        </activity>
+        <activity android:name=".TestActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name=".NotificationActivity" android:screenOrientation="portrait"></activity>
         
         <activity android:name="com.wise.setting.SetActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.setting.LoginActivity" android:screenOrientation="portrait"></activity>
@@ -94,9 +93,8 @@
         <activity android:name="com.wise.state.TestActivity" android:screenOrientation="portrait">            
              
         </activity>
-        <activity android:name="com.wise.show.ShowActivity" android:screenOrientation="portrait">
-            
-        </activity>
+        <activity android:name="com.wise.show.ShowActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.wise.show.ImageDetailsActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.show.ShowCarAcitivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.show.PhotoActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustResize" ></activity>
         <activity android:name="com.wise.car.CarActivity" android:screenOrientation="portrait"></activity>

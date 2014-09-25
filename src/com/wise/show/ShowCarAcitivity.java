@@ -10,7 +10,6 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Blur;
 import pubclas.Constant;
@@ -21,9 +20,6 @@ import pubclas.Variable;
 import sql.DBExcute;
 import sql.DBHelper;
 import com.aliyun.android.oss.task.PutObjectTask;
-import com.facepp.error.FaceppParseException;
-import com.facepp.http.HttpRequests;
-import com.facepp.http.PostParameters;
 import com.wise.baba.R;
 import com.wise.car.ModelsActivity;
 import android.app.Activity;
@@ -37,7 +33,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -46,7 +41,6 @@ import android.util.Log;
 import android.view.View.OnClickListener;
 import android.view.View;
 import android.view.Window;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -59,10 +53,10 @@ public class ShowCarAcitivity extends Activity{
 	private static final int postCloudStorage = 2;
 	private static final int getBrand = 3;
 	
+	int photo_type = 1;
 	Bitmap bitmap;
 	EditText et_content;
 	TextView tv_adress,tv_series;
-	CheckBox cb_girl;
 	String content = "";
 	String city = "";
 	String Lat = "";
@@ -81,7 +75,8 @@ public class ShowCarAcitivity extends Activity{
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		int widthPixels=metrics.widthPixels;
 		int heightPixels=metrics.heightPixels;
-		int newWidth = widthPixels > heightPixels ? heightPixels : widthPixels;		
+		int newWidth = widthPixels > heightPixels ? heightPixels : widthPixels;	
+		photo_type = getIntent().getIntExtra("photo_type", 1);
 		String image = getIntent().getStringExtra("image");
 		bitmap = Blur.decodeSampledBitmapFromPath(image, newWidth, newWidth);
 		
@@ -95,10 +90,8 @@ public class ShowCarAcitivity extends Activity{
 		tv_series = (TextView)findViewById(R.id.tv_series);
 		tv_series.setOnClickListener(onClickListener);
 		et_content = (EditText)findViewById(R.id.et_content);
-		cb_girl = (CheckBox)findViewById(R.id.cb_girl);
 		getLocation();
 		getDefaultCarSeries();
-		detect();
 	} 
 	
 	OnClickListener onClickListener = new OnClickListener() {		
@@ -324,12 +317,11 @@ public class ShowCarAcitivity extends Activity{
 		params.add(new BasicNameValuePair("small_pic_url", small_pic_url));
 		params.add(new BasicNameValuePair("big_pic_url", big_pic_url));
 		params.add(new BasicNameValuePair("content", content));
-		params.add(new BasicNameValuePair("if_beauty", cb_girl.isChecked()?"1":"0"));
+		params.add(new BasicNameValuePair("photo_type", ""+ photo_type));
 		params.add(new BasicNameValuePair("lon", Lon));
 		params.add(new BasicNameValuePair("lat", Lat));
 		params.add(new BasicNameValuePair("city", AddrStr));
 		new NetThread.postDataThread(handler, url, params, postCloudStorage).start();
-		GetSystem.myLog(url, ""+cb_girl.isChecked());
 	}	
 	
 	/**获取默认车型**/
@@ -431,79 +423,5 @@ public class ShowCarAcitivity extends Activity{
 				e.printStackTrace();
 			}
 		}
-	}
-	/**检测图片里的人脸**/
-	private void detect(){
-		FaceppDetect faceppDetect = new FaceppDetect();
-		faceppDetect.setDetectCallback(new DetectCallback() {			
-			public void detectResult(JSONObject rst) {				
-				try {
-					boolean isFemale = false;
-					JSONArray jsonArray = rst.getJSONArray("face");
-					for(int i = 0 ; i < jsonArray.length(); i++){
-						JSONObject jsonObject = jsonArray.getJSONObject(i);
-						String value = jsonObject.getJSONObject("attribute").getJSONObject("gender").getString("value");
-						if(value.equals("Female")){
-							isFemale = true;
-							break;
-						}
-					}
-					if(isFemale){
-						cb_girl.setChecked(true);
-					}else{
-						cb_girl.setChecked(false);
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		faceppDetect.detect(bitmap);
-	}
-	
-	private class FaceppDetect {
-    	DetectCallback callback = null;
-    	
-    	public void setDetectCallback(DetectCallback detectCallback) { 
-    		callback = detectCallback;
-    	}
-
-    	public void detect(final Bitmap image) {
-    		
-    		new Thread(new Runnable() {
-				
-				public void run() {
-					HttpRequests httpRequests = new HttpRequests("4480afa9b8b364e30ba03819f3e9eff5", "Pz9VFT8AP3g_Pz8_dz84cRY_bz8_Pz8M", true, false);
-		    		
-		    		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		    		float scale = Math.min(1, Math.min(600f / bitmap.getWidth(), 600f / bitmap.getHeight()));
-		    		Matrix matrix = new Matrix();
-		    		matrix.postScale(scale, scale);
-
-		    		Bitmap imgSmall = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-		    		//Log.v(TAG, "imgSmall size : " + imgSmall.getWidth() + " " + imgSmall.getHeight());
-		    		
-		    		imgSmall.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-		    		byte[] array = stream.toByteArray();
-		    		
-		    		try {
-		    			//detect
-						JSONObject result = httpRequests.detectionDetect(new PostParameters().setImg(array));
-						//finished , then call the callback function
-						if (callback != null) {
-							callback.detectResult(result);
-						}
-					} catch (FaceppParseException e) {
-						e.printStackTrace();
-					}
-					
-				}
-			}).start();
-    	}
-    }
-	
-	interface DetectCallback {
-    	void detectResult(JSONObject rst);
-	}
-	
+	}	
 }

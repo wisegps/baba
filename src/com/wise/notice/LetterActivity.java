@@ -97,6 +97,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		cust_id = getIntent().getStringExtra("cust_id");
 		cust_name = getIntent().getStringExtra("cust_name");
 		logo = getIntent().getStringExtra("logo");
+		System.out.println("cust_id = " + cust_id + " , cust_name = cust_name " + " , logo = " + logo);
 		tv_friend.setText(cust_name);
 		// 读取朋友对应的图片
 		if (new File(Constant.userIconPath + cust_id + ".png").exists()) {

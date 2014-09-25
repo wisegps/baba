@@ -552,11 +552,11 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				Log.d("TAG", "has no sdcard");
 			}
 			int lastSlashIndex = imageUrl.lastIndexOf("/");
-			String imageName = imageUrl.substring(lastSlashIndex + 1);
-			GetObjectTask task = new GetObjectTask(Constant.oss_path, imageName,Constant.oss_accessId, Constant.oss_accessKey);
-			OSSObject obj = task.getResult();
+			String imageName = imageUrl.substring(lastSlashIndex + 1);			
 			File imageFile = null;
 			try {
+				GetObjectTask task = new GetObjectTask(Constant.oss_path, imageName,Constant.oss_accessId, Constant.oss_accessKey);
+				OSSObject obj = task.getResult();
 				imageFile = new File(getImagePath(imageUrl));
 	            FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
 	            fileOutputStream.write(obj.getData());
