@@ -97,9 +97,9 @@ public final class ViewfinderView extends View {
 					frame.right - 1, frame.bottom + 40);
 			Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			paint.setStrokeWidth(2);
-			paint.setTextSize(24);
+			paint.setTextSize(36);
 			String testString = "将二维码放入框内，即可扫描添加终端";
-			paint.setColor(getResources().getColor(R.color.common));
+			paint.setColor(getResources().getColor(R.color.white));
 			FontMetricsInt fontMetrics = paint.getFontMetricsInt();
 			int baseline = targetRect.top
 					+ (targetRect.bottom - targetRect.top - fontMetrics.bottom + fontMetrics.top)
