@@ -164,7 +164,7 @@ public class ShowActivity extends Activity {
 			hsl_photo.addView(view_waterfalls);			
 			MyScrollView myScrollView = (MyScrollView) view_waterfalls.findViewById(R.id.my_scroll_view);
 			myScrollView.setOnFlowClickListener(onFlowClickListener);
-			RefreshableView ll_refresh = (RefreshableView) findViewById(R.id.ll_refresh);
+			RefreshableView ll_refresh = (RefreshableView) view_waterfalls.findViewById(R.id.ll_refresh);
 			ll_refresh.setRefreshListener(refreshListener,index);			
 			viewData.setMyScrollView(myScrollView);
 			viewData.setLl_refresh(ll_refresh);
@@ -291,6 +291,7 @@ public class ShowActivity extends Activity {
 	RefreshListener refreshListener = new RefreshListener() {
 		@Override
 		public void onRefresh() {
+			System.out.println("onRefresh");
 			//加标记 下拉刷新
 			refresh = "";
 			int Photo_id;
@@ -308,9 +309,10 @@ public class ShowActivity extends Activity {
 		}
 		@Override
 		public void onRefreshOver(int index) {
-			List<ImageData> iDatas = jsonImages(refresh);
-			viewDatas.get(index).getImageDatas().addAll(0, iDatas);
-			viewDatas.get(index).getMyScrollView().addHeadImages(iDatas);
+			System.out.println("onRefreshOver");
+			//List<ImageData> iDatas = jsonImages(refresh);
+			//viewDatas.get(index).getImageDatas().addAll(0, iDatas);
+			//viewDatas.get(index).getMyScrollView().addHeadImages(iDatas);
 		}
 	};
 
@@ -420,7 +422,16 @@ public class ShowActivity extends Activity {
 				break;
 			case getRefreshImage:
 				refresh = msg.obj.toString();
-				viewDatas.get(msg.arg1).getLl_refresh().runFast();
+				final int index = msg.arg1;
+				handler.postDelayed(new Runnable() {					
+					@Override
+					public void run() {
+						viewDatas.get(index).getLl_refresh().finishRefresh();
+						List<ImageData> iDatas1 = jsonImages(refresh);
+						viewDatas.get(index).getImageDatas().addAll(0, iDatas1);
+						viewDatas.get(index).getMyScrollView().addHeadImages(iDatas1);
+					}
+				}, 1000);
 				break;
 			}
 		}

@@ -1,5 +1,6 @@
 package com.wise.violation;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
@@ -7,6 +8,8 @@ import org.json.JSONObject;
 
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
+import com.wise.car.CarUpdateActivity;
+import com.wise.car.TrafficCitiyActivity;
 import com.wise.remind.DealAddressActivity;
 import pubclas.Constant;
 import pubclas.GetSystem;
@@ -16,6 +19,7 @@ import customView.HScrollLayout;
 import customView.OnViewChangeListener;
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
+import data.CarData;
 import data.CityData;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
@@ -35,6 +39,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * 车辆违章
@@ -42,7 +47,7 @@ import android.widget.TextView;
  * @author honesty
  */
 public class TrafficActivity extends Activity implements IXListViewListener {
-
+	private static final String TAG = "TrafficActivity";
 	private static final int frist_traffic = 1;
 	private static final int refresh_traffic = 2;
 
@@ -94,6 +99,16 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			case R.id.iv_back:
 				finish();
 				break;
+			case R.id.tv_note:
+				//TODO 判断
+				int status = trafficViews.get(index_car).getStatus();
+				if(status == 1){//选择城市
+					List<CityData> chooseCityDatas = new ArrayList<CityData>();
+					Intent intent = new Intent(TrafficActivity.this, TrafficCitiyActivity.class);
+					intent.putExtra("cityDatas", (Serializable) chooseCityDatas);
+					startActivityForResult(intent, 1);
+				}
+				break;
 			}
 		}
 	};
@@ -108,8 +123,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 					String.valueOf(trafficView.getTrafficDatas().size()));
 			trafficView.getLl_wait().setVisibility(View.GONE);
 			if (trafficView.getTrafficDatas().size() == 0) {
-				trafficViews.get(index).getRl_Note()
-						.setVisibility(View.VISIBLE);
+				trafficViews.get(index).getRl_Note().setVisibility(View.VISIBLE);
 				trafficViews.get(index).getLl_info().setVisibility(View.GONE);
 			} else {
 				trafficViews.get(index).getRl_Note().setVisibility(View.GONE);
@@ -136,13 +150,11 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 					String.valueOf(trafficView.getTrafficDatas().size()));
 			trafficView.getLl_wait().setVisibility(View.GONE);
 			if (trafficView.getTrafficDatas().size() == 0) {
-				trafficViews.get(index).getRl_Note()
-						.setVisibility(View.VISIBLE);
+				trafficViews.get(index).getRl_Note().setVisibility(View.VISIBLE);
 				trafficViews.get(index).getLl_info().setVisibility(View.GONE);
 			} else {
 				trafficViews.get(index).getRl_Note().setVisibility(View.GONE);
-				trafficViews.get(index).getLl_info()
-						.setVisibility(View.VISIBLE);
+				trafficViews.get(index).getLl_info().setVisibility(View.VISIBLE);
 				if (trafficViews.get(index).getTv_total_score() == null) {
 					
 				}
@@ -216,7 +228,10 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 					.findViewById(R.id.ll_wait);
 			ll_wait.setOnFinishListener(onFristFinishListener);
 			ll_wait.setWheelImage(R.drawable.wheel_blue);
-
+			TextView tv_note = (TextView)v.findViewById(R.id.tv_note);
+			tv_note.setOnClickListener(onClickListener);
+			
+			trafficView.setTv_note(tv_note);
 			trafficView.setLl_wait(ll_wait);
 			trafficView.setLl_wait_show(ll_wait_show);
 			trafficView.setxListView(lv_activity_traffic);
@@ -225,6 +240,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			trafficView.setTv_total_fine(tv_total_fine);
 			trafficView.setTv_total_score(tv_total_score);
 			trafficView.setTv_total(tv_total);
+			trafficView.setStatus(0);
 			trafficViews.add(trafficView);
 
 			rl_Note.setVisibility(View.GONE);
@@ -246,15 +262,17 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		changeImage(index_car);
 		TrafficView trafficView = trafficViews.get(index_car);
 		if (trafficView.getTrafficDatas() == null) {
-			trafficView.getLl_wait().startWheel(index_car);
-			try {
-				String url = Constant.BaseUrl + "vehicle/"
-						+ Variable.carDatas.get(index_car).getObj_id()
-						+ "/violation?auth_code=" + Variable.auth_code;
-				new NetThread.GetDataThread(handler, url, frist_traffic,
-						index_car).start();
-			} catch (Exception e) {
-				e.printStackTrace();
+			GetSystem.myLog(TAG, Variable.carDatas.get(index_car).toString());
+			CarData carData = Variable.carDatas.get(index_car);
+			ArrayList<String> citys = carData.getVio_citys();
+			if(citys.size() == 0){//TODO 提示添加城市
+				trafficView.setStatus(1);
+				List<CityData> chooseCityDatas = new ArrayList<CityData>();
+				Intent intent = new Intent(TrafficActivity.this, TrafficCitiyActivity.class);
+				intent.putExtra("cityDatas", (Serializable) chooseCityDatas);
+				startActivityForResult(intent, 1);
+			}else{
+				getFristTraffic();
 			}
 		}
 	}
@@ -438,7 +456,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 
 	@Override
 	public void onRefresh() {
-		// TODO 刷新 需不需要标记
+		//刷新 需不需要标记
 		TrafficView trafficView = trafficViews.get(index_car);
 		trafficView.getxListView().startHeaderWheel();
 		try {
@@ -500,75 +518,73 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		private TextView tv_total_fine;
 		private TextView tv_total;
 		private List<TrafficData> trafficDatas;
-
+		private TextView tv_note;
+		//状态，默认0 ， 没选择城市1，
+		private int status;
+				
+		public int getStatus() {
+			return status;
+		}
+		public void setStatus(int status) {
+			this.status = status;
+		}
+		public TextView getTv_note() {
+			return tv_note;
+		}
+		public void setTv_note(TextView tv_note) {
+			this.tv_note = tv_note;
+		}
 		public List<TrafficData> getTrafficDatas() {
 			return trafficDatas;
 		}
-
 		public void setTrafficDatas(List<TrafficData> trafficDatas) {
 			this.trafficDatas = trafficDatas;
 		}
-
 		public XListView getxListView() {
 			return xListView;
 		}
-
 		public void setxListView(XListView xListView) {
 			this.xListView = xListView;
 		}
-
 		public RelativeLayout getRl_Note() {
 			return rl_Note;
 		}
-
 		public void setRl_Note(RelativeLayout rl_Note) {
 			this.rl_Note = rl_Note;
 		}
-
 		public LinearLayout getLl_info() {
 			return ll_info;
 		}
-
 		public void setLl_info(LinearLayout ll_info) {
 			this.ll_info = ll_info;
 		}
-
 		public TextView getTv_total_score() {
 			return tv_total_score;
 		}
-
 		public void setTv_total_score(TextView tv_total_score) {
 			this.tv_total_score = tv_total_score;
 		}
-
 		public TextView getTv_total_fine() {
 			return tv_total_fine;
 		}
-
 		public void setTv_total_fine(TextView tv_total_fine) {
 			this.tv_total_fine = tv_total_fine;
 		}
-
 		public TextView getTv_total() {
 			return tv_total;
 		}
-
 		public void setTv_total(TextView tv_total) {
 			this.tv_total = tv_total;
 		}
-
 		public LinearLayout getLl_wait_show() {
 			return ll_wait_show;
 		}
-
 		public void setLl_wait_show(LinearLayout ll_wait_show) {
 			this.ll_wait_show = ll_wait_show;
 		}
-
 		public WaitLinearLayout getLl_wait() {
 			return ll_wait;
 		}
-
 		public void setLl_wait(WaitLinearLayout ll_wait) {
 			this.ll_wait = ll_wait;
 		}
@@ -679,7 +695,79 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == 3) {
+		//TODO 返回
+		if(requestCode == 1 && resultCode == 2){
+			//添加违章城市返回
+			@SuppressWarnings("unchecked")
+			List<CityData> chooseCityDatas = (List<CityData>) data.getSerializableExtra("cityDatas");
+			if(chooseCityDatas.size() == 0){
+				//TODO 没有选择违章城市
+				trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
+				trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
+				trafficViews.get(index_car).getTv_note().setText("没选择违章城市");
+				trafficViews.get(index_car).getLl_wait_show().setVisibility(View.GONE);
+			}else{
+				CarData carData = Variable.carDatas.get(index_car);
+				//违章信息保存
+				ArrayList<String> vio_citys = new ArrayList<String>();
+				ArrayList<String> vio_citys_code = new ArrayList<String>();
+				ArrayList<String> provinces = new ArrayList<String>();
+				for (int j = 0; j < chooseCityDatas.size(); j++) {
+					String vio_city_name = chooseCityDatas.get(j).getCityName();
+					String vio_location = chooseCityDatas.get(j).getCityCode();
+					String province = chooseCityDatas.get(j).getProvince();
+					vio_citys.add(vio_city_name);
+					vio_citys_code.add(vio_location);
+					provinces.add(province);
+				}
+				carData.setVio_citys(vio_citys);
+				carData.setVio_citys_code(vio_citys_code);
+				carData.setProvince(provinces);
+				//判断车架号和发动机号
+				String engine_no = carData.getEngine_no();
+				String frame_no = carData.getFrame_no();
+
+				for (CityData cityData : chooseCityDatas) {
+					// 发送机号
+					if (cityData.getEngine() == 0) {
+
+					} else {
+						if (cityData.getEngineno() == 1) {// 全部
+							if (engine_no.length() == 0) {
+								turnCarUpdate();
+								return;
+							}
+						} else {
+							if (engine_no.length() < cityData.getEngineno()) {
+								turnCarUpdate();
+								return;
+							}
+						}
+					}
+					// 车架号
+					if (cityData.getFrame() == 0) {
+
+					} else {
+						if (cityData.getFrameno() == 1) {// 全部
+							if (frame_no.length() == 0) {
+								turnCarUpdate();
+								return;
+							}
+						} else {
+							if (frame_no.length() < cityData.getFrameno()) {
+								turnCarUpdate();
+								return;
+							}
+						}
+					}
+				}
+				getFristTraffic();
+			}			
+		}else if(requestCode == 2 && resultCode == 3){
+			//添加车架号返回
+			GetSystem.myLog(TAG, Variable.carDatas.get(index_car).toString());
+			getFristTraffic();
+		}else if (resultCode == 3) {
 			int index = data.getIntExtra("index", 0);
 			int size = data.getIntExtra("size", 0);
 			trafficViews.get(index_car).getTrafficDatas().get(index)
@@ -692,6 +780,27 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 									.getTrafficDatas()));
 		}
 	}
+	
+	private void turnCarUpdate(){
+		Intent intent = new Intent(TrafficActivity.this, CarUpdateActivity.class);
+		intent.putExtra("index", index_car);
+		startActivityForResult(intent, 2);
+	}
+	/**获取违章数据**/
+	private void getFristTraffic(){
+		trafficViews.get(index_car).getLl_wait_show().setVisibility(View.VISIBLE);
+		trafficViews.get(index_car).getLl_wait().startWheel(index_car);
+		try {
+			String url = Constant.BaseUrl + "vehicle/"
+					+ Variable.carDatas.get(index_car).getObj_id()
+					+ "/violation?auth_code=" + Variable.auth_code;
+			new NetThread.GetDataThread(handler, url, frist_traffic,
+					index_car).start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
