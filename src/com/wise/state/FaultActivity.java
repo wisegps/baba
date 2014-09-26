@@ -39,6 +39,7 @@ import customView.NoticeScrollTextView;
 import customView.OnViewChangeListener;
 import customView.ParentSlide;
 import data.CarData;
+import android.R.menu;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -57,6 +58,8 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -228,6 +231,17 @@ public class FaultActivity extends FragmentActivity {
 		new CycleNstvThread().start();
 
 		UmengUpdateAgent.update(this);
+	}
+
+	/**
+	 * 当菜单即将要显示时触发（每次都触发） 菜单键显示
+	 */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		// 想要动态的改变现有的菜单可以在此添加代码
+		startActivity(new Intent(FaultActivity.this, MoreActivity.class));
+		return true;
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {

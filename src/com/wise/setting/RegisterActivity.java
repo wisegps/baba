@@ -179,10 +179,15 @@ public class RegisterActivity extends Activity {
 				if(mark == 0){
 					Toast.makeText(RegisterActivity.this, "该账号已注册，请登录", Toast.LENGTH_SHORT).show();
 				}else if(mark == 1){//重置密码
-					new AlertDialog.Builder(RegisterActivity.this)    
-					.setTitle("确认")  
-					.setMessage("我们将发送验证码到以上账号\n" + account)  
-					.setPositiveButton("好", new DialogInterface.OnClickListener() {						
+					AlertDialog.Builder dialog =new AlertDialog.Builder(RegisterActivity.this);
+					if(isPhone){
+						dialog.setTitle("确认");  
+						dialog.setMessage("我们将发送验证码短信到您的手机，请尽快查收\n" + account); 
+					}else{
+						dialog.setTitle("确认");  
+						dialog.setMessage("我们将发送验证码到您的邮箱，请尽快查收\n" + account); 
+					}
+					dialog.setPositiveButton("好", new DialogInterface.OnClickListener() {						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							Intent intent = new Intent(RegisterActivity.this,CaptchaActivity.class);
@@ -202,10 +207,15 @@ public class RegisterActivity extends Activity {
 				}
 			}else{//false,可以注册
 				if(mark == 0 || mark == 2){
-					new AlertDialog.Builder(RegisterActivity.this)    
-					.setTitle("确认手机账号")  
-					.setMessage("我们将发送验证码到以上账号\n" + account)  
-					.setPositiveButton("好", new DialogInterface.OnClickListener() {						
+					AlertDialog.Builder dialog = new AlertDialog.Builder(RegisterActivity.this);    
+					if(isPhone){
+						dialog.setTitle("确认手机账号");  
+						dialog.setMessage("我们将发送验证码短信到您的手机，请尽快查收\n" + account);  
+					}else{
+						dialog.setTitle("确认邮箱账号");  
+						dialog.setMessage("我们将发送验证码到您的邮箱，请尽快查收\n" + account);
+					}
+					dialog.setPositiveButton("好", new DialogInterface.OnClickListener() {						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							Intent intent = new Intent(RegisterActivity.this,CaptchaActivity.class);
