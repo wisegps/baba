@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.CollectionActivity;
 import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
@@ -71,10 +72,13 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	Button bt_login;
 	String account;
 	String pwd;
+	
+	boolean fastTrack = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		AppApplication.getActivityInstance().addActivity(this);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_login);
 		JPushInterface.init(getApplicationContext());
@@ -103,6 +107,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
 		progressBar.setVisibility(View.GONE);
+		fastTrack = getIntent().getBooleanExtra("fastTrack", false);
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -113,14 +118,13 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				finish();
 				break;
 			case R.id.tv_register:
-				Intent intent = new Intent(LoginActivity.this,
-						RegisterActivity.class);
+				Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
 				intent.putExtra("mark", 0);
+				intent.putExtra("fastTrack", fastTrack);
 				startActivity(intent);
 				break;
 			case R.id.tv_rest_pwd:
-				Intent intent1 = new Intent(LoginActivity.this,
-						RegisterActivity.class);
+				Intent intent1 = new Intent(LoginActivity.this,RegisterActivity.class);
 				intent1.putExtra("mark", 1);
 				startActivity(intent1);
 				break;
@@ -181,7 +185,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		}
 		String url = Constant.BaseUrl + "user_login?account=" + account
 				+ "&password=" + GetSystem.getM5DEndo(pwd);
-		new Thread(new NetThread.GetDataThread(handler, url, login_account))
+		new NetThread.GetDataThread(handler, url, login_account)
 				.start();
 	}
 
@@ -209,6 +213,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
+			progressBar.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -300,6 +305,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 												RegisterActivity.class);
 										intent1.putExtra("mark", 2);
 										intent1.putExtra("platform", platform);
+										intent1.putExtra("fastTrack", fastTrack);
 										startActivity(intent1);
 									}
 								}).show();

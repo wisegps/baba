@@ -67,6 +67,18 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			getData();
 		}
 	}
+	
+	
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		if(Judge.isLogin()){
+			getData();
+		}
+	}
+
+
 
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
@@ -163,7 +175,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	private void getData() {
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
 				+ "/get_relations?auth_code=" + Variable.auth_code;
-		new Thread(new NetThread.GetDataThread(handler, url, getNotice)).start();
+		new NetThread.GetDataThread(handler, url, getNotice).start();
 	}
 	/**解析通知**/
 	private void jsonData(String result) {

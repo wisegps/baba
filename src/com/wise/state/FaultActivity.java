@@ -189,8 +189,8 @@ public class FaultActivity extends FragmentActivity {
 		String Month = GetSystem.GetNowMonth().getMonth();
 		startMonth = Month + "-01";
 		endMonth = GetSystem.getMonthLastDay(Month);
-		// 未登录
-		if (Judge.isLogin()) {
+		
+		if (Judge.isLogin()) {//已登录
 			GetSystem.myLog(TAG, "Variable.carDatas.size() = "
 					+ Variable.carDatas.size());
 			initDataView();
@@ -198,29 +198,32 @@ public class FaultActivity extends FragmentActivity {
 					+ "/tips?auth_code=" + Variable.auth_code;
 			getMessage(url);
 			getCounter();
-		} else {
+		} else {// 未登录
 			// 给个临时id
 			Variable.cust_id = "0";
 			Variable.auth_code = "127a154df2d7850c4232542b4faa2c3d";
 			setLoginView();
 			String url = Constant.BaseUrl + "customer/0/tips";
 			getMessage(url);
+			Intent intent = new Intent(FaultActivity.this, LoginActivity.class);
+			intent.putExtra("fastTrack", true);
+			startActivity(intent);
 			// 给出快速注册
-			new AlertDialog.Builder(FaultActivity.this)
-					.setTitle("确认")
-					.setMessage("如果您有终端且没有注册，可使用快速注册！")
-					.setPositiveButton("好",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									Intent intent = new Intent(
-											FaultActivity.this,
-											RegisterActivity.class);
-									intent.putExtra("fastTrack", true);
-									startActivity(intent);
-								}
-							}).setNegativeButton("取消", null).show();
+//			new AlertDialog.Builder(FaultActivity.this)
+//					.setTitle("确认")
+//					.setMessage("如果您有终端且没有注册，可使用快速注册！")
+//					.setPositiveButton("好",
+//							new DialogInterface.OnClickListener() {
+//								@Override
+//								public void onClick(DialogInterface dialog,
+//										int which) {
+//									Intent intent = new Intent(
+//											FaultActivity.this,
+//											RegisterActivity.class);
+//									intent.putExtra("fastTrack", true);
+//									startActivity(intent);
+//								}
+//							}).setNegativeButton("取消", null).show();
 		}
 		myBroadCastReceiver = new MyBroadCastReceiver();
 		intentFilter = new IntentFilter();
