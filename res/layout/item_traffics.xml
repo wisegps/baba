@@ -34,6 +34,7 @@
 	                android:layout_height="fill_parent"
 	                android:src="@drawable/icon_reminder" />	            
 	            <TextView
+	                android:id="@+id/tv_note"
 	                android:layout_width="fill_parent"
 	                android:layout_height="wrap_content"
 	                android:gravity="center_horizontal"

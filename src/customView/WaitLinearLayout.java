@@ -18,7 +18,7 @@ public class WaitLinearLayout extends LinearLayout{
 	ImageView iv_wheel,iv_shadow;
 	int leftWidth = 100;
 	/**滚动到一定位置后暂停**/
-	int wait = 20;
+	int wait = 50;
 	Context mContext;
 	
 	public WaitLinearLayout(Context context){
@@ -123,6 +123,7 @@ public class WaitLinearLayout extends LinearLayout{
 						MarginLayoutParams params = (MarginLayoutParams) iv_wheel.getLayoutParams();
 						params.leftMargin = i;
 						iv_wheel.setLayoutParams(params);
+						//System.out.println(isOk + " , " + i);
 					}
 				}else{
 					if(i > wait){
@@ -132,6 +133,7 @@ public class WaitLinearLayout extends LinearLayout{
 						MarginLayoutParams params = (MarginLayoutParams) iv_wheel.getLayoutParams();
 						params.leftMargin = i;
 						iv_wheel.setLayoutParams(params);
+						//System.out.println(isOk + " , " + i);
 					}
 				}				
 				break;

@@ -100,8 +100,7 @@ public class CarUpdateActivity extends Activity {
 						ModelsActivity.class), 2);
 				break;
 			case R.id.tv_city:
-				Intent intent1 = new Intent(CarUpdateActivity.this,
-						TrafficCitiyActivity.class);
+				Intent intent1 = new Intent(CarUpdateActivity.this,TrafficCitiyActivity.class);
 				intent1.putExtra("cityDatas", (Serializable) chooseCityDatas);
 				startActivityForResult(intent1, 2);
 				break;
@@ -316,7 +315,7 @@ public class CarUpdateActivity extends Activity {
 
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
 				+ "?auth_code=" + Variable.auth_code;
-		new Thread(new NetThread.putDataThread(handler, url, params, update))
+		new NetThread.putDataThread(handler, url, params, update)
 				.start();
 	}
 
