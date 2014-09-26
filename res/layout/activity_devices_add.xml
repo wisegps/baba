@@ -1,193 +1,219 @@
-<RelativeLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_bg">
+    android:background="@color/gray_bg" >
+
     <LinearLayout
-        android:id="@+id/ll_top" 
+        android:id="@+id/ll_top"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical" >
+
         <RelativeLayout
-	        android:layout_width="fill_parent"
-	        android:layout_height="@dimen/title_hight"
-	        android:background="@color/title_back">
-	        <TextView
-	            android:layout_width="fill_parent"
-	            android:layout_height="fill_parent"
-	            android:gravity="center"
-	            android:text="绑定终端"
-	            android:textColor="@color/white"
-	            android:textSize="@dimen/head"/>
-			<ImageView 
-	            android:id="@+id/iv_back"
-		        android:layout_width="@dimen/title_hight"
-		        android:layout_height="@dimen/title_hight"
-		        android:layout_marginLeft="@dimen/margins"
-		        android:padding="@dimen/margins"
-		        android:layout_centerVertical="true"
-		        android:src="@drawable/nav_back"/>
-			<TextView
-			    android:id="@+id/tv_jump"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_centerVertical="true"
-	            android:layout_marginRight="@dimen/margins"
-	            android:text="跳过"
-	            android:layout_alignParentRight="true"
-	            android:textColor="@color/white"
-	            android:textSize="@dimen/head"/>
-		</RelativeLayout>
-		<LinearLayout 
-		    android:id="@+id/ll_content"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:orientation="vertical">
-		    <LinearLayout 
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:orientation="vertical"
-		        android:background="@color/white">      
-		        <TextView 
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:background="@color/gray_light"
-		            android:textColor="@color/navy"
-		            android:padding="@dimen/margins"
-		            android:textSize="@dimen/content"
-		            android:text="请扫描终端的二维码或者输入对应的序列号进行绑定"/>       
-		         <View 
-		             android:layout_width="fill_parent"
-		             android:layout_height="1dp"
-		             android:background="@drawable/body_line"/>
-		    </LinearLayout>
-		    <LinearLayout       
-		        android:orientation="horizontal"
-		        android:padding="@dimen/margins"
-		        android:background="@color/white"
-		        android:gravity="center_vertical"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content">
-		        <TextView
-		            android:text="序列号" 
-		            android:layout_weight="2"
-		            android:textColor="@color/navy"
-		            android:textSize="@dimen/content"
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"/>
-		        <RelativeLayout 
-		            android:layout_weight="1"
-	                android:layout_width="fill_parent"
-	                android:layout_height="wrap_content">
-		            <ImageView 
-		                android:id="@+id/iv_serial"
-		                android:src="@drawable/ewm"
-		                android:layout_alignParentRight="true"
-		                android:layout_centerVertical="true"
-		                android:layout_marginRight="@dimen/margins"
-		                android:layout_marginLeft="@dimen/margins"
-		                android:layout_width="@dimen/title_image"
-		                android:layout_height="@dimen/title_image"/>
-		            <EditText 
-		                android:id="@+id/et_serial"
-	                    android:layout_toLeftOf="@id/iv_serial"
-	                    android:background="@null"
-	                    android:textColor="@color/navy"
-	                    android:layout_centerVertical="true"
-		                android:layout_width="fill_parent"
-		                android:layout_height="wrap_content"/>         
-		        </RelativeLayout>
-		    </LinearLayout>
-		    <View 
             android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/line"/>
-		    <LinearLayout 
-		        android:orientation="horizontal"
-		        android:paddingLeft="@dimen/margins"
-		        android:paddingRight="@dimen/margins"
-		        android:paddingTop="14dp"
-		        android:paddingBottom="14dp"
-		        android:background="@color/white"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content">
-		        <TextView
-		            android:text="SIM卡号" 
-		            android:layout_weight="2"
-		            android:textSize="@dimen/content"
-		            android:textColor="@color/navy"
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"/>
-		        <EditText 
-		            android:id="@+id/et_sim"
-		            android:layout_weight="1"
-		            android:background="@null"
-		            android:maxLength="11"
-		            android:inputType="phone"
-		            android:textColor="@color/navy"
-		            android:textSize="@dimen/content"
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"/>
-		    </LinearLayout>
-	        <View 
-	            android:layout_width="fill_parent"
-	            android:layout_height="1dp"
-	            android:background="@drawable/body_line"/>
-		</LinearLayout>
+            android:layout_height="@dimen/title_hight"
+            android:background="@color/title_back" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:text="绑定终端"
+                android:textColor="@color/white"
+                android:textSize="@dimen/head" />
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="@dimen/title_hight"
+                android:layout_height="@dimen/title_hight"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/margins"
+                android:padding="@dimen/margins"
+                android:src="@drawable/nav_back" />
+
+            <ImageView
+                android:id="@+id/iv_add"
+                android:layout_width="@dimen/title_hight"
+                android:layout_height="@dimen/title_hight"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/margins"
+                android:padding="@dimen/margins"
+                android:src="@drawable/nav_ok" >
+            </ImageView>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/gray_light"
+                    android:padding="@dimen/margins"
+                    android:text="请扫描终端的二维码或者输入对应的序列号进行绑定"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/content" />
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@drawable/body_line" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/margins" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="序列号"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/content" />
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" >
+
+                    <ImageView
+                        android:id="@+id/iv_serial"
+                        android:layout_width="@dimen/title_image"
+                        android:layout_height="@dimen/title_image"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/margins"
+                        android:layout_marginRight="@dimen/margins"
+                        android:src="@drawable/ewm" />
+
+                    <EditText
+                        android:id="@+id/et_serial"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/iv_serial"
+                        android:background="@null"
+                        android:textColor="@color/navy" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/line" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingBottom="14dp"
+                android:paddingLeft="@dimen/margins"
+                android:paddingRight="@dimen/margins"
+                android:paddingTop="14dp" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="SIM卡号"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/content" />
+
+                <EditText
+                    android:id="@+id/et_sim"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:inputType="phone"
+                    android:maxLength="11"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/content" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/body_line" />
+        </LinearLayout>
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/ll_bottom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-		<Button
+        android:orientation="horizontal" >
+
+        <Button
             android:id="@+id/iv_buy"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="购买终端"
             android:textColor="@color/white"
             android:textSize="@dimen/main"
-            android:visibility="gone"
-            android:text="购买终端"/>        
+            android:visibility="gone" />
+
         <Button
-            android:id="@+id/iv_add"
+            android:id="@+id/tv_jump"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/white"
-            android:textSize="@dimen/bt"
-            android:padding="@dimen/margins"
             android:background="@drawable/bg_green"
-            android:text="绑定终端"/>
+            android:padding="@dimen/margins"
+            android:text="跳过"
+            android:textColor="@color/white"
+            android:textSize="@dimen/bt" />
     </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/rl_wait"
-        android:layout_below="@id/ll_top"
-        android:layout_above="@id/ll_bottom"
-        android:visibility="gone"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_centerInParent="true">
-        <LinearLayout 
+        android:layout_above="@id/ll_bottom"
+        android:layout_below="@id/ll_top"
+        android:layout_centerInParent="true"
+        android:visibility="gone" >
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-	        android:layout_centerInParent="true">
+            android:layout_centerInParent="true"
+            android:orientation="vertical" >
+
             <customView.WaitLinearLayout
-		        android:id="@+id/ll_wait"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content">        
-		    </customView.WaitLinearLayout>
-		    <TextView
-		        android:id="@+id/tv_note"
-		        android:layout_marginTop="@dimen/margins"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:textSize="@dimen/content"
-		        android:textColor="@color/navy"
-		        android:text="终端添加中"/>
+                android:id="@+id/ll_wait"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+            </customView.WaitLinearLayout>
+
+            <TextView
+                android:id="@+id/tv_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margins"
+                android:text="终端添加中"
+                android:textColor="@color/navy"
+                android:textSize="@dimen/content" />
         </LinearLayout>
     </RelativeLayout>
+
 </RelativeLayout>

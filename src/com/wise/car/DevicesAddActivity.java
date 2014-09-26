@@ -50,10 +50,10 @@ public class DevicesAddActivity extends Activity {
 	private static final int update_serial = 7;
 
 	ImageView iv_serial;
-	Button iv_add;
+	ImageView iv_add;
 	EditText et_serial, et_sim;
 	TextView tv_note;
-	TextView tv_jump;
+	Button tv_jump;
 	RelativeLayout rl_wait;
 	WaitLinearLayout ll_wait;
 
@@ -73,7 +73,7 @@ public class DevicesAddActivity extends Activity {
 		ll_wait = (WaitLinearLayout) findViewById(R.id.ll_wait);
 		ll_wait.setOnFinishListener(onFinishListener);
 		tv_note = (TextView) findViewById(R.id.tv_note);
-		tv_jump = (TextView) findViewById(R.id.tv_jump);
+		tv_jump = (Button) findViewById(R.id.tv_jump);
 		tv_jump.setOnClickListener(onClickListener);
 		rl_wait = (RelativeLayout) findViewById(R.id.rl_wait);
 		et_serial = (EditText) findViewById(R.id.et_serial);
@@ -84,7 +84,7 @@ public class DevicesAddActivity extends Activity {
 		iv_serial.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		iv_add = (Button) findViewById(R.id.iv_add);
+		iv_add = (ImageView) findViewById(R.id.iv_add);
 		iv_add.setOnClickListener(onClickListener);
 
 		Intent intent = getIntent();
