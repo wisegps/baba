@@ -43,6 +43,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +67,8 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	Platform platformQQ;
 	Platform platformSina;
 	String platform;
-
+	ProgressBar progressBar;
+	Button bt_login;
 	String account;
 	String pwd;
 
@@ -80,7 +82,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		tv_note = (TextView) findViewById(R.id.tv_note);
 		et_account = (EditText) findViewById(R.id.et_account);
 		et_pwd = (EditText) findViewById(R.id.et_pwd);
-		Button bt_login = (Button) findViewById(R.id.bt_login);
+		bt_login =  (Button) findViewById(R.id.bt_login);
 		bt_login.setOnClickListener(onClickListener);
 		TextView tv_register = (TextView) findViewById(R.id.tv_register);
 		tv_register.setOnClickListener(onClickListener);
@@ -98,6 +100,9 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		String sp_account = preferences.getString(Constant.sp_account, "");
 		et_account.setText(sp_account);
+
+		progressBar = (ProgressBar) findViewById(R.id.progressBar);
+		progressBar.setVisibility(View.GONE);
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -184,6 +189,8 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			if (jsonObject.getString("status_code").equals("0")) {
+				// 登录进度条显示
+				progressBar.setVisibility(View.VISIBLE);
 				Variable.cust_id = jsonObject.getString("cust_id");
 				Variable.auth_code = jsonObject.getString("auth_code");
 				// 保存账号密码
