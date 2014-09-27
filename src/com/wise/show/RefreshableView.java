@@ -247,7 +247,8 @@ public class RefreshableView extends LinearLayout {
 		LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) this.refreshView
 				.getLayoutParams();
 		int i = lp.topMargin;
-		scroller.startScroll(0, 0, 0, (i - refreshTargetTop) * 2);
+		//scroller.startScroll(0, 0, 0, refreshTargetTop - i);
+		scroller.startScroll(0, 0, 0, refreshTargetTop - i, 400);
 		invalidate();
 		isRefreshing = false;
 		iv_wheel.clearAnimation();

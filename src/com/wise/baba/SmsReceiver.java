@@ -30,6 +30,7 @@ public class SmsReceiver extends BroadcastReceiver{
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {        	
         	//TODO 确认消息发送，上传到自己服务器 
         	String result = intent.getExtras().getString(JPushInterface.EXTRA_EXTRA);
+        	System.out.println("result = " + result);
         	//{"friend_id":222,"msg":"~~~~","url":"","msg_type":"0"}
         	String msg = "";
         	String friend_id = "";

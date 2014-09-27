@@ -729,13 +729,13 @@ public class PhotoActivity extends Activity {
 			} else {
 				new Thread(new Runnable() {
 					@Override
-					public void run() {
-						GetObjectTask task = new GetObjectTask(
-								Constant.oss_path, imageName,
-								Constant.oss_accessId, Constant.oss_accessKey);
-						OSSObject obj = task.getResult();
-						File imageFile = null;
+					public void run() {						
 						try {
+							GetObjectTask task = new GetObjectTask(
+									Constant.oss_path, imageName,
+									Constant.oss_accessId, Constant.oss_accessKey);
+							OSSObject obj = task.getResult();
+							File imageFile = null;
 							imageFile = new File(getImagePath(imageUrl));
 							FileOutputStream fileOutputStream = new FileOutputStream(
 									imageFile);
