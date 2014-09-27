@@ -78,6 +78,7 @@ public class FanView extends View {
 				int index = text.indexOf("(");
 				if(index != -1){
 					text = text.substring(0, index);
+					text = text+"("+Datas.get(i).getAvg_fuel()+")";
 				}
 			}else if(type == FaultActivity.DISTANCE){
 				text = Datas.get(i).getDistance();

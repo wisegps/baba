@@ -429,8 +429,20 @@ public class FuelActivity extends Activity {
 				try {
 					JSONArray jsonArray = jsonObject.getJSONArray("fuel_data");
 					for (int i = 0; i < jsonArray.length(); i++) {
-						float avg_fuel1 = Float.valueOf(jsonArray
-								.getJSONObject(i).getString("avg_fuel"));
+						float avg_fuel1 = 0.0f;
+						if (type == FaultActivity.FUEL) {
+							avg_fuel1 = Float.valueOf(jsonArray
+									.getJSONObject(i).getString("total_fuel"));
+
+						} else if (type == FaultActivity.DISTANCE) {
+							avg_fuel1 = Float.valueOf(jsonArray
+									.getJSONObject(i).getString(
+											"total_distance"));
+
+						} else {
+							avg_fuel1 = Float.valueOf(jsonArray
+									.getJSONObject(i).getString("avg_fuel"));
+						}
 						int rcv_day = Integer.valueOf(jsonArray
 								.getJSONObject(i).getString("rcv_day")
 								.substring(8, 10));
