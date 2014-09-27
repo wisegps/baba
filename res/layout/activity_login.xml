@@ -122,7 +122,10 @@
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:paddingLeft="70dp"
+            style="?android:attr/progressBarStyleSmall"/>
+
     </RelativeLayout>
 
     <LinearLayout

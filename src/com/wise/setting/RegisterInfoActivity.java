@@ -1,7 +1,10 @@
 package com.wise.setting;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
@@ -10,6 +13,8 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
@@ -48,7 +53,7 @@ import android.widget.Toast;
  * @author Administrator
  * 
  */
-public class RegisterInfoActivity extends Activity {
+public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 
 	private static String TAG = "RegisterInfoActivity";
 	private static final int save = 1;
@@ -227,7 +232,7 @@ public class RegisterInfoActivity extends Activity {
 		}
 		String url = Constant.BaseUrl + "exists?query_type=5&value="
 				+ cust_name;
-		new Thread(new NetThread.GetDataThread(handler, url, exist)).start();
+		new NetThread.GetDataThread(handler, url, exist).start();
 	}
 
 	private void Save(String str) {
@@ -297,33 +302,34 @@ public class RegisterInfoActivity extends Activity {
 			JSONObject jsonObject = new JSONObject(str);
 			String status_code = jsonObject.getString("status_code");
 			if (status_code.equals("0")) {
+				// TODO 注册成功，把数据处理好
+				Variable.cust_id = jsonObject.getString("cust_id");
+				// 存储账号密码
+				SharedPreferences preferences = getSharedPreferences(
+						Constant.sharedPreferencesName,
+						Context.MODE_PRIVATE);
+				Editor editor = preferences.edit();
+				editor.putString(Constant.sp_account, account);
+				editor.putString(Constant.sp_pwd, GetSystem.getM5DEndo(pwd));
+				editor.commit();
+				String url = Constant.BaseUrl + "customer/"
+						+ Variable.cust_id + "?auth_code="
+						+ Variable.auth_code;
+				new NetThread.GetDataThread(handler, url, get_customer).start();
+				System.out.println("fastTrack = " + fastTrack);
 				if (fastTrack) {
-					// TODO 注册成功，把数据处理好
-					Variable.cust_id = jsonObject.getString("cust_id");
-					// 存储账号密码
-					SharedPreferences preferences = getSharedPreferences(
-							Constant.sharedPreferencesName,
-							Context.MODE_PRIVATE);
-					Editor editor = preferences.edit();
-					editor.putString(Constant.sp_account, account);
-					editor.putString(Constant.sp_pwd, GetSystem.getM5DEndo(pwd));
-					editor.commit();
 					// 设置
-					String url = Constant.BaseUrl + "customer/"
-							+ Variable.cust_id + "?auth_code="
-							+ Variable.auth_code;
-					new NetThread.GetDataThread(handler, url, get_customer)
-							.start();
-
-					Intent intent = new Intent(RegisterInfoActivity.this,
-							CarAddActivity.class);
+					Intent intent = new Intent(RegisterInfoActivity.this,CarAddActivity.class);
 					intent.putExtra("fastTrack", true);
 					startActivity(intent);
-				} else {
-					Toast.makeText(RegisterInfoActivity.this, "注册成功，请登录",
-							Toast.LENGTH_SHORT).show();
 					AppApplication.getActivityInstance().exit();
 				}
+				JPushInterface.resumePush(getApplicationContext());
+				setJpush();
+				Intent intent = new Intent(Constant.A_RefreshHomeCar);
+				sendBroadcast(intent);
+			}else{
+				Toast.makeText(RegisterInfoActivity.this, "注册失败，请重试",Toast.LENGTH_SHORT).show();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -360,5 +366,19 @@ public class RegisterInfoActivity extends Activity {
 		Editor editor = preferences.edit();
 		editor.putString(Constant.sp_customer + Variable.cust_id, str);
 		editor.commit();
+		AppApplication.getActivityInstance().exit();
+	}
+
+	@Override
+	public void gotResult(int arg0, String arg1, Set<String> arg2) {
+		
+	}
+	private void setJpush() {
+		GetSystem.myLog(TAG, "设置推送");
+		Set<String> tagSet = new LinkedHashSet<String>();
+		tagSet.add(Variable.cust_id);
+		// 调用JPush API设置Tag
+		JPushInterface.setAliasAndTags(getApplicationContext(), null, tagSet,
+				this);
 	}
 }

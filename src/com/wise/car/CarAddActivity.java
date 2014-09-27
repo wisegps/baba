@@ -7,11 +7,9 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
-import pubclas.JsonData;
 import pubclas.NetThread;
 import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import data.CarData;
 import android.app.Activity;
@@ -35,9 +33,6 @@ import android.widget.Toast;
 public class CarAddActivity extends Activity{
 	private static final String TAG = "CarAddActivity";
 	private static final int add_car = 1;
-	private static final int update_user = 2;
-	private static final int update_car = 3;
-	private static final int get_data = 4;
 	TextView tv_models;
 	EditText et_nick_name,et_obj_name;
 	CarData carNewData = new CarData();
@@ -49,7 +44,6 @@ public class CarAddActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		AppApplication.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_car_add);
 		et_nick_name = (EditText)findViewById(R.id.et_nick_name);
 		et_obj_name = (EditText)findViewById(R.id.et_obj_name);
@@ -83,9 +77,7 @@ public class CarAddActivity extends Activity{
 				addCar();
 				break;
 			case R.id.bt_jump:
-				//TODO 跳过
 				finish();
-				AppApplication.getActivityInstance().exit();
 				break;
 			}
 		}
@@ -98,46 +90,6 @@ public class CarAddActivity extends Activity{
 			switch (msg.what) {
 			case add_car:
 				jsonCar(msg.obj.toString());
-				break;
-
-			case update_user:
-				try {
-					String status_code = new JSONObject(msg.obj.toString()).getString("status_code");
-					if (status_code.equals("0")) {
-						// 绑定车辆
-						String url = Constant.BaseUrl + "vehicle/" + car_id
-								+ "/device?auth_code=" + Variable.auth_code;
-						List<NameValuePair> params = new ArrayList<NameValuePair>();
-						params.add(new BasicNameValuePair("device_id",device_id));
-						new NetThread.putDataThread(handler,url, params, update_car).start();
-					} else {
-						
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				break;
-			case update_car:
-				try {
-					String status_code = new JSONObject(msg.obj.toString()).getString("status_code");
-					if (status_code.equals("0")) {
-						//TODO 快速注册完毕
-						String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-								+ "/vehicle?auth_code=" + Variable.auth_code;
-						new NetThread.GetDataThread(handler, url, get_data).start();						
-					}else{
-						
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				break;
-			case get_data:
-				Variable.carDatas.clear();
-				Variable.carDatas.addAll(JsonData.jsonCarInfo(msg.obj.toString()));
-				Intent intent = new Intent(Constant.A_RefreshHomeCar);
-	            sendBroadcast(intent);
-				AppApplication.getActivityInstance().exit();
 				break;
 			}
 		}		
@@ -153,11 +105,6 @@ public class CarAddActivity extends Activity{
 					intent.putExtra("fastTrack", true);
 					intent.putExtra("car_id", car_id);
 					startActivity(intent);
-					//终端和用户,车辆信息绑定
-					//String url_sim = Constant.BaseUrl + "device/" + device_id + "/customer?auth_code=" + Variable.auth_code;
-					//List<NameValuePair> paramSim = new ArrayList<NameValuePair>();
-					//paramSim.add(new BasicNameValuePair("cust_id",Variable.cust_id));
-					//new NetThread.putDataThread(handler,url_sim, paramSim, update_user).start();
 				}else{
 					carNewData.setObj_id(car_id);
 					Variable.carDatas.add(carNewData);
