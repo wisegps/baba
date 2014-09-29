@@ -42,61 +42,102 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_margin="@dimen/margins">
-        <TextView 
-            android:id="@+id/tv_car"
+        <LinearLayout 
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textSize="@dimen/main"
-            android:padding="@dimen/margins"
-            android:textColor="@color/white"
-            android:background="@drawable/bg_border_left_press"
-            android:text="爱车"/>
-        <TextView 
-            android:id="@+id/tv_baby"
+            android:orientation="vertical">            
+	        <TextView 
+	            android:id="@+id/tv_car"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="center_horizontal"
+	            android:textSize="@dimen/main"
+	            android:padding="@dimen/margins"
+	            android:textColor="@color/Green"
+	            android:text="爱车"/>
+	        <View
+	            android:id="@+id/v_car"
+	            android:layout_height="5dp"
+	            android:layout_width="fill_parent"
+	            android:background="@color/Green"/>
+        </LinearLayout>
+        <LinearLayout 
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textSize="@dimen/main"
-            android:padding="@dimen/margins"
-            android:textColor="@color/Green"
-            android:background="@drawable/bg_border_center"
-            android:text="美女"/>
-        <TextView 
-            android:id="@+id/tv_scenery"
+            android:orientation="vertical">
+	        <TextView 
+	            android:id="@+id/tv_baby"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="center_horizontal"
+	            android:textSize="@dimen/main"
+	            android:padding="@dimen/margins"
+	            android:textColor="@color/navy"
+	            android:text="美女"/>
+	        <View
+	            android:id="@+id/v_baby" 
+	            android:layout_height="5dp"
+	            android:layout_width="fill_parent"/>
+        </LinearLayout>
+        <LinearLayout 
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textSize="@dimen/main"
-            android:padding="@dimen/margins"
-            android:textColor="@color/Green"
-            android:background="@drawable/bg_border_center"
-            android:text="美景"/>
-        <TextView 
-            android:id="@+id/tv_road"
+            android:orientation="vertical">
+	        <TextView 
+	            android:id="@+id/tv_scenery"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="center_horizontal"
+	            android:textSize="@dimen/main"
+	            android:padding="@dimen/margins"
+	            android:textColor="@color/navy"
+	            android:text="美景"/>
+	        <View
+	            android:id="@+id/v_scenery" 
+	            android:layout_height="5dp"
+	            android:layout_width="fill_parent"/>
+        </LinearLayout>
+        <LinearLayout 
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textSize="@dimen/main"
-            android:padding="@dimen/margins"
-            android:textColor="@color/Green"
-            android:background="@drawable/bg_border_center"
-            android:text="路况"/>
-        <TextView 
-            android:id="@+id/tv_travel"
+            android:orientation="vertical">
+	        <TextView 
+	            android:id="@+id/tv_road"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="center_horizontal"
+	            android:textSize="@dimen/main"
+	            android:padding="@dimen/margins"
+	            android:textColor="@color/navy"
+	            android:text="路况"/>
+	        <View
+	            android:id="@+id/v_road"  
+	            android:layout_height="5dp"
+	            android:layout_width="fill_parent"/>
+        </LinearLayout>
+        <LinearLayout 
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textSize="@dimen/main"
-            android:padding="@dimen/margins"
-            android:textColor="@color/Green"
-            android:background="@drawable/bg_border_right"
-            android:text="旅游"/>
+            android:orientation="vertical">
+	        <TextView 
+	            android:id="@+id/tv_travel"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:gravity="center_horizontal"
+	            android:textSize="@dimen/main"
+	            android:padding="@dimen/margins"
+	            android:textColor="@color/navy"
+	            android:text="现场"/>
+	        <View
+	            android:id="@+id/v_travel"   
+	            android:layout_height="5dp"
+	            android:layout_width="fill_parent"/>
+        </LinearLayout>
     </LinearLayout>
     <customView.ParentSlide   
           android:id="@+id/hsl_photo"

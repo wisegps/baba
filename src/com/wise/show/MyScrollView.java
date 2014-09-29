@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -434,20 +435,21 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		 *            图片的高度
 		 */
 		private void addImage(Bitmap bitmap, int imageWidth, int imageHeight) {
-			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageWidth, imageHeight);
+			//LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(imageWidth, imageHeight);
+			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(imageWidth, imageHeight);
 			if (mImageView != null) {
 				mImageView.setImageBitmap(bitmap);
 			} else {
 				View view = LayoutInflater.from(getContext()).inflate( R.layout.item_photo, null);
 				//需要先判断放到那一列
-				int column = findMinColumn();
-				if(column == 0){
-					//靠左边的一列
-					view.setPadding(6, 6, 3, 3);
-				}else{
-					//靠右边的一列
-					view.setPadding(3, 6, 6, 3);
-				}
+//				int column = findMinColumn();
+//				if(column == 0){
+//					//靠左边的一列
+//					view.setPadding(6, 6, 3, 3);
+//				}else{
+//					//靠右边的一列
+//					view.setPadding(3, 6, 6, 3);
+//				}
 				ImageView iv_praise = (ImageView)view.findViewById(R.id.iv_praise);
 				iv_praise.setOnClickListener(onClickListener);
 				iv_praise.setTag(R.string.image_url, mImageUrl);

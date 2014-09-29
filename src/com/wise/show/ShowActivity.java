@@ -51,6 +51,7 @@ public class ShowActivity extends Activity {
 	private static final int getRefreshImage = 4;
 	
 	TextView tv_car,tv_baby,tv_scenery,tv_road,tv_travel;
+	View v_car,v_baby,v_scenery,v_road,v_travel;
 	TextView tv_time,tv_title;
 	TextView tv_name,tv_ad,tv_dz,tv_bc,tv_bm,tv_all,tv_other;
 	LinearLayout ll_car_choose;
@@ -74,6 +75,11 @@ public class ShowActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_show);
+		v_car = (View)findViewById(R.id.v_car);
+		v_baby = (View)findViewById(R.id.v_baby);
+		v_scenery = (View)findViewById(R.id.v_scenery);
+		v_road = (View)findViewById(R.id.v_road);
+		v_travel = (View)findViewById(R.id.v_travel);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		ImageView iv_show_car = (ImageView) findViewById(R.id.iv_show_car);
@@ -117,32 +123,37 @@ public class ShowActivity extends Activity {
 				case 0:			
 					photo_type = 1;
 					setBg();
-					tv_car.setBackgroundResource(R.drawable.bg_border_left_press);
-					tv_car.setTextColor(getResources().getColor(R.color.white));		
+					//tv_car.setBackgroundResource(R.drawable.bg_border_left_press);
+					tv_car.setTextColor(getResources().getColor(R.color.Green));	
+					v_car.setBackgroundResource(R.color.Green);	
 					break;
 				case 1:
 					photo_type = 2;
 					setBg();
-					tv_baby.setBackgroundResource(R.drawable.bg_border_center_press);
-					tv_baby.setTextColor(getResources().getColor(R.color.white));
+					//tv_baby.setBackgroundResource(R.drawable.bg_border_center_press);
+					tv_baby.setTextColor(getResources().getColor(R.color.Green));
+					v_baby.setBackgroundResource(R.color.Green);
 					break;
 				case 2:
 					photo_type = 3;
 					setBg();
-					tv_scenery.setBackgroundResource(R.drawable.bg_border_center_press);
-					tv_scenery.setTextColor(getResources().getColor(R.color.white));
+					//tv_scenery.setBackgroundResource(R.drawable.bg_border_center_press);
+					tv_scenery.setTextColor(getResources().getColor(R.color.Green));
+					v_scenery.setBackgroundResource(R.color.Green);
 					break;
 				case 3:
 					photo_type = 4;
 					setBg();
-					tv_road.setBackgroundResource(R.drawable.bg_border_center_press);
-					tv_road.setTextColor(getResources().getColor(R.color.white));
+					//tv_road.setBackgroundResource(R.drawable.bg_border_center_press);
+					tv_road.setTextColor(getResources().getColor(R.color.Green));
+					v_road.setBackgroundResource(R.color.Green);
 					break;
 				case 4:
 					photo_type = 5;
 					setBg();
-					tv_travel.setBackgroundResource(R.drawable.bg_border_right_press);
-					tv_travel.setTextColor(getResources().getColor(R.color.white));
+					//tv_travel.setBackgroundResource(R.drawable.bg_border_right_press);
+					tv_travel.setTextColor(getResources().getColor(R.color.Green));
+					v_travel.setBackgroundResource(R.color.Green);
 					break;
 				}
 
@@ -272,16 +283,22 @@ public class ShowActivity extends Activity {
 		}
 	};
 	private void setBg(){
-		tv_car.setTextColor(getResources().getColor(R.color.Green));
-		tv_car.setBackgroundResource(R.drawable.bg_border_left);
-		tv_baby.setTextColor(getResources().getColor(R.color.Green));
-		tv_baby.setBackgroundResource(R.drawable.bg_border_center);
-		tv_scenery.setTextColor(getResources().getColor(R.color.Green));
-		tv_scenery.setBackgroundResource(R.drawable.bg_border_center);
-		tv_road.setTextColor(getResources().getColor(R.color.Green));
-		tv_road.setBackgroundResource(R.drawable.bg_border_center);
-		tv_travel.setTextColor(getResources().getColor(R.color.Green));
-		tv_travel.setBackgroundResource(R.drawable.bg_border_right);
+		tv_car.setTextColor(getResources().getColor(R.color.navy));
+		//v_car.setBackgroundColor(getResources().getColor(R.color.transparent));
+		v_car.setBackgroundResource(R.color.white);
+		//tv_car.setBackgroundResource(R.drawable.bg_border_left);
+		tv_baby.setTextColor(getResources().getColor(R.color.navy));
+		v_baby.setBackgroundResource(R.color.white);
+		//tv_baby.setBackgroundResource(R.drawable.bg_border_center);
+		tv_scenery.setTextColor(getResources().getColor(R.color.navy));
+		v_scenery.setBackgroundResource(R.color.white);
+		//tv_scenery.setBackgroundResource(R.drawable.bg_border_center);
+		tv_road.setTextColor(getResources().getColor(R.color.navy));
+		v_road.setBackgroundResource(R.color.white);
+		//tv_road.setBackgroundResource(R.drawable.bg_border_center);
+		tv_travel.setTextColor(getResources().getColor(R.color.navy));
+		v_travel.setBackgroundResource(R.color.white);
+		//tv_travel.setBackgroundResource(R.drawable.bg_border_right);
 	}
 	private void hideChooseCar(){
 		ll_car_choose.setVisibility(View.GONE);

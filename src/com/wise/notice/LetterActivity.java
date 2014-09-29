@@ -68,7 +68,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	RequestQueue mQueue;
 	Bitmap imageFriend = null;
 	Bitmap imageMe = null;
-	String cust_id;
+	String friend_id;
 	String cust_name;
 	String logo;
 	MyBroadCastReceiver myBroadCastReceiver;
@@ -94,15 +94,15 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		tv_friend = (TextView) findViewById(R.id.tv_friend);
 		TextView tv_send = (TextView) findViewById(R.id.tv_send);
 		tv_send.setOnClickListener(onClickListener);
-		cust_id = getIntent().getStringExtra("cust_id");
+		friend_id = getIntent().getStringExtra("cust_id");
 		cust_name = getIntent().getStringExtra("cust_name");
 		logo = getIntent().getStringExtra("logo");
-		System.out.println("cust_id = " + cust_id + " , cust_name = cust_name " + " , logo = " + logo);
+		System.out.println("cust_id = " + friend_id + " , cust_name = cust_name " + " , logo = " + logo);
 		tv_friend.setText(cust_name);
 		// 读取朋友对应的图片
-		if (new File(Constant.userIconPath + cust_id + ".png").exists()) {
+		if (new File(Constant.userIconPath + friend_id + ".png").exists()) {
 			imageFriend = BitmapFactory.decodeFile(Constant.userIconPath
-					+ cust_id + ".png");
+					+ friend_id + ".png");
 		}
 		// 读取自己对应的图片
 		if (new File(Constant.userIconPath + Variable.cust_id + ".png")
@@ -166,7 +166,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	private void getFriendInfo() {
 		if (cust_name == null || cust_name.equals("") || logo == null
 				|| logo.equals("")) {
-			String url = Constant.BaseUrl + "customer/" + cust_id
+			String url = Constant.BaseUrl + "customer/" + friend_id
 					+ "?auth_code=" + Variable.auth_code;
 			new NetThread.GetDataThread(handler, url, get_friend_info).start();
 		}
@@ -245,8 +245,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
 				+ "/send_chat?auth_code=" + Variable.auth_code;
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		pairs.add(new BasicNameValuePair("cust_name", cust_name));
-		pairs.add(new BasicNameValuePair("friend_id", cust_id));
+		pairs.add(new BasicNameValuePair("cust_name", Variable.cust_name));
+		pairs.add(new BasicNameValuePair("friend_id", friend_id));
 		pairs.add(new BasicNameValuePair("type", "0"));
 		pairs.add(new BasicNameValuePair("url", ""));
 		pairs.add(new BasicNameValuePair("content", content));
@@ -276,7 +276,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	private void getFristData() {
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
 				+ "/get_chats?auth_code=" + Variable.auth_code + "&friend_id="
-				+ cust_id;
+				+ friend_id;
 		new NetThread.GetDataThread(handler, url, get_data).start();
 	}
 
@@ -294,7 +294,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						.getString("send_time").substring(0, 19)
 						.replace("T", " "));
 				letterData.setSend_time(send_time);
-				if (sender_id.equals(cust_id)) {// 好友
+				if (sender_id.equals(friend_id)) {// 好友
 					letterData.setType(0);
 				} else {
 					letterData.setType(1);
@@ -320,7 +320,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							public void onResponse(Bitmap response) {
 								GetSystem.saveImageSD(response,
 										Constant.userIconPath,
-										cust_id + ".png", 100);
+										friend_id + ".png", 100);
 								imageFriend = response;
 								letterAdapter.notifyDataSetChanged();
 							}
@@ -647,7 +647,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				String extras = intent.getStringExtra("extras");
 				try {
 					JSONObject jsonObject = new JSONObject(extras);
-					if (cust_id.equals(jsonObject.getString("friend_id"))) {
+					if (friend_id.equals(jsonObject.getString("friend_id"))) {
 						String content = jsonObject.getString("msg");
 						// 如果是当前朋友发来的私信则显示
 						LetterData letterData = new LetterData();
@@ -679,7 +679,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		int Chat_id = letterDatas.get(0).getChat_id();
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
 				+ "/get_chats?auth_code=" + Variable.auth_code + "&friend_id="
-				+ cust_id + "&max_id=" + Chat_id;
+				+ friend_id + "&max_id=" + Chat_id;
 		new NetThread.GetDataThread(handler, url, refresh_data).start();
 		lv_letter.startHeaderWheel();
 	}
