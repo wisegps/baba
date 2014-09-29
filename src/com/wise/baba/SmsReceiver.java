@@ -30,16 +30,16 @@ public class SmsReceiver extends BroadcastReceiver{
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {        	
         	//TODO 确认消息发送，上传到自己服务器 
         	String result = intent.getExtras().getString(JPushInterface.EXTRA_EXTRA);
-        	System.out.println("result = " + result);
-        	//{"friend_id":222,"msg":"~~~~","url":"","msg_type":"0"}
         	String msg = "";
         	String friend_id = "";
         	String msg_type = "";
+        	String msg_name = "通知";
         	try {
         		JSONObject jsonObject = new JSONObject(result);
         		msg = jsonObject.getString("msg");
         		friend_id = jsonObject.getString("friend_id");
         		msg_type = jsonObject.getString("msg_type");
+        		msg_name = jsonObject.getString("cust_name");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -60,7 +60,7 @@ public class SmsReceiver extends BroadcastReceiver{
         				NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);  
         				Notification notification = new Notification();
         		    	notification.icon = R.drawable.ic_launcher;
-        		    	notification.tickerText = "通知";
+        		    	notification.tickerText = msg_name;
         		    	notification.flags |= Notification.FLAG_AUTO_CANCEL;
         		    	notification.defaults |= Notification.DEFAULT_SOUND;
         		    	Intent notificationIntent =new Intent(context, NotificationActivity.class); // 点击该通知后要跳转的Activity
@@ -68,7 +68,7 @@ public class SmsReceiver extends BroadcastReceiver{
         		    	//notificationIntent.putExtra("isTask", true);
         		    	intent.putExtra("cust_id", friend_id);
         		    	PendingIntent contentItent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-        		       	notification.setLatestEventInfo(context, "通知", msg, contentItent);
+        		       	notification.setLatestEventInfo(context, msg_name, msg, contentItent);
         		    	nm.notify(19172449, notification);
         			}
         		}else{
@@ -76,7 +76,7 @@ public class SmsReceiver extends BroadcastReceiver{
         			NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);  
     				Notification notification = new Notification();
     		    	notification.icon = R.drawable.ic_launcher;
-    		    	notification.tickerText = "通知";
+    		    	notification.tickerText = msg_name;
     		    	notification.flags |= Notification.FLAG_AUTO_CANCEL;
     		    	notification.defaults |= Notification.DEFAULT_SOUND;
     		    	Intent notificationIntent =new Intent(context, WelcomeActivity.class); // 点击该通知后要跳转的Activity
@@ -85,7 +85,7 @@ public class SmsReceiver extends BroadcastReceiver{
     		    	notificationIntent.putExtra("isSpecify", true);
     		    	notificationIntent.putExtras(intent.getExtras());
     		    	PendingIntent contentItent = PendingIntent.getActivity(context, 0, notificationIntent, 0);    	
-    		    	notification.setLatestEventInfo(context, "通知", msg, contentItent);
+    		    	notification.setLatestEventInfo(context, msg_name, msg, contentItent);
     		    	nm.notify(19172449, notification);
         		}
         	}        	        	

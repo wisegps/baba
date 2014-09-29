@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import com.wise.car.CarUpdateActivity;
@@ -100,7 +99,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 				finish();
 				break;
 			case R.id.tv_note:
-				//TODO 判断
+				//判断
 				int status = trafficViews.get(index_car).getStatus();
 				if(status == 1){//选择城市
 					List<CityData> chooseCityDatas = new ArrayList<CityData>();
@@ -265,7 +264,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			GetSystem.myLog(TAG, Variable.carDatas.get(index_car).toString());
 			CarData carData = Variable.carDatas.get(index_car);
 			ArrayList<String> citys = carData.getVio_citys();
-			if(citys.size() == 0){//TODO 提示添加城市
+			if(citys.size() == 0){//提示添加城市
 				trafficView.setStatus(1);
 				List<CityData> chooseCityDatas = new ArrayList<CityData>();
 				Intent intent = new Intent(TrafficActivity.this, TrafficCitiyActivity.class);
@@ -695,13 +694,13 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		//TODO 返回
+		//返回
 		if(requestCode == 1 && resultCode == 2){
 			//添加违章城市返回
 			@SuppressWarnings("unchecked")
 			List<CityData> chooseCityDatas = (List<CityData>) data.getSerializableExtra("cityDatas");
 			if(chooseCityDatas.size() == 0){
-				//TODO 没有选择违章城市
+				//没有选择违章城市
 				trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
 				trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
 				trafficViews.get(index_car).getTv_note().setText("没选择违章城市");
@@ -723,7 +722,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 				carData.setVio_citys(vio_citys);
 				carData.setVio_citys_code(vio_citys_code);
 				carData.setProvince(provinces);
-				//判断车架号和发动机号
+				//TODO engine_no 有null可能 判断车架号和发动机号
 				String engine_no = carData.getEngine_no();
 				String frame_no = carData.getFrame_no();
 
