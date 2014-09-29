@@ -51,7 +51,7 @@ public class FuelActivity extends Activity {
 	TextView tv_chart_title, tv_chart_unit;
 	TextView tv_speed_text, tv_speed_avg_fuel, tv_speed_fuel;
 	// 标题
-	TextView tv_title_1, tv_title_2, tv_title_3;
+	TextView tv_title_1, tv_title_2, tv_title_3,tv_title_map;
 	// 单位内容
 	TextView tv_content_1, tv_content_2, tv_content_3;
 
@@ -88,6 +88,7 @@ public class FuelActivity extends Activity {
 		tv_title_1 = (TextView) findViewById(R.id.tv_title_1);
 		tv_title_2 = (TextView) findViewById(R.id.tv_title_2);
 		tv_title_3 = (TextView) findViewById(R.id.tv_title_3);
+		tv_title_map = (TextView) findViewById(R.id.tv_title_map);
 
 		tv_content_1 = (TextView) findViewById(R.id.tv_content_1);
 		tv_content_2 = (TextView) findViewById(R.id.tv_content_2);
@@ -401,6 +402,7 @@ public class FuelActivity extends Activity {
 				tv_fuel.setText("￥");
 
 				tv_distance.setText(total_distance);
+				tv_title_map.setText("平均油耗图");
 
 			} else if (type == FaultActivity.DISTANCE) {
 				tv_title_1.setText("总行驶");
@@ -416,11 +418,13 @@ public class FuelActivity extends Activity {
 				tv_distance.setText("￥");
 
 				tv_fuel.setText(total_fuel);
+				tv_title_map.setText("里程-油耗图");
 
 			} else if (type == FaultActivity.FEE) {
 				tv_distance.setText(total_distance);
 				tv_fuel.setText(total_fuel);
 				tv_money.setText(total_fee);
+				tv_title_map.setText("花费-油耗图");
 			}
 
 			// 周月，需要画图

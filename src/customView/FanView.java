@@ -22,22 +22,19 @@ public class FanView extends View {
 	private int Width = 250; // 总大小
 	private int RingWidth = 20; // 圆环大小
 	private int CenterWidth = 100; // 圆心大小
-	
-	int[] Colors = { Color.argb(255, 81, 206, 181), 
-					Color.argb(255, 248, 220, 92), 
-					Color.argb(255, 235, 130, 99),
-					Color.argb(255, 139, 207, 233),
-					Color.argb(255, 58, 137, 184),
-					Color.argb(255, 248, 220, 92), 
-					Color.argb(255, 235, 130, 99),
-					Color.argb(255, 139, 207, 233)};
-	/**每次旋转的度数**/
+
+	int[] Colors = { Color.argb(255, 81, 206, 181),
+			Color.argb(255, 248, 220, 92), Color.argb(255, 235, 130, 99),
+			Color.argb(255, 139, 207, 233), Color.argb(255, 58, 137, 184),
+			Color.argb(255, 248, 220, 92), Color.argb(255, 235, 130, 99),
+			Color.argb(255, 139, 207, 233) };
+	/** 每次旋转的度数 **/
 	int AveRotate = 3;
 
 	Rect mBounds = new Rect();
-	/**通过RecordAngle来控制角度,在-90 到 270 之间**/
+	/** 通过RecordAngle来控制角度,在-90 到 270 之间 **/
 	int RecordAngle = -90;
-	/**当前旋转角度**/
+	/** 当前旋转角度 **/
 	int currentRotateRanges = 0;
 
 	public FanView(Context context) {
@@ -51,48 +48,47 @@ public class FanView extends View {
 	public FanView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
+
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		setMeasuredDimension(Width*2, Width*2);
+		setMeasuredDimension(Width * 2, Width * 2);
 	}
+
 	int startRange = 0;
-	
+
 	/**
 	 * 
 	 * @param Datas
-	 * @param position 指定那个位置
+	 * @param position
+	 *            指定那个位置
 	 */
-	public void setDatas(List<com.wise.state.FuelActivity.RangeData> Datas,int position,int type){
+	public void setDatas(List<com.wise.state.FuelActivity.RangeData> Datas,
+			int position, int type) {
 		rangeDatas.clear();
 		RecordAngle = -90;
 		currentRotateRanges = 0;
 		startRange = 0;
-		
-		//把百分比转成对应的度数
-		for(int i = 0 ; i < Datas.size() ; i++){
+
+		// 把百分比转成对应的度数
+		for (int i = 0; i < Datas.size(); i++) {
 			RangeData rangeData = new RangeData();
 			String text = "";
-			if(type == FaultActivity.FUEL){
-				text = Datas.get(i).getSpeed_text();
-				int index = text.indexOf("(");
-				if(index != -1){
-					text = text.substring(0, index);
-					text = text+"("+Datas.get(i).getAvg_fuel()+")";
-				}
-			}else if(type == FaultActivity.DISTANCE){
+			if (type == FaultActivity.FUEL) {
+				text = Datas.get(i).getAvg_fuel();
+			} else if (type == FaultActivity.DISTANCE) {
 				text = Datas.get(i).getDistance();
-			}else {
+			} else {
 				text = Datas.get(i).getFee();
 			}
-			if(i == (Datas.size() - 1)){				
+			if (i == (Datas.size() - 1)) {
 				rangeData.setStartRanges(startRange);
 				rangeData.setStartRotateRanges(startRange);
 				rangeData.setAnges(360 - startRange);
 				rangeData.setText(text);
 				rangeDatas.add(rangeData);
-			}else{
-				int range = Datas.get(i).getPercent() * 360/100;
+			} else {
+				int range = Datas.get(i).getPercent() * 360 / 100;
 				rangeData.setStartRanges(startRange);
 				rangeData.setStartRotateRanges(startRange);
 				rangeData.setAnges(range);
@@ -101,10 +97,11 @@ public class FanView extends View {
 				startRange += range;
 			}
 		}
-		if(Datas.size() > 0){
+		if (Datas.size() > 0) {
 			this.OnTouchIndex = position;
-			RangeData rangeData = rangeDatas.get(OnTouchIndex);		
-			int centerRanges = (rangeData.getAnges() / 2 + rangeData.getStartRanges())%360;
+			RangeData rangeData = rangeDatas.get(OnTouchIndex);
+			int centerRanges = (rangeData.getAnges() / 2 + rangeData
+					.getStartRanges()) % 360;
 			if (centerRanges > 180) {
 				rotateRanges = 180 - centerRanges;
 			} else {
@@ -112,57 +109,70 @@ public class FanView extends View {
 			}
 			// 重新计算位置
 			jsRotate(rotateRanges);
-			RecordAngle = (RecordAngle + rotateRanges) % 360;			
-		}		
+			RecordAngle = (RecordAngle + rotateRanges) % 360;
+		}
 		postInvalidate();
 	}
+
 	List<RangeData> rangeDatas = new ArrayList<RangeData>();
-	class RangeData{
+
+	class RangeData {
 		int startRanges;
 		int startRotateRanges;
 		int anges;
 		String text;
-				
+
 		public String getText() {
 			return text;
 		}
+
 		public void setText(String text) {
 			this.text = text;
 		}
+
 		public int getStartRotateRanges() {
 			return startRotateRanges;
 		}
+
 		public void setStartRotateRanges(int startRotateRanges) {
 			this.startRotateRanges = startRotateRanges;
 		}
+
 		public int getStartRanges() {
 			return startRanges;
 		}
+
 		public void setStartRanges(int startRanges) {
 			this.startRanges = startRanges;
 		}
+
 		public int getAnges() {
 			return anges;
 		}
+
 		public void setAnges(int anges) {
 			this.anges = anges;
 		}
+
 		@Override
 		public String toString() {
 			return "RangeData [startRanges=" + startRanges + ", anges=" + anges
 					+ "]";
-		}		
+		}
 	}
+
 	/**
 	 * 设置半径
-	 * @param Size 半径
+	 * 
+	 * @param Size
+	 *            半径
 	 */
-	public void setViewSize(int Size){
+	public void setViewSize(int Size) {
 		Width = Size;
-		CenterWidth = Size/3;
+		CenterWidth = Size / 3;
 		postInvalidate();
 	}
-	
+
 	Paint p = new Paint();
 
 	@Override
@@ -174,51 +184,57 @@ public class FanView extends View {
 
 		RectF oval = new RectF(RingWidth, RingWidth, Width * 2 - RingWidth,
 				Width * 2 - RingWidth);
-		p.setColor(Color.BLUE);	
-		
-		if(RecordAngle < -90){
+		p.setColor(Color.BLUE);
+
+		if (RecordAngle < -90) {
 			RecordAngle = RecordAngle + 360;
-		}else if(RecordAngle > 270){
+		} else if (RecordAngle > 270) {
 			RecordAngle = RecordAngle - 360;
 		}
-		int startAngle = (RecordAngle + currentRotateRanges)%360;
+		int startAngle = (RecordAngle + currentRotateRanges) % 360;
 		// 重新计算角度
-		for (int i = 0; i < rangeDatas.size(); i++) {			
+		for (int i = 0; i < rangeDatas.size(); i++) {
 			p.setColor(Colors[i]);
 			RangeData rangeData = rangeDatas.get(i);
-			if(B >= 0){
-				if((rangeData.getAnges() + rangeData.getStartRanges()) >= 360){
-					int endRanges = (rangeData.getAnges() + rangeData.getStartRanges()) - 360;
-					if(B < endRanges || B >= rangeData.getStartRanges()){
+			if (B >= 0) {
+				if ((rangeData.getAnges() + rangeData.getStartRanges()) >= 360) {
+					int endRanges = (rangeData.getAnges() + rangeData
+							.getStartRanges()) - 360;
+					if (B < endRanges || B >= rangeData.getStartRanges()) {
 						p.setColor(Color.GRAY);
 						OnTouchIndex = i;
-						if(onViewRotateListener != null){
+						if (onViewRotateListener != null) {
 							onViewRotateListener.viewRotate(OnTouchIndex);
 						}
 					}
-				}else if (B >= rangeData.getStartRanges() && B < (rangeData.getAnges() + rangeData.getStartRanges())) {
+				} else if (B >= rangeData.getStartRanges()
+						&& B < (rangeData.getAnges() + rangeData
+								.getStartRanges())) {
 					p.setColor(Color.GRAY);
 					OnTouchIndex = i;
-					if(onViewRotateListener != null){
+					if (onViewRotateListener != null) {
 						onViewRotateListener.viewRotate(OnTouchIndex);
 					}
 				}
 			}
 			canvas.drawArc(oval, startAngle, rangeData.getAnges(), true, p);
-			//TODO 写字
-			int nowCenterRanges = (rangeData.getAnges() / 2 + startAngle + 90)%360;
-			double nowX = Width + Width * Math.sin(nowCenterRanges*Math.PI/180)*0.6;
-			double nowY = Width - Width * Math.cos(nowCenterRanges*Math.PI/180)*0.6;
+			// TODO 写字
+			int nowCenterRanges = (rangeData.getAnges() / 2 + startAngle + 90) % 360;
+			double nowX = Width + Width
+					* Math.sin(nowCenterRanges * Math.PI / 180) * 0.6;
+			double nowY = Width - Width
+					* Math.cos(nowCenterRanges * Math.PI / 180) * 0.6;
 			p.setColor(Color.RED);
 			p.setTextSize(30);
 			String str = rangeData.getText();
-			int w = (int) p.measureText(str)/2;
-			canvas.drawText(str, (float)nowX - w, (float)nowY, p);
+			int w = (int) p.measureText(str) / 2;
+			canvas.drawText(str, (float) nowX - w, (float) nowY, p);
 			startAngle += rangeData.getAnges();
 		}
 		p.setColor(Color.WHITE);
 		canvas.drawCircle(Width, Width, CenterWidth, p); // 画圆
 	}
+
 	int OnTouchIndex = -1;
 	double B = -1;
 	double LastB = -1;
@@ -263,9 +279,10 @@ public class FanView extends View {
 			LastB = B;
 			B = -1;
 			postInvalidate();
-			if(OnTouchIndex != -1){
-				RangeData rangeData = rangeDatas.get(OnTouchIndex);		
-				int centerRanges = (rangeData.getAnges() / 2 + rangeData.getStartRanges())%360;
+			if (OnTouchIndex != -1) {
+				RangeData rangeData = rangeDatas.get(OnTouchIndex);
+				int centerRanges = (rangeData.getAnges() / 2 + rangeData
+						.getStartRanges()) % 360;
 				if (centerRanges > 180) {
 					rotateRanges = 180 - centerRanges;
 				} else {
@@ -281,9 +298,10 @@ public class FanView extends View {
 			LastB = B;
 			B = -1;
 			postInvalidate();
-			if(OnTouchIndex != -1){
-				RangeData rangeData = rangeDatas.get(OnTouchIndex);		
-				int centerRanges = (rangeData.getAnges() / 2 + rangeData.getStartRanges())%360;
+			if (OnTouchIndex != -1) {
+				RangeData rangeData = rangeDatas.get(OnTouchIndex);
+				int centerRanges = (rangeData.getAnges() / 2 + rangeData
+						.getStartRanges()) % 360;
 				if (centerRanges > 180) {
 					rotateRanges = 180 - centerRanges;
 				} else {
@@ -298,7 +316,8 @@ public class FanView extends View {
 		}
 		return true;
 	}
-	/**计算旋转后的角度**/
+
+	/** 计算旋转后的角度 **/
 	private void jsRotate(int rotate) {
 		for (int i = 0; i < rangeDatas.size(); i++) {
 			RangeData rangeData = rangeDatas.get(i);
@@ -311,8 +330,9 @@ public class FanView extends View {
 			rangeData.setStartRanges(newRanges);
 		}
 	}
-	/**重置旋转中的角度**/
-	private void resetRotate(){
+
+	/** 重置旋转中的角度 **/
+	private void resetRotate() {
 		for (int i = 0; i < rangeDatas.size(); i++) {
 			RangeData rangeData = rangeDatas.get(i);
 			rangeData.setStartRotateRanges(rangeData.getStartRanges());
@@ -322,7 +342,7 @@ public class FanView extends View {
 	/** 旋转的角度 **/
 	int rotateRanges;
 	boolean isRotate = false;
-	
+
 	class RotateThread extends Thread {
 		@Override
 		public void run() {
@@ -330,32 +350,32 @@ public class FanView extends View {
 			while (isRotate) {
 				try {
 					sleep(20);
-					if (rotateRanges >= 0) {//顺时针旋转 旋转 45 到 180 旋转 135
-						//判断下次旋转角度是否超过规定角度
-						if((currentRotateRanges +AveRotate) >= rotateRanges){
-							//最后一次旋转
+					if (rotateRanges >= 0) {// 顺时针旋转 旋转 45 到 180 旋转 135
+						// 判断下次旋转角度是否超过规定角度
+						if ((currentRotateRanges + AveRotate) >= rotateRanges) {
+							// 最后一次旋转
 							currentRotateRanges = rotateRanges;
 							isRotate = false;
 							RecordAngle = (RecordAngle + rotateRanges) % 360;
 							currentRotateRanges = 0;
 							resetRotate();
-						}else{
-							currentRotateRanges += AveRotate;							
+						} else {
+							currentRotateRanges += AveRotate;
 						}
 						handler.sendMessage(new Message());
 					} else {
-						//逆时针旋转
-						if((currentRotateRanges - AveRotate) <= rotateRanges){
+						// 逆时针旋转
+						if ((currentRotateRanges - AveRotate) <= rotateRanges) {
 							currentRotateRanges = rotateRanges;
 							isRotate = false;
-							//TODO 矫正下
+							// TODO 矫正下
 							RecordAngle = (RecordAngle + rotateRanges) % 360;
 							currentRotateRanges = 0;
 							resetRotate();
-						}else{
-							currentRotateRanges -= AveRotate;	//每次旋转1读
-						}						
-						handler.sendMessage(new Message());						
+						} else {
+							currentRotateRanges -= AveRotate; // 每次旋转1读
+						}
+						handler.sendMessage(new Message());
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
