@@ -179,8 +179,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		account = et_account.getText().toString().trim();
 		pwd = et_pwd.getText().toString().trim();
 		if (account.equals("") || pwd.equals("")) {
-			Toast.makeText(LoginActivity.this, "请输入账号密码", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(LoginActivity.this, "请输入账号密码", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		String url = Constant.BaseUrl + "user_login?account=" + account

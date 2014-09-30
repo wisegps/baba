@@ -188,7 +188,7 @@ public class ShowCarAcitivity extends Activity{
     		progressDialog = ProgressDialog.show(ShowCarAcitivity.this, getString(R.string.dialog_title), "爱车上传中");
     		progressDialog.setCancelable(true);
     	}
-        new Thread(new Runnable() {			
+        new Thread(new Runnable() {
 			@Override
 			public void run() {
 				//判断文件夹是否为空

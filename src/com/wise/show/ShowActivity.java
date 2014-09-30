@@ -571,12 +571,18 @@ public class ShowActivity extends Activity {
 				//TODO 获取图片路径
 				Uri uri = data.getData();
 	            Intent intent = new Intent(ShowActivity.this, ShowCarAcitivity.class);
-	            System.out.println("uri = "+getPath(uri));
-				intent.putExtra("image", getPath(uri));
+	            intent.putExtra("image", getPath(uri));
 				intent.putExtra("photo_type", photo_type);
 		        startActivity(intent);
 			}			
 	        return;
+		}
+		if (resultCode == Activity.RESULT_OK) {
+			Intent intent = new Intent(ShowActivity.this,ShowCarAcitivity.class);
+			intent.putExtra("image", Constant.VehiclePath + Constant.TemporaryImage);
+			intent.putExtra("photo_type", photo_type);
+			startActivity(intent);
+			return;
 		}
 		if (resultCode == 1) {
 			//登录返回,刷新数据
@@ -585,13 +591,6 @@ public class ShowActivity extends Activity {
 			}
 			getFristImages();
 			getLogo();
-			return;
-		}
-		if (resultCode == Activity.RESULT_OK) {
-			Intent intent = new Intent(ShowActivity.this,ShowCarAcitivity.class);
-			intent.putExtra("image", Constant.VehiclePath + Constant.TemporaryImage);
-			intent.putExtra("photo_type", photo_type);
-			startActivity(intent);
 			return;
 		}
 		if(resultCode == 2){

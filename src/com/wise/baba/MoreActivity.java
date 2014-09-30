@@ -1,6 +1,8 @@
 package com.wise.baba;
 
 import org.json.JSONObject;
+
+import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.Variable;
 import cn.jpush.android.api.JPushInterface;
@@ -19,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MoreActivity extends Activity{
-	
+	private static final String TAG = "MoreActivity";
 	ImageView iv_noti,iv_vio;
 	
 	public static final int SMS = 1;//传递信息页面跳转类型
@@ -120,7 +122,7 @@ public class MoreActivity extends Activity{
 				}
 				break;
 			case R.id.tv_set:
-				startActivity(new Intent(MoreActivity.this, SetActivity.class));
+				startActivityForResult(new Intent(MoreActivity.this, SetActivity.class), 1);
 				break;
 			}
 		}
@@ -142,6 +144,14 @@ public class MoreActivity extends Activity{
 			iv_vio.setVisibility(View.GONE);
 		}else{
 			iv_vio.setVisibility(View.VISIBLE);
+		}
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == 1 && resultCode == 1){
+			GetSystem.myLog(TAG, "登录返回");
+			finish();
 		}
 	}
 }

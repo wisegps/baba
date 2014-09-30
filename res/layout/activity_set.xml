@@ -52,7 +52,7 @@
                     app:border_color="@color/white" />
 	        <TextView
 	            android:id="@+id/tv_login"
-	            android:layout_width="fill_parent"
+	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_centerVertical="true"
 	            android:padding="@dimen/margins"
@@ -60,6 +60,14 @@
 	            android:text="登录/注册"
 	            android:textSize="@dimen/main"
 	            android:textColor="@color/navy" />
+	        <ImageView 
+	            android:id="@+id/iv_sex"
+	            android:layout_toRightOf="@id/tv_login"	            
+	            android:layout_centerVertical="true"
+	            android:layout_width="15dp"
+	            android:layout_height="15dp"
+	            android:visibility="gone"
+	            android:src="@drawable/icon_man"/>
 	    </RelativeLayout>
 	    <RelativeLayout 
 	        android:id="@+id/rl_city" 

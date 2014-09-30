@@ -32,16 +32,25 @@
 	        app:border_width="1dp"
 	        android:src="@drawable/icon_car"
 	        app:border_color="@color/white" />
-	    <TextView 
-	        android:id="@+id/tv_friend_content" 
+	    <RelativeLayout 
 	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:textSize="@dimen/content"
-	        android:textColor="@color/navy"
+	        android:layout_height="wrap_content"        
 	        android:paddingLeft="@dimen/margins"
 	        android:paddingRight="@dimen/margins"
-	        android:gravity="center_vertical"
-	        android:background="@drawable/chat_duifang_shuru"
-	        android:text="你是专门修宝马的吗"/>
+		    android:background="@drawable/chat_duifang_shuru">
+		    <TextView 
+		        android:id="@+id/tv_friend_content" 
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textSize="@dimen/content"
+		        android:textColor="@color/navy"
+		        android:layout_centerVertical="true"
+		        android:text="你是专门修宝马的吗"/>
+		    <ImageView
+		        android:id="@+id/iv_friend_pic" 
+		        android:scaleType="matrix"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"/>
+	    </RelativeLayout>
     </LinearLayout>    
 </LinearLayout>

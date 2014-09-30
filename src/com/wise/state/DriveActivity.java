@@ -9,7 +9,10 @@ import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
 import com.wise.baba.R;
+
+import data.CarData;
 import android.app.Activity;
+import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -117,10 +120,19 @@ public class DriveActivity extends Activity{
 	/**获取驾驶习惯**/
 	private void getDriveData(int frist){
 		try {
+			CarData carData = Variable.carDatas.get(index_car);
+			String Gas_no = "";
+			if (carData.getGas_no() == null
+					|| carData.getGas_no().equals("")) {
+				Gas_no = "93#(92#)";
+			} else {
+				Gas_no = carData.getGas_no();
+			}
+			//TODO 油耗要改
 			String url = Constant.BaseUrl + "device/" + Device_id + "/day_drive?auth_code=" + Variable.auth_code + 
-						"&day=" + Date + "&city=" + URLEncoder.encode(Variable.City, "UTF-8") + "&gas_no=93#";
+						"&day=" + Date + "&city=" + URLEncoder.encode(Variable.City, "UTF-8") + "&gas_no=" + Gas_no;
 			new NetThread.GetDataThread(handler, url, getData,frist).start();
-		} catch (UnsupportedEncodingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
