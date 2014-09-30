@@ -37,28 +37,29 @@
     <RelativeLayout
         android:id="@+id/rl_bottom"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:background="@color/Green_Light" >
         <ImageView
             android:id="@+id/ivPopUp"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="5dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dip"
             android:src="@drawable/chatting_setmode_msg_btn" />
         <RelativeLayout
             android:id="@+id/btn_bottom"
             android:layout_toRightOf="@id/ivPopUp" 
+            android:layout_centerVertical="true"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content" >
             <ImageView 
 	            android:id="@+id/iv_pic"
-	            android:layout_width="20dp"
-	            android:layout_height="20dp"
+	            android:layout_width="35dp"
+	            android:layout_height="35dp"
+	            android:padding="7dp"
 	            android:layout_centerVertical="true"
-	            android:layout_marginLeft="@dimen/margins"
 	            android:src="@drawable/icon_qiehuan_shuru"/>
 	        <TextView
 	            android:id="@+id/tv_send"
@@ -82,7 +83,8 @@
 	            android:singleLine="true" />
         </RelativeLayout>
         <TextView
-            android:id="@+id/btn_rcd"
+            android:id="@+id/btn_rcd"            
+            android:visibility="gone"
             android:layout_width="fill_parent"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
@@ -92,8 +94,7 @@
             android:layout_toRightOf="@+id/ivPopUp"
             android:background="@drawable/chat_send_btn"
             android:gravity="center"
-            android:text="按住说话"
-            android:visibility="gone" />
+            android:text="按住说话"/>
     </RelativeLayout>
     <xlist.XListView
         android:id="@+id/lv_letter"
