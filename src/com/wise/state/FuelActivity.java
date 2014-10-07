@@ -51,7 +51,7 @@ public class FuelActivity extends Activity {
 	TextView tv_chart_title, tv_chart_unit;
 	TextView tv_speed_text, tv_speed_avg_fuel, tv_speed_fuel;
 	// 标题
-	TextView tv_title_1, tv_title_2, tv_title_3,tv_title_map;
+	TextView tv_title_1, tv_title_2, tv_title_3, tv_title_map;
 	// 单位内容
 	TextView tv_content_1, tv_content_2, tv_content_3;
 
