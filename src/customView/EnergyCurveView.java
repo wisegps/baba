@@ -107,7 +107,11 @@ public class EnergyCurveView extends View{
 			paint.setStyle(Paint.Style.FILL);//设置填满  
 			paint.setStrokeWidth(3);
 			float y = realHeight - (value * i) * spacingOfY; //竖字Y轴坐标
-			canvas.drawText(""+(int)(value * i),padding + fontSize/2,y + fontSize/2,paint);//Y轴坐标
+			if(value < 1){				
+				canvas.drawText(String.format("%.1f",(value * i)),padding + fontSize/2,y + fontSize/2,paint);//Y轴坐标
+			}else{
+				canvas.drawText(""+(int)(value * i),padding + fontSize/2,y + fontSize/2,paint);//Y轴坐标
+			}
 			
 			Path path = new Path();
 			path.moveTo(padding+SPACING, y);       

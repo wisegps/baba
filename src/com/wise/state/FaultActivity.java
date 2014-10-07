@@ -31,7 +31,6 @@ import com.wise.car.DevicesAddActivity;
 import com.wise.notice.NoticeFragment;
 import com.wise.notice.NoticeFragment.BtnListener;
 import com.wise.setting.LoginActivity;
-import com.wise.setting.RegisterActivity;
 import com.wise.show.ShowActivity;
 import customView.AlwaysMarqueeTextView;
 import customView.HScrollLayout;
@@ -39,11 +38,8 @@ import customView.NoticeScrollTextView;
 import customView.OnViewChangeListener;
 import customView.ParentSlide;
 import data.CarData;
-import android.R.menu;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -59,7 +55,6 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -96,6 +91,10 @@ public class FaultActivity extends FragmentActivity {
 	private static final int get_counter = 8;
 	/** 获取gps信息 **/
 	private static final int get_gps = 10;
+	/**获取健康体检信息**/
+	private static final int get_health = 11;
+	/**获取驾驶指数**/
+	private static final int get_device = 12;
 
 	ImageView iv_weather, iv_noti;
 	TextView tv_city, tv_weather_time, tv_weather, tv_advice, tv_joy,
@@ -208,22 +207,6 @@ public class FaultActivity extends FragmentActivity {
 			Intent intent = new Intent(FaultActivity.this, LoginActivity.class);
 			intent.putExtra("fastTrack", true);
 			startActivity(intent);
-			// 给出快速注册
-//			new AlertDialog.Builder(FaultActivity.this)
-//					.setTitle("确认")
-//					.setMessage("如果您有终端且没有注册，可使用快速注册！")
-//					.setPositiveButton("好",
-//							new DialogInterface.OnClickListener() {
-//								@Override
-//								public void onClick(DialogInterface dialog,
-//										int which) {
-//									Intent intent = new Intent(
-//											FaultActivity.this,
-//											RegisterActivity.class);
-//									intent.putExtra("fastTrack", true);
-//									startActivity(intent);
-//								}
-//							}).setNegativeButton("取消", null).show();
 		}
 		myBroadCastReceiver = new MyBroadCastReceiver();
 		intentFilter = new IntentFilter();
@@ -241,8 +224,6 @@ public class FaultActivity extends FragmentActivity {
 	 */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// TODO Auto-generated method stub
-		// 想要动态的改变现有的菜单可以在此添加代码
 		startActivity(new Intent(FaultActivity.this, MoreActivity.class));
 		return true;
 	}
@@ -294,12 +275,11 @@ public class FaultActivity extends FragmentActivity {
 						Intent intent = new Intent(FaultActivity.this,
 								DriveActivity.class);
 						intent.putExtra("index_car", index);
-						// TODO 刷新
 						startActivityForResult(intent, 2);
 					}
 				}
 				break;
-			// TODO 油耗，花费，里程分别显示
+			//油耗，花费，里程分别显示
 			case R.id.Liner_distance:
 				getDataOne(FaultActivity.DISTANCE);
 				break;
@@ -329,7 +309,7 @@ public class FaultActivity extends FragmentActivity {
 	public static final int FEE = 2;// 费用
 	public static final int FUEL = 3;// 油耗
 
-	// TODO 根据跳转类型进行（里程，花费，油耗）页面显示
+	//根据跳转类型进行（里程，花费，油耗）页面显示
 	private void getDataOne(int type) {
 		if (Variable.carDatas != null && Variable.carDatas.size() != 0) {
 			String Device_id = Variable.carDatas.get(index).getDevice_id();
@@ -382,11 +362,45 @@ public class FaultActivity extends FragmentActivity {
 			case get_gps:
 				jsonGps(msg.obj.toString(), msg.arg1);
 				break;
+			case get_health:
+				//显示体检信息
+				try {
+					JSONObject jsonObject = new JSONObject(msg.obj.toString());
+					//健康指数
+					int health_score = jsonObject.getInt("health_score");
+					carViews.get(msg.arg1).getmTasksView().setProgress(health_score);
+					carViews.get(msg.arg1).getTv_score().setText(String.valueOf(health_score));
+					carViews.get(msg.arg1).getTv_title().setText("健康指数");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				//体检结果存起来
+				SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		        Editor editor = preferences.edit();
+		        editor.putString(Constant.sp_health_score + Variable.carDatas.get(msg.arg1).getObj_id(), msg.obj.toString());	        
+		        editor.commit();
+				break;
+			case get_device:
+				//TODO 驾驶指数
+				try {
+					JSONObject jsonObject = new JSONObject(msg.obj.toString());
+					int drive_score = jsonObject.getInt("drive_score");
+					carViews.get(msg.arg1).getTcv_drive().setProgress(drive_score);
+					carViews.get(msg.arg1).getTv_drive().setText(String.valueOf(drive_score));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				//存在本地
+				SharedPreferences preferences1 = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		        Editor editor1 = preferences1.edit();
+		        editor1.putString(Constant.sp_drive_score + Variable.carDatas.get(msg.arg1).getObj_id(), msg.obj.toString());
+		        editor1.commit();
+				break;
 			}
 		}
 	};
 
-	/** 获取所有数据 **/
+	/** 获取当前车辆需要显示的所有数据 **/
 	private void getTotalData() {
 		if (Variable.carDatas == null || Variable.carDatas.size() == 0) {
 			return;
@@ -396,14 +410,14 @@ public class FaultActivity extends FragmentActivity {
 		if (device_id == null || device_id.equals("")) {
 
 		} else {
-			try {
-				String Gas_no = "";
-				if (carData.getGas_no() == null
-						|| carData.getGas_no().equals("")) {
-					Gas_no = "93#(92#)";
-				} else {
-					Gas_no = carData.getGas_no();
-				}
+			String Gas_no = "";
+			if (carData.getGas_no() == null
+					|| carData.getGas_no().equals("")) {
+				Gas_no = "93#(92#)";
+			} else {
+				Gas_no = carData.getGas_no();
+			}
+			try {				
 				// 获取当前月的数据
 				String url = Constant.BaseUrl + "device/" + device_id
 						+ "/total?auth_code=" + Variable.auth_code
@@ -421,6 +435,29 @@ public class FaultActivity extends FragmentActivity {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			//判断有没有体检分数和驾驶得分
+			SharedPreferences preferences = getSharedPreferences(
+					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+			String result = preferences.getString(Constant.sp_health_score
+					+ carData.getObj_id(), "");
+			if (result.equals("")) {
+				//未体检过，从服务器获取体检信息
+				String url =Constant.BaseUrl + "device/" + device_id + "/health_exam?auth_code=" +Variable.auth_code;
+				new NetThread.GetDataThread(handler, url, get_health,index).start();
+			}
+			/** 驾驶信息 **/
+			String drive = preferences.getString(Constant.sp_drive_score
+					+ carData.getObj_id(), "");
+			if (drive.equals("")) {
+				//获取驾驶信息
+				try {
+					String url = Constant.BaseUrl + "device/" + device_id + "/day_drive?auth_code=" + Variable.auth_code + 
+								"&day=" + GetSystem.GetNowMonth().getDay() + "&city=" + URLEncoder.encode(Variable.City, "UTF-8") + "&gas_no=" + Gas_no;
+					new NetThread.GetDataThread(handler, url, get_device,index).start();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		// 获取限行信息
 		if (Variable.City == null || carData.getObj_name() == null
@@ -437,8 +474,7 @@ public class FaultActivity extends FragmentActivity {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
-
+		}		
 	}
 
 	/** 获取GPS信息 **/
@@ -472,8 +508,7 @@ public class FaultActivity extends FragmentActivity {
 					String.format("%.0f", jsonObject.getDouble("total_fee")));// 花费
 			carView.getTv_fuel().setText(
 					String.format("%.0f", jsonObject.getDouble("total_fuel")));// 油耗
-
-			// TODO 剩余里程显示
+			//剩余里程显示
 			if (jsonObject.getDouble("left_distance") == 0) {
 				carView.getTv_distance().setText(
 						String.format("%.0f",
@@ -602,7 +637,7 @@ public class FaultActivity extends FragmentActivity {
 	}
 
 	/** 滑动车辆布局 **/
-	private void initDataView() {// TODO 布局
+	private void initDataView() {//布局
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		hs_car.removeAllViews();
@@ -687,7 +722,7 @@ public class FaultActivity extends FragmentActivity {
 				} else {
 					try {
 						JSONObject jsonObject = new JSONObject(result);
-						// 健康指数
+						//健康指数
 						int health_score = jsonObject.getInt("health_score");
 						carView.getmTasksView().setProgress(health_score);
 						tv_score.setText(String.valueOf(health_score));
@@ -1076,7 +1111,7 @@ public class FaultActivity extends FragmentActivity {
 			// 体检返回重新布局
 			initDataView();
 		} else if (requestCode == 2) {
-			// TODO 驾驶习惯返回
+			//驾驶习惯返回
 			/** 驾驶信息 **/
 			SharedPreferences preferences = getSharedPreferences(
 					Constant.sharedPreferencesName, Context.MODE_PRIVATE);

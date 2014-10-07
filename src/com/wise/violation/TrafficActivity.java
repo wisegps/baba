@@ -732,12 +732,12 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 
 					} else {
 						if (cityData.getEngineno() == 1) {// 全部
-							if (engine_no.length() == 0) {
+							if (engine_no == null || engine_no.length() == 0) {
 								turnCarUpdate();
 								return;
 							}
 						} else {
-							if (engine_no.length() < cityData.getEngineno()) {
+							if (engine_no == null || engine_no.length() < cityData.getEngineno()) {
 								turnCarUpdate();
 								return;
 							}
@@ -748,12 +748,12 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 
 					} else {
 						if (cityData.getFrameno() == 1) {// 全部
-							if (frame_no.length() == 0) {
+							if (frame_no == null || frame_no.length() == 0) {
 								turnCarUpdate();
 								return;
 							}
 						} else {
-							if (frame_no.length() < cityData.getFrameno()) {
+							if (frame_no == null || frame_no.length() < cityData.getFrameno()) {
 								turnCarUpdate();
 								return;
 							}

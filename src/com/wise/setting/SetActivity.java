@@ -55,7 +55,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 	private static final int get_pic = 3;
 	
 	TextView tv_login,tv_city;
-	ImageView iv_logo;
+	ImageView iv_logo,iv_sex;
 	Button bt_login_out;
 	RequestQueue mQueue;
 	Platform platformQQ;
@@ -78,6 +78,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 		tv_login = (TextView)findViewById(R.id.tv_login);
 		tv_city = (TextView)findViewById(R.id.tv_city);
 		iv_logo = (ImageView)findViewById(R.id.iv_logo);
+		iv_sex = (ImageView)findViewById(R.id.iv_sex);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		TextView tv_car = (TextView)findViewById(R.id.tv_car);
@@ -128,6 +129,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 	            sendBroadcast(intent);
 		        bt_login_out.setVisibility(View.GONE);
 		        tv_login.setText("登录/注册");
+		        iv_sex.setVisibility(View.GONE);
 		        iv_logo.setImageResource(R.drawable.icon_add);
 		        platformQQ.removeAccount();
 		        platformSina.removeAccount();
@@ -185,8 +187,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 	        Editor editor1 = preferences1.edit();
 	        editor1.putString(Constant.sp_customer + Variable.cust_id, str);
 	        editor1.commit();
-		}	
-		//TODO customer里的密码没变更
+		}
 		try {
 			JSONObject jsonObject = new JSONObject(str);			
 			if(jsonObject.opt("status_code") == null){
@@ -197,21 +198,31 @@ public class SetActivity extends Activity implements TagAliasCallback{
 		        if(bimage != null){
 		        	iv_logo.setImageBitmap(bimage);
 		        }
-		        
+		        iv_sex.setVisibility(View.VISIBLE);
+		        String sex = jsonObject.getString("sex");
+		        if(sex.equals("0")){
+			        iv_sex.setImageResource(R.drawable.icon_man);
+		        }else{
+		        	iv_sex.setImageResource(R.drawable.icon_woman);
+		        }
 		        tv_login.setText(jsonObject.getString("cust_name"));
 		        String logo = jsonObject.getString("logo");
-		        mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {
-					@Override
-					public void onResponse(Bitmap response) {
-						GetSystem.saveImageSD(response, Constant.userIconPath, Variable.cust_id + ".png",100);
-						iv_logo.setImageBitmap(response);
-					}
-				}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
-					@Override
-					public void onErrorResponse(VolleyError error) {
-						error.printStackTrace();
-					}
-				}));
+		        if(logo == null || logo.equals("")){
+		        	
+		        }else{
+		        	mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {
+						@Override
+						public void onResponse(Bitmap response) {
+							GetSystem.saveImageSD(response, Constant.userIconPath, Variable.cust_id + ".png",100);
+							iv_logo.setImageBitmap(response);
+						}
+					}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
+						@Override
+						public void onErrorResponse(VolleyError error) {
+							error.printStackTrace();
+						}
+					}));
+		        }		        
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -237,10 +248,12 @@ public class SetActivity extends Activity implements TagAliasCallback{
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);		
 		GetSystem.myLog(TAG, "requestCode = " + ",resultCode= " + resultCode);
-		if(resultCode == 1){
-			String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-					+ "?auth_code=" + Variable.auth_code;
+		if(requestCode == 1 && resultCode == 1){
+			GetSystem.myLog(TAG, "登录返回");
+			String url = Constant.BaseUrl + "customer/" + Variable.cust_id+ "?auth_code=" + Variable.auth_code;
 			new NetThread.GetDataThread(handler, url, get_customer).start();
+			setResult(1);
+			finish();
 		}else if(resultCode == 2){
 			tv_city.setText(Variable.City);
 		}

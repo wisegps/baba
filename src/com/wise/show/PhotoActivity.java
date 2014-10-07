@@ -719,7 +719,6 @@ public class PhotoActivity extends Activity {
 			}
 			//TODO 读取大图片
 			imageUrl = jsonObject.getString("big_pic_url");
-			System.out.println("imageUrl = " + imageUrl);
 			int lastSlashIndex = imageUrl.lastIndexOf("/");
 			imageName = imageUrl.substring(lastSlashIndex + 1);
 			if (new File(getImagePath(imageUrl)).exists()) {

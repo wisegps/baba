@@ -196,6 +196,13 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 					//如果是私信的话,把头像url取下
 					if(friend_type == 99){
 						noticeData.setLogo(jsonObject.getString("logo"));
+						//判断是文本还是图片
+						int type = jsonObject.getInt("type");
+						if(type == 1){
+							noticeData.setContent("[图片]");
+						}else if(type == 2){
+							noticeData.setContent("[语音]");
+						}
 					}
 					noticeDatas.add(noticeData);
 				}				
@@ -350,6 +357,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		public void setLogo(String logo) {
 			this.logo = logo;
 		}
+		
 		@Override
 		public String toString() {
 			return "NoticeData [friend_id=" + friend_id + ", friend_type="

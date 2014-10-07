@@ -707,8 +707,8 @@ public class FaultDetectionActivity extends Activity{
 				return;
 			}
 			initVariable();
-			String url =Constant.BaseUrl + "device/" + Device_id + "/health_exam?auth_code=bba2204bcd4c1f87a19ef792f1f68404";
-			new Thread(new NetThread.GetDataThread(handler, url, getData,index)).start();
+			String url =Constant.BaseUrl + "device/" + Device_id + "/health_exam?auth_code=" +Variable.auth_code;
+			new NetThread.GetDataThread(handler, url, getData,index).start();
 		}
 	}
 	

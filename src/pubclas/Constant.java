@@ -21,12 +21,12 @@ public class Constant {
 	public static String oss_accessKey = "iAxAHoAuG1ZYwjIRLfyYKK2oF9WcCe";
 
 	/** url,42.121.109.221:8002 **/
+	//public static String BaseUrl = "http://183.12.66.164:8002/";
 	public static String BaseUrl = "http://api.bibibaba.cn/";
 	/** 图片地址 **/
 	public static String ImageUrl = "http://img.wisegps.cn/logo/";
 	/** 图片路径存储地址 **/
-	public static String BasePath = Environment.getExternalStorageDirectory()
-			.getPath() + "/baba/";
+	public static String BasePath = Environment.getExternalStorageDirectory().getPath() + "/baba/";
 	/** 车品牌logo **/
 	public static String VehicleLogoPath = BasePath + "vehicleLogo/";
 	/** 存放用户头像 **/

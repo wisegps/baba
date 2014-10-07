@@ -30,20 +30,25 @@ public class SmsReceiver extends BroadcastReceiver{
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {        	
         	//TODO 确认消息发送，上传到自己服务器 
         	String result = intent.getExtras().getString(JPushInterface.EXTRA_EXTRA);
+        	System.out.println("result = " + result);
+        	//{"friend_id":230,"cust_name":"honesty","msg":"[图片]","url":"http:\/\/img.bibibaba.cn\/2301412067020878.png","msg_type":1}
+        	//通知消息只有msg_type,
         	String msg = "";
         	String friend_id = "";
-        	String msg_type = "";
         	String msg_name = "通知";
+        	boolean isLetter = true;
         	try {
         		JSONObject jsonObject = new JSONObject(result);
+        		if(jsonObject.opt("friend_id") == null){
+        			isLetter = false;
+        		}
         		msg = jsonObject.getString("msg");
         		friend_id = jsonObject.getString("friend_id");
-        		msg_type = jsonObject.getString("msg_type");
         		msg_name = jsonObject.getString("cust_name");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-        	if(msg_type.equals("0")){
+        	if(isLetter){
         		//boolean isTask = true;
             	ActivityManager am = (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
         		List<RunningTaskInfo> Infos = am.getRunningTasks(1);
