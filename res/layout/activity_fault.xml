@@ -1,230 +1,265 @@
-<LinearLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:background="@color/gray_bg">
+    android:background="@color/gray_bg"
+    android:orientation="vertical" >
+
     <customView.ParentSlide
         android:id="@+id/smv_content"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <RelativeLayout 
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent">
-	        <RelativeLayout 
-		    	android:id="@+id/ll_main"
-			    android:layout_width="fill_parent"
-			    android:layout_height="@dimen/title_hight"
-		        android:background="@color/title_back">
-			    <TextView
-			         android:layout_width="fill_parent"
-			         android:layout_height="wrap_content"
-			         android:layout_centerInParent="true"
-			         android:text="叭叭"
-			         android:gravity="center"
-			         android:textSize="@dimen/title"
-			         android:textColor="@color/white" />
-			    <ImageView
-		            android:id="@+id/iv_back"
-		            android:layout_width="@dimen/title_hight"
-		            android:layout_height="@dimen/title_hight"
-		            android:layout_centerVertical="true"
-		            android:layout_marginLeft="@dimen/margins"
-		            android:padding="@dimen/margins"
-		            android:visibility="gone"
-		            android:src="@drawable/nav_back" />
-			    <ImageView 
-			        android:id="@+id/iv_menu"
-			        android:layout_width="@dimen/title_hight"
-			        android:layout_height="@dimen/title_hight"
-			        android:layout_marginRight="@dimen/margins"
-			        android:layout_alignParentRight="true"
-			        android:padding="@dimen/margins"
-			        android:layout_centerVertical="true"
-			        android:src="@drawable/bg_set"/>
-			    <ImageView 
-			        android:id="@+id/iv_noti"
-		            android:layout_alignRight="@id/iv_menu"
-		            android:layout_marginTop="5dp"
-		            android:layout_marginRight="5dp"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:visibility="gone"
-		            android:src="@drawable/small_red_dot"/>
-			</RelativeLayout>	
-		    <LinearLayout 
-		        android:id="@+id/ll_bottom"
-		        android:layout_alignParentBottom="true"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:orientation="horizontal">		        
-				<Button
-		            android:id="@+id/bt_ask"
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:padding="@dimen/margins"
-		            android:layout_weight="1"
-		            android:textColor="@color/white"
-		            android:textSize="@dimen/bt"
-		            android:background="@drawable/bg_green_lights"
-		            android:text="问一下"/>        
-		        <Button
-		            android:id="@+id/bt_show"
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:padding="@dimen/margins"
-		            android:layout_weight="1"
-		            android:textColor="@color/white"
-		            android:textSize="@dimen/bt"
-		            android:background="@drawable/bg_green"
-		            android:text="秀一下"/>
-		    </LinearLayout>
-			<LinearLayout 
-			    android:layout_width="fill_parent"
-			    android:layout_height="fill_parent"
-			    android:layout_below="@id/ll_main"
-			    android:layout_above="@id/ll_bottom">
-			    <ScrollView 
-			        android:layout_width="fill_parent"
-			        android:layout_height="fill_parent"
-			        android:scrollbars="none">
-			        <LinearLayout 
-			            android:layout_width="fill_parent"
-			            android:layout_height="wrap_content"
-			            android:orientation="vertical">
-			            <customView.HScrollLayout
-			                android:id="@+id/hs_car"
-					        android:layout_width="fill_parent"
-					        android:layout_height="fill_parent">
-					        </customView.HScrollLayout>
-						    <View
-						        android:layout_width="fill_parent"
-						        android:layout_height="0.5dp"
-						        android:background="@color/line" />
-					        <customView.NoticeScrollTextView 
-					            android:id="@+id/nstv_message"
-					            android:visibility="gone"
-						        android:layout_width="fill_parent"
-						        android:layout_height="35dp">					            
-					        </customView.NoticeScrollTextView>					        
-					    <RelativeLayout 
-					        android:layout_width="fill_parent"
-					        android:layout_height="wrap_content"
-					        android:padding="@dimen/margins">
-					        <ImageView
-					            android:id="@+id/iv_weather" 
-					            android:layout_width="50dp"
-					            android:layout_height="50dp"
-					            android:src="@drawable/x1"
-					            android:layout_centerVertical="true"
-					            android:layout_marginLeft="@dimen/margins"
-            					android:layout_marginRight="@dimen/double_margins"/>
-					        <LinearLayout
-					            android:layout_toRightOf="@id/iv_weather" 
-					            android:layout_width="fill_parent"
-					            android:layout_height="wrap_content"
-					            android:orientation="vertical">
-					            <RelativeLayout 
-					                android:layout_width="fill_parent"
-					                android:layout_height="wrap_content">
-					                <TextView
-					                    android:id="@+id/tv_city_weather"
-					                    android:layout_width="wrap_content"
-					                    android:layout_height="wrap_content"
-					                    android:textColor="@color/blue_light"
-					                    android:textSize="@dimen/content"
-					                    android:text="今日天气 "/>
-					                <TextView
-					                    android:id="@+id/tv_city"
-					                    android:layout_width="wrap_content"
-					                    android:layout_height="wrap_content"
-					                    android:textColor="@color/blue_light"
-					                    android:textSize="@dimen/content"
-					                    android:layout_toRightOf="@id/tv_city_weather"
-					                    android:text="[  ]"/>
-					                <TextView
-					                    android:id="@+id/tv_weather_time"
-					                    android:layout_width="wrap_content"
-					                    android:layout_height="wrap_content"
-					                    android:textColor="@color/blue_light"
-					                    android:textSize="@dimen/content"
-					                    android:layout_alignParentRight="true"/>
-					            </RelativeLayout>
-					            <TextView
-					                android:id="@+id/tv_weather" 
-					                android:layout_width="fill_parent"
-					                android:layout_height="wrap_content"
-					                android:layout_marginTop="5dp"
-					                android:textSize="@dimen/content"
-					                android:text="26℃~32℃ 多云"
-					                android:textColor="@color/navy"/>
-					            <TextView
-					                android:id="@+id/tv_advice"
-					                android:layout_width="fill_parent"
-					                android:layout_height="wrap_content"
-					                android:layout_marginTop="5dp"
-					                android:textColor="@color/navy"
-					                android:textSize="@dimen/content"
-					                android:text="今日有雨，道路实话，请减慢车速，小心驾驶"/>
-					        </LinearLayout>
-					    </RelativeLayout>
-					    <View
-					        android:layout_width="fill_parent"
-					        android:layout_height="0.5dp"
-					        android:background="@color/line" />
-					    <RelativeLayout 
-					        android:layout_width="fill_parent"
-					        android:layout_height="wrap_content"
-					        android:padding="@dimen/margins">
-					        <ImageView
-					            android:id="@+id/iv_happy" 
-					            android:src="@drawable/icon_c_happy"
-					            android:layout_width="50dp"
-					            android:layout_height="50dp"
-					            android:layout_centerVertical="true"
-					            android:layout_marginLeft="@dimen/margins"
-            					android:layout_marginRight="@dimen/double_margins"/>
-					        <LinearLayout
-					            android:layout_toRightOf="@id/iv_happy" 
-					            android:layout_width="fill_parent"
-					            android:layout_height="wrap_content"
-					            android:orientation="vertical">
-					            <RelativeLayout 
-					                android:layout_width="fill_parent"
-					                android:layout_height="wrap_content">
-					                <TextView
-					                    android:layout_width="wrap_content"
-					                    android:layout_height="wrap_content"
-					                    android:textColor="@color/blue_light"
-					                    android:textSize="@dimen/content"
-					                    android:text="乐一下"/>
-					                <TextView
-					                    android:id="@+id/tv_happy_time"
-					                    android:layout_width="wrap_content"
-					                    android:layout_height="wrap_content"
-					                    android:textColor="@color/blue_light"
-					                    android:textSize="@dimen/content"
-					                    android:layout_alignParentRight="true"/>
-					            </RelativeLayout>
-					            <TextView
-					                android:id="@+id/tv_joy"
-					                android:layout_width="fill_parent"
-					                android:layout_height="wrap_content"
-					                android:layout_marginTop="5dp"
-					                android:textColor="@color/navy"
-					                android:text = "早上赶公共汽车，到站台的时候，汽车已经启动了。于是我只好边追边喊：师傅，等等我！师傅，等等我呀！这时一乘客从车窗探出头来冲我说了一句：悟空你就别追了。"
-					                android:textSize="@dimen/content"/>
-					        </LinearLayout>
-					    </RelativeLayout>
-			        </LinearLayout>
-			    </ScrollView>
-			</LinearLayout>
-	    </RelativeLayout>
-	    <LinearLayout 
+        android:layout_height="fill_parent" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <RelativeLayout
+                android:id="@+id/ll_main"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/title_hight"
+                android:background="@color/title_back" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="叭叭"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/title" />
+
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="@dimen/title_hight"
+                    android:layout_height="@dimen/title_hight"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/margins"
+                    android:padding="@dimen/margins"
+                    android:src="@drawable/nav_back"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/iv_menu"
+                    android:layout_width="@dimen/title_hight"
+                    android:layout_height="@dimen/title_hight"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/margins"
+                    android:padding="@dimen/margins"
+                    android:src="@drawable/bg_set" />
+
+                <ImageView
+                    android:id="@+id/iv_noti"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@id/iv_menu"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/small_red_dot"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_bottom"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/bt_ask"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_green_lights"
+                    android:padding="@dimen/margins"
+                    android:text="问一下"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/bt" />
+
+                <Button
+                    android:id="@+id/bt_show"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_green"
+                    android:padding="@dimen/margins"
+                    android:text="秀一下"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/bt" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_above="@id/ll_bottom"
+                android:layout_below="@id/ll_main" >
+
+                <ScrollView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:scrollbars="none" >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <customView.HScrollLayout
+                            android:id="@+id/hs_car"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent" >
+                        </customView.HScrollLayout>
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="0.5dp"
+                            android:background="@color/line" />
+
+                        <customView.NoticeScrollTextView
+                            android:id="@+id/nstv_message"
+                            android:layout_width="fill_parent"
+                            android:layout_height="35dp"
+                            android:visibility="gone" >
+                        </customView.NoticeScrollTextView>
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/margins" >
+
+                            <ImageView
+                                android:id="@+id/iv_weather"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="@dimen/margins"
+                                android:layout_marginRight="@dimen/double_margins"
+                                android:src="@drawable/x1" />
+
+                            <LinearLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/iv_weather"
+                                android:orientation="vertical" >
+
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content" >
+
+                                    <TextView
+                                        android:id="@+id/tv_city_weather"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="今日天气 "
+                                        android:textColor="@color/blue_light"
+                                        android:textSize="@dimen/content" />
+
+                                    <TextView
+                                        android:id="@+id/tv_city"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_toRightOf="@id/tv_city_weather"
+                                        android:text="[  ]"
+                                        android:textColor="@color/blue_light"
+                                        android:textSize="@dimen/content" />
+
+                                    <TextView
+                                        android:id="@+id/tv_weather_time"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:textColor="@color/blue_light"
+                                        android:textSize="@dimen/content" />
+                                </RelativeLayout>
+
+                                <TextView
+                                    android:id="@+id/tv_weather"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:text="26℃~32℃ 多云"
+                                    android:textColor="@color/navy"
+                                    android:textSize="@dimen/content" />
+
+                                <TextView
+                                    android:id="@+id/tv_advice"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:text="今日有雨，道路实话，请减慢车速，小心驾驶"
+                                    android:textColor="@color/navy"
+                                    android:textSize="@dimen/content" />
+                            </LinearLayout>
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="0.5dp"
+                            android:background="@color/line" />
+
+                        <RelativeLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/margins" >
+
+                            <ImageView
+                                android:id="@+id/iv_happy"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="@dimen/margins"
+                                android:layout_marginRight="@dimen/double_margins"
+                                android:src="@drawable/icon_c_happy" />
+
+                            <LinearLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@id/iv_happy"
+                                android:orientation="vertical" >
+
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content" >
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="乐一下"
+                                        android:textColor="@color/blue_light"
+                                        android:textSize="@dimen/content" />
+
+                                    <TextView
+                                        android:id="@+id/tv_happy_time"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:textColor="@color/blue_light"
+                                        android:textSize="@dimen/content" />
+                                </RelativeLayout>
+
+                                <TextView
+                                    android:id="@+id/tv_joy"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:text="早上赶公共汽车，到站台的时候，汽车已经启动了。于是我只好边追边喊：师傅，等等我！师傅，等等我呀！这时一乘客从车窗探出头来冲我说了一句：悟空你就别追了。"
+                                    android:textColor="@color/navy"
+                                    android:textSize="@dimen/content" />
+                            </LinearLayout>
+                        </RelativeLayout>
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
             android:id="@+id/ll_notice"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="vertical"></LinearLayout>
-    </customView.ParentSlide>        	
+            android:orientation="vertical" >
+        </LinearLayout>
+    </customView.ParentSlide>
+
 </LinearLayout>
