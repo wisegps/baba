@@ -47,7 +47,7 @@
             android:padding="5dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/chatting_setmode_msg_btn" />
+            android:src="@drawable/chatto_voice_friend" />
         <RelativeLayout
             android:id="@+id/btn_bottom"
             android:layout_toRightOf="@id/ivPopUp" 
@@ -92,7 +92,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_toRightOf="@+id/ivPopUp"
-            android:background="@drawable/chat_send_btn"
+            android:background="@drawable/bg_letter_white"
             android:gravity="center"
             android:text="按住说话"/>
     </RelativeLayout>

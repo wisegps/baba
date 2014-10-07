@@ -39,15 +39,15 @@ public class NoticeActivity extends FragmentActivity{
 			try {
 				jsonObject = new JSONObject(extras);
 				int msg_type = jsonObject.getInt("msg_type");
-				if(msg_type == 0){//私信界面
-					Intent intent = new Intent(NoticeActivity.this, LetterActivity.class);
-					intent.putExtra("cust_id", jsonObject.getString("friend_id"));
-			        startActivity(intent);
-				}else{//消息界面
+				if(jsonObject.opt("friend_id") == null){
 					Intent intent = new Intent(NoticeActivity.this, SmsActivity.class);
 					intent.putExtra("type", msg_type);
 			        startActivity(intent);
-				}
+        		}else{
+        			Intent intent = new Intent(NoticeActivity.this, LetterActivity.class);
+					intent.putExtra("cust_id", jsonObject.getString("friend_id"));
+			        startActivity(intent);
+        		}
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}

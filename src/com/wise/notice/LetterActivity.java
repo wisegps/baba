@@ -26,7 +26,6 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.wise.baba.R;
-import com.wise.baba.R.layout;
 import com.wise.show.ImageDetailsActivity;
 import customView.CircleImageView;
 import customView.PopView;
@@ -37,6 +36,7 @@ import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ClipboardManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -160,8 +160,6 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		friend_id = getIntent().getStringExtra("cust_id");
 		cust_name = getIntent().getStringExtra("cust_name");
 		logo = getIntent().getStringExtra("logo");
-		System.out.println("cust_id = " + friend_id
-				+ " , cust_name = cust_name " + " , logo = " + logo);
 		tv_friend.setText(cust_name);
 		// 读取朋友对应的图片
 		if (new File(Constant.userIconPath + friend_id + ".png").exists()) {
@@ -214,12 +212,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					btn_rcd.setVisibility(View.GONE);
 					btn_bottom.setVisibility(View.VISIBLE);
 					btn_vocie = false;
-					ivPopUp.setImageResource(R.drawable.chatting_setmode_msg_btn);
+					ivPopUp.setImageResource(R.drawable.chatto_voice_friend);
 
 				} else {
 					btn_rcd.setVisibility(View.VISIBLE);
 					btn_bottom.setVisibility(View.GONE);
-					ivPopUp.setImageResource(R.drawable.chatting_setmode_voice_btn);
+					ivPopUp.setImageResource(R.drawable.icon_qiehuan_shuru);
 					btn_vocie = true;
 				}
 				break;
@@ -463,7 +461,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			if (meLogo.equals("")) {
+			if (!meLogo.equals("")) {
 				// 获取自己头像
 				mQueue.add(new ImageRequest(meLogo,
 						new Response.Listener<Bitmap>() {
@@ -528,6 +526,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							.findViewById(R.id.tv_me_content);
 					viewMe.tv_time = (TextView) convertView
 							.findViewById(R.id.tv_time);
+					viewMe.tv_sound_lenght = (TextView) convertView
+							.findViewById(R.id.tv_sound_lenght);
 					viewMe.iv_me_pic = (ImageView) convertView
 							.findViewById(R.id.iv_me_pic);
 					convertView.setTag(viewMe);
@@ -667,6 +667,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					viewMe.iv_me.setImageResource(R.drawable.icon_people_no);
 				}
 				if (letterData.getContent_type() == type_text) {
+					viewMe.tv_sound_lenght.setVisibility(View.GONE);
 					viewMe.iv_me_pic.setVisibility(View.GONE);
 					viewMe.tv_me_content.setVisibility(View.VISIBLE);
 					viewMe.tv_me_content.setText(letterData.getContent());
@@ -675,6 +676,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				} else if (letterData.getContent_type() == type_pic) {
 					viewMe.iv_me_pic.setVisibility(View.VISIBLE);
 					viewMe.tv_me_content.setVisibility(View.GONE);
+					viewMe.tv_sound_lenght.setVisibility(View.GONE);
 					//显示
 					String imageUrl = letterData.getUrl();
 					int lastSlashIndex = imageUrl.lastIndexOf("/");
@@ -701,6 +703,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					viewMe.tv_me_content
 							.setCompoundDrawablesWithIntrinsicBounds(0, 0,
 									R.drawable.chatto_voice_me, 0);
+					try {
+						//long time = GetSystem.getAmrDuration(new File(getImagePath(letterData.getUrl())));
+						//viewMe.tv_sound_lenght.setText(""+abdddd(getImagePath(letterData.getUrl())));
+						viewMe.tv_sound_lenght.setVisibility(View.GONE);
+						//TODO 刷新
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 				viewMe.tv_me_content.setOnClickListener(new OnClickListener() {					
 					@Override
@@ -781,6 +791,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			CircleImageView iv_me;
 			TextView tv_me_content;
 			TextView tv_time;
+			TextView tv_sound_lenght;
 			ImageView iv_me_pic;
 		}
 	}
@@ -1085,6 +1096,42 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		cursor.moveToFirst();
 		return cursor.getString(column_index);
 	}
+	public int abdddd(String Path){
+		System.out.println("Path = " + Path);
+		int durationIndex = 0;
+		String[] projection = { MediaStore.Audio.Media.DATA};
+		ContentResolver mResolver = getContentResolver();
+		Cursor cursor = mResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI , null, MediaStore.Audio.Media.DATA + "=?", new String[]{Path}, null);
+		if(cursor != null){
+			//TODO 获取分数
+			cursor.moveToFirst();
+			durationIndex = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
+			System.out.println("-------------------------------------------------------");
+			System.out.println("durationIndex = " + durationIndex);
+			System.out.println("TITLE_KEY = " + cursor.getColumnIndex(MediaStore.Audio.Media.TITLE_KEY));
+			System.out.println("DEFAULT_SORT_ORDER = " + cursor.getColumnIndex(MediaStore.Audio.Media.DEFAULT_SORT_ORDER));
+			System.out.println("_COUNT = " + cursor.getColumnIndex(MediaStore.Audio.Media._COUNT));
+			System.out.println("_ID = " + cursor.getColumnIndex(MediaStore.Audio.Media._ID));
+			System.out.println("ALBUM = " + cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+			System.out.println("ALBUM_ID = " + cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+			System.out.println("ALBUM_KEY = " + cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
+			System.out.println("ARTIST = " + cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));			
+			System.out.println("ARTIST_ID = " + cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
+			System.out.println("ARTIST_KEY = " + cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_KEY));
+			System.out.println("BOOKMARK = " + cursor.getColumnIndex(MediaStore.Audio.Media.BOOKMARK));
+			System.out.println("COMPOSER = " + cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
+			System.out.println("DATA = " + cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+			System.out.println("DATE_ADDED = " + cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED));
+			System.out.println("DATE_MODIFIED = " + cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED));
+			System.out.println("IS_MUSIC = " + cursor.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC));
+			System.out.println("SIZE = " + cursor.getColumnIndex(MediaStore.Audio.Media.SIZE));
+			System.out.println("TITLE = " + cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+		}else{
+			System.out.println("cursor 为空");
+		}
+		cursor.close();
+		return durationIndex;
+	}
 
 	private String getImagePath(String imageUrl) {
 		int lastSlashIndex = imageUrl.lastIndexOf("/");
@@ -1121,16 +1168,13 @@ public class LetterActivity extends Activity implements IXListViewListener {
 
 	/** 获取显示区域的图片 **/
 	private void getPersionImage() {
-		GetSystem.myLog(TAG, "getPersionImage");
 		int start = lv_letter.getFirstVisiblePosition();
 		int stop = lv_letter.getLastVisiblePosition();
-		System.out.println("start = " + start + " , stop = " + stop);
 		for (int i = start; i < stop; i++) {
 			if (start == 0 || stop == (letterDatas.size() - 1)) {
 
 			} else {
 				// 判断图片是否存在
-				System.out.println("i-1 = " + (i - 1));
 				if (new File(getImagePath(letterDatas.get(i - 1).getUrl()))
 						.exists()) {
 
@@ -1278,8 +1322,6 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						}, 500);
 						return false;
 					}
-					System.out.println("endVoiceT = " + endVoiceT
-							+ " , startVoiceT = " + startVoiceT);
 					// TODO 录制完毕
 					saveSound(voiceName);
 					rcChat_popup.setVisibility(View.GONE);
@@ -1287,7 +1329,6 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				}
 			}
 			if (event.getY() < btn_rc_Y) {// 手势按下的位置不在语音录制按钮的范围内
-				System.out.println("5");
 				Animation mLitteAnimation = AnimationUtils.loadAnimation(this,
 						R.anim.cancel_rc);
 				Animation mBigAnimation = AnimationUtils.loadAnimation(this,
@@ -1379,13 +1420,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			if (mMediaPlayer.isPlaying()) {
 				mMediaPlayer.stop();
 			}
+			System.out.println("Duration = " + mMediaPlayer.getDuration());
 			mMediaPlayer.reset();
 			mMediaPlayer.setDataSource(name);
 			mMediaPlayer.prepare();
 			mMediaPlayer.start();
 			mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
 				public void onCompletion(MediaPlayer mp) {
-
+					System.out.println("播放完毕");
 				}
 			});
 

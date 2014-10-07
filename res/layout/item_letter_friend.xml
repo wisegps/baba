@@ -22,6 +22,7 @@
     <LinearLayout 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="50dp"
         android:orientation="horizontal">
         <customView.CircleImageView 
 	        android:id="@+id/iv_friend"
@@ -34,9 +35,7 @@
 	        app:border_color="@color/white" />
 	    <RelativeLayout 
 	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"        
-	        android:paddingLeft="@dimen/margins"
-	        android:paddingRight="@dimen/margins"
+	        android:layout_height="wrap_content"  
 		    android:background="@drawable/chat_duifang_shuru">
 		    <TextView 
 		        android:id="@+id/tv_friend_content" 
@@ -44,8 +43,9 @@
 		        android:layout_height="wrap_content"
 		        android:textSize="@dimen/content"
 		        android:textColor="@color/navy"
+		        android:padding="5dp"
 		        android:layout_centerVertical="true"
-		        android:text="你是专门修宝马的吗"/>
+		        android:text="你是专门修宝马的吗吗吗吗吗吗吗吗吗11111111111111111111111"/>
 		    <ImageView
 		        android:id="@+id/iv_friend_pic" 
 		        android:scaleType="matrix"

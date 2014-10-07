@@ -18,6 +18,7 @@
         android:visibility="gone"/>
     <RelativeLayout 
     	android:gravity="center_vertical"
+    	android:layout_marginLeft="50dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
         <customView.CircleImageView 
@@ -29,12 +30,11 @@
 	        android:src="@drawable/icon_car"
 	        app:border_width="1dp"
 	        app:border_color="@color/white" />
-	    <RelativeLayout 
+	    <RelativeLayout
+	        android:id="@id/rl_content" 
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:orientation="horizontal"
-	        android:paddingLeft="@dimen/margins"
-	        android:paddingRight="15dp"
 	        android:layout_toLeftOf="@id/iv_me"
 	        android:background="@drawable/chat_i_shuru">	        
 		    <TextView
@@ -42,7 +42,8 @@
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:textSize="@dimen/content"
-		        android:textColor="@color/navy"
+		        android:textColor="@color/navy"		        
+		        android:padding="5dp"
 		        android:layout_centerVertical="true"
 		        android:text="你是专门修宝马的吗"/>
 		    <ImageView
@@ -51,5 +52,15 @@
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"/>
 	    </RelativeLayout>
+	    <TextView
+	        android:id="@+id/tv_sound_lenght"
+	        android:layout_toLeftOf="@id/rl_content"
+	        android:layout_centerVertical="true"
+	        android:layout_marginRight="5dp"
+	        android:textColor="@color/navy"
+	        android:visibility="gone"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="12"/>
     </RelativeLayout>    
 </LinearLayout>
