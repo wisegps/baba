@@ -7,31 +7,29 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import model.BaseData;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
+
 import pubclas.Blur;
 import pubclas.Constant;
 import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
-import sql.DBExcute;
-import sql.DBHelper;
 import com.aliyun.android.oss.task.PutObjectTask;
 import com.wise.baba.R;
 import com.wise.car.ModelsActivity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -127,11 +125,11 @@ public class ShowCarAcitivity extends Activity{
 				jsonSaveResult(msg.obj.toString());
 				break;
 			case getBrand:
-				DBExcute dBExcute = new DBExcute();
-				ContentValues contentValues = new ContentValues();
-				contentValues.put("Title", "carBrank");
-				contentValues.put("Content", msg.obj.toString());
-				dBExcute.InsertDB(ShowCarAcitivity.this, contentValues,Constant.TB_Base);
+				//保存到数据库
+				BaseData baseData = new BaseData();
+				baseData.setTitle("carBrank");
+				baseData.setContent("msg.obj.toString()");
+				baseData.save();
 				result = msg.obj.toString();
 				jsonBrand(msg.obj.toString());
 				break;
@@ -326,19 +324,12 @@ public class ShowCarAcitivity extends Activity{
 	
 	/**获取默认车型**/
 	private void getDefaultCarSeries(){
-		//获取车品牌列表
-		DBHelper dbHelper = new DBHelper(ShowCarAcitivity.this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor cursor = db.rawQuery("select * from " + Constant.TB_Base + " where Title = ?", new String[] { "carBrank" });
-		if (cursor.moveToFirst()) {
-			Log.e("数据库数据", "数据库数据");
-			jsonBrand(cursor.getString(cursor.getColumnIndex("Content")));
-		} else {
-			Log.e("服务器数据", "服务器数据");
+		List<BaseData> baseDatas = DataSupport.where("Title = ?","carBrank").find(BaseData.class);
+		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
 			new NetThread.GetDataThread(handler, Constant.BaseUrl + "base/car_brand",getBrand).start();
-		}
-		cursor.close();
-		db.close();		
+		}else{
+			jsonBrand(baseDatas.get(0).getContent());
+		}	
 	}
 	
 	private void jsonBrand(String result){

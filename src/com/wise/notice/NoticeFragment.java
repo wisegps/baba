@@ -32,7 +32,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+/**
+ * 通知列表
+ * @author honesty
+ *
+ */
 public class NoticeFragment extends Fragment implements IXListViewListener{
 
 	private final int getNotice = 1;

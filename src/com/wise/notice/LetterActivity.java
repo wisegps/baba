@@ -1263,7 +1263,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					return false;
 				}
 				if (event.getY() > btn_rc_Y && event.getX() > btn_rc_X) {// 判断手势按下的位置是否是语音录制按钮的范围内
-					btn_rcd.setBackgroundResource(R.drawable.voice_rcd_btn_pressed);
+					btn_rcd.setBackgroundResource(R.drawable.bg_letter_white_press);
 					rcChat_popup.setVisibility(View.VISIBLE);
 					voice_rcd_hint_loading.setVisibility(View.VISIBLE);
 					voice_rcd_hint_rcding.setVisibility(View.GONE);
@@ -1286,12 +1286,13 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					flag = 2;
 				}
 			} else if (event.getAction() == MotionEvent.ACTION_UP && flag == 2) {// 松开手势时执行录制完成
-				btn_rcd.setBackgroundResource(R.drawable.voice_rcd_btn_nor);
+				btn_rcd.setBackgroundResource(R.drawable.bg_letter_white);
 				if (event.getY() >= del_Y
 						&& event.getY() <= del_Y + del_re.getHeight()
 						&& event.getX() >= del_x
 						&& event.getX() <= del_x + del_re.getWidth()) {
 					// 取消发送
+					System.out.println("取消发送");
 					rcChat_popup.setVisibility(View.GONE);
 					img1.setVisibility(View.VISIBLE);
 					del_re.setVisibility(View.GONE);
@@ -1302,6 +1303,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						file.delete();
 					}
 				} else {
+					System.out.println("发送");
 					voice_rcd_hint_rcding.setVisibility(View.GONE);
 					stop();
 					endVoiceT = System.currentTimeMillis();

@@ -12,6 +12,7 @@ import pubclas.NetThread;
 import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
+import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
@@ -68,7 +69,7 @@ public class DevicesAddActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		AppApplication.getActivityInstance().addActivity(this);
+		ManageActivity.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_devices_add);
 		ll_wait = (WaitLinearLayout) findViewById(R.id.ll_wait);
 		ll_wait.setOnFinishListener(onFinishListener);
@@ -215,7 +216,7 @@ public class DevicesAddActivity extends Activity {
 						.toString()));
 				Intent intent = new Intent(Constant.A_RefreshHomeCar);
 				sendBroadcast(intent);
-				AppApplication.getActivityInstance().exit();
+				ManageActivity.getActivityInstance().exit();
 				break;
 			case update_serial:
 				try {

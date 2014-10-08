@@ -106,27 +106,27 @@ public class Constant {
 	/**
 	 * 基础表
 	 */
-	public static String TB_Base = "TB_Base";
+	//public static String TB_Base = "TB_Base";
 	/**
 	 * 我的爱车
 	 */
-	public static String TB_Vehicle = "TB_Vehicle";
+	//public static String TB_Vehicle = "TB_Vehicle";
 	/**
 	 * 我的终端
 	 */
-	public static String TB_Devices = "TB_Devices";
+	//public static String TB_Devices = "TB_Devices";
 	/**
 	 * 我的收藏
 	 */
-	public static String TB_Collection = "TB_Collection";
+	//public static String TB_Collection = "TB_Collection";
 	/**
 	 * 我的消息
 	 */
-	public static String TB_Sms = "TB_Sms";
+	//public static String TB_Sms = "TB_Sms";
 	/**
 	 * 违章城市表
 	 */
-	public static String TB_IllegalCity = "TB_IllegalCity";
+	//public static String TB_IllegalCity = "TB_IllegalCity";
 	/**
 	 * 定位成功发送广播，选择城市用到
 	 */

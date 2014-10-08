@@ -4,22 +4,19 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import model.BaseData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
 import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.Variable;
-import sql.DBExcute;
-import sql.DBHelper;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -69,22 +66,17 @@ public class FoursActivity extends Activity {
 
 		brank = (String) getIntent().getStringExtra("brank");
 		city = (String) getIntent().getStringExtra("city");
-		//读取本地数据
-		DBHelper dBHelper = new DBHelper(FoursActivity.this);
-		SQLiteDatabase reader = dBHelper.getReadableDatabase();
-		Cursor cursor = reader.rawQuery("select * from " + Constant.TB_Base
-				+ " where Title = ?", new String[] { Constant.Maintain + "/"
-				+ city + "/" + brank });
-		if (cursor.moveToFirst()) {
-			parseJSON(cursor.getString(cursor.getColumnIndex("Content")));
-		}else{
+		
+		List<BaseData> baseDatas = DataSupport.where("Title = ?",Constant.Maintain + "/"
+				+ city + "/" + brank).find(BaseData.class);
+		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
 			progressDialog = ProgressDialog.show(FoursActivity.this,
 					getString(R.string.dialog_title),
 					getString(R.string.dialog_message));
 			progressDialog.setCancelable(true);
+		}else{
+			parseJSON(baseDatas.get(0).getContent());
 		}
-		cursor.close();
-		reader.close();
 		
 		String urlCity = "";
 		String urlBrank = "";
@@ -122,12 +114,11 @@ public class FoursActivity extends Activity {
 				}
 				// 存在数据库
 				if (!"[]".equals(msg.obj.toString())) {
-					DBExcute dBExcute = new DBExcute();
-					ContentValues values = new ContentValues();
-					values.put("Cust_id", Variable.cust_id);
-					values.put("Title", Constant.Maintain + "/" + city + "/"+ brank);
-					values.put("Content", msg.obj.toString());
-					dBExcute.InsertDB(FoursActivity.this, values,Constant.TB_Base);
+					BaseData baseData = new BaseData();
+					baseData.setCust_id(Variable.cust_id);
+					baseData.setTitle(Constant.Maintain + "/" + city + "/"+ brank);
+					baseData.setContent(msg.obj.toString());
+					baseData.save();
 					parseJSON(msg.obj.toString());
 				}else{
 					rl_Note.setVisibility(View.VISIBLE);

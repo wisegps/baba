@@ -3,13 +3,19 @@ package com.wise.setting;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+
+import model.BaseData;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
 
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.CollectionActivity;
+import com.wise.baba.ManageActivity;
 import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.notice.NoticeActivity;
@@ -78,7 +84,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		AppApplication.getActivityInstance().addActivity(this);
+		ManageActivity.getActivityInstance().addActivity(LoginActivity.this);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_login);
 		JPushInterface.init(getApplicationContext());
@@ -108,6 +114,8 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
 		progressBar.setVisibility(View.GONE);
 		fastTrack = getIntent().getBooleanExtra("fastTrack", false);
+		List<BaseData> bDatas = DataSupport.findAll(BaseData.class);
+		System.out.println("bDatas.size() = " + bDatas.size());
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {

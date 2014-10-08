@@ -9,30 +9,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import model.BaseData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
-
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;
-import sql.DBExcute;
-import sql.DBHelper;
 import data.BrandData;
 import data.CharacterParser;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -89,8 +85,6 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 	
 	private ProgressDialog progressDialog;
 
-	private DBExcute dBExcute = null;
-	private DBHelper dbHelper = null;
 	private TextView tv_title;
 	String carSeriesId;
 	String carBrankId;
@@ -110,8 +104,6 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_models);
-		dbHelper = new DBHelper(ModelsActivity.this);
-		dBExcute = new DBExcute();
 		// 初始化控件
 		initViews();
 		isNeedType = getIntent().getBooleanExtra("isNeedType", true);
@@ -236,10 +228,10 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 				// 存到数据库
 				insertDatabases(carBrankTitle, brankData, ModelsActivity.this);
 				if (!"".equals(brankData)) {
-					ContentValues contentValues = new ContentValues();
-					contentValues.put("Title", carBrankTitle);
-					contentValues.put("Content", brankData);
-					dBExcute.InsertDB(ModelsActivity.this, contentValues,Constant.TB_Base);
+					BaseData baseData = new BaseData();
+					baseData.setTitle(carBrankTitle);
+					baseData.setContent(brankData);
+					baseData.save();
 					jsonBrands(brankData);
 				} else {
 					Toast.makeText(getApplicationContext(), "获取数据失败，稍后再试", 0)
@@ -250,19 +242,10 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 				onLoad();
 				String refreshData = msg.obj.toString();
 				if (!"".equals(refreshData)) {
-					SQLiteDatabase db = dbHelper.getReadableDatabase();
-					Cursor cursor = db.rawQuery("select * from "
-							+ Constant.TB_Base + " where Title = ?",
-							new String[] { "carBrank" });
-					if (cursor.moveToFirst()) {
-						db.delete(Constant.TB_Base, "Title = ?",
-								new String[] { "carBrank" });
-					}
-					ContentValues contentValues = new ContentValues();
-					contentValues.put("Title", carBrankTitle);
-					contentValues.put("Content", refreshData);
-					// 更新数据库
-					dBExcute.InsertDB(ModelsActivity.this, contentValues,Constant.TB_Base);
+					//更新数据库
+					BaseData baseData = new BaseData();
+					baseData.setContent(refreshData);
+					baseData.updateAll("Title = ?" , "carBrank");
 				} else {
 					Toast.makeText(getApplicationContext(), "获取数据失败，稍后再试", 0)
 							.show();
@@ -303,28 +286,22 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 	 * @param handlerWhat 服务器获取handler异步处理的标识
 	 */
 	private void getDate(String whereValues, String url, int handlerWhat) {
-		Log.e("title:", whereValues);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor cursor = db.rawQuery("select * from " + Constant.TB_Base + " where Title = ?", new String[] { whereValues });
-		if (cursor.moveToFirst()) {
-			Log.e("数据库数据", "数据库数据");
-			if(handlerWhat == GET_BRANK){
-				jsonBrands(cursor.getString(cursor.getColumnIndex("Content")));
-			}else if(handlerWhat == GET_SERIES){
-				jsonSeries(cursor.getString(cursor.getColumnIndex("Content")));
-			}else if(handlerWhat == GET_TYPE){
-				jsonType(cursor.getString(cursor.getColumnIndex("Content")));
-			}
-		} else {
-			Log.e("服务器数据", "服务器数据");
+		List<BaseData> baseDatas = DataSupport.where("Title = ?","carBrank").find(BaseData.class);
+		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
 			progressDialog = ProgressDialog.show(ModelsActivity.this,
 					getString(R.string.dialog_title),
 					getString(R.string.dialog_message));
 			progressDialog.setCancelable(true);
 			new NetThread.GetDataThread(handler, url, handlerWhat).start();
+		}else{
+			if(handlerWhat == GET_BRANK){
+				jsonBrands(baseDatas.get(0).getContent());
+			}else if(handlerWhat == GET_SERIES){
+				jsonSeries(baseDatas.get(0).getContent());
+			}else if(handlerWhat == GET_TYPE){
+				jsonType(baseDatas.get(0).getContent());
+			}
 		}
-		cursor.close();
-		db.close();
 	}
 	private void jsonBrands(String result){
 		if(progressDialog != null){
@@ -528,12 +505,11 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 	// 将获取的数据存到数据库
 	public static void insertDatabases(String titleName, String content,
 			Context context) {
-		ContentValues values = new ContentValues();
-		values.put("Cust_id", Variable.cust_id);
-		values.put("Title", titleName);
-		values.put("Content", content);
-		DBExcute dBExcute = new DBExcute();
-		dBExcute.InsertDB(context, values, Constant.TB_Base);
+		BaseData baseData = new BaseData();
+		baseData.setCust_id(Variable.cust_id);
+		baseData.setTitle(titleName);
+		baseData.setContent(content);
+		baseData.save();
 	}
 
 	public void logoImageIsExist(final String imagePath, final String name,final String logoUrl) {

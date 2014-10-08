@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="libs/umeng-update-v2.4.2.jar"/>
 	<classpathentry kind="lib" path="libs/jpush-sdk-release1.6.3.jar"/>
 	<classpathentry kind="lib" path="libs/baidumapapi_v3_1_0.jar"/>
+	<classpathentry kind="lib" path="libs/litepal-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

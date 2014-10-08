@@ -2,18 +2,15 @@ package com.wise.car;
 
 import java.util.ArrayList;
 import java.util.List;
+import model.BaseData;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
+import org.litepal.crud.DataSupport;
 import pubclas.Constant;
 import pubclas.NetThread;
-
-import sql.DBExcute;
-import sql.DBHelper;
-
+import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
-
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import android.app.Activity;
@@ -104,23 +101,14 @@ public class InsuranceActivity extends Activity implements
 
     boolean isHaveInsurance = false;
     private void getDBData() {
-        DBHelper dbHelper = new DBHelper(this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from " + Constant.TB_Base
-                + " where Title=?", new String[] { "insurance" });
-        if (cursor.getCount() == 0) {
-            String url = Constant.BaseUrl + "base/insurance";
-            new Thread(new NetThread.GetDataThread(handler, url, getData))
-                    .start();
-        } else {
-            if (cursor.moveToFirst()) {
-                isHaveInsurance = true;
-                String Content = cursor.getString(cursor.getColumnIndex("Content"));
-                jsonData(Content);
-            }
-        }
-        cursor.close();
-        db.close();
+    	List<BaseData> baseDatas = DataSupport.where("Title = ?","insurance").find(BaseData.class);
+		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
+			String url = Constant.BaseUrl + "base/insurance";
+            new NetThread.GetDataThread(handler, url, getData).start();
+		}else{
+			isHaveInsurance = true;
+            jsonData(baseDatas.get(0).getContent());
+		}
     }
     private void jsonData(String result){
         try {
@@ -146,17 +134,15 @@ public class InsuranceActivity extends Activity implements
         }
     }
     private void UpdateInsurance(String result, String Title) {
-        DBExcute dbExcute = new DBExcute();
-        ContentValues values = new ContentValues();
-        values.put("Content", result);
-        dbExcute.UpdateDB(InsuranceActivity.this, values, Title);
+        BaseData baseData  = new BaseData();
+        baseData.setContent(result);
+        baseData.updateAll("Title=?" , Title);
     }
-    private void InsertInsurance(String result, String Title) {
-        DBExcute dbExcute = new DBExcute();
-        ContentValues values = new ContentValues();
-        values.put("Title", Title);
-        values.put("Content", result);
-        dbExcute.InsertDB(InsuranceActivity.this, values, Constant.TB_Base);
+    private void InsertInsurance(String result, String Title) {        
+        BaseData baseData = new BaseData();
+		baseData.setTitle(Title);
+		baseData.setContent(result);
+		baseData.save();
     }
 
     @Override

@@ -4,6 +4,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.tablemanager.Connector;
+
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import cn.sharesdk.framework.ShareSDK;
@@ -23,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -55,6 +58,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		ShareSDK.initSDK(this);
 		setContentView(R.layout.activity_welcome);
+		//SQLiteDatabase db = Connector.getDatabase();
 		clearData();
 		GetSystem.myLog(TAG, "onCreate");
 		Intent intent = getIntent();

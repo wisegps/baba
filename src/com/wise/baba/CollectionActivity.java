@@ -2,21 +2,22 @@ package com.wise.baba;
 
 import java.util.ArrayList;
 import java.util.List;
+import model.CollectionData;
 import nadapter.CollectionAdapter;
 import nadapter.CollectionAdapter.CollectionItemListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
-import sql.DBExcute;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import data.AdressData;
-import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,7 +40,6 @@ public class CollectionActivity extends Activity implements IXListViewListener{
     private XListView lv_collection;
     private CollectionAdapter collectionAdapter;
     
-    DBExcute dBExcute = new DBExcute();
     List<AdressData> adressDatas = new ArrayList<AdressData>();
     
     boolean isGetDB = true; //上拉是否继续读取数据库
@@ -93,7 +93,7 @@ public class CollectionActivity extends Activity implements IXListViewListener{
             case frist_getdata:
             	ll_wait.runFast(0);
 				refresh = msg.obj.toString();
-                dBExcute.DeleteDB(CollectionActivity.this, "delete from " + Constant.TB_Collection + " where Cust_id=" + Variable.cust_id);
+                DataSupport.deleteAll(CollectionData.class);
                 adressDatas.clear();
                 break;
             case refresh_getdata:
@@ -131,8 +131,8 @@ public class CollectionActivity extends Activity implements IXListViewListener{
                     isNothingNote(true);
                 }
 			}else if(index == 1){
-				dBExcute.DeleteDB(CollectionActivity.this, "delete from " + Constant.TB_Collection + " where Cust_id=" + Variable.cust_id);
-                adressDatas.clear();
+				DataSupport.deleteAll(CollectionData.class);
+				adressDatas.clear();
 				adressDatas.addAll(0,jsonCollectionData(refresh));
 				collectionAdapter.notifyDataSetChanged();
 			}else if(index == 2){
@@ -157,8 +157,7 @@ public class CollectionActivity extends Activity implements IXListViewListener{
             //删除服务器记录
             new Thread(new NetThread.DeleteThread(handler, url, 999)).start();
             //删除本地数据库
-            dBExcute.DeleteDB(CollectionActivity.this, Constant.TB_Collection, "favorite_id = ?", new String[]{String.valueOf(adressDatas.get(position).get_id())});
-            
+            DataSupport.deleteAll(CollectionData.class, "favorite_id = ?" , String.valueOf(adressDatas.get(position).get_id()));
             adressDatas.remove(position);
             collectionAdapter.notifyDataSetChanged();
         }
@@ -193,13 +192,13 @@ public class CollectionActivity extends Activity implements IXListViewListener{
     }
     
     private boolean isGetDataUrl(){
-        DBExcute dbExcute = new DBExcute();
-        String sql = "select * from " + Constant.TB_Collection + " where Cust_id=?";
-        int Total = dbExcute.getTotalCount(CollectionActivity.this, sql, new String[]{Variable.cust_id});
-        if(Total == 0){
-            return true;
+    	System.out.println("Variable.cust_id = " + Variable.cust_id);
+    	List<CollectionData> collectionDatas = DataSupport.where("Cust_id = ?",Variable.cust_id).find(CollectionData.class);
+        System.out.println("collectionDatas.size() = " + collectionDatas.size());
+    	if(collectionDatas.size() == 0){
+        	return true;
         }else{
-            return false;
+        	return false;
         }
     }
     
@@ -218,15 +217,15 @@ public class CollectionActivity extends Activity implements IXListViewListener{
                 adrDatas.setLon(Double.parseDouble(jsonObject.getString("lon")));
                 adressDatas.add(adrDatas);
                 
-                ContentValues values = new ContentValues();
-                values.put("Cust_id", Variable.cust_id);
-                values.put("favorite_id", adrDatas.get_id());
-                values.put("name", adrDatas.getName());
-                values.put("address", adrDatas.getAdress());
-                values.put("tel", adrDatas.getPhone());
-                values.put("lon", adrDatas.getLon());
-                values.put("lat", adrDatas.getLat());
-                dBExcute.InsertDB(CollectionActivity.this, values, Constant.TB_Collection);
+                CollectionData collectionData = new CollectionData();
+                collectionData.setCust_id(Variable.cust_id);
+                collectionData.setFavorite_id(String.valueOf(adrDatas.get_id()));
+                collectionData.setName(adrDatas.getName());
+                collectionData.setAddress(adrDatas.getAdress());
+                collectionData.setTel(adrDatas.getPhone());
+                collectionData.setLon(jsonObject.getString("lon"));
+                collectionData.setLat(jsonObject.getString("lat"));
+                collectionData.save();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -271,8 +270,26 @@ public class CollectionActivity extends Activity implements IXListViewListener{
      * @param pageSize 一次读取多少条
      */
     private void getCollectionDatas(int start,int pageSize) {
-        List<AdressData> datas = dBExcute.getPageDatas(CollectionActivity.this, "select * from " + Constant.TB_Collection + " where Cust_id=? order by favorite_id desc limit ?,?", new String[]{Variable.cust_id,String.valueOf(start),String.valueOf(pageSize)});
-        adressDatas.addAll(datas);
+    	String sql = "select * from CollectionData where Cust_id=" + Variable.cust_id + " order by favorite_id desc limit " + start + "," + pageSize;
+    	Cursor cursor = DataSupport.findBySQL(sql);
+    	List<AdressData> datas = new ArrayList<AdressData>();
+		while (cursor.moveToNext()) {
+			AdressData adrDatas = new AdressData();
+			adrDatas.set_id(cursor.getInt(cursor.getColumnIndex("favorite_id")));
+			adrDatas.setAdress(cursor.getString(cursor
+					.getColumnIndex("address")));
+			adrDatas.setName(cursor.getString(cursor.getColumnIndex("name")));
+			adrDatas.setPhone(cursor.getString(cursor.getColumnIndex("tel")));
+			adrDatas.setLat(Double.parseDouble(cursor.getString(cursor
+					.getColumnIndex("lat"))));
+			adrDatas.setLon(Double.parseDouble(cursor.getString(cursor
+					.getColumnIndex("lon"))));
+			datas.add(adrDatas);
+		}
+		if (cursor != null) {
+			cursor.close();
+		}
+    	adressDatas.addAll(datas);
         Toal += datas.size();//记录位置
         if(datas.size() == pageSize){
             //继续读取数据库

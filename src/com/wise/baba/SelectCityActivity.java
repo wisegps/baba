@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import model.BaseData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
 import pubclas.Constant;
 import pubclas.GetLocation;
+import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
-import sql.DBExcute;
-import sql.DBHelper;
 import com.wise.car.ClearEditText;
 import com.wise.car.SideBar;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;
@@ -21,14 +22,11 @@ import data.CharacterParser;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -125,11 +123,10 @@ public class SelectCityActivity extends Activity {
     }
     
     private void InsertCity(String result, String Title) {
-        DBExcute dbExcute = new DBExcute();
-        ContentValues values = new ContentValues();
-        values.put("Title", Title);
-        values.put("Content", result);
-        dbExcute.InsertDB(SelectCityActivity.this, values, Constant.TB_Base);
+        BaseData baseData = new BaseData();
+		baseData.setTitle(Title);
+		baseData.setContent(result);
+		baseData.save();
     }
     
     Handler handler = new Handler(){
@@ -145,6 +142,8 @@ public class SelectCityActivity extends Activity {
                 if(progressDialog != null){
                 	progressDialog.dismiss();
                 }
+                List<BaseData> bDatas = DataSupport.findAll(BaseData.class);
+                GetSystem.myLog(TAG, "bDatas.size() = " + bDatas.size());
 				break;
 
 			case Get_city:
@@ -158,51 +157,44 @@ public class SelectCityActivity extends Activity {
                 if(progressDialog != null){
                 	progressDialog.dismiss();
                 }
+                List<BaseData> bDatas1 = DataSupport.findAll(BaseData.class);
+                GetSystem.myLog(TAG, "bDatas1.size() = " + bDatas1.size());
 				break;
 			}
 		}    	
     };
     
     private void GetCity() {
-        //查询
-        DBHelper dbHelper = new DBHelper(SelectCityActivity.this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        //热门城市
-        Cursor cursor = db.rawQuery("select * from " + Constant.TB_Base
-                + " where Title=?", new String[] { "hotCity" });
-        if (cursor.moveToFirst()) {
-            String Hot_Citys = cursor.getString(cursor.getColumnIndex("Content"));
-            hotDatas = GetCityList(Hot_Citys);
-        }else{
-        	if(progressDialog == null){
+    	List<BaseData> hotBaseDatas = DataSupport.where("Title = ?","hotCity").find(BaseData.class);
+		System.out.println("hotBaseDatas.size() = " + hotBaseDatas.size());
+    	if(hotBaseDatas.size() == 0 || hotBaseDatas.get(0).getContent() == null || hotBaseDatas.get(0).getContent().equals("")){
+			if(progressDialog == null){
         		progressDialog = ProgressDialog.show(SelectCityActivity.this, getString(R.string.dialog_title), "城市信息获取中");
         		progressDialog.setCancelable(true);
         	}
         	String url_hot = Constant.BaseUrl + "base/city?is_hot=1";
-            new Thread(new NetThread.GetDataThread(handler, url_hot,
-                     Get_host_city)).start();
-        }
-        cursor.close();
-        //城市
-        Cursor c = db.rawQuery("select * from " + Constant.TB_Base
-                + " where Title=?", new String[] { "City" });
-        if (c.moveToFirst()) {
-            String Citys = c.getString(c.getColumnIndex("Content"));
-            cityDatas = GetCityList(Citys);
-            //排序,添加热门
-            ProcessCitys();
-            filterCityDatas.addAll(cityDatas);
-            allCityAdapter.notifyDataSetChanged();
-        }else{
-        	if(progressDialog == null){
+            new NetThread.GetDataThread(handler, url_hot,Get_host_city).start();
+		}else{
+			String Hot_Citys = hotBaseDatas.get(0).getContent();
+            hotDatas = GetCityList(Hot_Citys);			
+		}
+		List<BaseData> baseDatas = DataSupport.where("Title = ?","City").find(BaseData.class);
+		System.out.println("baseDatas.size() = " + baseDatas.size());
+		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
+			if(progressDialog == null){
         		progressDialog = ProgressDialog.show(SelectCityActivity.this, getString(R.string.dialog_title), "城市信息获取中");
         		progressDialog.setCancelable(true);
         	}
         	String url = Constant.BaseUrl + "base/city?is_hot=0";
             new Thread(new NetThread.GetDataThread(handler, url, Get_city)).start();
-        }
-        c.close();
-        db.close();
+		}else{			
+            String Citys = baseDatas.get(0).getContent();
+            cityDatas = GetCityList(Citys);
+            //排序,添加热门
+            ProcessCitys();
+            filterCityDatas.addAll(cityDatas);
+            allCityAdapter.notifyDataSetChanged();
+		}        
     }
     
     TextWatcher textWatcher = new TextWatcher() {        

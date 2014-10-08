@@ -21,6 +21,7 @@ import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qzone.QZone;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
+import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
 import com.wise.car.CarAddActivity;
 import com.wise.car.ModelsActivity;
@@ -82,7 +83,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		AppApplication.getActivityInstance().addActivity(this);
+		ManageActivity.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_register_info);
 		et_cust_name = (EditText) findViewById(R.id.et_cust_name);
 		tv_model = (TextView) findViewById(R.id.tv_model);
@@ -322,7 +323,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 					Intent intent = new Intent(RegisterInfoActivity.this,CarAddActivity.class);
 					intent.putExtra("fastTrack", true);
 					startActivity(intent);
-					AppApplication.getActivityInstance().exit();
+					ManageActivity.getActivityInstance().exit();
 				}
 				JPushInterface.resumePush(getApplicationContext());
 				setJpush();
@@ -366,7 +367,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 		Editor editor = preferences.edit();
 		editor.putString(Constant.sp_customer + Variable.cust_id, str);
 		editor.commit();
-		AppApplication.getActivityInstance().exit();
+		ManageActivity.getActivityInstance().exit();
 	}
 
 	@Override

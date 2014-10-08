@@ -6,9 +6,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import model.BaseData;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
+
 import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.Variable;
@@ -17,10 +22,8 @@ import com.wise.baba.R;
 import data.CharacterParser;
 import data.CityData;
 import data.ProvinceData;
-import sql.DBExcute;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,7 +57,6 @@ public class TrafficCitiyActivity extends Activity {
 	ImageView iv_back;
 
 	ProgressDialog myDialog = null;	
-	private DBExcute dBExcute = new DBExcute();
 	CharacterParser characterParser;
 	PinyinComparator comparator;
 	
@@ -144,27 +146,25 @@ public class TrafficCitiyActivity extends Activity {
 				chooseAdapter.notifyDataSetChanged();				
 			}
 		});
-		
-		String jsonData = dBExcute.selectIllegal(TrafficCitiyActivity.this);
-		if(jsonData == null){
+		List<BaseData> baseDatas = DataSupport.where("Title = ?","Violation").find(BaseData.class);
+		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
 			myDialog = ProgressDialog.show(TrafficCitiyActivity.this,
 					getString(R.string.dialog_title),
 					getString(R.string.dialog_message));
 			myDialog.setCancelable(true);
-			new Thread(new NetThread.GetDataThread(handler, Constant.BaseUrl
-					+ "violation/city?cuth_code=" + Variable.auth_code, 0))
+			new NetThread.GetDataThread(handler, Constant.BaseUrl
+					+ "violation/city?cuth_code=" + Variable.auth_code, 0)
 					.start();
 		}else{
 			// 解析数据 并且更新
-			provinceDatas = parseJson(jsonData);
+			provinceDatas = parseJson(baseDatas.get(0).getContent());
 			provinceAdapter = new ProvinceAdapter(provinceDatas);
 			lv_provnice.setAdapter(provinceAdapter);
 			showCity(0);
-			new Thread(new NetThread.GetDataThread(handler, Constant.BaseUrl
-					+ "violation/city?cuth_code=" + Variable.auth_code, 0))
+			new NetThread.GetDataThread(handler, Constant.BaseUrl
+					+ "violation/city?cuth_code=" + Variable.auth_code, 0)
 					.start();
-		}	
-		
+		}		
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -182,9 +182,11 @@ public class TrafficCitiyActivity extends Activity {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			if (!"".equals(msg.obj.toString())) {
-				ContentValues values = new ContentValues();
-				values.put("json_data", msg.obj.toString());
-				dBExcute.InsertDB(TrafficCitiyActivity.this, values,Constant.TB_IllegalCity);
+				BaseData baseData = new BaseData();
+				baseData.setContent(msg.obj.toString());
+				baseData.setTitle("Violation");
+				baseData.save();
+				
 				provinceDatas = parseJson(msg.obj.toString());
 				provinceAdapter = new ProvinceAdapter(provinceDatas);
 				lv_provnice.setAdapter(provinceAdapter);

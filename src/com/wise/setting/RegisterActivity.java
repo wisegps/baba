@@ -8,6 +8,7 @@ import pubclas.NetThread;
 
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
+import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -53,7 +54,7 @@ public class RegisterActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		AppApplication.getActivityInstance().addActivity(this);
+		ManageActivity.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_register);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);

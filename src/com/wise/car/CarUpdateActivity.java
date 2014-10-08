@@ -9,12 +9,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
+
+import model.BaseData;
 import nadapter.OpenDateDialog;
 import nadapter.OpenDateDialogListener;
 import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.Variable;
-import sql.DBExcute;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import com.wise.violation.ShortProvincesActivity;
@@ -503,15 +505,17 @@ public class CarUpdateActivity extends Activity {
 
 	/** 获取各个市违章信息 **/
 	private void getTraffic() {
-		DBExcute dBExcute = new DBExcute();
-		String jsonData = dBExcute.selectIllegal(CarUpdateActivity.this);
-		if (jsonData == null) {
+		
+		List<BaseData> bDatas = DataSupport.findAll(BaseData.class);
+		System.out.println("bDatas.size() = " + bDatas.size());
+		
+		List<BaseData> baseDatas = DataSupport.where("Title = ?","Violation").find(BaseData.class);
+		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
 			String url = Constant.BaseUrl + "violation/city?cuth_code="
 					+ Variable.auth_code;
 			new NetThread.GetDataThread(handler, url, get_traffic).start();
-		} else {
-			// 解析数据 并且更新
-			parseJson(jsonData);
+		}else{
+			parseJson(baseDatas.get(0).getContent());
 		}
 	}
 

@@ -2,6 +2,7 @@ package nadapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import model.CollectionData;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
@@ -10,14 +11,11 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
-import sql.DBExcute;
-
 import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.R;
 import data.AdressData;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -190,16 +188,17 @@ public class AdressAdapter extends BaseAdapter{
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					if(jsonObject.getString("status_code").equals("0")){
 					    AdressData adressData = adressDatas.get(msg.arg1);
-						DBExcute dbExcute = new DBExcute();
-				        ContentValues values = new ContentValues();
-				        values.put("Cust_id", Variable.cust_id);
-				        values.put("favorite_id", jsonObject.getString("favorite_id"));
-				        values.put("name", adressData.getName());
-				        values.put("address", adressData.getAdress());
-				        values.put("tel", adressData.getPhone());
-				        values.put("lon", adressData.getLon());
-				        values.put("lat", adressData.getLat());
-				        dbExcute.InsertDB(mActivity, values, Constant.TB_Collection);
+				        
+				        CollectionData collectionData = new CollectionData();
+		                collectionData.setCust_id(Variable.cust_id);
+		                collectionData.setFavorite_id(jsonObject.getString("favorite_id"));
+		                collectionData.setName(adressData.getName());
+		                collectionData.setAddress(adressData.getAdress());
+		                collectionData.setTel(adressData.getPhone());
+		                collectionData.setLon(String.valueOf(adressData.getLon()));
+		                collectionData.setLat(String.valueOf(adressData.getLat()));
+		                collectionData.save();
+				        
 						Toast.makeText(mActivity, "添加成功", Toast.LENGTH_SHORT).show();
 						if(onCollectListener != null){
 						    onCollectListener.OnCollect(index);

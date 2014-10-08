@@ -3,9 +3,14 @@ package com.wise.state;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import model.BaseData;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
+
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.Judge;
@@ -114,7 +119,7 @@ public class FaultActivity extends FragmentActivity {
 	/** 获取油耗数据结束时间 **/
 	String endMonth;
 	NoticeFragment noticeFragment;
-	private GeoCoder mGeoCoder = null;
+	//private GeoCoder mGeoCoder = null;
 	int completed;
 
 	@Override
@@ -123,8 +128,8 @@ public class FaultActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fault);
 		GetSystem.myLog(TAG, "onCreate");
-		mGeoCoder = GeoCoder.newInstance();
-		mGeoCoder.setOnGetGeoCodeResultListener(listener);
+		//mGeoCoder = GeoCoder.newInstance();
+		//mGeoCoder.setOnGetGeoCodeResultListener(listener);
 		boolean isSpecify = getIntent().getBooleanExtra("isSpecify", false);
 		if (isSpecify) {
 			Intent intent = new Intent(FaultActivity.this, MoreActivity.class);
@@ -198,6 +203,8 @@ public class FaultActivity extends FragmentActivity {
 			getMessage(url);
 			getCounter();
 		} else {// 未登录
+	        List<BaseData> bDatas = DataSupport.findAll(BaseData.class);
+			GetSystem.myLog(TAG, "bDatas.size() = " + bDatas.size());
 			// 给个临时id
 			Variable.cust_id = "0";
 			Variable.auth_code = "127a154df2d7850c4232542b4faa2c3d";
@@ -492,8 +499,7 @@ public class FaultActivity extends FragmentActivity {
 					GetSystem.ChangeTimeZone(gpsTime.substring(0, 19).replace(
 							"T", " ")));
 			GetSystem.myLog(TAG, "lat = " + lat + " , Lon = " + lon);
-			mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
-					.location(latLng));
+			//mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
