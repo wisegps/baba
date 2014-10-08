@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
@@ -20,7 +19,6 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qzone.QZone;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
 import com.wise.car.CarAddActivity;
@@ -305,6 +303,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 			if (status_code.equals("0")) {
 				// TODO 注册成功，把数据处理好
 				Variable.cust_id = jsonObject.getString("cust_id");
+				Variable.auth_code = "127a154df2d7850c4232542b4faa2c3d";
 				// 存储账号密码
 				SharedPreferences preferences = getSharedPreferences(
 						Constant.sharedPreferencesName,

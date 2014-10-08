@@ -119,7 +119,7 @@ public class FaultActivity extends FragmentActivity {
 	/** 获取油耗数据结束时间 **/
 	String endMonth;
 	NoticeFragment noticeFragment;
-	//private GeoCoder mGeoCoder = null;
+	private GeoCoder mGeoCoder = null;
 	int completed;
 
 	@Override
@@ -128,8 +128,8 @@ public class FaultActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fault);
 		GetSystem.myLog(TAG, "onCreate");
-		//mGeoCoder = GeoCoder.newInstance();
-		//mGeoCoder.setOnGetGeoCodeResultListener(listener);
+		mGeoCoder = GeoCoder.newInstance();
+		mGeoCoder.setOnGetGeoCodeResultListener(listener);
 		boolean isSpecify = getIntent().getBooleanExtra("isSpecify", false);
 		if (isSpecify) {
 			Intent intent = new Intent(FaultActivity.this, MoreActivity.class);
@@ -499,7 +499,7 @@ public class FaultActivity extends FragmentActivity {
 					GetSystem.ChangeTimeZone(gpsTime.substring(0, 19).replace(
 							"T", " ")));
 			GetSystem.myLog(TAG, "lat = " + lat + " , Lon = " + lon);
-			//mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
+			mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

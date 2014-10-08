@@ -437,7 +437,12 @@ public class FaultDetectionActivity extends Activity{
 						List<NameValuePair> params = new ArrayList<NameValuePair>();
 				        params.add(new BasicNameValuePair("brand", Variable.carDatas.get(index).getCar_brand()));
 				        params.add(new BasicNameValuePair("obd_err", jsonObject.getString("active_obd_err")));
-				        new NetThread.postDataThread(handler, url, params, getFault).start();					
+				        new NetThread.postDataThread(handler, url, params, getFault).start();
+				        tv_guzhang.setText("有"+jsonErrArray.length() + "个故障");
+						tv_guzhang.setTextColor(getResources().getColor(R.color.yellow));
+						Drawable drawable= getResources().getDrawable(R.drawable.icon_guzhang_abnormal);
+						drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+						tv_guzhang_icon.setCompoundDrawables(drawable,null,null,null);
 					}else{
 						tv_guzhang.setText("无故障码");
 						tv_guzhang.setTextColor(getResources().getColor(R.color.blue_press));

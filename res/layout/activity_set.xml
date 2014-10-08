@@ -62,12 +62,21 @@
 	            android:textColor="@color/navy" />
 	        <ImageView 
 	            android:id="@+id/iv_sex"
-	            android:layout_toRightOf="@id/tv_login"	            
+	            android:layout_toRightOf="@id/tv_login"	
+	            android:layout_marginRight="@dimen/margins"            
 	            android:layout_centerVertical="true"
 	            android:layout_width="15dp"
 	            android:layout_height="15dp"
 	            android:visibility="gone"
 	            android:src="@drawable/icon_man"/>
+	        <ImageView 
+	            android:id="@+id/iv_service"
+	            android:layout_toRightOf="@id/iv_sex"	            
+	            android:layout_centerVertical="true"
+	            android:layout_width="15dp"
+	            android:layout_height="15dp"
+	            android:visibility="gone"
+	            android:src="@drawable/icon_xx_service"/>
 	    </RelativeLayout>
 	    <RelativeLayout 
 	        android:id="@+id/rl_city" 

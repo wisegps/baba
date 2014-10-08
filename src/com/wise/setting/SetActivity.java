@@ -55,7 +55,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 	private static final int get_pic = 3;
 	
 	TextView tv_login,tv_city;
-	ImageView iv_logo,iv_sex;
+	ImageView iv_logo,iv_sex,iv_service;
 	Button bt_login_out;
 	RequestQueue mQueue;
 	Platform platformQQ;
@@ -79,6 +79,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 		tv_city = (TextView)findViewById(R.id.tv_city);
 		iv_logo = (ImageView)findViewById(R.id.iv_logo);
 		iv_sex = (ImageView)findViewById(R.id.iv_sex);
+		iv_service = (ImageView)findViewById(R.id.iv_service);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		TextView tv_car = (TextView)findViewById(R.id.tv_car);
@@ -204,6 +205,13 @@ public class SetActivity extends Activity implements TagAliasCallback{
 			        iv_sex.setImageResource(R.drawable.icon_man);
 		        }else{
 		        	iv_sex.setImageResource(R.drawable.icon_woman);
+		        }
+		        int cust_type = jsonObject.getInt("cust_type");
+		        //如果是服务商显示标志
+		        if(cust_type == 2){
+		        	iv_service.setVisibility(View.VISIBLE);
+		        }else{
+		        	iv_service.setVisibility(View.GONE);
 		        }
 		        tv_login.setText(jsonObject.getString("cust_name"));
 		        String logo = jsonObject.getString("logo");

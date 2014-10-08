@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
- * 故障明细
+ * 故障明细列表
  * @author honesty
  *
  */
@@ -73,6 +73,7 @@ public class FaultDetailActivity extends Activity{
 				FaultData faultData = new FaultData();
 				faultData.setC_define(jsonObject.getString("c_define"));
 				faultData.setContent(jsonObject.getString("content"));
+				faultData.setCategory(jsonObject.getString("category"));
 				faultDatas.add(faultData);
 			}
 		} catch (JSONException e) {
@@ -101,6 +102,7 @@ public class FaultDetailActivity extends Activity{
 	            holder = new ViewHolder();
 	            holder.tv_define = (TextView) convertView.findViewById(R.id.tv_define);
 	            holder.tv_content = (TextView) convertView.findViewById(R.id.tv_content);
+	            holder.tv_category = (TextView) convertView.findViewById(R.id.tv_category);
 	            convertView.setTag(holder);
 			}else{
 				holder = (ViewHolder) convertView.getTag();
@@ -108,15 +110,17 @@ public class FaultDetailActivity extends Activity{
 			FaultData faultData = faultDatas.get(position);
 			holder.tv_define.setText(faultData.getC_define());
 			holder.tv_content.setText(faultData.getContent());
+			holder.tv_category.setText(faultData.getCategory());
 			return convertView;
 		}
 		private class ViewHolder {
-	        TextView tv_define,tv_content;
+	        TextView tv_define,tv_content,tv_category;
 	    }
 	}
 	class FaultData{
 		private String content;
 		private String c_define;
+		private String category;
 		public String getContent() {
 			return content;
 		}
@@ -128,6 +132,12 @@ public class FaultDetailActivity extends Activity{
 		}
 		public void setC_define(String c_define) {
 			this.c_define = c_define;
+		}
+		public String getCategory() {
+			return category;
+		}
+		public void setCategory(String category) {
+			this.category = category;
 		}		
 	}
 	@Override
