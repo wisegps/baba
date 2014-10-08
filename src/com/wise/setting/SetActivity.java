@@ -131,6 +131,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 		        bt_login_out.setVisibility(View.GONE);
 		        tv_login.setText("登录/注册");
 		        iv_sex.setVisibility(View.GONE);
+		        iv_service.setVisibility(View.GONE);
 		        iv_logo.setImageResource(R.drawable.icon_add);
 		        platformQQ.removeAccount();
 		        platformSina.removeAccount();

@@ -1,34 +1,100 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/gray_bg"
-    android:orientation="vertical" >
-    <RelativeLayout 
-    	android:id="@+id/ll_main"
-	    android:layout_width="fill_parent"
-	    android:layout_height="@dimen/title_hight"
-        android:background="@color/title_back">
-	    <TextView
-	         android:layout_width="fill_parent"
-	         android:layout_height="wrap_content"
-	         android:layout_centerInParent="true"
-	         android:text="车辆位置"
-	         android:gravity="center"
-	         android:textSize="@dimen/title"
-	         android:textColor="@color/white" />
-        <ImageView 
+    android:background="@color/gray_bg" >
+
+    <RelativeLayout
+        android:id="@+id/ll_main"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/title_hight"
+        android:background="@color/title_back" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="车辆位置"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
+
+        <ImageView
             android:id="@+id/iv_back"
-	        android:layout_width="@dimen/title_hight"
-	        android:layout_height="@dimen/title_hight"
-	        android:layout_marginLeft="@dimen/margins"
-	        android:padding="@dimen/margins"
-	        android:layout_centerVertical="true"
-	        android:src="@drawable/nav_back"/>
-	</RelativeLayout>
-	<com.baidu.mapapi.map.MapView
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margins"
+            android:padding="@dimen/margins"
+            android:src="@drawable/nav_back" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_location_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/bt_location_findCar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_yellow"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margins"
+            android:paddingTop="@dimen/margins"
+            android:text="寻车"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
+
+        <Button
+            android:id="@+id/bt_location_travel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_yellow"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margins"
+            android:paddingTop="@dimen/margins"
+            android:text="行程"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
+
+        <Button
+            android:id="@+id/bt_location_periphery"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_yellow"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margins"
+            android:paddingTop="@dimen/margins"
+            android:text="周边"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
+
+        <Button
+            android:id="@+id/bt_location_fence"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_yellow"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margins"
+            android:paddingTop="@dimen/margins"
+            android:text="围栏"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
+    </LinearLayout>
+
+    <com.baidu.mapapi.map.MapView
         android:id="@+id/mv_car_location"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_above="@id/ll_location_bottom"
+        android:layout_below="@id/ll_main"
         android:clickable="true" />
-</LinearLayout>
+
+</RelativeLayout>
