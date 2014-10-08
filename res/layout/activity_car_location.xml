@@ -36,73 +36,57 @@
         android:layout_alignParentBottom="true"
         android:orientation="horizontal" >
 
-        <LinearLayout
+        <Button
+            android:id="@+id/bt_location_findCar"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center_horizontal" >
+            android:background="@drawable/bg_yellow"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margins"
+            android:paddingTop="@dimen/margins"
+            android:text="寻车"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
 
-            <Button
-                android:id="@+id/bt_location_findCar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:drawableLeft="@drawable/tool_search"
-                android:text="寻车"
-                android:textColor="@color/color_common"
-                android:textSize="@dimen/main" />
-        </LinearLayout>
-
-        <LinearLayout
+        <Button
+            android:id="@+id/bt_location_travel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center_horizontal" >
+            android:background="@drawable/bg_yellow"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margins"
+            android:paddingTop="@dimen/margins"
+            android:text="行程"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
 
-            <Button
-                android:id="@+id/bt_location_travel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:drawableLeft="@drawable/tool_route"
-                android:text="行程"
-                android:textColor="@color/color_common"
-                android:textSize="@dimen/main" />
-        </LinearLayout>
-
-        <LinearLayout
+        <Button
+            android:id="@+id/bt_location_periphery"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center_horizontal" >
+            android:background="@drawable/bg_yellow"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margins"
+            android:paddingTop="@dimen/margins"
+            android:text="周边"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
 
-            <Button
-                android:id="@+id/bt_location_periphery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:drawableLeft="@drawable/tool_rim"
-                android:text="周边"
-                android:textColor="@color/color_common"
-                android:textSize="@dimen/main" />
-        </LinearLayout>
-
-        <LinearLayout
+        <Button
+            android:id="@+id/bt_location_fence"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center_horizontal" >
-
-            <Button
-                android:id="@+id/bt_location_fence"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:drawableLeft="@drawable/tool_fence"
-                android:text="围栏"
-                android:textColor="@color/color_common"
-                android:textSize="@dimen/main" />
-        </LinearLayout>
+            android:background="@drawable/bg_yellow"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margins"
+            android:paddingTop="@dimen/margins"
+            android:text="围栏"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
     </LinearLayout>
 
     <com.baidu.mapapi.map.MapView

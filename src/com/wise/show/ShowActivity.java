@@ -13,11 +13,13 @@ import pubclas.Constant;
 import pubclas.Judge;
 import pubclas.NetThread;
 import pubclas.Variable;
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +37,8 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -97,57 +101,6 @@ public class ShowActivity extends Activity {
 		iv_choose.setOnClickListener(onClickListener);
 		tv_time = (TextView) findViewById(R.id.tv_time);
 		tv_title = (TextView) findViewById(R.id.tv_title);
-
-		car_choose_grid = (GridView) findViewById(R.id.car_choose_grid);
-		car_choose_grid.setAdapter(new CarChosseGrid());
-		car_choose_grid
-				.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
-
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						switch (position) {
-						case 0:
-							car_brand_id = -1;
-							tv_name.setText("所有车型");
-							hideChooseCar();
-							getFristImages();
-							break;
-						case 1:
-							car_brand_id = 9;
-							tv_name.setText("奥迪");
-							hideChooseCar();
-							getFristImages();
-							break;
-						case 2:
-							car_brand_id = 8;
-							tv_name.setText("大众");
-							hideChooseCar();
-							getFristImages();
-							break;
-						case 3:
-							car_brand_id = 2;
-							tv_name.setText("奔驰");
-							hideChooseCar();
-							getFristImages();
-							break;
-						case 4:
-							car_brand_id = 3;
-							tv_name.setText("宝马");
-							hideChooseCar();
-							getFristImages();
-							break;
-						case 5:
-							Intent intent = new Intent(ShowActivity.this,
-									ModelsActivity.class);
-							intent.putExtra("isNeedModel", false);
-							startActivityForResult(intent, 3);
-							hideChooseCar();
-							break;
-						}
-					}
-
-				});
 
 		hsl_photo = (ParentSlide) findViewById(R.id.hsl_photo);
 		tv_car = (TextView) findViewById(R.id.tv_car);
@@ -233,6 +186,69 @@ public class ShowActivity extends Activity {
 			public void OnFinish(int index) {
 			}
 		});
+	}
+
+	PopupWindow mPopupWindow;
+
+	private void getCarChooseShow() {
+		LayoutInflater mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+		View mpopView = mInflater.inflate(R.layout.car_choose_grid, null);
+		car_choose_grid = (GridView) mpopView
+				.findViewById(R.id.car_choose_grid);
+		car_choose_grid.setAdapter(new CarChosseGrid());
+		mPopupWindow = new PopupWindow(mpopView, LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT);
+		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+		mPopupWindow.setFocusable(true);
+		mPopupWindow.setOutsideTouchable(true);
+		mPopupWindow.showAsDropDown(iv_choose);
+		car_choose_grid
+				.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						switch (position) {
+						case 0:
+							car_brand_id = -1;
+							tv_name.setText("所有车型");
+							hideChooseCar();
+							getFristImages();
+							break;
+						case 1:
+							car_brand_id = 9;
+							tv_name.setText("奥迪");
+							hideChooseCar();
+							getFristImages();
+							break;
+						case 2:
+							car_brand_id = 8;
+							tv_name.setText("大众");
+							hideChooseCar();
+							getFristImages();
+							break;
+						case 3:
+							car_brand_id = 2;
+							tv_name.setText("奔驰");
+							hideChooseCar();
+							getFristImages();
+							break;
+						case 4:
+							car_brand_id = 3;
+							tv_name.setText("宝马");
+							hideChooseCar();
+							getFristImages();
+							break;
+						case 5:
+							Intent intent = new Intent(ShowActivity.this,
+									ModelsActivity.class);
+							intent.putExtra("isNeedModel", false);
+							startActivityForResult(intent, 3);
+							hideChooseCar();
+							break;
+						}
+						mPopupWindow.dismiss();
+					}
+				});
 	}
 
 	private String[] carTypes = { "所有车型", "奥迪", "大众", "奔驰", "宝马", "选择其他" };
@@ -347,9 +363,8 @@ public class ShowActivity extends Activity {
 				}
 				break;
 			case R.id.iv_choose:
-				car_choose_grid.setVisibility(View.VISIBLE);
-				// ll_car_choose.setVisibility(View.VISIBLE);
-				// iv_choose.setVisibility(View.GONE);
+				// TODO popupwindow显示
+				getCarChooseShow();
 				break;
 			case R.id.tv_ad:
 				car_brand_id = 9;

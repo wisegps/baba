@@ -75,18 +75,18 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 	private SideBar sideBar = null; // 右侧字母索引栏
 
 	private CharacterParser characterParser; // 将汉字转成拼音
-	/**品牌**/
+	/** 品牌 **/
 	private List<BrandData> brandDatas = new ArrayList<BrandData>(); // 车辆品牌集合
-	/**车型**/
+	/** 车型 **/
 	private List<String[]> carSeries = new ArrayList<String[]>();
-	/**车款**/
+	/** 车款 **/
 	private List<String[]> carTypes = new ArrayList<String[]>();
 
 	private PinyinComparator comparator; // 根据拼音排序
 
 	private BrandAdapter brandAdapter;
 	private SeriesAdapter seriesAdapter;
-	
+
 	private ProgressDialog progressDialog;
 
 	private DBExcute dBExcute = null;
@@ -102,7 +102,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 
 	public static final String carBrankTitle = "carBrank"; // 数据库基础表车辆品牌的标题字段
 	public static final String carSeriesTitle = "carSeries"; // 数据库基础表车辆款式的标题字段
-	
+
 	boolean isNeedType = true;
 	boolean isNeedModel = true;
 
@@ -117,19 +117,21 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		isNeedType = getIntent().getBooleanExtra("isNeedType", true);
 		isNeedModel = getIntent().getBooleanExtra("isNeedModel", true);
 	}
-	/**选择品牌**/
+
+	/** 选择品牌 **/
 	OnItemClickListener onBrankClickListener = new OnItemClickListener() {
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
 			BrandData brankModel = (BrandData) lv_brand.getItemAtPosition(arg2);
 			carBrank = brankModel.getBrand();
 			carBrankId = brankModel.getId();
 			logoUrl = brankModel.getLogoUrl();
-			if(isNeedModel){
+			if (isNeedModel) {
 				// 点击品牌列表 选择车型
 				getDate(carBrankTitle + carBrankId, Constant.BaseUrl
 						+ "base/car_series?pid=" + carBrankId, GET_SERIES);
-			}else{
+			} else {
 				Intent intent = new Intent();
 				intent.putExtra("brank", carBrank);
 				intent.putExtra("brankId", carBrankId);
@@ -138,7 +140,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			}
 		}
 	};
-	/**选择车型**/
+	/** 选择车型 **/
 	OnItemClickListener onModelsClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -146,10 +148,10 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			String[] str = (String[]) lv_modles.getItemAtPosition(arg2);
 			carSeriesId = str[0];
 			carSerie = str[1];
-			if(isNeedType){
+			if (isNeedType) {
 				getDate(carSeriesTitle + carSeriesId, Constant.BaseUrl
 						+ "base/car_type?pid=" + carSeriesId, GET_TYPE);
-			}else{
+			} else {
 				Intent intent = new Intent();
 				intent.putExtra("brank", carBrank);
 				intent.putExtra("brankId", carBrankId);
@@ -160,7 +162,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			}
 		}
 	};
-	/**选择车款**/
+	/** 选择车款 **/
 	OnItemClickListener onTypeClickListener = new OnItemClickListener() {
 
 		@Override
@@ -178,7 +180,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			ModelsActivity.this.finish();
 		}
 	};
-	
+
 	private void initViews() {
 		tv_title = (TextView) findViewById(R.id.tv_title);
 		rl_brand = (RelativeLayout) findViewById(R.id.rl_brand);
@@ -199,14 +201,20 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		cet_key = (ClearEditText) findViewById(R.id.cet_key);
 		// 根据输入框输入值的改变来过滤搜索
 		cet_key.addTextChangedListener(new TextWatcher() {
-			public void onTextChanged(CharSequence s, int start, int before,int count) {
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
 				// 当输入框里面的值为空，更新为原来的列表，否则为过滤数据列表
 				filterData(s.toString());
 			}
-			public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
-			public void afterTextChanged(Editable s) {}
+
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			public void afterTextChanged(Editable s) {
+			}
 		});
-		//TODO A
+		// TODO A
 		letterIndex = (TextView) findViewById(R.id.dialog);
 		sideBar = (SideBar) findViewById(R.id.sidrbar);
 		sideBar.setTextView(letterIndex); // 选中某个拼音索引 提示框显示
@@ -221,13 +229,14 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 				}
 			}
 		});
-		getDate(carBrankTitle, Constant.BaseUrl + "base/car_brand",GET_BRANK);		
+		getDate(carBrankTitle, Constant.BaseUrl + "base/car_brand", GET_BRANK);
 	}
-	Handler handler = new Handler(){
+
+	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
-			if(progressDialog != null){
+			if (progressDialog != null) {
 				progressDialog.dismiss();
 			}
 			switch (msg.what) {
@@ -239,7 +248,8 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 					ContentValues contentValues = new ContentValues();
 					contentValues.put("Title", carBrankTitle);
 					contentValues.put("Content", brankData);
-					dBExcute.InsertDB(ModelsActivity.this, contentValues,Constant.TB_Base);
+					dBExcute.InsertDB(ModelsActivity.this, contentValues,
+							Constant.TB_Base);
 					jsonBrands(brankData);
 				} else {
 					Toast.makeText(getApplicationContext(), "获取数据失败，稍后再试", 0)
@@ -262,7 +272,8 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 					contentValues.put("Title", carBrankTitle);
 					contentValues.put("Content", refreshData);
 					// 更新数据库
-					dBExcute.InsertDB(ModelsActivity.this, contentValues,Constant.TB_Base);
+					dBExcute.InsertDB(ModelsActivity.this, contentValues,
+							Constant.TB_Base);
 				} else {
 					Toast.makeText(getApplicationContext(), "获取数据失败，稍后再试", 0)
 							.show();
@@ -277,7 +288,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 
 				break;
 			case GET_SERIES: // 车型
-				String seriesData = msg.obj.toString();				
+				String seriesData = msg.obj.toString();
 				insertDatabases(carBrankTitle + carBrankId, seriesData,
 						ModelsActivity.this);
 
@@ -294,25 +305,29 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 				brandAdapter.notifyDataSetChanged();
 				break;
 			}
-		}		
+		}
 	};
 
 	/**
-	 * @param whereValues 查询数据库时搜索条件
-	 * @param url 数据库没有数据 服务器获取的地址
-	 * @param handlerWhat 服务器获取handler异步处理的标识
+	 * @param whereValues
+	 *            查询数据库时搜索条件
+	 * @param url
+	 *            数据库没有数据 服务器获取的地址
+	 * @param handlerWhat
+	 *            服务器获取handler异步处理的标识
 	 */
 	private void getDate(String whereValues, String url, int handlerWhat) {
 		Log.e("title:", whereValues);
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor cursor = db.rawQuery("select * from " + Constant.TB_Base + " where Title = ?", new String[] { whereValues });
+		Cursor cursor = db.rawQuery("select * from " + Constant.TB_Base
+				+ " where Title = ?", new String[] { whereValues });
 		if (cursor.moveToFirst()) {
 			Log.e("数据库数据", "数据库数据");
-			if(handlerWhat == GET_BRANK){
+			if (handlerWhat == GET_BRANK) {
 				jsonBrands(cursor.getString(cursor.getColumnIndex("Content")));
-			}else if(handlerWhat == GET_SERIES){
+			} else if (handlerWhat == GET_SERIES) {
 				jsonSeries(cursor.getString(cursor.getColumnIndex("Content")));
-			}else if(handlerWhat == GET_TYPE){
+			} else if (handlerWhat == GET_TYPE) {
 				jsonType(cursor.getString(cursor.getColumnIndex("Content")));
 			}
 		} else {
@@ -326,8 +341,9 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		cursor.close();
 		db.close();
 	}
-	private void jsonBrands(String result){
-		if(progressDialog != null){
+
+	private void jsonBrands(String result) {
+		if (progressDialog != null) {
 			progressDialog.dismiss();
 		}
 		JSONArray jsonArray = null;
@@ -364,7 +380,8 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			e2.printStackTrace();
 		}
 	}
-	private void jsonSeries(String result){
+
+	private void jsonSeries(String result) {
 		carSeries.clear();
 		JSONArray jsonArray;
 		try {
@@ -384,17 +401,18 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			// 隐藏车牌列表 显示车型列表
 			rl_brand.setVisibility(View.GONE);
 			lv_type.setVisibility(View.GONE);
-			seriesAdapter = new SeriesAdapter(carSeries,
-					ModelsActivity.this, 1, null);
+			seriesAdapter = new SeriesAdapter(carSeries, ModelsActivity.this,
+					1, null);
 			lv_modles.setAdapter(seriesAdapter);
 			tv_title.setText(R.string.choice_series);
 			lv_modles.setVisibility(View.VISIBLE);
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		}
-		
+
 	}
-	private void jsonType(String result){
+
+	private void jsonType(String result) {
 		JSONArray jsonArray = null;
 		try {
 			jsonArray = new JSONArray(result);
@@ -417,7 +435,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			lv_type.setAdapter(seriesAdapter);
 			tv_title.setText(R.string.choice_type);
 			lv_type.setVisibility(View.VISIBLE);
-			if(jsonTypeLength == 0){
+			if (jsonTypeLength == 0) {
 				Intent intent = new Intent();
 				intent.putExtra("brank", carBrank);
 				intent.putExtra("brankId", carBrankId);
@@ -443,7 +461,8 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 	private List<BrandData> filledData(List<BrandData> brankList) {
 		for (int i = 0; i < brankList.size(); i++) {
 			// 汉字转换成拼音
-			String pinyin = characterParser.getSelling(brankList.get(i).getBrand());
+			String pinyin = characterParser.getSelling(brankList.get(i)
+					.getBrand());
 			String sortString = pinyin.substring(0, 1).toUpperCase();
 			// 正则表达式，判断首字母是否是英文字母
 			if (sortString.matches("[A-Z]")) {
@@ -536,15 +555,17 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		dBExcute.InsertDB(context, values, Constant.TB_Base);
 	}
 
-	public void logoImageIsExist(final String imagePath, final String name,final String logoUrl) {
-		//去掉最后面的斜杠
+	public void logoImageIsExist(final String imagePath, final String name,
+			final String logoUrl) {
+		// 去掉最后面的斜杠
 		File filePath = new File(imagePath);
 		if (!filePath.exists()) {
 			filePath.mkdirs();
 		}
-		File imageFile = new File(imagePath + name + ".png");	
+		File imageFile = new File(imagePath + name + ".png");
 		if (!imageFile.exists()) {
-			Bitmap bitmap = GetSystem.getBitmapFromURL(Constant.ImageUrl+ logoUrl);
+			Bitmap bitmap = GetSystem.getBitmapFromURL(Constant.ImageUrl
+					+ logoUrl);
 			if (bitmap != null) {
 				createImage(imagePath + name + ".png", bitmap);
 			}
@@ -557,9 +578,8 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 				if (!"".equals(brandDatas.get(i).getLogoUrl())
 						&& brandDatas.get(i).getLogoUrl() != null) {
 					if (imageDownload) {
-						logoImageIsExist(Constant.VehicleLogoPath,
-								brandDatas.get(i).getId(),
-								brandDatas.get(i).getLogoUrl());
+						logoImageIsExist(Constant.VehicleLogoPath, brandDatas
+								.get(i).getId(), brandDatas.get(i).getLogoUrl());
 					} else {
 						continue;
 					}
@@ -567,6 +587,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			}
 			super.run();
 		}
+
 		public void reStart() {
 			run();
 		}
