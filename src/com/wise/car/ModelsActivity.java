@@ -285,8 +285,8 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 	 * @param url 数据库没有数据 服务器获取的地址
 	 * @param handlerWhat 服务器获取handler异步处理的标识
 	 */
-	private void getDate(String whereValues, String url, int handlerWhat) {
-		List<BaseData> baseDatas = DataSupport.where("Title = ?","carBrank").find(BaseData.class);
+	private void getDate(String whereValues, String url, int handlerWhat) {		
+		List<BaseData> baseDatas = DataSupport.where("Title = ?",whereValues).find(BaseData.class);
 		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
 			progressDialog = ProgressDialog.show(ModelsActivity.this,
 					getString(R.string.dialog_title),
@@ -342,6 +342,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		}
 	}
 	private void jsonSeries(String result){
+		System.out.println(result);
 		carSeries.clear();
 		JSONArray jsonArray;
 		try {
@@ -351,8 +352,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 				String[] series = new String[2];
 				try {
 					series[0] = jsonArray.getJSONObject(i).getString("id");
-					series[1] = jsonArray.getJSONObject(i).getString(
-							"show_name");
+					series[1] = jsonArray.getJSONObject(i).getString("show_name");
 					carSeries.add(series);
 				} catch (JSONException e) {
 					e.printStackTrace();
