@@ -22,15 +22,6 @@
             android:textSize="@dimen/title" />
 
         <ImageView
-            android:id="@+id/iv_choose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/tv_title"
-            android:padding="@dimen/margins"
-            android:src="@drawable/btn_carchoose_nor" />
-
-        <ImageView
             android:id="@+id/iv_back"
             android:layout_width="@dimen/title_hight"
             android:layout_height="@dimen/title_hight"
@@ -47,6 +38,16 @@
             android:layout_centerVertical="true"
             android:padding="@dimen/margins"
             android:src="@drawable/nav_icon_pic_add" />
+
+        <ImageView
+            android:id="@+id/iv_choose"
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="-10dp"
+            android:layout_toLeftOf="@id/iv_show_car"
+            android:padding="@dimen/margins"
+            android:src="@drawable/pindao" />
     </RelativeLayout>
 
     <LinearLayout

@@ -363,8 +363,10 @@ public class ShowActivity extends Activity {
 				}
 				break;
 			case R.id.iv_choose:
-				// TODO popupwindow显示
-				getCarChooseShow();
+				// TODO 点击频道跳转频道页面
+				Intent i = new Intent(ShowActivity.this, PinDaoActivity.class);
+				startActivity(i);
+				// getCarChooseShow();
 				break;
 			case R.id.tv_ad:
 				car_brand_id = 9;

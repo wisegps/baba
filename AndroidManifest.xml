@@ -93,6 +93,7 @@
         <activity android:name="com.wise.state.TestActivity" android:screenOrientation="portrait">            
              
         </activity>
+        <activity android:name="com.wise.show.PinDaoActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.show.ShowActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.show.ImageDetailsActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.show.ShowCarAcitivity" android:screenOrientation="portrait"></activity>
@@ -241,9 +242,10 @@
 		<!-- 
 		debug：0QNTY4tnP9Tv6ghXpGa6XXOm
 		正     式：DhT4kz88wR3r5yCl6tQCpaNW
+		本机：qfRNMbrcCCxi2zO4yGSdh2In
 		 -->
 		<meta-data  
 	        android:name="com.baidu.lbsapi.API_KEY"  
-	        android:value="DhT4kz88wR3r5yCl6tQCpaNW" />
+	        android:value="qfRNMbrcCCxi2zO4yGSdh2In" />
     </application>
 </manifest>
