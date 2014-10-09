@@ -16,6 +16,7 @@ import com.wise.baba.R;
 
 import data.CarData;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -88,8 +89,11 @@ public class CarLocationActivity extends Activity {
 						Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.bt_location_travel:// 行程
-				Toast.makeText(CarLocationActivity.this, "行程（更新中）",
-						Toast.LENGTH_SHORT).show();
+				Intent i = new Intent(CarLocationActivity.this,
+						TravelActivity.class);
+				startActivity(i);
+				// Toast.makeText(CarLocationActivity.this, "行程（更新中）",
+				// Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.bt_location_periphery:// 周边
 				ShowPop();// 弹出popupwidow显示
