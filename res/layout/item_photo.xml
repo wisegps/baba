@@ -17,8 +17,10 @@
             android:id="@+id/rl_pic" 
             android:layout_alignParentBottom="true"
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:paddingBottom="@dimen/margins"
+            android:layout_height="wrap_content"
+            android:background="#80000000"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
             android:paddingLeft="@dimen/margins"
             android:paddingRight="@dimen/margins">            
 	        <TextView
@@ -27,8 +29,6 @@
 	            android:layout_height="wrap_content"
 	            android:layout_centerVertical="true"
 	            android:textColor="@color/white"
-	            android:textSize="@dimen/main"
-	            android:visibility="gone"
 	            android:text="宝马X3"/>
 	        <ImageView
 	            android:id="@+id/iv_logo"
@@ -38,6 +38,7 @@
 	            android:background="@drawable/bg_a"
 	            android:layout_marginRight="@dimen/margins"
 	            android:layout_centerVertical="true"
+	            android:visibility="gone"
 	            android:layout_toRightOf="@id/tv_series"/>
 	        <ImageView
 	            android:id="@+id/iv_sex"
@@ -47,28 +48,24 @@
 	            android:background="@drawable/bg_a"
 	            android:layout_centerVertical="true"
 	            android:src="@drawable/icon_man"
+	            android:visibility="gone"
 	            android:layout_toRightOf="@id/iv_logo"/>
-	        <LinearLayout
-	            android:background="@drawable/bg_a"	            
+	        <LinearLayout          
 	            android:layout_alignParentRight="true"	            
 	            android:layout_centerVertical="true"
 	            android:orientation="horizontal"
-	            android:layout_width="30dp"
-	            android:layout_height="30dp"
-	            android:gravity="center"
-	            android:padding="5dp">	            
+	            android:layout_height="wrap_content"
+	            android:layout_width="wrap_content">	            
 		        <ImageView 
 		            android:id="@+id/iv_praise"
-		            android:layout_width="10dp"
-		            android:layout_height="10dp"
+		            android:layout_width="20dp"
+		            android:layout_height="20dp"
 		            android:src="@drawable/icon_xiu_zan_nor"/>	            
 		        <TextView
 		            android:id="@+id/tv_praise" 
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:textColor="@color/white"
-		            android:textSize="12sp"
-		            android:singleLine="true"/>
+		            android:textColor="@color/white"/>
 	        </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>

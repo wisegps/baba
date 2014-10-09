@@ -3,28 +3,29 @@ package com.wise.show;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import pubclas.Constant;
+import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
 import pubclas.Variable;
-import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,24 +33,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.wise.baba.R;
-import com.wise.car.ModelsActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.show.MyScrollView.OnFlowClickListener;
 import com.wise.show.RefreshableView.RefreshListener;
-
-import customView.OnViewChangeListener;
-import customView.ParentSlide;
 import customView.PopView;
 import customView.PopView.OnItemClickListener;
 
@@ -63,14 +54,14 @@ public class ShowActivity extends Activity {
 	private static final int getRefreshImage = 4;
 
 	TextView tv_car, tv_baby, tv_scenery, tv_road, tv_travel;
-	View v_car, v_baby, v_scenery, v_road, v_travel;
 	TextView tv_time, tv_title;
 	TextView tv_name, tv_ad, tv_dz, tv_bc, tv_bm, tv_all, tv_other;
-	LinearLayout ll_car_choose;
 	ImageView iv_choose;
 	GridView car_choose_grid;
-
-	ParentSlide hsl_photo;
+	
+	ViewPager viewPager;
+	ArrayList<View> pageViews = new ArrayList<View>(); 
+	
 	/** 个人头像路径 **/
 	String logo = "";
 	int page_count = 20;
@@ -88,11 +79,6 @@ public class ShowActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_show);
-		v_car = (View) findViewById(R.id.v_car);
-		v_baby = (View) findViewById(R.id.v_baby);
-		v_scenery = (View) findViewById(R.id.v_scenery);
-		v_road = (View) findViewById(R.id.v_road);
-		v_travel = (View) findViewById(R.id.v_travel);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		ImageView iv_show_car = (ImageView) findViewById(R.id.iv_show_car);
@@ -102,7 +88,8 @@ public class ShowActivity extends Activity {
 		tv_time = (TextView) findViewById(R.id.tv_time);
 		tv_title = (TextView) findViewById(R.id.tv_title);
 
-		hsl_photo = (ParentSlide) findViewById(R.id.hsl_photo);
+		viewPager = (ViewPager)findViewById(R.id.vp_photo);  
+		
 		tv_car = (TextView) findViewById(R.id.tv_car);
 		tv_car.setOnClickListener(onClickListener);
 		tv_baby = (TextView) findViewById(R.id.tv_baby);
@@ -113,194 +100,66 @@ public class ShowActivity extends Activity {
 		tv_road.setOnClickListener(onClickListener);
 		tv_travel = (TextView) findViewById(R.id.tv_travel);
 		tv_travel.setOnClickListener(onClickListener);
-		ll_car_choose = (LinearLayout) findViewById(R.id.ll_car_choose);
 		tv_name = (TextView) findViewById(R.id.tv_name);
-		TextView tv_ad = (TextView) findViewById(R.id.tv_ad);
-		tv_ad.setOnClickListener(onClickListener);
-		TextView tv_dz = (TextView) findViewById(R.id.tv_dz);
-		tv_dz.setOnClickListener(onClickListener);
-		TextView tv_bc = (TextView) findViewById(R.id.tv_bc);
-		tv_bc.setOnClickListener(onClickListener);
-		TextView tv_bm = (TextView) findViewById(R.id.tv_bm);
-		tv_bm.setOnClickListener(onClickListener);
-		TextView tv_all = (TextView) findViewById(R.id.tv_all);
-		tv_all.setOnClickListener(onClickListener);
-		TextView tv_other = (TextView) findViewById(R.id.tv_other);
-		tv_other.setOnClickListener(onClickListener);
 		getLogo();
 		setWaterFalls();
-		hsl_photo.setOnViewChangeListener(new OnViewChangeListener() {
+		viewPager.setAdapter(new GuidePageAdapter());
+		viewPager.setOnPageChangeListener(new OnPageChangeListener() {			
 			@Override
-			public void OnViewChange(int view) {
-				index = view;
+			public void onPageSelected(int arg0) {
+				GetSystem.myLog(TAG, "onPageSelected");
+				index = arg0;
 				switch (index) {
 				case 0:
 					photo_type = 1;
 					setBg();
-					// tv_car.setBackgroundResource(R.drawable.bg_border_left_press);
-					tv_car.setTextColor(getResources().getColor(R.color.Green));
-					v_car.setBackgroundResource(R.color.Green);
+					tv_car.setTextColor(getResources().getColor(R.color.white));
+					tv_car.setBackgroundResource(R.color.Green);
 					break;
 				case 1:
 					photo_type = 2;
 					setBg();
-					// tv_baby.setBackgroundResource(R.drawable.bg_border_center_press);
-					tv_baby.setTextColor(getResources().getColor(R.color.Green));
-					v_baby.setBackgroundResource(R.color.Green);
+					tv_baby.setTextColor(getResources().getColor(R.color.white));
+					tv_baby.setBackgroundResource(R.color.Green);
 					break;
 				case 2:
 					photo_type = 3;
 					setBg();
-					// tv_scenery.setBackgroundResource(R.drawable.bg_border_center_press);
 					tv_scenery.setTextColor(getResources().getColor(
-							R.color.Green));
-					v_scenery.setBackgroundResource(R.color.Green);
+							R.color.white));
+					tv_scenery.setBackgroundResource(R.color.Green);
 					break;
 				case 3:
 					photo_type = 4;
 					setBg();
-					// tv_road.setBackgroundResource(R.drawable.bg_border_center_press);
-					tv_road.setTextColor(getResources().getColor(R.color.Green));
-					v_road.setBackgroundResource(R.color.Green);
+					tv_road.setTextColor(getResources().getColor(R.color.white));
+					tv_road.setBackgroundResource(R.color.Green);
 					break;
 				case 4:
 					photo_type = 5;
 					setBg();
-					// tv_travel.setBackgroundResource(R.drawable.bg_border_right_press);
 					tv_travel.setTextColor(getResources().getColor(
-							R.color.Green));
-					v_travel.setBackgroundResource(R.color.Green);
+							R.color.white));
+					tv_travel.setBackgroundResource(R.color.Green);
 					break;
 				}
-
 				if (viewDatas.get(index).getImageDatas().size() == 0) {
 					getFristImages();
 				}
-			}
-
+			}			
 			@Override
-			public void OnLastView() {
-			}
-
+			public void onPageScrolled(int arg0, float arg1, int arg2) {}			
 			@Override
-			public void OnFinish(int index) {
-			}
+			public void onPageScrollStateChanged(int arg0) {}
 		});
-	}
-
-	PopupWindow mPopupWindow;
-
-	private void getCarChooseShow() {
-		LayoutInflater mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-		View mpopView = mInflater.inflate(R.layout.car_choose_grid, null);
-		car_choose_grid = (GridView) mpopView
-				.findViewById(R.id.car_choose_grid);
-		car_choose_grid.setAdapter(new CarChosseGrid());
-		mPopupWindow = new PopupWindow(mpopView, LayoutParams.MATCH_PARENT,
-				LayoutParams.WRAP_CONTENT);
-		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
-		mPopupWindow.setFocusable(true);
-		mPopupWindow.setOutsideTouchable(true);
-		mPopupWindow.showAsDropDown(iv_choose);
-		car_choose_grid
-				.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						switch (position) {
-						case 0:
-							car_brand_id = -1;
-							tv_name.setText("所有车型");
-							hideChooseCar();
-							getFristImages();
-							break;
-						case 1:
-							car_brand_id = 9;
-							tv_name.setText("奥迪");
-							hideChooseCar();
-							getFristImages();
-							break;
-						case 2:
-							car_brand_id = 8;
-							tv_name.setText("大众");
-							hideChooseCar();
-							getFristImages();
-							break;
-						case 3:
-							car_brand_id = 2;
-							tv_name.setText("奔驰");
-							hideChooseCar();
-							getFristImages();
-							break;
-						case 4:
-							car_brand_id = 3;
-							tv_name.setText("宝马");
-							hideChooseCar();
-							getFristImages();
-							break;
-						case 5:
-							Intent intent = new Intent(ShowActivity.this,
-									ModelsActivity.class);
-							intent.putExtra("isNeedModel", false);
-							startActivityForResult(intent, 3);
-							hideChooseCar();
-							break;
-						}
-						mPopupWindow.dismiss();
-					}
-				});
-	}
-
-	private String[] carTypes = { "所有车型", "奥迪", "大众", "奔驰", "宝马", "选择其他" };
-
-	class CarChosseGrid extends BaseAdapter {
-		private LayoutInflater inflate = LayoutInflater.from(ShowActivity.this);
-
-		@Override
-		public int getCount() {
-			return carTypes.length;
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return carTypes[position];
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			Holder mhHolder = null;
-			if (convertView == null) {
-				convertView = inflate.inflate(R.layout.item_short_province,
-						null);
-				mhHolder = new Holder();
-				mhHolder.typeText = (TextView) convertView
-						.findViewById(R.id.tv_province);
-				convertView.setTag(mhHolder);
-			} else {
-				mhHolder = (Holder) convertView.getTag();
-			}
-			mhHolder.typeText.setBackgroundColor(getResources().getColor(
-					R.color.title_back));
-			mhHolder.typeText.setText(carTypes[position]);
-			return convertView;
-		}
-
-		class Holder {
-			TextView typeText;
-		}
-	}
+	}	
 
 	private void setWaterFalls() {
 		for (int i = 0; i < 5; i++) {
 			ViewData viewData = new ViewData();
 			View view_waterfalls = LayoutInflater.from(this).inflate(
 					R.layout.item_waterfalls, null);
-			hsl_photo.addView(view_waterfalls);
+			pageViews.add(view_waterfalls);
 			MyScrollView myScrollView = (MyScrollView) view_waterfalls
 					.findViewById(R.id.my_scroll_view);
 			myScrollView.setOnFlowClickListener(onFlowClickListener);
@@ -313,6 +172,30 @@ public class ShowActivity extends Activity {
 			viewDatas.add(viewData);
 		}
 		getFristImages();
+	}
+	
+	class GuidePageAdapter extends PagerAdapter{
+		@Override
+		public int getCount() {
+			return pageViews.size();
+		}
+		@Override
+		public boolean isViewFromObject(View arg0, Object arg1) {
+			return arg0 == arg1;
+		}
+		@Override
+		public int getItemPosition(Object object) {
+			return super.getItemPosition(object);
+		}
+		@Override
+		public void destroyItem(View container, int position, Object object) {
+			((ViewPager) container).removeView(pageViews.get(position)); 
+		}
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+			((ViewPager) container).addView(pageViews.get(position));  
+            return pageViews.get(position); 
+		}
 	}
 
 	List<ViewData> viewDatas = new ArrayList<ViewData>();
@@ -368,85 +251,36 @@ public class ShowActivity extends Activity {
 				startActivity(i);
 				// getCarChooseShow();
 				break;
-			case R.id.tv_ad:
-				car_brand_id = 9;
-				tv_name.setText("奥迪");
-				hideChooseCar();
-				getFristImages();
-				break;
-			case R.id.tv_dz:
-				car_brand_id = 8;
-				tv_name.setText("大众");
-				hideChooseCar();
-				getFristImages();
-				break;
-			case R.id.tv_bc:
-				car_brand_id = 2;
-				tv_name.setText("奔驰");
-				hideChooseCar();
-				getFristImages();
-				break;
-			case R.id.tv_bm:
-				car_brand_id = 3;
-				tv_name.setText("宝马");
-				hideChooseCar();
-				getFristImages();
-				break;
-			case R.id.tv_all:
-				car_brand_id = -1;
-				tv_name.setText("所有车型");
-				hideChooseCar();
-				getFristImages();
-				break;
-			case R.id.tv_other:
-				Intent intent = new Intent(ShowActivity.this,
-						ModelsActivity.class);
-				intent.putExtra("isNeedModel", false);
-				startActivityForResult(intent, 3);
-				hideChooseCar();
-				break;
 			case R.id.tv_car:
-				hsl_photo.snapToScreen(0);
+				viewPager.setCurrentItem(0);
 				break;
 			case R.id.tv_baby:
-				hsl_photo.snapToScreen(1);
+				viewPager.setCurrentItem(1);
 				break;
 			case R.id.tv_scenery:
-				hsl_photo.snapToScreen(2);
+				viewPager.setCurrentItem(2);
 				break;
 			case R.id.tv_road:
-				hsl_photo.snapToScreen(3);
+				viewPager.setCurrentItem(3);
 				break;
 			case R.id.tv_travel:
-				hsl_photo.snapToScreen(4);
+				viewPager.setCurrentItem(4);
 				break;
 			}
 		}
 	};
 
 	private void setBg() {
-		tv_car.setTextColor(getResources().getColor(R.color.navy));
-		// v_car.setBackgroundColor(getResources().getColor(R.color.transparent));
-		v_car.setBackgroundResource(R.color.white);
-		// tv_car.setBackgroundResource(R.drawable.bg_border_left);
-		tv_baby.setTextColor(getResources().getColor(R.color.navy));
-		v_baby.setBackgroundResource(R.color.white);
-		// tv_baby.setBackgroundResource(R.drawable.bg_border_center);
-		tv_scenery.setTextColor(getResources().getColor(R.color.navy));
-		v_scenery.setBackgroundResource(R.color.white);
-		// tv_scenery.setBackgroundResource(R.drawable.bg_border_center);
-		tv_road.setTextColor(getResources().getColor(R.color.navy));
-		v_road.setBackgroundResource(R.color.white);
-		// tv_road.setBackgroundResource(R.drawable.bg_border_center);
-		tv_travel.setTextColor(getResources().getColor(R.color.navy));
-		v_travel.setBackgroundResource(R.color.white);
-		// tv_travel.setBackgroundResource(R.drawable.bg_border_right);
-	}
-
-	private void hideChooseCar() {
-		// ll_car_choose.setVisibility(View.GONE);
-		// iv_choose.setVisibility(View.VISIBLE);
-		car_choose_grid.setVisibility(View.GONE);
+		tv_car.setTextColor(getResources().getColor(R.color.Green));
+		tv_car.setBackgroundResource(R.color.white);
+		tv_baby.setTextColor(getResources().getColor(R.color.Green));
+		tv_baby.setBackgroundResource(R.color.white);
+		tv_scenery.setTextColor(getResources().getColor(R.color.Green));
+		tv_scenery.setBackgroundResource(R.color.white);
+		tv_road.setTextColor(getResources().getColor(R.color.Green));
+		tv_road.setBackgroundResource(R.color.white);
+		tv_travel.setTextColor(getResources().getColor(R.color.Green));
+		tv_travel.setBackgroundResource(R.color.white);
 	}
 
 	String refresh = "";
@@ -581,6 +415,7 @@ public class ShowActivity extends Activity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case getFristImage:
+				//TODO 解析数据
 				List<ImageData> iDatas = jsonImages(msg.obj.toString());
 				viewDatas.get(msg.arg1).getImageDatas().addAll(iDatas);
 				viewDatas.get(msg.arg1).getMyScrollView().resetImages(iDatas);
@@ -601,11 +436,16 @@ public class ShowActivity extends Activity {
 				handler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						viewDatas.get(index).getLl_refresh().finishRefresh();
 						List<ImageData> iDatas1 = jsonImages(refresh);
-						viewDatas.get(index).getImageDatas().addAll(0, iDatas1);
-						viewDatas.get(index).getMyScrollView()
-								.addHeadImages(iDatas1);
+						//判断数据是否更新
+						if(iDatas1.size() != 0){
+							//判断返回的第一条数据和本地的第一条数据是否相等
+							if(iDatas1.get(0).getPhoto_id() != viewDatas.get(index).getImageDatas().get(0).getPhoto_id()){
+								viewDatas.get(index).getImageDatas().addAll(0, iDatas1);
+								viewDatas.get(index).getMyScrollView().addHeadImages(iDatas1);
+							}							
+						}
+						viewDatas.get(index).getLl_refresh().finishRefresh();
 					}
 				}, 1000);
 				break;
@@ -717,7 +557,7 @@ public class ShowActivity extends Activity {
 					startActivityForResult(intent, 1);
 					popView.dismiss();
 					break;
-				case 1:// TODO 从图库获取
+				case 1://从图库获取
 					Intent i = new Intent(
 							Intent.ACTION_PICK,
 							android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -735,7 +575,7 @@ public class ShowActivity extends Activity {
 				+ resultCode);
 		if (requestCode == 9) {
 			if (data != null) {
-				// TODO 获取图片路径
+				//获取图片路径
 				Uri uri = data.getData();
 				Intent intent = new Intent(ShowActivity.this,
 						ShowCarAcitivity.class);

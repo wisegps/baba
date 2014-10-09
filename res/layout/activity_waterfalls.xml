@@ -1,0 +1,47 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_vertical">
+    <com.wise.show.RefreshableView
+        android:id="@+id/ll_refresh"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+        <com.wise.show.MyScrollView
+		    android:id="@+id/my_scroll_view"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent" >	
+		    <LinearLayout
+		        android:id="@+id/ll_column"
+		        android:layout_width="match_parent"
+		        android:layout_height="fill_parent"
+		        android:orientation="horizontal" >	
+		        <LinearLayout
+		            android:id="@+id/first_column"
+		            android:layout_width="0dp"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:orientation="vertical" >
+		        </LinearLayout>	
+		        <LinearLayout
+		            android:id="@+id/second_column"
+		            android:layout_width="0dp"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:orientation="vertical" >
+		        </LinearLayout>
+		    </LinearLayout>
+		</com.wise.show.MyScrollView>
+    </com.wise.show.RefreshableView>
+    <RelativeLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <View 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+</LinearLayout>

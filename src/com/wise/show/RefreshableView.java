@@ -1,11 +1,9 @@
 package com.wise.show;
 
 import pubclas.DensityUtil;
-
 import com.wise.baba.R;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -77,7 +75,6 @@ public class RefreshableView extends LinearLayout {
 		lp.topMargin = refreshTargetTop;
 		lp.gravity = Gravity.CENTER;
 		addView(refreshView, lp);
-		System.out.println("refreshTargetTop = " + refreshTargetTop);
 	}
 //	OnFinishListener onFinishListener = new OnFinishListener() {		
 //		@Override
@@ -107,7 +104,6 @@ public class RefreshableView extends LinearLayout {
 			// y移动坐标
 			int m = y - lastY;
 			if (((m < 6) && (m > -1)) || (!isDragging)) {
-				System.out.println("getScrollY() = " + getScrollY());
 				doMovement(m);
 			}
 			// 记录下此刻y坐标
@@ -130,15 +126,11 @@ public class RefreshableView extends LinearLayout {
 	private void fling() {
 		getParent().requestDisallowInterceptTouchEvent(false);
 		LinearLayout.LayoutParams lp = (LayoutParams) refreshView.getLayoutParams();
-		System.out.println("lp.topMargin = " + lp.topMargin);
 		if (lp.topMargin > 0) {// 拉到了触发可刷新事件
 			refresh();
 			if (refreshListener != null) {
 				refreshListener.onRefresh();
 				isRefreshing = false;
-				System.out.println("refreshListener 不为空");
-			}else{
-				System.out.println("refreshListener 为空");
 			}
 		} else {
 			returnInitState();
@@ -196,7 +188,6 @@ public class RefreshableView extends LinearLayout {
 	 */
 	private void doMovement(int moveY) {
 		LinearLayout.LayoutParams lp = (LayoutParams) refreshView.getLayoutParams();
-		//System.out.println("moveY = " + moveY);
 		if (moveY > 0) {
 			// 获取view的上边距
 			float f1 = lp.topMargin;
@@ -204,7 +195,6 @@ public class RefreshableView extends LinearLayout {
 			int i = (int) (f1 + 0.5*f2);
 			if(i >= 10){
 				//防止拉太多情况
-				//System.out.println("防止拉太多情况");
 				xlistview_header_hint_textview.setText("松开刷新");
 			}else{
 				// 修改上边距
@@ -214,7 +204,6 @@ public class RefreshableView extends LinearLayout {
 				refreshView.setLayoutParams(lp);
 				refreshView.invalidate();
 				invalidate();
-				//System.out.println("lp.topMargin = " + i);
 			}
 		} else {
 			float f1 = lp.topMargin;
