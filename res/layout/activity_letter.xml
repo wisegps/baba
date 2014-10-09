@@ -34,72 +34,100 @@
             android:padding="@dimen/margins"
             android:src="@drawable/nav_ok" />
     </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/rl_bottom"
+    <LinearLayout 
+        android:id="@+id/ll_bottom"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/Green_Light" >
-        <ImageView
-            android:id="@+id/ivPopUp"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:padding="5dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/chatto_voice_friend" />
+        android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:background="@color/Green_Light" 
+        android:orientation="vertical">
         <RelativeLayout
-            android:id="@+id/btn_bottom"
-            android:layout_toRightOf="@id/ivPopUp" 
-            android:layout_centerVertical="true"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
-            <ImageView 
-	            android:id="@+id/iv_pic"
+	        android:layout_width="fill_parent"
+	        android:layout_height="50dp">
+	        <ImageView
+	            android:id="@+id/ivPopUp"
 	            android:layout_width="35dp"
 	            android:layout_height="35dp"
-	            android:padding="7dp"
+	            android:padding="5dp"
+	            android:layout_alignParentLeft="true"
 	            android:layout_centerVertical="true"
-	            android:src="@drawable/icon_qiehuan_shuru"/>
+	            android:src="@drawable/chatto_voice_friend" />
+	        <RelativeLayout
+	            android:id="@+id/btn_bottom"
+	            android:layout_toRightOf="@id/ivPopUp" 
+	            android:layout_centerVertical="true"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content" >
+	            <ImageView 
+		            android:id="@+id/iv_pic"
+		            android:layout_width="35dp"
+		            android:layout_height="35dp"
+		            android:padding="7dp"
+		            android:layout_centerVertical="true"
+		            android:src="@drawable/icon_qiehuan_shuru"/>
+		        <TextView
+		            android:id="@+id/tv_send"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentRight="true"
+		            android:layout_centerVertical="true"
+		            android:padding="@dimen/margins"
+		            android:text="发送"
+		            android:textColor="@color/white"
+		            android:textSize="@dimen/main" />
+		        <EditText
+		            android:id="@+id/et_content"
+		            android:layout_width="fill_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_toLeftOf="@id/tv_send"
+		            android:layout_toRightOf="@id/iv_pic"
+		            android:layout_marginLeft="@dimen/margins"
+		            android:background="@drawable/et_back"
+		            android:layout_centerVertical="true"
+		            android:singleLine="true" />
+	        </RelativeLayout>
 	        <TextView
-	            android:id="@+id/tv_send"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
+	            android:id="@+id/btn_rcd"            
+	            android:visibility="gone"
+	            android:layout_width="fill_parent"
+	            android:layout_height="40dp"
 	            android:layout_alignParentRight="true"
 	            android:layout_centerVertical="true"
-	            android:padding="@dimen/margins"
-	            android:text="发送"
-	            android:textColor="@color/white"
-	            android:textSize="@dimen/main" />
-	        <EditText
-	            android:id="@+id/et_content"
-	            android:layout_width="fill_parent"
+	            android:layout_marginLeft="10dp"
+	            android:layout_marginRight="10dp"
+	            android:layout_toRightOf="@+id/ivPopUp"
+	            android:background="@drawable/bg_letter_white"
+	            android:gravity="center"
+	            android:text="按住说话"/>
+	    </RelativeLayout>
+	    <LinearLayout
+	        android:id="@+id/ll_menu" 
+	        android:visibility="gone"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:padding="@dimen/margins"
+	        android:orientation="horizontal">
+	        <ImageView
+	            android:layout_weight="1" 
+	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:layout_toLeftOf="@id/tv_send"
-	            android:layout_toRightOf="@id/iv_pic"
-	            android:layout_marginLeft="@dimen/margins"
-	            android:background="@drawable/et_back"
-	            android:layout_centerVertical="true"
-	            android:singleLine="true" />
-        </RelativeLayout>
-        <TextView
-            android:id="@+id/btn_rcd"            
-            android:visibility="gone"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_toRightOf="@+id/ivPopUp"
-            android:background="@drawable/bg_letter_white"
-            android:gravity="center"
-            android:text="按住说话"/>
-    </RelativeLayout>
+	            android:src="@drawable/gallery"/>
+	        <ImageView 
+	            android:layout_weight="1" 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:src="@drawable/camera"/>
+	        <ImageView 
+	            android:layout_weight="1" 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:src="@drawable/location"/>
+	    </LinearLayout>
+    </LinearLayout>    
     <xlist.XListView
         android:id="@+id/lv_letter"
         android:layout_below="@id/rl_top"
-        android:layout_above="@id/rl_bottom"
+        android:layout_above="@id/ll_bottom"
         android:divider="@null"
         android:listSelector="#00000000"
         android:cacheColorHint="#00000000"

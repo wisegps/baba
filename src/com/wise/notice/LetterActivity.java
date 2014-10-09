@@ -118,6 +118,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	String voiceName;
 	SoundMeter mSensor;
 	int flag = 1;
+	/**文字，语音，图片**/
 	int type_text = 0;
 	int type_pic = 1;
 	int type_sound = 2;

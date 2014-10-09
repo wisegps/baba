@@ -225,6 +225,9 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		this.imageDatas.clear();
 		this.imageDatas.addAll(imageDatas);
 		//重新布局
+		if(firstColumn == null){
+			System.out.println("firstColumn == null");
+		}
 		firstColumn.removeAllViews();
 		secondColumn.removeAllViews();
 		firstColumnHeight = 0;

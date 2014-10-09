@@ -37,6 +37,8 @@ import com.wise.notice.NoticeFragment;
 import com.wise.notice.NoticeFragment.BtnListener;
 import com.wise.setting.LoginActivity;
 import com.wise.show.ShowActivity;
+import com.wise.show.TestShowActivity;
+
 import customView.AlwaysMarqueeTextView;
 import customView.HScrollLayout;
 import customView.NoticeScrollTextView;
