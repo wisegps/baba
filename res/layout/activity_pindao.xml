@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/gray_bg"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -31,13 +31,35 @@
             android:src="@drawable/nav_back" />
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/list_pindao"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:divider="#00000000"
-        android:dividerHeight="0.5dp"
-        android:listSelector="#00000000" >
-    </ListView>
+        android:layout_height="fill_parent"
+        android:orientation="horizontal" >
+
+        <ListView
+            android:id="@+id/list_pindao"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:divider="@color/blue_line"
+            android:dividerHeight="0.5dp"
+            android:scrollbars="none" >
+        </ListView>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent" />
+
+        <ListView
+            android:id="@+id/list_pindao_show"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:divider="@color/blue_line"
+            android:dividerHeight="0.5dp"
+            android:scrollbars="none"
+            android:visibility="invisible" >
+        </ListView>
+    </LinearLayout>
 
 </LinearLayout>
