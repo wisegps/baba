@@ -48,6 +48,7 @@ import customView.PopView.OnItemClickListener;
 public class ShowActivity extends Activity {
 	private static final String TAG = "ShowActivity";
 
+	public static final int PINDAO = 5;// 频道请求码
 	private static final int getFristImage = 1;
 	private static final int getNextImage = 2;
 	private static final int praise = 3;
@@ -57,11 +58,10 @@ public class ShowActivity extends Activity {
 	TextView tv_time, tv_title;
 	TextView tv_name, tv_ad, tv_dz, tv_bc, tv_bm, tv_all, tv_other;
 	ImageView iv_choose;
-	GridView car_choose_grid;
-	
+
 	ViewPager viewPager;
-	ArrayList<View> pageViews = new ArrayList<View>(); 
-	
+	ArrayList<View> pageViews = new ArrayList<View>();
+
 	/** 个人头像路径 **/
 	String logo = "";
 	int page_count = 20;
@@ -88,8 +88,8 @@ public class ShowActivity extends Activity {
 		tv_time = (TextView) findViewById(R.id.tv_time);
 		tv_title = (TextView) findViewById(R.id.tv_title);
 
-		viewPager = (ViewPager)findViewById(R.id.vp_photo);  
-		
+		viewPager = (ViewPager) findViewById(R.id.vp_photo);
+
 		tv_car = (TextView) findViewById(R.id.tv_car);
 		tv_car.setOnClickListener(onClickListener);
 		tv_baby = (TextView) findViewById(R.id.tv_baby);
@@ -104,7 +104,7 @@ public class ShowActivity extends Activity {
 		getLogo();
 		setWaterFalls();
 		viewPager.setAdapter(new GuidePageAdapter());
-		viewPager.setOnPageChangeListener(new OnPageChangeListener() {			
+		viewPager.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageSelected(int arg0) {
 				GetSystem.myLog(TAG, "onPageSelected");
@@ -146,13 +146,17 @@ public class ShowActivity extends Activity {
 				if (viewDatas.get(index).getImageDatas().size() == 0) {
 					getFristImages();
 				}
-			}			
+			}
+
 			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {}			
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+			}
+
 			@Override
-			public void onPageScrollStateChanged(int arg0) {}
+			public void onPageScrollStateChanged(int arg0) {
+			}
 		});
-	}	
+	}
 
 	private void setWaterFalls() {
 		for (int i = 0; i < 5; i++) {
@@ -173,28 +177,32 @@ public class ShowActivity extends Activity {
 		}
 		getFristImages();
 	}
-	
-	class GuidePageAdapter extends PagerAdapter{
+
+	class GuidePageAdapter extends PagerAdapter {
 		@Override
 		public int getCount() {
 			return pageViews.size();
 		}
+
 		@Override
 		public boolean isViewFromObject(View arg0, Object arg1) {
 			return arg0 == arg1;
 		}
+
 		@Override
 		public int getItemPosition(Object object) {
 			return super.getItemPosition(object);
 		}
+
 		@Override
 		public void destroyItem(View container, int position, Object object) {
-			((ViewPager) container).removeView(pageViews.get(position)); 
+			((ViewPager) container).removeView(pageViews.get(position));
 		}
+
 		@Override
 		public Object instantiateItem(ViewGroup container, int position) {
-			((ViewPager) container).addView(pageViews.get(position));  
-            return pageViews.get(position); 
+			((ViewPager) container).addView(pageViews.get(position));
+			return pageViews.get(position);
 		}
 	}
 
@@ -248,7 +256,7 @@ public class ShowActivity extends Activity {
 			case R.id.iv_choose:
 				// TODO 点击频道跳转频道页面
 				Intent i = new Intent(ShowActivity.this, PinDaoActivity.class);
-				startActivity(i);
+				startActivityForResult(i, PINDAO);
 				// getCarChooseShow();
 				break;
 			case R.id.tv_car:
@@ -415,7 +423,7 @@ public class ShowActivity extends Activity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case getFristImage:
-				//TODO 解析数据
+				// TODO 解析数据
 				List<ImageData> iDatas = jsonImages(msg.obj.toString());
 				viewDatas.get(msg.arg1).getImageDatas().addAll(iDatas);
 				viewDatas.get(msg.arg1).getMyScrollView().resetImages(iDatas);
@@ -437,13 +445,17 @@ public class ShowActivity extends Activity {
 					@Override
 					public void run() {
 						List<ImageData> iDatas1 = jsonImages(refresh);
-						//判断数据是否更新
-						if(iDatas1.size() != 0){
-							//判断返回的第一条数据和本地的第一条数据是否相等
-							if(iDatas1.get(0).getPhoto_id() != viewDatas.get(index).getImageDatas().get(0).getPhoto_id()){
-								viewDatas.get(index).getImageDatas().addAll(0, iDatas1);
-								viewDatas.get(index).getMyScrollView().addHeadImages(iDatas1);
-							}							
+						// 判断数据是否更新
+						if (iDatas1.size() != 0) {
+							// 判断返回的第一条数据和本地的第一条数据是否相等
+							if (iDatas1.get(0).getPhoto_id() != viewDatas
+									.get(index).getImageDatas().get(0)
+									.getPhoto_id()) {
+								viewDatas.get(index).getImageDatas()
+										.addAll(0, iDatas1);
+								viewDatas.get(index).getMyScrollView()
+										.addHeadImages(iDatas1);
+							}
 						}
 						viewDatas.get(index).getLl_refresh().finishRefresh();
 					}
@@ -557,7 +569,7 @@ public class ShowActivity extends Activity {
 					startActivityForResult(intent, 1);
 					popView.dismiss();
 					break;
-				case 1://从图库获取
+				case 1:// 从图库获取
 					Intent i = new Intent(
 							Intent.ACTION_PICK,
 							android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -575,7 +587,7 @@ public class ShowActivity extends Activity {
 				+ resultCode);
 		if (requestCode == 9) {
 			if (data != null) {
-				//获取图片路径
+				// 获取图片路径
 				Uri uri = data.getData();
 				Intent intent = new Intent(ShowActivity.this,
 						ShowCarAcitivity.class);
