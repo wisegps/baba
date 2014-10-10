@@ -23,9 +23,11 @@ import data.CharacterParser;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,6 +40,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class PinDaoActivity extends Activity {
+	// 返回类型码
+	public static final int CARTYPE = 3;// 车型
+	public static final int SEX = 4;// 性别
+	public static final int CITY = 5;// 城市
+
 	ListView pindaoListView, pindao_show;
 	List<String> pindaoData = new ArrayList<String>();
 	PindaoAdapter mAdapter;
@@ -96,6 +103,7 @@ public class PinDaoActivity extends Activity {
 				}
 				PindaoAdapter carAdapter = new PindaoAdapter(carTypes);
 				pindao_show.setAdapter(carAdapter);
+				getResult(carTypes, CARTYPE);
 				break;
 			case 1:// 性别
 				pindao_show.setVisibility(View.VISIBLE);
@@ -104,15 +112,31 @@ public class PinDaoActivity extends Activity {
 				sex.add("女");
 				PindaoAdapter sexAdapter = new PindaoAdapter(sex);
 				pindao_show.setAdapter(sexAdapter);
+				getResult(sex, SEX);
 				break;
 			case 2:// 城市
 				pindao_show.setVisibility(View.VISIBLE);
 				PindaoAdapter cityAdapter = new PindaoAdapter(cityDatas);
 				pindao_show.setAdapter(cityAdapter);
+				getResult(cityDatas, CITY);
 				break;
 			}
 		}
 	};
+
+	private void getResult(final List<String> s, final int resultCode) {
+		pindao_show.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Intent intent = new Intent();
+				intent.putExtra("显示", s.get(position));
+				setResult(resultCode);
+				PinDaoActivity.this.finish();
+			}
+		});
+	}
 
 	class PindaoAdapter extends BaseAdapter {
 		List<String> datas = null;
@@ -150,6 +174,7 @@ public class PinDaoActivity extends Activity {
 			} else {
 				mHolder = (Holder) convertView.getTag();
 			}
+			mHolder.pindaoView.setGravity(Gravity.LEFT);
 			mHolder.pindaoView.setText(datas.get(position));
 			return convertView;
 		}
