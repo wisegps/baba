@@ -41,8 +41,9 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:divider="@color/blue_line"
-            android:dividerHeight="0.5dp"
+            android:divider="@color/gray"
+            android:dividerHeight="0.5dip"
+            android:listSelector="@drawable/bg_item_selector"
             android:scrollbars="none" >
         </ListView>
 
@@ -55,10 +56,10 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:divider="@color/blue_line"
-            android:dividerHeight="0.5dp"
-            android:scrollbars="none"
-            android:visibility="invisible" >
+            android:divider="@color/gray"
+            android:dividerHeight="0.5dip"
+            android:listSelector="@drawable/bg_item_selector"
+            android:scrollbars="none" >
         </ListView>
     </LinearLayout>
 

@@ -45,9 +45,10 @@ public class PinDaoActivity extends Activity {
 	public static final int SEX = 4;// 性别
 	public static final int CITY = 5;// 城市
 
+	private static final int type = 6;
 	ListView pindaoListView, pindao_show;
-	List<String> pindaoData = new ArrayList<String>();
-	PindaoAdapter mAdapter;
+
+	PindaoAdapter mAdapter, carAdapter;
 
 	private CharacterParser characterParser; // 将汉字转成拼音
 	private PinyinComparator comparator;
@@ -57,16 +58,17 @@ public class PinDaoActivity extends Activity {
 	/** 品牌 **/
 	private List<BrandData> brandDatas = new ArrayList<BrandData>(); // 车辆品牌集合
 
+	List<String> pindaoData = new ArrayList<String>();
 	List<String> cityDatas = new ArrayList<String>();
+	List<String> carTypes = new ArrayList<String>();
+	List<String> sex = new ArrayList<String>();
+
+	int index = 0;// 标记选中背景
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pindao);
-
-		pindaoData.add("车型");
-		pindaoData.add("性别");
-		pindaoData.add("城市");
 		comparator = new PinyinComparator();
 		characterParser = new CharacterParser().getInstance();
 		getDate(ModelsActivity.carBrankTitle, Constant.BaseUrl
@@ -76,9 +78,10 @@ public class PinDaoActivity extends Activity {
 		pindaoListView = (ListView) findViewById(R.id.list_pindao);
 		pindao_show = (ListView) findViewById(R.id.list_pindao_show);
 
-		mAdapter = new PindaoAdapter(pindaoData);
+		mAdapter = new PindaoAdapter(pindaoData, type);
 		pindaoListView.setAdapter(mAdapter);
 
+		init();
 		pindaoListView.setOnItemClickListener(onItemClickListener);
 
 		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
@@ -89,49 +92,59 @@ public class PinDaoActivity extends Activity {
 		});
 	}
 
-	OnItemClickListener onItemClickListener = new OnItemClickListener() {
+	private void init() {
+		pindaoData.add("车型");
+		pindaoData.add("性别");
+		pindaoData.add("城市");
 
+		sex.add("男");
+		sex.add("女");
+
+		carAdapter = new PindaoAdapter(carTypes, 0);
+		pindao_show.setAdapter(carAdapter);
+		getResult(carTypes, CARTYPE);
+
+	}
+
+	OnItemClickListener onItemClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
+			index = position;
+			mAdapter.notifyDataSetChanged();
 			switch (position) {
 			case 0:// 车型
-				pindao_show.setVisibility(View.VISIBLE);
-				List<String> carTypes = new ArrayList<String>();
-				for (BrandData b : brandDatas) {
-					carTypes.add(b.getBrand());
-				}
-				PindaoAdapter carAdapter = new PindaoAdapter(carTypes);
 				pindao_show.setAdapter(carAdapter);
 				getResult(carTypes, CARTYPE);
 				break;
 			case 1:// 性别
-				pindao_show.setVisibility(View.VISIBLE);
-				List<String> sex = new ArrayList<String>();
-				sex.add("男");
-				sex.add("女");
-				PindaoAdapter sexAdapter = new PindaoAdapter(sex);
+				PindaoAdapter sexAdapter = new PindaoAdapter(sex, 0);
 				pindao_show.setAdapter(sexAdapter);
 				getResult(sex, SEX);
 				break;
 			case 2:// 城市
-				pindao_show.setVisibility(View.VISIBLE);
-				PindaoAdapter cityAdapter = new PindaoAdapter(cityDatas);
+				PindaoAdapter cityAdapter = new PindaoAdapter(cityDatas, 0);
 				pindao_show.setAdapter(cityAdapter);
 				getResult(cityDatas, CITY);
 				break;
 			}
+
 		}
 	};
 
+	// 返回数据
 	private void getResult(final List<String> s, final int resultCode) {
 		pindao_show.setOnItemClickListener(new OnItemClickListener() {
-
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Intent intent = new Intent();
-				intent.putExtra("显示", s.get(position));
+				if (resultCode == CARTYPE) {
+					brandDatas.get(position).getId();
+					intent.putExtra("id", brandDatas.get(position).getId());
+				} else {
+					intent.putExtra("显示", s.get(position));
+				}
 				setResult(resultCode);
 				PinDaoActivity.this.finish();
 			}
@@ -141,9 +154,11 @@ public class PinDaoActivity extends Activity {
 	class PindaoAdapter extends BaseAdapter {
 		List<String> datas = null;
 		LayoutInflater mInflater = LayoutInflater.from(PinDaoActivity.this);
+		int flag;
 
-		public PindaoAdapter(List<String> data) {
+		public PindaoAdapter(List<String> data, int i) {
 			datas = data;
+			flag = i;
 		}
 
 		@Override
@@ -173,6 +188,12 @@ public class PinDaoActivity extends Activity {
 				convertView.setTag(mHolder);
 			} else {
 				mHolder = (Holder) convertView.getTag();
+			}
+			if (index == position && flag == type) {
+				mHolder.pindaoView
+						.setBackgroundResource(R.color.blue_bg_traffic);
+			} else {
+				mHolder.pindaoView.setBackgroundResource(R.color.white);
 			}
 			mHolder.pindaoView.setGravity(Gravity.LEFT);
 			mHolder.pindaoView.setText(datas.get(position));
@@ -300,6 +321,9 @@ public class PinDaoActivity extends Activity {
 			brandDatas = filledData(brankList);
 			// 排序
 			Collections.sort(brandDatas, comparator);
+			for (BrandData b : brandDatas) {
+				carTypes.add(b.getBrand());
+			}
 
 		} catch (JSONException e2) {
 			e2.printStackTrace();
