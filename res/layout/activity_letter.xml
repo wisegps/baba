@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:id="@+id/rl_main">
     <RelativeLayout
         android:id="@+id/rl_top"
         android:layout_width="fill_parent"
@@ -46,9 +47,9 @@
 	        android:layout_height="50dp">
 	        <ImageView
 	            android:id="@+id/ivPopUp"
-	            android:layout_width="35dp"
-	            android:layout_height="35dp"
-	            android:padding="5dp"
+	            android:layout_width="45dp"
+	            android:layout_height="45dp"
+	            android:padding="@dimen/margins"
 	            android:layout_alignParentLeft="true"
 	            android:layout_centerVertical="true"
 	            android:src="@drawable/chatto_voice_friend" />
@@ -58,30 +59,34 @@
 	            android:layout_centerVertical="true"
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content" >
-	            <ImageView 
-		            android:id="@+id/iv_pic"
-		            android:layout_width="35dp"
-		            android:layout_height="35dp"
-		            android:padding="7dp"
-		            android:layout_centerVertical="true"
-		            android:src="@drawable/icon_qiehuan_shuru"/>
-		        <TextView
-		            android:id="@+id/tv_send"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_alignParentRight="true"
-		            android:layout_centerVertical="true"
-		            android:padding="@dimen/margins"
-		            android:text="发送"
-		            android:textColor="@color/white"
-		            android:textSize="@dimen/main" />
+	            <RelativeLayout
+	                android:id="@+id/rl_menu" 
+			        android:layout_alignParentRight="true"
+	                android:layout_width="50dp"
+	                android:layout_height="wrap_content">	                
+		            <ImageView 
+			            android:id="@+id/iv_expand"
+			            android:layout_width="35dp"
+			            android:layout_height="35dp"
+			            android:padding="5dp"
+			            android:layout_centerInParent="true"
+			            android:src="@drawable/expand"/>
+			        <TextView
+			            android:id="@+id/tv_send"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"           
+			            android:layout_centerInParent="true"
+			            android:text="发送"
+			            android:visibility="invisible"
+			            android:textColor="@color/white"
+			            android:textSize="@dimen/main" />
+	            </RelativeLayout>
 		        <EditText
 		            android:id="@+id/et_content"
 		            android:layout_width="fill_parent"
 		            android:layout_height="wrap_content"
-		            android:layout_toLeftOf="@id/tv_send"
+		            android:layout_toLeftOf="@id/rl_menu"
 		            android:layout_toRightOf="@id/iv_pic"
-		            android:layout_marginLeft="@dimen/margins"
 		            android:background="@drawable/et_back"
 		            android:layout_centerVertical="true"
 		            android:singleLine="true" />
@@ -93,7 +98,6 @@
 	            android:layout_height="40dp"
 	            android:layout_alignParentRight="true"
 	            android:layout_centerVertical="true"
-	            android:layout_marginLeft="10dp"
 	            android:layout_marginRight="10dp"
 	            android:layout_toRightOf="@+id/ivPopUp"
 	            android:background="@drawable/bg_letter_white"
@@ -108,16 +112,19 @@
 	        android:padding="@dimen/margins"
 	        android:orientation="horizontal">
 	        <ImageView
+	            android:id="@+id/iv_gallery"
 	            android:layout_weight="1" 
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:src="@drawable/gallery"/>
 	        <ImageView 
+	            android:id="@+id/iv_camera"
 	            android:layout_weight="1" 
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:src="@drawable/camera"/>
 	        <ImageView 
+	            android:id="@+id/iv_location"
 	            android:layout_weight="1" 
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
