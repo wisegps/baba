@@ -48,7 +48,6 @@ import customView.PopView.OnItemClickListener;
 public class ShowActivity extends Activity {
 	private static final String TAG = "ShowActivity";
 
-	public static final int PINDAO = 5;// 频道请求码
 	private static final int getFristImage = 1;
 	private static final int getNextImage = 2;
 	private static final int praise = 3;
@@ -256,8 +255,7 @@ public class ShowActivity extends Activity {
 			case R.id.iv_choose:
 				// TODO 点击频道跳转频道页面
 				Intent i = new Intent(ShowActivity.this, PinDaoActivity.class);
-				startActivityForResult(i, PINDAO);
-				// getCarChooseShow();
+				startActivityForResult(i, 5);
 				break;
 			case R.id.tv_car:
 				viewPager.setCurrentItem(0);
@@ -585,6 +583,16 @@ public class ShowActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 		System.out.println("requestCode = " + requestCode + " , resultCode = "
 				+ resultCode);
+		if(requestCode == 5 && resultCode == 3){
+			//车型
+			data.getStringExtra("result");
+		}else if(requestCode == 5 && resultCode == 4){
+			//性别
+			data.getStringExtra("result");
+		}else if(requestCode == 5 && resultCode == 5){
+			//城市
+			data.getStringExtra("result");
+		}
 		if (requestCode == 9) {
 			if (data != null) {
 				// 获取图片路径

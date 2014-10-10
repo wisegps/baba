@@ -30,6 +30,7 @@ import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -62,6 +63,7 @@ public class PinDaoActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_pindao);
 
 		pindaoData.add("车型");
@@ -131,7 +133,7 @@ public class PinDaoActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Intent intent = new Intent();
-				intent.putExtra("显示", s.get(position));
+				intent.putExtra("result", s.get(position));
 				setResult(resultCode);
 				PinDaoActivity.this.finish();
 			}
