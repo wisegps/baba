@@ -2,20 +2,10 @@ package com.wise.show;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-
-import pubclas.Constant;
 import pubclas.GetSystem;
-import pubclas.NetThread;
-import pubclas.Variable;
-
 import com.wise.baba.R;
 import com.wise.baba.SelectCityActivity;
 import com.wise.car.ModelsActivity;
-import com.wise.setting.AccountActivity;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
