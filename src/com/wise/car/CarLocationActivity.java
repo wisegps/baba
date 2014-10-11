@@ -1,5 +1,7 @@
 package com.wise.car;
 
+import pubclas.Constant;
+import pubclas.GetLocation;
 import pubclas.Variable;
 
 import com.baidu.mapapi.map.BaiduMap;
@@ -12,11 +14,18 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
+import com.baidu.mapapi.navi.BaiduMapNavigation;
+import com.baidu.mapapi.navi.NaviPara;
 import com.wise.baba.R;
+import com.wise.baba.SelectCityActivity;
 
 import data.CarData;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -35,14 +44,16 @@ public class CarLocationActivity extends Activity {
 	MapView mMapView = null;
 	LinearLayout ll_location_bottom;
 	PopupWindow mPopupWindow;
+	CarData carData;
+	int index;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_location);
-		int index = getIntent().getIntExtra("index", 0);
-		CarData carData = Variable.carDatas.get(index);
+		index = getIntent().getIntExtra("index", 0);
+		carData = Variable.carDatas.get(index);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_car_location);
@@ -75,8 +86,28 @@ public class CarLocationActivity extends Activity {
 		findViewById(R.id.bt_location_fence)
 				.setOnClickListener(onClickListener);
 		ll_location_bottom = (LinearLayout) findViewById(R.id.ll_location_bottom);
+
+		registerBroadcastReceiver();
+		GetLocation getLocation = new GetLocation(CarLocationActivity.this);
 	}
 
+	private void registerBroadcastReceiver() {
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(Constant.A_City);
+		registerReceiver(broadcastReceiver, intentFilter);
+	}
+
+	double latitude, longitude;
+	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equals(Constant.A_City)) {
+				latitude = Double.valueOf((intent.getStringExtra("Lat")));
+				longitude = Double.valueOf((intent.getStringExtra("Lon")));
+			}
+		}
+	};
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -84,9 +115,23 @@ public class CarLocationActivity extends Activity {
 			case R.id.iv_back:
 				finish();
 				break;
-			case R.id.bt_location_findCar:// 寻车
-				Toast.makeText(CarLocationActivity.this, "寻车（更新中）",
-						Toast.LENGTH_SHORT).show();
+			case R.id.bt_location_findCar:// TODO 寻车,客户端导航
+				LatLng startLocat = new LatLng(latitude, longitude);
+				LatLng carLocat = new LatLng(carData.getLat(), carData.getLon());
+				// 构建 导航参数
+				NaviPara param = new NaviPara();
+				param.startPoint = startLocat;
+				param.startName = "";
+				param.endPoint = carLocat;
+				param.endName = "";
+				try {
+					BaiduMapNavigation.openBaiduMapNavi(param,
+							CarLocationActivity.this);
+				} catch (BaiduMapAppNotSupportNaviException e) {
+					e.printStackTrace();
+					BaiduMapNavigation.openWebBaiduMapNavi(param,
+							CarLocationActivity.this);
+				}
 				break;
 			case R.id.bt_location_travel:// 行程
 				Intent i = new Intent(CarLocationActivity.this,
@@ -105,22 +150,22 @@ public class CarLocationActivity extends Activity {
 
 			// 周边点击弹出Popupwindow监听事件
 			case R.id.tv_item_car_location_oil:// 加油站
-				ToSearchMap("");
+				ToSearchMap("加油站");
 				break;
 			case R.id.tv_item_car_location_Parking:// 停车场
-				ToSearchMap("");
+				ToSearchMap("停车场");
 				break;
 			case R.id.tv_item_car_location_4s:// 4S店
-				ToSearchMap("");
+				ToSearchMap("4S店");
 				break;
 			case R.id.tv_item_car_location_specialist:// 维修店
-				ToSearchMap("");
+				ToSearchMap("维修店");
 				break;
 			case R.id.tv_item_car_location_automotive_beauty:// 美容店
-				ToSearchMap("");
+				ToSearchMap("美容店");
 				break;
 			case R.id.tv_item_car_location_wash:// 洗车店
-				ToSearchMap("");
+				ToSearchMap("洗车店");
 				break;
 			}
 		}
@@ -134,7 +179,11 @@ public class CarLocationActivity extends Activity {
 	private void ToSearchMap(String keyWord) {
 		mPopupWindow.dismiss();
 		// TODO 地图搜寻
-		Toast.makeText(CarLocationActivity.this, "正在更新中", 2000).show();
+		Intent intent = new Intent(CarLocationActivity.this,
+				SearchMapActivity.class);
+		intent.putExtra("index", index);
+		intent.putExtra("keyWord", keyWord);
+		startActivity(intent);
 	}
 
 	/**
