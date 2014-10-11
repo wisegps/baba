@@ -433,7 +433,7 @@ public class FaultDetectionActivity extends Activity{
 					
 					JSONArray jsonErrArray = jsonObject.getJSONArray("active_obd_err");
 					if(jsonErrArray.length() > 0){
-						String url = Constant.BaseUrl + "device/fault_desc?auth_code=" + Variable.auth_code;
+						String url = Constant.BaseUrl + "device/fault_desc_new?auth_code=" + Variable.auth_code;
 						List<NameValuePair> params = new ArrayList<NameValuePair>();
 				        params.add(new BasicNameValuePair("brand", Variable.carDatas.get(index).getCar_brand()));
 				        params.add(new BasicNameValuePair("obd_err", jsonObject.getString("active_obd_err")));
@@ -728,7 +728,7 @@ public class FaultDetectionActivity extends Activity{
 			case 1:
 				JSONArray jsonErrArray = jsonObject.getJSONArray("active_obd_err");
 				if(jsonErrArray.length() > 0){
-					String url = Constant.BaseUrl + "device/fault_desc?auth_code=" + Variable.auth_code;
+					String url = Constant.BaseUrl + "device/fault_desc_new?auth_code=" + Variable.auth_code;
 					List<NameValuePair> params = new ArrayList<NameValuePair>();
 					params.add(new BasicNameValuePair("brand", Variable.carDatas.get(index).getCar_brand()));
 			        params.add(new BasicNameValuePair("obd_err", jsonObject.getString("active_obd_err")));

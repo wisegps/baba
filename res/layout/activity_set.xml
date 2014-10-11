@@ -103,7 +103,7 @@
 	            android:textSize="@dimen/content"
 	            android:text="定位城市"
 	            android:textColor="@color/navy" />	        
-	    </RelativeLayout>    
+	    </RelativeLayout>
 	    <View 
 	        android:layout_width="fill_parent"
 	        android:layout_height="0.5dp"

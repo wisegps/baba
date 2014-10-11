@@ -37,7 +37,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -228,15 +227,8 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 				String brankData = msg.obj.toString();
 				// 存到数据库
 				insertDatabases(carBrankTitle, brankData, ModelsActivity.this);
-				if (!"".equals(brankData)) {
-					BaseData baseData = new BaseData();
-					baseData.setTitle(carBrankTitle);
-					baseData.setContent(brankData);
-					baseData.save();
-					jsonBrands(brankData);
-				} else {
-					Toast.makeText(getApplicationContext(), "获取数据失败，稍后再试", 0)
-							.show();
+				if (brankData.equals("")) {
+					Toast.makeText(getApplicationContext(), "获取数据失败，稍后再试", Toast.LENGTH_SHORT).show();
 				}
 				break;
 			case REFRESH_BRANK:
@@ -507,7 +499,6 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 	public static void insertDatabases(String titleName, String content,
 			Context context) {
 		BaseData baseData = new BaseData();
-		baseData.setCust_id(Variable.cust_id);
 		baseData.setTitle(titleName);
 		baseData.setContent(content);
 		baseData.save();

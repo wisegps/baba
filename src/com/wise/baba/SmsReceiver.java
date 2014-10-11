@@ -3,6 +3,8 @@ package com.wise.baba;
 import java.util.List;
 import org.json.JSONObject;
 import pubclas.Constant;
+import pubclas.GetSystem;
+
 import com.wise.notice.LetterActivity;
 import com.wise.notice.SmsActivity;
 import com.wise.remind.RemindListActivity;
@@ -20,6 +22,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class SmsReceiver extends BroadcastReceiver{
+	private static final String TAG = "SmsReceiver";
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Log.d("smsReceiver", intent.getAction());		
@@ -130,6 +133,7 @@ public class SmsReceiver extends BroadcastReceiver{
 	}	
 	private void receivingNotification(Context context, Bundle bundle){
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+        GetSystem.myLog(TAG, extras);
         try {
 			JSONObject jsonObject = new JSONObject(extras);
 			int msg_type = jsonObject.getInt("msg_type");
@@ -148,6 +152,7 @@ public class SmsReceiver extends BroadcastReceiver{
 		        context.startActivity(intent);
 			}else{//消息界面
 				Intent intent = new Intent(context, SmsActivity.class);
+				intent.putExtra("type", msg_type);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 		        context.startActivity(intent);
 			}

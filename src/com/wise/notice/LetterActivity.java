@@ -28,8 +28,6 @@ import com.android.volley.toolbox.Volley;
 import com.wise.baba.R;
 import com.wise.show.ImageDetailsActivity;
 import customView.CircleImageView;
-import customView.PopView;
-import customView.PopView.OnItemClickListener;
 import customView.WaitLinearLayout.OnFinishListener;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
@@ -63,7 +61,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
@@ -698,7 +695,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						Bitmap image = BitmapFactory
 								.decodeFile(Constant.VehiclePath + imageName);
 						image = Blur.scaleImage(image, 100);
-						viewFriend.iv_friend_pic.setImageBitmap(image);
+						
+						viewFriend.iv_friend_pic.setImageBitmap(Blur.toRoundCorner(image, 5));
 						viewFriend.iv_friend_pic.setOnClickListener(new OnClickListener() {							
 							@Override
 							public void onClick(View v) {
@@ -768,7 +766,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					if (new File(getImagePath(imageUrl)).exists()) {
 						Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath + imageName);
 						image = Blur.scaleImage(image, 100);
-						viewMe.iv_me_pic.setImageBitmap(image);
+						viewMe.iv_me_pic.setImageBitmap(Blur.toRoundCorner(image, 5));
 						viewMe.iv_me_pic.setOnClickListener(new OnClickListener() {							
 							@Override
 							public void onClick(View v) {
@@ -1045,12 +1043,15 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+		System.out.println("requestCode = " + requestCode + " , resultCode = " + resultCode);
+		if(resultCode == Activity.RESULT_CANCELED){
+			ll_menu.setVisibility(View.VISIBLE);
+			return;
+		}else if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
 			// 拍照返回
 			saveImage(Constant.VehiclePath + Constant.TemporaryImage);
 			return;
-		}
-		if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
+		}else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
 			// 图库返回
 			if (data != null) {
 				// 获取图片路径
@@ -1509,6 +1510,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		if(ll_menu.getVisibility() == View.VISIBLE){
 			ll_menu.setVisibility(View.GONE);
 		}else{
+			if (mMediaPlayer.isPlaying()) {
+				mMediaPlayer.stop();
+			}
 			finish();
 		}
 	}

@@ -50,36 +50,16 @@
                 android:text="没有故障记录"/>
            </RelativeLayout>
 	</RelativeLayout>
-	<LinearLayout 
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:padding="@dimen/margins"
-	    android:orientation="horizontal">	    	
-	    <TextView 
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:drawableLeft="@drawable/icon_guzhang_abnormal"
-	        android:gravity="center_vertical"
-	        android:textSize="@dimen/main"
-	        android:textColor="@color/navy"
-	        android:drawablePadding="@dimen/margins"
-	        android:text="发现"/>
-	    <TextView 
-	        android:id="@+id/tv_fault"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:gravity="center_vertical"
-	        android:textSize="@dimen/main"
-	        android:textColor="@color/yellow"
-	        android:text="0"/>
-	    <TextView 
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:gravity="center_vertical"
-	        android:textSize="@dimen/main"
-	        android:textColor="@color/navy"
-	        android:text="个故障码"/>
-	</LinearLayout>
+	<TextView	    
+        android:id="@+id/tv_fault"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/icon_guzhang_abnormal"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/main"
+        android:textColor="@color/navy"
+        android:drawablePadding="@dimen/margins"
+        android:padding="@dimen/margins"/>
 	<View
         android:layout_width="fill_parent"
         android:layout_height="0.5dp"

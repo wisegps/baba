@@ -5,10 +5,10 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +32,8 @@ public class FaultDetailActivity extends Activity{
 	TextView tv_fault;
 	String fault_content;
 	List<FaultData> faultDatas = new ArrayList<FaultData>();
+	int[][] colors = {{83,181,220},{133,208,66},{245,149,91},{248,127,96},{255,105,105}};
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,11 +68,17 @@ public class FaultDetailActivity extends Activity{
 	};
 	private void jsonData(){
 		try {
-			JSONArray jsonArray = new JSONArray(fault_content);
-			tv_fault.setText(""+jsonArray.length());
+			JSONObject jObject = new JSONObject(fault_content);
+			int max_level = jObject.getInt("max_level");
+			String advice = jObject.getString("advice");
+			JSONArray jsonArray = jObject.getJSONArray("data");
+			int color[] = colors[max_level - 1];
+			tv_fault.setTextColor(Color.rgb(color[0], color[1], color[2]));
+			tv_fault.setText(advice);
 			for(int i = 0 ; i < jsonArray.length() ; i++){
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				FaultData faultData = new FaultData();
+				faultData.setLevel(jsonObject.getInt("level"));
 				faultData.setC_define(jsonObject.getString("c_define"));
 				faultData.setContent(jsonObject.getString("content"));
 				faultData.setCategory(jsonObject.getString("category"));
@@ -109,8 +117,14 @@ public class FaultDetailActivity extends Activity{
 			}
 			FaultData faultData = faultDatas.get(position);
 			holder.tv_define.setText(faultData.getC_define());
-			holder.tv_content.setText(faultData.getContent());
+			holder.tv_content.setText(faultData.getContent());			
 			holder.tv_category.setText(faultData.getCategory());
+			try {
+				int color[] = colors[faultData.getLevel() - 1];
+				holder.tv_define.setTextColor(Color.rgb(color[0], color[1], color[2]));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return convertView;
 		}
 		private class ViewHolder {
@@ -118,9 +132,17 @@ public class FaultDetailActivity extends Activity{
 	    }
 	}
 	class FaultData{
+		private int level;
 		private String content;
 		private String c_define;
 		private String category;
+		
+		public int getLevel() {
+			return level;
+		}
+		public void setLevel(int level) {
+			this.level = level;
+		}
 		public String getContent() {
 			return content;
 		}
