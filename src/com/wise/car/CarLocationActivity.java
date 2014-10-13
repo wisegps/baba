@@ -144,8 +144,10 @@ public class CarLocationActivity extends Activity {
 				ShowPop();// 弹出popupwidow显示
 				break;
 			case R.id.bt_location_fence:// 围栏
-				Toast.makeText(CarLocationActivity.this, "围栏（更新中）",
-						Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(CarLocationActivity.this,
+						FenceActivity.class);
+				intent.putExtra("index", index);
+				startActivity(intent);
 				break;
 
 			// 周边点击弹出Popupwindow监听事件
