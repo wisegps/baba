@@ -295,7 +295,6 @@ public class ShowActivity extends Activity {
 	RefreshListener refreshListener = new RefreshListener() {
 		@Override
 		public void onRefresh() {
-			System.out.println("onRefresh");
 			// 加标记 下拉刷新
 			refresh = "";
 			int Photo_id;
@@ -316,10 +315,6 @@ public class ShowActivity extends Activity {
 
 		@Override
 		public void onRefreshOver(int index) {
-			System.out.println("onRefreshOver");
-			// List<ImageData> iDatas = jsonImages(refresh);
-			// viewDatas.get(index).getImageDatas().addAll(0, iDatas);
-			// viewDatas.get(index).getMyScrollView().addHeadImages(iDatas);
 		}
 	};
 
@@ -583,8 +578,6 @@ public class ShowActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		System.out.println("requestCode = " + requestCode + " , resultCode = "
-				+ resultCode);
 		if (requestCode == 9) {
 			if (data != null) {
 				// 获取图片路径
@@ -632,7 +625,6 @@ public class ShowActivity extends Activity {
 					.setPraiseCount(position, Praise_count);
 		}
 		if (requestCode == 3) {
-			System.out.println("brank = " + data.getStringExtra("brank"));
 			tv_name.setText(data.getStringExtra("brank"));
 			car_brand_id = Integer.valueOf(data.getStringExtra("brankId"));
 			getFristImages();

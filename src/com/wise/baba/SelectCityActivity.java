@@ -171,7 +171,6 @@ public class SelectCityActivity extends Activity {
     
     private void GetCity() {
     	List<BaseData> hotBaseDatas = DataSupport.where("Title = ?","hotCity").find(BaseData.class);
-		System.out.println("hotBaseDatas.size() = " + hotBaseDatas.size());
     	if(hotBaseDatas.size() == 0 || hotBaseDatas.get(0).getContent() == null || hotBaseDatas.get(0).getContent().equals("")){
 			if(progressDialog == null){
         		progressDialog = ProgressDialog.show(SelectCityActivity.this, getString(R.string.dialog_title), "城市信息获取中");
@@ -184,7 +183,6 @@ public class SelectCityActivity extends Activity {
             hotDatas = GetCityList(Hot_Citys);			
 		}
 		List<BaseData> baseDatas = DataSupport.where("Title = ?","City").find(BaseData.class);
-		System.out.println("baseDatas.size() = " + baseDatas.size());
 		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
 			if(progressDialog == null){
         		progressDialog = ProgressDialog.show(SelectCityActivity.this, getString(R.string.dialog_title), "城市信息获取中");

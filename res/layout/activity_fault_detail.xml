@@ -27,7 +27,7 @@
 	        android:src="@drawable/nav_back"/>
 	</RelativeLayout>
 	<RelativeLayout
-	    android:id="@+id/rl_no_fault" 
+	    android:id="@+id/rl_no_fault"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent">
 	    <RelativeLayout 
@@ -50,16 +50,22 @@
                 android:text="没有故障记录"/>
            </RelativeLayout>
 	</RelativeLayout>
-	<TextView	    
-        android:id="@+id/tv_fault"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/icon_guzhang_abnormal"
-        android:gravity="center_vertical"
-        android:textSize="@dimen/main"
-        android:textColor="@color/navy"
-        android:drawablePadding="@dimen/margins"
-        android:padding="@dimen/margins"/>
+	<LinearLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:padding="@dimen/margins"
+	    android:orientation="horizontal">
+	    <ImageView 
+	        android:layout_width="20dp"
+	        android:layout_height="20dp"
+	        android:src="@drawable/icon_guzhang_abnormal"/>
+		<TextView	    
+	        android:id="@+id/tv_fault"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="@dimen/main"
+	        android:textColor="@color/navy"/>
+	</LinearLayout>
 	<View
         android:layout_width="fill_parent"
         android:layout_height="0.5dp"

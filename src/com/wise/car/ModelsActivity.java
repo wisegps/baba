@@ -17,7 +17,6 @@ import org.litepal.crud.DataSupport;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;
@@ -225,10 +224,12 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			switch (msg.what) {
 			case GET_BRANK:
 				String brankData = msg.obj.toString();
-				// 存到数据库
+				//TODO 存到数据库
 				insertDatabases(carBrankTitle, brankData, ModelsActivity.this);
 				if (brankData.equals("")) {
 					Toast.makeText(getApplicationContext(), "获取数据失败，稍后再试", Toast.LENGTH_SHORT).show();
+				}else{
+					jsonBrands(brankData);
 				}
 				break;
 			case REFRESH_BRANK:
@@ -335,7 +336,6 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		}
 	}
 	private void jsonSeries(String result){
-		System.out.println(result);
 		carSeries.clear();
 		JSONArray jsonArray;
 		try {

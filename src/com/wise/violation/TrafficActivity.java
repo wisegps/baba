@@ -809,7 +809,6 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 					.replaceAll("\"vio_city_name\":", "vio_city_name:")
 					.replaceAll("\"vio_location\":", "vio_location:")
 					.replaceAll("\"province\":", "province:");
-			System.out.println(jsonString);
 			return jsonString;
 		} catch (Exception e) {
 			e.printStackTrace();

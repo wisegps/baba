@@ -77,7 +77,6 @@ public class SmsActivity extends Activity implements IXListViewListener{
 			}
 		});
 		int type = getIntent().getIntExtra("type", 0);
-		System.out.println("type = " + type);
 		if(type == 0){
 			index_view = 4;
 		}else{

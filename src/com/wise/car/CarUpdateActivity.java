@@ -516,9 +516,7 @@ public class CarUpdateActivity extends Activity {
 	/** 获取各个市违章信息 **/
 	private void getTraffic() {
 		
-		List<BaseData> bDatas = DataSupport.findAll(BaseData.class);
-		System.out.println("bDatas.size() = " + bDatas.size());
-		
+		List<BaseData> bDatas = DataSupport.findAll(BaseData.class);		
 		List<BaseData> baseDatas = DataSupport.where("Title = ?","Violation").find(BaseData.class);
 		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
 			String url = Constant.BaseUrl + "violation/city?cuth_code="

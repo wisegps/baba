@@ -1,20 +1,19 @@
 package com.wise.baba;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.litepal.tablemanager.Connector;
-
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import cn.sharesdk.framework.ShareSDK;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
-import com.umeng.update.UpdateConfig;
 import com.wise.state.FaultActivity;
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
+import data.CarData;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.JsonData;
@@ -25,7 +24,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -58,9 +56,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		ShareSDK.initSDK(this);
 		setContentView(R.layout.activity_welcome);
-		//SQLiteDatabase db = Connector.getDatabase();
+		GetSystem.myLog(TAG, "启动程序-------------------------------------------");
 		clearData();
-		GetSystem.myLog(TAG, "onCreate");
 		Intent intent = getIntent();
 		
 		isSpecify = intent.getBooleanExtra("isSpecify", false);
@@ -74,8 +71,6 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		
 		getLogin();
 		MobclickAgent.setDebugMode(true);
-		//打印更新日志，正式发布去掉
-		//UpdateConfig.setDebug(true);
 		FeedbackAgent agent = new FeedbackAgent(this);
 		agent.sync();
 	}
@@ -95,6 +90,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 			case get_data:
 				isLoging = true;
 				strData = msg.obj.toString();
+				GetSystem.myLog(TAG, "get_Data ,Variable.carDatas = " + Variable.carDatas.size());
 				TurnActivity();
 				break;
 			case get_customer:
@@ -107,8 +103,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 	private void getLogin() {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-		String sp_account = preferences.getString(Constant.sp_account, "");
-		String sp_pwd = preferences.getString(Constant.sp_pwd, "");
+		String sp_account = preferences.getString(Constant.sp_account, "13138154075");
+		String sp_pwd = preferences.getString(Constant.sp_pwd, "e10adc3949ba59abbe56e057f20f883e");
 		new WaitThread().start();
 		if (sp_account.equals("")) {
 			isLogin = false;
@@ -121,6 +117,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 	private void jsonLogin(String str){
 		if(str.equals("")){
 			GetSystem.myLog(TAG, "网络连接异常");
+			GetSystem.myLog(TAG, "clearData,Variable.carDatas = " + Variable.carDatas.size());
 			isException = true;
 			TurnActivity();
 		}else{
@@ -134,6 +131,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 			        getData();		        
 				}else{
 					isLogin = false;
+					GetSystem.myLog(TAG, "jsonLogin status_code ,Variable.carDatas = " + Variable.carDatas.size());
 					TurnActivity();
 				}
 			} catch (JSONException e) {
@@ -155,25 +153,14 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
         editor1.commit();
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-//			String mobile = jsonObject.getString("mobile");
-//			String email = jsonObject.getString("email");
-//			String password = jsonObject.getString("password");
 			Variable.cust_name = jsonObject.getString("cust_name");
-//			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-//	        Editor editor = preferences.edit();
-//	        editor.putString(Constant.sp_pwd, password);			
-//			if(mobile.equals("")){
-//		        editor.putString(Constant.sp_account, email);
-//			}else{
-//				editor.putString(Constant.sp_account, mobile);
-//			}
-//	        editor.commit();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	private void getData(){
+		GetSystem.myLog(TAG, "getData ,Variable.carDatas = " + Variable.carDatas.size());
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/vehicle?auth_code=" + Variable.auth_code;
 		new NetThread.GetDataThread(handler, url, get_data).start();
 	}
@@ -194,6 +181,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 	}
 	
 	private void TurnActivity() {
+		GetSystem.myLog(TAG, "TurnActivity ,Variable.carDatas = " + Variable.carDatas.size() +
+				"isWait = " + isWait + " , isLogin = " + isLogin + " , isException = " + isException + " , isLoging = " + isLoging);
         if (isWait) {//城市读取完毕，延时        	
         	if(!isLogin){
         		//未登录跳转
@@ -233,11 +222,13 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 			if(!isLogin){
         		//是否需要选择城市
         		if(Variable.City.equals("")){
+        			GetSystem.myLog(TAG, "未登录选择城市,Variable.carDatas = " + Variable.carDatas.size());
         			Intent intent = new Intent(WelcomeActivity.this, SelectCityActivity.class);
     				intent.putExtra("Welcome", true);
     				startActivity(intent);
     				finish();
         		}else{
+        			GetSystem.myLog(TAG, "未登录跳转,Variable.carDatas = " + Variable.carDatas.size());
         			Intent intent = new Intent(WelcomeActivity.this, FaultActivity.class);
     				startActivity(intent);
     				finish();
@@ -246,6 +237,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
         		if(isException){//程序异常
         			GetSystem.myLog(TAG, "runFast isException");
         			Intent intent = new Intent(WelcomeActivity.this, FaultActivity.class);
+        			GetSystem.myLog(TAG, "程序异常,Variable.carDatas = " + Variable.carDatas.size());
     				startActivity(intent);
     				finish();
         		}else if(isLoging){//登录流程走完
@@ -257,6 +249,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
     	    			intent.putExtra("isSpecify", isSpecify);
     	    			intent.putExtras(bundle);
     				}
+    				GetSystem.myLog(TAG, "登录流程走完,Variable.carDatas = " + Variable.carDatas.size());
     				startActivity(intent);
     				finish();
             	}
@@ -279,6 +272,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		Variable.auth_code = null;
 		Variable.cust_id = null;
 		Variable.cust_name = "";
-		Variable.carDatas.clear();
+		Variable.carDatas = new ArrayList<CarData>();
+		GetSystem.myLog(TAG, "clearData,Variable.carDatas = " + Variable.carDatas.size());
 	}
 }

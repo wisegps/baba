@@ -7,17 +7,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 import pubclas.Constant;
+import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +35,7 @@ import android.widget.TextView;
  */
 public class InsuranceActivity extends Activity implements
         IXListViewListener {
+	private static final String TAG = "InsuranceActivity";
     private static final int getData = 1;
     
     XListView lv_insurance;
@@ -73,9 +71,9 @@ public class InsuranceActivity extends Activity implements
             super.handleMessage(msg);
             switch (msg.what) {
             case getData:
-                jsonData(msg.obj.toString());
                 //插入到服务器
                 JudgeInsurance(msg.obj.toString());
+                jsonData(msg.obj.toString());
                 onLoad();
                 break;
 
@@ -106,32 +104,41 @@ public class InsuranceActivity extends Activity implements
 			String url = Constant.BaseUrl + "base/insurance";
             new NetThread.GetDataThread(handler, url, getData).start();
 		}else{
-			isHaveInsurance = true;
             jsonData(baseDatas.get(0).getContent());
 		}
     }
     private void jsonData(String result){
-        try {
-            insuranceDatas.clear();
-            JSONArray jsonArray = new JSONArray(result);
-            for(int i = 0 ; i < jsonArray.length() ; i++){
-                InsuranceData insuranceData = new InsuranceData();
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                insuranceData.setName(jsonObject.getString("name"));
-                insuranceData.setService_phone(jsonObject.getString("service_phone"));
-                insuranceDatas.add(insuranceData);
+    	if(result == null || result.equals("")){
+    		
+    	}else{
+    		try {
+    			isHaveInsurance = true;
+                insuranceDatas.clear();
+                JSONArray jsonArray = new JSONArray(result);
+                for(int i = 0 ; i < jsonArray.length() ; i++){
+                    InsuranceData insuranceData = new InsuranceData();
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    insuranceData.setName(jsonObject.getString("name"));
+                    insuranceData.setService_phone(jsonObject.getString("service_phone"));
+                    insuranceDatas.add(insuranceData);
+                }
+                inSuranceAdapter.notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            inSuranceAdapter.notifyDataSetChanged();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    	}        
     }
     private void JudgeInsurance(String result) {
-        if (isHaveInsurance) {// 更新
-            UpdateInsurance(result, "insurance");
-        } else {// 插入
-            InsertInsurance(result, "insurance");
-        }
+    	if(result == null || result.equals("")){
+    		
+    	}else{
+    		if (isHaveInsurance) {// 更新
+                UpdateInsurance(result, "insurance");
+            } else {// 插入
+            	GetSystem.myLog(TAG, "InsertInsurance");
+                InsertInsurance(result, "insurance");
+            }
+    	}        
     }
     private void UpdateInsurance(String result, String Title) {
         BaseData baseData  = new BaseData();

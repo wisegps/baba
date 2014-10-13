@@ -192,10 +192,8 @@ public class CollectionActivity extends Activity implements IXListViewListener{
     }
     
     private boolean isGetDataUrl(){
-    	System.out.println("Variable.cust_id = " + Variable.cust_id);
     	List<CollectionData> collectionDatas = DataSupport.where("Cust_id = ?",Variable.cust_id).find(CollectionData.class);
-        System.out.println("collectionDatas.size() = " + collectionDatas.size());
-    	if(collectionDatas.size() == 0){
+        if(collectionDatas.size() == 0){
         	return true;
         }else{
         	return false;

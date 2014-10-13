@@ -32,7 +32,7 @@ public class FaultDetailActivity extends Activity{
 	TextView tv_fault;
 	String fault_content;
 	List<FaultData> faultDatas = new ArrayList<FaultData>();
-	int[][] colors = {{83,181,220},{133,208,66},{245,149,91},{248,127,96},{255,105,105}};
+	int[][] colors = {{83,181,220},{106,195,149},{133,208,66},{245,149,91},{248,127,96},{255,105,105}};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,13 @@ public class FaultDetailActivity extends Activity{
 			int max_level = jObject.getInt("max_level");
 			String advice = jObject.getString("advice");
 			JSONArray jsonArray = jObject.getJSONArray("data");
-			int color[] = colors[max_level - 1];
+			if(max_level < 0){
+				max_level = 0;
+			};
+			if(max_level >= colors.length){
+				max_level = colors.length - 1;
+			};
+			int color[] = colors[max_level];
 			tv_fault.setTextColor(Color.rgb(color[0], color[1], color[2]));
 			tv_fault.setText(advice);
 			for(int i = 0 ; i < jsonArray.length() ; i++){
@@ -120,7 +126,14 @@ public class FaultDetailActivity extends Activity{
 			holder.tv_content.setText(faultData.getContent());			
 			holder.tv_category.setText(faultData.getCategory());
 			try {
-				int color[] = colors[faultData.getLevel() - 1];
+				int level = faultData.getLevel();
+				if(level < 0){
+					level = 0;
+				};
+				if(level >= colors.length){
+					level = colors.length - 1;
+				};
+				int color[] = colors[level];
 				holder.tv_define.setTextColor(Color.rgb(color[0], color[1], color[2]));
 			} catch (Exception e) {
 				e.printStackTrace();

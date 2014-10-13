@@ -41,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class CarRemindUpdateActivity extends Activity{
+	private static final String TAG = "CarRemindUpdateActivity";
 	private static final int save = 1;
 	String remind_way = "2";
 	String remind_time;
@@ -102,6 +103,7 @@ public class CarRemindUpdateActivity extends Activity{
 		s_mode.setAdapter(mode);
 		
 		remindData = (RemindData) getIntent().getSerializableExtra("remindData");
+		GetSystem.myLog(TAG, remindData.toString());
 		s_type.setSelection(remindData.getRemind_type());
 		s_car.setSelection(getSelectedItemPosition(remindData.getObj_id()));
 		s_mode.setSelection(remindData.getRepeat_type());

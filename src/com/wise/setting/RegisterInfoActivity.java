@@ -316,7 +316,6 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 						+ Variable.cust_id + "?auth_code="
 						+ Variable.auth_code;
 				new NetThread.GetDataThread(handler, url, get_customer).start();
-				System.out.println("fastTrack = " + fastTrack);
 				if (fastTrack) {
 					// 设置
 					Intent intent = new Intent(RegisterInfoActivity.this,CarAddActivity.class);

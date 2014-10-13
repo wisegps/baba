@@ -122,7 +122,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 				if (scrollViewHeight + scrollY >= scrollLayout.getHeight()
 						&& taskCollection.isEmpty()) {
 					myScrollView.loadMoreImages();
-					System.out.println("滚动到底部");
 				}
 				myScrollView.checkVisibility();
 			} else {
@@ -162,7 +161,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 			secondColumn = (LinearLayout) findViewById(R.id.second_column);
 			if(firstColumn != null){
 				columnWidth = firstColumn.getWidth();
-				System.out.println("columnWidth = " + columnWidth);
 			}
 			loadOnce = true;
 		}
@@ -225,9 +223,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		this.imageDatas.clear();
 		this.imageDatas.addAll(imageDatas);
 		//重新布局
-		if(firstColumn == null){
-			System.out.println("firstColumn == null");
-		}
 		firstColumn.removeAllViews();
 		secondColumn.removeAllViews();
 		firstColumnHeight = 0;
@@ -262,7 +257,6 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		if (hasSDCard()) {
 			int startIndex = page * PAGE_SIZE;
 			int endIndex = page * PAGE_SIZE + PAGE_SIZE;
-			//System.out.println("startIndex = " + startIndex + "endIndex = " + endIndex);
 			if (startIndex < imageDatas.size()) {
 				if (endIndex > imageDatas.size()) {
 					endIndex = imageDatas.size();
@@ -291,12 +285,10 @@ public class MyScrollView extends ScrollView implements OnTouchListener {
 		if(onFlowClickListener != null){
 			onFlowClickListener.OnScrollFinish();
 		}
-		//System.out.println("scrollViewHeight = " + scrollViewHeight);
 		for (int i = 0; i < pViews.size(); i++) {
 			ImageView imageView = pViews.get(i).getIv_pic();
 			int borderTop = (Integer) imageView.getTag(R.string.border_top);
 			int borderBottom = (Integer) imageView.getTag(R.string.border_bottom);
-			//System.out.println("i = " + i + " , borderTop = " + borderTop + " , borderBottom = " + borderBottom + " , getScrollY() = " + getScrollY());
 			if (borderBottom > (getScrollY() - scrollViewHeight) && borderTop < getScrollY() + scrollViewHeight * 2) {
 				//SHUAXIN
 				String imageUrl = (String) imageView.getTag(R.string.image_url);

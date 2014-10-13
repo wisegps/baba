@@ -114,8 +114,6 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
 		progressBar.setVisibility(View.GONE);
 		fastTrack = getIntent().getBooleanExtra("fastTrack", false);
-		List<BaseData> bDatas = DataSupport.findAll(BaseData.class);
-		System.out.println("bDatas.size() = " + bDatas.size());
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {

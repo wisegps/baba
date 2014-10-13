@@ -14,7 +14,6 @@ public class NotificationActivity extends Activity{
 		//判断app状况
 		Bundle bundle = getIntent().getExtras();
 		boolean isTask = getIntent().getBooleanExtra("isTask", true);
-		System.out.println("isTask = " + isTask);
 		if(isTask){
 			receivingNotification(bundle);
 		}else{

@@ -123,7 +123,6 @@ public class WaitLinearLayout extends LinearLayout{
 						MarginLayoutParams params = (MarginLayoutParams) iv_wheel.getLayoutParams();
 						params.leftMargin = i;
 						iv_wheel.setLayoutParams(params);
-						//System.out.println(isOk + " , " + i);
 					}
 				}else{
 					if(i > wait){
@@ -133,7 +132,6 @@ public class WaitLinearLayout extends LinearLayout{
 						MarginLayoutParams params = (MarginLayoutParams) iv_wheel.getLayoutParams();
 						params.leftMargin = i;
 						iv_wheel.setLayoutParams(params);
-						//System.out.println(isOk + " , " + i);
 					}
 				}				
 				break;

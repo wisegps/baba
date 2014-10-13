@@ -30,9 +30,9 @@ public  class SoundMeter {
 				
 				mEMA = 0.0;
 			} catch (IllegalStateException e) {
-				System.out.print(e.getMessage());
+				e.printStackTrace();
 			} catch (IOException e) {
-				System.out.print(e.getMessage());
+				e.printStackTrace();
 			}
 
 		}

@@ -51,7 +51,7 @@ public class FoursActivity extends Activity {
 
 	ProgressDialog progressDialog = null;
 	private List<String[]> maintains = new ArrayList<String[]>();
-
+	boolean isGetDB = false;
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -75,6 +75,7 @@ public class FoursActivity extends Activity {
 					getString(R.string.dialog_message));
 			progressDialog.setCancelable(true);
 		}else{
+			isGetDB = true;
 			parseJSON(baseDatas.get(0).getContent());
 		}
 		
@@ -112,17 +113,21 @@ public class FoursActivity extends Activity {
 				if(progressDialog != null){
 					progressDialog.dismiss();
 				}
-				// 存在数据库
-				if (!"[]".equals(msg.obj.toString())) {
-					BaseData baseData = new BaseData();
-					baseData.setCust_id(Variable.cust_id);
-					baseData.setTitle(Constant.Maintain + "/" + city + "/"+ brank);
-					baseData.setContent(msg.obj.toString());
-					baseData.save();
-					parseJSON(msg.obj.toString());
-				}else{
+				if(msg.obj.toString() == null || msg.obj.toString().equals("")){
 					rl_Note.setVisibility(View.VISIBLE);
 					lv_4s.setVisibility(View.GONE);
+				}else{
+					if(isGetDB){
+						BaseData baseData  = new BaseData();
+				        baseData.setContent(msg.obj.toString());
+				        baseData.updateAll("Title=?" , Constant.Maintain + "/" + city + "/"+ brank);
+					}else{
+						BaseData baseData = new BaseData();
+						baseData.setTitle(Constant.Maintain + "/" + city + "/"+ brank);
+						baseData.setContent(msg.obj.toString());
+						baseData.save();
+					}					
+					parseJSON(msg.obj.toString());
 				}
 				break;
 			}
