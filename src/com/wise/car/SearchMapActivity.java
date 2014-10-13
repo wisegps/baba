@@ -21,9 +21,6 @@ import data.CarData;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class SearchMapActivity extends Activity {
@@ -38,16 +35,6 @@ public class SearchMapActivity extends Activity {
 		int index = getIntent().getIntExtra("index", 0);
 		carData = Variable.carDatas.get(index);
 		String search = getIntent().getStringExtra("keyWord");
-
-		TextView name = (TextView) findViewById(R.id.tv_activity_search_map_title);
-		name.setText(search);
-
-		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				SearchMapActivity.this.finish();
-			}
-		});
 
 		mBaiduMap = ((MapView) findViewById(R.id.mv_search_map)).getMap();
 

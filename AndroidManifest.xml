@@ -113,6 +113,7 @@
         <activity android:name="com.wise.car.TravelActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.car.TravelMapActivity" android:screenOrientation="portrait"></activity>
         <activity android:name="com.wise.car.SearchMapActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name="com.wise.car.FenceActivity" android:screenOrientation="portrait"></activity>
         
         <activity android:name="com.wise.remind.RemindAddActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
         <activity android:name="com.wise.remind.CarRemindUpdateActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
