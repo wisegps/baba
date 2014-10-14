@@ -111,13 +111,7 @@ public class FenceActivity extends Activity {
 
 	private void getDate() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("geo_type", String.valueOf(geo_type)));
-		params.add(new BasicNameValuePair("lon", String.valueOf(carData
-				.getLon())));
-		params.add(new BasicNameValuePair("lat", String.valueOf(carData
-				.getLat())));
-		params.add(new BasicNameValuePair("width", fence_distance.getText()
-				.toString()));
+		params.add(new BasicNameValuePair("geo", "{geo_type: 0,lon: 112,lat: 22,width: 1000 }"));
 
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
 				+ "?auth_code=" + Variable.auth_code;
