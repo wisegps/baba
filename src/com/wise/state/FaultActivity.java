@@ -197,16 +197,14 @@ public class FaultActivity extends FragmentActivity {
 		endMonth = GetSystem.getMonthLastDay(Month);
 
 		if (Judge.isLogin()) {// 已登录
-			GetSystem.myLog(TAG, "Variable.carDatas.size() = "
-					+ Variable.carDatas.size());
+			GetSystem.myLog(TAG, "已登录,Variable.carDatas = " + Variable.carDatas.size());
 			initDataView();
 			String url = Constant.BaseUrl + "customer/" + Variable.cust_id
 					+ "/tips?auth_code=" + Variable.auth_code;
 			getMessage(url);
 			getCounter();
 		} else {// 未登录
-	        List<BaseData> bDatas = DataSupport.findAll(BaseData.class);
-			GetSystem.myLog(TAG, "bDatas.size() = " + bDatas.size());
+			GetSystem.myLog(TAG, "未登录,Variable.carDatas = " + Variable.carDatas.size());
 			// 给个临时id
 			Variable.cust_id = "0";
 			Variable.auth_code = "127a154df2d7850c4232542b4faa2c3d";
@@ -385,7 +383,7 @@ public class FaultActivity extends FragmentActivity {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				// 体检结果存起来
+				//TODO (carDatas 为空) 体检结果存起来
 				SharedPreferences preferences = getSharedPreferences(
 						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 				Editor editor = preferences.edit();
@@ -395,7 +393,7 @@ public class FaultActivity extends FragmentActivity {
 				editor.commit();
 				break;
 			case get_device:
-				// TODO 驾驶指数
+				// TODO (carDatas 为空) 驾驶指数
 				try {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					int drive_score = jsonObject.getInt("drive_score");
@@ -697,7 +695,6 @@ public class FaultActivity extends FragmentActivity {
 			TextView tv_xx = (TextView) v.findViewById(R.id.tv_xx);
 			TextView tv_adress = (TextView) v.findViewById(R.id.tv_adress);
 
-			// TODO 监听事件
 			v.findViewById(R.id.Liner_distance).setOnClickListener(
 					onClickListener);
 			v.findViewById(R.id.Liner_fuel).setOnClickListener(onClickListener);
@@ -1140,7 +1137,7 @@ public class FaultActivity extends FragmentActivity {
 			String drive = preferences.getString(Constant.sp_drive_score
 					+ Variable.carDatas.get(index).getObj_id(), "");
 			if (drive.equals("")) {
-				System.out.println("没有驾驶信息");
+				
 			} else {
 				try {
 					JSONObject jsonObject = new JSONObject(drive);

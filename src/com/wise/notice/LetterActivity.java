@@ -28,15 +28,12 @@ import com.android.volley.toolbox.Volley;
 import com.wise.baba.R;
 import com.wise.show.ImageDetailsActivity;
 import customView.CircleImageView;
-import customView.PopView;
-import customView.PopView.OnItemClickListener;
 import customView.WaitLinearLayout.OnFinishListener;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ClipboardManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -63,7 +60,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
@@ -295,7 +291,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				int after) {}		
 		@Override
 		public void afterTextChanged(Editable s) {
-			System.out.println();
+			
 		}
 	};
 
@@ -440,15 +436,17 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		pairs.add(new BasicNameValuePair("type", type));
 		pairs.add(new BasicNameValuePair("url", oss_url));
 		pairs.add(new BasicNameValuePair("content", content));
+		pairs.add(new BasicNameValuePair("voice_len", String.valueOf(voice_len)));
 		new NetThread.postDataThread(handler, url, pairs, send_letter).start();
 		et_content.setText("");
-		// 添加显示
+		//TODO 添加显示
 		LetterData letterData = new LetterData();
 		letterData.setContent(content);
 		letterData.setType(1);
 		letterData.setContent_type(Integer.valueOf(type));
 		letterData.setUrl(oss_url);
 		letterData.setSend_time(GetSystem.GetNowTime());
+		letterData.setVoice_len(voice_len);
 		letterDatas.add(letterData);
 		letterAdapter.notifyDataSetChanged();
 		lv_letter.setSelection(lv_letter.getBottom());
@@ -481,6 +479,11 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			for (int i = (jsonArray.length() - 1); i >= 0; i--) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				LetterData letterData = new LetterData();
+				if(jsonObject.opt("voice_len") == null){
+					letterData.setVoice_len(0);
+				}else{
+					letterData.setVoice_len(jsonObject.getInt("voice_len"));
+				}
 				letterData.setChat_id(jsonObject.getInt("chat_id"));
 				letterData.setContent(jsonObject.getString("content"));
 				String sender_id = jsonObject.getString("sender_id");
@@ -587,6 +590,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							.findViewById(R.id.tv_friend_content);
 					viewFriend.tv_time = (TextView) convertView
 							.findViewById(R.id.tv_time);
+					viewFriend.tv_sound_lenght = (TextView) convertView
+							.findViewById(R.id.tv_sound_lenght);
 					viewFriend.iv_friend_pic = (ImageView) convertView
 							.findViewById(R.id.iv_friend_pic);
 					viewFriend.iv_friend_sound = (ImageView) convertView
@@ -679,6 +684,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							.setImageResource(R.drawable.icon_people_no);
 				}
 				if (letterData.getContent_type() == type_text) {
+					viewFriend.tv_sound_lenght.setVisibility(View.GONE);
 					viewFriend.iv_friend_pic.setVisibility(View.GONE);
 					viewFriend.iv_friend_sound.setVisibility(View.GONE);
 					viewFriend.tv_friend_content.setVisibility(View.VISIBLE);
@@ -687,6 +693,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					viewFriend.tv_friend_content.setText(letterData
 							.getContent());
 				} else if (letterData.getContent_type() == type_pic) {
+					viewFriend.tv_sound_lenght.setVisibility(View.GONE);
 					viewFriend.iv_friend_pic.setVisibility(View.VISIBLE);
 					viewFriend.tv_friend_content.setVisibility(View.GONE);
 					viewFriend.iv_friend_sound.setVisibility(View.GONE);
@@ -698,7 +705,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						Bitmap image = BitmapFactory
 								.decodeFile(Constant.VehiclePath + imageName);
 						image = Blur.scaleImage(image, 100);
-						viewFriend.iv_friend_pic.setImageBitmap(image);
+						
+						viewFriend.iv_friend_pic.setImageBitmap(Blur.toRoundCorner(image, 5));
 						viewFriend.iv_friend_pic.setOnClickListener(new OnClickListener() {							
 							@Override
 							public void onClick(View v) {
@@ -711,6 +719,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						viewFriend.iv_friend_pic.setImageBitmap(null);
 					}
 				} else if (letterData.getContent_type() == type_sound) {
+					viewFriend.tv_sound_lenght.setVisibility(View.VISIBLE);
+					viewFriend.tv_sound_lenght.setText(letterData.getVoice_len() + "\"");
 					viewFriend.iv_friend_pic.setVisibility(View.GONE);
 					viewFriend.tv_friend_content.setVisibility(View.GONE);
 					viewFriend.iv_friend_sound.setVisibility(View.VISIBLE);
@@ -750,6 +760,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				}
 				if (letterData.getContent_type() == type_text) {
 					viewMe.tv_sound_lenght.setVisibility(View.GONE);
+					viewMe.tv_sound_lenght.setVisibility(View.GONE);
 					viewMe.iv_me_sound.setVisibility(View.GONE);
 					viewMe.iv_me_pic.setVisibility(View.GONE);
 					viewMe.tv_me_content.setVisibility(View.VISIBLE);
@@ -757,6 +768,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					viewMe.tv_me_content
 					.setCompoundDrawablesWithIntrinsicBounds(0, 0,0, 0);
 				} else if (letterData.getContent_type() == type_pic) {
+					viewMe.tv_sound_lenght.setVisibility(View.GONE);
 					viewMe.iv_me_pic.setVisibility(View.VISIBLE);
 					viewMe.tv_me_content.setVisibility(View.GONE);
 					viewMe.tv_sound_lenght.setVisibility(View.GONE);
@@ -768,7 +780,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					if (new File(getImagePath(imageUrl)).exists()) {
 						Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath + imageName);
 						image = Blur.scaleImage(image, 100);
-						viewMe.iv_me_pic.setImageBitmap(image);
+						viewMe.iv_me_pic.setImageBitmap(Blur.toRoundCorner(image, 5));
 						viewMe.iv_me_pic.setOnClickListener(new OnClickListener() {							
 							@Override
 							public void onClick(View v) {
@@ -781,6 +793,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						viewMe.iv_me_pic.setImageBitmap(null);
 					}
 				}else if (letterData.getContent_type() == type_sound) {
+					viewMe.tv_sound_lenght.setVisibility(View.VISIBLE);
+					viewMe.tv_sound_lenght.setText(letterData.getVoice_len() + "\"");
 					viewMe.iv_me_pic.setVisibility(View.GONE);
 					viewMe.tv_me_content.setVisibility(View.GONE);
 					viewMe.iv_me_sound.setVisibility(View.VISIBLE);
@@ -796,14 +810,6 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			                animationDrawable.start();  
 						}
 					});
-					try {
-						//long time = GetSystem.getAmrDuration(new File(getImagePath(letterData.getUrl())));
-						//viewMe.tv_sound_lenght.setText(""+abdddd(getImagePath(letterData.getUrl())));
-						viewMe.tv_sound_lenght.setVisibility(View.GONE);
-						//TODO 刷新
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
 				}
 			}
 			return convertView;
@@ -869,6 +875,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			CircleImageView iv_friend;
 			TextView tv_friend_content;
 			TextView tv_time;
+			TextView tv_sound_lenght;
 			ImageView iv_friend_pic;
 			ImageView iv_friend_sound;
 		}
@@ -894,6 +901,15 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		int chat_id;
 		String url;
 		int content_type;
+		int voice_len;
+		
+		public int getVoice_len() {
+			return voice_len;
+		}
+
+		public void setVoice_len(int voice_len) {
+			this.voice_len = voice_len;
+		}
 
 		public int getContent_type() {
 			return content_type;
@@ -1045,12 +1061,15 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+		System.out.println("requestCode = " + requestCode + " , resultCode = " + resultCode);
+		if(resultCode == Activity.RESULT_CANCELED){
+			ll_menu.setVisibility(View.VISIBLE);
+			return;
+		}else if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
 			// 拍照返回
 			saveImage(Constant.VehiclePath + Constant.TemporaryImage);
 			return;
-		}
-		if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
+		}else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
 			// 图库返回
 			if (data != null) {
 				// 获取图片路径
@@ -1148,43 +1167,6 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		cursor.moveToFirst();
 		return cursor.getString(column_index);
 	}
-	public int abdddd(String Path){
-		System.out.println("Path = " + Path);
-		int durationIndex = 0;
-		String[] projection = { MediaStore.Audio.Media.DATA};
-		ContentResolver mResolver = getContentResolver();
-		Cursor cursor = mResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI , null, MediaStore.Audio.Media.DATA + "=?", new String[]{Path}, null);
-		if(cursor != null){
-			//TODO 获取分数
-			cursor.moveToFirst();
-			durationIndex = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
-			System.out.println("-------------------------------------------------------");
-			System.out.println("durationIndex = " + durationIndex);
-			System.out.println("TITLE_KEY = " + cursor.getColumnIndex(MediaStore.Audio.Media.TITLE_KEY));
-			System.out.println("DEFAULT_SORT_ORDER = " + cursor.getColumnIndex(MediaStore.Audio.Media.DEFAULT_SORT_ORDER));
-			System.out.println("_COUNT = " + cursor.getColumnIndex(MediaStore.Audio.Media._COUNT));
-			System.out.println("_ID = " + cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-			System.out.println("ALBUM = " + cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
-			System.out.println("ALBUM_ID = " + cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
-			System.out.println("ALBUM_KEY = " + cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_KEY));
-			System.out.println("ARTIST = " + cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));			
-			System.out.println("ARTIST_ID = " + cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
-			System.out.println("ARTIST_KEY = " + cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_KEY));
-			System.out.println("BOOKMARK = " + cursor.getColumnIndex(MediaStore.Audio.Media.BOOKMARK));
-			System.out.println("COMPOSER = " + cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER));
-			System.out.println("DATA = " + cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-			System.out.println("DATE_ADDED = " + cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED));
-			System.out.println("DATE_MODIFIED = " + cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED));
-			System.out.println("IS_MUSIC = " + cursor.getColumnIndex(MediaStore.Audio.Media.IS_MUSIC));
-			System.out.println("SIZE = " + cursor.getColumnIndex(MediaStore.Audio.Media.SIZE));
-			System.out.println("TITLE = " + cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-		}else{
-			System.out.println("cursor 为空");
-		}
-		cursor.close();
-		return durationIndex;
-	}
-
 	private String getImagePath(String imageUrl) {
 		int lastSlashIndex = imageUrl.lastIndexOf("/");
 		String imageName = imageUrl.substring(lastSlashIndex + 1);
@@ -1294,6 +1276,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		}
 	}
 	
+	int voice_len = 0;
+	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		
@@ -1345,7 +1329,6 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						&& event.getX() >= del_x
 						&& event.getX() <= del_x + del_re.getWidth()) {
 					// 取消发送
-					System.out.println("取消发送");
 					rcChat_popup.setVisibility(View.GONE);
 					img1.setVisibility(View.VISIBLE);
 					del_re.setVisibility(View.GONE);
@@ -1356,12 +1339,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						file.delete();
 					}
 				} else {
-					System.out.println("发送");
 					voice_rcd_hint_rcding.setVisibility(View.GONE);
 					stop();
 					endVoiceT = System.currentTimeMillis();
 					flag = 1;
-					int time = (int) ((endVoiceT - startVoiceT) / 1);
+					
+					int time = (int) ((endVoiceT - startVoiceT) / 1000);
+					voice_len = time;
+					GetSystem.myLog(TAG, "time = " + time);
 					if (time < 1) {
 						isShosrt = true;
 						voice_rcd_hint_loading.setVisibility(View.GONE);
@@ -1482,14 +1467,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	                ivNowPlay.setImageResource(R.drawable.sound_friend_2);
 				}
 			}
-			System.out.println("Duration = " + mMediaPlayer.getDuration());
 			mMediaPlayer.reset();
 			mMediaPlayer.setDataSource(name);
 			mMediaPlayer.prepare();
 			mMediaPlayer.start();
 			mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
 				public void onCompletion(MediaPlayer mp) {
-					System.out.println("播放完毕");
 					AnimationDrawable animationDrawable = (AnimationDrawable) ivNowPlay.getDrawable();  
 	                animationDrawable.stop(); 
 					if(noSoundPlay == type.me){
@@ -1509,6 +1492,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		if(ll_menu.getVisibility() == View.VISIBLE){
 			ll_menu.setVisibility(View.GONE);
 		}else{
+			if (mMediaPlayer.isPlaying()) {
+				mMediaPlayer.stop();
+			}
 			finish();
 		}
 	}

@@ -53,8 +53,8 @@
 		        android:layout_height="wrap_content"/>
 		    <ImageView
 		        android:id="@+id/iv_me_sound"
-		        android:layout_width="40dp"
-		        android:layout_height="40dp"		        
+		        android:layout_width="30dp"
+		        android:layout_height="30dp"		        
 		        android:layout_centerVertical="true"
 		        android:padding="5dp"
 		        android:visibility="gone"

@@ -34,6 +34,7 @@
 	        android:src="@drawable/icon_car"
 	        app:border_color="@color/white" />
 	    <RelativeLayout 
+	        android:id="@+id/rl_content"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"  
 		    android:background="@drawable/chat_duifang_shuru">
@@ -45,7 +46,7 @@
 		        android:textColor="@color/navy"
 		        android:padding="5dp"
 		        android:layout_centerVertical="true"
-		        android:text="你是专门修宝马的吗吗吗吗吗吗吗吗吗11111111111111111111111"/>
+		        android:text="你是专门修"/>
 		    <ImageView
 		        android:id="@+id/iv_friend_pic" 
 		        android:scaleType="matrix"
@@ -53,12 +54,22 @@
 		        android:layout_height="wrap_content"/>
 		    <ImageView
 		        android:id="@+id/iv_friend_sound"
-		        android:layout_width="40dp"
-		        android:layout_height="40dp"		        
+		        android:layout_width="30dp"
+		        android:layout_height="30dp"		        
 		        android:layout_centerVertical="true"
 		        android:padding="5dp"
 		        android:visibility="gone"
 		        android:src="@drawable/sound_friend_2"/>
-	    </RelativeLayout>
+	    </RelativeLayout>	    
+	    <TextView
+	        android:id="@+id/tv_sound_lenght"
+	        android:layout_gravity="center_vertical"
+	        android:layout_marginRight="5dp"
+	        android:textColor="@color/navy"
+	        android:visibility="gone"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="5dp"
+	        android:text="12"/>
     </LinearLayout>    
 </LinearLayout>

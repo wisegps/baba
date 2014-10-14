@@ -56,6 +56,9 @@ import android.widget.Toast;
 
 /**
  * 选择城市
+ * 欢迎界面进入 isWelcome = true;
+ * 天气界面或定位界面进入 ， 返回并保存数据在本地
+ * 秀一下选择城市进入，返回数据不保存在本地
  * @author honesty
  */
 public class SelectCityActivity extends Activity {
@@ -80,6 +83,7 @@ public class SelectCityActivity extends Activity {
     String LocationCity = "";
     
     boolean isWelcome = false;
+    boolean isShow = false;
     ProgressDialog progressDialog = null;
 
     @Override
@@ -100,6 +104,7 @@ public class SelectCityActivity extends Activity {
         
         Intent intent = getIntent();
         isWelcome = intent.getBooleanExtra("Welcome", false);
+        isShow = intent.getBooleanExtra("isShow", false);
         GetCity();
         setupListView();
         letterIndex = (TextView) findViewById(R.id.dialog);
@@ -166,7 +171,6 @@ public class SelectCityActivity extends Activity {
     
     private void GetCity() {
     	List<BaseData> hotBaseDatas = DataSupport.where("Title = ?","hotCity").find(BaseData.class);
-		System.out.println("hotBaseDatas.size() = " + hotBaseDatas.size());
     	if(hotBaseDatas.size() == 0 || hotBaseDatas.get(0).getContent() == null || hotBaseDatas.get(0).getContent().equals("")){
 			if(progressDialog == null){
         		progressDialog = ProgressDialog.show(SelectCityActivity.this, getString(R.string.dialog_title), "城市信息获取中");
@@ -179,7 +183,6 @@ public class SelectCityActivity extends Activity {
             hotDatas = GetCityList(Hot_Citys);			
 		}
 		List<BaseData> baseDatas = DataSupport.where("Title = ?","City").find(BaseData.class);
-		System.out.println("baseDatas.size() = " + baseDatas.size());
 		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
 			if(progressDialog == null){
         		progressDialog = ProgressDialog.show(SelectCityActivity.this, getString(R.string.dialog_title), "城市信息获取中");
@@ -283,6 +286,14 @@ public class SelectCityActivity extends Activity {
      * @param cityData
      */
     private void SaveCityInfo(CityData cityData){
+    	if(isShow){
+    		//如果是秀一下界面进入，把城市返回即可
+    		Intent intent = new Intent();
+			intent.putExtra("city", cityData.getCity());
+    		setResult(2,intent);
+    		finish();
+    		return;
+    	}
     	Variable.City = cityData.getCity();
     	Variable.Province = cityData.getProvince();
         SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);

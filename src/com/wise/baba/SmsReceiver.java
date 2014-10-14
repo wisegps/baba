@@ -3,6 +3,8 @@ package com.wise.baba;
 import java.util.List;
 import org.json.JSONObject;
 import pubclas.Constant;
+import pubclas.GetSystem;
+
 import com.wise.notice.LetterActivity;
 import com.wise.notice.SmsActivity;
 import com.wise.remind.RemindListActivity;
@@ -20,6 +22,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class SmsReceiver extends BroadcastReceiver{
+	private static final String TAG = "SmsReceiver";
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Log.d("smsReceiver", intent.getAction());		
@@ -30,7 +33,6 @@ public class SmsReceiver extends BroadcastReceiver{
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {        	
         	//TODO 确认消息发送，上传到自己服务器 
         	String result = intent.getExtras().getString(JPushInterface.EXTRA_EXTRA);
-        	System.out.println("result = " + result);
         	//{"friend_id":230,"cust_name":"honesty","msg":"[图片]","url":"http:\/\/img.bibibaba.cn\/2301412067020878.png","msg_type":1}
         	//通知消息只有msg_type,
         	String msg = "";
@@ -54,14 +56,11 @@ public class SmsReceiver extends BroadcastReceiver{
         		List<RunningTaskInfo> Infos = am.getRunningTasks(1);
         		if(Infos.get(0).topActivity.getPackageName().equals("com.wise.baba")){
         			if(Infos.get(0).topActivity.getClassName().equals("com.wise.notice.LetterActivity")){
-        				System.out.println("直接显示");
-        	        	Intent intent1 = new Intent(Constant.A_ReceiverLetter);
+        				Intent intent1 = new Intent(Constant.A_ReceiverLetter);
         	        	String extras = intent.getExtras().getString(JPushInterface.EXTRA_EXTRA);
         	        	intent1.putExtra("extras", extras);
         	        	context.sendBroadcast(intent1);
         			}else{ 
-        				//isTask = false;
-        				System.out.println("弹出提示框 true");
         				NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);  
         				Notification notification = new Notification();
         		    	notification.icon = R.drawable.ic_launcher;
@@ -77,7 +76,6 @@ public class SmsReceiver extends BroadcastReceiver{
         		    	nm.notify(19172449, notification);
         			}
         		}else{
-        			System.out.println("弹出提示框 false");
         			NotificationManager nm = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);  
     				Notification notification = new Notification();
     		    	notification.icon = R.drawable.ic_launcher;
@@ -130,6 +128,7 @@ public class SmsReceiver extends BroadcastReceiver{
 	}	
 	private void receivingNotification(Context context, Bundle bundle){
         String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+        GetSystem.myLog(TAG, extras);
         try {
 			JSONObject jsonObject = new JSONObject(extras);
 			int msg_type = jsonObject.getInt("msg_type");
@@ -148,6 +147,7 @@ public class SmsReceiver extends BroadcastReceiver{
 		        context.startActivity(intent);
 			}else{//消息界面
 				Intent intent = new Intent(context, SmsActivity.class);
+				intent.putExtra("type", msg_type);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 		        context.startActivity(intent);
 			}

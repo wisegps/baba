@@ -63,22 +63,27 @@ public class RemindActivity extends Activity{
 			remindData = (RemindData) intent.getSerializableExtra("remindData");
 			setView();
 		}		
-	}
+	}	
 	private void setView(){
-		TextView tv_name = (TextView)findViewById(R.id.tv_name);
-		TextView tv_date = (TextView)findViewById(R.id.tv_date);
-		String title = "距离" + getCarName(remindData.getObj_id()) + Constant.items_note_type[remindData.getRemind_type()];
-		tv_name.setText(title);
-		
-		int count_time = GetSystem.isTimeOut(remindData.getRemind_time());
-		if(count_time > 0){
-			tv_date.setText(GetSystem.jsTime(count_time));
-		}else{
-			tv_date.setText("0");
-		}
-		tv_content = (TextView)findViewById(R.id.tv_content);
-		tv_content.setText(remindData.getContent());
-		setUrl();
+		try {
+			TextView tv_name = (TextView)findViewById(R.id.tv_name);
+			TextView tv_date = (TextView)findViewById(R.id.tv_date);
+			//TODO 有null指针异常
+			String title = "距离" + getCarName(remindData.getObj_id()) + Constant.items_note_type[remindData.getRemind_type()];
+			tv_name.setText(title);
+			
+			int count_time = GetSystem.isTimeOut(remindData.getRemind_time());
+			if(count_time > 0){
+				tv_date.setText(GetSystem.jsTime(count_time));
+			}else{
+				tv_date.setText("0");
+			}
+			tv_content = (TextView)findViewById(R.id.tv_content);
+			tv_content.setText(remindData.getContent());
+			setUrl();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 	/**得到车辆对应的位置**/
 	private String getCarName(int Obj_id){

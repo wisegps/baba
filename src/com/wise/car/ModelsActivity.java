@@ -17,7 +17,6 @@ import org.litepal.crud.DataSupport;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;
@@ -37,7 +36,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -226,17 +224,12 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			switch (msg.what) {
 			case GET_BRANK:
 				String brankData = msg.obj.toString();
-				// 存到数据库
+				//TODO 存到数据库
 				insertDatabases(carBrankTitle, brankData, ModelsActivity.this);
-				if (!"".equals(brankData)) {
-					BaseData baseData = new BaseData();
-					baseData.setTitle(carBrankTitle);
-					baseData.setContent(brankData);
-					baseData.save();
+				if (brankData.equals("")) {
+					Toast.makeText(getApplicationContext(), "获取数据失败，稍后再试", Toast.LENGTH_SHORT).show();
+				}else{
 					jsonBrands(brankData);
-				} else {
-					Toast.makeText(getApplicationContext(), "获取数据失败，稍后再试", 0)
-							.show();
 				}
 				break;
 			case REFRESH_BRANK:
@@ -343,7 +336,6 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		}
 	}
 	private void jsonSeries(String result){
-		System.out.println(result);
 		carSeries.clear();
 		JSONArray jsonArray;
 		try {
@@ -507,7 +499,6 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 	public static void insertDatabases(String titleName, String content,
 			Context context) {
 		BaseData baseData = new BaseData();
-		baseData.setCust_id(Variable.cust_id);
 		baseData.setTitle(titleName);
 		baseData.setContent(content);
 		baseData.save();

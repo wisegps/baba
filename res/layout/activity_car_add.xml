@@ -59,14 +59,14 @@
 	        <TextView 
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:textSize="@dimen/main"
+	            android:textSize="@dimen/content"
 	            android:textColor="@color/navy"
 	            android:text="车辆名称"/>
 	        <EditText
 	            android:id="@+id/et_nick_name"
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
-			    android:textSize="@dimen/main"
+			    android:textSize="@dimen/content"
 			    android:layout_marginTop="10dp"
 			    android:padding="10dp"   
 			    android:maxLength="11"
@@ -76,20 +76,50 @@
 	        <TextView 
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:textSize="@dimen/main"
+	            android:textSize="@dimen/content"
 			    android:layout_marginTop="10dp"
 			    android:textColor="@color/navy"
 	            android:text="车牌号"/>
-	        <EditText
-	            android:id="@+id/et_obj_name"
-			    android:layout_width="fill_parent"
-			    android:layout_height="wrap_content"
-			    android:textSize="@dimen/main"
-			    android:layout_marginTop="10dp"
-			    android:padding="10dp"   
-			    android:background="@drawable/et_back"
-			    android:textColor="@color/navy"
-			    android:hint="选填"/>
+	        <LinearLayout 
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="10dp"
+				android:padding="10dp"   
+	            android:background="@drawable/et_back"
+	            android:orientation="horizontal">
+	            <LinearLayout 
+	                android:id="@+id/btn_choose"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:orientation="horizontal">
+	                <TextView
+	                    android:id="@+id/choose_car_province"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="match_parent"
+	                    android:gravity="center"
+	                    android:text="粤"
+	                    android:paddingLeft="5dp"
+	                    android:paddingRight="5dp"
+	                    android:textColor="@color/navy"
+	                    android:textSize="@dimen/content" />	
+	                <ImageButton
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="match_parent"
+	                    android:adjustViewBounds="true"
+	                    android:background="@null"
+	                    android:scaleType="fitCenter"
+	                    android:src="@drawable/body_icon_pulldown" />
+	            </LinearLayout>	            
+		        <EditText
+		            android:id="@+id/et_obj_name"
+				    android:layout_width="fill_parent"
+				    android:layout_height="wrap_content"
+				    android:textSize="@dimen/content"
+				    android:background="@null"
+				    android:layout_marginLeft="5dp"
+				    android:textColor="@color/navy"
+				    android:hint="选填"/>
+	        </LinearLayout>
 	        <LinearLayout 
 	            android:layout_width="fill_parent"
 	            android:layout_height="fill_parent"
@@ -99,7 +129,7 @@
 			    <TextView 
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
-		            android:textSize="@dimen/main"
+		            android:textSize="@dimen/content"
 				    android:padding="10dp"
 				    android:textColor="@color/navy"
 		            android:text="车型:"/>
@@ -107,7 +137,7 @@
 			        android:id="@+id/tv_models"
 		            android:layout_width="fill_parent"
 		            android:layout_height="wrap_content"
-		            android:textSize="@dimen/main"
+		            android:textSize="@dimen/content"
 		            android:textColor="@color/navy"
 				    android:padding="10dp"/>
 	        </LinearLayout>

@@ -1,174 +1,112 @@
 package com.wise.show;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import model.BaseData;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.litepal.crud.DataSupport;
-
-import pubclas.Constant;
-import pubclas.NetThread;
-
+import pubclas.GetSystem;
 import com.wise.baba.R;
+import com.wise.baba.SelectCityActivity;
 import com.wise.car.ModelsActivity;
-import com.wise.car.PinyinComparator;
-
-import data.BrandData;
-import data.CharacterParser;
-
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class PinDaoActivity extends Activity {
-	// 返回类型码
-	public static final int CARTYPE = 3;// 车型
-	public static final int SEX = 4;// 性别
-	public static final int CITY = 5;// 城市
-
-	private static final int type = 6;
-	ListView pindaoListView, pindao_show;
-
-	PindaoAdapter mAdapter, carAdapter;
-
-	private CharacterParser characterParser; // 将汉字转成拼音
-	private PinyinComparator comparator;
-	private ProgressDialog progressDialog;
-	private static final int GET_BRANK = 1;
-	private static final int Get_city = 2;
-	/** 品牌 **/
-	private List<BrandData> brandDatas = new ArrayList<BrandData>(); // 车辆品牌集合
-
-	List<String> pindaoData = new ArrayList<String>();
-	List<String> cityDatas = new ArrayList<String>();
-	List<String> carTypes = new ArrayList<String>();
-	List<String> sex = new ArrayList<String>();
-
-	int index = 0;// 标记选中背景
-
+	private static final String TAG = "PinDaoActivity";
+	List<PinDaoData> pinDaoDatas = new ArrayList<PinDaoData>();
+	PinDaoAdapter pinDaoAdapter;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_pindao);
-		comparator = new PinyinComparator();
-		characterParser = new CharacterParser().getInstance();
-		getDate(ModelsActivity.carBrankTitle, Constant.BaseUrl
-				+ "base/car_brand", GET_BRANK);
-		getCity();
-
-		pindaoListView = (ListView) findViewById(R.id.list_pindao);
-		pindao_show = (ListView) findViewById(R.id.list_pindao_show);
-
-		mAdapter = new PindaoAdapter(pindaoData, type);
-		pindaoListView.setAdapter(mAdapter);
-
-		init();
-		pindaoListView.setOnItemClickListener(onItemClickListener);
-
-		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
+		setData();
+		ListView lv_pindao = (ListView)findViewById(R.id.lv_pindao);
+		pinDaoAdapter = new PinDaoAdapter();
+		lv_pindao.setAdapter(pinDaoAdapter);
+		lv_pindao.setOnItemClickListener(onItemClickListener);
 	}
-
-	private void init() {
-		pindaoData.add("车型");
-		pindaoData.add("性别");
-		pindaoData.add("城市");
-
-		sex.add("男");
-		sex.add("女");
-
-		carAdapter = new PindaoAdapter(carTypes, 0);
-		pindao_show.setAdapter(carAdapter);
-		getResult(carTypes, CARTYPE);
-
-	}
-
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			index = position;
-			mAdapter.notifyDataSetChanged();
-			switch (position) {
-			case 0:// 车型
-				pindao_show.setAdapter(carAdapter);
-				getResult(carTypes, CARTYPE);
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			switch (arg2) {
+			case 0:
+				//车型 isNeedModel
+				Intent intent0 = new Intent(PinDaoActivity.this, ModelsActivity.class);
+				intent0.putExtra("isNeedModel", false);
+				startActivityForResult(intent0, 1);
 				break;
-			case 1:// 性别
-				PindaoAdapter sexAdapter = new PindaoAdapter(sex, 0);
-				pindao_show.setAdapter(sexAdapter);
-				getResult(sex, SEX);
+
+			case 1:
+				//性别
+				setSex();
 				break;
-			case 2:// 城市
-				PindaoAdapter cityAdapter = new PindaoAdapter(cityDatas, 0);
-				pindao_show.setAdapter(cityAdapter);
-				getResult(cityDatas, CITY);
+				
+			case 2:
+				//城市
+				Intent intent = new Intent(PinDaoActivity.this, SelectCityActivity.class);
+				intent.putExtra("isShow", true);
+				startActivityForResult(intent, 3);
 				break;
 			}
-
 		}
 	};
-
-	// 返回数据
-	private void getResult(final List<String> s, final int resultCode) {
-		pindao_show.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				Intent intent = new Intent();
-				if (resultCode == CARTYPE) {
-					brandDatas.get(position).getId();
-					intent.putExtra("id", brandDatas.get(position).getId());
-				} else {
-					intent.putExtra("显示", s.get(position));
-				}
-				setResult(resultCode);
-				PinDaoActivity.this.finish();
-			}
-		});
+	String[] Sexs = { "男", "女" };
+	private void setSex() {
+		new AlertDialog.Builder(PinDaoActivity.this).setTitle("请选择性别").setItems(Sexs,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+				        switch (which) {
+						case 0:
+							pinDaoDatas.get(1).setValue("男");
+							break;
+						case 1:
+							pinDaoDatas.get(1).setValue("女");
+							break;
+						}
+						pinDaoAdapter.notifyDataSetChanged();
+					}
+				}).setNegativeButton("取消", null).show();
 	}
-
-	class PindaoAdapter extends BaseAdapter {
-		List<String> datas = null;
-		LayoutInflater mInflater = LayoutInflater.from(PinDaoActivity.this);
-		int flag;
-
-		public PindaoAdapter(List<String> data, int i) {
-			datas = data;
-			flag = i;
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == 1 && resultCode == 3){
+			String carBrank = data.getStringExtra("brank");
+			String carBrankId = data.getStringExtra("brankId");
+			GetSystem.myLog(TAG, carBrank + " : " + carBrankId);
+			pinDaoDatas.get(0).setValue(carBrank);
+		}else if(requestCode == 3 && resultCode == 2){
+			String city = data.getStringExtra("city");
+			GetSystem.myLog(TAG,"city : " + city);
+			pinDaoDatas.get(2).setValue(city);
 		}
-
+		pinDaoAdapter.notifyDataSetChanged();
+	}
+	class PinDaoAdapter extends BaseAdapter{
+		LayoutInflater layoutInflater = LayoutInflater.from(PinDaoActivity.this);
 		@Override
 		public int getCount() {
-			return datas == null ? 0 : datas.size();
+			return pinDaoDatas.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			return datas.get(position);
+			return pinDaoDatas.get(position);
 		}
 
 		@Override
@@ -178,178 +116,52 @@ public class PinDaoActivity extends Activity {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			Holder mHolder = null;
-			if (convertView == null) {
-				mHolder = new Holder();
-				convertView = mInflater.inflate(R.layout.item_short_province,
-						null);
-				mHolder.pindaoView = (TextView) convertView
-						.findViewById(R.id.tv_province);
-				convertView.setTag(mHolder);
-			} else {
-				mHolder = (Holder) convertView.getTag();
+			ViewHolder viewHolder = null;
+			if(convertView == null){
+				convertView = layoutInflater.inflate(R.layout.item_pindao, null);
+				viewHolder = new ViewHolder();
+				viewHolder.tv_key = (TextView)convertView.findViewById(R.id.tv_key);
+				viewHolder.tv_value = (TextView)convertView.findViewById(R.id.tv_value);
+				convertView.setTag(viewHolder);
+			}else{
+				viewHolder = (ViewHolder)convertView.getTag();
 			}
-			if (index == position && flag == type) {
-				mHolder.pindaoView
-						.setBackgroundResource(R.color.blue_bg_traffic);
-			} else {
-				mHolder.pindaoView.setBackgroundResource(R.color.white);
-			}
-			mHolder.pindaoView.setGravity(Gravity.LEFT);
-			mHolder.pindaoView.setText(datas.get(position));
+			viewHolder.tv_key.setText(pinDaoDatas.get(position).getKey());
+			viewHolder.tv_value.setText(pinDaoDatas.get(position).getValue());
 			return convertView;
 		}
-
-		class Holder {
-			TextView pindaoView;
+		private class ViewHolder{
+			TextView tv_key,tv_value;
 		}
 	}
-
-	Handler handler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			if (progressDialog != null) {
-				progressDialog.dismiss();
-			}
-			switch (msg.what) {
-			case GET_BRANK:
-				String brankData = msg.obj.toString();
-				if (!"".equals(brankData)) {
-					BaseData baseData = new BaseData();
-					baseData.setTitle(ModelsActivity.carBrankTitle);
-					baseData.setContent(brankData);
-					baseData.save();
-					jsonBrands(brankData);
-				} else {
-					Toast.makeText(getApplicationContext(), "获取数据失败，稍后再试", 0)
-							.show();
-				}
-				break;
-			}
-
-		}
-	};
-
-	private void getCity() {
-		List<BaseData> baseDatas = DataSupport.where("Title = ?", "City").find(
-				BaseData.class);
-		System.out.println("baseDatas.size() = " + baseDatas.size());
-		if (baseDatas.size() == 0 || baseDatas.get(0).getContent() == null
-				|| baseDatas.get(0).getContent().equals("")) {
-			if (progressDialog == null) {
-				progressDialog = ProgressDialog.show(PinDaoActivity.this,
-						getString(R.string.dialog_title), "城市信息获取中");
-				progressDialog.setCancelable(true);
-			}
-			String url = Constant.BaseUrl + "base/city?is_hot=0";
-			new Thread(new NetThread.GetDataThread(handler, url, Get_city))
-					.start();
-		} else {
-			String Citys = baseDatas.get(0).getContent();
-			cityDatas = GetCityList(Citys);
-		}
+	private void setData(){
+		PinDaoData pinDaoData2 = new PinDaoData();
+		pinDaoData2.setKey("车型");
+		pinDaoData2.setValue("");
+		pinDaoDatas.add(pinDaoData2);
+		PinDaoData pinDaoData1 = new PinDaoData();
+		pinDaoData1.setKey("车型");
+		pinDaoData1.setValue("");
+		pinDaoDatas.add(pinDaoData1);
+		PinDaoData pinDaoData = new PinDaoData();
+		pinDaoData.setKey("城市");
+		pinDaoData.setValue("");
+		pinDaoDatas.add(pinDaoData);
 	}
-
-	/**
-	 * 解析城市列表
-	 * 
-	 * @param Citys
-	 */
-	private List<String> GetCityList(String Citys) {
-		List<String> cityType = new ArrayList<String>();
-		try {
-			JSONArray jsonArray = new JSONArray(Citys);
-			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				cityType.add(jsonObject.getString("city"));
-			}
-			return cityType;
-		} catch (JSONException e) {
-			e.printStackTrace();
+	class PinDaoData{
+		String key;
+		String value;
+		public String getKey() {
+			return key;
 		}
-		return cityType;
-	}
-
-	/**
-	 * @param whereValues
-	 *            查询数据库时搜索条件
-	 * @param url
-	 *            数据库没有数据 服务器获取的地址
-	 * @param handlerWhat
-	 *            服务器获取handler异步处理的标识
-	 */
-	private void getDate(String whereValues, String url, int handlerWhat) {
-		List<BaseData> baseDatas = DataSupport.where("Title = ?", "carBrank")
-				.find(BaseData.class);
-		if (baseDatas.size() == 0 || baseDatas.get(0).getContent() == null
-				|| baseDatas.get(0).getContent().equals("")) {
-			progressDialog = ProgressDialog.show(PinDaoActivity.this,
-					getString(R.string.dialog_title),
-					getString(R.string.dialog_message));
-			progressDialog.setCancelable(true);
-			new NetThread.GetDataThread(handler, url, handlerWhat).start();
-		} else {
-			if (handlerWhat == GET_BRANK) {
-				jsonBrands(baseDatas.get(0).getContent());
-			}
+		public void setKey(String key) {
+			this.key = key;
 		}
-	}
-
-	private void jsonBrands(String result) {
-		if (progressDialog != null) {
-			progressDialog.dismiss();
+		public String getValue() {
+			return value;
 		}
-		JSONArray jsonArray = null;
-		try {
-			jsonArray = new JSONArray(result);
-			List<BrandData> brankList = null;
-			int arrayLength = jsonArray.length();
-			brankList = new ArrayList<BrandData>();
-			for (int i = 0; i < arrayLength; i++) {
-				JSONObject jsonObj = jsonArray.getJSONObject(i);
-				BrandData brankModel = new BrandData();
-				brankModel.setBrand(jsonObj.getString("name"));
-				brankModel.setId(jsonObj.getString("id"));
-				if (jsonObj.opt("url_icon") != null) {
-					brankModel.setLogoUrl(jsonObj.getString("url_icon"));
-				} else {
-					brankModel.setLogoUrl("");
-				}
-				brankList.add(brankModel);
-			}
-			brandDatas = filledData(brankList);
-			// 排序
-			Collections.sort(brandDatas, comparator);
-			for (BrandData b : brandDatas) {
-				carTypes.add(b.getBrand());
-			}
-
-		} catch (JSONException e2) {
-			e2.printStackTrace();
-		}
-	}
-
-	/**
-	 * 为ListView填充数据
-	 * 
-	 * @param date
-	 * @return
-	 */
-	private List<BrandData> filledData(List<BrandData> brankList) {
-		for (int i = 0; i < brankList.size(); i++) {
-			// 汉字转换成拼音
-			String pinyin = characterParser.getSelling(brankList.get(i)
-					.getBrand());
-			String sortString = pinyin.substring(0, 1).toUpperCase();
-			// 正则表达式，判断首字母是否是英文字母
-			if (sortString.matches("[A-Z]")) {
-				brankList.get(i).setLetter(sortString.toUpperCase());
-			} else {
-				brankList.get(i).setLetter("#");
-			}
-		}
-		return brankList;
-
+		public void setValue(String value) {
+			this.value = value;
+		}		
 	}
 }

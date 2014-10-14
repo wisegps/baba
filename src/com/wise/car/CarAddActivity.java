@@ -11,6 +11,8 @@ import pubclas.NetThread;
 import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.R;
+import com.wise.violation.ShortProvincesActivity;
+
 import data.CarData;
 import android.app.Activity;
 import android.content.Intent;
@@ -23,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 /**
@@ -33,18 +36,22 @@ import android.widget.Toast;
 public class CarAddActivity extends Activity{
 	private static final String TAG = "CarAddActivity";
 	private static final int add_car = 1;
-	TextView tv_models;
+	TextView tv_models,choose_car_province;
 	EditText et_nick_name,et_obj_name;
 	CarData carNewData = new CarData();
 	boolean fastTrack = false;
 	String device_id = "";
 	Button bt_jump;
 	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_add);
+		LinearLayout btn_choose = (LinearLayout)findViewById(R.id.btn_choose);
+		btn_choose.setOnClickListener(onClickListener);
+		choose_car_province = (TextView)findViewById(R.id.choose_car_province);
 		et_nick_name = (EditText)findViewById(R.id.et_nick_name);
 		et_obj_name = (EditText)findViewById(R.id.et_obj_name);
 		tv_models = (TextView)findViewById(R.id.tv_models);
@@ -78,6 +85,10 @@ public class CarAddActivity extends Activity{
 				break;
 			case R.id.bt_jump:
 				finish();
+				break;
+			case R.id.btn_choose:
+				startActivityForResult(new Intent(CarAddActivity.this,
+						ShortProvincesActivity.class), 3);
 				break;
 			}
 		}
@@ -132,7 +143,10 @@ public class CarAddActivity extends Activity{
 			Toast.makeText(CarAddActivity.this, "车型不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		String obj_name = et_obj_name.getText().toString().trim();
+		String obj_name = choose_car_province.getText().toString() + et_obj_name.getText().toString().trim();
+		if(obj_name.length() == 1){
+			obj_name = "";
+		}
 		String url = Constant.BaseUrl + "vehicle/simple?auth_code=" + Variable.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();		
 
@@ -176,6 +190,10 @@ public class CarAddActivity extends Activity{
 			car_type_id = data.getStringExtra("typeId");
             
             tv_models.setText(car_series + car_type);
+		}
+		if(requestCode == 3 && resultCode == 6){
+			//选择省份返回
+			choose_car_province.setText(data.getStringExtra("province"));
 		}
 	}
 	@Override

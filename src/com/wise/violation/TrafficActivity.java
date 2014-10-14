@@ -3,6 +3,9 @@ package com.wise.violation;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.umeng.analytics.MobclickAgent;
@@ -49,6 +52,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 	private static final String TAG = "TrafficActivity";
 	private static final int frist_traffic = 1;
 	private static final int refresh_traffic = 2;
+	private static final int update_city = 3;
 
 	TextView tv_car;
 	HScrollLayout hsl_traffic;
@@ -189,6 +193,9 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 				trafficViews.get(msg.arg1).getxListView().runFast(msg.arg1);
 				trafficViews.get(msg.arg1).setTrafficDatas(
 						jsonTrafficData(msg.obj.toString()));
+				break;
+			case update_city:
+				GetSystem.myLog(TAG, msg.obj.toString());
 				break;
 			}
 		}
@@ -760,6 +767,11 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 						}
 					}
 				}
+				//保存
+				String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id() + "/vio_city?auth_code=" + Variable.auth_code;
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("vio_citys", jsonList(chooseCityDatas)));
+				new NetThread.putDataThread(handler, url, params, update_city).start();
 				getFristTraffic();
 			}			
 		}else if(requestCode == 2 && resultCode == 3){
@@ -778,6 +790,30 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 							new TrafficAdapter(trafficViews.get(index_car)
 									.getTrafficDatas()));
 		}
+	}
+	
+	private String jsonList(List<CityData> cityDatas) {
+		try {
+			JSONArray jsonArray = new JSONArray();
+			for (int i = 0; i < cityDatas.size(); i++) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("vio_city_name", cityDatas.get(i)
+						.getCityName());
+				jsonObject.put("vio_location", cityDatas.get(i)
+						.getCityCode());
+				jsonObject
+						.put("province", cityDatas.get(i).getProvince());
+				jsonArray.put(jsonObject);
+			}
+			String jsonString = jsonArray.toString()
+					.replaceAll("\"vio_city_name\":", "vio_city_name:")
+					.replaceAll("\"vio_location\":", "vio_location:")
+					.replaceAll("\"province\":", "province:");
+			return jsonString;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "[]";
 	}
 	
 	private void turnCarUpdate(){

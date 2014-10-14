@@ -29,26 +29,21 @@
 	            android:layout_height="wrap_content"
 	            android:layout_centerVertical="true"
 	            android:textColor="@color/white"
+	            android:visibility="gone"
 	            android:text="宝马X3"/>
 	        <ImageView
 	            android:id="@+id/iv_logo"
-	            android:layout_width="30dp"
-	            android:layout_height="30dp"
-	            android:padding="7dp"
-	            android:background="@drawable/bg_a"
+	            android:layout_width="20dp"
+	            android:layout_height="20dp"
 	            android:layout_marginRight="@dimen/margins"
 	            android:layout_centerVertical="true"
-	            android:visibility="gone"
 	            android:layout_toRightOf="@id/tv_series"/>
 	        <ImageView
 	            android:id="@+id/iv_sex"
-	            android:layout_width="30dp"
-	            android:layout_height="30dp"
-	            android:padding="11dp"
-	            android:background="@drawable/bg_a"
+	            android:layout_width="20dp"
+	            android:layout_height="20dp"
 	            android:layout_centerVertical="true"
 	            android:src="@drawable/icon_man"
-	            android:visibility="gone"
 	            android:layout_toRightOf="@id/iv_logo"/>
 	        <LinearLayout          
 	            android:layout_alignParentRight="true"	            

@@ -49,7 +49,7 @@ import android.widget.Toast;
  * 
  */
 public class CarUpdateActivity extends Activity {
-
+	
 	private final int inspection = 1;
 	private final int buy_date = 2;
 	private final int year_check = 3;
@@ -81,6 +81,7 @@ public class CarUpdateActivity extends Activity {
 		setContentView(R.layout.activity_car_update);
 		index = getIntent().getIntExtra("index", 0);
 		carData = Variable.carDatas.get(index);
+		carNewData = carData; 
 		init();
 		setData();
 		setTime();
@@ -136,7 +137,6 @@ public class CarUpdateActivity extends Activity {
 				startActivityForResult(intent2, 3);
 				break;
 			case R.id.image_help_1:// 帮助图片显示
-				// TODO
 				helpPopView();
 				break;
 			case R.id.image_help_2:
@@ -188,9 +188,20 @@ public class CarUpdateActivity extends Activity {
 	}
 
 	private void jsonSave(String str) {
-		Variable.carDatas.set(index, carNewData);
-		setResult(3);
-		finish();
+		try {
+			JSONObject jsonObject = new JSONObject(str);
+			if(jsonObject.getInt("status_code") == 0){
+				Variable.carDatas.set(index, carNewData);
+				setResult(3);
+				finish();
+			}else{
+				Toast.makeText(CarUpdateActivity.this, "保存失败，请重试", Toast.LENGTH_SHORT).show();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(CarUpdateActivity.this, "保存失败，请重试", Toast.LENGTH_SHORT).show();
+		}
+		
 	}
 
 	private void Save() {
@@ -218,7 +229,7 @@ public class CarUpdateActivity extends Activity {
 				} else {
 					if (engine_no.length() < cityData.getEngineno()) {
 						Toast.makeText(CarUpdateActivity.this,
-								"需要发送机号的" + cityData.getEngineno() + "位",
+								"需要发送机号的后" + cityData.getEngineno() + "位",
 								Toast.LENGTH_SHORT).show();
 						return;
 					}
@@ -237,7 +248,7 @@ public class CarUpdateActivity extends Activity {
 				} else {
 					if (frame_no.length() < cityData.getFrameno()) {
 						Toast.makeText(CarUpdateActivity.this,
-								"需要车架号的" + cityData.getFrameno() + "位",
+								"需要车架号的后" + cityData.getFrameno() + "位",
 								Toast.LENGTH_SHORT).show();
 						return;
 					}
@@ -376,7 +387,7 @@ public class CarUpdateActivity extends Activity {
 			CityData cityData = new CityData();
 			cityData.setCityName(carData.getVio_citys().get(i));
 			cityData.setCityCode(carData.getVio_citys_code().get(i));
-			cityData.setProvince(carData.getProvince().get(i));
+			cityData.setProvince(carData.getProvince().get(i));//TODO 异常
 			chooseCityDatas.add(cityData);
 		}
 		tv_city.setText(citys);
@@ -445,7 +456,6 @@ public class CarUpdateActivity extends Activity {
 				jsonObject
 						.put("province", chooseCityDatas.get(i).getProvince());
 				jsonArray.put(jsonObject);
-				// TODO 增加省份
 			}
 			String jsonString = jsonArray.toString()
 					.replaceAll("\"vio_city_name\":", "vio_city_name:")
@@ -506,9 +516,7 @@ public class CarUpdateActivity extends Activity {
 	/** 获取各个市违章信息 **/
 	private void getTraffic() {
 		
-		List<BaseData> bDatas = DataSupport.findAll(BaseData.class);
-		System.out.println("bDatas.size() = " + bDatas.size());
-		
+		List<BaseData> bDatas = DataSupport.findAll(BaseData.class);		
 		List<BaseData> baseDatas = DataSupport.where("Title = ?","Violation").find(BaseData.class);
 		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
 			String url = Constant.BaseUrl + "violation/city?cuth_code="
@@ -576,7 +584,7 @@ public class CarUpdateActivity extends Activity {
 			if (isNeedAllEngine) {
 				et_engine_no.setHint("需要完整的发送机号");
 			} else {
-				et_engine_no.setHint("需要发送机号的" + Engineno + "位");
+				et_engine_no.setHint("需要发送机号的后" + Engineno + "位");
 			}
 		} else {
 			// 选填，隐藏
@@ -606,7 +614,7 @@ public class CarUpdateActivity extends Activity {
 			if (isNeedAllFrame) {
 				et_frame_no.setHint("需要完整的车架号");
 			} else {
-				et_frame_no.setHint("需要车架号的" + Frameno + "位");
+				et_frame_no.setHint("需要车架号的后" + Frameno + "位");
 			}
 		} else {
 			// 选填，隐藏
