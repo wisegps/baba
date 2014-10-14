@@ -5,6 +5,31 @@
     android:background="@color/gray"
     android:orientation="vertical" >
 
+    <RelativeLayout
+        android:id="@+id/ll_main"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/image_width"
+        android:background="@color/title_back" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="车辆围栏"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margins"
+            android:padding="@dimen/margins"
+            android:src="@drawable/nav_back" />
+    </RelativeLayout>
+
     <com.baidu.mapapi.map.MapView
         android:id="@+id/fence_map"
         android:layout_width="fill_parent"
@@ -15,7 +40,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dip"
-        android:layout_weight="1.25"
+        android:layout_weight="1.15"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -26,26 +51,50 @@
 
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="10dp" >
+                android:layout_height="wrap_content" >
 
                 <TextView
-                    android:layout_width="fill_parent"
+                    android:id="@+id/tv_alarm"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:padding="10dip"
-                    android:text="电子围栏"
+                    android:text="报警类型"
                     android:textSize="@dimen/content" />
 
-                <ImageView
-                    android:id="@+id/fence_open"
-                    android:layout_width="wrap_content"
+                <RadioGroup
+                    android:id="@+id/group_alarm"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/auth_follow_cb_chd" />
+                    android:layout_alignBottom="@id/tv_alarm"
+                    android:layout_toRightOf="@id/tv_alarm"
+                    android:background="@color/white"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:id="@+id/bt_alarm"
+                        android:layout_width="0dip"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="进出报警"
+                        android:textSize="@dimen/content" />
+
+                    <RadioButton
+                        android:id="@+id/bt_alarm_in"
+                        android:layout_width="0dip"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="进入报警"
+                        android:textSize="@dimen/content" />
+
+                    <RadioButton
+                        android:id="@+id/bt_alarm_out"
+                        android:layout_width="0dip"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="驶出报警"
+                        android:textSize="@dimen/content" />
+                </RadioGroup>
             </RelativeLayout>
 
             <LinearLayout
@@ -85,14 +134,31 @@
             </LinearLayout>
         </LinearLayout>
 
-        <Button
-            android:id="@+id/fence_update"
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="2dp"
-            android:text="显示围栏" />
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/fence_update"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1"
+                android:text="显示围栏" />
+
+            <Button
+                android:id="@+id/fence_delete"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1"
+                android:text="删除围栏" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
