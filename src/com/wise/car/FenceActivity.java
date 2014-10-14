@@ -111,16 +111,12 @@ public class FenceActivity extends Activity {
 
 	private void getDate() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("geo_type", String.valueOf(geo_type)));
-		params.add(new BasicNameValuePair("lon", String.valueOf(carData
-				.getLon())));
-		params.add(new BasicNameValuePair("lat", String.valueOf(carData
-				.getLat())));
-		params.add(new BasicNameValuePair("width", fence_distance.getText()
-				.toString()));
-
+		params.add(new BasicNameValuePair("geo", "{geo_type:" + geo_type
+				+ ",lon:" + carData.getLon() + ",lat:" + carData.getLat()
+				+ ",width:"
+				+ Integer.valueOf(fence_distance.getText().toString()) + "}"));
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
-				+ "?auth_code=" + Variable.auth_code;
+				+ "geofence" + "?auth_code=" + Variable.auth_code;
 		new NetThread.putDataThread(handler, url, params, GETDATE).start();
 	}
 
@@ -137,7 +133,7 @@ public class FenceActivity extends Activity {
 				break;
 			case R.id.fence_delete:
 				String url = Constant.BaseUrl + "vehicle/"
-						+ carData.getObj_id() + "?auth_code="
+						+ carData.getObj_id() + "geofence" + "?auth_code="
 						+ Variable.auth_code;
 				new NetThread.DeleteThread(handler, url, DELETE).start();
 				break;
