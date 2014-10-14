@@ -26,6 +26,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 
 public class FenceActivity extends Activity {
@@ -33,9 +36,10 @@ public class FenceActivity extends Activity {
 	private BaiduMap mBaiduMap = null;
 	CarData carData;
 
-	private ImageView fence_open;
 	private EditText fence_distance;
 	private Button fence_update;
+
+	RadioGroup group_alarm;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +53,26 @@ public class FenceActivity extends Activity {
 		mMapView = (MapView) findViewById(R.id.fence_map);
 		mBaiduMap = mMapView.getMap();
 		// 初始化控件
-		fence_open = (ImageView) findViewById(R.id.fence_open);
 		fence_distance = (EditText) findViewById(R.id.fence_distance);
 		fence_update = (Button) findViewById(R.id.fence_update);
+		group_alarm = (RadioGroup) findViewById(R.id.group_alarm);
+		group_alarm.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				switch (checkedId) {
+				case R.id.bt_alarm:
 
-		fence_open.setOnClickListener(onClickListener);
+					break;
+				case R.id.bt_alarm_in:
+
+					break;
+				case R.id.bt_alarm_out:
+
+					break;
+				}
+			}
+		});
+
 		fence_update.setOnClickListener(onClickListener);
 
 		getRange();
@@ -63,9 +82,6 @@ public class FenceActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.fence_open:
-				Toast.makeText(FenceActivity.this, "开启围栏", 2000).show();
-				break;
 			case R.id.fence_update:
 				mMapView.getMap().clear();
 				getRange();

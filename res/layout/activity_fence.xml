@@ -30,22 +30,46 @@
                 android:paddingTop="10dp" >
 
                 <TextView
-                    android:layout_width="fill_parent"
+                    android:id="@+id/tv_alarm"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:padding="10dip"
-                    android:text="电子围栏"
+                    android:text="报警类型"
                     android:textSize="@dimen/content" />
 
-                <ImageView
-                    android:id="@+id/fence_open"
-                    android:layout_width="wrap_content"
+                <RadioGroup
+                    android:id="@+id/group_alarm"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/auth_follow_cb_chd" />
+                    android:layout_toRightOf="@id/tv_alarm"
+                    android:background="@color/white"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:id="@+id/bt_alarm"
+                        android:layout_width="0dip"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="进出报警"
+                        android:textSize="@dimen/content" />
+
+                    <RadioButton
+                        android:id="@+id/bt_alarm_in"
+                        android:layout_width="0dip"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="进入报警"
+                        android:textSize="@dimen/content" />
+
+                    <RadioButton
+                        android:id="@+id/bt_alarm_out"
+                        android:layout_width="0dip"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="驶出报警"
+                        android:textSize="@dimen/content" />
+                </RadioGroup>
             </RelativeLayout>
 
             <LinearLayout
