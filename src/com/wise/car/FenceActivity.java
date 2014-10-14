@@ -34,7 +34,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.Toast;
 
 public class FenceActivity extends Activity {
 	// 报警状态
@@ -45,11 +48,14 @@ public class FenceActivity extends Activity {
 	private static final int GETDATE = 3;// 消息码
 	private static final int DELETE = 4;// 删除码
 	private int geo_type;
+
+	// 围栏范围
+	int distance = 0;
 	private MapView mMapView;
 	private BaiduMap mBaiduMap = null;
 	CarData carData;
 
-	private EditText fence_distance;
+	private SeekBar fence_distance;
 
 	RadioGroup group_alarm;
 
@@ -66,7 +72,31 @@ public class FenceActivity extends Activity {
 		mMapView = (MapView) findViewById(R.id.fence_map);
 		mBaiduMap = mMapView.getMap();
 		// 初始化控件
-		fence_distance = (EditText) findViewById(R.id.fence_distance);
+		fence_distance = (SeekBar) findViewById(R.id.fence_distance);
+		fence_distance
+				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+					@Override
+					// 停止拖动时触发
+					public void onStopTrackingTouch(SeekBar seekBar) {
+						distance = fence_distance.getProgress();
+						mMapView.getMap().clear();
+						getRange();
+					}
+
+					@Override
+					// 开始触碰时触发
+					public void onStartTrackingTouch(SeekBar seekBar) {
+
+					}
+
+					@Override
+					// 拖动过程中
+					public void onProgressChanged(SeekBar seekBar,
+							int progress, boolean fromUser) {
+
+					}
+				});
+
 		group_alarm = (RadioGroup) findViewById(R.id.group_alarm);
 		group_alarm.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
@@ -82,28 +112,29 @@ public class FenceActivity extends Activity {
 					geo_type = ALARM_OUT;
 					break;
 				}
-				getDate();
 			}
 		});
 
 		findViewById(R.id.fence_update).setOnClickListener(onClickListener);
 		findViewById(R.id.fence_delete).setOnClickListener(onClickListener);
 		findViewById(R.id.iv_back).setOnClickListener(onClickListener);
-		getDate();
 
+		getCarLocation();
 	}
 
 	Handler handler = new Handler() {
-
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case GETDATE:
-				getRange();
+				Toast.makeText(FenceActivity.this, "设置成功", Toast.LENGTH_SHORT)
+						.show();
+				FenceActivity.this.finish();
 				break;
 			case DELETE:
 				mMapView.getMap().clear();
+				getCarLocation();
 				break;
 			}
 		}
@@ -113,8 +144,7 @@ public class FenceActivity extends Activity {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("geo", "{geo_type:" + geo_type
 				+ ",lon:" + carData.getLon() + ",lat:" + carData.getLat()
-				+ ",width:"
-				+ Integer.valueOf(fence_distance.getText().toString()) + "}"));
+				+ ",width:" + distance + "}"));
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
 				+ "geofence" + "?auth_code=" + Variable.auth_code;
 		new NetThread.putDataThread(handler, url, params, GETDATE).start();
@@ -128,8 +158,7 @@ public class FenceActivity extends Activity {
 				FenceActivity.this.finish();
 				break;
 			case R.id.fence_update:
-				mMapView.getMap().clear();
-				getRange();
+				getDate();
 				break;
 			case R.id.fence_delete:
 				String url = Constant.BaseUrl + "vehicle/"
@@ -141,7 +170,7 @@ public class FenceActivity extends Activity {
 		}
 	};
 
-	private void getRange() {
+	private void getCarLocation() {
 		// 围栏范围圆
 		LatLng circle = new LatLng(carData.getLat(), carData.getLon());
 
@@ -159,22 +188,16 @@ public class FenceActivity extends Activity {
 		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 				.newMapStatus(mapStatus);
 		mBaiduMap.setMapStatus(mapStatusUpdate);
+	}
 
-		OverlayOptions coverFence;
-		if ((fence_distance.getText().toString()) != null
-				&& !(fence_distance.getText().toString()).equals("")) {
-			coverFence = new CircleOptions()
-					.fillColor(0xAA00FF00)
-					.center(circle)
-					.stroke(new Stroke(1, 0xAAFF00FF))
-					.radius(Integer
-							.valueOf(fence_distance.getText().toString()));
-
-		} else {
-			coverFence = new CircleOptions().fillColor(0xAA00FF00)
-					.center(circle).stroke(new Stroke(1, 0xAAFF00FF))
-					.radius(100);
-		}
+	private void getRange() {
+		getCarLocation();
+		// 围栏范围圆
+		LatLng circle = new LatLng(carData.getLat(), carData.getLon());
+		// 画圆
+		OverlayOptions coverFence = new CircleOptions().fillColor(0xAA00FF00)
+				.center(circle).stroke(new Stroke(1, 0xAAFF00FF))
+				.radius(distance);
 		mBaiduMap.addOverlay(coverFence);
 	}
 }

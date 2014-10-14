@@ -76,6 +76,7 @@
                         android:layout_width="0dip"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:checked="true"
                         android:text="进出报警"
                         android:textSize="@dimen/content" />
 
@@ -100,37 +101,24 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp" >
+                android:layout_marginTop="1dp"
+                android:background="@color/white" >
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/white"
                     android:padding="10dip"
                     android:text="围栏范围"
                     android:textSize="@dimen/content" />
 
-                <EditText
+                <SeekBar
                     android:id="@+id/fence_distance"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
-                    android:background="@color/white"
-                    android:gravity="right"
-                    android:hint="请输入范围"
-                    android:numeric="integer"
-                    android:padding="10dip"
-                    android:singleLine="true"
-                    android:textSize="@dimen/content" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:padding="10dip"
-                    android:text="km"
-                    android:textSize="@dimen/content" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:max="1000" />
             </LinearLayout>
         </LinearLayout>
 
@@ -147,7 +135,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="2dp"
                 android:layout_weight="1"
-                android:text="显示围栏" />
+                android:text="设置围栏" />
 
             <Button
                 android:id="@+id/fence_delete"
