@@ -89,7 +89,7 @@ public class FenceActivity extends Activity {
 		findViewById(R.id.fence_update).setOnClickListener(onClickListener);
 		findViewById(R.id.fence_delete).setOnClickListener(onClickListener);
 		findViewById(R.id.iv_back).setOnClickListener(onClickListener);
-		getDate();
+		//getDate();
 
 	}
 
@@ -111,8 +111,11 @@ public class FenceActivity extends Activity {
 
 	private void getDate() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("geo", "{geo_type: 0,lon: 112,lat: 22,width: 1000 }"));
 
+		params.add(new BasicNameValuePair("geo", "{geo_type:" + geo_type
+				+ ",lon:" + carData.getLon() + ",lat:" + carData.getLat()
+				+ ",width:"
+				+ Integer.valueOf(fence_distance.getText().toString()) + "}"));
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
 				+ "?auth_code=" + Variable.auth_code;
 		new NetThread.putDataThread(handler, url, params, GETDATE).start();
@@ -126,8 +129,9 @@ public class FenceActivity extends Activity {
 				FenceActivity.this.finish();
 				break;
 			case R.id.fence_update:
-				mMapView.getMap().clear();
-				getRange();
+				//mMapView.getMap().clear();
+				//getRange();
+				getDate();
 				break;
 			case R.id.fence_delete:
 				String url = Constant.BaseUrl + "vehicle/"

@@ -228,6 +228,7 @@ public class CarLocationActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		mMapView.onDestroy();
+		unregisterReceiver(broadcastReceiver);
 	}
 
 	@Override
