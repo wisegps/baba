@@ -237,8 +237,8 @@ public class CarLocationActivity extends Activity {
 		bt_alarm_out = (CheckBox) popunwindwow.findViewById(R.id.bt_alarm_out);
 		fence_distance = (SeekBar) popunwindwow
 				.findViewById(R.id.fence_distance);
-
-		if (carData.getGeofence() != null) {
+		System.out.println(carData.toString());
+		if (carData.getGeofence() != null && !carData.getGeofence().equals("null")) {
 			try {
 				JSONObject json = new JSONObject(carData.getGeofence());
 				distance = json.getInt("width");
@@ -259,6 +259,7 @@ public class CarLocationActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
+		System.out.println("------");
 		fence_distance
 				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 					@Override
@@ -314,7 +315,8 @@ public class CarLocationActivity extends Activity {
 
 	// 画圆（围栏）
 	private void getRange() {
-		if (carData.getGeofence() != null) {
+		System.out.println("getRange");
+		if (carData.getGeofence() != null && !carData.getGeofence().equals("null")) {
 			getCarLocation();
 			LatLng circle = new LatLng(fence_lat, fence_lon);
 			// 画圆
