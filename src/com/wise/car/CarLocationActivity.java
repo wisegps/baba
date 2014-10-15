@@ -1,24 +1,32 @@
 package com.wise.car;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import pubclas.Constant;
 import pubclas.GetLocation;
+import pubclas.NetThread;
 import pubclas.Variable;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.CircleOptions;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.NaviPara;
 import com.wise.baba.R;
-import com.wise.baba.SelectCityActivity;
 
 import data.CarData;
 import android.app.Activity;
@@ -28,23 +36,31 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.widget.CheckBox;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class CarLocationActivity extends Activity {
 	MapView mMapView = null;
 	LinearLayout ll_location_bottom;
 	PopupWindow mPopupWindow;
 	CarData carData;
+	BaiduMap mBaiduMap;
 	int index;
 
 	@Override
@@ -57,24 +73,8 @@ public class CarLocationActivity extends Activity {
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_car_location);
-		BaiduMap mBaiduMap = mMapView.getMap();
-		// 定义Maker坐标点
-		LatLng point = new LatLng(carData.getLat(), carData.getLon());
-
-		// 构建Marker图标
-		BitmapDescriptor bitmap = BitmapDescriptorFactory
-				.fromResource(R.drawable.icon_place);
-		// 构建MarkerOption，用于在地图上添加Marker
-		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0)
-				.position(point).icon(bitmap);
-		// 在地图上添加Marker，并显示
-		mBaiduMap.addOverlay(option);
-
-		MapStatus mapStatus = new MapStatus.Builder().target(point).zoom(18)
-				.build();
-		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
-				.newMapStatus(mapStatus);
-		mBaiduMap.setMapStatus(mapStatusUpdate);
+		mBaiduMap = mMapView.getMap();
+		getCarLocation();
 
 		// 就初始化控件
 		findViewById(R.id.bt_location_findCar).setOnClickListener(
@@ -144,10 +144,7 @@ public class CarLocationActivity extends Activity {
 				ShowPop();// 弹出popupwidow显示
 				break;
 			case R.id.bt_location_fence:// 围栏
-				Intent intent = new Intent(CarLocationActivity.this,
-						FenceActivity.class);
-				intent.putExtra("index", index);
-				startActivity(intent);
+				ShowFence();
 				break;
 
 			// 周边点击弹出Popupwindow监听事件
@@ -169,6 +166,17 @@ public class CarLocationActivity extends Activity {
 			case R.id.tv_item_car_location_wash:// 洗车店
 				ToSearchMap("洗车店");
 				break;
+
+			// 围栏监听
+			case R.id.fence_update:
+				getDate();
+				break;
+			case R.id.fence_delete:
+				String url = Constant.BaseUrl + "vehicle/"
+						+ carData.getObj_id() + "/geofence" + "?auth_code="
+						+ Variable.auth_code;
+				new NetThread.DeleteThread(handler, url, DELETE).start();
+				break;
 			}
 		}
 	};
@@ -188,8 +196,151 @@ public class CarLocationActivity extends Activity {
 		startActivity(intent);
 	}
 
+	// 报警状态
+	private static final int ALARM = 0;// 进出报警
+	private static final int ALARM_IN = 1;// 进入报警
+	private static final int ALARM_OUT = 2;// 驶出报警
+
+	private static final int GETDATE = 3;// 消息码
+	private static final int DELETE = 4;// 删除码
+	private int geo_type;
+	SeekBar fence_distance;
+	int distance = 0;
+
+	CheckBox bt_alarm_in, bt_alarm_out;
+
 	/**
-	 * 弹出popupwindow
+	 * TODO 显示围栏
+	 */
+	private void ShowFence() {
+		int Height = ll_location_bottom.getMeasuredHeight();
+		LayoutInflater mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+		View popunwindwow = mLayoutInflater.inflate(R.layout.activity_fence,
+				null);
+		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.FILL_PARENT,
+				LayoutParams.WRAP_CONTENT);
+		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+		mPopupWindow.setFocusable(true);
+		mPopupWindow.setOutsideTouchable(true);
+		mPopupWindow.showAtLocation(findViewById(R.id.bt_location_periphery),
+				Gravity.BOTTOM, 0, Height);
+
+		popunwindwow.findViewById(R.id.fence_update).setOnClickListener(
+				onClickListener);
+		popunwindwow.findViewById(R.id.fence_delete).setOnClickListener(
+				onClickListener);
+
+		bt_alarm_in = (CheckBox) popunwindwow.findViewById(R.id.bt_alarm_in);
+		bt_alarm_in.setOnCheckedChangeListener(onCheckedChangeListener);
+		bt_alarm_out = (CheckBox) popunwindwow.findViewById(R.id.bt_alarm_out);
+		bt_alarm_out.setOnCheckedChangeListener(onCheckedChangeListener);
+
+		fence_distance = (SeekBar) popunwindwow
+				.findViewById(R.id.fence_distance);
+		fence_distance
+				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+					@Override
+					// 停止拖动时触发
+					public void onStopTrackingTouch(SeekBar seekBar) {
+						distance = fence_distance.getProgress();
+						mMapView.getMap().clear();
+						getRange();
+					}
+
+					@Override
+					// 开始触碰时触发
+					public void onStartTrackingTouch(SeekBar seekBar) {
+					}
+
+					@Override
+					// 拖动过程中
+					public void onProgressChanged(SeekBar seekBar,
+							int progress, boolean fromUser) {
+					}
+				});
+	}
+
+	OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView,
+				boolean isChecked) {
+			if (!(bt_alarm_out.isChecked()) && isChecked) {
+				geo_type = ALARM_IN;
+			} else if (!(bt_alarm_in.isChecked()) && isChecked) {
+				geo_type = ALARM_OUT;
+			} else if (bt_alarm_out.isChecked() && bt_alarm_in.isChecked()) {
+				geo_type = ALARM;
+			}
+		}
+	};
+
+	// 上传数据
+	private void getDate() {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("geo", "{geo_type:" + geo_type
+				+ ",lon:" + carData.getLon() + ",lat:" + carData.getLat()
+				+ ",width:" + distance + "}"));
+		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
+				+ "/geofence" + "?auth_code=" + Variable.auth_code;
+		new NetThread.putDataThread(handler, url, params, GETDATE).start();
+	}
+
+	// 画圆（围栏）
+	private void getRange() {
+		getCarLocation();
+		// 围栏范围圆
+		LatLng circle = new LatLng(carData.getLat(), carData.getLon());
+		// 画圆
+		OverlayOptions coverFence = new CircleOptions().fillColor(0xAA00FF00)
+				.center(circle).stroke(new Stroke(1, 0xAAFF00FF))
+				.radius(distance);
+		mBaiduMap.addOverlay(coverFence);
+	}
+
+	// 当前车辆位子
+	private void getCarLocation() {
+		// 围栏范围圆
+		LatLng circle = new LatLng(carData.getLat(), carData.getLon());
+
+		// 构建Marker图标
+		BitmapDescriptor bitmap = BitmapDescriptorFactory
+				.fromResource(R.drawable.icon_place);
+		// 构建MarkerOption，用于在地图上添加Marker
+		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0)
+				.position(circle).icon(bitmap);
+		// 在地图上添加Marker，并显示
+		mBaiduMap.addOverlay(option);
+
+		MapStatus mapStatus = new MapStatus.Builder().target(circle).zoom(18)
+				.build();
+		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
+				.newMapStatus(mapStatus);
+		mBaiduMap.setMapStatus(mapStatusUpdate);
+	}
+
+	Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case GETDATE:
+				System.out.println(msg.obj.toString());
+				Toast.makeText(CarLocationActivity.this, "设置成功",
+						Toast.LENGTH_SHORT).show();
+				mPopupWindow.dismiss();
+				break;
+			case DELETE:
+				Toast.makeText(CarLocationActivity.this, "删除成功",
+						Toast.LENGTH_SHORT).show();
+				mMapView.getMap().clear();
+				getCarLocation();
+				break;
+			}
+		}
+	};
+
+	/**
+	 * 弹出popupwindow 显示周边
 	 */
 	private void ShowPop() {
 		int Height = ll_location_bottom.getMeasuredHeight();
