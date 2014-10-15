@@ -74,7 +74,12 @@ public class JsonData {
 				}
 				if(jsonObject.opt("maintain_tel") != null){
 					carData.setMaintain_tel(jsonObject.getString("maintain_tel"));
-				}				
+				}
+				if(jsonObject.opt("geofence") != null){
+					carData.setGeofence(jsonObject.getString("geofence"));
+				}else{
+					
+				}
 				JSONArray jsonArray2 = new JSONArray(jsonObject.getString("vio_citys"));
 				ArrayList<String> vio_citys = new ArrayList<String>();
 				ArrayList<String> vio_citys_code = new ArrayList<String>();

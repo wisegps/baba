@@ -2,6 +2,8 @@ package data;
 
 import java.util.ArrayList;
 
+import com.wise.baba.R.string;
+
 /**
  * 车辆信息(车牌，车标)
  * @author keven.cheng
@@ -33,6 +35,7 @@ public class CarData {
      * 保险时间
      */
     public String insurance_date;
+    public String geofence;
     /**
      * 年检日期
      */
@@ -276,6 +279,12 @@ public class CarData {
 	public void setProvince(ArrayList<String> province) {
 		this.province = province;
 	}
+	public String getGeofence() {
+		return geofence;
+	}
+	public void setGeofence(String geofence) {
+		this.geofence = geofence;
+	}
 	@Override
 	public String toString() {
 		return "CarData [obj_id=" + obj_id + ", car_brand=" + car_brand
@@ -288,16 +297,17 @@ public class CarData {
 				+ maintain_tel + ", nick_name=" + nick_name + ", insurance_no="
 				+ insurance_no + ", limit=" + limit + ", insurance_company="
 				+ insurance_company + ", insurance_date=" + insurance_date
-				+ ", annual_inspect_date=" + annual_inspect_date
-				+ ", maintain_company=" + maintain_company
-				+ ", maintain_last_mileage=" + maintain_last_mileage
-				+ ", maintain_next_mileage=" + maintain_next_mileage
-				+ ", buy_date=" + buy_date + ", obj_name=" + obj_name
-				+ ", maintain_last_date=" + maintain_last_date + ", logoPath="
-				+ logoPath + ", device_id=" + device_id + ", serial=" + serial
-				+ ", Type=" + Type + ", Adress=" + Adress + ", gps_time="
-				+ gps_time + ", Lat=" + Lat + ", Lon=" + Lon + ", vio_citys="
-				+ vio_citys + ", vio_citys_code=" + vio_citys_code
-				+ ", province=" + province + "]";
-	}				       
+				+ ", geofence=" + geofence + ", annual_inspect_date="
+				+ annual_inspect_date + ", maintain_company="
+				+ maintain_company + ", maintain_last_mileage="
+				+ maintain_last_mileage + ", maintain_next_mileage="
+				+ maintain_next_mileage + ", buy_date=" + buy_date
+				+ ", obj_name=" + obj_name + ", maintain_last_date="
+				+ maintain_last_date + ", logoPath=" + logoPath
+				+ ", device_id=" + device_id + ", serial=" + serial + ", Type="
+				+ Type + ", Adress=" + Adress + ", gps_time=" + gps_time
+				+ ", Lat=" + Lat + ", Lon=" + Lon + ", vio_citys=" + vio_citys
+				+ ", vio_citys_code=" + vio_citys_code + ", province="
+				+ province + "]";
+	}					       
 }

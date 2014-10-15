@@ -247,7 +247,7 @@
 		本机：qfRNMbrcCCxi2zO4yGSdh2In
 		 -->
 		<meta-data  
-	        android:name="com.baidu.lbsapi.API_KEY"  
-	        android:value="qfRNMbrcCCxi2zO4yGSdh2In" />
+	        android:name="com.baidu.lbsapi.API_KEY" 
+	        android:value="0QNTY4tnP9Tv6ghXpGa6XXOm" />
     </application>
 </manifest>

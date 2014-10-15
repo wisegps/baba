@@ -257,7 +257,7 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(requestCode == 9){
+		if(requestCode == 9 && resultCode == Activity.RESULT_OK){
 			Uri uri = data.getData(); 
             Log.e("uri", uri.toString()); 
             ContentResolver cr = this.getContentResolver(); 
@@ -268,6 +268,15 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
                 Log.e("Exception", e.getMessage(),e); 
             }
 			return;
+		}else if(requestCode == 1 && resultCode == Activity.RESULT_OK){
+			String sdStatus = Environment.getExternalStorageState();
+            if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
+                Log.v("TestFile","SD card is not avaiable/writeable right now.");
+                return;
+            }
+            Bundle bundle = data.getExtras();
+            Bitmap bitmap = (Bitmap) bundle.get("data");// 获取相机返回的数据，并转换为Bitmap图片格式
+            UpdateBitmap(bitmap);
 		}
 		switch (resultCode) {
 		case 1:
@@ -284,16 +293,6 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			}
 			
 			GetCustomer();
-			break;
-		case Activity.RESULT_OK:
-			String sdStatus = Environment.getExternalStorageState();
-            if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
-                Log.v("TestFile","SD card is not avaiable/writeable right now.");
-                return;
-            }
-            Bundle bundle = data.getExtras();
-            Bitmap bitmap = (Bitmap) bundle.get("data");// 获取相机返回的数据，并转换为Bitmap图片格式
-            UpdateBitmap(bitmap);
 			break;
 		}
 	}

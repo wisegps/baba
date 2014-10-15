@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import pubclas.Constant;
 import pubclas.GetLocation;
@@ -173,7 +175,7 @@ public class CarLocationActivity extends Activity {
 				break;
 			case R.id.fence_delete:
 				String url = Constant.BaseUrl + "vehicle/"
-						+ carData.getObj_id() + "geofence" + "?auth_code="
+						+ carData.getObj_id() + "/geofence" + "?auth_code="
 						+ Variable.auth_code;
 				new NetThread.DeleteThread(handler, url, DELETE).start();
 				break;
@@ -208,6 +210,7 @@ public class CarLocationActivity extends Activity {
 	int distance = 0;
 
 	CheckBox bt_alarm_in, bt_alarm_out;
+	double fence_lat, fence_lon;
 
 	/**
 	 * TODO 显示围栏
@@ -222,8 +225,21 @@ public class CarLocationActivity extends Activity {
 		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
 		mPopupWindow.setFocusable(true);
 		mPopupWindow.setOutsideTouchable(true);
-		mPopupWindow.showAtLocation(findViewById(R.id.bt_location_periphery),
+		mPopupWindow.showAtLocation(findViewById(R.id.bt_location_fence),
 				Gravity.BOTTOM, 0, Height);
+
+		if (carData.getGeofence() != null) {
+			try {
+				JSONObject json = new JSONObject(carData.getGeofence());
+				distance = json.getInt("width");
+				fence_lat = json.getDouble("lat");
+				fence_lon = json.getDouble("lon");
+				geo_type = json.getInt("geo_type");
+				getRange();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 
 		popunwindwow.findViewById(R.id.fence_update).setOnClickListener(
 				onClickListener);
@@ -231,9 +247,7 @@ public class CarLocationActivity extends Activity {
 				onClickListener);
 
 		bt_alarm_in = (CheckBox) popunwindwow.findViewById(R.id.bt_alarm_in);
-		bt_alarm_in.setOnCheckedChangeListener(onCheckedChangeListener);
 		bt_alarm_out = (CheckBox) popunwindwow.findViewById(R.id.bt_alarm_out);
-		bt_alarm_out.setOnCheckedChangeListener(onCheckedChangeListener);
 
 		fence_distance = (SeekBar) popunwindwow
 				.findViewById(R.id.fence_distance);
@@ -260,41 +274,49 @@ public class CarLocationActivity extends Activity {
 				});
 	}
 
-	OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
-		@Override
-		public void onCheckedChanged(CompoundButton buttonView,
-				boolean isChecked) {
-			if (!(bt_alarm_out.isChecked()) && isChecked) {
-				geo_type = ALARM_IN;
-			} else if (!(bt_alarm_in.isChecked()) && isChecked) {
-				geo_type = ALARM_OUT;
-			} else if (bt_alarm_out.isChecked() && bt_alarm_in.isChecked()) {
-				geo_type = ALARM;
-			}
-		}
-	};
-
 	// 上传数据
 	private void getDate() {
+		if (!bt_alarm_out.isChecked() && !bt_alarm_in.isChecked()) {
+			// 提示
+			Toast.makeText(CarLocationActivity.this, "未设置报警类型",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+		if (bt_alarm_out.isChecked() && bt_alarm_in.isChecked()) {
+			geo_type = ALARM;
+		} else if (bt_alarm_out.isChecked() && !bt_alarm_in.isChecked()) {
+			geo_type = ALARM_OUT;
+		} else if (!bt_alarm_out.isChecked() && bt_alarm_in.isChecked()) {
+			geo_type = ALARM_IN;
+		}
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("geo", "{geo_type:" + geo_type
 				+ ",lon:" + carData.getLon() + ",lat:" + carData.getLat()
 				+ ",width:" + distance + "}"));
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
-				+ "geofence" + "?auth_code=" + Variable.auth_code;
+				+ "/geofence" + "?auth_code=" + Variable.auth_code;
 		new NetThread.putDataThread(handler, url, params, GETDATE).start();
 	}
 
 	// 画圆（围栏）
 	private void getRange() {
-		getCarLocation();
-		// 围栏范围圆
-		LatLng circle = new LatLng(carData.getLat(), carData.getLon());
-		// 画圆
-		OverlayOptions coverFence = new CircleOptions().fillColor(0xAA00FF00)
-				.center(circle).stroke(new Stroke(1, 0xAAFF00FF))
-				.radius(distance);
-		mBaiduMap.addOverlay(coverFence);
+		if (carData.getGeofence() != null) {
+			LatLng circle = new LatLng(fence_lat, fence_lon);
+			// 画圆
+			OverlayOptions coverFence = new CircleOptions()
+					.fillColor(0xAA00FF00).center(circle)
+					.stroke(new Stroke(1, 0xAAFF00FF)).radius(distance);
+			mBaiduMap.addOverlay(coverFence);
+		} else {
+			getCarLocation();
+			// 围栏范围圆
+			LatLng circle = new LatLng(carData.getLat(), carData.getLon());
+			// 画圆
+			OverlayOptions coverFence = new CircleOptions()
+					.fillColor(0xAA00FF00).center(circle)
+					.stroke(new Stroke(1, 0xAAFF00FF)).radius(distance);
+			mBaiduMap.addOverlay(coverFence);
+		}
 	}
 
 	// 当前车辆位子
@@ -324,6 +346,7 @@ public class CarLocationActivity extends Activity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case GETDATE:
+				System.out.println(msg.obj.toString());
 				Toast.makeText(CarLocationActivity.this, "设置成功",
 						Toast.LENGTH_SHORT).show();
 				mPopupWindow.dismiss();

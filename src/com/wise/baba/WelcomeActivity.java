@@ -42,7 +42,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
     boolean isLoging = false;
     /**登录发生异常**/
     boolean isException = false;
-    
+    /**界面关闭关闭线程**/
+	boolean isDestory = false;
     boolean isWait = false;
     /**是否从通知栏里启动**/
     boolean isSpecify = false;
@@ -103,8 +104,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 	private void getLogin() {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-		String sp_account = preferences.getString(Constant.sp_account, "13138154075");
-		String sp_pwd = preferences.getString(Constant.sp_pwd, "e10adc3949ba59abbe56e057f20f883e");
+		String sp_account = preferences.getString(Constant.sp_account, "");
+		String sp_pwd = preferences.getString(Constant.sp_pwd, "");
 		new WaitThread().start();
 		if (sp_account.equals("")) {
 			isLogin = false;
@@ -183,7 +184,11 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 	private void TurnActivity() {
 		GetSystem.myLog(TAG, "TurnActivity ,Variable.carDatas = " + Variable.carDatas.size() +
 				"isWait = " + isWait + " , isLogin = " + isLogin + " , isException = " + isException + " , isLoging = " + isLoging);
-        if (isWait) {//城市读取完毕，延时        	
+        if(isDestory){
+        	finish();
+        	return;
+        }
+		if (isWait) {//城市读取完毕，延时        	
         	if(!isLogin){
         		//未登录跳转
             	ll_wait.runFast();
@@ -214,6 +219,10 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 	OnFinishListener onFinishListener = new OnFinishListener() {
 		@Override
 		public void OnFinish(int index) {
+			if(isDestory){
+				finish();
+	        	return;
+	        }
 			GetSystem.myLog(TAG, "runFast OnFinish");
     		//未登录跳转
     		SharedPreferences preferences = getSharedPreferences(
@@ -266,6 +275,11 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		isDestory = true;
 	}
 	/**清空静态数据**/
 	private void clearData(){
