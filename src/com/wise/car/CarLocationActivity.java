@@ -228,19 +228,6 @@ public class CarLocationActivity extends Activity {
 		mPopupWindow.showAtLocation(findViewById(R.id.bt_location_fence),
 				Gravity.BOTTOM, 0, Height);
 
-		if (carData.getGeofence() != null) {
-			try {
-				JSONObject json = new JSONObject(carData.getGeofence());
-				distance = json.getInt("width");
-				fence_lat = json.getDouble("lat");
-				fence_lon = json.getDouble("lon");
-				geo_type = json.getInt("geo_type");
-				getRange();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-
 		popunwindwow.findViewById(R.id.fence_update).setOnClickListener(
 				onClickListener);
 		popunwindwow.findViewById(R.id.fence_delete).setOnClickListener(
@@ -248,9 +235,30 @@ public class CarLocationActivity extends Activity {
 
 		bt_alarm_in = (CheckBox) popunwindwow.findViewById(R.id.bt_alarm_in);
 		bt_alarm_out = (CheckBox) popunwindwow.findViewById(R.id.bt_alarm_out);
-
 		fence_distance = (SeekBar) popunwindwow
 				.findViewById(R.id.fence_distance);
+
+		if (carData.getGeofence() != null) {
+			try {
+				JSONObject json = new JSONObject(carData.getGeofence());
+				distance = json.getInt("width");
+				fence_lat = json.getDouble("lat");
+				fence_lon = json.getDouble("lon");
+				geo_type = json.getInt("geo_type");
+				if (geo_type == ALARM_IN) {
+					bt_alarm_in.setChecked(true);
+				} else if (geo_type == ALARM_OUT) {
+					bt_alarm_out.setChecked(true);
+				} else if (geo_type == ALARM) {
+					bt_alarm_in.setChecked(true);
+					bt_alarm_out.setChecked(true);
+				}
+				fence_distance.setProgress(distance);
+				getRange();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 		fence_distance
 				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 					@Override
@@ -270,8 +278,12 @@ public class CarLocationActivity extends Activity {
 					// 拖动过程中
 					public void onProgressChanged(SeekBar seekBar,
 							int progress, boolean fromUser) {
+						distance = fence_distance.getProgress();
+						mMapView.getMap().clear();
+						getRange();
 					}
 				});
+
 	}
 
 	// 上传数据
@@ -289,18 +301,21 @@ public class CarLocationActivity extends Activity {
 		} else if (!bt_alarm_out.isChecked() && bt_alarm_in.isChecked()) {
 			geo_type = ALARM_IN;
 		}
+		geo = "{geo_type:" + geo_type + ",lon:" + carData.getLon() + ",lat:"
+				+ carData.getLat() + ",width:" + distance + "}";
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("geo", "{geo_type:" + geo_type
-				+ ",lon:" + carData.getLon() + ",lat:" + carData.getLat()
-				+ ",width:" + distance + "}"));
+		params.add(new BasicNameValuePair("geo", geo));
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
 				+ "/geofence" + "?auth_code=" + Variable.auth_code;
 		new NetThread.putDataThread(handler, url, params, GETDATE).start();
 	}
 
+	String geo = "";
+
 	// 画圆（围栏）
 	private void getRange() {
 		if (carData.getGeofence() != null) {
+			getCarLocation();
 			LatLng circle = new LatLng(fence_lat, fence_lon);
 			// 画圆
 			OverlayOptions coverFence = new CircleOptions()
@@ -350,12 +365,15 @@ public class CarLocationActivity extends Activity {
 				Toast.makeText(CarLocationActivity.this, "设置成功",
 						Toast.LENGTH_SHORT).show();
 				mPopupWindow.dismiss();
+				carData.setGeofence(geo);
 				break;
 			case DELETE:
 				Toast.makeText(CarLocationActivity.this, "删除成功",
 						Toast.LENGTH_SHORT).show();
 				mMapView.getMap().clear();
 				getCarLocation();
+				mPopupWindow.dismiss();
+				carData.setGeofence(null);
 				break;
 			}
 		}
