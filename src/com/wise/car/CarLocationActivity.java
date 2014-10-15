@@ -276,13 +276,26 @@ public class CarLocationActivity extends Activity {
 
 	// 上传数据
 	private void getDate() {
+		if(!bt_alarm_out.isChecked() && !bt_alarm_in.isChecked()){
+			//提示 
+			System.out.println("没勾选");
+			return;
+		}
+		System.out.println("勾选");
+		if(bt_alarm_out.isChecked() && bt_alarm_in.isChecked()){
+			System.out.println("0");
+		}else if(bt_alarm_out.isChecked() && !bt_alarm_in.isChecked()){
+			System.out.println("2");
+		}else if(!bt_alarm_out.isChecked() && bt_alarm_in.isChecked()){
+			System.out.println("1");
+		}
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("geo", "{geo_type:" + geo_type
 				+ ",lon:" + carData.getLon() + ",lat:" + carData.getLat()
 				+ ",width:" + distance + "}"));
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
 				+ "/geofence" + "?auth_code=" + Variable.auth_code;
-		new NetThread.putDataThread(handler, url, params, GETDATE).start();
+		//new NetThread.putDataThread(handler, url, params, GETDATE).start();
 	}
 
 	// 画圆（围栏）
