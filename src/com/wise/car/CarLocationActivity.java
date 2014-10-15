@@ -259,6 +259,28 @@ public class CarLocationActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
+		if (carData.getGeofence() != null
+				&& !carData.getGeofence().equals("null")) {
+			try {
+				JSONObject json = new JSONObject(carData.getGeofence());
+				distance = json.getInt("width");
+				fence_lat = json.getDouble("lat");
+				fence_lon = json.getDouble("lon");
+				geo_type = json.getInt("geo_type");
+				if (geo_type == ALARM_IN) {
+					bt_alarm_in.setChecked(true);
+				} else if (geo_type == ALARM_OUT) {
+					bt_alarm_out.setChecked(true);
+				} else if (geo_type == ALARM) {
+					bt_alarm_in.setChecked(true);
+					bt_alarm_out.setChecked(true);
+				}
+				fence_distance.setProgress(distance);
+				getRange();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 		fence_distance
 				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 					@Override
@@ -314,7 +336,8 @@ public class CarLocationActivity extends Activity {
 
 	// 画圆（围栏）
 	private void getRange() {
-		if (carData.getGeofence() != null) {
+		if (carData.getGeofence() != null
+				&& !carData.getGeofence().equals("null")) {
 			getCarLocation();
 			LatLng circle = new LatLng(fence_lat, fence_lon);
 			// 画圆
