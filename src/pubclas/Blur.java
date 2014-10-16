@@ -130,7 +130,7 @@ public class Blur {
 		return newbm;
 	}
 	/**取最小缩放比例**/
-	private static float calculateScale(int realHeight , int relWidth , int newWidth){
+	public static float calculateScale(int realHeight , int relWidth , int newWidth){
 		float height = (float)newWidth/realHeight;
 		float width = (float)newWidth/relWidth;
 		return height < width ? width : height;

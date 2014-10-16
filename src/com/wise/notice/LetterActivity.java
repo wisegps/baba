@@ -30,7 +30,6 @@ import com.wise.show.ImageDetailsActivity;
 import customView.CircleImageView;
 import customView.WaitLinearLayout.OnFinishListener;
 import android.annotation.SuppressLint;
-import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ClipboardManager;
@@ -63,6 +62,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -78,17 +78,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 
-/** 私信 **/
+/**
+ * 私信
+ * 1：布局优化，解决图片上传阴影问题
+2：语音优化，语言的时间越长显示越长
+3：图片加上发送中状态
+4：发送失败提示，可以从发。
+ * @author honesty
+ *
+ */
 @SuppressLint("NewApi")
 public class LetterActivity extends Activity implements IXListViewListener {
 	private static final String TAG = "LetterActivity";
-
+	
+	private static final int FriendText = 0;
+	private static final int FriendImage = 2;
+	private static final int FriendSound = 4;
+	private static final int MeText = 1;
+	private static final int MeImage = 3;
+	private static final int MeSound = 5;
+	
 	private static final int send_letter = 1;
 	private static final int get_data = 2;
 	private static final int refresh_data = 3;
 	private static final int get_friend_info = 4;
 	/** 上传文件到阿里云 **/
-	private static final int putOss = 5;
+	private static final int putOssImage = 5;
 	private static final int getPersionImage = 6;
 	private static final int getOssSound = 7;
 	
@@ -124,8 +139,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	int type_text = 0;
 	int type_pic = 1;
 	int type_sound = 2;
-	enum type {friend,me};
+	/**当前播放谁的语言，播放完毕后需要使用它来改变不同的图片**/
 	type noSoundPlay;
+	enum type {friend,me};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -272,6 +288,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					btn_vocie = true;
 				}
 				break;
+			case R.id.letter_copy:
+				LetterActivity.copyContent(letterCopy, LetterActivity.this);
+				Toast.makeText(LetterActivity.this, "复制成功",
+						Toast.LENGTH_SHORT).show();
+				if (popupWindow.isShowing()) {
+					popupWindow.dismiss();
+				}
+				break;
 			}
 		}
 	};
@@ -307,19 +331,6 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		ClipboardManager cmb = (ClipboardManager) context
 				.getSystemService(Context.CLIPBOARD_SERVICE);
 		cmb.setText(content.trim());
-	}
-
-	/**
-	 * 实现粘贴功能 add by wangqianzhou
-	 * 
-	 * @param context
-	 * @return
-	 */
-	public static String pasteContent(Context context) {
-		// 得到剪贴板管理器
-		ClipboardManager cmb = (ClipboardManager) context
-				.getSystemService(Context.CLIPBOARD_SERVICE);
-		return cmb.getText().toString().trim();
 	}
 
 	@Override
@@ -371,7 +382,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				break;
 
 			case get_data:
-				List<LetterData> lDatas = jsonData(msg.obj.toString());
+				List<LetterData> lDatas = jsonData(msg.obj.toString());				
 				letterDatas.addAll(lDatas);
 				letterAdapter.notifyDataSetChanged();
 				lv_letter.setSelection(lv_letter.getBottom());
@@ -390,11 +401,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			case get_friend_info:
 				jsonFriendInfo(msg.obj.toString());
 				break;
-			case putOss:
-				/** 在阿里云上对应的图片url **/
-				String big_pic_url = Constant.oss_url + big_pic;
-				//上传
-				send("0", big_pic_url, "1");
+			case putOssImage:
+				letterAdapter.notifyDataSetChanged();
 				break;
 			case getPersionImage:
 				letterAdapter.notifyDataSetChanged();
@@ -426,8 +434,6 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	 *            类型,0:文本 1:图片 2:语音
 	 */
 	private void send(String content, String oss_url, String type) {
-		GetSystem.myLog(TAG, "content = " + content + " , oss_url = " + oss_url
-				+ " , type = " + type);
 		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
 				+ "/send_chat?auth_code=" + Variable.auth_code;
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -442,8 +448,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		//TODO 添加显示
 		LetterData letterData = new LetterData();
 		letterData.setContent(content);
-		letterData.setType(1);
-		letterData.setContent_type(Integer.valueOf(type));
+		letterData.setChatType(revisionType(false , Integer.valueOf(type) * 2 + 1));
 		letterData.setUrl(oss_url);
 		letterData.setSend_time(GetSystem.GetNowTime());
 		letterData.setVoice_len(voice_len);
@@ -491,13 +496,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						.getString("send_time").substring(0, 19)
 						.replace("T", " "));
 				letterData.setSend_time(send_time);
-				if (sender_id.equals(friend_id)) {// 好友
-					letterData.setType(0);
-				} else {
-					letterData.setType(1);
+				int type = jsonObject.getInt("type");
+				if (sender_id.equals(friend_id)) {// 好友,//0文本，1图片，2音乐
+					letterData.setChatType(revisionType(true,type * 2));
+				} else {					
+					letterData.setChatType(revisionType(false,type * 2 + 1));
 				}
-				letterData.setContent_type(jsonObject.getInt("type"));
 				letterData.setUrl(jsonObject.getString("url"));
+				letterData.setSendIn(false);
 				lDatas.add(letterData);
 			}
 		} catch (JSONException e) {
@@ -555,6 +561,32 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		}
 	}
 	
+	private PopupWindow popupWindow;
+	// 弹出框显示复制分享等功能
+	private void initPopWindow(View v) {
+		View letterView = LayoutInflater.from(LetterActivity.this)
+				.inflate(R.layout.letter_popupwidow, null);
+		popupWindow = new PopupWindow(letterView,
+				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		popupWindow.setBackgroundDrawable(new BitmapDrawable());
+		popupWindow.setFocusable(true);
+		popupWindow.setOutsideTouchable(true);
+		popupWindow.showAsDropDown(v, 0, -104);
+
+		popupWindow.getContentView().findViewById(R.id.letter_copy)
+				.setOnClickListener(onClickListener);
+		popupWindow.update();
+	}
+	
+	OnLongClickListener onLongClickListener = new OnLongClickListener() {		
+		@Override
+		public boolean onLongClick(View v) {
+			initPopWindow(v);
+			letterCopy = ((TextView) v).getText().toString();
+			return false;
+		}
+	};
+	
 	class LetterAdapter extends BaseAdapter {
 		LayoutInflater inflater = LayoutInflater.from(LetterActivity.this);
 
@@ -576,322 +608,344 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			int Type = getItemViewType(position);
-			ViewFriend viewFriend = null;
-			ViewMe viewMe = null;
-
+			
+			ViewFriendText viewFriendText = null;
+			ViewFriendImage viewFriendImage = null;
+			ViewFriendSound viewFriendSound = null;
+			ViewMeText viewMeText = null;
+			ViewMeImage viewMeImage = null;
+			ViewMeSound viewMeSound = null;
+			
 			if (convertView == null) {
-				if (Type == 0) {// 朋友
-					convertView = inflater.inflate(R.layout.item_letter_friend,
+				switch (Type) {
+				case FriendText:
+					convertView = inflater.inflate(R.layout.item_letter_friend_text,
 							null);
-					viewFriend = new ViewFriend();
-					viewFriend.iv_friend = (CircleImageView) convertView
+					viewFriendText = new ViewFriendText();
+					viewFriendText.tv_time = (TextView) convertView
+							.findViewById(R.id.tv_time);
+					viewFriendText.iv_friend = (CircleImageView) convertView
 							.findViewById(R.id.iv_friend);
-					viewFriend.tv_friend_content = (TextView) convertView
+					viewFriendText.tv_friend_content = (TextView) convertView
 							.findViewById(R.id.tv_friend_content);
-					viewFriend.tv_time = (TextView) convertView
-							.findViewById(R.id.tv_time);
-					viewFriend.tv_sound_lenght = (TextView) convertView
-							.findViewById(R.id.tv_sound_lenght);
-					viewFriend.iv_friend_pic = (ImageView) convertView
-							.findViewById(R.id.iv_friend_pic);
-					viewFriend.iv_friend_sound = (ImageView) convertView
-							.findViewById(R.id.iv_friend_sound);
-					convertView.setTag(viewFriend);
-				} else {
-					convertView = inflater.inflate(R.layout.item_letter_me,
+					convertView.setTag(viewFriendText);
+					break;
+				case FriendImage:
+					convertView = inflater.inflate(R.layout.item_letter_friend_image,
 							null);
-					viewMe = new ViewMe();
-					viewMe.iv_me = (CircleImageView) convertView
-							.findViewById(R.id.iv_me);
-					viewMe.tv_me_content = (TextView) convertView
-							.findViewById(R.id.tv_me_content);
-					viewMe.tv_time = (TextView) convertView
+					viewFriendImage = new ViewFriendImage();
+					viewFriendImage.tv_time = (TextView) convertView
 							.findViewById(R.id.tv_time);
-					viewMe.tv_sound_lenght = (TextView) convertView
+					viewFriendImage.iv_friend = (CircleImageView) convertView
+							.findViewById(R.id.iv_friend);
+					viewFriendImage.iv_friend_pic = (ImageView) convertView
+							.findViewById(R.id.iv_friend_pic);
+					convertView.setTag(viewFriendImage);
+					break;
+				case FriendSound:
+					convertView = inflater.inflate(R.layout.item_letter_friend_sound,
+							null);
+					viewFriendSound = new ViewFriendSound();
+					viewFriendSound.tv_time = (TextView) convertView
+							.findViewById(R.id.tv_time);
+					viewFriendSound.iv_friend = (CircleImageView) convertView
+							.findViewById(R.id.iv_friend);
+					viewFriendSound.tv_sound_lenght = (TextView) convertView
 							.findViewById(R.id.tv_sound_lenght);
-					viewMe.iv_me_pic = (ImageView) convertView
+					viewFriendSound.iv_friend_sound = (ImageView) convertView
+							.findViewById(R.id.iv_friend_sound);
+					convertView.setTag(viewFriendSound);
+					break;
+				case MeText:
+					convertView = inflater.inflate(R.layout.item_letter_me_text,
+							null);
+					viewMeText = new ViewMeText();
+					viewMeText.tv_time = (TextView) convertView
+							.findViewById(R.id.tv_time);
+					viewMeText.iv_me = (CircleImageView) convertView
+							.findViewById(R.id.iv_me);
+					viewMeText.tv_me_content = (TextView) convertView
+							.findViewById(R.id.tv_me_content);
+					convertView.setTag(viewMeText);
+					break;
+				case MeImage:
+					convertView = inflater.inflate(R.layout.item_letter_me_image,
+							null);
+					viewMeImage = new ViewMeImage();
+					viewMeImage.tv_time = (TextView) convertView
+							.findViewById(R.id.tv_time);
+					viewMeImage.tv_send_in = (TextView) convertView
+							.findViewById(R.id.tv_send_in);
+					viewMeImage.iv_me = (CircleImageView) convertView
+							.findViewById(R.id.iv_me);
+					viewMeImage.iv_me_pic = (ImageView) convertView
 							.findViewById(R.id.iv_me_pic);
-					viewMe.iv_me_sound = (ImageView) convertView
+					convertView.setTag(viewMeImage);
+					break;
+				case MeSound:
+					convertView = inflater.inflate(R.layout.item_letter_me_sound,
+							null);
+					viewMeSound = new ViewMeSound();
+					viewMeSound.tv_time = (TextView) convertView
+							.findViewById(R.id.tv_time);
+					viewMeSound.iv_me = (CircleImageView) convertView
+							.findViewById(R.id.iv_me);
+					viewMeSound.iv_me_sound = (ImageView) convertView
 							.findViewById(R.id.iv_me_sound);
-					convertView.setTag(viewMe);
+					viewMeSound.tv_sound_lenght = (TextView) convertView
+							.findViewById(R.id.tv_sound_lenght);
+					convertView.setTag(viewMeSound);
+					break;
 				}
 			} else {
-				if (Type == 0) {
-					viewFriend = (ViewFriend) convertView.getTag();
-				} else {
-					viewMe = (ViewMe) convertView.getTag();
+				switch (Type) {
+				case FriendText:
+					viewFriendText = (ViewFriendText) convertView.getTag();
+					break;
+				case FriendImage:
+					viewFriendImage = (ViewFriendImage) convertView.getTag();
+					break;
+				case FriendSound:
+					viewFriendSound = (ViewFriendSound) convertView.getTag();
+					break;
+				case MeText:
+					viewMeText = (ViewMeText) convertView.getTag();
+					break;
+				case MeImage:
+					viewMeImage = (ViewMeImage) convertView.getTag();
+					break;
+				case MeSound:
+					viewMeSound = (ViewMeSound) convertView.getTag();
+					break;
 				}
 			}
+			boolean isTimeShow = false;
 			final LetterData letterData = letterDatas.get(position);
-			if ((position + 1) >= letterDatas.size()) {
+			if (position == 0) { //第一条特殊考虑
 				// 最后一条
-				String last_time = letterData.getSend_time();
+				String now_time = letterData.getSend_time();
 				// 得到间隔分钟
-				int min = GetSystem.spacingNowTime(last_time);
+				int min = GetSystem.spacingNowTime(now_time);
 				if (min >= 5) {
-					if (Type == 0) {// 朋友
-						viewFriend.tv_time.setVisibility(View.VISIBLE);
-						viewFriend.tv_time.setText(last_time.substring(5, 16));
-					} else {
-						viewMe.tv_time.setVisibility(View.VISIBLE);
-						viewMe.tv_time.setText(last_time.substring(5, 16));
-					}
+					isTimeShow = true;
 				} else {
-					if (Type == 0) {// 朋友
-						viewFriend.tv_time.setVisibility(View.GONE);
-					} else {
-						viewMe.tv_time.setVisibility(View.GONE);
-					}
+					isTimeShow = false;
 				}
 			} else {
-				String last_time = letterData.getSend_time();
-				String next_time = letterDatas.get(position + 1).getSend_time();
+				String now_time = letterData.getSend_time();
+				String last_time = letterDatas.get(position - 1).getSend_time();
 				// 得到间隔分钟
-				int min = GetSystem.spacingTime(last_time, next_time) / 60;
+				int min = GetSystem.spacingTime(last_time, now_time) / 60;
 				if (min >= 5) {
-					if (Type == 0) {// 朋友
-						viewFriend.tv_time.setVisibility(View.VISIBLE);
-						viewFriend.tv_time.setText(last_time.substring(5, 16));
-					} else {
-						viewMe.tv_time.setVisibility(View.VISIBLE);
-						viewMe.tv_time.setText(last_time.substring(5, 16));
-					}
+					isTimeShow = true;
 				} else {
-					if (Type == 0) {// 朋友
-						viewFriend.tv_time.setVisibility(View.GONE);
-					} else {
-						viewMe.tv_time.setVisibility(View.GONE);
-					}
+					isTimeShow = false;
 				}
 			}
-			if (Type == 0) {// 朋友
-				// 长按监听，弹出（复制，分享等）功能
-				viewFriend.tv_friend_content
-						.setOnLongClickListener(new OnLongClickListener() {
-							@Override
-							public boolean onLongClick(View v) {
-								initPopWindow(v);
-								letterCopy = ((TextView) v).getText()
-										.toString();
-								return true;
-							}
-						});
-				// 读取朋友对应的图片
+			switch (Type) {
+			case FriendText:
+				if(isTimeShow){
+					viewFriendText.tv_time.setVisibility(View.VISIBLE);
+					viewFriendText.tv_time.setText(letterData.getSend_time().substring(5, 16));
+				}else{
+					viewFriendText.tv_time.setVisibility(View.GONE);
+				}
 				if (imageFriend != null) {
-					viewFriend.iv_friend.setImageBitmap(imageFriend);
+					viewFriendText.iv_friend.setImageBitmap(imageFriend);
 				} else {
-					viewFriend.iv_friend
-							.setImageResource(R.drawable.icon_people_no);
+					viewFriendText.iv_friend.setImageResource(R.drawable.icon_people_no);
 				}
-				if (letterData.getContent_type() == type_text) {
-					viewFriend.tv_sound_lenght.setVisibility(View.GONE);
-					viewFriend.iv_friend_pic.setVisibility(View.GONE);
-					viewFriend.iv_friend_sound.setVisibility(View.GONE);
-					viewFriend.tv_friend_content.setVisibility(View.VISIBLE);
-					viewFriend.tv_friend_content
-					.setCompoundDrawablesWithIntrinsicBounds(0, 0,0, 0);
-					viewFriend.tv_friend_content.setText(letterData
-							.getContent());
-				} else if (letterData.getContent_type() == type_pic) {
-					viewFriend.tv_sound_lenght.setVisibility(View.GONE);
-					viewFriend.iv_friend_pic.setVisibility(View.VISIBLE);
-					viewFriend.tv_friend_content.setVisibility(View.GONE);
-					viewFriend.iv_friend_sound.setVisibility(View.GONE);
-					//显示
-					String imageUrl = letterData.getUrl();
-					int lastSlashIndex = imageUrl.lastIndexOf("/");
-					final String imageName = imageUrl.substring(lastSlashIndex + 1);
-					if (new File(getImagePath(imageUrl)).exists()) {
-						Bitmap image = BitmapFactory
-								.decodeFile(Constant.VehiclePath + imageName);
-						image = Blur.scaleImage(image, 100);
-						
-						viewFriend.iv_friend_pic.setImageBitmap(Blur.toRoundCorner(image, 5));
-						viewFriend.iv_friend_pic.setOnClickListener(new OnClickListener() {							
-							@Override
-							public void onClick(View v) {
-								Intent intent = new Intent(LetterActivity.this, ImageDetailsActivity.class);
-								intent.putExtra("image_path", Constant.VehiclePath + imageName);
-								startActivity(intent);
-							}
-						});
-					}else{
-						viewFriend.iv_friend_pic.setImageBitmap(null);
-					}
-				} else if (letterData.getContent_type() == type_sound) {
-					viewFriend.tv_sound_lenght.setVisibility(View.VISIBLE);
-					viewFriend.tv_sound_lenght.setText(letterData.getVoice_len() + "\"");
-					viewFriend.iv_friend_pic.setVisibility(View.GONE);
-					viewFriend.tv_friend_content.setVisibility(View.GONE);
-					viewFriend.iv_friend_sound.setVisibility(View.VISIBLE);
-					viewFriend.tv_friend_content.setText("");
-					//TODO iv_friend_sound
-					viewFriend.iv_friend_sound.setOnClickListener(new OnClickListener() {						
+				viewFriendText.tv_friend_content.setText(letterData.getContent());
+				viewFriendText.tv_friend_content.setOnLongClickListener(onLongClickListener);
+				break;
+			case FriendImage:
+				if(isTimeShow){
+					viewFriendImage.tv_time.setVisibility(View.VISIBLE);
+					viewFriendImage.tv_time.setText(letterData.getSend_time().substring(5, 16));
+				}else{
+					viewFriendImage.tv_time.setVisibility(View.GONE);
+				}
+				if (imageFriend != null) {
+					viewFriendImage.iv_friend.setImageBitmap(imageFriend);
+				} else {
+					viewFriendImage.iv_friend.setImageResource(R.drawable.icon_people_no);
+				}
+				//显示
+				String imageUrl = letterData.getUrl();
+				int lastSlashIndex = imageUrl.lastIndexOf("/");
+				final String imageName = imageUrl.substring(lastSlashIndex + 1);
+				if (new File(getImagePath(imageUrl)).exists()) {
+					Bitmap image = BitmapFactory
+							.decodeFile(Constant.VehiclePath + imageName);
+					image = Blur.scaleImage(image, 100);					
+					viewFriendImage.iv_friend_pic.setImageBitmap(Blur.toRoundCorner(image, 5));
+					viewFriendImage.iv_friend_pic.setOnClickListener(new OnClickListener() {							
 						@Override
 						public void onClick(View v) {
-							playMusic(getImagePath(letterData.getUrl())) ;
-							noSoundPlay = type.friend;
-							ivNowPlay = (ImageView)v;
-							((ImageView)v).setImageResource(R.drawable.sound_friend);  
-							AnimationDrawable animationDrawable = (AnimationDrawable) ((ImageView)v).getDrawable();  
-			                animationDrawable.start();  
+							Intent intent = new Intent(LetterActivity.this, ImageDetailsActivity.class);
+							intent.putExtra("image_path", Constant.VehiclePath + imageName);
+							startActivity(intent);
 						}
 					});
+				}else{
+					viewFriendImage.iv_friend_pic.setImageBitmap(null);
 				}
-			} else {
-				viewMe.tv_me_content.setText(letterData.getContent());
-				// 长按监听，弹出（复制，分享等）功能
-				viewMe.tv_me_content
-						.setOnLongClickListener(new OnLongClickListener() {
-							@Override
-							public boolean onLongClick(View v) {
-								initPopWindow(v);
-								letterCopy = ((TextView) v).getText()
-										.toString();
-								return true;
-							}
-						});
-
-				// 读取自己对应的图片
+				break;
+			case FriendSound:
+				if(isTimeShow){
+					viewFriendSound.tv_time.setVisibility(View.VISIBLE);
+					viewFriendSound.tv_time.setText(letterData.getSend_time().substring(5, 16));
+				}else{
+					viewFriendSound.tv_time.setVisibility(View.GONE);
+				}
+				if (imageFriend != null) {
+					viewFriendSound.iv_friend.setImageBitmap(imageFriend);
+				} else {
+					viewFriendSound.iv_friend.setImageResource(R.drawable.icon_people_no);
+				}
+				viewFriendSound.tv_sound_lenght.setText(letterData.getVoice_len() + "\"");
+				viewFriendSound.iv_friend_sound.setOnClickListener(new OnClickListener() {						
+					@Override
+					public void onClick(View v) {
+						playMusic(getImagePath(letterData.getUrl())) ;
+						noSoundPlay = type.friend;
+						ivNowPlay = (ImageView)v;
+						((ImageView)v).setImageResource(R.drawable.sound_friend);  
+						AnimationDrawable animationDrawable = (AnimationDrawable) ((ImageView)v).getDrawable();  
+		                animationDrawable.start();  
+					}
+				});
+				break;
+			case MeText:
+				if(isTimeShow){
+					viewMeText.tv_time.setVisibility(View.VISIBLE);
+					viewMeText.tv_time.setText(letterData.getSend_time().substring(5, 16));
+				}else{
+					viewMeText.tv_time.setVisibility(View.GONE);
+				}
 				if (imageMe != null) {
-					viewMe.iv_me.setImageBitmap(imageMe);
+					viewMeText.iv_me.setImageBitmap(imageMe);
 				} else {
-					viewMe.iv_me.setImageResource(R.drawable.icon_people_no);
+					viewMeText.iv_me.setImageResource(R.drawable.icon_people_no);
 				}
-				if (letterData.getContent_type() == type_text) {
-					viewMe.tv_sound_lenght.setVisibility(View.GONE);
-					viewMe.tv_sound_lenght.setVisibility(View.GONE);
-					viewMe.iv_me_sound.setVisibility(View.GONE);
-					viewMe.iv_me_pic.setVisibility(View.GONE);
-					viewMe.tv_me_content.setVisibility(View.VISIBLE);
-					viewMe.tv_me_content.setText(letterData.getContent());
-					viewMe.tv_me_content
-					.setCompoundDrawablesWithIntrinsicBounds(0, 0,0, 0);
-				} else if (letterData.getContent_type() == type_pic) {
-					viewMe.tv_sound_lenght.setVisibility(View.GONE);
-					viewMe.iv_me_pic.setVisibility(View.VISIBLE);
-					viewMe.tv_me_content.setVisibility(View.GONE);
-					viewMe.tv_sound_lenght.setVisibility(View.GONE);
-					viewMe.iv_me_sound.setVisibility(View.GONE);
-					//显示
-					String imageUrl = letterData.getUrl();
-					int lastSlashIndex = imageUrl.lastIndexOf("/");
-					final String imageName = imageUrl.substring(lastSlashIndex + 1);
-					if (new File(getImagePath(imageUrl)).exists()) {
-						Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath + imageName);
-						image = Blur.scaleImage(image, 100);
-						viewMe.iv_me_pic.setImageBitmap(Blur.toRoundCorner(image, 5));
-						viewMe.iv_me_pic.setOnClickListener(new OnClickListener() {							
-							@Override
-							public void onClick(View v) {
-								Intent intent = new Intent(LetterActivity.this, ImageDetailsActivity.class);
-								intent.putExtra("image_path", Constant.VehiclePath + imageName);
-								startActivity(intent);
-							}
-						});
-					}else{
-						viewMe.iv_me_pic.setImageBitmap(null);
-					}
-				}else if (letterData.getContent_type() == type_sound) {
-					viewMe.tv_sound_lenght.setVisibility(View.VISIBLE);
-					viewMe.tv_sound_lenght.setText(letterData.getVoice_len() + "\"");
-					viewMe.iv_me_pic.setVisibility(View.GONE);
-					viewMe.tv_me_content.setVisibility(View.GONE);
-					viewMe.iv_me_sound.setVisibility(View.VISIBLE);
-					viewMe.tv_me_content.setText("");
-					viewMe.iv_me_sound.setOnClickListener(new OnClickListener() {						
+				viewMeText.tv_me_content.setText(letterData.getContent());
+				viewMeText.tv_me_content.setOnLongClickListener(onLongClickListener);
+				break;
+			case MeImage:
+				if(isTimeShow){
+					viewMeImage.tv_time.setVisibility(View.VISIBLE);
+					viewMeImage.tv_time.setText(letterData.getSend_time().substring(5, 16));
+				}else{
+					viewMeImage.tv_time.setVisibility(View.GONE);
+				}
+				if (imageMe != null) {
+					viewMeImage.iv_me.setImageBitmap(imageMe);
+				} else {
+					viewMeImage.iv_me.setImageResource(R.drawable.icon_people_no);
+				}
+				//显示
+				String imageUrl1 = letterData.getUrl();
+				int lastSlashIndex1 = imageUrl1.lastIndexOf("/");
+				final String imageName1 = imageUrl1.substring(lastSlashIndex1 + 1);
+				if (new File(getImagePath(imageUrl1)).exists()) {
+					Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath + imageName1);
+					image = Blur.scaleImage(image, 100);
+					viewMeImage.iv_me_pic.setImageBitmap(Blur.toRoundCorner(image, 5));
+					viewMeImage.iv_me_pic.setOnClickListener(new OnClickListener() {							
 						@Override
 						public void onClick(View v) {
-							playMusic(getImagePath(letterData.getUrl())) ;
-							noSoundPlay = type.me;
-							ivNowPlay = (ImageView)v;
-							((ImageView)v).setImageResource(R.drawable.sound_me);  
-							AnimationDrawable animationDrawable = (AnimationDrawable) ((ImageView)v).getDrawable();  
-			                animationDrawable.start();  
+							Intent intent = new Intent(LetterActivity.this, ImageDetailsActivity.class);
+							intent.putExtra("image_path", Constant.VehiclePath + imageName1);
+							startActivity(intent);
 						}
 					});
+					if(letterData.isSendIn){
+						float Scale = Blur.calculateScale(image.getHeight(), image.getWidth(), 100);
+						viewMeImage.tv_send_in.setVisibility(View.VISIBLE);
+						viewMeImage.tv_send_in.setLayoutParams(new RelativeLayout.LayoutParams((int)(image.getWidth() * Scale), (int)(image.getHeight() * Scale)));
+					}else{
+						viewMeImage.tv_send_in.setVisibility(View.GONE);
+					}
+					
+				}else{
+					viewMeImage.iv_me_pic.setImageBitmap(null);
 				}
+				break;
+			case MeSound:
+				if(isTimeShow){
+					viewMeSound.tv_time.setVisibility(View.VISIBLE);
+					viewMeSound.tv_time.setText(letterData.getSend_time().substring(5, 16));
+				}else{
+					viewMeSound.tv_time.setVisibility(View.GONE);
+				}
+				if (imageMe != null) {
+					viewMeSound.iv_me.setImageBitmap(imageMe);
+				} else {
+					viewMeSound.iv_me.setImageResource(R.drawable.icon_people_no);
+				}
+				viewMeSound.tv_sound_lenght.setText(letterData.getVoice_len() + "\"");
+				viewMeSound.iv_me_sound.setOnClickListener(new OnClickListener() {						
+					@Override
+					public void onClick(View v) {
+						playMusic(getImagePath(letterData.getUrl())) ;
+						noSoundPlay = type.me;
+						ivNowPlay = (ImageView)v;
+						((ImageView)v).setImageResource(R.drawable.sound_me);  
+						AnimationDrawable animationDrawable = (AnimationDrawable) ((ImageView)v).getDrawable();  
+		                animationDrawable.start();  
+					}
+				});
+				break;
 			}
 			return convertView;
 		}
-
-		private PopupWindow popupWindow;
-
-		// 弹出框显示复制分享等功能
-		private void initPopWindow(View v) {
-			View letterView = inflater
-					.inflate(R.layout.letter_popupwidow, null);
-			popupWindow = new PopupWindow(letterView,
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-			popupWindow.setBackgroundDrawable(new BitmapDrawable());
-			popupWindow.setFocusable(true);
-			popupWindow.setOutsideTouchable(true);
-			popupWindow.showAsDropDown(v, 0, -104);
-
-			popupWindow.getContentView().findViewById(R.id.letter_copy)
-					.setOnClickListener(click);
-			popupWindow.getContentView().findViewById(R.id.letter_collection)
-					.setOnClickListener(click);
-			popupWindow.getContentView().findViewById(R.id.letter_share)
-					.setOnClickListener(click);
-
-			popupWindow.update();
-		}
-
-		OnClickListener click = new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				switch (v.getId()) {
-				case R.id.letter_copy:// 复制
-					LetterActivity.copyContent(letterCopy, LetterActivity.this);
-					Toast.makeText(LetterActivity.this, "复制成功",
-							Toast.LENGTH_SHORT).show();
-					break;
-				case R.id.letter_collection:// 收藏
-
-					break;
-				case R.id.letter_share:// 分享
-
-					break;
-				}
-				if (popupWindow.isShowing()) {
-					popupWindow.dismiss();
-				}
-			}
-		};
-
 		@Override
 		public int getItemViewType(int position) {
 			LetterData letterData = letterDatas.get(position);
-			return letterData.getType();
+			return letterData.getChatType();
 		}
 
 		@Override
 		public int getViewTypeCount() {
-			return 2;
+			return 6;
 		}
-
-		class ViewFriend {
+		class ViewFriendText{
+			TextView tv_time;
 			CircleImageView iv_friend;
 			TextView tv_friend_content;
+		}
+		class ViewFriendImage {
 			TextView tv_time;
-			TextView tv_sound_lenght;
+			CircleImageView iv_friend;
 			ImageView iv_friend_pic;
+		}
+		class ViewFriendSound {
+			TextView tv_time;
+			CircleImageView iv_friend;
+			TextView tv_sound_lenght;
 			ImageView iv_friend_sound;
 		}
-
-		class ViewMe {
+		class ViewMeText {
+			TextView tv_time;
 			CircleImageView iv_me;
 			TextView tv_me_content;
+		}
+		class ViewMeImage {
 			TextView tv_time;
-			TextView tv_sound_lenght;
+			CircleImageView iv_me;
 			ImageView iv_me_pic;
+			TextView tv_send_in;
+		}
+		class ViewMeSound {
+			TextView tv_time;
+			CircleImageView iv_me;
+			TextView tv_sound_lenght;
 			ImageView iv_me_sound;
 		}
 	}
-
+	
 	class LetterData {
-		int type;
+		int chatType;
 		String content;
 		int friend_id;
 		String friend_name;
@@ -900,25 +954,21 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		int relat_id;
 		int chat_id;
 		String url;
-		int content_type;
 		int voice_len;
+		boolean isSendIn;		
 		
+		public boolean isSendIn() {
+			return isSendIn;
+		}
+		public void setSendIn(boolean isSendIn) {
+			this.isSendIn = isSendIn;
+		}
 		public int getVoice_len() {
 			return voice_len;
 		}
-
 		public void setVoice_len(int voice_len) {
 			this.voice_len = voice_len;
 		}
-
-		public int getContent_type() {
-			return content_type;
-		}
-
-		public void setContent_type(int content_type) {
-			this.content_type = content_type;
-		}
-
 		public String getUrl() {
 			return url;
 		}
@@ -941,14 +991,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 
 		public void setChat_id(int chat_id) {
 			this.chat_id = chat_id;
+		}	
+
+		public int getChatType() {
+			return chatType;
 		}
 
-		public int getType() {
-			return type;
-		}
-
-		public void setType(int type) {
-			this.type = type;
+		public void setChatType(int chatType) {
+			this.chatType = chatType;
 		}
 
 		public String getContent() {
@@ -993,7 +1043,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 
 		@Override
 		public String toString() {
-			return "LetterData [type=" + type + ", content=" + content
+			return "LetterData [type=" + chatType + ", content=" + content
 					+ ", friend_id=" + friend_id + ", friend_name="
 					+ friend_name + ", logo=" + logo + ", send_time="
 					+ send_time + ", relat_id=" + relat_id + ", chat_id="
@@ -1014,9 +1064,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						// 如果是当前朋友发来的私信则显示
 						LetterData letterData = new LetterData();
 						letterData.setContent(content);
-						letterData.setType(0);
+						letterData.setChatType(revisionType(true,jsonObject.getInt("msg_type") * 2));
 						letterData.setSend_time(GetSystem.GetNowTime());
-						letterData.setContent_type(jsonObject.getInt("msg_type"));
 						letterData.setUrl(jsonObject.getString("url"));
 						letterDatas.add(letterData);						
 						letterAdapter.notifyDataSetChanged();
@@ -1080,61 +1129,87 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		}
 	}
 
-	String big_pic = "";
-
 	private void saveImage(final String path) {
+		// 设置图像的名称和地址
+		final String big_pic = Variable.cust_id + System.currentTimeMillis() + ".png";
+		final String oss_url = Constant.oss_url + big_pic;
+		// 判断文件夹是否为空
+		File filePath = new File(Constant.VehiclePath);
+		if (!filePath.exists()) {
+			filePath.mkdirs();
+		}
+		
+		// 获取手机分辨率,选出最小的
+		DisplayMetrics metrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		int widthPixels = metrics.widthPixels;
+		int heightPixels = metrics.heightPixels;
+		int newWidth = widthPixels > heightPixels ? heightPixels
+				: widthPixels;
+		
+		Bitmap bitmap = Blur.decodeSampledBitmapFromPath(path,
+				newWidth, newWidth);
+		//存大图像
+		bitmap = Blur.scaleImage(bitmap, newWidth);
+
+		FileOutputStream bigOutputStream = null;
+		final String bigFile = Constant.VehiclePath + big_pic;
+		try {
+			bigOutputStream = new FileOutputStream(bigFile);
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 90,
+					bigOutputStream);// 把数据写入文件
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				bigOutputStream.flush();
+				bigOutputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}		
+		//TODO 先显示
+		LetterData letterData = new LetterData();
+		letterData.setContent("");
+		letterData.setChatType(MeImage);
+		letterData.setUrl(oss_url);
+		letterData.setSend_time(GetSystem.GetNowTime());
+		letterData.setVoice_len(0);
+		letterData.setSendIn(true);
+		letterDatas.add(letterData);
+		letterAdapter.notifyDataSetChanged();
+		lv_letter.setSelection(lv_letter.getBottom());
 		// 给图片命名
 		// 上传图片
 		// 存到服务器
 		new Thread(new Runnable() {
 			@Override
-			public void run() {
-				// 判断文件夹是否为空
-				File filePath = new File(Constant.VehiclePath);
-				if (!filePath.exists()) {
-					filePath.mkdirs();
-				}
-
-				// 获取手机分辨率,选出最小的
-				DisplayMetrics metrics = new DisplayMetrics();
-				getWindowManager().getDefaultDisplay().getMetrics(metrics);
-				int widthPixels = metrics.widthPixels;
-				int heightPixels = metrics.heightPixels;
-				int newWidth = widthPixels > heightPixels ? heightPixels
-						: widthPixels;
-				// 设置大图形和小图像的名称
-				big_pic = Variable.cust_id + System.currentTimeMillis()
-						+ ".png";
-				Bitmap bitmap = Blur.decodeSampledBitmapFromPath(path,
-						newWidth, newWidth);
-				//存大图像
-				bitmap = Blur.scaleImage(bitmap, newWidth);
-
-				FileOutputStream bigOutputStream = null;
-				final String bigFile = Constant.VehiclePath + big_pic;
-				try {
-					bigOutputStream = new FileOutputStream(bigFile);
-					bitmap.compress(Bitmap.CompressFormat.JPEG, 90,
-							bigOutputStream);// 把数据写入文件
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} finally {
-					try {
-						bigOutputStream.flush();
-						bigOutputStream.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+			public void run() {				
 				// 上传大图图片到阿里云
 				PutObjectTask bigTask = new PutObjectTask(Constant.oss_path,
 						big_pic, "image/jpg", bigFile, Constant.oss_accessId,
 						Constant.oss_accessKey);
 				bigTask.getResult();
-
-				Message message = new Message();
-				message.what = putOss;
-				handler.sendMessage(message);
+				String url = Constant.BaseUrl + "customer/" + Variable.cust_id
+						+ "/send_chat?auth_code=" + Variable.auth_code;
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				pairs.add(new BasicNameValuePair("cust_name", Variable.cust_name));
+				pairs.add(new BasicNameValuePair("friend_id", friend_id));
+				pairs.add(new BasicNameValuePair("type", "1"));
+				pairs.add(new BasicNameValuePair("url", oss_url));
+				pairs.add(new BasicNameValuePair("content", ""));
+				pairs.add(new BasicNameValuePair("voice_len", "0"));
+				String result = NetThread.postData(url, pairs);
+				GetSystem.myLog(TAG, result);
+				for(LetterData letterData : letterDatas){
+					if(letterData.getUrl().equals(oss_url)){
+						letterData.setSendIn(false);
+						Message message = new Message();
+						message.what = putOssImage;
+						handler.sendMessage(message);
+						break;
+					}
+				}
 			}
 		}).start();
 	}
@@ -1506,5 +1581,17 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
-	}	
+	}
+	/**防止超过0-5之间的数据**/
+	private int revisionType(boolean isFriend , int Type){
+		if(Type >= 0 && Type <= 5){
+			return Type;
+		}else{
+			if(isFriend){
+				return 0;
+			}else{
+				return 1;
+			}
+		}
+	}
 }

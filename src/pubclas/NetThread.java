@@ -294,4 +294,25 @@ public class NetThread {
 			}
 		}
 	}
+	/**post(非线程)**/
+	public static String postData(String url,List<NameValuePair> params){
+		GetSystem.myLog(TAG, url);
+		HttpPost httpPost = new HttpPost(url);
+		try {
+			 httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+			 HttpClient client = new DefaultHttpClient();
+			 client.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 20000);
+			 client.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 20000);
+			 HttpResponse httpResponse = client.execute(httpPost);
+			 Log.d(TAG, "状态" +httpResponse.getStatusLine().getStatusCode());
+			 if(httpResponse.getStatusLine().getStatusCode() == 200){
+				 String strResult = EntityUtils.toString(httpResponse.getEntity());
+				 return strResult;	
+			 }else{					 
+				 return "";
+			 }
+		} catch (Exception e) {
+			return "";
+		}
+	}
 }
