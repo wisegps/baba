@@ -8,16 +8,17 @@
     <com.baidu.mapapi.map.MapView
         android:id="@+id/mv_search_map"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="2"
         android:clickable="true" />
 
     <ListView
         android:id="@+id/lv_activity_search_map"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="0dip"
         android:layout_marginTop="@dimen/margins"
+        android:layout_weight="1"
         android:descendantFocusability="blocksDescendants"
-        android:divider="@null"
-        android:visibility="gone" />
+        android:divider="@null" />
 
 </LinearLayout>

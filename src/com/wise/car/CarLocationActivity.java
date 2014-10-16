@@ -139,8 +139,6 @@ public class CarLocationActivity extends Activity {
 				Intent i = new Intent(CarLocationActivity.this,
 						TravelActivity.class);
 				startActivity(i);
-				// Toast.makeText(CarLocationActivity.this, "行程（更新中）",
-				// Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.bt_location_periphery:// 周边
 				ShowPop();// 弹出popupwidow显示
@@ -338,8 +336,10 @@ public class CarLocationActivity extends Activity {
 	private void getRange() {
 		if (carData.getGeofence() != null
 				&& !carData.getGeofence().equals("null")) {
-			getCarLocation();
 			LatLng circle = new LatLng(fence_lat, fence_lon);
+			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
+					.newLatLng(circle);
+			mBaiduMap.setMapStatus(mapStatusUpdate);
 			// 画圆
 			OverlayOptions coverFence = new CircleOptions()
 					.fillColor(0xAA00FF00).center(circle)
@@ -359,9 +359,7 @@ public class CarLocationActivity extends Activity {
 
 	// 当前车辆位子
 	private void getCarLocation() {
-		// 围栏范围圆
 		LatLng circle = new LatLng(carData.getLat(), carData.getLon());
-
 		// 构建Marker图标
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.icon_place);
