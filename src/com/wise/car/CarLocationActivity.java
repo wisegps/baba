@@ -134,6 +134,7 @@ public class CarLocationActivity extends Activity {
 			case R.id.bt_location_travel:// 行程
 				Intent i = new Intent(CarLocationActivity.this,
 						TravelActivity.class);
+				i.putExtra("index", index);
 				startActivity(i);
 				break;
 			case R.id.bt_location_periphery:// 周边

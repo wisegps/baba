@@ -7,17 +7,13 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.litepal.util.DBUtility;
 
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -55,6 +51,7 @@ public class TravelActivity extends Activity {
 	String Date;
 	String device_id = "3";
 	private GeoCoder mGeoCoder = null;
+	int index;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +72,7 @@ public class TravelActivity extends Activity {
 		iv_activity_travel_data_previous.setOnClickListener(onClickListener);
 		lv_activity_travel = (ListView) findViewById(R.id.lv_activity_travel);
 
+		index = getIntent().getIntExtra("index", 0);
 		Date = GetSystem.GetNowDay();
 		tv_travel_date.setText(Date);
 		GetDataTrip();
@@ -139,9 +137,9 @@ public class TravelActivity extends Activity {
 			JSONArray jsonArray = jsonObject.getJSONArray("data");
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject2 = jsonArray.getJSONObject(i);
-				if(jsonObject2.opt("start_time") == null){
-					
-				}else{
+				if (jsonObject2.opt("start_time") == null) {
+
+				} else {
 					TravelData travelData = new TravelData();
 					travelData.setStartTime(jsonObject2.getString("start_time")
 							.replace("T", " ").substring(0, 19));
@@ -169,7 +167,7 @@ public class TravelActivity extends Activity {
 					travelData.setCost("花费：" + jsonObject2.getString("cur_fee")
 							+ "元");
 					travelDatas.add(travelData);
-				}				
+				}
 			}
 			travelAdapter.notifyDataSetChanged();
 			if (travelDatas.size() > 0) {
@@ -319,6 +317,7 @@ public class TravelActivity extends Activity {
 					intent.putExtra("Speed", travelDatas.get(position)
 							.getSpeed());
 					intent.putExtra("Cost", travelDatas.get(position).getCost());
+					intent.putExtra("index", index);
 					TravelActivity.this.startActivity(intent);
 				}
 			});
@@ -468,7 +467,7 @@ public class TravelActivity extends Activity {
 		@Override
 		public void onGetGeoCodeResult(GeoCodeResult arg0) {
 			String strInfo = arg0.getAddress();
-			System.out.println("strInfo = " + strInfo);
+			Log.e("my_log", "=======>" + strInfo);
 			strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
 					strInfo.length());
 			if (isFrist) {// 起点位置取完，在取结束位置
