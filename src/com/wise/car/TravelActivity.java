@@ -468,6 +468,7 @@ public class TravelActivity extends Activity {
 		@Override
 		public void onGetGeoCodeResult(GeoCodeResult arg0) {
 			String strInfo = arg0.getAddress();
+			System.out.println("strInfo = " + strInfo);
 			strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
 					strInfo.length());
 			if (isFrist) {// 起点位置取完，在取结束位置
