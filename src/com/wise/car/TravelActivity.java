@@ -24,6 +24,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -59,6 +60,7 @@ public class TravelActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_travel);
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
@@ -178,6 +180,7 @@ public class TravelActivity extends Activity {
 				double lat = Double.valueOf(travelDatas.get(i).getStart_lat());
 				double lon = Double.valueOf(travelDatas.get(i).getStart_lon());
 				LatLng latLng = new LatLng(lat, lon);
+				System.out.println("获取位置");
 				mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
 						.location(latLng));
 			}
@@ -466,9 +469,11 @@ public class TravelActivity extends Activity {
 
 	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
 		@Override
-		public void onGetGeoCodeResult(GeoCodeResult arg0) {
+		public void onGetGeoCodeResult(GeoCodeResult arg0) {}
+		@Override
+		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
 			String strInfo = arg0.getAddress();
-			System.out.println("strInfo = " + strInfo);
+			System.out.println("onGetGeoCodeResult");
 			strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
 					strInfo.length());
 			if (isFrist) {// 起点位置取完，在取结束位置
@@ -498,17 +503,12 @@ public class TravelActivity extends Activity {
 			travelAdapter.notifyDataSetChanged();
 		}
 
-		@Override
-		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
-			// TODO Auto-generated method stub
-
-		}
-
 	};
 
 	@Override
-	protected void onDestroy() {
+	protected void onDestroy() {		
 		super.onDestroy();
+		mGeoCoder.destroy();
 	}
 
 	@Override
