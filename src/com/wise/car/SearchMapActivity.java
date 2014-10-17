@@ -5,11 +5,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import nadapter.AdressAdapter;
 import nadapter.AdressAdapter.OnCollectListener;
 import pubclas.Constant;
@@ -29,7 +27,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
-
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -39,6 +40,7 @@ import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.overlayutil.PoiOverlay;
@@ -69,6 +71,9 @@ public class SearchMapActivity extends Activity {
 	List<AdressData> adressDatas = new ArrayList<AdressData>();
 	ListView lv_activity_search_map;
 	AdressAdapter adressAdapter;
+	// 定位相关
+	LocationClient mLocClient;
+	public MyLocationListenner myListener = new MyLocationListenner();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +85,7 @@ public class SearchMapActivity extends Activity {
 		String keyWord = getIntent().getStringExtra("keyWord");
 		mMapView = (MapView) findViewById(R.id.mv_search_map);
 		mBaiduMap = mMapView.getMap();
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(12));
 		mPoiSearch = PoiSearch.newInstance();
 		mPoiSearch.setOnGetPoiSearchResultListener(poiListener);
 
@@ -94,7 +100,7 @@ public class SearchMapActivity extends Activity {
 				String url = Constant.BaseUrl + "base/dealer?city="
 						+ URLEncoder.encode(City, "UTF-8") + "&brand="
 						+ URLEncoder.encode(car_brand, "UTF-8") + "&lon="
-						+ Variable.Lon + "&lat=" + Variable.Lat + "&cust_id="
+						+ getIntent().getDoubleExtra("longitude", 0) + "&lat=" + getIntent().getDoubleExtra("latitude", 0) + "&cust_id="
 						+ Variable.cust_id;
 				new Thread(new NetThread.GetDataThread(handler, url, get4s))
 						.start();
@@ -138,7 +144,17 @@ public class SearchMapActivity extends Activity {
 						(float) adressData.getLon(), "地点", url);
 			}
 		});
-
+		// 开启定位图层
+		mBaiduMap.setMyLocationEnabled(true);
+		// 定位初始化
+		mLocClient = new LocationClient(this);
+		mLocClient.registerLocationListener(myListener);
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);// 打开gps
+		option.setCoorType("bd09ll"); // 设置坐标类型
+		option.setScanSpan(1000);
+		mLocClient.setLocOption(option);
+		mLocClient.start();
 	}
 
 	// 当前车辆位子
@@ -205,10 +221,9 @@ public class SearchMapActivity extends Activity {
 										adressDatas.get(i).getLon()))
 						.zIndex(9)
 						.icon(BitmapDescriptorFactory
-								.fromResource(R.drawable.auth_follow_cb_chd));
+								.fromResource(R.drawable.body_icon_location2));
 				mBaiduMap.addOverlay(marker);
 			}
-			// mMapView.refreshDrawableState();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -259,7 +274,6 @@ public class SearchMapActivity extends Activity {
 				return;
 			}
 			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
-				mBaiduMap.clear();
 				PoiOverlay overlay = new MyPoiOverlay(mBaiduMap);
 				mBaiduMap.setOnMarkerClickListener(overlay);
 				overlay.setData(result);
@@ -357,6 +371,36 @@ public class SearchMapActivity extends Activity {
 			return true;
 		}
 	}
+	
+	boolean isFirstLoc = true;
+
+	private class MyLocationListenner implements BDLocationListener {
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			// map view 销毁后不在处理新接收的位置
+			if (location == null || mMapView == null)
+				return;
+			MyLocationData locData = new MyLocationData.Builder()
+					.accuracy(location.getRadius())
+					// 此处设置开发者获取到的方向信息，顺时针0-360
+					.direction(100).latitude(location.getLatitude())
+					.longitude(location.getLongitude()).build();
+			mBaiduMap.setMyLocationData(locData);
+			if (isFirstLoc) {
+				isFirstLoc = false;
+				LatLng ll = new LatLng(location.getLatitude(),
+						location.getLongitude());
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
+				mBaiduMap.animateMapStatus(u);
+			}
+		}
+
+		@Override
+		public void onReceivePoi(BDLocation arg0) {
+			// TODO Auto-generated method stub
+
+		}
+	}
 
 	@Override
 	protected void onPause() {
@@ -373,8 +417,13 @@ public class SearchMapActivity extends Activity {
 	}
 
 	protected void onDestroy() {
-		mMapView.onDestroy();
-		mPoiSearch.destroy();
 		super.onDestroy();
+		// 退出时销毁定位
+		mLocClient.stop();
+		mPoiSearch.destroy();
+		// 关闭定位图层
+		mBaiduMap.setMyLocationEnabled(false);
+		mMapView.onDestroy();
+		mMapView = null;
 	}
 }
