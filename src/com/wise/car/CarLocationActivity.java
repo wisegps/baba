@@ -2,7 +2,6 @@ package com.wise.car;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
@@ -459,4 +458,5 @@ public class CarLocationActivity extends Activity {
 		super.onPause();
 		mMapView.onPause();
 	}
+	
 }
