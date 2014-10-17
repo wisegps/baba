@@ -3,176 +3,417 @@
     package="com.wise.baba"
     android:versionCode="15"
     android:versionName="1.032" >
-	<supports-screens android:largeScreens="true" android:normalScreens="true" android:smallScreens="true" android:resizeable="true" android:anyDensity="true"/>  
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
-	<permission
+
+    <permission
         android:name="com.wise.baba.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
-    <!-- Required  一些系统要求的权限，如访问网络等-->
+    <!-- Required  一些系统要求的权限，如访问网络等 -->
     <uses-permission android:name="com.wise.baba.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/> 
-    
-	<uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-	<uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-	<uses-permission android:name="android.permission.CALL_PHONE"/>
-	<uses-permission android:name="android.permission.GET_TASKS" />
-	<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
-	<uses-permission android:name="android.permission.READ_LOGS"/>
-	<uses-permission android:name="android.permission.RECORD_AUDIO" />
-	<uses-permission android:name="android.permission.CAMERA"/>	
-	<uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
-    
+
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+
     <application
         android:name="com.wise.baba.AppApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:name=".WelcomeActivity" android:screenOrientation="portrait"
-            android:label="@string/app_name" >
+            android:name=".WelcomeActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ServiceActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ServiceInfoActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ShowCarActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".MoreActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".FeedBackActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".AboutActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".SelectCityActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
-        <activity android:name=".TestActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".NotificationActivity" android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.wise.setting.SetActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.setting.LoginActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.setting.RegisterActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.setting.CaptchaActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.setting.RegisterInfoActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.setting.AccountActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.setting.NameActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.setting.BindActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.setting.UpdatePwdActivity" android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.wise.state.FaultDetectionActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.state.FaultDetailActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.state.DyActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.state.FaultActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.state.FaultTestActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.state.FuelActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.state.FuelDetailsActivity" android:screenOrientation="portrait"></activity>  
-        <activity android:name="com.wise.state.DriveActivity" android:screenOrientation="portrait"></activity>  
-        <activity android:name="com.wise.state.FuelRankActivity" android:screenOrientation="portrait"></activity>  
-        <activity android:name="com.wise.state.DriveRankActivity" android:screenOrientation="portrait"></activity>  
-        
-        
-        <activity android:name="com.wise.notice.NoticeActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.notice.LetterActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
-        
-        <activity android:name="com.wise.state.TestActivity" android:screenOrientation="portrait">            
-             
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.wise.show.PinDaoActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.show.ShowActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.show.TestShowActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.show.ImageDetailsActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.show.ShowCarAcitivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.show.PhotoActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustResize" ></activity>
-       
-        <activity android:name="com.wise.car.CarActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.car.CarAddActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
-        <activity android:name="com.wise.car.ModelsActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
-        <activity android:name="com.wise.car.DevicesAddActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.car.CarUpdateActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
-        <activity android:name="com.wise.car.TrafficCitiyActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.car.PetrolGradeActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.car.InsuranceActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.car.FoursActivity" android:screenOrientation="portrait"></activity>        
-        <activity android:name="com.wise.car.CarLocationActivity" android:screenOrientation="portrait"></activity>        
-        <activity android:name="com.wise.car.BarcodeActivity" android:screenOrientation="portrait"></activity>        
-        <activity android:name="com.wise.car.TravelActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.car.TravelMapActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.car.SearchMapActivity" android:screenOrientation="portrait"></activity>
-        
-        <activity android:name="com.wise.remind.RemindAddActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
-        <activity android:name="com.wise.remind.CarRemindUpdateActivity" android:screenOrientation="portrait" android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
-        <activity android:name="com.wise.remind.RemindActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.remind.DealAddressActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.violation.TrafficActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.violation.ComplainActivity" android:screenOrientation="portrait"  android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
-        <activity android:name="com.wise.violation.ShortProvincesActivity" android:screenOrientation="portrait"  android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
-            
+        <activity
+            android:name=".ServiceActivity"
+            android:screenOrientation="portrait" >
         </activity>
-        
-        <activity android:name=".AskActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".AskInfoActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".QuestionActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".FriendQuestionActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ReplyActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ServiceRankingActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".SearchServiceActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ServiceShowActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ServiceShowInfoActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".AddShowActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".CollectionActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.notice.SmsActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name="com.wise.remind.RemindListActivity" android:screenOrientation="portrait"></activity>
-        <service android:name=".LocationService"></service>
+        <activity
+            android:name=".ServiceInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ShowCarActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".MoreActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".FeedBackActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".AboutActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".SelectCityActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+        </activity>
+        <activity
+            android:name=".TestActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".NotificationActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.setting.SetActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.setting.LoginActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.setting.RegisterActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.setting.CaptchaActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.setting.RegisterInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.setting.AccountActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.setting.NameActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.setting.BindActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.setting.UpdatePwdActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.state.FaultDetectionActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.state.FaultDetailActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.state.DyActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.state.FaultActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.state.FaultTestActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.state.FuelActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.state.FuelDetailsActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.state.DriveActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.state.FuelRankActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.state.DriveRankActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.notice.NoticeActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.notice.LetterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+        </activity>
+        <activity
+            android:name="com.wise.state.TestActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.show.PinDaoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.show.ShowActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.show.TestShowActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.show.ImageDetailsActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.show.ShowCarAcitivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.show.PhotoActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" >
+        </activity>
+        <activity
+            android:name="com.wise.car.CarActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.CarAddActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+        </activity>
+        <activity
+            android:name="com.wise.car.ModelsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+        </activity>
+        <activity
+            android:name="com.wise.car.DevicesAddActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.CarUpdateActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+        </activity>
+        <activity
+            android:name="com.wise.car.TrafficCitiyActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.PetrolGradeActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.InsuranceActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.FoursActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.CarLocationActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.BarcodeActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.TravelActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.TravelMapActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.SearchMapActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.remind.RemindAddActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+        </activity>
+        <activity
+            android:name="com.wise.remind.CarRemindUpdateActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+        </activity>
+        <activity
+            android:name="com.wise.remind.RemindActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.remind.DealAddressActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.violation.TrafficActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.violation.ComplainActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+        </activity>
+        <activity
+            android:name="com.wise.violation.ShortProvincesActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+        </activity>
+        <activity
+            android:name=".AskActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".AskInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".QuestionActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".FriendQuestionActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ReplyActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ServiceRankingActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".SearchServiceActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ServiceShowActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ServiceShowInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".AddShowActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".CollectionActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.notice.SmsActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.remind.RemindListActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <service android:name=".LocationService" >
+        </service>
+
         <activity
             android:name="cn.sharesdk.framework.ShareSDKUIShell"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:configChanges="keyboardHidden|orientation|screenSize" android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" >
-            <meta-data android:name="Adapter" android:value="cn.sharesdk.demo.MyAdapter" />
+            <meta-data
+                android:name="Adapter"
+                android:value="cn.sharesdk.demo.MyAdapter" />
+
             <intent-filter>
                 <data android:scheme="db-7janx53ilz11gbs" />
-        		<action android:name="android.intent.action.VIEW" />
-        		<category android:name="android.intent.category.BROWSABLE"/>
-        		<category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <service android:name=".LocationService"></service>
-        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"></service>
-        <!-- Required SDK核心功能-->
+
+        <service android:name=".LocationService" >
+        </service>
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" >
+        </service>
+        <!-- Required SDK核心功能 -->
         <activity
             android:name="cn.jpush.android.ui.PushActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:configChanges="orientation|keyboardHidden" >
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
             <intent-filter>
                 <action android:name="cn.jpush.android.ui.PushActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="com.wise.baba" />
             </intent-filter>
         </activity>
-        
-		<!-- Required  SDK核心功能-->
+
+        <!-- Required  SDK核心功能 -->
         <service
             android:name="cn.jpush.android.service.DownloadService"
             android:enabled="true"
             android:exported="false" >
         </service>
-        
-    	<!-- Required -->
+
+        <!-- Required -->
         <service
             android:name="cn.jpush.android.service.PushService"
             android:enabled="true"
@@ -184,70 +425,84 @@
                 <action android:name="cn.jpush.android.intent.PUSH_TIME" />
             </intent-filter>
         </service>
-        
-        <!-- Required SDK核心功能-->
+
+        <!-- Required SDK核心功能 -->
         <receiver
             android:name="cn.jpush.android.service.PushReceiver"
             android:enabled="true" >
-             <intent-filter android:priority="1000">
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />   <!--Required  显示通知栏 -->
+            <intent-filter android:priority="1000" >
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" /> <!-- Required  显示通知栏 -->
                 <category android:name="com.wise.baba" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.USER_PRESENT" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
-             <!-- Optional -->
+            <!-- Optional -->
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
                 <data android:scheme="package" />
             </intent-filter>
-   
         </receiver>
-        
-        <!-- Required SDK核心功能-->
+
+        <!-- Required SDK核心功能 -->
         <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
-        
-		<receiver
-		    android:name="com.wise.baba.SmsReceiver"
-		    android:enabled="true">
-		    <intent-filter>
-		        <action android:name="cn.jpush.android.intent.REGISTRATION" />
-		        <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
-		        <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />		        
-		        <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
-		        <action android:name="cn.jpush.android.intent.CONNECTION" />	        
-		        <category android:name="com.wise.baba" />
-		    </intent-filter>
-		</receiver>
-		<service
-		    android:name="com.umeng.update.net.DownloadingService"
-		    android:process=":DownloadingService" >
-		</service>
-		<activity 
-		    android:name="com.umeng.update.UpdateDialogActivity"
-		    android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-		</activity>		
-		<activity android:name="com.umeng.fb.ConversationActivity"
-         android:theme="@android:style/Theme.NoTitleBar"/>
-        <activity android:name="com.umeng.fb.ContactActivity"
-         android:theme="@android:style/Theme.NoTitleBar"/>
-		
-        <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default"/>
+        <receiver
+            android:name="com.wise.baba.SmsReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTRATION" />
+                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
+                <action android:name="cn.jpush.android.intent.CONNECTION" />
+
+                <category android:name="com.wise.baba" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.umeng.update.net.DownloadingService"
+            android:process=":DownloadingService" >
+        </service>
+
+        <activity
+            android:name="com.umeng.update.UpdateDialogActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.umeng.fb.ConversationActivity"
+            android:theme="@android:style/Theme.NoTitleBar" />
+        <activity
+            android:name="com.umeng.fb.ContactActivity"
+            android:theme="@android:style/Theme.NoTitleBar" />
+
+        <meta-data
+            android:name="JPUSH_CHANNEL"
+            android:value="developer-default" />
         <!-- Required. AppKey copied from Portal -->
-        <meta-data android:name="JPUSH_APPKEY" android:value="b69c5983ae1ee0c30005dac9"/>
-        <!-- meta-data android:name="JPUSH_APPKEY" android:value="dac9b50affaff5884ce442ac"/-->
-        
-        <meta-data android:value="53dca363fd98c5e436026949" android:name="UMENG_APPKEY"></meta-data>
-		<meta-data android:value="Channel ID" android:name="UMENG_CHANNEL"/>
-		<!-- 
+        <meta-data
+            android:name="JPUSH_APPKEY"
+            android:value="b69c5983ae1ee0c30005dac9" />
+        <!-- meta-data android:name="JPUSH_APPKEY" android:value="dac9b50affaff5884ce442ac"/ -->
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="53dca363fd98c5e436026949" >
+        </meta-data>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Channel ID" />
+        <!--
 		debug：0QNTY4tnP9Tv6ghXpGa6XXOm
 		正     式：DhT4kz88wR3r5yCl6tQCpaNW
 		本机：qfRNMbrcCCxi2zO4yGSdh2In
-		 -->
-		<meta-data  
-	        android:name="com.baidu.lbsapi.API_KEY" 
-	        android:value="qfRNMbrcCCxi2zO4yGSdh2In" />
+        -->
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="qfRNMbrcCCxi2zO4yGSdh2In" />
     </application>
+
 </manifest>

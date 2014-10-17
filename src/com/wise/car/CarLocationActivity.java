@@ -6,12 +6,13 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
-import pubclas.GetLocation;
 import pubclas.NetThread;
 import pubclas.Variable;
-
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -21,20 +22,19 @@ import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.NaviPara;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.wise.baba.R;
-
 import data.CarData;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -61,6 +61,11 @@ public class CarLocationActivity extends Activity {
 	CarData carData;
 	BaiduMap mBaiduMap;
 	int index;
+	//当前位置
+	double latitude, longitude;
+	// 定位相关
+	LocationClient mLocClient;
+	public MyLocationListenner myListener = new MyLocationListenner();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +78,17 @@ public class CarLocationActivity extends Activity {
 		iv_back.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_car_location);
 		mBaiduMap = mMapView.getMap();
+		// 开启定位图层
+		mBaiduMap.setMyLocationEnabled(true);
+		// 定位初始化
+		mLocClient = new LocationClient(this);
+		mLocClient.registerLocationListener(myListener);
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);// 打开gps
+		option.setCoorType("bd09ll"); // 设置坐标类型
+		option.setScanSpan(1000);
+		mLocClient.setLocOption(option);
+		mLocClient.start();
 		getCarLocation();
 
 		// 就初始化控件
@@ -86,27 +102,10 @@ public class CarLocationActivity extends Activity {
 				.setOnClickListener(onClickListener);
 		ll_location_bottom = (LinearLayout) findViewById(R.id.ll_location_bottom);
 
-		registerBroadcastReceiver();
-		GetLocation getLocation = new GetLocation(CarLocationActivity.this);
 	}
 
-	private void registerBroadcastReceiver() {
-		IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction(Constant.A_City);
-		registerReceiver(broadcastReceiver, intentFilter);
-	}
 
-	double latitude, longitude;
-	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
-			if (action.equals(Constant.A_City)) {
-				latitude = Double.valueOf((intent.getStringExtra("Lat")));
-				longitude = Double.valueOf((intent.getStringExtra("Lon")));
-			}
-		}
-	};
+	
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -190,6 +189,8 @@ public class CarLocationActivity extends Activity {
 				SearchMapActivity.class);
 		intent.putExtra("index", index);
 		intent.putExtra("keyWord", keyWord);
+		intent.putExtra("latitude", latitude);
+		intent.putExtra("longitude", longitude);
 		startActivity(intent);
 	}
 
@@ -236,28 +237,6 @@ public class CarLocationActivity extends Activity {
 		fence_distance = (SeekBar) popunwindwow
 				.findViewById(R.id.fence_distance);
 
-		if (carData.getGeofence() != null) {
-			try {
-				JSONObject json = new JSONObject(carData.getGeofence());
-				distance = json.getInt("width");
-				fence_lat = json.getDouble("lat");
-				fence_lon = json.getDouble("lon");
-				geo_type = json.getInt("geo_type");
-				if (geo_type == ALARM_IN) {
-					bt_alarm_in.setChecked(true);
-				} else if (geo_type == ALARM_OUT) {
-					bt_alarm_out.setChecked(true);
-				} else if (geo_type == ALARM) {
-					bt_alarm_in.setChecked(true);
-					bt_alarm_out.setChecked(true);
-				}
-				fence_distance.setProgress(distance);
-				getRange();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-		fence_distance_date.setText(distance + "km");
 		if (carData.getGeofence() != null
 				&& !carData.getGeofence().equals("null")) {
 			try {
@@ -274,7 +253,8 @@ public class CarLocationActivity extends Activity {
 					bt_alarm_in.setChecked(true);
 					bt_alarm_out.setChecked(true);
 				}
-				fence_distance.setProgress(distance);
+				fence_distance.setProgress((int)(distance/1000) - 1);
+				fence_distance_date.setText((int)(distance/1000) + "km");
 				getRange();
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -284,23 +264,17 @@ public class CarLocationActivity extends Activity {
 				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 					@Override
 					// 停止拖动时触发
-					public void onStopTrackingTouch(SeekBar seekBar) {
-						distance = fence_distance.getProgress();
-						fence_distance_date.setText(distance + "km");
-						mMapView.getMap().clear();
-						getRange();
-					}
-
+					public void onStopTrackingTouch(SeekBar seekBar) {}
 					@Override
 					// 开始触碰时触发
-					public void onStartTrackingTouch(SeekBar seekBar) {
-					}
+					public void onStartTrackingTouch(SeekBar seekBar) {}
 
 					@Override
 					// 拖动过程中
 					public void onProgressChanged(SeekBar seekBar,
 							int progress, boolean fromUser) {
-						distance = fence_distance.getProgress();
+						distance = (fence_distance.getProgress() + 1)*1000;
+						fence_distance_date.setText((fence_distance.getProgress() + 1) + "km");
 						mMapView.getMap().clear();
 						getRange();
 					}
@@ -338,6 +312,7 @@ public class CarLocationActivity extends Activity {
 	private void getRange() {
 		if (carData.getGeofence() != null
 				&& !carData.getGeofence().equals("null")) {
+			getCarLocation();
 			LatLng circle = new LatLng(fence_lat, fence_lon);
 			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 					.newLatLng(circle);
@@ -348,7 +323,6 @@ public class CarLocationActivity extends Activity {
 					.stroke(new Stroke(1, 0xAAFF00FF)).radius(distance);
 			mBaiduMap.addOverlay(coverFence);
 		} else {
-			getCarLocation();
 			// 围栏范围圆
 			LatLng circle = new LatLng(carData.getLat(), carData.getLon());
 			// 画圆
@@ -356,6 +330,28 @@ public class CarLocationActivity extends Activity {
 					.fillColor(0xAA00FF00).center(circle)
 					.stroke(new Stroke(1, 0xAAFF00FF)).radius(distance);
 			mBaiduMap.addOverlay(coverFence);
+			getCarLocation();
+		}
+		//获取左上角坐标
+		LatLng llLeftTop = mBaiduMap.getProjection().fromScreenLocation(new Point(0, 0));
+		LatLng llCenter;
+		if (carData.getGeofence() != null && !carData.getGeofence().equals("null")) {
+			llCenter = new LatLng(fence_lat, fence_lon);
+		}else {
+			llCenter = new LatLng(carData.getLat(), carData.getLon());
+		}
+		//计算2点之间的距离
+		setMapZoon(llLeftTop, llCenter);
+	}
+	
+	private void setMapZoon(LatLng llLeftTop , LatLng llCenter){
+		double nowDistance = DistanceUtil.getDistance(llLeftTop, llCenter);
+		float zoom = mBaiduMap.getMapStatus().zoom;
+		//放大地图
+		if(nowDistance < distance * 2.5){
+			mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(zoom - 1));
+		}else if(nowDistance > distance * 4){
+			mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(zoom + 1));
 		}
 	}
 
@@ -366,12 +362,12 @@ public class CarLocationActivity extends Activity {
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.icon_place);
 		// 构建MarkerOption，用于在地图上添加Marker
-		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0)
+		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
 				.position(circle).icon(bitmap);
 		// 在地图上添加Marker，并显示
 		mBaiduMap.addOverlay(option);
 
-		MapStatus mapStatus = new MapStatus.Builder().target(circle).zoom(18)
+		MapStatus mapStatus = new MapStatus.Builder().target(circle)
 				.build();
 		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 				.newMapStatus(mapStatus);
@@ -438,11 +434,47 @@ public class CarLocationActivity extends Activity {
 		tv_item_car_location_wash.setOnClickListener(onClickListener);
 	}
 
+	boolean isFirstLoc = true;
+
+	private class MyLocationListenner implements BDLocationListener {
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			// map view 销毁后不在处理新接收的位置
+			if (location == null || mMapView == null)
+				return;
+			latitude = location.getLatitude();
+			longitude = location.getLongitude();
+			MyLocationData locData = new MyLocationData.Builder()
+					.accuracy(location.getRadius())
+					// 此处设置开发者获取到的方向信息，顺时针0-360
+					.direction(100).latitude(location.getLatitude())
+					.longitude(location.getLongitude()).build();
+			mBaiduMap.setMyLocationData(locData);
+			if (isFirstLoc) {
+				isFirstLoc = false;
+				LatLng ll = new LatLng(location.getLatitude(),
+						location.getLongitude());
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
+				mBaiduMap.animateMapStatus(u);
+			}
+		}
+
+		@Override
+		public void onReceivePoi(BDLocation arg0) {
+			// TODO Auto-generated method stub
+
+		}
+	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		// 退出时销毁定位
+		mLocClient.stop();
+		// 关闭定位图层
+		mBaiduMap.setMyLocationEnabled(false);
 		mMapView.onDestroy();
-		unregisterReceiver(broadcastReceiver);
+		mMapView = null;
 	}
 
 	@Override
