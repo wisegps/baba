@@ -209,6 +209,7 @@ public class CarLocationActivity extends Activity {
 
 	CheckBox bt_alarm_in, bt_alarm_out;
 	double fence_lat, fence_lon;
+	TextView fence_distance_date;
 
 	/**
 	 * TODO 显示围栏
@@ -231,6 +232,8 @@ public class CarLocationActivity extends Activity {
 		popunwindwow.findViewById(R.id.fence_delete).setOnClickListener(
 				onClickListener);
 
+		fence_distance_date = (TextView) popunwindwow
+				.findViewById(R.id.fence_distance_date);
 		bt_alarm_in = (CheckBox) popunwindwow.findViewById(R.id.bt_alarm_in);
 		bt_alarm_out = (CheckBox) popunwindwow.findViewById(R.id.bt_alarm_out);
 		fence_distance = (SeekBar) popunwindwow
@@ -257,6 +260,7 @@ public class CarLocationActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
+		fence_distance_date.setText(distance + "km");
 		if (carData.getGeofence() != null
 				&& !carData.getGeofence().equals("null")) {
 			try {
@@ -285,6 +289,7 @@ public class CarLocationActivity extends Activity {
 					// 停止拖动时触发
 					public void onStopTrackingTouch(SeekBar seekBar) {
 						distance = fence_distance.getProgress();
+						fence_distance_date.setText(distance + "km");
 						mMapView.getMap().clear();
 						getRange();
 					}
