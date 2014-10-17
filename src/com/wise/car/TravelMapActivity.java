@@ -6,17 +6,37 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.Variable;
+
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.Overlay;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
 import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.R;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -41,11 +61,15 @@ public class TravelMapActivity extends Activity {
 
 	MapView mMapView = null;
 	BaiduMap mBaiduMap;
-	//MapController mMapController = null;
+	// MapController mMapController = null;
 	List<Overlay> overlays;
 	ProgressDialog Dialog = null; // progress
-	int device = 3;
+	int device = 4;
 	Intent intent;
+
+	// 定位相关
+	LocationClient mLocClient;
+	private MyLocationListenner myListener = new MyLocationListenner();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,16 +79,31 @@ public class TravelMapActivity extends Activity {
 		iv_activity_travel_share.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_travel_map);
 		mBaiduMap = mMapView.getMap();
-		LatLng latLng = new LatLng(39.915, 116.404);
-		//地图居中
-		mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(latLng));
-		//mBaiduMap.setBuiltInZoomControls(true);
-		//mMapView.regMapViewListener(app.mBMapManager, mkMapViewListener);
-		//mMapController = mMapView.getController();
-		//GeoPoint point = new GeoPoint((int) (39.915 * 1E6),(int) (116.404 * 1E6));
-		//mMapController.setCenter(point);// 设置地图中心点
-		//mMapController.setZoom(12);// 设置地图zoom级别
-		//overlays = mMapView.getOverlays();
+
+		int index = getIntent().getIntExtra("index", 0);
+		LatLng circle = new LatLng(Variable.carDatas.get(index).getLat(),
+				Variable.carDatas.get(index).getLon());
+		// 构建Marker图标
+		BitmapDescriptor bitmap = BitmapDescriptorFactory
+				.fromResource(R.drawable.icon_place);
+		// 构建MarkerOption，用于在地图上添加Marker
+		OverlayOptions option_1 = new MarkerOptions().anchor(0.5f, 1.0f)
+				.position(circle).icon(bitmap);
+		// 在地图上添加Marker，并显示
+		mBaiduMap.addOverlay(option_1);
+
+		// 开启定位图层
+		mBaiduMap.setMyLocationEnabled(true);
+		// 定位初始化
+		mLocClient = new LocationClient(this);
+		mLocClient.registerLocationListener(myListener);
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);// 打开gps
+		option.setCoorType("bd09ll"); // 设置坐标类型
+		option.setScanSpan(1000);
+		mLocClient.setLocOption(option);
+		mLocClient.start();
+
 		TextView tv_travel_startPlace = (TextView) findViewById(R.id.tv_travel_startPlace);
 		TextView tv_travel_stopPlace = (TextView) findViewById(R.id.tv_travel_stopPlace);
 		TextView tv_travel_startTime = (TextView) findViewById(R.id.tv_travel_startTime);
@@ -95,8 +134,6 @@ public class TravelMapActivity extends Activity {
 		String StartTime = intent.getStringExtra("StartTime");
 		String StopTime = intent.getStringExtra("StopTime");
 
-		StartTime = "2014-01-02 11:28:37";
-		StopTime = "2014-01-02 12:28:37";
 		try {
 			String url = Constant.BaseUrl + "device/" + device
 					+ "/gps_data?auth_code=" + Variable.auth_code
@@ -117,18 +154,19 @@ public class TravelMapActivity extends Activity {
 				finish();
 				break;
 			case R.id.iv_activity_travel_share:
-				//TODO 截图
-				//Toast.makeText(TravelMapActivity.this,R.string.travel_map_urrent, Toast.LENGTH_LONG).show();
-				//boolean isCurrent = mMapView.getCurrentMap();
-				//System.out.println("isCurrent = " + isCurrent);
+				// TODO 截图
+				// Toast.makeText(TravelMapActivity.this,R.string.travel_map_urrent,
+				// Toast.LENGTH_LONG).show();
+				// boolean isCurrent = mMapView.getCurrentMap();
+				// System.out.println("isCurrent = " + isCurrent);
 				mBaiduMap.snapshot(new SnapshotReadyCallback() {
 					public void onSnapshotReady(Bitmap snapshot) {
 						File file = new File("/mnt/sdcard/test.png");
 						FileOutputStream out;
 						try {
 							out = new FileOutputStream(file);
-							if (snapshot.compress(
-									Bitmap.CompressFormat.PNG, 100, out)) {
+							if (snapshot.compress(Bitmap.CompressFormat.PNG,
+									100, out)) {
 								out.flush();
 								out.close();
 							}
@@ -154,121 +192,125 @@ public class TravelMapActivity extends Activity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case get_data:
-				//jsonData(msg.obj.toString());
-				break;
-
-			default:
+				jsonData(msg.obj.toString());
 				break;
 			}
 		}
 	};
-	
-//	private void jsonData(String result) {
-//		try {
-//			GeoPoint startGeoPoint = null;
-//			GeoPoint stopGeoPoint = null;
-//			JSONArray jsonArray = new JSONArray(result);
-//			GeoPoint[] geoPoints = new GeoPoint[jsonArray.length()];
-//			for (int i = 0; i < jsonArray.length(); i++) {
-//				JSONObject jsonObject = jsonArray.getJSONObject(i);
-//				String Lat = jsonObject.getString("lat");
-//				String Lon = jsonObject.getString("lon");
-//
-//				GeoPoint geoPoint = new GeoPoint(GetSystem.StringToInt(Lat),
-//						GetSystem.StringToInt(Lon));
-//				geoPoints[i] = geoPoint;
-//				mMapController.setCenter(geoPoint);
-//				if (i == 0) {
-//					startGeoPoint = geoPoint;
-//				} else {
-//					stopGeoPoint = geoPoint;
-//				}
-//			}
-//			// 创建样式
-//			Symbol palaceSymbol = new Symbol();
-//			Symbol.Color palaceColor = palaceSymbol.new Color();
-//			palaceColor.red = 0;// 设置颜色的红色分量
-//			palaceColor.green = 0;// 设置颜色的绿色分量
-//			palaceColor.blue = 255;// 设置颜色的蓝色分量
-//			palaceColor.alpha = 126;// 设置颜色的alpha值
-//			palaceSymbol.setLineSymbol(palaceColor, 7);
-//
-//			Geometry geometry = new Geometry();
-//			geometry.setPolyLine(geoPoints);
-//			Graphic palaceGraphic = new Graphic(geometry, palaceSymbol);
-//
-//			// 将自绘图形添加到地图中
-//			GraphicsOverlay palaceOverlay = new GraphicsOverlay(mMapView);
-//			overlays.add(palaceOverlay);
-//			palaceOverlay.setData(palaceGraphic);
-//
-//			if (startGeoPoint != null) {
-//				Drawable start = getResources().getDrawable(
-//						R.drawable.body_icon_outset);
-//				ItemizedOverlay startItemizedOverlay = new ItemizedOverlay<OverlayItem>(
-//						start, mMapView);
-//				overlays.add(startItemizedOverlay);
-//				OverlayItem overlayItem = new OverlayItem(startGeoPoint, "", "");
-//				overlayItem.setAnchor(OverlayItem.ALING_CENTER);
-//				startItemizedOverlay.addItem(overlayItem);
-//				if (stopGeoPoint != null) {
-//					Drawable stop = getResources().getDrawable(
-//							R.drawable.body_icon_end);
-//					ItemizedOverlay stopItemizedOverlay = new ItemizedOverlay<OverlayItem>(
-//							stop, mMapView);
-//					overlays.add(stopItemizedOverlay);
-//					OverlayItem overlayItem1 = new OverlayItem(stopGeoPoint,
-//							"", "");
-//					overlayItem1.setAnchor(OverlayItem.ALING_CENTER);
-//					stopItemizedOverlay.addItem(overlayItem1);
-//				}
-//			}
-//
-//			mMapView.refresh();
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//TODO 截图回调
-//	MKMapViewListener mkMapViewListener = new MKMapViewListener() {
-//		@Override
-//		public void onMapMoveFinish() {
-//		}
-//
-//		@Override
-//		public void onMapLoadFinish() {
-//		}
-//
-//		@Override
-//		public void onMapAnimationFinish() {
-//		}
-//
-//		@Override
-//		public void onGetCurrentMap(Bitmap arg0) {
-//			System.out.println("截取成功");
-//			GetSystem.saveImageSD(arg0, Constant.picPath, Constant.ShareImage,
-//					50);
-//			String imagePath = Constant.picPath + Constant.ShareImage;
-//			StringBuffer sb = new StringBuffer();
-//			sb.append("【行程】");
-//			sb.append(intent.getStringExtra("StartTime").substring(5, 16));
-//			sb.append(" 从" + intent.getStringExtra("Start_place"));
-//			sb.append("到" + intent.getStringExtra("End_place"));
-//			sb.append("，共行驶" + intent.getStringExtra("SpacingDistance"));
-//			sb.append("公里，耗时" + intent.getStringExtra("SpacingTime"));
-//			sb.append("，" + intent.getStringExtra("Oil"));
-//			sb.append("，" + intent.getStringExtra("Cost"));
-//			sb.append("，" + intent.getStringExtra("AverageOil"));
-//			sb.append("，" + intent.getStringExtra("Speed"));
-//			System.out.println(sb.toString());
-//			GetSystem.share(TravelMapActivity.this, sb.toString(), imagePath,
-//					0, 0, "行程", "");
-//		}
-//
-//		@Override
-//		public void onClickMapPoi(MapPoi arg0) {
-//		}
-//	};
+
+	boolean isFirstLoc = true;
+
+	private class MyLocationListenner implements BDLocationListener {
+		@Override
+		public void onReceiveLocation(BDLocation location) {
+			// map view 销毁后不在处理新接收的位置
+			if (location == null || mMapView == null)
+				return;
+			MyLocationData locData = new MyLocationData.Builder()
+					.accuracy(location.getRadius())
+					// 此处设置开发者获取到的方向信息，顺时针0-360
+					.direction(100).latitude(location.getLatitude())
+					.longitude(location.getLongitude()).build();
+			mBaiduMap.setMyLocationData(locData);
+			if (isFirstLoc) {
+				isFirstLoc = false;
+				LatLng ll = new LatLng(location.getLatitude(),
+						location.getLongitude());
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
+				mBaiduMap.animateMapStatus(u);
+
+			}
+		}
+
+		@Override
+		public void onReceivePoi(BDLocation arg0) {
+
+		}
+	}
+
+	private void jsonData(String result) {
+		try {
+			// 添加折线
+			List<LatLng> points = new ArrayList<LatLng>();
+			JSONArray jsonArray = new JSONArray(result);
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				double Lat = Double.valueOf(jsonObject.getString("lat"));
+				double Lon = Double.valueOf(jsonObject.getString("lon"));
+				LatLng ll = new LatLng(Lat, Lon);
+				points.add(ll);
+			}
+			if (points.size() > 2) {
+				OverlayOptions ooPolyline = new PolylineOptions().width(5)
+						.color(0xAAFF0000).points(points);
+				mBaiduMap.addOverlay(ooPolyline);
+			}
+			if(points.size() > 0){
+				// 构建Marker图标
+				BitmapDescriptor bitmap = BitmapDescriptorFactory
+						.fromResource(R.drawable.body_icon_outset);
+				// 构建MarkerOption，用于在地图上添加Marker
+				OverlayOptions start = new MarkerOptions().anchor(0.5f, 0.5f)
+						.position(points.get(0)).icon(bitmap);
+				// 在地图上添加Marker，并显示
+				mBaiduMap.addOverlay(start);
+			}
+			if(points.size() > 1){
+				// 构建Marker图标
+				BitmapDescriptor bitmap_end = BitmapDescriptorFactory
+						.fromResource(R.drawable.body_icon_end);
+				// 构建MarkerOption，用于在地图上添加Marker
+				OverlayOptions end = new MarkerOptions().anchor(0.5f, 0.5f)
+						.position(points.get(points.size() - 1)).icon(bitmap_end);
+				// 在地图上添加Marker，并显示
+				mBaiduMap.addOverlay(end);
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	// // TODO 截图回调
+	// MKMapViewListener mkMapViewListener = new MKMapViewListener() {
+	// @Override
+	// public void onMapMoveFinish() {
+	// }
+	//
+	// @Override
+	// public void onMapLoadFinish() {
+	// }
+	//
+	// @Override
+	// public void onMapAnimationFinish() {
+	// }
+	//
+	// @Override
+	// public void onGetCurrentMap(Bitmap arg0) {
+	// System.out.println("截取成功");
+	// GetSystem.saveImageSD(arg0, Constant.picPath, Constant.ShareImage,
+	// 50);
+	// String imagePath = Constant.picPath + Constant.ShareImage;
+	// StringBuffer sb = new StringBuffer();
+	// sb.append("【行程】");
+	// sb.append(intent.getStringExtra("StartTime").substring(5, 16));
+	// sb.append(" 从" + intent.getStringExtra("Start_place"));
+	// sb.append("到" + intent.getStringExtra("End_place"));
+	// sb.append("，共行驶" + intent.getStringExtra("SpacingDistance"));
+	// sb.append("公里，耗时" + intent.getStringExtra("SpacingTime"));
+	// sb.append("，" + intent.getStringExtra("Oil"));
+	// sb.append("，" + intent.getStringExtra("Cost"));
+	// sb.append("，" + intent.getStringExtra("AverageOil"));
+	// sb.append("，" + intent.getStringExtra("Speed"));
+	// System.out.println(sb.toString());
+	// GetSystem.share(TravelMapActivity.this, sb.toString(), imagePath,
+	// 0, 0, "行程", "");
+	// }
+	//
+	// @Override
+	// public void onClickMapPoi(MapPoi arg0) {
+	// }
+	// };
 
 	@Override
 	protected void onDestroy() {
