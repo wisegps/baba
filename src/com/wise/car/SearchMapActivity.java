@@ -110,7 +110,6 @@ public class SearchMapActivity extends Activity {
 
 		lv_activity_search_map = (ListView) findViewById(R.id.lv_activity_search_map);
 		lv_activity_search_map.setOnItemClickListener(onItemClickListener);
-		Log.e("my_log", "========>" + adressDatas.size());
 		adressAdapter = new AdressAdapter(SearchMapActivity.this, adressDatas,
 				SearchMapActivity.this);
 		lv_activity_search_map.setAdapter(adressAdapter);

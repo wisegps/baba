@@ -46,8 +46,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.CheckBox;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -458,5 +456,5 @@ public class CarLocationActivity extends Activity {
 		super.onPause();
 		mMapView.onPause();
 	}
-	
+
 }

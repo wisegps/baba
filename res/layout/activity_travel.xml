@@ -26,7 +26,6 @@
             android:layout_marginLeft="@dimen/margins"
             android:padding="@dimen/margins"
             android:src="@drawable/nav_back" />
-        
     </RelativeLayout>
 
     <LinearLayout
