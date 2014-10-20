@@ -23,6 +23,7 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 /**
  * 提醒明细
@@ -34,12 +35,15 @@ public class RemindActivity extends Activity{
 	int resultCode = 0;
 	RemindData remindData;
 	TextView tv_content;
+	RelativeLayout rl_Note,rl_body;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_remind);
+		rl_Note = (RelativeLayout)findViewById(R.id.rl_Note);
+		rl_body = (RelativeLayout)findViewById(R.id.rl_body);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		Button bt_edit = (Button)findViewById(R.id.bt_edit);
@@ -61,6 +65,8 @@ public class RemindActivity extends Activity{
 		}else{
 			//接收传过来的数据
 			remindData = (RemindData) intent.getSerializableExtra("remindData");
+			rl_body.setVisibility(View.VISIBLE);
+			rl_Note.setVisibility(View.GONE);
 			setView();
 		}		
 	}	
@@ -136,8 +142,16 @@ public class RemindActivity extends Activity{
 				break;
 
 			case get_data:
-				jsonRemindData(msg.obj.toString());
-				setView();
+				//TODO 返回""说明该车务提醒以被删除，做处理
+				if(msg.obj.toString().equals("")){
+					rl_body.setVisibility(View.GONE);
+					rl_Note.setVisibility(View.VISIBLE);
+				}else{
+					rl_body.setVisibility(View.VISIBLE);
+					rl_Note.setVisibility(View.GONE);
+					jsonRemindData(msg.obj.toString());
+					setView();
+				}
 				break;
 			}
 		}		

@@ -108,21 +108,21 @@ public class SmsActivity extends Activity implements IXListViewListener{
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
 			List<SmsData> smsDatas = smsViews.get(index_view).getSmsDatas();
-			if(arg2 !=0 || arg2 != (smsDatas.size()+1)){				
+			System.out.println("arg2 = " + arg2);
+			if(arg2 !=0 && arg2 != (smsDatas.size()+1)){
+				System.out.println(smsDatas.get(arg2 -1).toString());
 			    String Type = smsDatas.get(arg2 -1).getMsg_type();
 	            if(Type.equals("0")){
 	                
 	            }else if(Type.equals("1")){
-	                Intent intent = new Intent(SmsActivity.this, RemindActivity.class);
-	                if(smsDatas.get(arg2 -1).getObj_id() != null && !smsDatas.get(arg2 -1).getObj_id().equals("0") ){
-	                    int reminder_id = smsDatas.get(arg2 -1).getReminder_id();
-	                    if(reminder_id != 0){
-	                    	intent.putExtra("Obj_id", smsDatas.get(arg2 -1).getObj_id());
-		                    intent.putExtra("isNeedGetData", true);
-		                    intent.putExtra("reminder_id", reminder_id);
-	                        startActivity(intent);
-	                    }		                	
-	                }
+	                Intent intent = new Intent(SmsActivity.this, RemindActivity.class);	                
+                    int reminder_id = smsDatas.get(arg2 -1).getReminder_id();
+                    if(reminder_id != 0){
+                    	intent.putExtra("Obj_id", smsDatas.get(arg2 -1).getObj_id());
+	                    intent.putExtra("isNeedGetData", true);
+	                    intent.putExtra("reminder_id", reminder_id);
+                        startActivity(intent);
+                    }	
 	            }else if (Type.equals("2")) {
 	                //holder.tv_new_Regnum.setText("车辆故障");
 	                //startActivity(new Intent(SmsActivity.this, CarRemindActivity.class));

@@ -1,8 +1,9 @@
-<RelativeLayout 
+<LinearLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/white">
     <RelativeLayout
         android:id="@+id/rl_top"
@@ -25,115 +26,144 @@
 	        android:layout_centerVertical="true"
 	        android:src="@drawable/nav_back"/>
 	</RelativeLayout>
-	<LinearLayout 
-	    android:id="@+id/ll_bottom"
+	<RelativeLayout
+        android:id="@+id/rl_Note"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+        <RelativeLayout 
+         android:layout_centerInParent="true"
+            android:layout_width="264dp"
+            android:layout_height="162dp">                
+         <ImageView
+             android:id="@+id/iv_nothing"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+             android:src="@drawable/icon_reminder" />	            
+         <TextView
+             android:id="@+id/tv_note"
+             android:layout_width="fill_parent"
+             android:layout_height="wrap_content"
+             android:gravity="center_horizontal"
+             android:textColor="@color/white"
+             android:textSize="@dimen/title" 
+             android:layout_alignParentBottom="true"
+             android:layout_marginBottom="25dp"
+             android:text="提醒已经被删除"/>
+        </RelativeLayout>
+    </RelativeLayout>
+	<RelativeLayout
+	    android:id="@+id/rl_body" 
 	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentBottom="true"
-	    android:background="@drawable/bg_qianlv_biaoti"
-	    android:paddingTop="5dp"
-	    android:paddingBottom="5dp"
-	    android:orientation="horizontal">
-	    <Button 
-	        android:id="@+id/bt_edit"
-	        android:layout_width="0dp"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:background="@null"
-	        android:drawableTop="@drawable/tab_eidt"
-	        android:drawablePadding="5dp"
-	        android:textColor="@color/color_white"
-	        android:textSize="@dimen/content"
-	        android:text="编辑"/>
-	    <Button 
-	        android:id="@+id/bt_delete"
-	        android:layout_width="0dp"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:background="@null"
-	        android:drawablePadding="5dp"
-	        android:drawableTop="@drawable/tab_delete"
-	        android:textColor="@color/color_white"
-	        android:textSize="@dimen/content"
-	        android:text="删除"/>
-	    <Button 
-	        android:id="@+id/bt_share"
-	        android:layout_width="0dp"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:background="@null"
-	        android:drawablePadding="5dp"
-	        android:drawableTop="@drawable/nav_icon_share_nor"
-	        android:textColor="@color/color_white"
-	        android:textSize="@dimen/content"
-	        android:text="分享"/>
-	    <Button 
-	        android:id="@+id/bt_place"
-	        android:layout_width="0dp"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:background="@null"
-	        android:drawablePadding="5dp"
-	        android:drawableTop="@drawable/tab_place"
-	        android:textColor="@color/color_white"
-	        android:textSize="@dimen/content"
-	        android:text="地点"/>
-	</LinearLayout>
-	<LinearLayout 
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:orientation="vertical"
-	    android:gravity="center_horizontal"
-	    android:layout_below="@id/rl_top"
-	    android:layout_above="@id/ll_bottom">
-	    <TextView
-			android:id="@+id/tv_name"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:textSize="@dimen/main"
-	        android:layout_marginTop="@dimen/margins"
-	        android:gravity="center_horizontal"
-	        android:textColor="@color/navy"
-	        android:text="距离粤B12345车辆年检"/>
+	    android:layout_height="fill_parent">
 	    <LinearLayout 
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:orientation="horizontal">
-	        <TextView 
-		        android:layout_width="wrap_content"
+		    android:id="@+id/ll_bottom"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentBottom="true"
+		    android:background="@drawable/bg_qianlv_biaoti"
+		    android:paddingTop="5dp"
+		    android:paddingBottom="5dp"
+		    android:orientation="horizontal">
+		    <Button 
+		        android:id="@+id/bt_edit"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1"
+		        android:background="@null"
+		        android:drawableTop="@drawable/tab_eidt"
+		        android:drawablePadding="5dp"
+		        android:textColor="@color/color_white"
+		        android:textSize="@dimen/content"
+		        android:text="编辑"/>
+		    <Button 
+		        android:id="@+id/bt_delete"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1"
+		        android:background="@null"
+		        android:drawablePadding="5dp"
+		        android:drawableTop="@drawable/tab_delete"
+		        android:textColor="@color/color_white"
+		        android:textSize="@dimen/content"
+		        android:text="删除"/>
+		    <Button 
+		        android:id="@+id/bt_share"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1"
+		        android:background="@null"
+		        android:drawablePadding="5dp"
+		        android:drawableTop="@drawable/nav_icon_share_nor"
+		        android:textColor="@color/color_white"
+		        android:textSize="@dimen/content"
+		        android:text="分享"/>
+		    <Button 
+		        android:id="@+id/bt_place"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1"
+		        android:background="@null"
+		        android:drawablePadding="5dp"
+		        android:drawableTop="@drawable/tab_place"
+		        android:textColor="@color/color_white"
+		        android:textSize="@dimen/content"
+		        android:text="地点"/>
+		</LinearLayout>
+		<LinearLayout 
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:orientation="vertical"
+		    android:gravity="center_horizontal"
+		    android:layout_above="@id/ll_bottom">
+		    <TextView
+				android:id="@+id/tv_name"
+		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:textSize="@dimen/main"
-		        android:textColor="@color/navy"
-		        android:text="还有"/>
-	        <TextView
-	            android:id="@+id/tv_date" 
+		        android:layout_marginTop="@dimen/margins"
+		        android:gravity="center_horizontal"
+		        android:textColor="@color/navy"/>
+		    <LinearLayout 
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:textSize="30sp"
-		        android:textColor="@color/blue_press"
-		        android:text="3"/>
-	        <TextView 
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
+		        android:orientation="horizontal">
+		        <TextView 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:textSize="@dimen/main"
+			        android:textColor="@color/navy"
+			        android:text="还有"/>
+		        <TextView
+		            android:id="@+id/tv_date" 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:textSize="30sp"
+			        android:textColor="@color/blue_press"
+			        android:text="0"/>
+		        <TextView 
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:textSize="@dimen/main"
+			        android:textColor="@color/navy"
+			        android:text="天"/>
+		    </LinearLayout>	    
+		    <View
+		        android:layout_width="fill_parent"
+		        android:layout_height="0.5dp"
+		        android:layout_marginTop="@dimen/margins"
+		        android:background="@color/line" />
+		    <TextView
+		        android:id="@+id/tv_content" 
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:padding="@dimen/margins"
 		        android:textSize="@dimen/main"
-		        android:textColor="@color/navy"
-		        android:text="天"/>
-	    </LinearLayout>	    
-	    <View
-	        android:layout_width="fill_parent"
-	        android:layout_height="0.5dp"
-	        android:layout_marginTop="@dimen/margins"
-	        android:background="@color/line" />
-	    <TextView
-	        android:id="@+id/tv_content" 
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
-	        android:padding="@dimen/margins"
-	        android:textSize="@dimen/main"
-	        android:textColor="@color/navy"/>
-	    <WebView
-	        android:id="@+id/share_web"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent" />
-	</LinearLayout>
-</RelativeLayout>
+		        android:textColor="@color/navy"/>
+		    <WebView
+		        android:id="@+id/share_web"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent" />
+		</LinearLayout>
+	</RelativeLayout>	
+</LinearLayout>

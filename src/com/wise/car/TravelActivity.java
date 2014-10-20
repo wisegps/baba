@@ -50,7 +50,6 @@ public class TravelActivity extends Activity {
 	List<TravelData> travelDatas = new ArrayList<TravelData>();
 	TravelAdapter travelAdapter;
 	String Date;
-	String device_id = "3";
 	private GeoCoder mGeoCoder = null;
 	int index;
 
@@ -125,15 +124,15 @@ public class TravelActivity extends Activity {
 		try {
 			travelDatas.clear();
 			JSONObject jsonObject = new JSONObject(result);
-			String distance = "行驶总里程:" + jsonObject.getString("total_distance")
+			String distance = "行驶总里程：" + jsonObject.getString("total_distance")
 					+ "KM";
 			tv_distance.setText(distance);
-			String fuel = "油耗:" + jsonObject.getString("avg_fuel") + "L";
+			String fuel = "油耗：" + jsonObject.getString("avg_fuel") + "L";
 			tv_fuel.setText(fuel);
-			String hk_fuel = "百公里油耗:" + jsonObject.getString("total_fuel")
+			String hk_fuel = "百公里油耗：" + jsonObject.getString("total_fuel")
 					+ "L";
 			tv_hk_fuel.setText(hk_fuel);
-			String fee = "花费:" + jsonObject.getString("total_fee") + "元";
+			String fee = "花费：" + jsonObject.getString("total_fee") + "元";
 			tv_money.setText(fee);
 
 			JSONArray jsonArray = jsonObject.getJSONArray("data");
@@ -330,6 +329,7 @@ public class TravelActivity extends Activity {
 							.getSpeed());
 					intent.putExtra("Cost", travelDatas.get(position).getCost());
 					intent.putExtra("index", index);
+					intent.putExtra("device", Variable.carDatas.get(index).getDevice_id());
 					TravelActivity.this.startActivity(intent);
 				}
 			});
@@ -486,7 +486,7 @@ public class TravelActivity extends Activity {
 			strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
 					strInfo.length());
 			if (isFrist) {// 起点位置取完，在取结束位置
-				travelDatas.get(i).setStart_place("起点:" + strInfo);
+				travelDatas.get(i).setStart_place("起点：" + strInfo);
 				isFrist = false;
 				double lat = Double.valueOf(travelDatas.get(i).getEnd_lat());
 				double lon = Double.valueOf(travelDatas.get(i).getEnd_lon());
@@ -495,7 +495,7 @@ public class TravelActivity extends Activity {
 						.location(latLng));
 				i++;
 			} else {
-				travelDatas.get(i - 1).setEnd_place("终点:" + strInfo);
+				travelDatas.get(i - 1).setEnd_place("终点：" + strInfo);
 				if (travelDatas.size() == i) {
 					System.out.println("递归完毕");
 				} else {
