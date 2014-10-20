@@ -7,6 +7,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
+import pubclas.DensityUtil;
 import pubclas.NetThread;
 import pubclas.Variable;
 import com.baidu.location.BDLocation;
@@ -25,6 +26,7 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Stroke;
+import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
@@ -208,7 +210,6 @@ public class CarLocationActivity extends Activity {
 
 	CheckBox bt_alarm_in, bt_alarm_out;
 	double fence_lat, fence_lon;
-	TextView fence_distance_date;
 
 	/**
 	 * TODO 显示围栏
@@ -231,8 +232,6 @@ public class CarLocationActivity extends Activity {
 		popunwindwow.findViewById(R.id.fence_delete).setOnClickListener(
 				onClickListener);
 
-		fence_distance_date = (TextView) popunwindwow
-				.findViewById(R.id.fence_distance_date);
 		bt_alarm_in = (CheckBox) popunwindwow.findViewById(R.id.bt_alarm_in);
 		bt_alarm_out = (CheckBox) popunwindwow.findViewById(R.id.bt_alarm_out);
 		fence_distance = (SeekBar) popunwindwow
@@ -255,7 +254,7 @@ public class CarLocationActivity extends Activity {
 					bt_alarm_out.setChecked(true);
 				}
 				fence_distance.setProgress((int)(distance/1000) - 1);
-				fence_distance_date.setText((int)(distance/1000) + "km");
+				setText(distance);
 				getRange();
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -275,9 +274,9 @@ public class CarLocationActivity extends Activity {
 					public void onProgressChanged(SeekBar seekBar,
 							int progress, boolean fromUser) {
 						distance = (fence_distance.getProgress() + 1)*1000;
-						fence_distance_date.setText((fence_distance.getProgress() + 1) + "km");
 						mMapView.getMap().clear();
 						getRange();
+						setText(distance);
 					}
 				});
 
@@ -320,16 +319,16 @@ public class CarLocationActivity extends Activity {
 			mBaiduMap.setMapStatus(mapStatusUpdate);
 			// 画圆
 			OverlayOptions coverFence = new CircleOptions()
-					.fillColor(0xAA00FF00).center(circle)
-					.stroke(new Stroke(1, 0xAAFF00FF)).radius(distance);
+					.fillColor(0x400e6f97).center(circle)
+					.stroke(new Stroke(1, 0xFF0e6f97)).radius(distance);
 			mBaiduMap.addOverlay(coverFence);
 		} else {
 			// 围栏范围圆
 			LatLng circle = new LatLng(carData.getLat(), carData.getLon());
 			// 画圆
 			OverlayOptions coverFence = new CircleOptions()
-					.fillColor(0xAA00FF00).center(circle)
-					.stroke(new Stroke(1, 0xAAFF00FF)).radius(distance);
+					.fillColor(0x400e6f97).center(circle)
+					.stroke(new Stroke(1, 0xFF0e6f97)).radius(distance);
 			mBaiduMap.addOverlay(coverFence);
 			getCarLocation();
 		}
@@ -354,6 +353,15 @@ public class CarLocationActivity extends Activity {
 		}else if(nowDistance > distance * 4){
 			mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(zoom + 1));
 		}
+	}
+	/**添加文字**/
+	private void setText(int distance){		
+		int px = DensityUtil.dip2px(CarLocationActivity.this, 18);
+		LatLng llText = new LatLng(latitude, longitude);
+		OverlayOptions ooText = new TextOptions().align(TextOptions.ALIGN_LEFT, TextOptions.ALIGN_BOTTOM)
+				.fontSize(px).fontColor(0xFFFF00FF).text("    "+distance/1000 + "km")
+				.position(llText);
+		mBaiduMap.addOverlay(ooText);
 	}
 
 	// 当前车辆位子
