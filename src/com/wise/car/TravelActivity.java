@@ -143,10 +143,12 @@ public class TravelActivity extends Activity {
 
 				} else {
 					TravelData travelData = new TravelData();
-					travelData.setStartTime(jsonObject2.getString("start_time")
-							.replace("T", " ").substring(0, 19));
-					travelData.setStopTime(jsonObject2.getString("end_time")
-							.replace("T", " ").substring(0, 19));
+					travelData.setStartTime(GetSystem
+							.ChangeTimeZone(jsonObject2.getString("start_time")
+									.replace("T", " ").substring(0, 19)));
+					travelData.setStopTime(GetSystem.ChangeTimeZone(jsonObject2
+							.getString("end_time").replace("T", " ")
+							.substring(0, 19)));
 
 					travelData.setSpacingTime(GetSystem.ProcessTime(GetSystem
 							.spacingTime(travelData.getStartTime(),
@@ -195,11 +197,18 @@ public class TravelActivity extends Activity {
 	 */
 	private void GetDataTrip() {
 		String url;
+		String Gas_no;
+		if (Variable.carDatas.get(index).getGas_no() == null
+				|| Variable.carDatas.get(index).getGas_no().equals("")) {
+			Gas_no = "93#(92#)";
+		} else {
+			Gas_no = Variable.carDatas.get(index).getGas_no();
+		}
 		try {
 			url = Constant.BaseUrl + "device/4/trip?auth_code="
 					+ Variable.auth_code + "&day=" + Date + "&city="
 					+ URLEncoder.encode(Variable.City, "UTF-8") + "&gas_no="
-					+ "93";
+					+ Gas_no;
 			new Thread(new NetThread.GetDataThread(handler, url, get_data))
 					.start();
 		} catch (UnsupportedEncodingException e) {
@@ -475,7 +484,7 @@ public class TravelActivity extends Activity {
 			strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
 					strInfo.length());
 			if (isFrist) {// 起点位置取完，在取结束位置
-				travelDatas.get(i).setStart_place(strInfo);
+				travelDatas.get(i).setStart_place("起始位置:" + strInfo);
 				isFrist = false;
 				double lat = Double.valueOf(travelDatas.get(i).getEnd_lat());
 				double lon = Double.valueOf(travelDatas.get(i).getEnd_lon());
@@ -484,7 +493,7 @@ public class TravelActivity extends Activity {
 						.location(latLng));
 				i++;
 			} else {
-				travelDatas.get(i - 1).setEnd_place(strInfo);
+				travelDatas.get(i - 1).setEnd_place("结束位置:" + strInfo);
 				if (travelDatas.size() == i) {
 					System.out.println("递归完毕");
 				} else {
