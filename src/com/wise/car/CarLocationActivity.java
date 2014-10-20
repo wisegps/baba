@@ -543,7 +543,7 @@ public class CarLocationActivity extends Activity {
 			mBaiduMap.setOnMarkerClickListener(overlay);
             overlay.setData(result.getRouteLines().get(0));
             overlay.addToMap();
-            overlay.zoomToSpan();
+            //overlay.zoomToSpan();
 		}
 	};
 

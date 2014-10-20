@@ -304,7 +304,7 @@ public class FaultActivity extends FragmentActivity {
 				startActivityForResult(new Intent(FaultActivity.this,
 						SelectCityActivity.class), 0);
 				break;
-			case R.id.tv_adress:
+			case R.id.ll_adress:
 				goCarMap();
 				break;
 			}
@@ -678,6 +678,7 @@ public class FaultActivity extends FragmentActivity {
 
 			LinearLayout ll_adress = (LinearLayout) v
 					.findViewById(R.id.ll_adress);
+			ll_adress.setOnClickListener(onClickListener);
 			TextView tv_score = (TextView) v.findViewById(R.id.tv_score);
 			TextView tv_title = (TextView) v.findViewById(R.id.tv_title);
 			TasksCompletedView mTasksView = (TasksCompletedView) v
@@ -699,7 +700,6 @@ public class FaultActivity extends FragmentActivity {
 					onClickListener);
 			v.findViewById(R.id.Liner_fuel).setOnClickListener(onClickListener);
 			v.findViewById(R.id.Liner_fee).setOnClickListener(onClickListener);
-			tv_adress.setOnClickListener(onClickListener);
 
 			TasksCompletedView tcv_drive = (TasksCompletedView) v
 					.findViewById(R.id.tcv_drive);
