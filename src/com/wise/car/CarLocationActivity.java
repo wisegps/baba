@@ -160,7 +160,7 @@ public class CarLocationActivity extends Activity {
 				ToSearchMap("维修店");
 				break;
 			case R.id.tv_item_car_location_automotive_beauty:// 美容店
-				ToSearchMap("美容店");
+				ToSearchMap("洗车美容");
 				break;
 			case R.id.tv_item_car_location_wash:// 洗车店
 				ToSearchMap("洗车店");
@@ -358,8 +358,8 @@ public class CarLocationActivity extends Activity {
 	private void setText(int distance){		
 		int px = DensityUtil.dip2px(CarLocationActivity.this, 18);
 		LatLng llText = new LatLng(latitude, longitude);
-		OverlayOptions ooText = new TextOptions().align(TextOptions.ALIGN_LEFT, TextOptions.ALIGN_BOTTOM)
-				.fontSize(px).fontColor(0xFFFF00FF).text("    "+distance/1000 + "km")
+		OverlayOptions ooText = new TextOptions().align(TextOptions.ALIGN_LEFT, TextOptions.ALIGN_CENTER_VERTICAL)
+				.fontSize(px).fontColor(0xFFFF0000).text("    "+distance/1000 + "km")
 				.position(llText);
 		mBaiduMap.addOverlay(ooText);
 	}

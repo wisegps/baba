@@ -8,15 +8,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.Variable;
-
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -27,7 +24,6 @@ import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.Overlay;
@@ -36,7 +32,6 @@ import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
 import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.R;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -45,6 +40,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -74,6 +70,7 @@ public class TravelMapActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_travel_map);
 		ImageView iv_activity_travel_share = (ImageView) findViewById(R.id.iv_activity_travel_share);
 		iv_activity_travel_share.setOnClickListener(onClickListener);
@@ -117,8 +114,8 @@ public class TravelMapActivity extends Activity {
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		intent = getIntent();
-		tv_travel_startPlace.setText(intent.getStringExtra("Start_place"));
-		tv_travel_stopPlace.setText(intent.getStringExtra("End_place"));
+		tv_travel_startPlace.setText("起点:"+intent.getStringExtra("Start_place"));
+		tv_travel_stopPlace.setText("终点:"+intent.getStringExtra("End_place"));
 		tv_travel_startTime.setText(intent.getStringExtra("StartTime")
 				.substring(10, 16));
 		tv_travel_stopTime.setText(intent.getStringExtra("StopTime").substring(
