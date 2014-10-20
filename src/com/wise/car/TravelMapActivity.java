@@ -245,7 +245,7 @@ public class TravelMapActivity extends Activity {
 						.color(0xAAFF0000).points(points);
 				mBaiduMap.addOverlay(ooPolyline);
 			}
-			if(points.size() > 0){
+			if (points.size() > 0) {
 				// 构建Marker图标
 				BitmapDescriptor bitmap = BitmapDescriptorFactory
 						.fromResource(R.drawable.body_icon_outset);
@@ -255,17 +255,18 @@ public class TravelMapActivity extends Activity {
 				// 在地图上添加Marker，并显示
 				mBaiduMap.addOverlay(start);
 			}
-			if(points.size() > 1){
+			if (points.size() > 1) {
 				// 构建Marker图标
 				BitmapDescriptor bitmap_end = BitmapDescriptorFactory
 						.fromResource(R.drawable.body_icon_end);
 				// 构建MarkerOption，用于在地图上添加Marker
 				OverlayOptions end = new MarkerOptions().anchor(0.5f, 0.5f)
-						.position(points.get(points.size() - 1)).icon(bitmap_end);
+						.position(points.get(points.size() - 1))
+						.icon(bitmap_end);
 				// 在地图上添加Marker，并显示
 				mBaiduMap.addOverlay(end);
 			}
-			
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
