@@ -133,7 +133,7 @@ public class FuelActivity extends Activity {
 			tv_chart_unit.setText("km");
 		} else if (type == FaultActivity.FEE) {
 			tv_chart_title.setText("花费月曲线");
-			tv_chart_unit.setText("RMB");
+			tv_chart_unit.setText("￥");
 		} else {
 			tv_chart_title.setText("无消耗");
 		}
@@ -190,7 +190,7 @@ public class FuelActivity extends Activity {
 					tv_chart_unit.setText("km");
 				} else if (type == FaultActivity.FEE) {
 					tv_chart_title.setText("花费月曲线");
-					tv_chart_unit.setText("RMB");
+					tv_chart_unit.setText("￥");
 				} else {
 					tv_chart_title.setText("无消耗");
 				}
@@ -215,7 +215,7 @@ public class FuelActivity extends Activity {
 					tv_chart_unit.setText("km");
 				} else if (type == FaultActivity.FEE) {
 					tv_chart_title.setText("花费周曲线");
-					tv_chart_unit.setText("RMB");
+					tv_chart_unit.setText("￥");
 				} else {
 					tv_chart_title.setText("无消耗");
 				}

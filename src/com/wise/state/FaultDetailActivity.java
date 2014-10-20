@@ -85,7 +85,7 @@ public class FaultDetailActivity extends Activity{
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				FaultData faultData = new FaultData();
 				faultData.setLevel(jsonObject.getInt("level"));
-				faultData.setC_define(jsonObject.getString("c_define"));
+				faultData.setC_define(jsonObject.getString("code") + "  " +jsonObject.getString("c_define"));
 				faultData.setContent(jsonObject.getString("content"));
 				faultData.setCategory(jsonObject.getString("category"));
 				faultDatas.add(faultData);
