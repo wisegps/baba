@@ -477,14 +477,16 @@ public class TravelActivity extends Activity {
 
 	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
 		@Override
-		public void onGetGeoCodeResult(GeoCodeResult arg0) {}
+		public void onGetGeoCodeResult(GeoCodeResult arg0) {
+		}
+
 		@Override
 		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
 			String strInfo = arg0.getAddress();
 			strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
 					strInfo.length());
 			if (isFrist) {// 起点位置取完，在取结束位置
-				travelDatas.get(i).setStart_place("起始位置:" + strInfo);
+				travelDatas.get(i).setStart_place("起点:" + strInfo);
 				isFrist = false;
 				double lat = Double.valueOf(travelDatas.get(i).getEnd_lat());
 				double lon = Double.valueOf(travelDatas.get(i).getEnd_lon());
@@ -493,7 +495,7 @@ public class TravelActivity extends Activity {
 						.location(latLng));
 				i++;
 			} else {
-				travelDatas.get(i - 1).setEnd_place("结束位置:" + strInfo);
+				travelDatas.get(i - 1).setEnd_place("终点:" + strInfo);
 				if (travelDatas.size() == i) {
 					System.out.println("递归完毕");
 				} else {
@@ -513,7 +515,7 @@ public class TravelActivity extends Activity {
 	};
 
 	@Override
-	protected void onDestroy() {		
+	protected void onDestroy() {
 		super.onDestroy();
 		mGeoCoder.destroy();
 	}
