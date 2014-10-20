@@ -118,7 +118,7 @@ public class CarLocationActivity extends Activity {
 				.setOnClickListener(onClickListener);
 		ll_location_bottom = (LinearLayout) findViewById(R.id.ll_location_bottom);
 		mSearch = RoutePlanSearch.newInstance();
-        mSearch.setOnGetRoutePlanResultListener(onGetRoutePlanResultListener);
+		mSearch.setOnGetRoutePlanResultListener(onGetRoutePlanResultListener);
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -193,7 +193,7 @@ public class CarLocationActivity extends Activity {
 	private void showDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				CarLocationActivity.this);
-		builder.setTitle("寻车").setMessage("是否要寻找车辆位置？");
+		builder.setTitle("寻车").setMessage("是否进行路径导航？");
 
 		builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
 			@Override
@@ -404,12 +404,16 @@ public class CarLocationActivity extends Activity {
 	private void setText(int distance) {
 		int px = DensityUtil.dip2px(CarLocationActivity.this, 18);
 		LatLng llText = new LatLng(latitude, longitude);
-		OverlayOptions ooText = new TextOptions().align(TextOptions.ALIGN_LEFT, TextOptions.ALIGN_CENTER_VERTICAL)
-				.fontSize(px).fontColor(0xFFFF0000).text("    "+distance/1000 + "km")
+		OverlayOptions ooText = new TextOptions()
+				.align(TextOptions.ALIGN_LEFT,
+						TextOptions.ALIGN_CENTER_VERTICAL).fontSize(px)
+				.fontColor(0xFFFF0000).text("    " + distance / 1000 + "km")
 				.position(llText);
 		mBaiduMap.addOverlay(ooText);
 	}
+
 	LatLng circle;
+
 	// 当前车辆位子
 	private void getCarLocation() {
 		circle = new LatLng(carData.getLat(), carData.getLon());
@@ -491,6 +495,7 @@ public class CarLocationActivity extends Activity {
 
 	boolean isFirstLoc = true;
 	LatLng ll;
+
 	private class MyLocationListenner implements BDLocationListener {
 		@Override
 		public void onReceiveLocation(BDLocation location) {
@@ -507,8 +512,7 @@ public class CarLocationActivity extends Activity {
 			mBaiduMap.setMyLocationData(locData);
 			if (isFirstLoc) {
 				isFirstLoc = false;
-				ll = new LatLng(location.getLatitude(),
-						location.getLongitude());
+				ll = new LatLng(location.getLatitude(), location.getLongitude());
 				LatLng carLocat = new LatLng(carData.getLat(), carData.getLon());
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(carLocat);
 				mBaiduMap.animateMapStatus(u);
@@ -522,21 +526,28 @@ public class CarLocationActivity extends Activity {
 
 		}
 	}
-	/**画出2点之间的驾车轨迹**/
-	private void setTransitRoute(LatLng startLatLng , LatLng stopLatLng){
-		if(startLatLng == null || stopLatLng == null){
+
+	/** 画出2点之间的驾车轨迹 **/
+	private void setTransitRoute(LatLng startLatLng, LatLng stopLatLng) {
+		if (startLatLng == null || stopLatLng == null) {
 			return;
 		}
 		System.out.println("轨迹");
 		PlanNode stNode = PlanNode.withLocation(startLatLng);
 		PlanNode edNode = PlanNode.withLocation(stopLatLng);
-		mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(edNode));
+		mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(
+				edNode));
 	}
-	OnGetRoutePlanResultListener onGetRoutePlanResultListener = new OnGetRoutePlanResultListener() {		
+
+	OnGetRoutePlanResultListener onGetRoutePlanResultListener = new OnGetRoutePlanResultListener() {
 		@Override
-		public void onGetWalkingRouteResult(WalkingRouteResult arg0) {}		
+		public void onGetWalkingRouteResult(WalkingRouteResult arg0) {
+		}
+
 		@Override
-		public void onGetTransitRouteResult(TransitRouteResult result) {}		
+		public void onGetTransitRouteResult(TransitRouteResult result) {
+		}
+
 		@Override
 		public void onGetDrivingRouteResult(DrivingRouteResult result) {
 			DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaiduMap);

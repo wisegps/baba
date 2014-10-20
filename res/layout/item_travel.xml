@@ -81,7 +81,7 @@
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/gray_light"
+        android:background="@color/white"
         android:padding="@dimen/margins"
         android:stretchColumns="*" >
 

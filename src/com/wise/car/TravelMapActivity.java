@@ -164,20 +164,24 @@ public class TravelMapActivity extends Activity {
 								out.close();
 							}
 							String imagePath = "/mnt/sdcard/test.png";
-							 StringBuffer sb = new StringBuffer();
-							 sb.append("【行程】");
-							 sb.append(intent.getStringExtra("StartTime").substring(5, 16));
-							 sb.append(" 从" + intent.getStringExtra("Start_place"));
-							 sb.append("到" + intent.getStringExtra("End_place"));
-							 sb.append("，共行驶" + intent.getStringExtra("SpacingDistance"));
-							 sb.append("公里，耗时" + intent.getStringExtra("SpacingTime"));
-							 sb.append("，" + intent.getStringExtra("Oil"));
-							 sb.append("，" + intent.getStringExtra("Cost"));
-							 sb.append("，" + intent.getStringExtra("AverageOil"));
-							 sb.append("，" + intent.getStringExtra("Speed"));
-							 System.out.println(sb.toString());
-							 GetSystem.share(TravelMapActivity.this, sb.toString(), imagePath,
-							 0, 0, "行程", "");
+							StringBuffer sb = new StringBuffer();
+							sb.append("【行程】");
+							sb.append(intent.getStringExtra("StartTime")
+									.substring(5, 16));
+							sb.append(" 从"
+									+ intent.getStringExtra("Start_place"));
+							sb.append("到" + intent.getStringExtra("End_place"));
+							sb.append("，共行驶"
+									+ intent.getStringExtra("SpacingDistance"));
+							sb.append("公里，耗时"
+									+ intent.getStringExtra("SpacingTime"));
+							sb.append("，" + intent.getStringExtra("Oil"));
+							sb.append("，" + intent.getStringExtra("Cost"));
+							sb.append("，" + intent.getStringExtra("AverageOil"));
+							sb.append("，" + intent.getStringExtra("Speed"));
+							System.out.println(sb.toString());
+							GetSystem.share(TravelMapActivity.this,
+									sb.toString(), imagePath, 0, 0, "行程", "");
 						} catch (FileNotFoundException e) {
 							e.printStackTrace();
 						} catch (IOException e) {
@@ -223,7 +227,6 @@ public class TravelMapActivity extends Activity {
 						location.getLongitude());
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
 				mBaiduMap.animateMapStatus(u);
-
 			}
 		}
 
@@ -250,7 +253,7 @@ public class TravelMapActivity extends Activity {
 						.color(0xAAFF0000).points(points);
 				mBaiduMap.addOverlay(ooPolyline);
 			}
-			if(points.size() > 0){
+			if (points.size() > 0) {
 				// 构建Marker图标
 				BitmapDescriptor bitmap = BitmapDescriptorFactory
 						.fromResource(R.drawable.body_icon_outset);
@@ -259,18 +262,23 @@ public class TravelMapActivity extends Activity {
 						.position(points.get(0)).icon(bitmap);
 				// 在地图上添加Marker，并显示
 				mBaiduMap.addOverlay(start);
+
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(points
+						.get(0));
+				mBaiduMap.animateMapStatus(u);
 			}
-			if(points.size() > 1){
+			if (points.size() > 1) {
 				// 构建Marker图标
 				BitmapDescriptor bitmap_end = BitmapDescriptorFactory
 						.fromResource(R.drawable.body_icon_end);
 				// 构建MarkerOption，用于在地图上添加Marker
 				OverlayOptions end = new MarkerOptions().anchor(0.5f, 0.5f)
-						.position(points.get(points.size() - 1)).icon(bitmap_end);
+						.position(points.get(points.size() - 1))
+						.icon(bitmap_end);
 				// 在地图上添加Marker，并显示
 				mBaiduMap.addOverlay(end);
 			}
-			
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
