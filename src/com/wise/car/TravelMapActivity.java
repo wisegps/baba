@@ -15,10 +15,6 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -26,7 +22,6 @@ import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolylineOptions;
@@ -60,12 +55,8 @@ public class TravelMapActivity extends Activity {
 	BaiduMap mBaiduMap;
 	List<Overlay> overlays;
 	ProgressDialog Dialog = null; // progress
-	int device = 4;
+	String device = "";
 	Intent intent;
-
-	// 定位相关
-	LocationClient mLocClient;
-	private MyLocationListenner myListener = new MyLocationListenner();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,29 +68,6 @@ public class TravelMapActivity extends Activity {
 		mMapView = (MapView) findViewById(R.id.mv_travel_map);
 		mBaiduMap = mMapView.getMap();
 		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
-		int index = getIntent().getIntExtra("index", 0);
-		LatLng circle = new LatLng(Variable.carDatas.get(index).getLat(),
-				Variable.carDatas.get(index).getLon());
-		// 构建Marker图标
-		BitmapDescriptor bitmap = BitmapDescriptorFactory
-				.fromResource(R.drawable.body_icon_location2);
-		// 构建MarkerOption，用于在地图上添加Marker
-		OverlayOptions option_1 = new MarkerOptions().anchor(0.5f, 1.0f)
-				.position(circle).icon(bitmap);
-		// 在地图上添加Marker，并显示
-		mBaiduMap.addOverlay(option_1);
-
-		// 开启定位图层
-		mBaiduMap.setMyLocationEnabled(true);
-		// 定位初始化
-		mLocClient = new LocationClient(this);
-		mLocClient.registerLocationListener(myListener);
-		LocationClientOption option = new LocationClientOption();
-		option.setOpenGps(true);// 打开gps
-		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(1000);
-		mLocClient.setLocOption(option);
-		mLocClient.start();
 
 		TextView tv_travel_startPlace = (TextView) findViewById(R.id.tv_travel_startPlace);
 		TextView tv_travel_stopPlace = (TextView) findViewById(R.id.tv_travel_stopPlace);
@@ -114,6 +82,7 @@ public class TravelMapActivity extends Activity {
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		intent = getIntent();
+		device = intent.getStringExtra("device");
 		tv_travel_startPlace.setText(intent.getStringExtra("Start_place"));
 		tv_travel_stopPlace.setText(intent.getStringExtra("End_place"));
 		tv_travel_startTime.setText(intent.getStringExtra("StartTime")
@@ -131,16 +100,16 @@ public class TravelMapActivity extends Activity {
 		String StartTime = intent.getStringExtra("StartTime");
 		String StopTime = intent.getStringExtra("StopTime");
 
-		try {
-			String url = Constant.BaseUrl + "device/" + device
-					+ "/gps_data?auth_code=" + Variable.auth_code
-					+ "&start_time=" + URLEncoder.encode(StartTime, "UTF-8")
-					+ "&end_time=" + URLEncoder.encode(StopTime, "UTF-8");
-			new Thread(new NetThread.GetDataThread(handler, url, get_data))
-					.start();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+			try {
+				String url = Constant.BaseUrl + "device/" + device
+						+ "/gps_data?auth_code=" + Variable.auth_code
+						+ "&start_time=" + URLEncoder.encode(StartTime, "UTF-8")
+						+ "&end_time=" + URLEncoder.encode(StopTime, "UTF-8");
+				new NetThread.GetDataThread(handler, url, get_data).start();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -206,35 +175,6 @@ public class TravelMapActivity extends Activity {
 			}
 		}
 	};
-
-	boolean isFirstLoc = true;
-
-	private class MyLocationListenner implements BDLocationListener {
-		@Override
-		public void onReceiveLocation(BDLocation location) {
-			// map view 销毁后不在处理新接收的位置
-			if (location == null || mMapView == null)
-				return;
-			MyLocationData locData = new MyLocationData.Builder()
-					.accuracy(location.getRadius())
-					// 此处设置开发者获取到的方向信息，顺时针0-360
-					.direction(100).latitude(location.getLatitude())
-					.longitude(location.getLongitude()).build();
-			mBaiduMap.setMyLocationData(locData);
-			if (isFirstLoc) {
-				isFirstLoc = false;
-				LatLng ll = new LatLng(location.getLatitude(),
-						location.getLongitude());
-				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
-				mBaiduMap.animateMapStatus(u);
-			}
-		}
-
-		@Override
-		public void onReceivePoi(BDLocation arg0) {
-
-		}
-	}
 
 	private void jsonData(String result) {
 		try {

@@ -558,9 +558,9 @@ public class CarLocationActivity extends Activity {
 		public void onGetDrivingRouteResult(DrivingRouteResult result) {
 			DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaiduMap);
 			mBaiduMap.setOnMarkerClickListener(overlay);
-			overlay.setData(result.getRouteLines().get(0));
-			overlay.addToMap();
-			overlay.zoomToSpan();
+            overlay.setData(result.getRouteLines().get(0));
+            overlay.addToMap();
+            //overlay.zoomToSpan();
 		}
 	};
 

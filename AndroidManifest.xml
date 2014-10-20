@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wise.baba"
-    android:versionCode="15"
-    android:versionName="1.032" >
+    android:versionCode="16"
+    android:versionName="1.033" >
 
     <supports-screens
         android:anyDensity="true"
@@ -502,7 +502,7 @@
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="qfRNMbrcCCxi2zO4yGSdh2In" />
+            android:value="0QNTY4tnP9Tv6ghXpGa6XXOm" />
     </application>
 
 </manifest>

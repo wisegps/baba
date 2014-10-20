@@ -438,13 +438,21 @@ public class FuelActivity extends Activity {
 							avg_fuel1 = Float.valueOf(jsonArray
 									.getJSONObject(i).getString("total_fuel"));
 
+							System.out.println("total_fuel = " + jsonArray
+									.getJSONObject(i).getString("total_fuel"));
 						} else if (type == FaultActivity.DISTANCE) {
 							avg_fuel1 = Float.valueOf(jsonArray
 									.getJSONObject(i).getString(
 											"total_distance"));
 
+							System.out.println("DISTANCE = " + jsonArray
+									.getJSONObject(i).getString("total_distance"));
 						} else {
 							avg_fuel1 = Float.valueOf(jsonArray
+									.getJSONObject(i).getString("avg_fuel"));
+
+
+							System.out.println("avg_fuel = " + jsonArray
 									.getJSONObject(i).getString("avg_fuel"));
 						}
 						int rcv_day = Integer.valueOf(jsonArray
