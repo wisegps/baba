@@ -22,10 +22,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -89,6 +91,15 @@ public class SearchMapActivity extends Activity {
 		mPoiSearch = PoiSearch.newInstance();
 		mPoiSearch.setOnGetPoiSearchResultListener(poiListener);
 
+		TextView name = (TextView) findViewById(R.id.name);
+		name.setText(keyWord);
+
+		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
 		getCarLocation();
 		if (keyWord.equals("4S店")) {
 			// 4S店数据去自己服务器读取
@@ -100,8 +111,9 @@ public class SearchMapActivity extends Activity {
 				String url = Constant.BaseUrl + "base/dealer?city="
 						+ URLEncoder.encode(City, "UTF-8") + "&brand="
 						+ URLEncoder.encode(car_brand, "UTF-8") + "&lon="
-						+ getIntent().getDoubleExtra("longitude", 0) + "&lat=" + getIntent().getDoubleExtra("latitude", 0) + "&cust_id="
-						+ Variable.cust_id;
+						+ getIntent().getDoubleExtra("longitude", 0) + "&lat="
+						+ getIntent().getDoubleExtra("latitude", 0)
+						+ "&cust_id=" + Variable.cust_id;
 				new Thread(new NetThread.GetDataThread(handler, url, get4s))
 						.start();
 			} catch (UnsupportedEncodingException e) {
@@ -370,7 +382,7 @@ public class SearchMapActivity extends Activity {
 			return true;
 		}
 	}
-	
+
 	boolean isFirstLoc = true;
 
 	private class MyLocationListenner implements BDLocationListener {

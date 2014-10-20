@@ -26,6 +26,7 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Stroke;
+import com.baidu.mapapi.map.Text;
 import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
@@ -250,6 +251,7 @@ public class CarLocationActivity extends Activity {
 
 	CheckBox bt_alarm_in, bt_alarm_out;
 	double fence_lat, fence_lon;
+	TextView fence_distance_date;
 
 	/**
 	 * TODO 显示围栏
@@ -276,6 +278,8 @@ public class CarLocationActivity extends Activity {
 		bt_alarm_out = (CheckBox) popunwindwow.findViewById(R.id.bt_alarm_out);
 		fence_distance = (SeekBar) popunwindwow
 				.findViewById(R.id.fence_distance);
+		fence_distance_date = (TextView) popunwindwow
+				.findViewById(R.id.fence_distance_date);
 
 		if (carData.getGeofence() != null
 				&& !carData.getGeofence().equals("null")) {
@@ -294,7 +298,8 @@ public class CarLocationActivity extends Activity {
 					bt_alarm_out.setChecked(true);
 				}
 				fence_distance.setProgress((int) (distance / 1000) - 1);
-				setText(distance);
+				fence_distance_date.setText(distance + "km");
+				// setText(distance);
 				getRange();
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -317,9 +322,10 @@ public class CarLocationActivity extends Activity {
 					public void onProgressChanged(SeekBar seekBar,
 							int progress, boolean fromUser) {
 						distance = (fence_distance.getProgress() + 1) * 1000;
+						fence_distance_date.setText(distance + "km");
 						mMapView.getMap().clear();
 						getRange();
-						setText(distance);
+						// setText(distance);
 					}
 				});
 
@@ -402,13 +408,13 @@ public class CarLocationActivity extends Activity {
 
 	/** 添加文字 **/
 	private void setText(int distance) {
-		int px = DensityUtil.dip2px(CarLocationActivity.this, 18);
-		LatLng llText = new LatLng(latitude, longitude);
+		int px = DensityUtil.dip2px(CarLocationActivity.this, 25);
+		// LatLng llText = new LatLng(latitude, longitude);
+		LatLng llText = new LatLng(fence_lat, fence_lon);
 		OverlayOptions ooText = new TextOptions()
-				.align(TextOptions.ALIGN_LEFT,
-						TextOptions.ALIGN_CENTER_VERTICAL).fontSize(px)
-				.fontColor(0xFFFF0000).text("    " + distance / 1000 + "km")
-				.position(llText);
+				.align(TextOptions.ALIGN_BOTTOM, 500).fontSize(px)
+				.fontColor(getResources().getColor(R.color.white))
+				.text("    " + distance / 1000 + "km").position(llText);
 		mBaiduMap.addOverlay(ooText);
 	}
 
