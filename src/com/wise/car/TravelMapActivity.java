@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
+import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
 import com.baidu.location.BDLocation;
@@ -57,7 +58,6 @@ public class TravelMapActivity extends Activity {
 
 	MapView mMapView = null;
 	BaiduMap mBaiduMap;
-	// MapController mMapController = null;
 	List<Overlay> overlays;
 	ProgressDialog Dialog = null; // progress
 	int device = 4;
@@ -76,13 +76,13 @@ public class TravelMapActivity extends Activity {
 		iv_activity_travel_share.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_travel_map);
 		mBaiduMap = mMapView.getMap();
-
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
 		int index = getIntent().getIntExtra("index", 0);
 		LatLng circle = new LatLng(Variable.carDatas.get(index).getLat(),
 				Variable.carDatas.get(index).getLon());
 		// 构建Marker图标
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
-				.fromResource(R.drawable.icon_place);
+				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
 		OverlayOptions option_1 = new MarkerOptions().anchor(0.5f, 1.0f)
 				.position(circle).icon(bitmap);
@@ -114,8 +114,8 @@ public class TravelMapActivity extends Activity {
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		intent = getIntent();
-		tv_travel_startPlace.setText("起点:"+intent.getStringExtra("Start_place"));
-		tv_travel_stopPlace.setText("终点:"+intent.getStringExtra("End_place"));
+		tv_travel_startPlace.setText(intent.getStringExtra("Start_place"));
+		tv_travel_stopPlace.setText(intent.getStringExtra("End_place"));
 		tv_travel_startTime.setText(intent.getStringExtra("StartTime")
 				.substring(10, 16));
 		tv_travel_stopTime.setText(intent.getStringExtra("StopTime").substring(
@@ -152,10 +152,6 @@ public class TravelMapActivity extends Activity {
 				break;
 			case R.id.iv_activity_travel_share:
 				// TODO 截图
-				// Toast.makeText(TravelMapActivity.this,R.string.travel_map_urrent,
-				// Toast.LENGTH_LONG).show();
-				// boolean isCurrent = mMapView.getCurrentMap();
-				// System.out.println("isCurrent = " + isCurrent);
 				mBaiduMap.snapshot(new SnapshotReadyCallback() {
 					public void onSnapshotReady(Bitmap snapshot) {
 						File file = new File("/mnt/sdcard/test.png");
@@ -163,13 +159,25 @@ public class TravelMapActivity extends Activity {
 						try {
 							out = new FileOutputStream(file);
 							if (snapshot.compress(Bitmap.CompressFormat.PNG,
-									100, out)) {
+									80, out)) {
 								out.flush();
 								out.close();
 							}
-							Toast.makeText(TravelMapActivity.this,
-									"屏幕截图成功，图片存在: " + file.toString(),
-									Toast.LENGTH_SHORT).show();
+							String imagePath = "/mnt/sdcard/test.png";
+							 StringBuffer sb = new StringBuffer();
+							 sb.append("【行程】");
+							 sb.append(intent.getStringExtra("StartTime").substring(5, 16));
+							 sb.append(" 从" + intent.getStringExtra("Start_place"));
+							 sb.append("到" + intent.getStringExtra("End_place"));
+							 sb.append("，共行驶" + intent.getStringExtra("SpacingDistance"));
+							 sb.append("公里，耗时" + intent.getStringExtra("SpacingTime"));
+							 sb.append("，" + intent.getStringExtra("Oil"));
+							 sb.append("，" + intent.getStringExtra("Cost"));
+							 sb.append("，" + intent.getStringExtra("AverageOil"));
+							 sb.append("，" + intent.getStringExtra("Speed"));
+							 System.out.println(sb.toString());
+							 GetSystem.share(TravelMapActivity.this, sb.toString(), imagePath,
+							 0, 0, "行程", "");
 						} catch (FileNotFoundException e) {
 							e.printStackTrace();
 						} catch (IOException e) {
@@ -267,47 +275,6 @@ public class TravelMapActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
-
-	// // TODO 截图回调
-	// MKMapViewListener mkMapViewListener = new MKMapViewListener() {
-	// @Override
-	// public void onMapMoveFinish() {
-	// }
-	//
-	// @Override
-	// public void onMapLoadFinish() {
-	// }
-	//
-	// @Override
-	// public void onMapAnimationFinish() {
-	// }
-	//
-	// @Override
-	// public void onGetCurrentMap(Bitmap arg0) {
-	// System.out.println("截取成功");
-	// GetSystem.saveImageSD(arg0, Constant.picPath, Constant.ShareImage,
-	// 50);
-	// String imagePath = Constant.picPath + Constant.ShareImage;
-	// StringBuffer sb = new StringBuffer();
-	// sb.append("【行程】");
-	// sb.append(intent.getStringExtra("StartTime").substring(5, 16));
-	// sb.append(" 从" + intent.getStringExtra("Start_place"));
-	// sb.append("到" + intent.getStringExtra("End_place"));
-	// sb.append("，共行驶" + intent.getStringExtra("SpacingDistance"));
-	// sb.append("公里，耗时" + intent.getStringExtra("SpacingTime"));
-	// sb.append("，" + intent.getStringExtra("Oil"));
-	// sb.append("，" + intent.getStringExtra("Cost"));
-	// sb.append("，" + intent.getStringExtra("AverageOil"));
-	// sb.append("，" + intent.getStringExtra("Speed"));
-	// System.out.println(sb.toString());
-	// GetSystem.share(TravelMapActivity.this, sb.toString(), imagePath,
-	// 0, 0, "行程", "");
-	// }
-	//
-	// @Override
-	// public void onClickMapPoi(MapPoi arg0) {
-	// }
-	// };
 
 	@Override
 	protected void onDestroy() {

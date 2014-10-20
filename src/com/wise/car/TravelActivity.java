@@ -205,7 +205,7 @@ public class TravelActivity extends Activity {
 			Gas_no = Variable.carDatas.get(index).getGas_no();
 		}
 		try {
-			url = Constant.BaseUrl + "device/4/trip?auth_code="
+			url = Constant.BaseUrl + "device/" + Variable.carDatas.get(index).getDevice_id() + "/trip?auth_code="
 					+ Variable.auth_code + "&day=" + Date + "&city="
 					+ URLEncoder.encode(Variable.City, "UTF-8") + "&gas_no="
 					+ Gas_no;
