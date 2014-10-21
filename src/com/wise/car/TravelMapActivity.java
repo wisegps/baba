@@ -100,16 +100,16 @@ public class TravelMapActivity extends Activity {
 		String StartTime = intent.getStringExtra("StartTime");
 		String StopTime = intent.getStringExtra("StopTime");
 
-			try {
-				String url = Constant.BaseUrl + "device/" + device
-						+ "/gps_data?auth_code=" + Variable.auth_code
-						+ "&start_time=" + URLEncoder.encode(StartTime, "UTF-8")
-						+ "&end_time=" + URLEncoder.encode(StopTime, "UTF-8");
-				new NetThread.GetDataThread(handler, url, get_data).start();
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-		
+		try {
+			String url = Constant.BaseUrl + "device/" + device
+					+ "/gps_data?auth_code=" + Variable.auth_code
+					+ "&start_time=" + URLEncoder.encode(StartTime, "UTF-8")
+					+ "&end_time=" + URLEncoder.encode(StopTime, "UTF-8");
+			new NetThread.GetDataThread(handler, url, get_data).start();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -188,11 +188,7 @@ public class TravelMapActivity extends Activity {
 				LatLng ll = new LatLng(Lat, Lon);
 				points.add(ll);
 			}
-			if (points.size() > 2) {
-				OverlayOptions ooPolyline = new PolylineOptions().width(5)
-						.color(0xAAFF0000).points(points);
-				mBaiduMap.addOverlay(ooPolyline);
-			}
+
 			if (points.size() > 0) {
 				// 构建Marker图标
 				BitmapDescriptor bitmap = BitmapDescriptorFactory
@@ -217,6 +213,11 @@ public class TravelMapActivity extends Activity {
 						.icon(bitmap_end);
 				// 在地图上添加Marker，并显示
 				mBaiduMap.addOverlay(end);
+			}
+			if (points.size() > 2) {
+				OverlayOptions ooPolyline = new PolylineOptions().width(5)
+						.color(0xAAFF0000).points(points);
+				mBaiduMap.addOverlay(ooPolyline);
 			}
 
 		} catch (JSONException e) {

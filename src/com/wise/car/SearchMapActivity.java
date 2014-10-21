@@ -291,12 +291,14 @@ public class SearchMapActivity extends Activity {
 				overlay.addToMap();
 				overlay.zoomToSpan();
 				String str = "";// 用户判断是否已经收藏
-				for (PoiInfo mkPoiInfo : result.getAllPoi()) {
+				PoiInfo mkPoiInfo = null;
+				for (int i = 0; i < result.getAllPoi().size(); i++) {
+					mkPoiInfo = result.getAllPoi().get(i);
 					int distance = (int) DistanceUtil.getDistance(new LatLng(
 							carData.getLat(), carData.getLon()),
 							mkPoiInfo.location);
 					AdressData adressData = new AdressData();
-					adressData.setName(mkPoiInfo.name);
+					adressData.setName((i + 1) + "." + mkPoiInfo.name);
 					adressData.setAdress(mkPoiInfo.address);
 					adressData.setPhone(mkPoiInfo.phoneNum);
 					adressData.setLat(mkPoiInfo.location.latitude);

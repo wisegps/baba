@@ -184,7 +184,7 @@ public class CarLocationActivity extends Activity {
 				CarLocationActivity.this);
 		builder.setTitle("寻车").setMessage("是否进行路径导航？");
 
-		builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				LatLng startLocat = new LatLng(latitude, longitude);
@@ -205,7 +205,7 @@ public class CarLocationActivity extends Activity {
 				}
 			}
 		});
-		builder.setPositiveButton("取消", null);
+		builder.setNegativeButton("取消", null);
 		builder.create().show();
 	}
 
