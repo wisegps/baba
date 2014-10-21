@@ -204,10 +204,11 @@ public class TravelActivity extends Activity {
 			Gas_no = Variable.carDatas.get(index).getGas_no();
 		}
 		try {
-			url = Constant.BaseUrl + "device/" + Variable.carDatas.get(index).getDevice_id() + "/trip?auth_code="
-					+ Variable.auth_code + "&day=" + Date + "&city="
-					+ URLEncoder.encode(Variable.City, "UTF-8") + "&gas_no="
-					+ Gas_no;
+			url = Constant.BaseUrl + "device/"
+					+ Variable.carDatas.get(index).getDevice_id()
+					+ "/trip?auth_code=" + Variable.auth_code + "&day=" + Date
+					+ "&city=" + URLEncoder.encode(Variable.City, "UTF-8")
+					+ "&gas_no=" + Gas_no;
 			new Thread(new NetThread.GetDataThread(handler, url, get_data))
 					.start();
 		} catch (UnsupportedEncodingException e) {
@@ -329,7 +330,8 @@ public class TravelActivity extends Activity {
 							.getSpeed());
 					intent.putExtra("Cost", travelDatas.get(position).getCost());
 					intent.putExtra("index", index);
-					intent.putExtra("device", Variable.carDatas.get(index).getDevice_id());
+					intent.putExtra("device", Variable.carDatas.get(index)
+							.getDevice_id());
 					TravelActivity.this.startActivity(intent);
 				}
 			});
