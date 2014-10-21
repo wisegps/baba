@@ -298,7 +298,7 @@ public class CarLocationActivity extends Activity {
 					bt_alarm_out.setChecked(true);
 				}
 				fence_distance.setProgress((int) (distance / 1000) - 1);
-				fence_distance_date.setText(distance + "km");
+				fence_distance_date.setText(distance / 1000 + "km");
 				// setText(distance);
 				getRange();
 			} catch (JSONException e) {
@@ -322,7 +322,7 @@ public class CarLocationActivity extends Activity {
 					public void onProgressChanged(SeekBar seekBar,
 							int progress, boolean fromUser) {
 						distance = (fence_distance.getProgress() + 1) * 1000;
-						fence_distance_date.setText(distance + "km");
+						fence_distance_date.setText(distance / 1000 + "km");
 						mMapView.getMap().clear();
 						getRange();
 						// setText(distance);
@@ -558,9 +558,9 @@ public class CarLocationActivity extends Activity {
 		public void onGetDrivingRouteResult(DrivingRouteResult result) {
 			DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaiduMap);
 			mBaiduMap.setOnMarkerClickListener(overlay);
-            overlay.setData(result.getRouteLines().get(0));
-            overlay.addToMap();
-            //overlay.zoomToSpan();
+			overlay.setData(result.getRouteLines().get(0));
+			overlay.addToMap();
+			// overlay.zoomToSpan();
 		}
 	};
 
