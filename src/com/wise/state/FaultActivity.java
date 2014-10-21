@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
 import pubclas.Constant;
+import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
@@ -224,6 +225,7 @@ public class FaultActivity extends FragmentActivity {
 		new CycleNstvThread().start();
 
 		UmengUpdateAgent.update(this);
+		GetLocation getLocation = new GetLocation(FaultActivity.this);
 	}
 
 	/**
