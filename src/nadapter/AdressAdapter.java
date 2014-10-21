@@ -156,9 +156,7 @@ public class AdressAdapter extends BaseAdapter{
 			public void onClick(View v) {
 				LatLng pt1 = new LatLng(Variable.Lat, Variable.Lon);
 				LatLng pt2 = new LatLng(adressData.getLat(), adressData.getLon());
-				//GeoPoint point = new GeoPoint((int) (Variable.Lat * 1E6),(int) (Variable.Lon * 1E6));
-				//LatLng point1 = new GeoPoint((int) (adressData.getLat() * 1E6),(int) (adressData.getLon() * 1E6));
-                GetSystem.FindCar(mActivity, pt1, pt2, "point", "point1");
+				GetSystem.FindCar(mActivity, pt1, pt2, "point", "point1");
 			}
 		});
         //拨打电话

@@ -26,21 +26,17 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Stroke;
-import com.baidu.mapapi.map.Text;
 import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.NaviPara;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
-import com.baidu.mapapi.overlayutil.TransitRouteOverlay;
-import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
 import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
-import com.baidu.mapapi.search.route.TransitRoutePlanOption;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.utils.DistanceUtil;
@@ -131,18 +127,10 @@ public class CarLocationActivity extends Activity {
 				break;
 			case R.id.bt_location_findCar:// TODO 寻车,客户端导航
 				LatLng carLocat = new LatLng(carData.getLat(), carData.getLon());
-				// 构建Marker图标
-				BitmapDescriptor bitmap = BitmapDescriptorFactory
-						.fromResource(R.drawable.icon_place);
-				// 构建MarkerOption，用于在地图上添加Marker
-				OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
-						.position(carLocat).icon(bitmap);
-				// 在地图上添加Marker，并显示
-				mBaiduMap.addOverlay(option);
 				// 定位以车辆为中心
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(carLocat);
 				mBaiduMap.animateMapStatus(u);
-				showDialog();
+				setTransitRoute(ll, circle);
 				break;
 			case R.id.bt_location_travel:// 行程
 				Intent i = new Intent(CarLocationActivity.this,
@@ -436,7 +424,6 @@ public class CarLocationActivity extends Activity {
 		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 				.newMapStatus(mapStatus);
 		mBaiduMap.setMapStatus(mapStatusUpdate);
-		setTransitRoute(ll, circle);
 	}
 
 	Handler handler = new Handler() {
@@ -510,6 +497,8 @@ public class CarLocationActivity extends Activity {
 				return;
 			latitude = location.getLatitude();
 			longitude = location.getLongitude();
+			Variable.Lat = latitude;
+			Variable.Lon = longitude;
 			MyLocationData locData = new MyLocationData.Builder()
 					.accuracy(location.getRadius())
 					// 此处设置开发者获取到的方向信息，顺时针0-360
@@ -522,7 +511,6 @@ public class CarLocationActivity extends Activity {
 				LatLng carLocat = new LatLng(carData.getLat(), carData.getLon());
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(carLocat);
 				mBaiduMap.animateMapStatus(u);
-				setTransitRoute(ll, circle);
 			}
 		}
 
@@ -560,7 +548,8 @@ public class CarLocationActivity extends Activity {
 			mBaiduMap.setOnMarkerClickListener(overlay);
 			overlay.setData(result.getRouteLines().get(0));
 			overlay.addToMap();
-			// overlay.zoomToSpan();
+			//overlay.zoomToSpan();
+			showDialog();
 		}
 	};
 
