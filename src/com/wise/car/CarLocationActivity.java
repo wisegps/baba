@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.DensityUtil;
+import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.Variable;
 import com.baidu.location.BDLocation;
@@ -51,6 +52,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,6 +82,9 @@ public class CarLocationActivity extends Activity {
 	LocationClient mLocClient;
 	public MyLocationListenner myListener = new MyLocationListenner();
 	RoutePlanSearch mSearch = null;
+
+	/** 获取gps信息 **/
+	private static final int get_gps = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +122,30 @@ public class CarLocationActivity extends Activity {
 		ll_location_bottom = (LinearLayout) findViewById(R.id.ll_location_bottom);
 		mSearch = RoutePlanSearch.newInstance();
 		mSearch.setOnGetRoutePlanResultListener(onGetRoutePlanResultListener);
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (isStop) {
+					// 获取gps信息
+					try {
+						Thread.sleep(30000);
+						String gpsUrl = Constant.BaseUrl + "device/"
+								+ carData.getDevice_id()
+								+ "/active_gps_data?auth_code="
+								+ Variable.auth_code
+								+ "&update_time=2014-01-01%2019:06:43";
+						new NetThread.GetDataThread(handler, gpsUrl, get_gps,
+								index).start();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
 	}
+
+	boolean isStop = true;
 
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
@@ -446,9 +475,30 @@ public class CarLocationActivity extends Activity {
 				mPopupWindow.dismiss();
 				carData.setGeofence(null);
 				break;
+			case get_gps:
+				jsonGps(msg.obj.toString());
+				break;
 			}
 		}
 	};
+
+	/** 获取GPS信息 **/
+	private void jsonGps(String str) {
+		if (!isStop) {
+			return;
+		}
+		try {
+			JSONObject jsonObject = new JSONObject(str)
+					.getJSONObject("active_gps_data");
+			double lat = jsonObject.getDouble("lat");
+			double lon = jsonObject.getDouble("lon");
+			carData.setLat(lat);
+			carData.setLon(lon);
+			getCarLocation();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * 弹出popupwindow 显示周边
@@ -548,7 +598,7 @@ public class CarLocationActivity extends Activity {
 			mBaiduMap.setOnMarkerClickListener(overlay);
 			overlay.setData(result.getRouteLines().get(0));
 			overlay.addToMap();
-			//overlay.zoomToSpan();
+			// overlay.zoomToSpan();
 			showDialog();
 		}
 	};
@@ -562,6 +612,7 @@ public class CarLocationActivity extends Activity {
 		mBaiduMap.setMyLocationEnabled(false);
 		mMapView.onDestroy();
 		mMapView = null;
+		isStop = false;
 	}
 
 	@Override
