@@ -162,8 +162,8 @@ public class TravelActivity extends Activity {
 					travelData.setSpacingDistance(jsonObject2
 							.getString("cur_distance"));
 					travelData.setAverageOil("百公里油耗："
-							+ jsonObject2.getString("cur_fuel") + "L");
-					travelData.setOil("油耗：" + jsonObject2.getString("avg_fuel")
+							+ jsonObject2.getString("avg_fuel") + "L");
+					travelData.setOil("油耗：" + jsonObject2.getString("cur_fuel")
 							+ "L");
 					travelData.setSpeed("平均速度："
 							+ jsonObject2.getString("avg_speed") + "km/h");
