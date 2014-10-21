@@ -27,6 +27,8 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
+import com.baidu.mapapi.model.LatLngBounds.Builder;
 import com.wise.baba.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -178,6 +180,7 @@ public class TravelMapActivity extends Activity {
 
 	private void jsonData(String result) {
 		try {
+			LatLngBounds.Builder builder = new Builder();
 			// 添加折线
 			List<LatLng> points = new ArrayList<LatLng>();
 			JSONArray jsonArray = new JSONArray(result);
@@ -187,7 +190,12 @@ public class TravelMapActivity extends Activity {
 				double Lon = Double.valueOf(jsonObject.getString("lon"));
 				LatLng ll = new LatLng(Lat, Lon);
 				points.add(ll);
+				builder.include(ll);
 			}
+			LatLngBounds bounds = builder.build();
+			MapStatusUpdate u1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
+			mBaiduMap.animateMapStatus(u1);
+
 
 			if (points.size() > 0) {
 				// 构建Marker图标
@@ -198,10 +206,6 @@ public class TravelMapActivity extends Activity {
 						.position(points.get(0)).icon(bitmap);
 				// 在地图上添加Marker，并显示
 				mBaiduMap.addOverlay(start);
-
-				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(points
-						.get(0));
-				mBaiduMap.animateMapStatus(u);
 			}
 			if (points.size() > 1) {
 				// 构建Marker图标
@@ -214,6 +218,8 @@ public class TravelMapActivity extends Activity {
 				// 在地图上添加Marker，并显示
 				mBaiduMap.addOverlay(end);
 			}
+			
+
 			if (points.size() > 2) {
 				OverlayOptions ooPolyline = new PolylineOptions().width(5)
 						.color(0xAAFF0000).points(points);

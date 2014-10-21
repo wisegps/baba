@@ -298,7 +298,7 @@ public class SearchMapActivity extends Activity {
 							carData.getLat(), carData.getLon()),
 							mkPoiInfo.location);
 					AdressData adressData = new AdressData();
-					adressData.setName((i + 1) + "." + mkPoiInfo.name);
+					adressData.setName((i + 1) + "。" + mkPoiInfo.name);
 					adressData.setAdress(mkPoiInfo.address);
 					adressData.setPhone(mkPoiInfo.phoneNum);
 					adressData.setLat(mkPoiInfo.location.latitude);
