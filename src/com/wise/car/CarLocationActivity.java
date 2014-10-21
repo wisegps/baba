@@ -23,6 +23,7 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
@@ -135,8 +136,7 @@ public class CarLocationActivity extends Activity {
 								+ "/active_gps_data?auth_code="
 								+ Variable.auth_code
 								+ "&update_time=2014-01-01%2019:06:43";
-						new NetThread.GetDataThread(handler, gpsUrl, get_gps,
-								index).start();
+						new NetThread.GetDataThread(handler, gpsUrl, get_gps).start();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -436,10 +436,18 @@ public class CarLocationActivity extends Activity {
 	}
 
 	LatLng circle;
-
+	Marker carMarker = null;
 	// 当前车辆位子
 	private void getCarLocation() {
 		circle = new LatLng(carData.getLat(), carData.getLon());
+		if(carMarker != null){
+			carMarker.remove();
+		}else{
+			MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
+			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
+					.newMapStatus(mapStatus);
+			mBaiduMap.setMapStatus(mapStatusUpdate);
+		}
 		// 构建Marker图标
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.body_icon_location2);
@@ -447,12 +455,7 @@ public class CarLocationActivity extends Activity {
 		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
 				.position(circle).icon(bitmap);
 		// 在地图上添加Marker，并显示
-		mBaiduMap.addOverlay(option);
-
-		MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
-		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
-				.newMapStatus(mapStatus);
-		mBaiduMap.setMapStatus(mapStatusUpdate);
+		carMarker = (Marker)(mBaiduMap.addOverlay(option));		
 	}
 
 	Handler handler = new Handler() {
