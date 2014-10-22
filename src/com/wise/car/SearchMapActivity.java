@@ -122,8 +122,9 @@ public class SearchMapActivity extends Activity {
 			}
 		} else {
 			// 搜索关键字
-			mPoiSearch.searchNearby((new PoiNearbySearchOption()).keyword(
-					key).location(new LatLng(carData.getLat(), carData.getLon())).radius(5000));
+			mPoiSearch.searchNearby((new PoiNearbySearchOption()).keyword(key)
+					.location(new LatLng(carData.getLat(), carData.getLon()))
+					.radius(5000));
 		}
 
 		lv_activity_search_map = (ListView) findViewById(R.id.lv_activity_search_map);
@@ -222,22 +223,23 @@ public class SearchMapActivity extends Activity {
 					adressData.setIs_collect(false);
 				}
 				adressDatas.add(adressData);
-				LatLng latLng = new LatLng(adressDatas.get(i).getLat(),adressDatas.get(i).getLon());
+				LatLng latLng = new LatLng(adressDatas.get(i).getLat(),
+						adressDatas.get(i).getLon());
 				OverlayOptions marker;
-				//图片名称
-				String imagePath = "Icon_mark"+(i+1)+".png";
+				// 图片名称
+				String imagePath = "Icon_mark" + (i + 1) + ".png";
 				try {
-					//百度jar包里的图片
-					Bitmap bitmap = BitmapFactory.decodeStream(SearchMapActivity.this.getAssets().open(imagePath));
-					marker = new MarkerOptions()
-					.position(latLng)
-					.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+					// 百度jar包里的图片
+					Bitmap bitmap = BitmapFactory
+							.decodeStream(SearchMapActivity.this.getAssets()
+									.open(imagePath));
+					marker = new MarkerOptions().position(latLng).icon(
+							BitmapDescriptorFactory.fromBitmap(bitmap));
 				} catch (IOException e) {
 					e.printStackTrace();
-					marker = new MarkerOptions()
-					.position(latLng)
-					.icon(BitmapDescriptorFactory
-							.fromResource(R.drawable.body_icon_outset));
+					marker = new MarkerOptions().position(latLng).icon(
+							BitmapDescriptorFactory
+									.fromResource(R.drawable.body_icon_outset));
 				}
 				mBaiduMap.addOverlay(marker);
 				builder.include(latLng);
