@@ -20,7 +20,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -40,24 +39,23 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
+import com.baidu.mapapi.model.LatLngBounds.Builder;
 import com.baidu.mapapi.overlayutil.PoiOverlay;
 import com.baidu.mapapi.search.core.CityInfo;
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
 import com.baidu.mapapi.search.poi.PoiDetailResult;
-import com.baidu.mapapi.search.poi.PoiDetailSearchOption;
 import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.wise.baba.R;
-
 import data.AdressData;
 import data.CarData;
 
@@ -179,12 +177,6 @@ public class SearchMapActivity extends Activity {
 				.position(circle).icon(bitmap);
 		// 在地图上添加Marker，并显示
 		mBaiduMap.addOverlay(option);
-
-		MapStatus mapStatus = new MapStatus.Builder().target(circle).zoom(18)
-				.build();
-		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
-				.newMapStatus(mapStatus);
-		mBaiduMap.setMapStatus(mapStatusUpdate);
 	}
 
 	Handler handler = new Handler() {
@@ -208,12 +200,13 @@ public class SearchMapActivity extends Activity {
 
 	private void jsonDealAdress(String result) {
 		try {
+			LatLngBounds.Builder builder = new Builder();
 			JSONArray jsonArray = new JSONArray(result);
 			for (int i = 0; i < jsonArray.length(); i++) {// TODO
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				AdressData adressData = new AdressData();
 				adressData.setAdress(jsonObject.getString("address"));
-				adressData.setName(jsonObject.getString("name"));
+				adressData.setName((i+1)+". "+jsonObject.getString("name"));
 				adressData.setPhone(jsonObject.getString("tel"));
 				adressData.setLat(jsonObject.getDouble("lat"));
 				adressData.setLon(jsonObject.getDouble("lon"));
@@ -226,15 +219,18 @@ public class SearchMapActivity extends Activity {
 					adressData.setIs_collect(false);
 				}
 				adressDatas.add(adressData);
+				LatLng latLng = new LatLng(adressDatas.get(i).getLat(),
+						adressDatas.get(i).getLon());
 				OverlayOptions marker = new MarkerOptions()
-						.position(
-								new LatLng(adressDatas.get(i).getLat(),
-										adressDatas.get(i).getLon()))
-						.zIndex(9)
+						.position(latLng)
 						.icon(BitmapDescriptorFactory
-								.fromResource(R.drawable.body_icon_location2));
+								.fromResource(R.drawable.body_icon_outset));
 				mBaiduMap.addOverlay(marker);
+				builder.include(latLng);
 			}
+			LatLngBounds bounds = builder.build();
+			MapStatusUpdate u1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
+			mBaiduMap.animateMapStatus(u1);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -285,7 +281,7 @@ public class SearchMapActivity extends Activity {
 				return;
 			}
 			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
-				PoiOverlay overlay = new MyPoiOverlay(mBaiduMap);
+				PoiOverlay overlay = new PoiOverlay(mBaiduMap);
 				mBaiduMap.setOnMarkerClickListener(overlay);
 				overlay.setData(result);
 				overlay.addToMap();
@@ -307,7 +303,7 @@ public class SearchMapActivity extends Activity {
 					adressDatas.add(adressData);
 					str = str + mkPoiInfo.name + ",";
 				}
-				Collections.sort(adressDatas, new Comparator());// 排序
+				//Collections.sort(adressDatas, new Comparator());// 排序
 				adressAdapter.notifyDataSetChanged();
 				// 判断是否收藏
 				String url;
@@ -367,24 +363,6 @@ public class SearchMapActivity extends Activity {
 		}
 	}
 
-	private class MyPoiOverlay extends PoiOverlay {
-
-		public MyPoiOverlay(BaiduMap baiduMap) {
-			super(baiduMap);
-		}
-
-		@Override
-		public boolean onPoiClick(int index) {
-			super.onPoiClick(index);
-			PoiInfo poi = getPoiResult().getAllPoi().get(index);
-			// if (poi.hasCaterDetails) {
-			mPoiSearch.searchPoiDetail((new PoiDetailSearchOption())
-					.poiUid(poi.uid));
-			// }
-			return true;
-		}
-	}
-
 	boolean isFirstLoc = true;
 
 	private class MyLocationListenner implements BDLocationListener {
@@ -399,18 +377,13 @@ public class SearchMapActivity extends Activity {
 					.direction(100).latitude(location.getLatitude())
 					.longitude(location.getLongitude()).build();
 			mBaiduMap.setMyLocationData(locData);
-			if (isFirstLoc) {
-				isFirstLoc = false;
-				LatLng ll = new LatLng(location.getLatitude(),
-						location.getLongitude());
-				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
-				mBaiduMap.animateMapStatus(u);
-			}
-		}
-
-		public void onReceivePoi(BDLocation arg0) {
-			// TODO Auto-generated method stub
-
+//			if (isFirstLoc) {
+//				isFirstLoc = false;
+//				LatLng ll = new LatLng(location.getLatitude(),
+//						location.getLongitude());
+//				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
+//				mBaiduMap.animateMapStatus(u);
+//			}
 		}
 	}
 

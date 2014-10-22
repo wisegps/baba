@@ -30,9 +30,6 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
-import com.baidu.mapapi.navi.BaiduMapNavigation;
-import com.baidu.mapapi.navi.NaviPara;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
@@ -53,8 +50,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -191,7 +186,7 @@ public class CarLocationActivity extends Activity {
 				ToSearchMap("洗车美容");
 				break;
 			case R.id.tv_item_car_location_wash:// 洗车店
-				ToSearchMap("洗车店");
+				ToSearchMap("洗车");
 				break;
 
 			// 围栏监听
@@ -552,11 +547,6 @@ public class CarLocationActivity extends Activity {
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(carLocat);
 				mBaiduMap.animateMapStatus(u);
 			}
-		}
-
-		public void onReceivePoi(BDLocation arg0) {
-			// TODO Auto-generated method stub
-
 		}
 	}
 

@@ -45,11 +45,12 @@ public class GetSystem {
 	private static final String TAG = "GetSystem";
 
 	public static void myLog(String TAG, String Message) {
-		if(Constant.isLog){
+		if (Constant.isLog) {
 			Log.d(TAG, Message);
 		}
 	}
-	/**获取当前时间**/
+
+	/** 获取当前时间 **/
 	public static String GetNowTime() {
 		Time time = new Time();
 		time.setToNow();
@@ -63,7 +64,8 @@ public class GetSystem {
 				+ ":" + sec;
 		return str;
 	}
-	/**返回当前日期**/
+
+	/** 返回当前日期 **/
 	public static String GetNowDay() {
 		Time time = new Time();
 		time.setToNow();
@@ -73,6 +75,7 @@ public class GetSystem {
 		String str = year + "-" + month + "-" + day;
 		return str;
 	}
+
 	/**
 	 * 返回当前月份
 	 * 
@@ -95,6 +98,7 @@ public class GetSystem {
 
 	/**
 	 * 调整时间格式
+	 * 
 	 * @param 9
 	 * @return 09
 	 */
@@ -107,18 +111,19 @@ public class GetSystem {
 		}
 		return str;
 	}
-	/**车务提醒**/
+
+	/** 车务提醒 **/
 	public static int getWeekOfDate(String Date) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(sdf.parse(Date));
 			int intWeek = calendar.get(Calendar.DAY_OF_WEEK) - 2;
-			if(intWeek == -2){
+			if (intWeek == -2) {
 				return 5;
-			}else if(intWeek == -1){
+			} else if (intWeek == -1) {
 				return 6;
-			}else{
+			} else {
 				return intWeek;
 			}
 		} catch (Exception e) {
@@ -126,7 +131,7 @@ public class GetSystem {
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * 解决时区问题
 	 * 
@@ -146,7 +151,8 @@ public class GetSystem {
 			return "";
 		}
 	}
-	/**获取某一天在这个星期的起始和结束时间**/
+
+	/** 获取某一天在这个星期的起始和结束时间 **/
 	public static WeekData getWeek(String str) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -193,27 +199,29 @@ public class GetSystem {
 			return null;
 		}
 	}
+
 	/**
 	 * 获取某月最后一天
+	 * 
 	 * @param Month
 	 * @return
 	 */
-	public static String getMonthLastDay(String Month){
+	public static String getMonthLastDay(String Month) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
 			Calendar nowDate = Calendar.getInstance();
 			nowDate.setTime(sdf.parse(Month));
 			nowDate.get(Calendar.YEAR);
-			
+
 			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.YEAR, nowDate.get(Calendar.YEAR));   
-			calendar.set(Calendar.MONTH, nowDate.get(Calendar.MONTH));   
+			calendar.set(Calendar.YEAR, nowDate.get(Calendar.YEAR));
+			calendar.set(Calendar.MONTH, nowDate.get(Calendar.MONTH));
 			int endday = calendar.getActualMaximum(calendar.DAY_OF_MONTH);
 			return Month + "-" + endday;
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
+
 		return Month + "-31";
 	}
 
@@ -239,7 +247,6 @@ public class GetSystem {
 			return null;
 		}
 	}
-	
 
 	public static String GetNextYear(String Date, int year) {
 		try {
@@ -314,11 +321,11 @@ public class GetSystem {
 		}
 		return myDate;
 	}
-	
-	public static String jsTime(int Second){
-		if(Second > 60*60*24){
-			return "" + Second/(60*60*24);
-		}else{
+
+	public static String jsTime(int Second) {
+		if (Second > 60 * 60 * 24) {
+			return "" + Second / (60 * 60 * 24);
+		} else {
 			return "1";
 		}
 	}
@@ -331,16 +338,17 @@ public class GetSystem {
 	 */
 	public static String ProcessTime(int Second) {
 		if (Second < 60) {
-			//小于60秒
+			// 小于60秒
 			return "1分";
-		} else if(Second < 60*60){
-			//小于一个小时
-			return (Second/60) + "分钟";
+		} else if (Second < 60 * 60) {
+			// 小于一个小时
+			return (Second / 60) + "分钟";
 		} else {
-			return (Second / 3600) + "小时" ;
+			return (Second / 3600) + "小时";
 		}
 	}
-	public static int spacingTime(String lastTime , String nextTime){
+
+	public static int spacingTime(String lastTime, String nextTime) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
 			java.util.Date begin = sdf.parse(lastTime);
@@ -352,8 +360,9 @@ public class GetSystem {
 		}
 		return 0;
 	}
-	/**获取距当前时间间隙**/
-	public static int spacingNowTime(String Data){
+
+	/** 获取距当前时间间隙 **/
+	public static int spacingNowTime(String Data) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
 			java.util.Date begin = sdf.parse(Data);
@@ -365,21 +374,21 @@ public class GetSystem {
 		}
 		return 60;
 	}
-	/**实际显示的时间**/
-	public static String showData(int Second,String Data) {
-		if (Second < 60) {//小于60秒
+
+	/** 实际显示的时间 **/
+	public static String showData(int Second, String Data) {
+		if (Second < 60) {// 小于60秒
 			return Second + "秒前";
-		} else if(Second < 60*60){//小于一个小时
-			return (Second/60) + "分钟前";
-		} else if(Second < 60*60*24){
-			return (Second / 3600) + "小时前" ;
-		} else if(Second < 60*60*24*30){
-			return (Second / 86400) + "天前" ;
+		} else if (Second < 60 * 60) {// 小于一个小时
+			return (Second / 60) + "分钟前";
+		} else if (Second < 60 * 60 * 24) {
+			return (Second / 3600) + "小时前";
+		} else if (Second < 60 * 60 * 24 * 30) {
+			return (Second / 86400) + "天前";
 		}
 		return Data.substring(0, 10);
 	}
 
-	
 	/**
 	 * 首页时间显示
 	 * 
@@ -405,16 +414,17 @@ public class GetSystem {
 			return "";
 		}
 	}
-	
-	public static String getTime(String sk_time){
+
+	public static String getTime(String sk_time) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		try {			
+		try {
 			Time time = new Time();
 			time.setToNow();
 			String minute = ChangeTime(time.minute);
-			String hour = ChangeTime(time.hour);			
+			String hour = ChangeTime(time.hour);
 			java.util.Date begin = sdf.parse("2014-08-06 " + sk_time + ":00");
-			java.util.Date end = sdf.parse("2014-08-06 " + hour + ":" + minute + ":00");
+			java.util.Date end = sdf.parse("2014-08-06 " + hour + ":" + minute
+					+ ":00");
 			int l = (int) ((end.getTime() - begin.getTime()) / 1000);
 			return ProcessTime(Math.abs(l)) + "前更新";
 		} catch (ParseException e) {
@@ -422,8 +432,6 @@ public class GetSystem {
 		}
 		return "";
 	}
-	
-	
 
 	/**
 	 * 调用百度地图导航
@@ -434,44 +442,30 @@ public class GetSystem {
 	 * @param str1
 	 * @param str2
 	 */
-	public static void FindCar(final Activity mActivity, LatLng pt1, LatLng pt2,
-			String str1, String str2) {
-//		NaviPara para = new NaviPara();
-//		para.startPoint = pt1; // 起点坐标
-//		para.startName = str1;
-//		para.endPoint = pt2; // 终点坐标
-//		para.endName = str2;
-//		try {
-//			// 调起百度地图客户端导航功能,参数this为Activity。
-//			BaiduMapNavigation.openBaiduMapNavi(para, mActivity);
-//		} catch (BaiduMapAppNotSupportNaviException e) {
-//			// 在此处理异常
-//			Log.d(TAG, "未安装百度地图,开始web导航");
-//			BaiduMapNavigation.openWebBaiduMapNavi(para, mActivity);
-//		}
-		//这里给出一个起终点示例，实际应用中可以通过POI检索、外部POI来源等方式获取起终点坐标
-		System.out.println("开始导航" +pt1.latitude + " , " + pt2.latitude);
-				BaiduNaviManager.getInstance().launchNavigator(mActivity,
-						pt1.latitude, pt1.longitude,"", 
-						pt2.latitude, pt2.longitude,"北京天安门",
-						NE_RoutePlan_Mode.ROUTE_PLAN_MOD_MIN_TIME, 		 //算路方式
-						true, 									   		 //真实导航
-						BaiduNaviManager.STRATEGY_FORCE_ONLINE_PRIORITY, //在离线策略
-						new OnStartNavigationListener() {				 //跳转监听
-							
-							@Override
-							public void onJumpToNavigator(Bundle configParams) {
-								System.out.println("onJumpToNavigator");
-								Intent intent = new Intent(mActivity, BNavigatorActivity.class);
-								intent.putExtras(configParams);
-								mActivity.startActivity(intent);
-							}
-							
-							@Override
-							public void onJumpToDownloader() {
-								System.out.println("onJumpToDownloader");
-							}
-						});
+	public static void FindCar(final Activity mActivity, LatLng pt1,
+			LatLng pt2, String str1, String str2) {
+		System.out.println("开始导航" + pt1.latitude + " , " + pt2.latitude);
+		BaiduNaviManager.getInstance().launchNavigator(mActivity, pt1.latitude,
+				pt1.longitude, "", pt2.latitude, pt2.longitude, "",
+				NE_RoutePlan_Mode.ROUTE_PLAN_MOD_MIN_TIME, // 算路方式
+				true, // 真实导航
+				BaiduNaviManager.STRATEGY_FORCE_ONLINE_PRIORITY, // 在离线策略
+				new OnStartNavigationListener() { // 跳转监听
+
+					@Override
+					public void onJumpToNavigator(Bundle configParams) {
+						System.out.println("onJumpToNavigator");
+						Intent intent = new Intent(mActivity,
+								BNavigatorActivity.class);
+						intent.putExtras(configParams);
+						mActivity.startActivity(intent);
+					}
+
+					@Override
+					public void onJumpToDownloader() {
+						System.out.println("onJumpToDownloader");
+					}
+				});
 	}
 
 	/**
@@ -649,9 +643,6 @@ public class GetSystem {
 		}
 	}
 
-	
-	
-
 	/**
 	 * 分享
 	 * 
@@ -735,41 +726,44 @@ public class GetSystem {
 		}
 		return hexValue.toString();
 	}
+
 	/**
 	 * 获取音频文件时长
+	 * 
 	 * @param file
 	 * @return
 	 * @throws IOException
 	 */
-	public static long getAmrDuration(File file) throws IOException {  
-        long duration = -1;  
-        int[] packedSize = { 12, 13, 15, 17, 19, 20, 26, 31, 5, 0, 0, 0, 0, 0, 0, 0 };  
-        RandomAccessFile randomAccessFile = null;  
-        try {  
-            randomAccessFile = new RandomAccessFile(file, "rw");  
-            long length = file.length();//文件的长度  
-            int pos = 6;//设置初始位置  
-            int frameCount = 0;//初始帧数  
-            int packedPos = -1;  
-            /////////////////////////////////////////////////////  
-            byte[] datas = new byte[1];//初始数据值  
-            while (pos <= length) {  
-                randomAccessFile.seek(pos);  
-                if (randomAccessFile.read(datas, 0, 1) != 1) {  
-                    duration = length > 0 ? ((length - 6) / 650) : 0;  
-                    break;  
-                }  
-                packedPos = (datas[0] >> 3) & 0x0F;  
-                pos += packedSize[packedPos] + 1;  
-                frameCount++;  
-            }  
-            /////////////////////////////////////////////////////  
-            duration += frameCount * 20;//帧数*20  
-        } finally {  
-            if (randomAccessFile != null) {  
-                randomAccessFile.close();  
-            }  
-        }  
-        return duration;  
-    }  
+	public static long getAmrDuration(File file) throws IOException {
+		long duration = -1;
+		int[] packedSize = { 12, 13, 15, 17, 19, 20, 26, 31, 5, 0, 0, 0, 0, 0,
+				0, 0 };
+		RandomAccessFile randomAccessFile = null;
+		try {
+			randomAccessFile = new RandomAccessFile(file, "rw");
+			long length = file.length();// 文件的长度
+			int pos = 6;// 设置初始位置
+			int frameCount = 0;// 初始帧数
+			int packedPos = -1;
+			// ///////////////////////////////////////////////////
+			byte[] datas = new byte[1];// 初始数据值
+			while (pos <= length) {
+				randomAccessFile.seek(pos);
+				if (randomAccessFile.read(datas, 0, 1) != 1) {
+					duration = length > 0 ? ((length - 6) / 650) : 0;
+					break;
+				}
+				packedPos = (datas[0] >> 3) & 0x0F;
+				pos += packedSize[packedPos] + 1;
+				frameCount++;
+			}
+			// ///////////////////////////////////////////////////
+			duration += frameCount * 20;// 帧数*20
+		} finally {
+			if (randomAccessFile != null) {
+				randomAccessFile.close();
+			}
+		}
+		return duration;
+	}
 }

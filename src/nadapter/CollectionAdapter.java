@@ -1,6 +1,8 @@
 package nadapter;
 
 import java.util.List;
+
+import pubclas.GetSystem;
 import pubclas.Variable;
 
 import com.baidu.mapapi.model.LatLng;
@@ -8,6 +10,8 @@ import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.NaviPara;
 import com.wise.baba.R;
+import com.wise.car.CarLocationActivity;
+
 import customView.SlidingView;
 import data.AdressData;
 import android.app.Activity;
@@ -140,20 +144,6 @@ public class CollectionAdapter extends BaseAdapter {
     public void startNavi(double goLat, double goLon) {
         LatLng pt1 = new LatLng(currentLat, currentLon);
         LatLng pt2 = new LatLng(goLat, goLon);
-        // 构建 导航参数
-        NaviPara para = new NaviPara();
-        para.startPoint = pt1;
-        para.startName = "从这里开始";
-        para.endPoint = pt2;
-        para.endName = "到这里结束";
-
-        try {
-            BaiduMapNavigation.openBaiduMapNavi(para, (Activity) context);
-
-        } catch (BaiduMapAppNotSupportNaviException e) {
-            e.printStackTrace();
-            Log.d(TAG, "未安装百度地图,开始web导航");
-            BaiduMapNavigation.openWebBaiduMapNavi(para, (Activity) context);
-        }
+		GetSystem.FindCar((Activity) context, pt1, pt2, "", "");
     }
 }
