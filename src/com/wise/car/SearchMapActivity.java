@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -209,7 +208,8 @@ public class SearchMapActivity extends Activity {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				AdressData adressData = new AdressData();
 				adressData.setAdress(jsonObject.getString("address"));
-				adressData.setName((i+1)+". "+jsonObject.getString("name"));
+				adressData.setName((i + 1) + ". "
+						+ jsonObject.getString("name"));
 				adressData.setPhone(jsonObject.getString("tel"));
 				adressData.setLat(jsonObject.getDouble("lat"));
 				adressData.setLon(jsonObject.getDouble("lon"));
@@ -239,7 +239,6 @@ public class SearchMapActivity extends Activity {
 					.icon(BitmapDescriptorFactory
 							.fromResource(R.drawable.body_icon_outset));
 				}
-				
 				mBaiduMap.addOverlay(marker);
 				builder.include(latLng);
 			}
@@ -318,7 +317,7 @@ public class SearchMapActivity extends Activity {
 					adressDatas.add(adressData);
 					str = str + mkPoiInfo.name + ",";
 				}
-				//Collections.sort(adressDatas, new Comparator());// 排序
+				// Collections.sort(adressDatas, new Comparator());// 排序
 				adressAdapter.notifyDataSetChanged();
 				// 判断是否收藏
 				String url;
@@ -392,13 +391,13 @@ public class SearchMapActivity extends Activity {
 					.direction(100).latitude(location.getLatitude())
 					.longitude(location.getLongitude()).build();
 			mBaiduMap.setMyLocationData(locData);
-//			if (isFirstLoc) {
-//				isFirstLoc = false;
-//				LatLng ll = new LatLng(location.getLatitude(),
-//						location.getLongitude());
-//				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
-//				mBaiduMap.animateMapStatus(u);
-//			}
+			// if (isFirstLoc) {
+			// isFirstLoc = false;
+			// LatLng ll = new LatLng(location.getLatitude(),
+			// location.getLongitude());
+			// MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
+			// mBaiduMap.animateMapStatus(u);
+			// }
 		}
 	}
 

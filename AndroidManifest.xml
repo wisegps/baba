@@ -70,8 +70,8 @@
         </activity>
         <activity
             android:name=".BNavigatorActivity"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
             android:name=".ServiceActivity"
@@ -511,7 +511,7 @@
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="0QNTY4tnP9Tv6ghXpGa6XXOm" />
+            android:value="qfRNMbrcCCxi2zO4yGSdh2In" />
     </application>
 
 </manifest>
