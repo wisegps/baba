@@ -220,7 +220,7 @@ public class TravelMapActivity extends Activity {
 			}
 			
 
-			if (points.size() > 2) {
+			if (points.size() > 1) {
 				OverlayOptions ooPolyline = new PolylineOptions().width(5)
 						.color(0xAAFF0000).points(points);
 				mBaiduMap.addOverlay(ooPolyline);

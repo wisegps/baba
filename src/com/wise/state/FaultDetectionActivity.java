@@ -317,7 +317,12 @@ public class FaultDetectionActivity extends Activity {
 						break;
 					// 报险
 					case R.id.risk:
-						
+						String tel = Variable.carDatas.get(index)
+								.getMaintain_tel();
+						Log.e("my_log", "======>" + tel);
+						Intent in_2 = new Intent(Intent.ACTION_DIAL,
+								Uri.parse("tel:" + (tel != null ? tel : "")));
+						startActivity(in_2);
 						break;
 					// 问一下
 					case R.id.ask:
@@ -329,7 +334,8 @@ public class FaultDetectionActivity extends Activity {
 						Intent in = new Intent(FaultDetectionActivity.this,
 								SearchMapActivity.class);
 						in.putExtra("index", index);
-						in.putExtra("keyWord", "维修店");
+						intent.putExtra("keyWord", "维修店");
+						intent.putExtra("key", "汽车维修");
 						in.putExtra("latitude", 0);
 						in.putExtra("longitude", 0);
 						startActivity(in);
