@@ -173,7 +173,7 @@ public class SearchMapActivity extends Activity {
 		LatLng circle = new LatLng(carData.getLat(), carData.getLon());
 		// 构建Marker图标
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
-				.fromResource(R.drawable.icon_place);
+				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
 		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0)
 				.position(circle).icon(bitmap);
@@ -298,7 +298,7 @@ public class SearchMapActivity extends Activity {
 							carData.getLat(), carData.getLon()),
 							mkPoiInfo.location);
 					AdressData adressData = new AdressData();
-					adressData.setName((i + 1) + "。" + mkPoiInfo.name);
+					adressData.setName((i + 1) + ". " + mkPoiInfo.name);
 					adressData.setAdress(mkPoiInfo.address);
 					adressData.setPhone(mkPoiInfo.phoneNum);
 					adressData.setLat(mkPoiInfo.location.latitude);
@@ -408,7 +408,6 @@ public class SearchMapActivity extends Activity {
 			}
 		}
 
-		@Override
 		public void onReceivePoi(BDLocation arg0) {
 			// TODO Auto-generated method stub
 

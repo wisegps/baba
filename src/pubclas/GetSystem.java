@@ -22,16 +22,22 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.NaviPara;
+import com.baidu.navisdk.BaiduNaviManager;
+import com.baidu.navisdk.BaiduNaviManager.OnStartNavigationListener;
+import com.baidu.navisdk.comapi.routeplan.RoutePlanParams.NE_RoutePlan_Mode;
+import com.wise.baba.BNavigatorActivity;
 import com.wise.baba.R;
 import data.TimeData;
 import data.WeekData;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
 
@@ -428,21 +434,44 @@ public class GetSystem {
 	 * @param str1
 	 * @param str2
 	 */
-	public static void FindCar(Activity mActivity, LatLng pt1, LatLng pt2,
+	public static void FindCar(final Activity mActivity, LatLng pt1, LatLng pt2,
 			String str1, String str2) {
-		NaviPara para = new NaviPara();
-		para.startPoint = pt1; // 起点坐标
-		para.startName = str1;
-		para.endPoint = pt2; // 终点坐标
-		para.endName = str2;
-		try {
-			// 调起百度地图客户端导航功能,参数this为Activity。
-			BaiduMapNavigation.openBaiduMapNavi(para, mActivity);
-		} catch (BaiduMapAppNotSupportNaviException e) {
-			// 在此处理异常
-			Log.d(TAG, "未安装百度地图,开始web导航");
-			BaiduMapNavigation.openWebBaiduMapNavi(para, mActivity);
-		}
+//		NaviPara para = new NaviPara();
+//		para.startPoint = pt1; // 起点坐标
+//		para.startName = str1;
+//		para.endPoint = pt2; // 终点坐标
+//		para.endName = str2;
+//		try {
+//			// 调起百度地图客户端导航功能,参数this为Activity。
+//			BaiduMapNavigation.openBaiduMapNavi(para, mActivity);
+//		} catch (BaiduMapAppNotSupportNaviException e) {
+//			// 在此处理异常
+//			Log.d(TAG, "未安装百度地图,开始web导航");
+//			BaiduMapNavigation.openWebBaiduMapNavi(para, mActivity);
+//		}
+		//这里给出一个起终点示例，实际应用中可以通过POI检索、外部POI来源等方式获取起终点坐标
+		System.out.println("开始导航" +pt1.latitude + " , " + pt2.latitude);
+				BaiduNaviManager.getInstance().launchNavigator(mActivity,
+						pt1.latitude, pt1.longitude,"", 
+						pt2.latitude, pt2.longitude,"北京天安门",
+						NE_RoutePlan_Mode.ROUTE_PLAN_MOD_MIN_TIME, 		 //算路方式
+						true, 									   		 //真实导航
+						BaiduNaviManager.STRATEGY_FORCE_ONLINE_PRIORITY, //在离线策略
+						new OnStartNavigationListener() {				 //跳转监听
+							
+							@Override
+							public void onJumpToNavigator(Bundle configParams) {
+								System.out.println("onJumpToNavigator");
+								Intent intent = new Intent(mActivity, BNavigatorActivity.class);
+								intent.putExtras(configParams);
+								mActivity.startActivity(intent);
+							}
+							
+							@Override
+							public void onJumpToDownloader() {
+								System.out.println("onJumpToDownloader");
+							}
+						});
 	}
 
 	/**

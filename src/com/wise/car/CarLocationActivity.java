@@ -218,20 +218,7 @@ public class CarLocationActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				LatLng startLocat = new LatLng(latitude, longitude);
 				LatLng carLocat = new LatLng(carData.getLat(), carData.getLon());
-				// 构建 导航参数
-				NaviPara param = new NaviPara();
-				param.startPoint = startLocat;
-				param.startName = "";
-				param.endPoint = carLocat;
-				param.endName = "";
-				try {
-					BaiduMapNavigation.openBaiduMapNavi(param,
-							CarLocationActivity.this);
-				} catch (BaiduMapAppNotSupportNaviException e) {
-					e.printStackTrace();
-					BaiduMapNavigation.openWebBaiduMapNavi(param,
-							CarLocationActivity.this);
-				}
+				GetSystem.FindCar(CarLocationActivity.this, startLocat, carLocat, "", "");
 			}
 		});
 		builder.setNegativeButton("取消", null);
@@ -567,7 +554,6 @@ public class CarLocationActivity extends Activity {
 			}
 		}
 
-		@Override
 		public void onReceivePoi(BDLocation arg0) {
 			// TODO Auto-generated method stub
 
