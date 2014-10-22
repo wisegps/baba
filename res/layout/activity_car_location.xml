@@ -11,11 +11,11 @@
         android:background="@color/title_back" >
 
         <TextView
+            android:id="@+id/tv_car_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="车辆位置"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
 
@@ -93,8 +93,19 @@
         android:id="@+id/mv_car_location"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/ll_location_bottom"
         android:layout_below="@id/ll_main"
+        android:layout_above="@id/ll_location_bottom"
         android:clickable="true" />
 
+    <ImageView
+        android:id="@+id/iv_streetview" 
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/margins"
+        android:layout_marginRight="@dimen/margins"
+        android:layout_height="30dp"
+        android:layout_below="@id/ll_main"
+        android:scaleType="fitEnd"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:src="@drawable/streetview"/>
 </RelativeLayout>
