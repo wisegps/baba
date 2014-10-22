@@ -27,6 +27,8 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.Polyline;
+import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
@@ -81,14 +83,20 @@ public class CarLocationActivity extends Activity {
 
 	/** 获取gps信息 **/
 	private static final int get_gps = 1;
+	/**车辆轨迹**/
+	List<LatLng> points = new ArrayList<LatLng>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_location);
+		ImageView iv_streetview = (ImageView)findViewById(R.id.iv_streetview);
+		iv_streetview.setOnClickListener(onClickListener);
+		TextView tv_car_name = (TextView)findViewById(R.id.tv_car_name);
 		index = getIntent().getIntExtra("index", 0);
 		carData = Variable.carDatas.get(index);
+		tv_car_name.setText(carData.getNick_name());
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_car_location);
@@ -171,22 +179,22 @@ public class CarLocationActivity extends Activity {
 
 			// 周边点击弹出Popupwindow监听事件
 			case R.id.tv_item_car_location_oil:// 加油站
-				ToSearchMap("加油站");
+				ToSearchMap("加油站","加油站");
 				break;
 			case R.id.tv_item_car_location_Parking:// 停车场
-				ToSearchMap("停车场");
+				ToSearchMap("停车场","停车场");
 				break;
 			case R.id.tv_item_car_location_4s:// 4S店
-				ToSearchMap("4S店");
+				ToSearchMap("4S店","4S店");
 				break;
 			case R.id.tv_item_car_location_specialist:// 维修店
-				ToSearchMap("维修店");
+				ToSearchMap("维修店","汽车维修");
 				break;
 			case R.id.tv_item_car_location_automotive_beauty:// 美容店
-				ToSearchMap("洗车美容");
+				ToSearchMap("汽车美容店","汽车美容");
 				break;
 			case R.id.tv_item_car_location_wash:// 洗车店
-				ToSearchMap("洗车");
+				ToSearchMap("洗车店","洗车");
 				break;
 
 			// 围栏监听
@@ -198,6 +206,13 @@ public class CarLocationActivity extends Activity {
 						+ carData.getObj_id() + "/geofence" + "?auth_code="
 						+ Variable.auth_code;
 				new NetThread.DeleteThread(handler, url, DELETE).start();
+				break;
+			case R.id.iv_streetview:
+				//TODO 进入洁净
+				Intent intent = new Intent(CarLocationActivity.this, PanoramaDemoActivityMain.class);
+				intent.putExtra("lat", latitude);
+				intent.putExtra("lon", longitude);
+				startActivity(intent);
 				break;
 			}
 		}
@@ -225,13 +240,14 @@ public class CarLocationActivity extends Activity {
 	 * 
 	 * @param keyWord
 	 */
-	private void ToSearchMap(String keyWord) {
+	private void ToSearchMap(String keyWord,String key) {
 		mPopupWindow.dismiss();
 		// TODO 地图搜寻
 		Intent intent = new Intent(CarLocationActivity.this,
 				SearchMapActivity.class);
 		intent.putExtra("index", index);
 		intent.putExtra("keyWord", keyWord);
+		intent.putExtra("key", key);
 		intent.putExtra("latitude", latitude);
 		intent.putExtra("longitude", longitude);
 		startActivity(intent);
@@ -419,6 +435,8 @@ public class CarLocationActivity extends Activity {
 
 	LatLng circle;
 	Marker carMarker = null;
+	Polyline carLine = null;
+	
 	// 当前车辆位子
 	private void getCarLocation() {
 		circle = new LatLng(carData.getLat(), carData.getLon());
@@ -438,6 +456,15 @@ public class CarLocationActivity extends Activity {
 				.position(circle).icon(bitmap);
 		// 在地图上添加Marker，并显示
 		carMarker = (Marker)(mBaiduMap.addOverlay(option));		
+		points.add(circle);
+		if (points.size() > 1) {
+			if(carLine != null){
+				carLine.remove();
+			}
+			OverlayOptions ooPolyline = new PolylineOptions().width(5)
+					.color(0xAAFF0000).points(points);
+			carLine = (Polyline)(mBaiduMap.addOverlay(ooPolyline));
+		}
 	}
 
 	Handler handler = new Handler() {

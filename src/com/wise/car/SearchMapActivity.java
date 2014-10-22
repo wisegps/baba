@@ -1,5 +1,6 @@
 package com.wise.car;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ import pubclas.Variable;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -83,6 +86,7 @@ public class SearchMapActivity extends Activity {
 		int index = getIntent().getIntExtra("index", 0);
 		carData = Variable.carDatas.get(index);
 		String keyWord = getIntent().getStringExtra("keyWord");
+		String key = getIntent().getStringExtra("key");
 		mMapView = (MapView) findViewById(R.id.mv_search_map);
 		mBaiduMap = mMapView.getMap();
 		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(12));
@@ -120,8 +124,7 @@ public class SearchMapActivity extends Activity {
 		} else {
 			// 搜索关键字
 			mPoiSearch.searchNearby((new PoiNearbySearchOption()).keyword(
-					keyWord).location(
-					new LatLng(carData.getLat(), carData.getLon())));
+					key).location(new LatLng(carData.getLat(), carData.getLon())).radius(5000));
 		}
 
 		lv_activity_search_map = (ListView) findViewById(R.id.lv_activity_search_map);
@@ -174,7 +177,7 @@ public class SearchMapActivity extends Activity {
 				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
 		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0)
-				.position(circle).icon(bitmap);
+				.position(circle).icon(bitmap).title("1");
 		// 在地图上添加Marker，并显示
 		mBaiduMap.addOverlay(option);
 	}
@@ -219,12 +222,24 @@ public class SearchMapActivity extends Activity {
 					adressData.setIs_collect(false);
 				}
 				adressDatas.add(adressData);
-				LatLng latLng = new LatLng(adressDatas.get(i).getLat(),
-						adressDatas.get(i).getLon());
-				OverlayOptions marker = new MarkerOptions()
-						.position(latLng)
-						.icon(BitmapDescriptorFactory
-								.fromResource(R.drawable.body_icon_outset));
+				LatLng latLng = new LatLng(adressDatas.get(i).getLat(),adressDatas.get(i).getLon());
+				OverlayOptions marker;
+				//图片名称
+				String imagePath = "Icon_mark"+(i+1)+".png";
+				try {
+					//百度jar包里的图片
+					Bitmap bitmap = BitmapFactory.decodeStream(SearchMapActivity.this.getAssets().open(imagePath));
+					marker = new MarkerOptions()
+					.position(latLng)
+					.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+				} catch (IOException e) {
+					e.printStackTrace();
+					marker = new MarkerOptions()
+					.position(latLng)
+					.icon(BitmapDescriptorFactory
+							.fromResource(R.drawable.body_icon_outset));
+				}
+				
 				mBaiduMap.addOverlay(marker);
 				builder.include(latLng);
 			}
@@ -276,7 +291,7 @@ public class SearchMapActivity extends Activity {
 
 			if (result == null
 					|| result.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {
-				Toast.makeText(SearchMapActivity.this, "抱歉，为找到结果",
+				Toast.makeText(SearchMapActivity.this, "抱歉，没找到结果",
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
