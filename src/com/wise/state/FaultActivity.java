@@ -3,20 +3,16 @@ package com.wise.state;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
-import model.BaseData;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.litepal.crud.DataSupport;
-
 import pubclas.Constant;
 import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
 import pubclas.Variable;
+import com.baidu.lbsapi.auth.LBSAuthManagerListener;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -24,6 +20,8 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.baidu.navisdk.BaiduNaviManager;
+import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.wise.baba.MoreActivity;
@@ -38,8 +36,6 @@ import com.wise.notice.NoticeFragment;
 import com.wise.notice.NoticeFragment.BtnListener;
 import com.wise.setting.LoginActivity;
 import com.wise.show.ShowActivity;
-import com.wise.show.TestShowActivity;
-
 import customView.AlwaysMarqueeTextView;
 import customView.HScrollLayout;
 import customView.NoticeScrollTextView;
@@ -53,6 +49,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
@@ -226,6 +223,29 @@ public class FaultActivity extends FragmentActivity {
 
 		UmengUpdateAgent.update(this);
 		GetLocation getLocation = new GetLocation(FaultActivity.this);
+		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(),
+                mNaviEngineInitListener, new LBSAuthManagerListener() {
+                    @Override
+                    public void onAuthResult(int status, String msg) {}
+                });
+	}
+	private NaviEngineInitListener mNaviEngineInitListener = new NaviEngineInitListener() {
+		public void engineInitSuccess() {
+			System.out.println("---------------true");
+		}
+
+		public void engineInitStart() {
+		}
+
+		public void engineInitFail() {
+		}
+	};
+	private String getSdcardDir() {
+		if (Environment.getExternalStorageState().equalsIgnoreCase(
+				Environment.MEDIA_MOUNTED)) {
+			return Environment.getExternalStorageDirectory().toString();
+		}
+		return null;
 	}
 
 	/**

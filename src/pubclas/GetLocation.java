@@ -4,6 +4,8 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.baidu.navisdk.R.string;
+
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -26,22 +28,19 @@ public class GetLocation {
 	private void SetOption() {
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);
-		option.setAddrType("all");// 返回的定位结果包含地址信息
+		option.setCoorType("all");// 返回的定位结果包含地址信息
 		option.setCoorType("bd09ll");// 返回的定位结果是百度经纬度,默认值gcj02
+		option.setIsNeedAddress(true);
 		option.setScanSpan(60000);// 设置发起定位请求的间隔时间为5000ms
-		option.disableCache(true);// 禁止启用缓存定位
-		option.setPoiNumber(5); // 最多返回POI个数
-		option.setPoiDistance(1000); // poi查询距离
-		option.setPoiExtraInfo(true); // 是否需要POI的电话和地址等详细信息
 		mLocationClient.setLocOption(option);
 	}
-	
+	private static final String TAG = "MyLocationListener";
 	class MyLocationListener implements BDLocationListener {
 		@Override
 		public void onReceiveLocation(BDLocation location) {
 			if (location == null)
 				return;
-			//Log.d(TAG, "定位成功");
+			Log.d(TAG, "定位成功");
 			StringBuffer sb = new StringBuffer(256);
 			sb.append("time : ");
 			sb.append(location.getTime());
@@ -66,6 +65,7 @@ public class GetLocation {
 				sb.append("\ncity: ");
 				sb.append(location.getCity());
 				sb.append("\nProvince: " + location.getProvince());
+				Log.d(TAG, "定位成功 = " + sb.toString());
 				String city = location.getCity();
 				String province = location.getProvince();
 				Variable.Adress = location.getAddrStr();
@@ -83,35 +83,6 @@ public class GetLocation {
 			Log.d("location", sb.toString());
 			mLocationClient.stop();
 			mLocationClient.unRegisterLocationListener(myListener);
-		}
-
-		@Override
-		public void onReceivePoi(BDLocation poiLocation) {
-			if (poiLocation == null) {
-				return;
-			}
-			StringBuffer sb = new StringBuffer(256);
-			sb.append("Poi time : ");
-			sb.append(poiLocation.getTime());
-			sb.append("\nerror code : ");
-			sb.append(poiLocation.getLocType());
-			sb.append("\nlatitude : ");
-			sb.append(poiLocation.getLatitude());
-			sb.append("\nlontitude : ");
-			sb.append(poiLocation.getLongitude());
-			sb.append("\nradius : ");
-			sb.append(poiLocation.getRadius());
-			if (poiLocation.getLocType() == BDLocation.TypeNetWorkLocation) {
-				sb.append("\naddr : ");
-				sb.append(poiLocation.getAddrStr());
-			}
-			if (poiLocation.hasPoi()) {
-				sb.append("\nPoi:");
-				sb.append(poiLocation.getPoi());
-			} else {
-				sb.append("noPoi information");
-			}
-			//Log.d(TAG, "poi:" + sb.toString());
 		}
 	}
 }

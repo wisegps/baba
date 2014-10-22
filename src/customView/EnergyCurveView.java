@@ -48,7 +48,7 @@ public class EnergyCurveView extends View{
 		super(context, attrs);
 		this.context = context;
 		fontSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, getResources().getDisplayMetrics());
-		SPACING = fontSize * 2;
+		SPACING = fontSize * 3;
 
         //invalidate();
 	}

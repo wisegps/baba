@@ -23,15 +23,13 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
-import com.baidu.mapapi.navi.BaiduMapNavigation;
-import com.baidu.mapapi.navi.NaviPara;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
@@ -52,8 +50,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -135,8 +131,7 @@ public class CarLocationActivity extends Activity {
 								+ "/active_gps_data?auth_code="
 								+ Variable.auth_code
 								+ "&update_time=2014-01-01%2019:06:43";
-						new NetThread.GetDataThread(handler, gpsUrl, get_gps,
-								index).start();
+						new NetThread.GetDataThread(handler, gpsUrl, get_gps).start();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -191,7 +186,7 @@ public class CarLocationActivity extends Activity {
 				ToSearchMap("洗车美容");
 				break;
 			case R.id.tv_item_car_location_wash:// 洗车店
-				ToSearchMap("洗车店");
+				ToSearchMap("洗车");
 				break;
 
 			// 围栏监听
@@ -218,20 +213,7 @@ public class CarLocationActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				LatLng startLocat = new LatLng(latitude, longitude);
 				LatLng carLocat = new LatLng(carData.getLat(), carData.getLon());
-				// 构建 导航参数
-				NaviPara param = new NaviPara();
-				param.startPoint = startLocat;
-				param.startName = "";
-				param.endPoint = carLocat;
-				param.endName = "";
-				try {
-					BaiduMapNavigation.openBaiduMapNavi(param,
-							CarLocationActivity.this);
-				} catch (BaiduMapAppNotSupportNaviException e) {
-					e.printStackTrace();
-					BaiduMapNavigation.openWebBaiduMapNavi(param,
-							CarLocationActivity.this);
-				}
+				GetSystem.FindCar(CarLocationActivity.this, startLocat, carLocat, "", "");
 			}
 		});
 		builder.setNegativeButton("取消", null);
@@ -436,10 +418,18 @@ public class CarLocationActivity extends Activity {
 	}
 
 	LatLng circle;
-
+	Marker carMarker = null;
 	// 当前车辆位子
 	private void getCarLocation() {
 		circle = new LatLng(carData.getLat(), carData.getLon());
+		if(carMarker != null){
+			carMarker.remove();
+		}else{
+			MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
+			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
+					.newMapStatus(mapStatus);
+			mBaiduMap.setMapStatus(mapStatusUpdate);
+		}
 		// 构建Marker图标
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.body_icon_location2);
@@ -447,12 +437,7 @@ public class CarLocationActivity extends Activity {
 		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
 				.position(circle).icon(bitmap);
 		// 在地图上添加Marker，并显示
-		mBaiduMap.addOverlay(option);
-
-		MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
-		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
-				.newMapStatus(mapStatus);
-		mBaiduMap.setMapStatus(mapStatusUpdate);
+		carMarker = (Marker)(mBaiduMap.addOverlay(option));		
 	}
 
 	Handler handler = new Handler() {
@@ -562,12 +547,6 @@ public class CarLocationActivity extends Activity {
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(carLocat);
 				mBaiduMap.animateMapStatus(u);
 			}
-		}
-
-		@Override
-		public void onReceivePoi(BDLocation arg0) {
-			// TODO Auto-generated method stub
-
 		}
 	}
 
