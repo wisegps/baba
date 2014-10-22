@@ -334,8 +334,8 @@ public class FaultDetectionActivity extends Activity {
 						Intent in = new Intent(FaultDetectionActivity.this,
 								SearchMapActivity.class);
 						in.putExtra("index", index);
-						intent.putExtra("keyWord", "维修店");
-						intent.putExtra("key", "汽车维修");
+						in.putExtra("keyWord", "维修店");
+						in.putExtra("key", "汽车维修");
 						in.putExtra("latitude", 0);
 						in.putExtra("longitude", 0);
 						startActivity(in);
