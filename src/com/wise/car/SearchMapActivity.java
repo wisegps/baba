@@ -86,6 +86,8 @@ public class SearchMapActivity extends Activity {
 		carData = Variable.carDatas.get(index);
 		String keyWord = getIntent().getStringExtra("keyWord");
 		String key = getIntent().getStringExtra("key");
+		System.out.println("keyWord = " + keyWord + " , key = " + key + " , index = " + index);
+		
 		mMapView = (MapView) findViewById(R.id.mv_search_map);
 		mBaiduMap = mMapView.getMap();
 		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(12));
