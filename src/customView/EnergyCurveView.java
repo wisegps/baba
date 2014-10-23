@@ -79,29 +79,20 @@ public class EnergyCurveView extends View{
 		//x轴
 		canvas.drawLine(SPACING+padding, realHeight, SPACING+padding + realWidth, realHeight, paint);
 		float xSpacing = (realWidth - fontSize - spacing_x)/6;
-        paint.setTextSize(fontSize);
-        if((stop - start + 1)%7 == 0){
-        	int sp = (stop - start + 1)/7;
-        	for(int i = 0 ; i <= 6 ; i++){//水平刻度
-    		    String Date = (i * sp ) + sp + "" ;
-    		    canvas.drawText(Date,padding +spacing_x + SPACING + i * xSpacing - fontSize/2,realHeight + (int)(fontSize * 1.5),paint);
-            }
-        }else{
-        	if((stop - start) < 7){
-        		float xSpacing1 = (realWidth - fontSize - spacing_x)/(stop - start);
-        		for(int i = 0 ; i < (stop - start + 1) ; i++){
-            		float x = fontSize + spacing_x + i*xSpacing1+padding;
-        		    canvas.drawText("" + (start + i),x,realHeight + (int)(fontSize * 1.5),paint);
-            	}
-        	}else{
-        		int value1 = (stop - start)/7 + 1;
-        		for(int i = 0 ; i < 7 ; i++){
-            		float x = padding+fontSize + spacing_x + i*xSpacing - fontSize/2;
-        		    canvas.drawText(""+(int)(value1 * i),x,realHeight + (int)(fontSize * 1.5),paint);
-            	}
-        	}        	
-        }
-        
+        paint.setTextSize(fontSize);        
+    	if((stop - start) < 7){
+    		float xSpacing1 = (realWidth - fontSize - spacing_x)/(stop - start);
+    		for(int i = 0 ; i < (stop - start + 1) ; i++){
+        		float x = fontSize + spacing_x + i*xSpacing1+padding;
+    		    canvas.drawText("" + (start + i),x,realHeight + (int)(fontSize * 1.5),paint);
+        	}
+    	}else{
+    		int value1 = (stop - start)/7 + 1;
+    		for(int i = 0 ; i < 7 ; i++){
+        		float x = padding+fontSize + spacing_x + i*xSpacing - fontSize/2;
+    		    canvas.drawText(""+ (start +(int)(value1 * i)),x,realHeight + (int)(fontSize * 1.5),paint);
+        	}
+    	}        
 		/* 竖直线和文字 */
 		for (int i = 0; i <= 5; i++) {
 			paint.setStyle(Paint.Style.FILL);//设置填满  
