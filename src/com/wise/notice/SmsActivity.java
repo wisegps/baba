@@ -5,10 +5,10 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.remind.RemindActivity;
 import com.wise.violation.TrafficActivity;
-
 import customView.HScrollLayout;
 import customView.OnViewChangeListener;
 import customView.WaitLinearLayout;
@@ -16,7 +16,6 @@ import customView.WaitLinearLayout.OnFinishListener;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import android.app.Activity;
@@ -53,12 +52,14 @@ public class SmsActivity extends Activity implements IXListViewListener{
 	TextView tv_0,tv_1,tv_2,tv_3,tv_4;
 	HScrollLayout hsl_sms;    
     int index_view = 0;
+    AppApplication app;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_sms);
+		app = (AppApplication)getApplication();
 		tv_0 = (TextView)findViewById(R.id.tv_0);
 		tv_0.setOnClickListener(onClickListener);
 		tv_1 = (TextView)findViewById(R.id.tv_1);
@@ -231,7 +232,7 @@ public class SmsActivity extends Activity implements IXListViewListener{
 				}else{
 					index = index_view + 1;
 				}
-				String url = Constant.BaseUrl +  "customer/" + Variable.cust_id + "/notification?auth_code=" + Variable.auth_code + 
+				String url = Constant.BaseUrl +  "customer/" + app.cust_id + "/notification?auth_code=" + app.auth_code + 
 						"&msg_type=" + index;
 			    new Thread(new NetThread.GetDataThread(handler, url, frist_sms,index_view)).start();
 				smsView.getLl_wait().startWheel(index_view);
@@ -358,8 +359,8 @@ public class SmsActivity extends Activity implements IXListViewListener{
 				}
 				smsView.setRefresh("");
 	            int id = smsView.getSmsDatas().get(0).getNoti_id();
-	            String url = Constant.BaseUrl +  "customer/" + Variable.cust_id + "/notification?auth_code=" 
-	                    + Variable.auth_code + "&max_id=" + id + "&msg_type=" + index;
+	            String url = Constant.BaseUrl +  "customer/" + app.cust_id + "/notification?auth_code=" 
+	                    + app.auth_code + "&max_id=" + id + "&msg_type=" + index;
 	            new Thread(new NetThread.GetDataThread(handler, url, GET_SMS,index_view)).start();
 	            smsView.getLv_sms().startHeaderWheel();
 	        }
@@ -380,8 +381,8 @@ public class SmsActivity extends Activity implements IXListViewListener{
 				}
 				smsView.setLoad("");
 	            int id = smsView.getSmsDatas().get(smsView.getSmsDatas().size() - 1).getNoti_id();
-	            String url = Constant.BaseUrl +  "customer/" + Variable.cust_id + "/notification?auth_code=" 
-	                    + Variable.auth_code + "&min_id=" + id + "&msg_type=" + index;
+	            String url = Constant.BaseUrl +  "customer/" + app.cust_id + "/notification?auth_code=" 
+	                    + app.auth_code + "&min_id=" + id + "&msg_type=" + index;
 	            /**区分头尾**/
 	            new Thread(new NetThread.GetDataThread(handler, url, GET_NEXT_SMS,(index_view + 5))).start();
 	    		smsView.getLv_sms().startBottomWheel();

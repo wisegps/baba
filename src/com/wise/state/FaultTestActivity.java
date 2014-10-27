@@ -9,10 +9,10 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UpdateConfig;
+import com.wise.baba.AppApplication;
 import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.baba.SelectCityActivity;
@@ -93,12 +93,14 @@ public class FaultTestActivity extends FragmentActivity {
 	String startMonth;
 	/**获取油耗数据结束时间**/
 	String endMonth;
+	AppApplication app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fault_test);
+		app = (AppApplication)getApplication();
 		boolean isSpecify = getIntent().getBooleanExtra("isSpecify", false);
 		if(isSpecify){
 			Intent intent = new Intent(FaultTestActivity.this, MoreActivity.class);
@@ -151,15 +153,15 @@ public class FaultTestActivity extends FragmentActivity {
 		startMonth = Month+"-01";
 		endMonth = Month+"-31";
 		//未登录
-		if (Variable.cust_id == null || Variable.cust_id.equals("")) {
+		if (app.cust_id == null || app.cust_id.equals("")) {
 			setLoginView();
 			String url =  Constant.BaseUrl + "customer/0/tips";
 			getMessage(url);
 		} else {
 			initDataView();
 			getTotalData();
-			String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-					+ "/tips?auth_code=" + Variable.auth_code;
+			String url = Constant.BaseUrl + "customer/" + app.cust_id
+					+ "/tips?auth_code=" + app.auth_code;
 			getMessage(url);
 			getCounter();			
 		}
@@ -183,10 +185,10 @@ public class FaultTestActivity extends FragmentActivity {
 				startActivity(new Intent(FaultTestActivity.this, MoreActivity.class));
 				break;
 			case R.id.tasks_view:
-				String Device_id = Variable.carDatas.get(index).getDevice_id();
+				String Device_id = app.carDatas.get(index).getDevice_id();
 				if (Device_id == null || Device_id.equals("")) {
 					Intent intent = new Intent(FaultTestActivity.this,DevicesAddActivity.class);
-					intent.putExtra("car_id", Variable.carDatas.get(index).getObj_id());
+					intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
 					startActivityForResult(intent, 2);
 				} else {
 					Intent intent = new Intent(FaultTestActivity.this,FaultDetectionActivity.class);
@@ -246,10 +248,10 @@ public class FaultTestActivity extends FragmentActivity {
 	};
 	/**获取统计数据**/
 	private void getTotalData() {
-		if(Variable.carDatas == null || Variable.carDatas.size() ==0 ){
+		if(app.carDatas == null || app.carDatas.size() ==0 ){
 			return;
 		}
-		CarData carData = Variable.carDatas.get(index);
+		CarData carData = app.carDatas.get(index);
 		String device_id = carData.getDevice_id();
 		if (device_id == null || device_id.equals("")) {
 
@@ -259,7 +261,7 @@ public class FaultTestActivity extends FragmentActivity {
 				String url = Constant.BaseUrl + "device/"+ device_id
 						+ "/total?auth_code=127a154df2d7850c4232542b4faa2c3d&start_day=" + startMonth + 
 						"&end_day=" + endMonth + "&city="
-						+ URLEncoder.encode(Variable.City, "UTF-8")
+						+ URLEncoder.encode(app.City, "UTF-8")
 						+ "&gas_no=93#(92#)";
 				new NetThread.GetDataThread(handler, url, getData,index).start();				
 			} catch (Exception e) {
@@ -267,12 +269,12 @@ public class FaultTestActivity extends FragmentActivity {
 			}
 		}
 		//获取限行信息
-		if(Variable.City == null || carData.getObj_name() == null || Variable.City.equals("") || carData.getObj_name().equals("")){
+		if(app.City == null || carData.getObj_name() == null || app.City.equals("") || carData.getObj_name().equals("")){
 			
 		}else{
 			try {
 				String url = Constant.BaseUrl + "base/ban?city="
-	                    + URLEncoder.encode(Variable.City, "UTF-8")
+	                    + URLEncoder.encode(app.City, "UTF-8")
 	                    + "&obj_name="
 	                    + URLEncoder.encode(carData.getObj_name(), "UTF-8");
 	            new NetThread.GetDataThread(handler, url,Get_carLimit,index).start();
@@ -301,7 +303,7 @@ public class FaultTestActivity extends FragmentActivity {
             JSONObject jsonObject = new JSONObject(result);
             String limit = jsonObject.getString("limit");
             carView.getTv_xx().setText(limit);
-            Variable.carDatas.get(index).setLimit(limit);
+            app.carDatas.get(index).setLimit(limit);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -311,12 +313,12 @@ public class FaultTestActivity extends FragmentActivity {
 	private void getWeather() {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-		Variable.City = preferences.getString(Constant.sp_city, "");
-		tv_city.setText("[ " + Variable.City + " ]");
-		Variable.Province = preferences.getString(Constant.sp_province, "");
+		app.City = preferences.getString(Constant.sp_city, "");
+		tv_city.setText("[ " + app.City + " ]");
+		app.Province = preferences.getString(Constant.sp_province, "");
 		try {
 			String url = Constant.BaseUrl + "base/weather2?city="
-					+ URLEncoder.encode(Variable.City, "UTF-8");
+					+ URLEncoder.encode(app.City, "UTF-8");
 			new NetThread.GetDataThread(handler, url, getWeather).start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -396,7 +398,7 @@ public class FaultTestActivity extends FragmentActivity {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		hs_car.removeAllViews();
-		for (int i = 0; i < Variable.carDatas.size(); i++) {
+		for (int i = 0; i < app.carDatas.size(); i++) {
 			View v = LayoutInflater.from(this).inflate(R.layout.item_fault,null);
 			hs_car.addView(v);
 			TextView tv_score = (TextView) v.findViewById(R.id.tv_score);
@@ -421,10 +423,10 @@ public class FaultTestActivity extends FragmentActivity {
 			carView.setTv_xx(tv_xx);
 			carViews.add(carView);
 
-			tv_name.setText(Variable.carDatas.get(i).getCar_series() + "("
-					+ Variable.carDatas.get(i).getNick_name() + ")");
+			tv_name.setText(app.carDatas.get(i).getCar_series() + "("
+					+ app.carDatas.get(i).getNick_name() + ")");
 			String result = preferences.getString(Constant.sp_health_score
-					+ Variable.carDatas.get(i).getObj_id(), "");
+					+ app.carDatas.get(i).getObj_id(), "");
 			if (result.equals("")) {// 未体检过
 				carView.getmTasksView().setProgress(100);
 				tv_score.setText("0");
@@ -469,15 +471,15 @@ public class FaultTestActivity extends FragmentActivity {
 	
 	/**获取消息数据**/
 	private void getCounter(){
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/counter?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/counter?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, get_counter).start();
 	}
 	/**解析消息数据**/
 	private void jsonCounter(String str){
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-			Variable.noti_count = jsonObject.getInt("noti_count");
-			Variable.vio_count = jsonObject.getInt("vio_count");
+			app.noti_count = jsonObject.getInt("noti_count");
+			app.vio_count = jsonObject.getInt("vio_count");
 			setNotiView();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -496,7 +498,7 @@ public class FaultTestActivity extends FragmentActivity {
 	}
 	/**设置提醒**/
 	private void setNotiView(){
-		if(Variable.noti_count == 0 && Variable.vio_count == 0){
+		if(app.noti_count == 0 && app.vio_count == 0){
 			//显示提醒
 			iv_noti.setVisibility(View.GONE);
 		}else{
@@ -662,8 +664,8 @@ public class FaultTestActivity extends FragmentActivity {
 
 	/** 根据obj_id返回对应列表的位置 **/
 	private int getIndexFromId(int obj_id) {
-		for (int i = 0; i < Variable.carDatas.size(); i++) {
-			if (Variable.carDatas.get(i).getObj_id() == obj_id) {
+		for (int i = 0; i < app.carDatas.size(); i++) {
+			if (app.carDatas.get(i).getObj_id() == obj_id) {
 				return i;
 			}
 		}
@@ -780,8 +782,8 @@ public class FaultTestActivity extends FragmentActivity {
 			if (action.equals(Constant.A_RefreshHomeCar)) {
 				initDataView();
 				getTotalData();
-				String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-						+ "/tips?auth_code=" + Variable.auth_code;
+				String url = Constant.BaseUrl + "customer/" + app.cust_id
+						+ "/tips?auth_code=" + app.auth_code;
 				getMessage(url);
 				getCounter();
 			} else if(action.equals(Constant.A_LoginOut)){
@@ -790,18 +792,18 @@ public class FaultTestActivity extends FragmentActivity {
 				getMessage(url);
 			} else if (action.equals(Constant.A_City)) {
 				try {
-					Variable.City = intent.getStringExtra("City");
-					Variable.Province = intent.getStringExtra("Province");
+					app.City = intent.getStringExtra("City");
+					app.Province = intent.getStringExtra("Province");
 					String url = Constant.BaseUrl + "base/weather2?city="
-							+ URLEncoder.encode(Variable.City, "UTF-8");
+							+ URLEncoder.encode(app.City, "UTF-8");
 					new NetThread.GetDataThread(handler, url, getWeather)
 							.start();
 					SharedPreferences preferences = getSharedPreferences(
 							Constant.sharedPreferencesName,
 							Context.MODE_PRIVATE);
 					Editor editor = preferences.edit();
-					editor.putString(Constant.sp_city, Variable.City);
-					editor.putString(Constant.sp_province, Variable.Province);
+					editor.putString(Constant.sp_city, app.City);
+					editor.putString(Constant.sp_province, app.Province);
 					editor.commit();
 				} catch (Exception e) {
 					e.printStackTrace();

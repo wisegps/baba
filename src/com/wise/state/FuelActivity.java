@@ -9,8 +9,8 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import customView.EnergyCurveView;
 import customView.FanView;
@@ -66,12 +66,14 @@ public class FuelActivity extends Activity {
 	String Day;
 	ArrayList<EnergyItem> Efuel = new ArrayList<EnergyItem>();
 	FanView fv;
+	AppApplication app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fuel);
+		app = (AppApplication)getApplication();
 		GetSystem.myLog(TAG, "onCreate");
 		fv = (FanView) findViewById(R.id.fv);
 		tv_speed_text = (TextView) findViewById(R.id.tv_speed_text);
@@ -138,7 +140,7 @@ public class FuelActivity extends Activity {
 			tv_chart_title.setText("无消耗");
 		}
 
-		tv_name.setText(Variable.carDatas.get(index_car).getNick_name());
+		tv_name.setText(app.carDatas.get(index_car).getNick_name());
 		initData();
 		fv.setOnViewRotateListener(new OnViewRotateListener() {
 			@Override
@@ -314,7 +316,7 @@ public class FuelActivity extends Activity {
 	/** 获取一段时间数据 **/
 	private void getData(String fristDate, String lastDate) {
 		try {
-			CarData carData = Variable.carDatas.get(index_car);
+			CarData carData = app.carDatas.get(index_car);
 			String Gas_no = "";
 			if (carData.getGas_no() == null || carData.getGas_no().equals("")) {
 				Gas_no = "93#(92#)";
@@ -326,7 +328,7 @@ public class FuelActivity extends Activity {
 					+ carData.getDevice_id()
 					+ "/total?auth_code=127a154df2d7850c4232542b4faa2c3d&start_day="
 					+ fristDate + "&end_day=" + lastDate + "&city="
-					+ URLEncoder.encode(Variable.City, "UTF-8") + "&gas_no="
+					+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
 					+ Gas_no;
 			new NetThread.GetDataThread(handler, url, getData).start();
 		} catch (Exception e) {
@@ -337,7 +339,7 @@ public class FuelActivity extends Activity {
 	/** 获取某一天数据 **/
 	private void getDayData(String Date) {
 		try {
-			CarData carData = Variable.carDatas.get(index_car);
+			CarData carData = app.carDatas.get(index_car);
 			String Gas_no = "";
 			if (carData.getGas_no() == null || carData.getGas_no().equals("")) {
 				Gas_no = "93#(92#)";
@@ -349,7 +351,7 @@ public class FuelActivity extends Activity {
 					+ carData.getDevice_id()
 					+ "/day_total?auth_code=127a154df2d7850c4232542b4faa2c3d&day="
 					+ Date + "&city="
-					+ URLEncoder.encode(Variable.City, "UTF-8") + "&gas_no="
+					+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
 					+ Gas_no;
 			new NetThread.GetDataThread(handler, url, getData).start();
 		} catch (Exception e) {

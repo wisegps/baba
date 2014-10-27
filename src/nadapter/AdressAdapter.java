@@ -10,8 +10,8 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.baidu.mapapi.model.LatLng;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import data.AdressData;
 import android.app.Activity;
@@ -51,11 +51,13 @@ public class AdressAdapter extends BaseAdapter{
 
     ForegroundColorSpan blackSpan;
     ForegroundColorSpan graySpan;
+    AppApplication app;
     
 	public AdressAdapter(Context context,List<AdressData> adressDatas,Activity mActivity){
 		this.context = context;
 		this.adressDatas = adressDatas;
 		this.mActivity = mActivity;
+		app = (AppApplication)mActivity.getApplication();
 		mInflater = LayoutInflater.from(context);
 		myHandler = new MyHandler();
 		blackSpan = new ForegroundColorSpan(context.getResources().getColor(R.color.common));
@@ -96,13 +98,13 @@ public class AdressAdapter extends BaseAdapter{
 		String distance = "";
 		if(adressData.getDistance() != -1){
 		    distance = d(adressData.getDistance());
-		    String str = adressData.getName() + distance;
+		    String str = (position + 1) + ". "+adressData.getName() + distance;
 	        SpannableStringBuilder builder = new SpannableStringBuilder(str);
-	        builder.setSpan(blackSpan, 0, adressData.getName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-	        builder.setSpan(graySpan, adressData.getName().length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+	        builder.setSpan(blackSpan, 0, ((position + 1) + ". "+adressData.getName()).length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+	        builder.setSpan(graySpan, ((position + 1) + ". "+adressData.getName()).length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 	        holder.tv_item_dealadress_name.setText(builder);
 		}else{
-		    holder.tv_item_dealadress_name.setText(adressData.getName());
+		    holder.tv_item_dealadress_name.setText((position + 1) + ". "+adressData.getName());
 		}        
         
 		holder.tv_item_dealadress_adress.setText("地址：" + adressData.getAdress());
@@ -130,7 +132,7 @@ public class AdressAdapter extends BaseAdapter{
 			@Override
 			public void onClick(View v) {				
 				//TODO  更新服务器   成功之后再操作 数据库				
-				if("".equals(Variable.auth_code)){
+				if("".equals(app.auth_code)){
 					Toast.makeText(context, "请登录",Toast.LENGTH_SHORT).show();
 					return;
 				}else{
@@ -139,13 +141,13 @@ public class AdressAdapter extends BaseAdapter{
 	                    myDialog = ProgressDialog.show(context,"提示", "收藏中...");
 	                    myDialog.setCancelable(true);
 	                    List<NameValuePair> params = new ArrayList<NameValuePair>();
-	                    params.add(new BasicNameValuePair("cust_id", Variable.cust_id));
+	                    params.add(new BasicNameValuePair("cust_id", app.cust_id));
 	                    params.add(new BasicNameValuePair("name", adressData.getName()));
 	                    params.add(new BasicNameValuePair("address", adressData.getAdress()));
 	                    params.add(new BasicNameValuePair("tel", adressData.getPhone()));
 	                    params.add(new BasicNameValuePair("lon", String.valueOf(adressData.getLon())));
 	                    params.add(new BasicNameValuePair("lat", String.valueOf(adressData.getLat())));
-	                    new Thread(new NetThread.postDataThread(myHandler, Constant.BaseUrl + "favorite?auth_code=" + Variable.auth_code, params, addFavorite,position)).start();
+	                    new Thread(new NetThread.postDataThread(myHandler, Constant.BaseUrl + "favorite?auth_code=" + app.auth_code, params, addFavorite,position)).start();
 				    }				    
 				}
 			}
@@ -154,7 +156,7 @@ public class AdressAdapter extends BaseAdapter{
 		holder.iv_location.setOnClickListener(new OnClickListener() {				
 			@Override
 			public void onClick(View v) {
-				LatLng pt1 = new LatLng(Variable.Lat, Variable.Lon);
+				LatLng pt1 = new LatLng(app.Lat, app.Lon);
 				LatLng pt2 = new LatLng(adressData.getLat(), adressData.getLon());
 				GetSystem.FindCar(mActivity, pt1, pt2, "point", "point1");
 			}
@@ -188,7 +190,7 @@ public class AdressAdapter extends BaseAdapter{
 					    AdressData adressData = adressDatas.get(msg.arg1);
 				        
 				        CollectionData collectionData = new CollectionData();
-		                collectionData.setCust_id(Variable.cust_id);
+		                collectionData.setCust_id(app.cust_id);
 		                collectionData.setFavorite_id(jsonObject.getString("favorite_id"));
 		                collectionData.setName(adressData.getName());
 		                collectionData.setAddress(adressData.getAdress());

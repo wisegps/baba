@@ -13,7 +13,6 @@ import customView.WaitLinearLayout.OnFinishListener;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import data.AdressData;
@@ -45,12 +44,14 @@ public class CollectionActivity extends Activity implements IXListViewListener{
     boolean isGetDB = true; //上拉是否继续读取数据库
     int Toal = 0; //从那条记录读起
     int pageSize = 10 ; //每次读取的记录数目
+    AppApplication app;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_collection);
+		app = (AppApplication)getApplication();
 		rl_Note = (RelativeLayout)findViewById(R.id.rl_Note);
 		ll_wait = (WaitLinearLayout)findViewById(R.id.ll_wait);
 		ll_wait.setOnFinishListener(onFinishListener);
@@ -72,7 +73,7 @@ public class CollectionActivity extends Activity implements IXListViewListener{
             //服务器取数据
             isGetDB = false;
             ll_wait.startWheel();
-            String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/favorite?auth_code=" + Variable.auth_code;
+            String url = Constant.BaseUrl + "customer/" + app.cust_id + "/favorite?auth_code=" + app.auth_code;
             new Thread(new NetThread.GetDataThread(handler, url, frist_getdata)).start();
         }else{
             //本地取数据
@@ -147,13 +148,13 @@ public class CollectionActivity extends Activity implements IXListViewListener{
                 }
 			}
             onLoad();
-		}
+        }
 	};
     
     CollectionItemListener collectionItemListener = new CollectionItemListener() {        
         @Override
         public void Delete(int position) {
-            String url = Constant.BaseUrl + "favorite/" + adressDatas.get(position).get_id() + "?auth_code=" + Variable.auth_code;
+            String url = Constant.BaseUrl + "favorite/" + adressDatas.get(position).get_id() + "?auth_code=" + app.auth_code;
             //删除服务器记录
             new Thread(new NetThread.DeleteThread(handler, url, 999)).start();
             //删除本地数据库
@@ -192,7 +193,7 @@ public class CollectionActivity extends Activity implements IXListViewListener{
     }
     
     private boolean isGetDataUrl(){
-    	List<CollectionData> collectionDatas = DataSupport.where("Cust_id = ?",Variable.cust_id).find(CollectionData.class);
+    	List<CollectionData> collectionDatas = DataSupport.where("Cust_id = ?",app.cust_id).find(CollectionData.class);
         if(collectionDatas.size() == 0){
         	return true;
         }else{
@@ -216,7 +217,7 @@ public class CollectionActivity extends Activity implements IXListViewListener{
                 adressDatas.add(adrDatas);
                 
                 CollectionData collectionData = new CollectionData();
-                collectionData.setCust_id(Variable.cust_id);
+                collectionData.setCust_id(app.cust_id);
                 collectionData.setFavorite_id(String.valueOf(adrDatas.get_id()));
                 collectionData.setName(adrDatas.getName());
                 collectionData.setAddress(adrDatas.getAdress());
@@ -236,7 +237,7 @@ public class CollectionActivity extends Activity implements IXListViewListener{
 	public void onRefresh() {
 		refresh = "";
 		lv_collection.startHeaderWheel();
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/favorite?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/favorite?auth_code=" + app.auth_code;
         new Thread(new NetThread.GetDataThread(handler, url, refresh_getdata)).start();
 	}
 	@Override
@@ -248,7 +249,7 @@ public class CollectionActivity extends Activity implements IXListViewListener{
         }else{//读取服务器
             if(adressDatas.size() != 0){
                 int id = adressDatas.get(adressDatas.size() - 1).get_id();
-                String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/favorite?auth_code=" + Variable.auth_code + "&&min_id=" + id;
+                String url = Constant.BaseUrl + "customer/" + app.cust_id + "/favorite?auth_code=" + app.auth_code + "&&min_id=" + id;
                 new Thread(new NetThread.GetDataThread(handler, url, load_getdata)).start();
                 lv_collection.startBottomWheel();
             }           
@@ -268,7 +269,7 @@ public class CollectionActivity extends Activity implements IXListViewListener{
      * @param pageSize 一次读取多少条
      */
     private void getCollectionDatas(int start,int pageSize) {
-    	String sql = "select * from CollectionData where Cust_id=" + Variable.cust_id + " order by favorite_id desc limit " + start + "," + pageSize;
+    	String sql = "select * from CollectionData where Cust_id=" + app.cust_id + " order by favorite_id desc limit " + start + "," + pageSize;
     	Cursor cursor = DataSupport.findBySQL(sql);
     	List<AdressData> datas = new ArrayList<AdressData>();
 		while (cursor.moveToNext()) {

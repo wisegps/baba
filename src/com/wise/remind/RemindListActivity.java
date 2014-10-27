@@ -5,15 +5,14 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import data.CarData;
 import data.RemindData;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -46,12 +45,14 @@ public class RemindListActivity extends Activity {
     RelativeLayout rl_Note;
     List<RemindData> remindDatas = new ArrayList<RemindData>();
     RemindAdapter remindAdapter;
+    AppApplication app;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_car_remind);
+        app = (AppApplication)getApplication();
         rl_Note = (RelativeLayout)findViewById(R.id.rl_Note);
         ll_frist = (LinearLayout)findViewById(R.id.ll_frist);
         ll_frist.setOnClickListener(onClickListener);
@@ -70,7 +71,7 @@ public class RemindListActivity extends Activity {
         lv_remind.setOnItemClickListener(onItemClickListener);
     }
     private void getData(){
-    	String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/reminder?auth_code=" + Variable.auth_code;
+    	String url = Constant.BaseUrl + "customer/" + app.cust_id + "/reminder?auth_code=" + app.auth_code;
     	new Thread(new NetThread.GetDataThread(handler, url, get_remind)).start();
     }
 
@@ -183,7 +184,7 @@ public class RemindListActivity extends Activity {
     }
     
     private String getObj_name(int Obj_id){
-    	for(CarData carData : Variable.carDatas){
+    	for(CarData carData : app.carDatas){
     		if(carData.getObj_id() == Obj_id){
     			return carData.getNick_name();
     		}
@@ -277,9 +278,9 @@ public class RemindListActivity extends Activity {
     }
     /**得到车辆对应的位置**/
 	private String getCarName(int Obj_id){
-		for(int i = 0 ; i < Variable.carDatas.size() ; i++){
-			if(Variable.carDatas.get(i).getObj_id() == Obj_id){
-				return Variable.carDatas.get(i).getNick_name();
+		for(int i = 0 ; i < app.carDatas.size() ; i++){
+			if(app.carDatas.get(i).getObj_id() == Obj_id){
+				return app.carDatas.get(i).getNick_name();
 			}
 		}
 		return "";

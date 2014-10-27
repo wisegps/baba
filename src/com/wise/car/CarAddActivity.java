@@ -8,11 +8,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.violation.ShortProvincesActivity;
-
 import data.CarData;
 import android.app.Activity;
 import android.content.Intent;
@@ -42,13 +41,14 @@ public class CarAddActivity extends Activity{
 	boolean fastTrack = false;
 	String device_id = "";
 	Button bt_jump;
-	
+	AppApplication app;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_add);
+		app = (AppApplication)getApplication();
 		LinearLayout btn_choose = (LinearLayout)findViewById(R.id.btn_choose);
 		btn_choose.setOnClickListener(onClickListener);
 		choose_car_province = (TextView)findViewById(R.id.choose_car_province);
@@ -118,7 +118,7 @@ public class CarAddActivity extends Activity{
 					startActivity(intent);
 				}else{
 					carNewData.setObj_id(car_id);
-					Variable.carDatas.add(carNewData);
+					app.carDatas.add(carNewData);
 					Toast.makeText(CarAddActivity.this, "车辆添加成功", Toast.LENGTH_SHORT).show();
 					setResult(3);
 					finish();
@@ -147,7 +147,7 @@ public class CarAddActivity extends Activity{
 		if(obj_name.length() == 1){
 			obj_name = "";
 		}
-		String url = Constant.BaseUrl + "vehicle/simple?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "vehicle/simple?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();		
 
         carNewData.setObj_name(obj_name);
@@ -159,7 +159,7 @@ public class CarAddActivity extends Activity{
         carNewData.setCar_series_id(car_series_id);
         carNewData.setCar_type_id(car_type_id);
 		
-        params.add(new BasicNameValuePair("cust_id", Variable.cust_id));
+        params.add(new BasicNameValuePair("cust_id", app.cust_id));
         params.add(new BasicNameValuePair("obj_name", obj_name));
         params.add(new BasicNameValuePair("nick_name", nick_name));
         params.add(new BasicNameValuePair("car_brand", car_brand));

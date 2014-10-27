@@ -118,8 +118,21 @@
             android:textColor="@color/navy" 
             android:background="@drawable/bg_white"/>
 	    <TextView
-	        android:id="@+id/tv_feedback"
+	        android:id="@+id/tv_offline_map"
 	        android:layout_marginTop="@dimen/margins"
+	        android:text="离线地图"
+	        android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/double_margins"
+            android:textSize="@dimen/content"
+            android:textColor="@color/navy" 
+            android:background="@drawable/bg_white"/>    
+	    <View 
+	        android:layout_width="fill_parent"
+	        android:layout_height="0.5dp"
+	        android:background="@color/gay_line"/>
+	    <TextView
+	        android:id="@+id/tv_feedback"
 	        android:text="反馈建议"
 	        android:layout_width="fill_parent"
             android:layout_height="wrap_content"

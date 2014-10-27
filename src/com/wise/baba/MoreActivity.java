@@ -1,10 +1,8 @@
 package com.wise.baba;
 
 import org.json.JSONObject;
-
 import pubclas.GetSystem;
 import pubclas.Judge;
-import pubclas.Variable;
 import cn.jpush.android.api.JPushInterface;
 import com.wise.notice.NoticeActivity;
 import com.wise.remind.RemindListActivity;
@@ -29,11 +27,13 @@ public class MoreActivity extends Activity{
 	public static final int TRAFFIC = 3;//违章
 	public static final int REMIND = 4;//提醒
 //	public static final int SET = 5;//设置
+	AppApplication app;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		app = (AppApplication)getApplication();
 		setContentView(R.layout.activity_more);		
 		TextView tv_set = (TextView)findViewById(R.id.tv_set);
 		tv_set.setOnClickListener(onClickListener);
@@ -83,8 +83,8 @@ public class MoreActivity extends Activity{
 				finish();
 				break;
 			case R.id.tv_sms:				
-				if(Judge.isLogin()){
-					Variable.noti_count = 0;
+				if(Judge.isLogin(app)){
+					app.noti_count = 0;
 					startActivity(new Intent(MoreActivity.this, NoticeActivity.class));
 				}else{
 					//TODO 传送类型跳转类型
@@ -94,7 +94,7 @@ public class MoreActivity extends Activity{
 				}
 				break;
 			case R.id.tv_collection:
-				if(Judge.isLogin()){
+				if(Judge.isLogin(app)){
 					startActivity(new Intent(MoreActivity.this, CollectionActivity.class));
 				}else{
 					Intent intent = new Intent(MoreActivity.this, LoginActivity.class);
@@ -103,7 +103,7 @@ public class MoreActivity extends Activity{
 				}
 				break;
 			case R.id.tv_remind:
-				if(Judge.isLogin()){
+				if(Judge.isLogin(app)){
 					startActivity(new Intent(MoreActivity.this, RemindListActivity.class));
 				}else{
 					Intent intent = new Intent(MoreActivity.this, LoginActivity.class);
@@ -112,8 +112,8 @@ public class MoreActivity extends Activity{
 				}
 				break;
 			case R.id.tv_traffic:
-				if(Judge.isLogin()){
-					Variable.vio_count = 0;
+				if(Judge.isLogin(app)){
+					app.vio_count = 0;
 					startActivity(new Intent(MoreActivity.this, TrafficActivity.class));
 				}else{
 					Intent intent = new Intent(MoreActivity.this, LoginActivity.class);
@@ -135,12 +135,12 @@ public class MoreActivity extends Activity{
 	}
 	/**设置提醒**/
 	private void setNotiView(){
-		if(Variable.noti_count == 0){
+		if(app.noti_count == 0){
 			iv_noti.setVisibility(View.GONE);
 		}else{
 			iv_noti.setVisibility(View.VISIBLE);
 		}
-		if(Variable.vio_count == 0){
+		if(app.vio_count == 0){
 			iv_vio.setVisibility(View.GONE);
 		}else{
 			iv_vio.setVisibility(View.VISIBLE);

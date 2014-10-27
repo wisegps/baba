@@ -4,8 +4,8 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.baidu.navisdk.R.string;
-
+import com.wise.baba.AppApplication;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -14,11 +14,11 @@ public class GetLocation {
 	Context mContext;
 	public LocationClient mLocationClient = null;
 	public BDLocationListener myListener = new MyLocationListener();
-	
-	public GetLocation(){}
+	AppApplication app;
 	
 	public GetLocation(Context context){
 		mContext = context;
+		app = (AppApplication)((Activity)context).getApplication();
 		mLocationClient = new LocationClient(mContext); // 声明LocationClient类
 		mLocationClient.registerLocationListener(myListener); // 注册监听函数
 		SetOption();
@@ -52,8 +52,8 @@ public class GetLocation {
 			sb.append(location.getLongitude());
 			sb.append("\nradius : ");
 			sb.append(location.getRadius());			
-			Variable.Lat = location.getLatitude();
-			Variable.Lon = location.getLongitude();
+			app.Lat = location.getLatitude();
+			app.Lon = location.getLongitude();
 			if (location.getLocType() == BDLocation.TypeGpsLocation) {
 				sb.append("\nspeed : ");
 				sb.append(location.getSpeed());
@@ -65,22 +65,27 @@ public class GetLocation {
 				sb.append("\ncity: ");
 				sb.append(location.getCity());
 				sb.append("\nProvince: " + location.getProvince());
-				Log.d(TAG, "定位成功 = " + sb.toString());
+				Log.d(TAG, "定位成功 = " + sb.toString());				
 				String city = location.getCity();
+				if(city != null && city.length() > 0){
+					city = city.substring(0, city.length() - 1); //去掉"市"
+				}
 				String province = location.getProvince();
-				Variable.Adress = location.getAddrStr();
-				Variable.City = city.substring(0, city.length() - 1);
-				Variable.Province = province.substring(0, province.length() - 1);
+				if(province != null && province.length() > 0){
+					province = province.substring(0, province.length() - 1); //去掉"省"
+				}				
+				app.Adress = location.getAddrStr();				
+				app.City = city;
+				app.Province = province;
 	            //发送定位城市广播，选择城市用到
 	            Intent intent = new Intent(Constant.A_City);
-	            intent.putExtra("City", city.substring(0, city.length() - 1));
-	            intent.putExtra("Province", province.substring(0, province.length() - 1));
+	            intent.putExtra("City", city);
+	            intent.putExtra("Province", province);
 	            intent.putExtra("AddrStr", location.getAddrStr());
 	            intent.putExtra("Lat", String.valueOf(location.getLatitude()));
 	            intent.putExtra("Lon", String.valueOf(location.getLongitude()));
 	            mContext.sendBroadcast(intent);
 			}
-			Log.d("location", sb.toString());
 			mLocationClient.stop();
 			mLocationClient.unRegisterLocationListener(myListener);
 		}

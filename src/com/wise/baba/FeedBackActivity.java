@@ -6,7 +6,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import pubclas.Constant;
 import pubclas.NetThread;
-import pubclas.Variable;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,9 +22,12 @@ import android.widget.Toast;
 public class FeedBackActivity extends Activity {
     private static final int feedBack = 1;
 	EditText et_content,et_qq;
+	AppApplication app;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        app = (AppApplication)getApplication();
 		setContentView(R.layout.activity_feed_back);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 		Button bt_send = (Button)findViewById(R.id.bt_send);
@@ -50,11 +52,11 @@ public class FeedBackActivity extends Activity {
                     Toast.makeText(FeedBackActivity.this, "联系方式不能为空", Toast.LENGTH_SHORT).show();
                     break;
                 }
-                String url = Constant.BaseUrl + "feedback?auth_code=" + Variable.auth_code;
+                String url = Constant.BaseUrl + "feedback?auth_code=" + app.auth_code;
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("content", content));
                 params.add(new BasicNameValuePair("contact", qq));
-                params.add(new BasicNameValuePair("cust_id", Variable.cust_id == null ? "0":Variable.cust_id));
+                params.add(new BasicNameValuePair("cust_id", app.cust_id == null ? "0":app.cust_id));
                 new Thread(new NetThread.postDataThread(handler, url, params, feedBack)).start();
                 break;
             case R.id.iv_back:

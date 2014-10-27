@@ -15,9 +15,8 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.JsonData;
 import pubclas.NetThread;
-import pubclas.Variable;
-
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import customView.SlidingView;
 import data.BrandData;
@@ -60,12 +59,14 @@ public class CarActivity extends Activity {
 	CarAdapter carAdapter;
 
 	boolean isRefresh = false;
+	AppApplication app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car);
+		app = (AppApplication)getApplication();
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		lv_cars = (ListView) findViewById(R.id.lv_cars);
@@ -75,7 +76,7 @@ public class CarActivity extends Activity {
 		carAdapter = new CarAdapter();
 		lv_cars.setAdapter(carAdapter);
 		lv_cars.setOnItemClickListener(onItemClickListener);
-		if (Variable.carDatas.size() == 0) {
+		if (app.carDatas.size() == 0) {
 			getData();
 		} else {
 			new GetImageThread().start();
@@ -98,8 +99,8 @@ public class CarActivity extends Activity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case get_data:
-				Variable.carDatas.clear();
-				Variable.carDatas.addAll(JsonData.jsonCarInfo(msg.obj
+				app.carDatas.clear();
+				app.carDatas.addAll(JsonData.jsonCarInfo(msg.obj
 						.toString()));
 				carAdapter.notifyDataSetChanged();
 				new GetImageThread().start();
@@ -124,7 +125,7 @@ public class CarActivity extends Activity {
 				// TODO 刷新
 				Toast.makeText(CarActivity.this, "解除绑定成功", Toast.LENGTH_SHORT)
 						.show();
-				Variable.carDatas.get(index).setDevice_id("");
+				app.carDatas.get(index).setDevice_id("");
 				carAdapter.notifyDataSetChanged();
 			}
 		} catch (JSONException e) {
@@ -138,7 +139,7 @@ public class CarActivity extends Activity {
 			if (jsonObject.getString("status_code").equals("0")) {
 				Toast.makeText(CarActivity.this, "删除成功", Toast.LENGTH_SHORT)
 						.show();
-				Variable.carDatas.remove(index);
+				app.carDatas.remove(index);
 				carAdapter.notifyDataSetChanged();
 				isRefresh = true;
 			}
@@ -151,7 +152,7 @@ public class CarActivity extends Activity {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			if (arg2 == Variable.carDatas.size()) {
+			if (arg2 == app.carDatas.size()) {
 				startActivityForResult(new Intent(CarActivity.this,
 						CarAddActivity.class), 2);
 			} else {
@@ -161,8 +162,8 @@ public class CarActivity extends Activity {
 	};
 
 	private void getData() {
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-				+ "/vehicle?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "/vehicle?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, get_data).start();
 	}
 
@@ -174,12 +175,12 @@ public class CarActivity extends Activity {
 
 		@Override
 		public int getCount() {
-			return Variable.carDatas.size();
+			return app.carDatas.size();
 		}
 
 		@Override
 		public Object getItem(int arg0) {
-			return Variable.carDatas.get(arg0);
+			return app.carDatas.get(arg0);
 		}
 
 		@Override
@@ -215,7 +216,7 @@ public class CarActivity extends Activity {
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-			final CarData carData = Variable.carDatas.get(position);
+			final CarData carData = app.carDatas.get(position);
 			if (new File(Constant.VehicleLogoPath + carData.getCar_brand_id()
 					+ ".png").exists()) {
 				Bitmap image = BitmapFactory
@@ -242,7 +243,7 @@ public class CarActivity extends Activity {
 					index = position;
 					String url = Constant.BaseUrl + "vehicle/"
 							+ carData.getObj_id() + "?auth_code="
-							+ Variable.auth_code;
+							+ app.auth_code;
 					new Thread(new NetThread.DeleteThread(handler, url,
 							delete_car)).start();
 				}
@@ -286,7 +287,7 @@ public class CarActivity extends Activity {
 					public void onClick(View v) {
 						String url = Constant.BaseUrl + "vehicle/"
 								+ carData.getObj_id() + "/device?auth_code="
-								+ Variable.auth_code;
+								+ app.auth_code;
 						List<NameValuePair> params = new ArrayList<NameValuePair>();
 						params.add(new BasicNameValuePair("device_id", "0"));
 						new Thread(new NetThread.putDataThread(handler, url,
@@ -378,7 +379,7 @@ public class CarActivity extends Activity {
 					e.printStackTrace();
 				}
 			}
-			for (CarData carData : Variable.carDatas) {
+			for (CarData carData : app.carDatas) {
 				if (new File(Constant.VehicleLogoPath
 						+ carData.getCar_brand_id() + ".png").exists()) {
 
@@ -423,7 +424,7 @@ public class CarActivity extends Activity {
 			try {
 				b.flush();
 				b.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

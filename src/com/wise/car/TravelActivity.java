@@ -7,11 +7,9 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,6 +32,7 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 
 /**
@@ -52,12 +51,13 @@ public class TravelActivity extends Activity {
 	String Date;
 	private GeoCoder mGeoCoder = null;
 	int index;
-
+	AppApplication app;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_travel);
+		app = (AppApplication)getApplication();
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
 		tv_travel_date = (TextView) findViewById(R.id.tv_travel_date);
@@ -197,17 +197,17 @@ public class TravelActivity extends Activity {
 	private void GetDataTrip() {
 		String url;
 		String Gas_no;
-		if (Variable.carDatas.get(index).getGas_no() == null
-				|| Variable.carDatas.get(index).getGas_no().equals("")) {
+		if (app.carDatas.get(index).getGas_no() == null
+				|| app.carDatas.get(index).getGas_no().equals("")) {
 			Gas_no = "93#(92#)";
 		} else {
-			Gas_no = Variable.carDatas.get(index).getGas_no();
+			Gas_no = app.carDatas.get(index).getGas_no();
 		}
 		try {
 			url = Constant.BaseUrl + "device/"
-					+ Variable.carDatas.get(index).getDevice_id()
-					+ "/trip?auth_code=" + Variable.auth_code + "&day=" + Date
-					+ "&city=" + URLEncoder.encode(Variable.City, "UTF-8")
+					+ app.carDatas.get(index).getDevice_id()
+					+ "/trip?auth_code=" + app.auth_code + "&day=" + Date
+					+ "&city=" + URLEncoder.encode(app.City, "UTF-8")
 					+ "&gas_no=" + Gas_no;
 			new Thread(new NetThread.GetDataThread(handler, url, get_data))
 					.start();
@@ -330,7 +330,7 @@ public class TravelActivity extends Activity {
 							.getSpeed());
 					intent.putExtra("Cost", travelDatas.get(position).getCost());
 					intent.putExtra("index", index);
-					intent.putExtra("device", Variable.carDatas.get(index)
+					intent.putExtra("device", app.carDatas.get(index)
 							.getDevice_id());
 					TravelActivity.this.startActivity(intent);
 				}

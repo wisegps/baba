@@ -13,7 +13,6 @@ import pubclas.Constant;
 import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.wise.car.ClearEditText;
 import com.wise.car.SideBar;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;
@@ -85,12 +84,13 @@ public class SelectCityActivity extends Activity {
     boolean isWelcome = false;
     boolean isShow = false;
     ProgressDialog progressDialog = null;
-
+    AppApplication app;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_select_city);
+        app = (AppApplication)getApplication();
         ImageView iv_select_city_back = (ImageView)findViewById(R.id.iv_select_city_back);
         iv_select_city_back.setOnClickListener(onClickListener);
         ll_activity_select_city = (LinearLayout) findViewById(R.id.ll_activity_select_city);
@@ -294,8 +294,8 @@ public class SelectCityActivity extends Activity {
     		finish();
     		return;
     	}
-    	Variable.City = cityData.getCity();
-    	Variable.Province = cityData.getProvince();
+    	app.City = cityData.getCity();
+    	app.Province = cityData.getProvince();
         SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
         Editor editor = preferences.edit();
         editor.putString(Constant.sp_city, cityData.getCity());

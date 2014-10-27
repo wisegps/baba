@@ -10,7 +10,6 @@ import pubclas.Constant;
 import pubclas.DensityUtil;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -33,6 +32,7 @@ import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
+import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
 import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
@@ -41,6 +41,7 @@ import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.utils.DistanceUtil;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import data.CarData;
 import android.app.Activity;
@@ -85,17 +86,19 @@ public class CarLocationActivity extends Activity {
 	private static final int get_gps = 1;
 	/**车辆轨迹**/
 	List<LatLng> points = new ArrayList<LatLng>();
+	AppApplication app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_location);
+		app = (AppApplication)getApplication();
 		ImageView iv_streetview = (ImageView)findViewById(R.id.iv_streetview);
 		iv_streetview.setOnClickListener(onClickListener);
 		TextView tv_car_name = (TextView)findViewById(R.id.tv_car_name);
 		index = getIntent().getIntExtra("index", 0);
-		carData = Variable.carDatas.get(index);
+		carData = app.carDatas.get(index);
 		tv_car_name.setText(carData.getNick_name());
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
@@ -137,7 +140,7 @@ public class CarLocationActivity extends Activity {
 						String gpsUrl = Constant.BaseUrl + "device/"
 								+ carData.getDevice_id()
 								+ "/active_gps_data?auth_code="
-								+ Variable.auth_code
+								+ app.auth_code
 								+ "&update_time=2014-01-01%2019:06:43";
 						new NetThread.GetDataThread(handler, gpsUrl, get_gps).start();
 					} catch (InterruptedException e) {
@@ -204,11 +207,11 @@ public class CarLocationActivity extends Activity {
 			case R.id.fence_delete:
 				String url = Constant.BaseUrl + "vehicle/"
 						+ carData.getObj_id() + "/geofence" + "?auth_code="
-						+ Variable.auth_code;
+						+ app.auth_code;
 				new NetThread.DeleteThread(handler, url, DELETE).start();
 				break;
 			case R.id.iv_streetview:
-				//TODO 进入洁净
+				//TODO 进入街景
 				Intent intent = new Intent(CarLocationActivity.this, PanoramaDemoActivityMain.class);
 				intent.putExtra("lat", latitude);
 				intent.putExtra("lon", longitude);
@@ -366,7 +369,7 @@ public class CarLocationActivity extends Activity {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("geo", geo));
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
-				+ "/geofence" + "?auth_code=" + Variable.auth_code;
+				+ "/geofence" + "?auth_code=" + app.auth_code;
 		new NetThread.putDataThread(handler, url, params, GETDATE).start();
 	}
 
@@ -559,8 +562,8 @@ public class CarLocationActivity extends Activity {
 				return;
 			latitude = location.getLatitude();
 			longitude = location.getLongitude();
-			Variable.Lat = latitude;
-			Variable.Lon = longitude;
+			app.Lat = latitude;
+			app.Lon = longitude;
 			MyLocationData locData = new MyLocationData.Builder()
 					.accuracy(location.getRadius())
 					// 此处设置开发者获取到的方向信息，顺时针0-360
@@ -600,12 +603,21 @@ public class CarLocationActivity extends Activity {
 
 		@Override
 		public void onGetDrivingRouteResult(DrivingRouteResult result) {
-			DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaiduMap);
-			mBaiduMap.setOnMarkerClickListener(overlay);
-			overlay.setData(result.getRouteLines().get(0));
-			overlay.addToMap();
-			// overlay.zoomToSpan();
-			showDialog();
+			if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+				Toast.makeText(CarLocationActivity.this, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+				return;
+	        }
+			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
+				DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaiduMap);
+				mBaiduMap.setOnMarkerClickListener(overlay);
+				overlay.setData(result.getRouteLines().get(0));
+				overlay.addToMap();
+				// overlay.zoomToSpan();
+				showDialog();
+			}else{
+				Toast.makeText(CarLocationActivity.this, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+				return;
+			}			
 		}
 	};
 

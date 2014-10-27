@@ -10,14 +10,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
-
 import model.BaseData;
 import nadapter.OpenDateDialog;
 import nadapter.OpenDateDialogListener;
 import pubclas.Constant;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.violation.ShortProvincesActivity;
 import data.CarData;
@@ -73,14 +72,16 @@ public class CarUpdateActivity extends Activity {
 	String car_series_id = "";
 	String car_type = "";
 	String car_type_id = "";
-
+	AppApplication app;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_update);
+		app = (AppApplication)getApplication();
 		index = getIntent().getIntExtra("index", 0);
-		carData = Variable.carDatas.get(index);
+		carData = app.carDatas.get(index);
 		carNewData = carData; 
 		init();
 		setData();
@@ -118,7 +119,7 @@ public class CarUpdateActivity extends Activity {
 			case R.id.tv_maintain_company:
 				Intent intent = new Intent(CarUpdateActivity.this,
 						FoursActivity.class);
-				intent.putExtra("city", Variable.City);
+				intent.putExtra("city", app.City);
 				intent.putExtra("brank", car_brand);
 				startActivityForResult(intent, 2);
 				break;
@@ -191,7 +192,7 @@ public class CarUpdateActivity extends Activity {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			if(jsonObject.getInt("status_code") == 0){
-				Variable.carDatas.set(index, carNewData);
+				app.carDatas.set(index, carNewData);
 				setResult(3);
 				finish();
 			}else{
@@ -327,7 +328,7 @@ public class CarUpdateActivity extends Activity {
 		params.add(new BasicNameValuePair("car_type_id", car_type_id));
 
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
-				+ "?auth_code=" + Variable.auth_code;
+				+ "?auth_code=" + app.auth_code;
 		new NetThread.putDataThread(handler, url, params, update)
 				.start();
 	}
@@ -520,7 +521,7 @@ public class CarUpdateActivity extends Activity {
 		List<BaseData> baseDatas = DataSupport.where("Title = ?","Violation").find(BaseData.class);
 		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
 			String url = Constant.BaseUrl + "violation/city?cuth_code="
-					+ Variable.auth_code;
+					+ app.auth_code;
 			new NetThread.GetDataThread(handler, url, get_traffic).start();
 		}else{
 			parseJson(baseDatas.get(0).getContent());

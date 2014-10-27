@@ -13,14 +13,13 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
-
 import pubclas.Blur;
 import pubclas.Constant;
 import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.aliyun.android.oss.task.PutObjectTask;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.ModelsActivity;
 import android.app.Activity;
@@ -61,13 +60,14 @@ public class ShowCarAcitivity extends Activity{
 	String Lon = "";
 	String AddrStr = "";
 	ProgressDialog progressDialog = null;
+	AppApplication app;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_show_mycar);
-		
+		app = (AppApplication)getApplication();
 		//照相机拍照，传过来的是SD卡路径
 		DisplayMetrics metrics=new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -203,8 +203,8 @@ public class ShowCarAcitivity extends Activity{
 				int newWidth = widthPixels > heightPixels ? heightPixels : widthPixels;
 				
 				//设置大图形和小图像的名称
-				small_pic = Variable.cust_id + System.currentTimeMillis() + ".png";
-				big_pic = Variable.cust_id + (System.currentTimeMillis() + 1) + ".png";
+				small_pic = app.cust_id + System.currentTimeMillis() + ".png";
+				big_pic = app.cust_id + (System.currentTimeMillis() + 1) + ".png";
 				
 				//存大图像
 				bitmap = Blur.scaleImage(bitmap, newWidth);
@@ -287,7 +287,7 @@ public class ShowCarAcitivity extends Activity{
 		String sex = "0";
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-		String customer = preferences.getString(Constant.sp_customer + Variable.cust_id, "");
+		String customer = preferences.getString(Constant.sp_customer + app.cust_id, "");
 		try {
 			JSONObject jsonObject = new JSONObject(customer);
 			logo = jsonObject.getString("logo");
@@ -300,11 +300,11 @@ public class ShowCarAcitivity extends Activity{
 		String big_pic_url = Constant.oss_url + big_pic;
 		String small_pic_url = Constant.oss_url + small_pic;
 		
-		String url = Constant.BaseUrl + "photo?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "photo?auth_code=" + app.auth_code;
 		//上传数据到服务器
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("cust_id", Variable.cust_id));
-		params.add(new BasicNameValuePair("cust_name", Variable.cust_name));
+		params.add(new BasicNameValuePair("cust_id", app.cust_id));
+		params.add(new BasicNameValuePair("cust_name", app.cust_name));
 		params.add(new BasicNameValuePair("icon", logo));
 		params.add(new BasicNameValuePair("sex", sex));
 		params.add(new BasicNameValuePair("car_brand_id", carBrankId));
@@ -360,13 +360,13 @@ public class ShowCarAcitivity extends Activity{
 //		}
 		if(!isCustomer){
 			//获取用户下车辆的车型
-			if(Variable.carDatas != null || Variable.carDatas.size() != 0){
+			if(app.carDatas != null || app.carDatas.size() != 0){
 				try {
-					String car_brand = Variable.carDatas.get(0).getCar_brand();
-					carBrankId = Variable.carDatas.get(0).getCar_brand_id();
-					carSeriesId = Variable.carDatas.get(0).getCar_series_id();
-					carSeries = Variable.carDatas.get(0).getCar_series();
-					carBrank = Variable.carDatas.get(0).getCar_brand();
+					String car_brand = app.carDatas.get(0).getCar_brand();
+					carBrankId = app.carDatas.get(0).getCar_brand_id();
+					carSeriesId = app.carDatas.get(0).getCar_series_id();
+					carSeries = app.carDatas.get(0).getCar_series();
+					carBrank = app.carDatas.get(0).getCar_brand();
 					tv_series.setText(carSeries);
 					JSONObject jsonObject2 = getJsonObjectFromJsonArray(result,car_brand);
 					LogUrl = Constant.BaseUrl +"logo/" + jsonObject2.getString("url_icon");//品牌logo地址

@@ -11,13 +11,13 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.aliyun.android.oss.model.OSSObject;
 import com.aliyun.android.oss.task.GetObjectTask;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.notice.LetterActivity;
 import customView.CircleImageView;
@@ -83,12 +83,14 @@ public class PhotoActivity extends Activity {
 	/** 是否修改了点赞状态 **/
 	boolean isPraises = false;
 	int textHeight = 45;
-
+	AppApplication app;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_photo);
+		app = (AppApplication)getApplication();
 		mQueue = Volley.newRequestQueue(this);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
@@ -151,7 +153,7 @@ public class PhotoActivity extends Activity {
 		iv_pic.setOnClickListener(onClickListener);
 		/** 获取大图片 **/
 		String url = Constant.BaseUrl + "photo/" + imageData.getPhoto_id()
-				+ "?auth_code=" + Variable.auth_code;
+				+ "?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, getPhoto).start();
 		getLogo();
 		textHeight = (int) TypedValue.applyDimension(
@@ -172,7 +174,7 @@ public class PhotoActivity extends Activity {
 			case R.id.iv_more:
 				if (cust_id == null || cust_id.equals("0")) {
 					// 没读取到数据
-				} else if (cust_id.equals(Variable.cust_id)) {
+				} else if (cust_id.equals(app.cust_id)) {
 					// 自己不能给自己私信
 				} else {
 					showMenu();
@@ -246,7 +248,7 @@ public class PhotoActivity extends Activity {
 		} else {
 			photoData = photoDatas.get(position);
 		}
-		if (photoData.getCust_id().equals(Variable.cust_id)) {
+		if (photoData.getCust_id().equals(app.cust_id)) {
 			//Toast.makeText(PhotoActivity.this, "不能回复自己", Toast.LENGTH_SHORT).show();
 		} else {
 			LayoutInflater mLayoutInflater = LayoutInflater
@@ -384,10 +386,10 @@ public class PhotoActivity extends Activity {
 		} else {
 			int Photo_id = imageData.getPhoto_id();
 			String url = Constant.BaseUrl + "photo/" + Photo_id
-					+ "/praise?auth_code=" + Variable.auth_code;
+					+ "/praise?auth_code=" + app.auth_code;
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-			pairs.add(new BasicNameValuePair("cust_id", Variable.cust_id));
-			pairs.add(new BasicNameValuePair("cust_name", Variable.cust_name));
+			pairs.add(new BasicNameValuePair("cust_id", app.cust_id));
+			pairs.add(new BasicNameValuePair("cust_name", app.cust_name));
 			pairs.add(new BasicNameValuePair("icon", logo));
 			new NetThread.putDataThread(handler, url, pairs, praise).start();
 		}
@@ -432,9 +434,9 @@ public class PhotoActivity extends Activity {
 				// 发表成功
 				PhotoData photoData = new PhotoData();
 				photoData.setContent(comments);
-				photoData.setCust_name(Variable.cust_name);
+				photoData.setCust_name(app.cust_name);
 				photoData.setCreate_time(GetSystem.GetNowTime());
-				photoData.setCust_id(Variable.cust_id);
+				photoData.setCust_id(app.cust_id);
 				photoData.setReply(reply);
 				photoDatas.add(photoData);
 				photoAdapter.notifyDataSetChanged();
@@ -462,10 +464,10 @@ public class PhotoActivity extends Activity {
 					"评论发送中");
 			progressDialog.setCancelable(true);
 			String url = Constant.BaseUrl + "photo/" + imageData.getPhoto_id()
-					+ "/comment?auth_code=" + Variable.auth_code;
+					+ "/comment?auth_code=" + app.auth_code;
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-			pairs.add(new BasicNameValuePair("cust_id", Variable.cust_id));
-			pairs.add(new BasicNameValuePair("cust_name", Variable.cust_name));
+			pairs.add(new BasicNameValuePair("cust_id", app.cust_id));
+			pairs.add(new BasicNameValuePair("cust_name", app.cust_name));
 			pairs.add(new BasicNameValuePair("icon", logo));
 			pairs.add(new BasicNameValuePair("content", comments));
 			pairs.add(new BasicNameValuePair("reply", reply));
@@ -798,11 +800,11 @@ public class PhotoActivity extends Activity {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		String customer = preferences.getString(Constant.sp_customer
-				+ Variable.cust_id, "");
+				+ app.cust_id, "");
 		try {
 			JSONObject jsonObject = new JSONObject(customer);
 			logo = jsonObject.getString("logo");
-			Variable.cust_name = jsonObject.getString("cust_name");
+			app.cust_name = jsonObject.getString("cust_name");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

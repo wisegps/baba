@@ -5,13 +5,10 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
 import model.BaseData;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
-
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.CollectionActivity;
@@ -21,12 +18,10 @@ import com.wise.baba.R;
 import com.wise.notice.NoticeActivity;
 import com.wise.remind.RemindListActivity;
 import com.wise.violation.TrafficActivity;
-
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.JsonData;
 import pubclas.NetThread;
-import pubclas.Variable;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import cn.sharesdk.framework.Platform;
@@ -80,6 +75,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	String pwd;
 	
 	boolean fastTrack = false;
+	AppApplication app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +83,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		ManageActivity.getActivityInstance().addActivity(LoginActivity.this);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_login);
+		app = (AppApplication)getApplication();
 		JPushInterface.init(getApplicationContext());
 		ShareSDK.initSDK(this);
 		tv_note = (TextView) findViewById(R.id.tv_note);
@@ -167,8 +164,8 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				jsonSQLogin(msg.obj.toString());
 				break;
 			case get_data:
-				Variable.carDatas.clear();
-				Variable.carDatas.addAll(JsonData.jsonCarInfo(msg.obj
+				app.carDatas.clear();
+				app.carDatas.addAll(JsonData.jsonCarInfo(msg.obj
 						.toString()));
 				// 发广播
 				Intent intent = new Intent(Constant.A_RefreshHomeCar);
@@ -200,8 +197,8 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 			if (jsonObject.getString("status_code").equals("0")) {
 				// 登录进度条显示
 				progressBar.setVisibility(View.VISIBLE);
-				Variable.cust_id = jsonObject.getString("cust_id");
-				Variable.auth_code = jsonObject.getString("auth_code");
+				app.cust_id = jsonObject.getString("cust_id");
+				app.auth_code = jsonObject.getString("auth_code");
 				// 保存账号密码
 				SharedPreferences preferences = getSharedPreferences(
 						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
@@ -254,8 +251,8 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				String url = Constant.BaseUrl + "sso_login?login_id="
 						+ login_id + "&cust_name="
 						+ URLEncoder.encode(cust_name, "UTF-8") + "&provice="
-						+ URLEncoder.encode(Variable.Province, "UTF-8")
-						+ "&city=" + URLEncoder.encode(Variable.City, "UTF-8")
+						+ URLEncoder.encode(app.Province, "UTF-8")
+						+ "&city=" + URLEncoder.encode(app.City, "UTF-8")
 						+ "&logo=" + logo + "&remark=";
 				new NetThread.GetDataThread(handler, url, login_sso).start();
 			} catch (Exception e) {
@@ -318,8 +315,8 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT)
 						.show();
 				// TODO 登录成功
-				Variable.cust_id = jsonObject.getString("cust_id");
-				Variable.auth_code = jsonObject.getString("auth_code");
+				app.cust_id = jsonObject.getString("cust_id");
+				app.auth_code = jsonObject.getString("auth_code");
 				JPushInterface.resumePush(getApplicationContext());
 				setJpush();
 				getData();
@@ -333,8 +330,8 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 
 	/** 获取车辆信息 **/
 	private void getData() {
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-				+ "/vehicle?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "/vehicle?auth_code=" + app.auth_code;
 		new Thread(new NetThread.GetDataThread(handler, url, get_data)).start();
 	}
 
@@ -375,7 +372,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	private void setJpush() {
 		GetSystem.myLog(TAG, "设置推送");
 		Set<String> tagSet = new LinkedHashSet<String>();
-		tagSet.add(Variable.cust_id);
+		tagSet.add(app.cust_id);
 		// 调用JPush API设置Tag
 		JPushInterface.setAliasAndTags(getApplicationContext(), null, tagSet,
 				this);

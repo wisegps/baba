@@ -10,13 +10,12 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import wheel.widget.OnWheelScrollListener;
 import wheel.widget.WheelView;
 import widget.adapters.ArrayWheelAdapter;
 import widget.adapters.NumericWheelAdapter;
-
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import data.CarData;
 import data.RemindData;
@@ -50,12 +49,14 @@ public class CarRemindUpdateActivity extends Activity{
 	TextView tv_before0 ,tv_before1 , tv_before3 , tv_before7,tv_before30,tv_remind_time,tv_before_note;
 	EditText et_mileage,et_content;
 	RemindData remindData;
+	AppApplication app;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_remind_add);
+		app = (AppApplication)getApplication();
 		ll_car = (LinearLayout)findViewById(R.id.ll_car);
 		ll_mileage = (LinearLayout)findViewById(R.id.ll_mileage);
 		ll_content = (LinearLayout)findViewById(R.id.ll_content);
@@ -119,8 +120,8 @@ public class CarRemindUpdateActivity extends Activity{
 	}
 	/**得到车辆对应的位置**/
 	private int getSelectedItemPosition(int Obj_id){		
-		for(int i = 0 ; i < Variable.carDatas.size() ; i++){
-			if(Variable.carDatas.get(i).getObj_id() == Obj_id){
+		for(int i = 0 ; i < app.carDatas.size() ; i++){
+			if(app.carDatas.get(i).getObj_id() == Obj_id){
 				return i;
 			}
 		}
@@ -254,10 +255,10 @@ public class CarRemindUpdateActivity extends Activity{
 	};
 	private void save(){
 		String mileage = et_mileage.getText().toString().trim();		
-		String url = Constant.BaseUrl + "reminder/" + remindData.getReminder_id() + "?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "reminder/" + remindData.getReminder_id() + "?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("remind_type", String.valueOf(s_type.getSelectedItemPosition())));
-        params.add(new BasicNameValuePair("obj_id", String.valueOf(Variable.carDatas.get(s_car.getSelectedItemPosition()).getObj_id())));
+        params.add(new BasicNameValuePair("obj_id", String.valueOf(app.carDatas.get(s_car.getSelectedItemPosition()).getObj_id())));
         params.add(new BasicNameValuePair("mileage", mileage.equals("")?"0":mileage));
         params.add(new BasicNameValuePair("remind_way", remind_way));
         params.add(new BasicNameValuePair("repeat_type", String.valueOf(s_mode.getSelectedItemPosition())));
@@ -274,7 +275,7 @@ public class CarRemindUpdateActivity extends Activity{
 	}
 	private List<String> getCars(){
 		List<String> strs = new ArrayList<String>();
-		for(CarData carData : Variable.carDatas){
+		for(CarData carData : app.carDatas){
 			strs.add(carData.getNick_name());
 		}
 		return strs;

@@ -7,9 +7,8 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-
 import data.CarData;
 import android.app.Activity;
 import android.app.ExpandableListActivity;
@@ -41,12 +40,14 @@ public class DriveActivity extends Activity{
 	int frist = 1; 
 	int second = 2;
 	int index_car;
+	AppApplication app;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_drive);
+		app = (AppApplication)getApplication();
 		mTasksView = (TasksCompletedView)findViewById(R.id.tasks_view);
 		Button bt_drive_rank = (Button)findViewById(R.id.bt_drive_rank);
 		bt_drive_rank.setOnClickListener(onClickListener);
@@ -68,8 +69,8 @@ public class DriveActivity extends Activity{
 		
 		TextView tv_name = (TextView)findViewById(R.id.tv_name);
 		index_car = getIntent().getIntExtra("index_car", 0);
-		tv_name.setText(Variable.carDatas.get(index_car).getNick_name());
-		Device_id = Variable.carDatas.get(index_car).getDevice_id();
+		tv_name.setText(app.carDatas.get(index_car).getNick_name());
+		Device_id = app.carDatas.get(index_car).getDevice_id();
 		Date = GetSystem.GetNowMonth().getDay();
 		tv_date.setText(Date);
 		getDriveData(frist);
@@ -120,7 +121,7 @@ public class DriveActivity extends Activity{
 	/**获取驾驶习惯**/
 	private void getDriveData(int frist){
 		try {
-			CarData carData = Variable.carDatas.get(index_car);
+			CarData carData = app.carDatas.get(index_car);
 			String Gas_no = "";
 			if (carData.getGas_no() == null
 					|| carData.getGas_no().equals("")) {
@@ -128,9 +129,8 @@ public class DriveActivity extends Activity{
 			} else {
 				Gas_no = carData.getGas_no();
 			}
-			//TODO 油耗要改
-			String url = Constant.BaseUrl + "device/" + Device_id + "/day_drive?auth_code=" + Variable.auth_code + 
-						"&day=" + Date + "&city=" + URLEncoder.encode(Variable.City, "UTF-8") + "&gas_no=" + Gas_no;
+			String url = Constant.BaseUrl + "device/" + Device_id + "/day_drive?auth_code=" + app.auth_code + 
+						"&day=" + Date + "&city=" + URLEncoder.encode(app.City, "UTF-8") + "&gas_no=" + Gas_no;
 			new NetThread.GetDataThread(handler, url, getData,frist).start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -141,7 +141,11 @@ public class DriveActivity extends Activity{
 			//TODO 保存在本地
 			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 	        Editor editor = preferences.edit();
-	        editor.putString(Constant.sp_drive_score + Variable.carDatas.get(index_car).getObj_id(), Data);
+	     // java.lang.IndexOutOfBoundsException: Invalid index 0, size is 0
+//	     	at java.util.ArrayList.throwIndexOutOfBoundsException(ArrayList.java:257)
+//	     	at java.util.ArrayList.get(ArrayList.java:311)
+//	     	at com.wise.state.DriveActivity.jsonData(DriveActivity.java:145)
+	        editor.putString(Constant.sp_drive_score + app.carDatas.get(index_car).getObj_id(), Data);
 	        editor.commit();
 		}
 		if(Data.equals("")){

@@ -1,17 +1,14 @@
 package nadapter;
 
 import java.util.List;
-
 import pubclas.GetSystem;
-import pubclas.Variable;
-
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.NaviPara;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.CarLocationActivity;
-
 import customView.SlidingView;
 import data.AdressData;
 import android.app.Activity;
@@ -39,12 +36,15 @@ public class CollectionAdapter extends BaseAdapter {
     List<AdressData> adressDatas = null;
 
     CollectionItemListener collectionItemListener = null;
-    // 天安门坐标
-    double currentLat = Variable.Lat;
-    double currentLon = Variable.Lon;
+    AppApplication app;
+    double currentLat;
+    double currentLon;
 
     public CollectionAdapter(Context context, List<AdressData> adrDataList) {
         this.context = context;
+        app = (AppApplication)((Activity)context).getApplication();
+        currentLat = app.Lat;
+        currentLon = app.Lon;
         layoutInflater = LayoutInflater.from(context);
         this.adressDatas = adrDataList;
     }
