@@ -92,12 +92,13 @@ public class DevicesAddActivity extends Activity {
 		car_id = intent.getIntExtra("car_id", 0);
 		isBind = intent.getBooleanExtra("isBind", true);
 		fastTrack = intent.getBooleanExtra("fastTrack", false);
-		// TODO 接收并现实以前的终端值
-		String old_device_id = intent.getStringExtra("old_device_id");
-		String url = Constant.BaseUrl + "/device/" + old_device_id
-				+ "?auth_code=" + app.auth_code;
-		new NetThread.GetDataThread(handler, url, update_serial).start();
-
+		if(isBind){
+			//接收并现实以前的终端值
+			String old_device_id = intent.getStringExtra("old_device_id");
+			String url = Constant.BaseUrl + "/device/" + old_device_id
+					+ "?auth_code=" + app.auth_code;
+			new NetThread.GetDataThread(handler, url, update_serial).start();
+		}
 		if (fastTrack) {
 			tv_jump.setVisibility(View.VISIBLE);
 		} else {
