@@ -15,7 +15,6 @@ import pubclas.Blur;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import com.aliyun.android.oss.model.OSSObject;
@@ -25,6 +24,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.show.ImageDetailsActivity;
 import customView.CircleImageView;
@@ -142,12 +142,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	/**当前播放谁的语言，播放完毕后需要使用它来改变不同的图片**/
 	type noSoundPlay;
 	enum type {friend,me};
+	AppApplication app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_letter);	
+		app = (AppApplication)getApplication();
 		mQueue = Volley.newRequestQueue(this);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
@@ -206,10 +208,10 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					+ friend_id + ".png");
 		}
 		// 读取自己对应的图片
-		if (new File(Constant.userIconPath + Variable.cust_id + ".png")
+		if (new File(Constant.userIconPath + app.cust_id + ".png")
 				.exists()) {
 			imageMe = BitmapFactory.decodeFile(Constant.userIconPath
-					+ Variable.cust_id + ".png");
+					+ app.cust_id + ".png");
 		}
 		getFristData();
 		getLogo();// 判断是否有需要从网上读取的图片
@@ -354,7 +356,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		if (cust_name == null || cust_name.equals("") || logo == null
 				|| logo.equals("")) {
 			String url = Constant.BaseUrl + "customer/" + friend_id
-					+ "?auth_code=" + Variable.auth_code;
+					+ "?auth_code=" + app.auth_code;
 			new NetThread.GetDataThread(handler, url, get_friend_info).start();
 		}
 	}
@@ -434,10 +436,10 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	 *            类型,0:文本 1:图片 2:语音
 	 */
 	private void send(String content, String oss_url, String type) {
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-				+ "/send_chat?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "/send_chat?auth_code=" + app.auth_code;
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		pairs.add(new BasicNameValuePair("cust_name", Variable.cust_name));
+		pairs.add(new BasicNameValuePair("cust_name", app.cust_name));
 		pairs.add(new BasicNameValuePair("friend_id", friend_id));
 		pairs.add(new BasicNameValuePair("type", type));
 		pairs.add(new BasicNameValuePair("url", oss_url));
@@ -471,8 +473,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	}
 
 	private void getFristData() {
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-				+ "/get_chats?auth_code=" + Variable.auth_code + "&friend_id="
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "/get_chats?auth_code=" + app.auth_code + "&friend_id="
 				+ friend_id;
 		new NetThread.GetDataThread(handler, url, get_data).start();
 	}
@@ -537,7 +539,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			SharedPreferences preferences = getSharedPreferences(
 					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 			String customer = preferences.getString(Constant.sp_customer
-					+ Variable.cust_id, "");
+					+ app.cust_id, "");
 			try {
 				JSONObject jsonObject = new JSONObject(customer);
 				meLogo = jsonObject.getString("logo");
@@ -551,7 +553,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							@Override
 							public void onResponse(Bitmap response) {
 								GetSystem.saveImageSD(response,
-										Constant.userIconPath, Variable.cust_id
+										Constant.userIconPath, app.cust_id
 												+ ".png", 100);
 								imageMe = response;
 								letterAdapter.notifyDataSetChanged();
@@ -1096,8 +1098,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	public void onRefresh() {
 		refresh = "";
 		int Chat_id = letterDatas.get(0).getChat_id();
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-				+ "/get_chats?auth_code=" + Variable.auth_code + "&friend_id="
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "/get_chats?auth_code=" + app.auth_code + "&friend_id="
 				+ friend_id + "&max_id=" + Chat_id;
 		new NetThread.GetDataThread(handler, url, refresh_data).start();
 		lv_letter.startHeaderWheel();
@@ -1131,7 +1133,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 
 	private void saveImage(final String path) {
 		// 设置图像的名称和地址
-		final String big_pic = Variable.cust_id + System.currentTimeMillis() + ".png";
+		final String big_pic = app.cust_id + System.currentTimeMillis() + ".png";
 		final String oss_url = Constant.oss_url + big_pic;
 		// 判断文件夹是否为空
 		File filePath = new File(Constant.VehiclePath);
@@ -1190,10 +1192,10 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						big_pic, "image/jpg", bigFile, Constant.oss_accessId,
 						Constant.oss_accessKey);
 				bigTask.getResult();
-				String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-						+ "/send_chat?auth_code=" + Variable.auth_code;
+				String url = Constant.BaseUrl + "customer/" + app.cust_id
+						+ "/send_chat?auth_code=" + app.auth_code;
 				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-				pairs.add(new BasicNameValuePair("cust_name", Variable.cust_name));
+				pairs.add(new BasicNameValuePair("cust_name", app.cust_name));
 				pairs.add(new BasicNameValuePair("friend_id", friend_id));
 				pairs.add(new BasicNameValuePair("type", "1"));
 				pairs.add(new BasicNameValuePair("url", oss_url));
@@ -1392,7 +1394,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					img1.setVisibility(View.VISIBLE);
 					del_re.setVisibility(View.GONE);
 					startVoiceT = System.currentTimeMillis();
-					voiceName = Variable.cust_id + System.currentTimeMillis()
+					voiceName = app.cust_id + System.currentTimeMillis()
 							+ ".amr";
 					start(voiceName);
 					flag = 2;

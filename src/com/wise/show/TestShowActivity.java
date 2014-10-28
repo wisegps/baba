@@ -2,14 +2,11 @@ package com.wise.show;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.NetThread;
-import pubclas.Variable;
-
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import android.app.Activity;
 import android.os.Bundle;
@@ -22,15 +19,17 @@ import android.os.Message;
 public class TestShowActivity extends Activity{
 	private static final int getFristImage = 1;
 	MyScrollView myScrollView;
+	AppApplication app;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_waterfalls);
+		app = (AppApplication)getApplication();
 		myScrollView = (MyScrollView)findViewById(R.id.my_scroll_view);
 		RefreshableView ll_refresh = (RefreshableView)findViewById(R.id.ll_refresh);
-		String url = Constant.BaseUrl + "photo?auth_code=" + Variable.auth_code
-				+  "&cust_id=" + Variable.cust_id + "&photo_type=1";
+		String url = Constant.BaseUrl + "photo?auth_code=" + app.auth_code
+				+  "&cust_id=" + app.cust_id + "&photo_type=1";
 		new NetThread.GetDataThread(handler, url, getFristImage).start();
 	}
 	List<ImageData> imageDatas = new ArrayList<ImageData>();

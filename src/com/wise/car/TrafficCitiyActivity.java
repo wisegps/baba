@@ -6,18 +6,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
 import model.BaseData;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
-
 import pubclas.Constant;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import data.CharacterParser;
 import data.CityData;
@@ -69,12 +66,12 @@ public class TrafficCitiyActivity extends Activity {
 	List<ProvinceData> provinceDatas;
 	
 	int index = 0;
-
+	AppApplication app;
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_traffic_city);
-
+		app = (AppApplication)getApplication();
 		chooseCityDatas = (List<CityData>)getIntent().getSerializableExtra("cityDatas");
 		lv_provnice = (ListView) findViewById(R.id.lv_provnice);
 		lv_city = (ListView) findViewById(R.id.lv_city);
@@ -153,7 +150,7 @@ public class TrafficCitiyActivity extends Activity {
 					getString(R.string.dialog_message));
 			myDialog.setCancelable(true);
 			new NetThread.GetDataThread(handler, Constant.BaseUrl
-					+ "violation/city?cuth_code=" + Variable.auth_code, 0)
+					+ "violation/city?cuth_code=" + app.auth_code, 0)
 					.start();
 		}else{
 			// 解析数据 并且更新
@@ -162,7 +159,7 @@ public class TrafficCitiyActivity extends Activity {
 			lv_provnice.setAdapter(provinceAdapter);
 			showCity(0);
 			new NetThread.GetDataThread(handler, Constant.BaseUrl
-					+ "violation/city?cuth_code=" + Variable.auth_code, 0)
+					+ "violation/city?cuth_code=" + app.auth_code, 0)
 					.start();
 		}		
 	}

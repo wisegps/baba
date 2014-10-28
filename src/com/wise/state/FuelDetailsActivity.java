@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
@@ -48,12 +47,14 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 	int index_car = 0;
 	
 	String NowYear = "";
+	AppApplication app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fuel_details);
+		app = (AppApplication)getApplication();
 		ll_wait = (WaitLinearLayout)findViewById(R.id.ll_wait);
 		ll_wait.setOnFinishListener(onFinishListener);
 		TextView tv_name = (TextView) findViewById(R.id.tv_name);
@@ -69,7 +70,7 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 		fuelAdapter = new FuelAdapter();
 		lv_fuel.setAdapter(fuelAdapter);
 		index_car = getIntent().getIntExtra("index_car", 0);
-		tv_name.setText(Variable.carDatas.get(index_car).getNick_name());
+		tv_name.setText(app.carDatas.get(index_car).getNick_name());
 		NowYear = GetNowYear();
 		getData();
 		setupListView();
@@ -137,9 +138,9 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 	private void getData() {
 		try {
 			String url = Constant.BaseUrl + "device/"
-					+ Variable.carDatas.get(index_car).getDevice_id()
-					+ "/fee_detail?auth_code=" + Variable.auth_code + "&city="
-					+ URLEncoder.encode(Variable.City, "UTF-8")
+					+ app.carDatas.get(index_car).getDevice_id()
+					+ "/fee_detail?auth_code=" + app.auth_code + "&city="
+					+ URLEncoder.encode(app.City, "UTF-8")
 					+ "&gas_no=#93(#92)";
 			new NetThread.GetDataThread(handler, url, getData).start();
 			ll_wait.startWheel();
@@ -398,9 +399,9 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 		try {
 			refresh = "";
 			String url = Constant.BaseUrl + "device/"
-					+ Variable.carDatas.get(index_car).getDevice_id()
-					+ "/fee_detail?auth_code=" + Variable.auth_code + "&city="
-					+ URLEncoder.encode(Variable.City, "UTF-8")
+					+ app.carDatas.get(index_car).getDevice_id()
+					+ "/fee_detail?auth_code=" + app.auth_code + "&city="
+					+ URLEncoder.encode(app.City, "UTF-8")
 					+ "&gas_no=#93(#92)";
 			new NetThread.GetDataThread(handler, url, refresh_data).start();
 			lv_fuel.startHeaderWheel();
@@ -413,9 +414,9 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 		try {
 			load = "";
 			String url = Constant.BaseUrl + "device/"
-					+ Variable.carDatas.get(index_car).getDevice_id()
-					+ "/fee_detail?auth_code=" + Variable.auth_code + "&city="
-					+ URLEncoder.encode(Variable.City, "UTF-8") + "&min_id=" + fuelDatas.get(fuelDatas.size() - 1).getDay_trip_id()
+					+ app.carDatas.get(index_car).getDevice_id()
+					+ "/fee_detail?auth_code=" + app.auth_code + "&city="
+					+ URLEncoder.encode(app.City, "UTF-8") + "&min_id=" + fuelDatas.get(fuelDatas.size() - 1).getDay_trip_id()
 					+ "&gas_no=#93(#92)";
 			new NetThread.GetDataThread(handler, url, Load).start();
 			lv_fuel.startBottomWheel();

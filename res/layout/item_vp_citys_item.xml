@@ -1,0 +1,27 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/margins">
+    <TextView 
+        android:id="@+id/tv_city_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/small"
+        android:textColor="@color/navy"
+        android:text="深圳市"/>
+    <ImageView
+        android:id="@+id/iv_down" 
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/margins"
+        android:src="@drawable/localmap_no_expand"/>
+    <TextView 
+        android:id="@+id/tv_city_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/iv_down"
+        android:textSize="@dimen/small"
+        android:text="20M"/>
+</RelativeLayout>

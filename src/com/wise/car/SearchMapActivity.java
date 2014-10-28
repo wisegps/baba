@@ -13,7 +13,6 @@ import nadapter.AdressAdapter.OnCollectListener;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -37,7 +36,6 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
@@ -57,6 +55,7 @@ import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 import com.baidu.mapapi.utils.DistanceUtil;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import data.AdressData;
 import data.CarData;
@@ -69,7 +68,7 @@ public class SearchMapActivity extends Activity {
 
 	private final int getIsCollect = 1;
 	private final int get4s = 2;
-
+	AppApplication app;
 	List<AdressData> adressDatas = new ArrayList<AdressData>();
 	ListView lv_activity_search_map;
 	AdressAdapter adressAdapter;
@@ -82,8 +81,9 @@ public class SearchMapActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_search_map);
+		app = (AppApplication)getApplication();
 		int index = getIntent().getIntExtra("index", 0);
-		carData = Variable.carDatas.get(index);
+		carData = app.carDatas.get(index);
 		String keyWord = getIntent().getStringExtra("keyWord");
 		String key = getIntent().getStringExtra("key");
 		mMapView = (MapView) findViewById(R.id.mv_search_map);
@@ -112,9 +112,9 @@ public class SearchMapActivity extends Activity {
 				String url = Constant.BaseUrl + "base/dealer?city="
 						+ URLEncoder.encode(City, "UTF-8") + "&brand="
 						+ URLEncoder.encode(car_brand, "UTF-8") + "&lon="
-						+ getIntent().getDoubleExtra("longitude", 0) + "&lat="
-						+ getIntent().getDoubleExtra("latitude", 0)
-						+ "&cust_id=" + Variable.cust_id;
+						+ carData.getLon() + "&lat="
+						+ carData.getLat()
+						+ "&cust_id=" + app.cust_id;
 				new Thread(new NetThread.GetDataThread(handler, url, get4s))
 						.start();
 			} catch (UnsupportedEncodingException e) {
@@ -176,8 +176,8 @@ public class SearchMapActivity extends Activity {
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
-		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0)
-				.position(circle).icon(bitmap).title("1");
+		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
+				.position(circle).icon(bitmap);
 		// 在地图上添加Marker，并显示
 		mBaiduMap.addOverlay(option);
 	}
@@ -206,11 +206,14 @@ public class SearchMapActivity extends Activity {
 			LatLngBounds.Builder builder = new Builder();
 			JSONArray jsonArray = new JSONArray(result);
 			for (int i = 0; i < jsonArray.length(); i++) {// TODO
+				if(i == 10){
+					//只显示10个
+					break;
+				}
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				AdressData adressData = new AdressData();
 				adressData.setAdress(jsonObject.getString("address"));
-				adressData.setName((i + 1) + ". "
-						+ jsonObject.getString("name"));
+				adressData.setName(jsonObject.getString("name"));
 				adressData.setPhone(jsonObject.getString("tel"));
 				adressData.setLat(jsonObject.getDouble("lat"));
 				adressData.setLon(jsonObject.getDouble("lon"));
@@ -247,7 +250,7 @@ public class SearchMapActivity extends Activity {
 			LatLngBounds bounds = builder.build();
 			MapStatusUpdate u1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
 			mBaiduMap.animateMapStatus(u1);
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -310,7 +313,7 @@ public class SearchMapActivity extends Activity {
 							carData.getLat(), carData.getLon()),
 							mkPoiInfo.location);
 					AdressData adressData = new AdressData();
-					adressData.setName((i + 1) + ". " + mkPoiInfo.name);
+					adressData.setName(mkPoiInfo.name);
 					adressData.setAdress(mkPoiInfo.address);
 					adressData.setPhone(mkPoiInfo.phoneNum);
 					adressData.setLat(mkPoiInfo.location.latitude);
@@ -325,9 +328,9 @@ public class SearchMapActivity extends Activity {
 				String url;
 				try {
 					url = Constant.BaseUrl + "favorite/is_collect?auth_code="
-							+ Variable.auth_code + "&names="
+							+ app.auth_code + "&names="
 							+ URLEncoder.encode(str, "UTF-8") + "&cust_id="
-							+ Variable.cust_id;
+							+ app.cust_id;
 					new Thread(new NetThread.GetDataThread(handler, url,
 							getIsCollect)).start();
 				} catch (UnsupportedEncodingException e) {

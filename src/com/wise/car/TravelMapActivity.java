@@ -14,7 +14,6 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -29,6 +28,7 @@ import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.model.LatLngBounds.Builder;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -59,12 +59,14 @@ public class TravelMapActivity extends Activity {
 	ProgressDialog Dialog = null; // progress
 	String device = "";
 	Intent intent;
+	AppApplication app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_travel_map);
+		app = (AppApplication)getApplication();
 		ImageView iv_activity_travel_share = (ImageView) findViewById(R.id.iv_activity_travel_share);
 		iv_activity_travel_share.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_travel_map);
@@ -104,7 +106,7 @@ public class TravelMapActivity extends Activity {
 
 		try {
 			String url = Constant.BaseUrl + "device/" + device
-					+ "/gps_data?auth_code=" + Variable.auth_code
+					+ "/gps_data?auth_code=" + app.auth_code
 					+ "&start_time=" + URLEncoder.encode(StartTime, "UTF-8")
 					+ "&end_time=" + URLEncoder.encode(StopTime, "UTF-8");
 			new NetThread.GetDataThread(handler, url, get_data).start();

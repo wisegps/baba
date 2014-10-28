@@ -11,8 +11,8 @@ import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 import pubclas.Constant;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -45,7 +45,7 @@ public class FoursActivity extends Activity {
 	private ImageView iv_back;
 	private ListView lv_4s;
 	private FoursAdapter foursAdapter;
-
+	AppApplication app;
 	private String brank = "";
 	private String city = "";
 
@@ -56,6 +56,7 @@ public class FoursActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_4s);
+		app = (AppApplication)getApplication();
 		rl_Note = (RelativeLayout)findViewById(R.id.rl_Note);
 		lv_4s = (ListView) findViewById(R.id.lv_4s);
 		foursAdapter = new FoursAdapter();
@@ -90,7 +91,7 @@ public class FoursActivity extends Activity {
 		}
 		String url = Constant.BaseUrl
 				+ "base/dealer?city=" + urlCity + "&brand=" + urlBrank
-				+ "&cust_id=" + Variable.cust_id;
+				+ "&cust_id=" + app.cust_id;
 		new NetThread.GetDataThread(handler,url , get_4s).start();
 	}
 

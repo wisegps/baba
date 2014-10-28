@@ -12,13 +12,11 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
-
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
 import android.app.Activity;
@@ -56,12 +54,14 @@ public class ComplainActivity extends Activity implements IXListViewListener{
 	boolean isChange = false;
 	int index = 0;
 	int total_complain = 0;
+	AppApplication app;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_complain);
+		app = (AppApplication)getApplication();
 		ll_wait = (WaitLinearLayout)findViewById(R.id.ll_wait);
 		ll_wait.setOnFinishListener(onFinishListener);
 		lv_complain = (XListView)findViewById(R.id.lv_complain);
@@ -155,7 +155,7 @@ public class ComplainActivity extends Activity implements IXListViewListener{
 				ComplainData complainData = new ComplainData();
 				complainData.setComplain_id(complain_id);
 				complainData.setContent(content);
-				complainData.setCust_name(Variable.cust_name);
+				complainData.setCust_name(app.cust_name);
 				complainData.setCreate_time(GetSystem.GetNowTime());
 				complainDatas.add(0, complainData);
 				complainAdapter.notifyDataSetChanged();
@@ -177,10 +177,10 @@ public class ComplainActivity extends Activity implements IXListViewListener{
 			Toast.makeText(ComplainActivity.this, "内容不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		String url = Constant.BaseUrl + "violation_complain?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "violation_complain?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("location", Location));
-        params.add(new BasicNameValuePair("cust_name", Variable.cust_name));
+        params.add(new BasicNameValuePair("cust_name", app.cust_name));
         params.add(new BasicNameValuePair("content", content));
         new NetThread.postDataThread(handler, url, params, sendData).start();
 	}
@@ -207,7 +207,7 @@ public class ComplainActivity extends Activity implements IXListViewListener{
 		try {
 			ll_wait.startWheel();
 			String url = Constant.BaseUrl + "violation_complain/" + URLEncoder.encode(Location, "UTF-8") + 
-					"?auth_code=" + Variable.auth_code;
+					"?auth_code=" + app.auth_code;
 			new Thread(new NetThread.GetDataThread(handler, url, getData)).start();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -314,7 +314,7 @@ public class ComplainActivity extends Activity implements IXListViewListener{
 			try {
 				String id = complainDatas.get(0).getComplain_id();
 				String url = Constant.BaseUrl + "violation_complain/" + URLEncoder.encode(Location, "UTF-8") + 
-						"?auth_code=" + Variable.auth_code + "&max_id=" + id;
+						"?auth_code=" + app.auth_code + "&max_id=" + id;
 				new Thread(new NetThread.GetDataThread(handler, url, refreshData)).start();
 				lv_complain.startHeaderWheel();
 			} catch (Exception e) {
@@ -329,7 +329,7 @@ public class ComplainActivity extends Activity implements IXListViewListener{
             try {
             	load = "";
     			String url = Constant.BaseUrl + "violation_complain/" + URLEncoder.encode(Location, "UTF-8") + 
-    					"?auth_code=" + Variable.auth_code + "&min_id=" + id;
+    					"?auth_code=" + app.auth_code + "&min_id=" + id;
     			new Thread(new NetThread.GetDataThread(handler, url, LoadData)).start();
     			lv_complain.startBottomWheel();
     		} catch (UnsupportedEncodingException e) {

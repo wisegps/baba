@@ -11,12 +11,10 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
-import pubclas.Variable;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,10 +31,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.setting.LoginActivity;
 import com.wise.show.MyScrollView.OnFlowClickListener;
@@ -73,12 +72,14 @@ public class ShowActivity extends Activity {
 	/** 当前所处位置 **/
 	int index = 0;
 	int photo_type = 1;
+	AppApplication app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_show);
+		app = (AppApplication)getApplication();
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		ImageView iv_show_car = (ImageView) findViewById(R.id.iv_show_car);
@@ -246,7 +247,7 @@ public class ShowActivity extends Activity {
 				finish();
 				break;
 			case R.id.iv_show_car:
-				if (Judge.isLogin()) {
+				if (Judge.isLogin(app)) {
 					picPop();
 				} else {
 					startActivityForResult(new Intent(ShowActivity.this,
@@ -302,7 +303,7 @@ public class ShowActivity extends Activity {
 				Photo_id = viewDatas.get(index).getImageDatas().get(0)
 						.getPhoto_id();
 				String url = Constant.BaseUrl + "photo?auth_code="
-						+ Variable.auth_code + "&cust_id=" + Variable.cust_id
+						+ app.auth_code + "&cust_id=" + app.cust_id
 						+ "&max_id=" + Photo_id + getBeauty();
 				new NetThread.GetDataThread(handler, url, getRefreshImage,
 						index).start();
@@ -321,18 +322,18 @@ public class ShowActivity extends Activity {
 	OnFlowClickListener onFlowClickListener = new OnFlowClickListener() {
 		@Override
 		public void OnPraise(int position) {// 点赞
-			if (Judge.isLogin()) {
+			if (Judge.isLogin(app)) {
 				ImageData imageData = viewDatas.get(index).getImageDatas()
 						.get(position);
 				if (!imageData.isCust_praise()) {
 					int Photo_id = imageData.getPhoto_id();
 					String url = Constant.BaseUrl + "photo/" + Photo_id
-							+ "/praise?auth_code=" + Variable.auth_code;
+							+ "/praise?auth_code=" + app.auth_code;
 					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 					pairs.add(new BasicNameValuePair("cust_id",
-							Variable.cust_id));
+							app.cust_id));
 					pairs.add(new BasicNameValuePair("cust_name",
-							Variable.cust_name));
+							app.cust_name));
 					pairs.add(new BasicNameValuePair("icon", logo));
 					new NetThread.putDataThread(handler, url, pairs, praise,
 							position).start();
@@ -346,7 +347,7 @@ public class ShowActivity extends Activity {
 
 		@Override
 		public void OnClick(int position) {// 点击图片
-			if (Judge.isLogin()) {
+			if (Judge.isLogin(app)) {
 				Intent intent = new Intent(ShowActivity.this,
 						PhotoActivity.class);
 				intent.putExtra("imageData", viewDatas.get(index)
@@ -379,8 +380,8 @@ public class ShowActivity extends Activity {
 							.get(viewDatas.get(index).getImageDatas().size() - 1)
 							.getPhoto_id();
 					String url = Constant.BaseUrl + "photo?auth_code="
-							+ Variable.auth_code + "&cust_id="
-							+ Variable.cust_id + "&min_id=" + Photo_id
+							+ app.auth_code + "&cust_id="
+							+ app.cust_id + "&min_id=" + Photo_id
 							+ getBeauty();
 					new NetThread.GetDataThread(handler, url, getNextImage,
 							index).start();
@@ -492,12 +493,12 @@ public class ShowActivity extends Activity {
 		viewDatas.get(index).getImageDatas().clear();
 		String url;
 		if (car_brand_id == -1) {
-			url = Constant.BaseUrl + "photo?auth_code=" + Variable.auth_code
-					+ "&cust_id=" + Variable.cust_id + getBeauty();
+			url = Constant.BaseUrl + "photo?auth_code=" + app.auth_code
+					+ "&cust_id=" + app.cust_id + getBeauty();
 		} else {
-			url = Constant.BaseUrl + "photo?auth_code=" + Variable.auth_code
+			url = Constant.BaseUrl + "photo?auth_code=" + app.auth_code
 					+ "&car_brand_id=" + car_brand_id + "&cust_id="
-					+ Variable.cust_id + getBeauty();
+					+ app.cust_id + getBeauty();
 		}
 		new NetThread.GetDataThread(handler, url, getFristImage, index).start();
 	}
@@ -531,7 +532,7 @@ public class ShowActivity extends Activity {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		String customer = preferences.getString(Constant.sp_customer
-				+ Variable.cust_id, "");
+				+ app.cust_id, "");
 		try {
 			JSONObject jsonObject = new JSONObject(customer);
 			logo = jsonObject.getString("logo");

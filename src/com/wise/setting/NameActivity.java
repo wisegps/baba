@@ -6,11 +6,10 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import android.app.Activity;
 import android.content.Context;
@@ -35,12 +34,14 @@ public class NameActivity extends Activity {
 	private static final int exist = 3;
 
 	EditText et_name;
+	AppApplication app;    
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_name);
+		app = (AppApplication)getApplication();
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		Button bt_sure = (Button) findViewById(R.id.bt_sure);
@@ -69,8 +70,8 @@ public class NameActivity extends Activity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case update_name:
-				String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-						+ "?auth_code=" + Variable.auth_code;
+				String url = Constant.BaseUrl + "customer/" + app.cust_id
+						+ "?auth_code=" + app.auth_code;
 				new Thread(new NetThread.GetDataThread(handler, url,
 						get_customer)).start();
 				break;
@@ -104,8 +105,8 @@ public class NameActivity extends Activity {
 				Intent data = new Intent();
 				data.putExtra("name", name_1);
 				setResult(1, data);
-				String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-						+ "/field?auth_code=" + Variable.auth_code;
+				String url = Constant.BaseUrl + "customer/" + app.cust_id
+						+ "/field?auth_code=" + app.auth_code;
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("field_name", "cust_name"));
 				params.add(new BasicNameValuePair("field_type", "String"));
@@ -128,7 +129,7 @@ public class NameActivity extends Activity {
 		SharedPreferences preferences1 = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		Editor editor1 = preferences1.edit();
-		editor1.putString(Constant.sp_customer + Variable.cust_id, str);
+		editor1.putString(Constant.sp_customer + app.cust_id, str);
 		editor1.commit();
 	}
 

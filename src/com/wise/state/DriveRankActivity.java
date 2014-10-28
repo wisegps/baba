@@ -9,7 +9,8 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
+
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.notice.LetterActivity;
 import customView.CircleImageView;
@@ -44,12 +45,14 @@ public class DriveRankActivity extends Activity{
 	String month = "month";
 	String all = "all";
 	List<DriveData> driveDatas = new ArrayList<DriveData>();
+	AppApplication app;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fuel_rank);
+		app = (AppApplication)getApplication();
 		TextView tv_name = (TextView)findViewById(R.id.tv_name);
 		tv_name.setText("驾驶排行榜");
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
@@ -102,7 +105,7 @@ public class DriveRankActivity extends Activity{
 		}		
 	};
 	private void getData(String data){
-		String url = Constant.BaseUrl + "device/drive_rank/" + data + "?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "device/drive_rank/" + data + "?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, getData).start();
 	}
 	private void jsonData(String Restult){
@@ -180,7 +183,7 @@ public class DriveRankActivity extends Activity{
 			viewHolder.iv_letter.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {
-					if(driveData.getCust_id() != Integer.valueOf(Variable.cust_id)){
+					if(driveData.getCust_id() != Integer.valueOf(app.cust_id)){
 						Intent intent = new Intent(DriveRankActivity.this, LetterActivity.class);
 						intent.putExtra("cust_id", ""+driveData.getCust_id());
 						intent.putExtra("cust_name", driveData.getCust_name());

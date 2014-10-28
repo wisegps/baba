@@ -9,7 +9,8 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
+
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.notice.LetterActivity;
 import customView.CircleImageView;
@@ -44,12 +45,14 @@ public class FuelRankActivity extends Activity{
 	String month = "month";
 	String all = "all";
 	List<FuelData> fuelDatas = new ArrayList<FuelData>();
+	AppApplication app;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fuel_rank);
+		app = (AppApplication)getApplication();
 		TextView tv_name = (TextView)findViewById(R.id.tv_name);
 		tv_name.setText("油耗排行榜");
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
@@ -102,7 +105,7 @@ public class FuelRankActivity extends Activity{
 		}		
 	};
 	private void getData(String data){
-		String url = Constant.BaseUrl + "device/fuel_rank/" + data + "?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "device/fuel_rank/" + data + "?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, getData).start();
 	}
 	private void jsonData(String Restult,int Type){
@@ -180,7 +183,7 @@ public class FuelRankActivity extends Activity{
 			viewHolder.iv_letter.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {
-					if(fuelData.getCust_id() != Integer.valueOf(Variable.cust_id)){
+					if(fuelData.getCust_id() != Integer.valueOf(app.cust_id)){
 						Intent intent = new Intent(FuelRankActivity.this, LetterActivity.class);
 						intent.putExtra("cust_id", ""+fuelData.getCust_id());
 						intent.putExtra("cust_name", fuelData.getCust_name());

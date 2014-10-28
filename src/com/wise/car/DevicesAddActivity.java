@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.JsonData;
 import pubclas.NetThread;
-import pubclas.Variable;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
@@ -64,13 +63,14 @@ public class DevicesAddActivity extends Activity {
 	String device_id;
 	/** 快速注册 **/
 	boolean fastTrack = false;
-
+	AppApplication app;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		ManageActivity.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_devices_add);
+		app = (AppApplication)getApplication();
 		ll_wait = (WaitLinearLayout) findViewById(R.id.ll_wait);
 		ll_wait.setOnFinishListener(onFinishListener);
 		tv_note = (TextView) findViewById(R.id.tv_note);
@@ -92,12 +92,13 @@ public class DevicesAddActivity extends Activity {
 		car_id = intent.getIntExtra("car_id", 0);
 		isBind = intent.getBooleanExtra("isBind", true);
 		fastTrack = intent.getBooleanExtra("fastTrack", false);
-		// TODO 接收并现实以前的终端值
-		String old_device_id = intent.getStringExtra("old_device_id");
-		String url = Constant.BaseUrl + "/device/" + old_device_id
-				+ "?auth_code=" + Variable.auth_code;
-		new NetThread.GetDataThread(handler, url, update_serial).start();
-
+		if(!isBind){
+			//接收并现实以前的终端值
+			String old_device_id = intent.getStringExtra("old_device_id");
+			String url = Constant.BaseUrl + "/device/" + old_device_id
+					+ "?auth_code=" + app.auth_code;
+			new NetThread.GetDataThread(handler, url, update_serial).start();
+		}
 		if (fastTrack) {
 			tv_jump.setVisibility(View.VISIBLE);
 		} else {
@@ -120,8 +121,8 @@ public class DevicesAddActivity extends Activity {
 				Add();
 				break;
 			case R.id.tv_jump:
-				String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-						+ "/vehicle?auth_code=" + Variable.auth_code;
+				String url = Constant.BaseUrl + "customer/" + app.cust_id
+						+ "/vehicle?auth_code=" + app.auth_code;
 				new NetThread.GetDataThread(handler, url, get_data).start();
 				break;
 			}
@@ -133,8 +134,8 @@ public class DevicesAddActivity extends Activity {
 		public void OnFinish(int index) {
 			SaveDataOver();
 			if (fastTrack) {
-				String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-						+ "/vehicle?auth_code=" + Variable.auth_code;
+				String url = Constant.BaseUrl + "customer/" + app.cust_id
+						+ "/vehicle?auth_code=" + app.auth_code;
 				new NetThread.GetDataThread(handler, url, get_data).start();
 			} else {
 				updateVariableCarData();
@@ -166,10 +167,10 @@ public class DevicesAddActivity extends Activity {
 					if (status_code.equals("0")) {
 						String url_sim = Constant.BaseUrl + "device/"
 								+ device_id + "/customer?auth_code="
-								+ Variable.auth_code;
+								+ app.auth_code;
 						List<NameValuePair> paramSim = new ArrayList<NameValuePair>();
 						paramSim.add(new BasicNameValuePair("cust_id",
-								Variable.cust_id));
+								app.cust_id));
 						new NetThread.putDataThread(handler, url_sim, paramSim,
 								update_user).start();
 					} else {
@@ -190,7 +191,7 @@ public class DevicesAddActivity extends Activity {
 					if (status_code.equals("0")) {
 						// 绑定车辆
 						String url = Constant.BaseUrl + "vehicle/" + car_id
-								+ "/device?auth_code=" + Variable.auth_code;
+								+ "/device?auth_code=" + app.auth_code;
 						List<NameValuePair> params = new ArrayList<NameValuePair>();
 						params.add(new BasicNameValuePair("device_id",
 								device_id));
@@ -211,8 +212,8 @@ public class DevicesAddActivity extends Activity {
 				ll_wait.runFast();
 				break;
 			case get_data:
-				Variable.carDatas.clear();
-				Variable.carDatas.addAll(JsonData.jsonCarInfo(msg.obj
+				app.carDatas.clear();
+				app.carDatas.addAll(JsonData.jsonCarInfo(msg.obj
 						.toString()));
 				Intent intent = new Intent(Constant.A_RefreshHomeCar);
 				sendBroadcast(intent);
@@ -237,7 +238,7 @@ public class DevicesAddActivity extends Activity {
 	 * 更新内存里的数据
 	 */
 	private void updateVariableCarData() {
-		for (CarData carData : Variable.carDatas) {
+		for (CarData carData : app.carDatas) {
 			if (carData.getObj_id() == Integer.valueOf(car_id)) {
 				carData.setDevice_id(device_id);
 				carData.setSerial(et_serial.getText().toString().trim());
@@ -272,7 +273,7 @@ public class DevicesAddActivity extends Activity {
 			rl_wait.setVisibility(View.VISIBLE);
 			ll_wait.startWheel();
 			String url = Constant.BaseUrl + "device/serial/" + serial
-					+ "?auth_code=" + Variable.auth_code;
+					+ "?auth_code=" + app.auth_code;
 			new NetThread.GetDataThread(handler, url, add_serial).start();
 			SaveDataIn();
 		}
@@ -290,7 +291,7 @@ public class DevicesAddActivity extends Activity {
 					String sim = et_sim.getText().toString().trim();
 					device_id = jsonObject.getString("device_id");
 					String url = Constant.BaseUrl + "device/" + device_id
-							+ "/sim?auth_code=" + Variable.auth_code;
+							+ "/sim?auth_code=" + app.auth_code;
 					List<NameValuePair> params = new ArrayList<NameValuePair>();
 					params.add(new BasicNameValuePair("sim", sim));
 					new Thread(new NetThread.putDataThread(handler, url,
@@ -324,7 +325,7 @@ public class DevicesAddActivity extends Activity {
 	private void checkSerial() {
 		String serial = et_serial.getText().toString().trim();
 		String url = Constant.BaseUrl + "device/serial/" + serial
-				+ "?auth_code=" + Variable.auth_code;
+				+ "?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, check_serial).start();
 	}
 

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
-import android.widget.Toast;
 import com.baidu.lbsapi.panoramaview.*;
 import com.baidu.lbsapi.BMapManager;
 import com.baidu.lbsapi.MKGeneralListener;
@@ -32,6 +31,7 @@ public class PanoramaDemoActivityMain extends Activity{
         setContentView(R.layout.activity_panorama_main);
         mPanoView = (PanoramaView) findViewById(R.id.panorama);
         mPanoView.setShowTopoLink(true);
+        mPanoView.setPanoramaLevel(1);
         
         Intent intent = getIntent();
         double lon = intent.getDoubleExtra("lon", 0);
@@ -52,11 +52,6 @@ public class PanoramaDemoActivityMain extends Activity{
     @Override
     protected void onDestroy() {
         mPanoView.destroy();
-        if(manager != null){
-        	System.out.println("manager onDestroy");
-        	manager.destroy();
-            manager = null;
-        }
         super.onDestroy();
     } 
 }

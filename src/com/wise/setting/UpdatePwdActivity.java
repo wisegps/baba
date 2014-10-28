@@ -9,9 +9,8 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
-
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import android.app.Activity;
 import android.content.Context;
@@ -31,12 +30,14 @@ public class UpdatePwdActivity extends Activity{
 	private static final int update_pwd = 1;
 	EditText et_pwd,et_new_pwd,et_new_pwd_again;
 	String new_pwd;
+	AppApplication app;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_update_pwd);
+		app = (AppApplication)getApplication();
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		ImageView iv_sure = (ImageView)findViewById(R.id.iv_sure);
@@ -94,7 +95,7 @@ public class UpdatePwdActivity extends Activity{
         	return ;
         }
         
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/field?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/field?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("field_name", "password"));
         params.add(new BasicNameValuePair("field_type", "String"));

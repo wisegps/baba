@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import cn.sharesdk.framework.Platform;
@@ -19,6 +18,7 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qzone.QZone;
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
 import com.wise.car.CarAddActivity;
@@ -76,6 +76,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 	String carBrankId = "";
 	String carSeries = "";
 	String carSeriesId = "";
+	AppApplication app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		ManageActivity.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_register_info);
+		app = (AppApplication)getApplication();
 		et_cust_name = (EditText) findViewById(R.id.et_cust_name);
 		tv_model = (TextView) findViewById(R.id.tv_model);
 		tv_model.setOnClickListener(onClickListener);
@@ -253,8 +255,8 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 				params.add(new BasicNameValuePair("cust_type", cust_type));
 				params.add(new BasicNameValuePair("sex", sex));
 				params.add(new BasicNameValuePair("birth", GetBirth()));
-				params.add(new BasicNameValuePair("province", Variable.Province));
-				params.add(new BasicNameValuePair("city", Variable.City));
+				params.add(new BasicNameValuePair("province", app.Province));
+				params.add(new BasicNameValuePair("city", app.City));
 				params.add(new BasicNameValuePair("car_brand", carBrank));
 				params.add(new BasicNameValuePair("car_series", carSeries));
 				params.add(new BasicNameValuePair("service_type", String
@@ -302,8 +304,8 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 			String status_code = jsonObject.getString("status_code");
 			if (status_code.equals("0")) {
 				// TODO 注册成功，把数据处理好
-				Variable.cust_id = jsonObject.getString("cust_id");
-				Variable.auth_code = "127a154df2d7850c4232542b4faa2c3d";
+				app.cust_id = jsonObject.getString("cust_id");
+				app.auth_code = "127a154df2d7850c4232542b4faa2c3d";
 				// 存储账号密码
 				SharedPreferences preferences = getSharedPreferences(
 						Constant.sharedPreferencesName,
@@ -313,8 +315,8 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 				editor.putString(Constant.sp_pwd, GetSystem.getM5DEndo(pwd));
 				editor.commit();
 				String url = Constant.BaseUrl + "customer/"
-						+ Variable.cust_id + "?auth_code="
-						+ Variable.auth_code;
+						+ app.cust_id + "?auth_code="
+						+ app.auth_code;
 				new NetThread.GetDataThread(handler, url, get_customer).start();
 				if (fastTrack) {
 					// 设置
@@ -363,7 +365,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		Editor editor = preferences.edit();
-		editor.putString(Constant.sp_customer + Variable.cust_id, str);
+		editor.putString(Constant.sp_customer + app.cust_id, str);
 		editor.commit();
 		ManageActivity.getActivityInstance().exit();
 	}
@@ -375,7 +377,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 	private void setJpush() {
 		GetSystem.myLog(TAG, "设置推送");
 		Set<String> tagSet = new LinkedHashSet<String>();
-		tagSet.add(Variable.cust_id);
+		tagSet.add(app.cust_id);
 		// 调用JPush API设置Tag
 		JPushInterface.setAliasAndTags(getApplicationContext(), null, tagSet,
 				this);

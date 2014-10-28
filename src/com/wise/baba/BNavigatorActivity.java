@@ -5,8 +5,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-
-import com.baidu.navisdk.BNaviModuleManager;
+import android.view.Window;
 import com.baidu.navisdk.BaiduNaviManager;
 import com.baidu.navisdk.comapi.mapcontrol.BNMapController;
 import com.baidu.navisdk.comapi.routeplan.BNRoutePlaner;
@@ -25,6 +24,7 @@ public class BNavigatorActivity extends Activity{
 
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		//创建NmapView
 		if (Build.VERSION.SDK_INT < 14) {
             BaiduNaviManager.getInstance().destroyNMapView();

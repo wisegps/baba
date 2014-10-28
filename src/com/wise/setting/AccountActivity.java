@@ -18,13 +18,13 @@ import pubclas.Constant;
 import pubclas.NetThread;
 import pubclas.UploadUtil;
 import pubclas.UploadUtil.OnUploadProcessListener;
-import pubclas.Variable;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import customView.PopView;
 import customView.PopView.OnItemClickListener;
@@ -56,15 +56,18 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 	private static final int get_customer = 1;
 	private static final int set_sex = 2;
 	private static final int set_birth = 3;
+	private static final int update_pic = 4;
 	TextView tv_phone,tv_name, tv_email, tv_sex,tv_birth;
 	ImageView iv_pic;
 	RequestQueue mQueue;
 	String birth;
+	AppApplication app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		app = (AppApplication)getApplication();
 		setContentView(R.layout.activity_account);
 		mQueue = Volley.newRequestQueue(this);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
@@ -89,7 +92,7 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			public void OnDateChange(String Date, int index) {
 				switch (index) {
 				case R.id.tv_birth:
-					String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/field?auth_code=" + Variable.auth_code;
+					String url = Constant.BaseUrl + "customer/" + app.cust_id + "/field?auth_code=" + app.auth_code;
 					List<NameValuePair> params = new ArrayList<NameValuePair>();
 			        params.add(new BasicNameValuePair("field_name", "birth"));
 			        params.add(new BasicNameValuePair("field_type", "Date"));
@@ -160,6 +163,9 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 				//修改生日后刷新
 				GetCustomer();
 				break;
+			case update_pic:
+				GetCustomer();
+				break;
 			}
 		}
 	};
@@ -168,7 +174,7 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 		try {
 			SharedPreferences preferences = getSharedPreferences(
 					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-			String customer = preferences.getString(Constant.sp_customer + Variable.cust_id, "");
+			String customer = preferences.getString(Constant.sp_customer + app.cust_id, "");
 			JSONObject jsonObject = new JSONObject(customer);
 			tv_phone.setText(jsonObject.getString("mobile"));
 			tv_name.setText(jsonObject.getString("cust_name"));
@@ -181,17 +187,21 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			birth = jsonObject.getString("birth").substring(0, 10);
 			tv_birth.setText(birth);
 			String logo = jsonObject.getString("logo");
-			mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {
-				@Override
-				public void onResponse(Bitmap response) {
-					iv_pic.setImageBitmap(response);
-				}
-			}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
-				@Override
-				public void onErrorResponse(VolleyError error) {
-					error.printStackTrace();
-				}
-			}));
+			if(logo == null || logo.equals("")){
+				
+			}else{
+				mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {
+					@Override
+					public void onResponse(Bitmap response) {
+						iv_pic.setImageBitmap(response);
+					}
+				}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						error.printStackTrace();
+					}
+				}));
+			}			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -204,7 +214,7 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/field?auth_code=" + Variable.auth_code;
+						String url = Constant.BaseUrl + "customer/" + app.cust_id + "/field?auth_code=" + app.auth_code;
 						List<NameValuePair> params = new ArrayList<NameValuePair>();
 				        params.add(new BasicNameValuePair("field_name", "sex"));
 				        params.add(new BasicNameValuePair("field_type", "Number"));
@@ -298,8 +308,8 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 	}
 	/**修改完手机或邮箱后刷新本地数据**/
 	private void GetCustomer() {
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-				+ "?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "?auth_code=" + app.auth_code;
 		new Thread(new NetThread.GetDataThread(handler, url, get_customer))
 				.start();
 	}
@@ -309,10 +319,10 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			String mobile = jsonObject.getString("mobile");
 			String email = jsonObject.getString("email");
 			String password = jsonObject.getString("password");
-			Variable.cust_name = jsonObject.getString("cust_name");
+			app.cust_name = jsonObject.getString("cust_name");
 			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 	        Editor editor = preferences.edit();
-	        editor.putString(Constant.sp_customer + Variable.cust_id, str);
+	        editor.putString(Constant.sp_customer + app.cust_id, str);
 	        editor.putString(Constant.sp_pwd, password);
 			if(mobile.equals("")){
 		        editor.putString(Constant.sp_account, email);
@@ -334,7 +344,7 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 		bitmap = Blur.scaleImage(bitmap, 150);
 		bitmap = Blur.getSquareBitmap(bitmap);
         FileOutputStream b = null;        
-        String fileName = Constant.userIconPath + Variable.cust_id + ".png";
+        String fileName = Constant.userIconPath + app.cust_id + ".png";
         try {
             b = new FileOutputStream(fileName);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, b);// 把数据写入文件
@@ -350,7 +360,7 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
         }
         iv_pic.setImageBitmap(bitmap);
         
-        String url = Constant.BaseUrl + "upload_image?auth_code=" + Variable.auth_code;
+        String url = Constant.BaseUrl + "upload_image?auth_code=" + app.auth_code;
         UploadUtil.getInstance().setOnUploadProcessListener(AccountActivity.this);
         UploadUtil.getInstance().uploadFile(fileName, "image", url, new HashMap<String, String>());
 	}
@@ -359,12 +369,12 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			JSONObject jsonObject = new JSONObject(str);
 			if(jsonObject.getString("status_code").equals("0")){
 				String ImageUrl = jsonObject.getString("image_file_url");
-				String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/field?auth_code=" + Variable.auth_code;
+				String url = Constant.BaseUrl + "customer/" + app.cust_id + "/field?auth_code=" + app.auth_code;
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 		        params.add(new BasicNameValuePair("field_name", "logo"));
 		        params.add(new BasicNameValuePair("field_type", "String"));
 		        params.add(new BasicNameValuePair("field_value", ImageUrl));
-		        new Thread(new NetThread.putDataThread(handler, url, params, 0)).start();
+		        new Thread(new NetThread.putDataThread(handler, url, params, update_pic)).start();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

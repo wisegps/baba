@@ -11,18 +11,14 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
-
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import data.AdressData;
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -41,12 +37,14 @@ public class DealAddressActivity extends Activity {
     List<AdressData> adressDatas = new ArrayList<AdressData>();
     AdressAdapter adressAdapter;
     int Type;
+    AppApplication app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_dealadress);
+        app = (AppApplication)getApplication();
         lv_activity_dealadress = (ListView) findViewById(R.id.lv_activity_dealadress);
         adressAdapter = new AdressAdapter(DealAddressActivity.this,
                 adressDatas, DealAddressActivity.this);
@@ -112,7 +110,7 @@ public class DealAddressActivity extends Activity {
     private void GetDealAdress(String city) {
         String LocationCity;
         if(city == null || city.equals("")){
-            LocationCity = Variable.City;
+            LocationCity = app.City;
         }else{
             LocationCity = city;
         }
@@ -120,14 +118,14 @@ public class DealAddressActivity extends Activity {
             String url;
             if(Type == 3){//违章不需要经纬度
                 url = Constant.BaseUrl + "location?auth_code="
-                        + Variable.auth_code + "&city="
+                        + app.auth_code + "&city="
                         + URLEncoder.encode(LocationCity, "UTF-8") + "&type="
-                        + Type + "&cust_id=" + Variable.cust_id;
+                        + Type + "&cust_id=" + app.cust_id;
             }else{
                 url = Constant.BaseUrl + "location?auth_code="
-                        + Variable.auth_code + "&city="
+                        + app.auth_code + "&city="
                         + URLEncoder.encode(LocationCity, "UTF-8") + "&type="
-                        + Type + "&cust_id=" + Variable.cust_id + "&lat=" + Variable.Lat + "&lon=" + Variable.Lon;
+                        + Type + "&cust_id=" + app.cust_id + "&lat=" + app.Lat + "&lon=" + app.Lon;
             }            
             new Thread(new NetThread.GetDataThread(handler, url, get_deal))
                     .start();

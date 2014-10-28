@@ -2,7 +2,6 @@ package com.wise.setting;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
@@ -10,8 +9,6 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
-
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
@@ -54,6 +51,7 @@ public class CaptchaActivity extends Activity{
 	int mark = 0;
 	String platform = "";
 	boolean fastTrack = false;
+	AppApplication app;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +59,7 @@ public class CaptchaActivity extends Activity{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		ManageActivity.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_captcha);
+		app = (AppApplication)getApplication();
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		et_captcha = (EditText)findViewById(R.id.et_captcha);
@@ -160,14 +159,14 @@ public class CaptchaActivity extends Activity{
 		}
         
         if(mark == 3){
-			String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/field?auth_code=" + Variable.auth_code;
+			String url = Constant.BaseUrl + "customer/" + app.cust_id + "/field?auth_code=" + app.auth_code;
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 	        params.add(new BasicNameValuePair("field_name", "mobile"));
 	        params.add(new BasicNameValuePair("field_type", "String"));
 	        params.add(new BasicNameValuePair("field_value", account));
 	        new Thread(new NetThread.putDataThread(handler, url, params, update_account)).start();
 		}else{
-			String url = Constant.BaseUrl + "customer/" + Variable.cust_id + "/field?auth_code=" + Variable.auth_code;
+			String url = Constant.BaseUrl + "customer/" + app.cust_id + "/field?auth_code=" + app.auth_code;
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
 	        params.add(new BasicNameValuePair("field_name", "email"));
 	        params.add(new BasicNameValuePair("field_type", "String"));

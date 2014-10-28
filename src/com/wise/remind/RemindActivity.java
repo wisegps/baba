@@ -1,13 +1,11 @@
 package com.wise.remind;
 
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import pubclas.Variable;
-
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import data.RemindData;
 import android.app.Activity;
@@ -36,12 +34,14 @@ public class RemindActivity extends Activity{
 	RemindData remindData;
 	TextView tv_content;
 	RelativeLayout rl_Note,rl_body;
+	AppApplication app;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_remind);
+		app = (AppApplication)getApplication();
 		rl_Note = (RelativeLayout)findViewById(R.id.rl_Note);
 		rl_body = (RelativeLayout)findViewById(R.id.rl_body);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
@@ -60,7 +60,7 @@ public class RemindActivity extends Activity{
 		if(isNeedGetData){
 			//从服务器读取数据
 			int reminder_id = intent.getIntExtra("reminder_id", 0);
-			String url = Constant.BaseUrl + "reminder/" + reminder_id + "?auth_code=" + Variable.auth_code;
+			String url = Constant.BaseUrl + "reminder/" + reminder_id + "?auth_code=" + app.auth_code;
 			new NetThread.GetDataThread(handler, url, get_data).start();
 		}else{
 			//接收传过来的数据
@@ -93,9 +93,9 @@ public class RemindActivity extends Activity{
 	}
 	/**得到车辆对应的位置**/
 	private String getCarName(int Obj_id){
-		for(int i = 0 ; i < Variable.carDatas.size() ; i++){
-			if(Variable.carDatas.get(i).getObj_id() == Obj_id){
-				return Variable.carDatas.get(i).getNick_name();
+		for(int i = 0 ; i < app.carDatas.size() ; i++){
+			if(app.carDatas.get(i).getObj_id() == Obj_id){
+				return app.carDatas.get(i).getNick_name();
 			}
 		}
 		return "";
@@ -210,7 +210,7 @@ public class RemindActivity extends Activity{
         startActivity(intent);
     }
 	private void Delete(){
-		String url = Constant.BaseUrl + "reminder/" + remindData.getReminder_id() + "?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "reminder/" + remindData.getReminder_id() + "?auth_code=" + app.auth_code;
 		new Thread(new NetThread.DeleteThread(handler, url, delete)).start();
 	}
 	private void setUrl(){

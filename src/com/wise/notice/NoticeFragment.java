@@ -9,9 +9,9 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
-import pubclas.Variable;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import customView.CircleImageView;
 import customView.WaitLinearLayout.OnFinishListener;
@@ -47,7 +47,8 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	BtnListener btnListener;
 	XListView lv_notice;
 	List<NoticeData> noticeDatas = new ArrayList<NoticeData>();
-
+	AppApplication app;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
+		app = (AppApplication)getActivity().getApplication();
 		ImageView iv_fm_back = (ImageView) getActivity().findViewById(R.id.iv_fm_back);
 		iv_fm_back.setOnClickListener(onClickListener);
 		lv_notice = (XListView) getActivity().findViewById(R.id.lv_notice);
@@ -67,7 +68,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		lv_notice.setXListViewListener(this);
 		noticeAdapter = new NoticeAdapter();
 		lv_notice.setAdapter(noticeAdapter);
-		if(Judge.isLogin()){
+		if(Judge.isLogin(app)){
 			getData();
 		}
 	}
@@ -77,7 +78,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	@Override
 	public void onResume() {
 		super.onResume();
-		if(Judge.isLogin()){
+		if(Judge.isLogin(app)){
 			getData();
 		}
 	}
@@ -177,8 +178,8 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	}
 
 	private void getData() {
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-				+ "/get_relations?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "/get_relations?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, getNotice).start();
 	}
 	/**解析通知**/
@@ -449,8 +450,8 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	@Override
 	public void onRefresh() {
 		refresh = "";
-		String url = Constant.BaseUrl + "customer/" + Variable.cust_id
-				+ "/get_relations?auth_code=" + Variable.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "/get_relations?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, refreshNotice).start();
 	}
 
