@@ -121,15 +121,14 @@ public class CarAddActivity extends Activity{
 					app.carDatas.add(carNewData);
 					Toast.makeText(CarAddActivity.this, "车辆添加成功", Toast.LENGTH_SHORT).show();
 					setResult(3);
-					finish();
-				}				
+				}		
+				finish();		
 			}else{
 				Toast.makeText(CarAddActivity.this, "添加失败", Toast.LENGTH_SHORT).show();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-			setResult(3);
-			finish();
+			Toast.makeText(CarAddActivity.this, "添加失败", Toast.LENGTH_SHORT).show();
 		}
 	}
 	

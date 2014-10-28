@@ -110,6 +110,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		String sp_pwd = preferences.getString(Constant.sp_pwd, "");
 		new WaitThread().start();
 		if (sp_account.equals("")) {
+			JPushInterface.stopPush(getApplicationContext());
 			isLogin = false;
 		} else {// 登录
 			String url = Constant.BaseUrl + "user_login?account=" + sp_account + "&password=" + sp_pwd;
@@ -119,6 +120,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 	//解析登录
 	private void jsonLogin(String str){
 		if(str.equals("")){
+			JPushInterface.stopPush(getApplicationContext());
 			GetSystem.myLog(TAG, "网络连接异常");
 			GetSystem.myLog(TAG, "clearData,Variable.carDatas = " + app.carDatas.size());
 			isException = true;
@@ -133,6 +135,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 					GetCustomer();
 			        getData();		        
 				}else{
+					JPushInterface.stopPush(getApplicationContext());
 					isLogin = false;
 					GetSystem.myLog(TAG, "jsonLogin status_code ,Variable.carDatas = " + app.carDatas.size());
 					TurnActivity();

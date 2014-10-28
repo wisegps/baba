@@ -258,11 +258,16 @@ public class CarRemindUpdateActivity extends Activity{
 		String url = Constant.BaseUrl + "reminder/" + remindData.getReminder_id() + "?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("remind_type", String.valueOf(s_type.getSelectedItemPosition())));
-        params.add(new BasicNameValuePair("obj_id", String.valueOf(app.carDatas.get(s_car.getSelectedItemPosition()).getObj_id())));
+        if(s_type.getSelectedItemPosition() == 5){
+        	//通用提醒
+        	params.add(new BasicNameValuePair("obj_id", "0"));
+        }else{
+        	params.add(new BasicNameValuePair("obj_id", String.valueOf(app.carDatas.get(s_car.getSelectedItemPosition()).getObj_id())));
+        }
         params.add(new BasicNameValuePair("mileage", mileage.equals("")?"0":mileage));
         params.add(new BasicNameValuePair("remind_way", remind_way));
         params.add(new BasicNameValuePair("repeat_type", String.valueOf(s_mode.getSelectedItemPosition())));
-        params.add(new BasicNameValuePair("content", ""));
+        params.add(new BasicNameValuePair("content", et_content.getText().toString().trim()));
         params.add(new BasicNameValuePair("remind_time", remind_time));
         new Thread(new NetThread.putDataThread(handler, url, params, save)).start();
 	}

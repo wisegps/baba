@@ -81,6 +81,8 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 	};
 	/**获取所有离线城市**/
 	private void setAllCityDatas(){		
+		allCities.clear();
+		lists.clear();
 		ArrayList<MKOLSearchRecord> records2 = mOffline.getOfflineCityList();
 			for (MKOLSearchRecord r : records2) {
 				CitysData citysData = new CitysData();
@@ -339,16 +341,21 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 				public void onClick(View v) {
 					mOffline.remove(m.cityID);
 					setOfflineCityData();
+					setAllCityDatas();
+					citysAdapter.notifyDataSetChanged();
 				}
 			});
 			if (m.ratio != 100) {
-				viewHolder.tv_city_size.setText("更新进度：" + m.ratio + "%)");
+				viewHolder.bt_update.setEnabled(true);
+				viewHolder.tv_city_size.setText("更新进度：" + m.ratio + "%");
 				viewHolder.tv_city_size.setTextColor(getResources().getColor(R.color.pink));
 			}else{
 				if(m.update){//可更新
-					viewHolder.tv_city_size.setText("(有更新包-" + formatDataSize(m.serversize));
+					viewHolder.bt_update.setEnabled(true);
+					viewHolder.tv_city_size.setText("(有更新包-" + formatDataSize(m.serversize) + ")");
 					viewHolder.tv_city_size.setTextColor(getResources().getColor(R.color.Green));
 				}else{
+					viewHolder.bt_update.setEnabled(false);
 					viewHolder.tv_city_size.setText("(" + formatDataSize(m.size) + ")");
 					viewHolder.tv_city_size.setTextColor(getResources().getColor(R.color.navy));
 				}

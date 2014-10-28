@@ -56,6 +56,7 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 	private static final int get_customer = 1;
 	private static final int set_sex = 2;
 	private static final int set_birth = 3;
+	private static final int update_pic = 4;
 	TextView tv_phone,tv_name, tv_email, tv_sex,tv_birth;
 	ImageView iv_pic;
 	RequestQueue mQueue;
@@ -162,6 +163,9 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 				//修改生日后刷新
 				GetCustomer();
 				break;
+			case update_pic:
+				GetCustomer();
+				break;
 			}
 		}
 	};
@@ -183,17 +187,21 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			birth = jsonObject.getString("birth").substring(0, 10);
 			tv_birth.setText(birth);
 			String logo = jsonObject.getString("logo");
-			mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {
-				@Override
-				public void onResponse(Bitmap response) {
-					iv_pic.setImageBitmap(response);
-				}
-			}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
-				@Override
-				public void onErrorResponse(VolleyError error) {
-					error.printStackTrace();
-				}
-			}));
+			if(logo == null || logo.equals("")){
+				
+			}else{
+				mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {
+					@Override
+					public void onResponse(Bitmap response) {
+						iv_pic.setImageBitmap(response);
+					}
+				}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						error.printStackTrace();
+					}
+				}));
+			}			
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -366,7 +374,7 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 		        params.add(new BasicNameValuePair("field_name", "logo"));
 		        params.add(new BasicNameValuePair("field_type", "String"));
 		        params.add(new BasicNameValuePair("field_value", ImageUrl));
-		        new Thread(new NetThread.putDataThread(handler, url, params, 0)).start();
+		        new Thread(new NetThread.putDataThread(handler, url, params, update_pic)).start();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

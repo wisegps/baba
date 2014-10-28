@@ -165,8 +165,11 @@ public class AdressAdapter extends BaseAdapter{
 		holder.iv_tel.setOnClickListener(new OnClickListener() {				
 			@Override
 			public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+ adressData.getPhone()));  
-                mActivity.startActivity(intent);
+				try {
+					Intent intent = new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+ adressData.getPhone()));  
+	                mActivity.startActivity(intent);
+				} catch (Exception e) {
+				}                
 			}
 		});
 		return convertView;

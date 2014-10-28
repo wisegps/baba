@@ -100,8 +100,10 @@ public class CollectionAdapter extends BaseAdapter {
         });
         holder.iv_tel.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+ adressData.getPhone()));  
-                context.startActivity(intent);
+            	try {
+            		Intent intent = new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+ adressData.getPhone()));  
+                    context.startActivity(intent);
+				} catch (Exception e) {}                
             }
         });
         holder.tv_del.setOnClickListener(new OnClickListener() {            

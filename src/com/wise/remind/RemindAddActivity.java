@@ -230,8 +230,7 @@ public class RemindAddActivity extends Activity {
 		params.add(new BasicNameValuePair("content", et_content.getText()
 				.toString().trim()));
 		params.add(new BasicNameValuePair("remind_time", remind_time));
-		new Thread(new NetThread.postDataThread(handler, url, params, save))
-				.start();
+		new NetThread.postDataThread(handler, url, params, save).start();
 	}
 
 	private void setWhite() {

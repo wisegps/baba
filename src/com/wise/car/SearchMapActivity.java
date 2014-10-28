@@ -178,8 +178,8 @@ public class SearchMapActivity extends Activity {
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
-		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0)
-				.position(circle).icon(bitmap).title("1");
+		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
+				.position(circle).icon(bitmap);
 		// 在地图上添加Marker，并显示
 		mBaiduMap.addOverlay(option);
 	}
@@ -252,7 +252,7 @@ public class SearchMapActivity extends Activity {
 			LatLngBounds bounds = builder.build();
 			MapStatusUpdate u1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
 			mBaiduMap.animateMapStatus(u1);
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
