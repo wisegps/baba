@@ -65,7 +65,7 @@ public class CarActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car);
-		app = (AppApplication)getApplication();
+		app = (AppApplication) getApplication();
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		lv_cars = (ListView) findViewById(R.id.lv_cars);
@@ -99,10 +99,9 @@ public class CarActivity extends Activity {
 			switch (msg.what) {
 			case get_data:
 				app.carDatas.clear();
-				app.carDatas.addAll(JsonData.jsonCarInfo(msg.obj
-						.toString()));
+				app.carDatas.addAll(JsonData.jsonCarInfo(msg.obj.toString()));
 				carAdapter.notifyDataSetChanged();
-				//发送更新车辆广播
+				// 发送更新车辆广播
 				Intent intent = new Intent(Constant.A_RefreshHomeCar);
 				sendBroadcast(intent);
 				new GetImageThread().start();
@@ -242,6 +241,11 @@ public class CarActivity extends Activity {
 			holder.tv_del.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					if (app.isTest) {
+						Toast.makeText(CarActivity.this, "演示帐号",
+								Toast.LENGTH_SHORT).show();
+						return;
+					}
 					index = position;
 					String url = Constant.BaseUrl + "vehicle/"
 							+ carData.getObj_id() + "?auth_code="
@@ -251,7 +255,6 @@ public class CarActivity extends Activity {
 				}
 			});
 			holder.sv.ScorllRestFast();
-
 			if (carData.getDevice_id() == null
 					|| carData.getDevice_id().equals("")
 					|| carData.getDevice_id().equals("0")) {
@@ -261,6 +264,11 @@ public class CarActivity extends Activity {
 				holder.bt_bind.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
+						if (app.isTest) {
+							Toast.makeText(CarActivity.this, "演示帐号",
+									Toast.LENGTH_SHORT).show();
+							return;
+						}
 						Intent intent = new Intent(CarActivity.this,
 								DevicesAddActivity.class);
 						intent.putExtra("car_id", carData.getObj_id());
@@ -269,12 +277,18 @@ public class CarActivity extends Activity {
 					}
 				});
 			} else {
+
 				holder.bt_bind.setVisibility(View.GONE);
 				holder.tv_update.setVisibility(View.VISIBLE);
 				holder.tv_remove.setVisibility(View.VISIBLE);
 				holder.tv_update.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
+						if (app.isTest) {
+							Toast.makeText(CarActivity.this, "演示帐号",
+									Toast.LENGTH_SHORT).show();
+							return;
+						}
 						Intent intent = new Intent(CarActivity.this,
 								DevicesAddActivity.class);
 						intent.putExtra("car_id", carData.getObj_id());
@@ -287,6 +301,11 @@ public class CarActivity extends Activity {
 				holder.tv_remove.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
+						if (app.isTest) {
+							Toast.makeText(CarActivity.this, "演示帐号",
+									Toast.LENGTH_SHORT).show();
+							return;
+						}
 						String url = Constant.BaseUrl + "vehicle/"
 								+ carData.getObj_id() + "/device?auth_code="
 								+ app.auth_code;

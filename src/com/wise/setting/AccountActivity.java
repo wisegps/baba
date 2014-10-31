@@ -26,6 +26,8 @@ import com.android.volley.toolbox.Volley;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.car.CarActivity;
+
 import customView.PopView;
 import customView.PopView.OnItemClickListener;
 import android.app.Activity;
@@ -51,13 +53,15 @@ import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class AccountActivity extends Activity implements OnUploadProcessListener{
+public class AccountActivity extends Activity implements
+		OnUploadProcessListener {
 	private static final int get_customer = 1;
 	private static final int set_sex = 2;
 	private static final int set_birth = 3;
 	private static final int update_pic = 4;
-	TextView tv_phone,tv_name, tv_email, tv_sex,tv_birth;
+	TextView tv_phone, tv_name, tv_email, tv_sex, tv_birth;
 	ImageView iv_pic;
 	RequestQueue mQueue;
 	String birth;
@@ -67,12 +71,12 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		app = (AppApplication)getApplication();
+		app = (AppApplication) getApplication();
 		setContentView(R.layout.activity_account);
 		mQueue = Volley.newRequestQueue(this);
-		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
+		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		iv_pic = (ImageView)findViewById(R.id.iv_pic);
+		iv_pic = (ImageView) findViewById(R.id.iv_pic);
 		iv_pic.setOnClickListener(onClickListener);
 		tv_phone = (TextView) findViewById(R.id.tv_phone);
 		tv_phone.setOnClickListener(onClickListener);
@@ -84,22 +88,24 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 		tv_sex.setOnClickListener(onClickListener);
 		tv_birth = (TextView) findViewById(R.id.tv_birth);
 		tv_birth.setOnClickListener(onClickListener);
-		TextView tv_update_pwd = (TextView)findViewById(R.id.tv_update_pwd);
+		TextView tv_update_pwd = (TextView) findViewById(R.id.tv_update_pwd);
 		tv_update_pwd.setOnClickListener(onClickListener);
 		jsonCustomer();
-		OpenDateDialog.SetCustomDateListener(new OpenDateDialogListener() {			
+		OpenDateDialog.SetCustomDateListener(new OpenDateDialogListener() {
 			@Override
 			public void OnDateChange(String Date, int index) {
 				switch (index) {
 				case R.id.tv_birth:
-					String url = Constant.BaseUrl + "customer/" + app.cust_id + "/field?auth_code=" + app.auth_code;
+					String url = Constant.BaseUrl + "customer/" + app.cust_id
+							+ "/field?auth_code=" + app.auth_code;
 					List<NameValuePair> params = new ArrayList<NameValuePair>();
-			        params.add(new BasicNameValuePair("field_name", "birth"));
-			        params.add(new BasicNameValuePair("field_type", "Date"));
-			        params.add(new BasicNameValuePair("field_value", Date));
-			        new Thread(new NetThread.putDataThread(handler, url, params, set_birth)).start();
-			        birth = Date;
-			        tv_birth.setText(Date);
+					params.add(new BasicNameValuePair("field_name", "birth"));
+					params.add(new BasicNameValuePair("field_type", "Date"));
+					params.add(new BasicNameValuePair("field_value", Date));
+					new Thread(new NetThread.putDataThread(handler, url,
+							params, set_birth)).start();
+					birth = Date;
+					tv_birth.setText(Date);
 					break;
 				}
 			}
@@ -114,34 +120,74 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 				finish();
 				break;
 			case R.id.tv_name:
+				if (app.isTest) {
+					Toast.makeText(AccountActivity.this, "演示帐号",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
 				String name = tv_name.getText().toString().trim();
-				Intent intent2 = new Intent(AccountActivity.this,NameActivity.class);
+				Intent intent2 = new Intent(AccountActivity.this,
+						NameActivity.class);
 				intent2.putExtra("name", name);
 				startActivityForResult(intent2, 1);
 				break;
 			case R.id.tv_sex:
+				if (app.isTest) {
+					Toast.makeText(AccountActivity.this, "演示帐号",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
 				setSex();
 				break;
 			case R.id.tv_update_pwd:
-				startActivity(new Intent(AccountActivity.this, UpdatePwdActivity.class));
+				if (app.isTest) {
+					Toast.makeText(AccountActivity.this, "演示帐号",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				startActivity(new Intent(AccountActivity.this,
+						UpdatePwdActivity.class));
 				break;
 			case R.id.tv_phone:
-				Intent intent = new Intent(AccountActivity.this, RegisterActivity.class);
+				if (app.isTest) {
+					Toast.makeText(AccountActivity.this, "演示帐号",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				Intent intent = new Intent(AccountActivity.this,
+						RegisterActivity.class);
 				intent.putExtra("mark", 3);
 				intent.putExtra("phone", tv_phone.getText().toString().trim());
 				startActivityForResult(intent, 1);
 				break;
 			case R.id.tv_email:
-				Intent intent1 = new Intent(AccountActivity.this, RegisterActivity.class);
+				if (app.isTest) {
+					Toast.makeText(AccountActivity.this, "演示帐号",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				Intent intent1 = new Intent(AccountActivity.this,
+						RegisterActivity.class);
 				intent1.putExtra("mark", 4);
 				intent1.putExtra("email", tv_email.getText().toString().trim());
 				startActivityForResult(intent1, 1);
 				break;
 			case R.id.iv_pic:
+				if (app.isTest) {
+					Toast.makeText(AccountActivity.this, "演示帐号",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
 				picPop();
 				break;
 			case R.id.tv_birth:
-				OpenDateDialog.ShowDate(AccountActivity.this, R.id.tv_birth,birth);
+				if (app.isTest) {
+					Toast.makeText(AccountActivity.this, "演示帐号",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				OpenDateDialog.ShowDate(AccountActivity.this, R.id.tv_birth,
+						birth);
 				break;
 			}
 		}
@@ -153,14 +199,14 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case set_sex:
-				//修改性别刷新
+				// 修改性别刷新
 				GetCustomer();
 				break;
 			case get_customer:
 				jsonCustomer(msg.obj.toString());
 				break;
 			case set_birth:
-				//修改生日后刷新
+				// 修改生日后刷新
 				GetCustomer();
 				break;
 			case update_pic:
@@ -169,12 +215,13 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			}
 		}
 	};
-	
+
 	private void jsonCustomer() {
 		try {
 			SharedPreferences preferences = getSharedPreferences(
 					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-			String customer = preferences.getString(Constant.sp_customer + app.cust_id, "");
+			String customer = preferences.getString(Constant.sp_customer
+					+ app.cust_id, "");
 			JSONObject jsonObject = new JSONObject(customer);
 			tv_phone.setText(jsonObject.getString("mobile"));
 			tv_name.setText(jsonObject.getString("cust_name"));
@@ -187,21 +234,22 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			birth = jsonObject.getString("birth").substring(0, 10);
 			tv_birth.setText(birth);
 			String logo = jsonObject.getString("logo");
-			if(logo == null || logo.equals("")){
-				
-			}else{
-				mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {
-					@Override
-					public void onResponse(Bitmap response) {
-						iv_pic.setImageBitmap(response);
-					}
-				}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
-					@Override
-					public void onErrorResponse(VolleyError error) {
-						error.printStackTrace();
-					}
-				}));
-			}			
+			if (logo == null || logo.equals("")) {
+
+			} else {
+				mQueue.add(new ImageRequest(logo,
+						new Response.Listener<Bitmap>() {
+							@Override
+							public void onResponse(Bitmap response) {
+								iv_pic.setImageBitmap(response);
+							}
+						}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
+							@Override
+							public void onErrorResponse(VolleyError error) {
+								error.printStackTrace();
+							}
+						}));
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -210,17 +258,22 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 	String[] Sexs = { "男", "女" };
 
 	private void setSex() {
-		new AlertDialog.Builder(AccountActivity.this).setTitle("请选择性别").setItems(Sexs,
-				new DialogInterface.OnClickListener() {
+		new AlertDialog.Builder(AccountActivity.this).setTitle("请选择性别")
+				.setItems(Sexs, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						String url = Constant.BaseUrl + "customer/" + app.cust_id + "/field?auth_code=" + app.auth_code;
+						String url = Constant.BaseUrl + "customer/"
+								+ app.cust_id + "/field?auth_code="
+								+ app.auth_code;
 						List<NameValuePair> params = new ArrayList<NameValuePair>();
-				        params.add(new BasicNameValuePair("field_name", "sex"));
-				        params.add(new BasicNameValuePair("field_type", "Number"));
-				        params.add(new BasicNameValuePair("field_value", String.valueOf(which)));
-				        new Thread(new NetThread.putDataThread(handler, url, params, set_sex)).start();
-				        switch (which) {
+						params.add(new BasicNameValuePair("field_name", "sex"));
+						params.add(new BasicNameValuePair("field_type",
+								"Number"));
+						params.add(new BasicNameValuePair("field_value", String
+								.valueOf(which)));
+						new Thread(new NetThread.putDataThread(handler, url,
+								params, set_sex)).start();
+						switch (which) {
 						case 0:
 							tv_sex.setText("男");
 							break;
@@ -231,15 +284,15 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 					}
 				}).setNegativeButton("取消", null).show();
 	}
-	
-	private void picPop(){
+
+	private void picPop() {
 		List<String> items = new ArrayList<String>();
 		items.add("拍照");
 		items.add("从手机相册中选取");
 		final PopView popView = new PopView(this);
 		popView.initView(findViewById(R.id.iv_pic));
 		popView.setData(items);
-		popView.SetOnItemClickListener(new OnItemClickListener() {			
+		popView.SetOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void OnItemClick(int index) {
 				switch (index) {
@@ -250,14 +303,14 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 					break;
 
 				case 1:
-					Intent intent = new Intent(); 
-	                /* 开启Pictures画面Type设定为image */ 
-	                intent.setType("image/*"); 
-	                /* 使用Intent.ACTION_GET_CONTENT这个Action */ 
-	                intent.setAction(Intent.ACTION_GET_CONTENT);  
-	                /* 取得相片后返回本画面 */ 
-	                startActivityForResult(intent, 9);
-	                popView.dismiss();
+					Intent intent = new Intent();
+					/* 开启Pictures画面Type设定为image */
+					intent.setType("image/*");
+					/* 使用Intent.ACTION_GET_CONTENT这个Action */
+					intent.setAction(Intent.ACTION_GET_CONTENT);
+					/* 取得相片后返回本画面 */
+					startActivityForResult(intent, 9);
+					popView.dismiss();
 					break;
 				}
 			}
@@ -267,26 +320,28 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(requestCode == 9 && resultCode == Activity.RESULT_OK){
-			Uri uri = data.getData(); 
-            Log.e("uri", uri.toString()); 
-            ContentResolver cr = this.getContentResolver(); 
-            try { 
-                Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri)); 
-                UpdateBitmap(bitmap);
-            } catch (FileNotFoundException e) { 
-                Log.e("Exception", e.getMessage(),e); 
-            }
+		if (requestCode == 9 && resultCode == Activity.RESULT_OK) {
+			Uri uri = data.getData();
+			Log.e("uri", uri.toString());
+			ContentResolver cr = this.getContentResolver();
+			try {
+				Bitmap bitmap = BitmapFactory.decodeStream(cr
+						.openInputStream(uri));
+				UpdateBitmap(bitmap);
+			} catch (FileNotFoundException e) {
+				Log.e("Exception", e.getMessage(), e);
+			}
 			return;
-		}else if(requestCode == 1 && resultCode == Activity.RESULT_OK){
+		} else if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
 			String sdStatus = Environment.getExternalStorageState();
-            if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
-                Log.v("TestFile","SD card is not avaiable/writeable right now.");
-                return;
-            }
-            Bundle bundle = data.getExtras();
-            Bitmap bitmap = (Bitmap) bundle.get("data");// 获取相机返回的数据，并转换为Bitmap图片格式
-            UpdateBitmap(bitmap);
+			if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
+				Log.v("TestFile",
+						"SD card is not avaiable/writeable right now.");
+				return;
+			}
+			Bundle bundle = data.getExtras();
+			Bitmap bitmap = (Bitmap) bundle.get("data");// 获取相机返回的数据，并转换为Bitmap图片格式
+			UpdateBitmap(bitmap);
 		}
 		switch (resultCode) {
 		case 1:
@@ -296,23 +351,25 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 		case 2:
 			boolean isPhone = data.getBooleanExtra("isPhone", true);
 			String account = data.getStringExtra("account");
-			if(isPhone){
+			if (isPhone) {
 				tv_phone.setText(account);
-			}else{
+			} else {
 				tv_email.setText(account);
 			}
-			
+
 			GetCustomer();
 			break;
 		}
 	}
-	/**修改完手机或邮箱后刷新本地数据**/
+
+	/** 修改完手机或邮箱后刷新本地数据 **/
 	private void GetCustomer() {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id
 				+ "?auth_code=" + app.auth_code;
 		new Thread(new NetThread.GetDataThread(handler, url, get_customer))
 				.start();
 	}
+
 	private void jsonCustomer(String str) {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
@@ -320,61 +377,68 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			String email = jsonObject.getString("email");
 			String password = jsonObject.getString("password");
 			app.cust_name = jsonObject.getString("cust_name");
-			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-	        Editor editor = preferences.edit();
-	        editor.putString(Constant.sp_customer + app.cust_id, str);
-	        editor.putString(Constant.sp_pwd, password);
-			if(mobile.equals("")){
-		        editor.putString(Constant.sp_account, email);
-			}else{
+			SharedPreferences preferences = getSharedPreferences(
+					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+			Editor editor = preferences.edit();
+			editor.putString(Constant.sp_customer + app.cust_id, str);
+			editor.putString(Constant.sp_pwd, password);
+			if (mobile.equals("")) {
+				editor.putString(Constant.sp_account, email);
+			} else {
 				editor.putString(Constant.sp_account, mobile);
 			}
-	        editor.commit();
+			editor.commit();
 		} catch (JSONException e) {
 			e.printStackTrace();
 			finish();
 		}
 	}
-	
-	private void UpdateBitmap(Bitmap bitmap){
+
+	private void UpdateBitmap(Bitmap bitmap) {
 		File filePath = new File(Constant.userIconPath);
-        if (!filePath.exists()) {
+		if (!filePath.exists()) {
 			filePath.mkdirs();
-		}		
+		}
 		bitmap = Blur.scaleImage(bitmap, 150);
 		bitmap = Blur.getSquareBitmap(bitmap);
-        FileOutputStream b = null;        
-        String fileName = Constant.userIconPath + app.cust_id + ".png";
-        try {
-            b = new FileOutputStream(fileName);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, b);// 把数据写入文件
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                b.flush();
-                b.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        iv_pic.setImageBitmap(bitmap);
-        
-        String url = Constant.BaseUrl + "upload_image?auth_code=" + app.auth_code;
-        UploadUtil.getInstance().setOnUploadProcessListener(AccountActivity.this);
-        UploadUtil.getInstance().uploadFile(fileName, "image", url, new HashMap<String, String>());
+		FileOutputStream b = null;
+		String fileName = Constant.userIconPath + app.cust_id + ".png";
+		try {
+			b = new FileOutputStream(fileName);
+			bitmap.compress(Bitmap.CompressFormat.PNG, 100, b);// 把数据写入文件
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				b.flush();
+				b.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		iv_pic.setImageBitmap(bitmap);
+
+		String url = Constant.BaseUrl + "upload_image?auth_code="
+				+ app.auth_code;
+		UploadUtil.getInstance().setOnUploadProcessListener(
+				AccountActivity.this);
+		UploadUtil.getInstance().uploadFile(fileName, "image", url,
+				new HashMap<String, String>());
 	}
-	private void jsonUpdatePic(String str){
+
+	private void jsonUpdatePic(String str) {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-			if(jsonObject.getString("status_code").equals("0")){
+			if (jsonObject.getString("status_code").equals("0")) {
 				String ImageUrl = jsonObject.getString("image_file_url");
-				String url = Constant.BaseUrl + "customer/" + app.cust_id + "/field?auth_code=" + app.auth_code;
+				String url = Constant.BaseUrl + "customer/" + app.cust_id
+						+ "/field?auth_code=" + app.auth_code;
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
-		        params.add(new BasicNameValuePair("field_name", "logo"));
-		        params.add(new BasicNameValuePair("field_type", "String"));
-		        params.add(new BasicNameValuePair("field_value", ImageUrl));
-		        new Thread(new NetThread.putDataThread(handler, url, params, update_pic)).start();
+				params.add(new BasicNameValuePair("field_name", "logo"));
+				params.add(new BasicNameValuePair("field_type", "String"));
+				params.add(new BasicNameValuePair("field_value", ImageUrl));
+				new Thread(new NetThread.putDataThread(handler, url, params,
+						update_pic)).start();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -385,15 +449,21 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 	public void onUploadDone(int responseCode, String message) {
 		jsonUpdatePic(message);
 	}
+
 	@Override
-	public void onUploadProcess(int uploadSize) {}
+	public void onUploadProcess(int uploadSize) {
+	}
+
 	@Override
-	public void initUpload(int fileSize) {}
+	public void initUpload(int fileSize) {
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		MobclickAgent.onResume(this);
 	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();

@@ -94,7 +94,7 @@
         android:id="@+id/tv_note"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="50dp"
         android:gravity="center_horizontal"
         android:text="账号密码错误!"
         android:textColor="@color/pink"
@@ -120,19 +120,18 @@
 
         <ProgressBar
             android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:paddingLeft="70dp"
-            style="?android:attr/progressBarStyleSmall"/>
-
+            android:paddingLeft="70dp" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal" >
 
         <ImageView
@@ -148,5 +147,15 @@
             android:layout_height="wrap_content"
             android:src="@drawable/side_sina" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp"
+        android:background="@drawable/bg_bt_yellow"
+        android:text="体验演示"
+        android:textSize="15sp" />
 
 </LinearLayout>

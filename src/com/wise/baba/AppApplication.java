@@ -15,7 +15,8 @@ import pubclas.GetSystem;
  */
 public class AppApplication extends LitePalApplication {
     private static final String TAG = "AppApplication";	
-    
+    /**演示true **/
+    public boolean isTest = false;
     /**auth_code**/
     public String auth_code;
     /**cust_id**/

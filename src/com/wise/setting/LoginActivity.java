@@ -73,7 +73,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	Button bt_login;
 	String account;
 	String pwd;
-	
+
 	AppApplication app;
 
 	@Override
@@ -82,13 +82,13 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		ManageActivity.getActivityInstance().addActivity(LoginActivity.this);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_login);
-		app = (AppApplication)getApplication();
+		app = (AppApplication) getApplication();
 		JPushInterface.init(getApplicationContext());
 		ShareSDK.initSDK(this);
 		tv_note = (TextView) findViewById(R.id.tv_note);
 		et_account = (EditText) findViewById(R.id.et_account);
 		et_pwd = (EditText) findViewById(R.id.et_pwd);
-		bt_login =  (Button) findViewById(R.id.bt_login);
+		bt_login = (Button) findViewById(R.id.bt_login);
 		bt_login.setOnClickListener(onClickListener);
 		TextView tv_register = (TextView) findViewById(R.id.tv_register);
 		tv_register.setOnClickListener(onClickListener);
@@ -109,6 +109,9 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
 		progressBar.setVisibility(View.GONE);
+
+		findViewById(R.id.btn_show).setOnClickListener(onClickListener);
+		app.isTest = false;
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -119,13 +122,15 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				finish();
 				break;
 			case R.id.tv_register:
-				Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
+				Intent intent = new Intent(LoginActivity.this,
+						RegisterActivity.class);
 				intent.putExtra("mark", 0);
 				intent.putExtra("fastTrack", true);
 				startActivity(intent);
 				break;
 			case R.id.tv_rest_pwd:
-				Intent intent1 = new Intent(LoginActivity.this,RegisterActivity.class);
+				Intent intent1 = new Intent(LoginActivity.this,
+						RegisterActivity.class);
 				intent1.putExtra("mark", 1);
 				startActivity(intent1);
 				break;
@@ -141,6 +146,11 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				platform = "sina";
 				break;
 			case R.id.bt_login:
+				Login();
+				break;
+
+			case R.id.btn_show:
+				app.isTest = true;
 				Login();
 				break;
 			}
@@ -163,8 +173,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				break;
 			case get_data:
 				app.carDatas.clear();
-				app.carDatas.addAll(JsonData.jsonCarInfo(msg.obj
-						.toString()));
+				app.carDatas.addAll(JsonData.jsonCarInfo(msg.obj.toString()));
 				// 发广播
 				Intent intent = new Intent(Constant.A_RefreshHomeCar);
 				sendBroadcast(intent);
@@ -177,16 +186,21 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	};
 
 	private void Login() {
-		account = et_account.getText().toString().trim();
-		pwd = et_pwd.getText().toString().trim();
-		if (account.equals("") || pwd.equals("")) {
-			Toast.makeText(LoginActivity.this, "请输入账号密码", Toast.LENGTH_SHORT).show();
-			return;
+		if (app.isTest) {
+			account = "demo@bibibaba.cn";
+			pwd = "demo123";
+		} else {
+			account = et_account.getText().toString().trim();
+			pwd = et_pwd.getText().toString().trim();
+			if (account.equals("") || pwd.equals("")) {
+				Toast.makeText(LoginActivity.this, "请输入账号密码",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
 		}
 		String url = Constant.BaseUrl + "user_login?account=" + account
 				+ "&password=" + GetSystem.getM5DEndo(pwd);
-		new NetThread.GetDataThread(handler, url, login_account)
-				.start();
+		new NetThread.GetDataThread(handler, url, login_account).start();
 	}
 
 	private void jsonLogin(String str) {
@@ -197,17 +211,21 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				progressBar.setVisibility(View.VISIBLE);
 				app.cust_id = jsonObject.getString("cust_id");
 				app.auth_code = jsonObject.getString("auth_code");
-				// 保存账号密码
-				SharedPreferences preferences = getSharedPreferences(
-						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-				Editor editor = preferences.edit();
-				editor.putString(Constant.sp_account, account);
-				editor.putString(Constant.sp_pwd, GetSystem.getM5DEndo(pwd));
-				editor.commit();
+				if (!app.isTest) {
+					// 保存账号密码
+					SharedPreferences preferences = getSharedPreferences(
+							Constant.sharedPreferencesName,
+							Context.MODE_PRIVATE);
+					Editor editor = preferences.edit();
+					editor.putString(Constant.sp_account, account);
+					editor.putString(Constant.sp_pwd, GetSystem.getM5DEndo(pwd));
+					editor.commit();
+				}
 				setJpush();
 				getData();
 				setResult(1);
 				finish();
+
 			} else {
 				tv_note.setVisibility(View.VISIBLE);
 			}
@@ -249,9 +267,9 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				String url = Constant.BaseUrl + "sso_login?login_id="
 						+ login_id + "&cust_name="
 						+ URLEncoder.encode(cust_name, "UTF-8") + "&provice="
-						+ URLEncoder.encode(app.Province, "UTF-8")
-						+ "&city=" + URLEncoder.encode(app.City, "UTF-8")
-						+ "&logo=" + logo + "&remark=";
+						+ URLEncoder.encode(app.Province, "UTF-8") + "&city="
+						+ URLEncoder.encode(app.City, "UTF-8") + "&logo="
+						+ logo + "&remark=";
 				new NetThread.GetDataThread(handler, url, login_sso).start();
 			} catch (Exception e) {
 				e.printStackTrace();
