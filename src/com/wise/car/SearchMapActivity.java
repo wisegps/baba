@@ -57,6 +57,8 @@ import com.baidu.mapapi.search.poi.PoiSearch;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.setting.AccountActivity;
+
 import data.AdressData;
 import data.CarData;
 
@@ -81,7 +83,7 @@ public class SearchMapActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_search_map);
-		app = (AppApplication)getApplication();
+		app = (AppApplication) getApplication();
 		int index = getIntent().getIntExtra("index", 0);
 		carData = app.carDatas.get(index);
 		String keyWord = getIntent().getStringExtra("keyWord");
@@ -112,8 +114,7 @@ public class SearchMapActivity extends Activity {
 				String url = Constant.BaseUrl + "base/dealer?city="
 						+ URLEncoder.encode(City, "UTF-8") + "&brand="
 						+ URLEncoder.encode(car_brand, "UTF-8") + "&lon="
-						+ carData.getLon() + "&lat="
-						+ carData.getLat()
+						+ carData.getLon() + "&lat=" + carData.getLat()
 						+ "&cust_id=" + app.cust_id;
 				new Thread(new NetThread.GetDataThread(handler, url, get4s))
 						.start();
@@ -135,6 +136,11 @@ public class SearchMapActivity extends Activity {
 		adressAdapter.setOnCollectListener(new OnCollectListener() {
 			@Override
 			public void OnCollect(int index) {
+				if (app.isTest) {
+					Toast.makeText(SearchMapActivity.this, "演示帐号",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
 				adressDatas.get(index).setIs_collect(true);
 				adressAdapter.notifyDataSetChanged();
 			}
@@ -206,8 +212,8 @@ public class SearchMapActivity extends Activity {
 			LatLngBounds.Builder builder = new Builder();
 			JSONArray jsonArray = new JSONArray(result);
 			for (int i = 0; i < jsonArray.length(); i++) {// TODO
-				if(i == 10){
-					//只显示10个
+				if (i == 10) {
+					// 只显示10个
 					break;
 				}
 				JSONObject jsonObject = jsonArray.getJSONObject(i);

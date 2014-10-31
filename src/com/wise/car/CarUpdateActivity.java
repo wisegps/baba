@@ -97,6 +97,10 @@ public class CarUpdateActivity extends Activity {
 				finish();
 				break;
 			case R.id.iv_save:
+				if(app.isTest){
+					Toast.makeText(CarUpdateActivity.this, "演示帐号", Toast.LENGTH_SHORT).show();
+					return;
+				}
 				Save();
 				break;
 			case R.id.tv_models:

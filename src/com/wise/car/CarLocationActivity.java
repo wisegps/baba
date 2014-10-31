@@ -83,7 +83,7 @@ public class CarLocationActivity extends Activity {
 
 	/** 获取gps信息 **/
 	private static final int get_gps = 1;
-	/**车辆轨迹**/
+	/** 车辆轨迹 **/
 	List<LatLng> points = new ArrayList<LatLng>();
 	AppApplication app;
 
@@ -92,10 +92,10 @@ public class CarLocationActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_location);
-		app = (AppApplication)getApplication();
-		ImageView iv_streetview = (ImageView)findViewById(R.id.iv_streetview);
+		app = (AppApplication) getApplication();
+		ImageView iv_streetview = (ImageView) findViewById(R.id.iv_streetview);
 		iv_streetview.setOnClickListener(onClickListener);
-		TextView tv_car_name = (TextView)findViewById(R.id.tv_car_name);
+		TextView tv_car_name = (TextView) findViewById(R.id.tv_car_name);
 		index = getIntent().getIntExtra("index", 0);
 		carData = app.carDatas.get(index);
 		tv_car_name.setText(carData.getNick_name());
@@ -138,10 +138,10 @@ public class CarLocationActivity extends Activity {
 						Thread.sleep(30000);
 						String gpsUrl = Constant.BaseUrl + "device/"
 								+ carData.getDevice_id()
-								+ "/active_gps_data?auth_code="
-								+ app.auth_code
+								+ "/active_gps_data?auth_code=" + app.auth_code
 								+ "&update_time=2014-01-01%2019:06:43";
-						new NetThread.GetDataThread(handler, gpsUrl, get_gps).start();
+						new NetThread.GetDataThread(handler, gpsUrl, get_gps)
+								.start();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -181,37 +181,48 @@ public class CarLocationActivity extends Activity {
 
 			// 周边点击弹出Popupwindow监听事件
 			case R.id.tv_item_car_location_oil:// 加油站
-				ToSearchMap("加油站","加油站");
+				ToSearchMap("加油站", "加油站");
 				break;
 			case R.id.tv_item_car_location_Parking:// 停车场
-				ToSearchMap("停车场","停车场");
+				ToSearchMap("停车场", "停车场");
 				break;
 			case R.id.tv_item_car_location_4s:// 4S店
-				ToSearchMap("4S店","4S店");
+				ToSearchMap("4S店", "4S店");
 				break;
 			case R.id.tv_item_car_location_specialist:// 维修店
-				ToSearchMap("维修店","汽车维修");
+				ToSearchMap("维修店", "汽车维修");
 				break;
 			case R.id.tv_item_car_location_automotive_beauty:// 美容店
-				ToSearchMap("汽车美容店","汽车美容");
+				ToSearchMap("汽车美容店", "汽车美容");
 				break;
 			case R.id.tv_item_car_location_wash:// 洗车店
-				ToSearchMap("洗车店","洗车");
+				ToSearchMap("洗车店", "洗车");
 				break;
 
 			// 围栏监听
 			case R.id.fence_update:
+				if (app.isTest) {
+					Toast.makeText(CarLocationActivity.this, "演示帐号",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
 				getDate();
 				break;
 			case R.id.fence_delete:
+				if (app.isTest) {
+					Toast.makeText(CarLocationActivity.this, "演示帐号",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
 				String url = Constant.BaseUrl + "vehicle/"
 						+ carData.getObj_id() + "/geofence" + "?auth_code="
 						+ app.auth_code;
 				new NetThread.DeleteThread(handler, url, DELETE).start();
 				break;
 			case R.id.iv_streetview:
-				//进入街景
-				Intent intent = new Intent(CarLocationActivity.this, PanoramaDemoActivityMain.class);
+				// 进入街景
+				Intent intent = new Intent(CarLocationActivity.this,
+						PanoramaDemoActivityMain.class);
 				intent.putExtra("lat", latitude);
 				intent.putExtra("lon", longitude);
 				startActivity(intent);
@@ -230,7 +241,8 @@ public class CarLocationActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				LatLng startLocat = new LatLng(latitude, longitude);
 				LatLng carLocat = new LatLng(carData.getLat(), carData.getLon());
-				GetSystem.FindCar(CarLocationActivity.this, startLocat, carLocat, "", "");
+				GetSystem.FindCar(CarLocationActivity.this, startLocat,
+						carLocat, "", "");
 			}
 		});
 		builder.setNegativeButton("取消", null);
@@ -242,9 +254,9 @@ public class CarLocationActivity extends Activity {
 	 * 
 	 * @param keyWord
 	 */
-	private void ToSearchMap(String keyWord,String key) {
+	private void ToSearchMap(String keyWord, String key) {
 		mPopupWindow.dismiss();
-		//地图搜寻
+		// 地图搜寻
 		Intent intent = new Intent(CarLocationActivity.this,
 				SearchMapActivity.class);
 		intent.putExtra("index", index);
@@ -373,14 +385,15 @@ public class CarLocationActivity extends Activity {
 
 	String geo = "";
 	Circle circleOverlay;
+
 	// 画圆（围栏）
 	private void getRange() {
-		if(circleOverlay != null){
+		if (circleOverlay != null) {
 			circleOverlay.remove();
 		}
 		if (carData.getGeofence() != null
 				&& !carData.getGeofence().equals("null")) {
-			//TODO 如果有围栏数据，则以围栏的坐标画圆
+			// TODO 如果有围栏数据，则以围栏的坐标画圆
 			LatLng circle = new LatLng(fence_lat, fence_lon);
 			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 					.newLatLng(circle);
@@ -389,7 +402,7 @@ public class CarLocationActivity extends Activity {
 			OverlayOptions coverFence = new CircleOptions()
 					.fillColor(0x400e6f97).center(circle)
 					.stroke(new Stroke(1, 0xFF0e6f97)).radius(distance);
-			circleOverlay = (Circle)mBaiduMap.addOverlay(coverFence);
+			circleOverlay = (Circle) mBaiduMap.addOverlay(coverFence);
 		} else {
 			// 围栏范围圆
 			LatLng circle = new LatLng(carData.getLat(), carData.getLon());
@@ -397,7 +410,7 @@ public class CarLocationActivity extends Activity {
 			OverlayOptions coverFence = new CircleOptions()
 					.fillColor(0x400e6f97).center(circle)
 					.stroke(new Stroke(1, 0xFF0e6f97)).radius(distance);
-			circleOverlay = (Circle)mBaiduMap.addOverlay(coverFence);
+			circleOverlay = (Circle) mBaiduMap.addOverlay(coverFence);
 		}
 		// 获取左上角坐标
 		LatLng llLeftTop = mBaiduMap.getProjection().fromScreenLocation(
@@ -411,7 +424,8 @@ public class CarLocationActivity extends Activity {
 		}
 		setMapZoon(llLeftTop, llCenter);
 	}
-	/**根据左上角和中心的距离来缩放地图，保证围栏在地图最大显示**/
+
+	/** 根据左上角和中心的距离来缩放地图，保证围栏在地图最大显示 **/
 	private void setMapZoon(LatLng llLeftTop, LatLng llCenter) {
 		double nowDistance = DistanceUtil.getDistance(llLeftTop, llCenter);
 		float zoom = mBaiduMap.getMapStatus().zoom;
@@ -426,14 +440,15 @@ public class CarLocationActivity extends Activity {
 	LatLng circle;
 	Marker carMarker = null;
 	Polyline carLine = null;
-	
+
 	// 当前车辆位子
 	private void getCarLocation() {
 		circle = new LatLng(carData.getLat(), carData.getLon());
-		if(carMarker != null){
+		if (carMarker != null) {
 			carMarker.remove();
-		}else{
-			MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
+		} else {
+			MapStatus mapStatus = new MapStatus.Builder().target(circle)
+					.build();
 			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 					.newMapStatus(mapStatus);
 			mBaiduMap.setMapStatus(mapStatusUpdate);
@@ -445,15 +460,15 @@ public class CarLocationActivity extends Activity {
 		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
 				.position(circle).icon(bitmap);
 		// 在地图上添加Marker，并显示
-		carMarker = (Marker)(mBaiduMap.addOverlay(option));		
+		carMarker = (Marker) (mBaiduMap.addOverlay(option));
 		points.add(circle);
 		if (points.size() > 1) {
-			if(carLine != null){
+			if (carLine != null) {
 				carLine.remove();
 			}
 			OverlayOptions ooPolyline = new PolylineOptions().width(5)
 					.color(0xAAFF0000).points(points);
-			carLine = (Polyline)(mBaiduMap.addOverlay(ooPolyline));
+			carLine = (Polyline) (mBaiduMap.addOverlay(ooPolyline));
 		}
 	}
 
@@ -472,7 +487,7 @@ public class CarLocationActivity extends Activity {
 			case DELETE:
 				Toast.makeText(CarLocationActivity.this, "删除成功",
 						Toast.LENGTH_SHORT).show();
-				if(circleOverlay != null){
+				if (circleOverlay != null) {
 					circleOverlay.remove();
 				}
 				mPopupWindow.dismiss();
@@ -592,9 +607,10 @@ public class CarLocationActivity extends Activity {
 		@Override
 		public void onGetDrivingRouteResult(DrivingRouteResult result) {
 			if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-				Toast.makeText(CarLocationActivity.this, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+				Toast.makeText(CarLocationActivity.this, "抱歉，未找到结果",
+						Toast.LENGTH_SHORT).show();
 				return;
-	        }
+			}
 			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
 				DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaiduMap);
 				mBaiduMap.setOnMarkerClickListener(overlay);
@@ -602,10 +618,11 @@ public class CarLocationActivity extends Activity {
 				overlay.addToMap();
 				// overlay.zoomToSpan();
 				showDialog();
-			}else{
-				Toast.makeText(CarLocationActivity.this, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(CarLocationActivity.this, "抱歉，未找到结果",
+						Toast.LENGTH_SHORT).show();
 				return;
-			}			
+			}
 		}
 	};
 
