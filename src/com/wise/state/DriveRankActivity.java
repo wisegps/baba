@@ -116,12 +116,17 @@ public class DriveRankActivity extends Activity{
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				DriveData driveData = new DriveData();
 				driveData.setEst_fuel(jsonObject.getDouble("est_fuel"));
-				driveData.setDriver_score(jsonObject.getInt("driver_score"));
-				driveData.setMileage(jsonObject.getInt("mileage"));
+				driveData.setDriver_score(jsonObject.getInt("drive_score"));
+				driveData.setMileage(jsonObject.getInt("total_distance"));
 				driveData.setCust_id(jsonObject.getInt("cust_id"));
 				driveData.setCust_name(jsonObject.getString("cust_name"));
 				driveData.setLogo(jsonObject.getString("logo"));
-				driveData.setCar_type(jsonObject.getString("car_type"));
+				String brand = jsonObject.getString("car_brand");
+				String series = jsonObject.getString("car_series");
+				if(series.indexOf(brand) == -1){
+					series = brand + series;
+				}
+				driveData.setCar_type(series);
 				driveDatas.add(driveData);
 			}
 		} catch (JSONException e) {
@@ -165,7 +170,7 @@ public class DriveRankActivity extends Activity{
 			}else{
 				viewHolder = (ViewHolder) convertView.getTag();
 			}
-			if(position <=3){
+			if(position <3){
 				viewHolder.tv_level.setVisibility(View.VISIBLE);
 				viewHolder.tv_level.setText(""+(position + 1));
 			}else{

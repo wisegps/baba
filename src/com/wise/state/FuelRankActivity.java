@@ -12,6 +12,7 @@ import pubclas.NetThread;
 
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.R.string;
 import com.wise.notice.LetterActivity;
 import customView.CircleImageView;
 import android.app.Activity;
@@ -117,11 +118,16 @@ public class FuelRankActivity extends Activity{
 				FuelData fuelData = new FuelData();
 				fuelData.setAvg_fuel(jsonObject.getDouble("avg_fuel"));
 				fuelData.setEst_fuel(jsonObject.getDouble("est_fuel"));				
-				fuelData.setMileage(jsonObject.getInt("mileage"));
+				fuelData.setMileage(jsonObject.getInt("total_distance"));
 				fuelData.setCust_id(jsonObject.getInt("cust_id"));
 				fuelData.setCust_name(jsonObject.getString("cust_name"));
 				fuelData.setLogo(jsonObject.getString("logo"));
-				fuelData.setCar_type(jsonObject.getString("car_type"));
+				String brand = jsonObject.getString("car_brand");
+				String series = jsonObject.getString("car_series");
+				if(series.indexOf(brand) == -1){
+					series = brand + series;
+				}
+				fuelData.setCar_type(series);
 				fuelDatas.add(fuelData);
 			}
 		} catch (JSONException e) {
@@ -165,7 +171,7 @@ public class FuelRankActivity extends Activity{
 			}else{
 				viewHolder = (ViewHolder) convertView.getTag();
 			}
-			if(position <=3){
+			if(position <3){
 				viewHolder.tv_level.setVisibility(View.VISIBLE);
 				viewHolder.tv_level.setText(""+(position + 1));
 			}else{

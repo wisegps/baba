@@ -56,6 +56,7 @@ public class AboutActivity extends Activity{
 		
 	};
 	private void setVersion(){
-		tv_version.setText("叭叭V"+ GetSystem.GetVersion(AboutActivity.this, Constant.PackageName));
+		//Alpha Beta
+		tv_version.setText("叭叭V"+ GetSystem.GetVersion(AboutActivity.this, Constant.PackageName) + " Alpha");
 	}
 }

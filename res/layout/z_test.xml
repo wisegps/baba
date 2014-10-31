@@ -8,8 +8,8 @@
     <SeekBar
         android:id="@+id/seekBar1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:max="100"/>
+        android:layout_height="wrap_content"
+        android:max="100" />
 
     <ProgressBar
         android:id="@+id/progressBar1"
@@ -17,4 +17,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/timg" />
+        <LinearLayout 
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+	            android:id="@+id/ll_image"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:orientation="horizontal" >
+	            <ImageView
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:src="@drawable/big_red_dot" />
+	        </LinearLayout>
+	        <TextView
+	            android:id="@+id/tv_content"
+	            android:layout_marginBottom="@dimen/margins" 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textColor="@color/white"
+	            android:textSize="@dimen/content"
+	            android:text="asdfasdfasdfasdf"/>
+        </LinearLayout>        
+    </RelativeLayout>
 </LinearLayout>

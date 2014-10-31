@@ -99,6 +99,15 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 				if(r.childCities != null){
 					citysData.setGroup(true);
 					ArrayList<CitysData> citysDatas = new ArrayList<CitysData>();
+					//添加全省地图包
+					CitysData cityProince = new CitysData();
+					cityProince.setCityID(r.cityID);
+					cityProince.setCityName("全省地图包");
+					cityProince.setCitySize(formatDataSize(r.size));
+					cityProince.setDown(true);
+					citysDatas.add(cityProince);
+					boolean isProniceDown = true;
+					
 					for(MKOLSearchRecord r2 : r.childCities){
 						CitysData citysData1 = new CitysData();
 						citysData1.setCityID(r2.cityID);
@@ -108,9 +117,16 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 						for(MKOLUpdateElement mkolUpdateElement : localMapList){
 							if(mkolUpdateElement.cityID == r2.cityID){
 								citysData1.setDown(true);
+								break;
 							}
 						}
 						citysDatas.add(citysData1);
+						if(!citysData1.isDown){
+							isProniceDown = false;
+						}
+					}
+					if(!isProniceDown){
+						citysDatas.get(0).setDown(false);
 					}
 					lists.add(citysDatas);
 				}else{
@@ -190,8 +206,15 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 			if(citysData.isDown){
 				
 			}else{
+				if(childPosition == 0){
+					//点击的是全省地图包
+					for(CitysData citysData2 : lists.get(groupPosition)){
+						citysData2.setDown(true);
+					}
+				}else{
+					citysData.setDown(true);
+				}
 				mOffline.start(citysData.getCityID());
-				citysData.setDown(true);
 				viewPager.setCurrentItem(0);
 				citysAdapter.notifyDataSetChanged();
 			}

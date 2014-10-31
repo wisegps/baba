@@ -1,5 +1,7 @@
 package com.wise.state;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
@@ -927,9 +929,15 @@ public class FaultDetectionActivity extends Activity {
 				return;
 			}
 			initapp();
-			String url = Constant.BaseUrl + "device/" + Device_id
-					+ "/health_exam?auth_code=" + app.auth_code;
-			new NetThread.GetDataThread(handler, url, getData, index).start();
+			String url;
+			try {
+				url = Constant.BaseUrl + "device/" + Device_id
+						+ "/health_exam?auth_code=" + app.auth_code + "&brand=" + 
+								URLEncoder.encode(app.carDatas.get(index).getCar_brand(), "UTF-8");
+				new NetThread.GetDataThread(handler, url, getData, index).start();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

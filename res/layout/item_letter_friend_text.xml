@@ -35,8 +35,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:text="adsfasdf"
             android:background="@drawable/chat_duifang_shuru"
-            android:padding="@dimen/margins"
+            android:paddingLeft="15dp"
+            android:paddingTop="@dimen/margins"
+            android:paddingBottom="@dimen/margins"
+            android:paddingRight="@dimen/margins"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />
     </LinearLayout>

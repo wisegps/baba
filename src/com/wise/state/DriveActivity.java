@@ -1,6 +1,5 @@
 package com.wise.state;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +10,6 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import data.CarData;
 import android.app.Activity;
-import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,9 +34,8 @@ public class DriveActivity extends Activity{
 	TasksCompletedView mTasksView;
 	String Date = "";
 	String Device_id = "";
-	/**把第一次驾驶体检数据记下来**/
-	int frist = 1; 
-	int second = 2;
+	/**把最近的数据存储**/
+	boolean isNearData = false;
 	int index_car;
 	AppApplication app;
 	
@@ -73,7 +70,7 @@ public class DriveActivity extends Activity{
 		Device_id = app.carDatas.get(index_car).getDevice_id();
 		Date = GetSystem.GetNowMonth().getDay();
 		tv_date.setText(Date);
-		getDriveData(frist);
+		getDriveData();
 	}
 	OnClickListener onClickListener = new OnClickListener() {		
 		@Override
@@ -85,13 +82,13 @@ public class DriveActivity extends Activity{
 			case R.id.iv_left:
 				Date = GetSystem.GetNextData(Date, -1);
 				tv_date.setText(Date);
-				getDriveData(second);
+				getDriveData();
 				iv_right.setVisibility(View.VISIBLE);
 				break;
 			case R.id.iv_right:
 				Date = GetSystem.GetNextData(Date, 1);
 				tv_date.setText(Date);
-				getDriveData(second);
+				getDriveData();
 				boolean isMax = GetSystem.maxTime(Date + " 00:00:00", GetSystem.GetNowMonth().getDay() + " 00:00:00");
 				if(isMax){
 					iv_right.setVisibility(View.GONE);
@@ -110,7 +107,7 @@ public class DriveActivity extends Activity{
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case getData:
-				jsonData(msg.obj.toString(),msg.arg1);
+				jsonData(msg.obj.toString());
 				break;
 
 			default:
@@ -119,7 +116,7 @@ public class DriveActivity extends Activity{
 		}			
 	};
 	/**获取驾驶习惯**/
-	private void getDriveData(int frist){
+	private void getDriveData(){
 		try {
 			CarData carData = app.carDatas.get(index_car);
 			String Gas_no = "";
@@ -131,24 +128,13 @@ public class DriveActivity extends Activity{
 			}
 			String url = Constant.BaseUrl + "device/" + Device_id + "/day_drive?auth_code=" + app.auth_code + 
 						"&day=" + Date + "&city=" + URLEncoder.encode(app.City, "UTF-8") + "&gas_no=" + Gas_no;
-			new NetThread.GetDataThread(handler, url, getData,frist).start();
+			new NetThread.GetDataThread(handler, url, getData).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	private void jsonData(String Data,int arg1){
-		if(arg1 == frist){
-			//TODO 保存在本地
-			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-	        Editor editor = preferences.edit();
-	     // java.lang.IndexOutOfBoundsException: Invalid index 0, size is 0
-//	     	at java.util.ArrayList.throwIndexOutOfBoundsException(ArrayList.java:257)
-//	     	at java.util.ArrayList.get(ArrayList.java:311)
-//	     	at com.wise.state.DriveActivity.jsonData(DriveActivity.java:145)
-	        editor.putString(Constant.sp_drive_score + app.carDatas.get(index_car).getObj_id(), Data);
-	        editor.commit();
-		}
-		if(Data.equals("")){
+	private void jsonData(String Data){
+		if(Data == null || Data.equals("")){
 			mTasksView.setProgress(0);
 			tv_advice.setText("");
 			tv_safe.setText(""+0);
@@ -158,30 +144,45 @@ public class DriveActivity extends Activity{
 			tv_fuel.setText(""+0);
 			tv_avg_fuel.setText(""+0);
 			tv_drive.setText(""+0);
+			//没有返回数据则跳过
+			return ;
+		}
+		int drive_score = 0;
+		try {
+			JSONObject jsonObject = new JSONObject(Data);
+			drive_score = jsonObject.getInt("drive_score");
+			int safe_score = jsonObject.getInt("safe_score");
+			int eco_score = jsonObject.getInt("eco_score");
+			int env_score = jsonObject.getInt("env_score");
+			String drive_advice = jsonObject.getString("drive_advice");
+			String total_fee = jsonObject.getString("total_fee");
+			String total_distance = jsonObject.getString("total_distance");
+			String total_fuel = jsonObject.getString("total_fuel");
+			String avg_fuel = jsonObject.getString("avg_fuel");
+			mTasksView.setProgress(drive_score);
+			tv_advice.setText(drive_advice);
+			tv_safe.setText(""+safe_score);
+			tv_eco.setText(""+eco_score);
+			tv_env.setText(""+env_score);
+			tv_distance.setText(total_distance);
+			tv_fuel.setText(total_fuel);
+			tv_avg_fuel.setText(avg_fuel.equals("null")? "0":avg_fuel);
+			tv_drive.setText(""+drive_score);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		if(isNearData){
+			
 		}else{
-			try {
-				JSONObject jsonObject = new JSONObject(Data);
-				int drive_score = jsonObject.getInt("drive_score");
-				int safe_score = jsonObject.getInt("safe_score");
-				int eco_score = jsonObject.getInt("eco_score");
-				int env_score = jsonObject.getInt("env_score");
-				String drive_advice = jsonObject.getString("drive_advice");
-				String total_fee = jsonObject.getString("total_fee");
-				String total_distance = jsonObject.getString("total_distance");
-				String total_fuel = jsonObject.getString("total_fuel");
-				String avg_fuel = jsonObject.getString("avg_fuel");
-				mTasksView.setProgress(drive_score);
-				tv_advice.setText(drive_advice);
-				tv_safe.setText(""+safe_score);
-				tv_eco.setText(""+eco_score);
-				tv_env.setText(""+env_score);
-				tv_distance.setText(total_distance);
-				tv_fuel.setText(total_fuel);
-				tv_avg_fuel.setText(avg_fuel.equals("null")? "0":avg_fuel);
-				tv_drive.setText(""+drive_score);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}		
+			//最近值，且不为0，需要存储
+			if(drive_score != 0){
+				isNearData = true;
+				SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		        Editor editor = preferences.edit();
+		        editor.putString(Constant.sp_drive_score + app.carDatas.get(index_car).getObj_id(), Data);
+		        editor.commit();
+			}			
+		}				
 	}
 }

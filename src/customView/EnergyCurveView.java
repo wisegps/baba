@@ -72,7 +72,7 @@ public class EnergyCurveView extends View{
 	private void initDraw(Canvas canvas, Paint paint) {
 		paint.setColor(getResources().getColor(R.color.Green));
 		paint.setAntiAlias(true);
-		//TODO 绘制
+		//绘制
 		float value = maxEnergy.value/5;
 		//y轴
 		canvas.drawLine(SPACING+padding, 0, SPACING+padding, realHeight, paint);
@@ -83,13 +83,15 @@ public class EnergyCurveView extends View{
     	if((stop - start) < 7){
     		float xSpacing1 = (realWidth - fontSize - spacing_x)/(stop - start);
     		for(int i = 0 ; i < (stop - start + 1) ; i++){
-        		float x = fontSize + spacing_x + i*xSpacing1+padding;
+    			//TODO 文字
+    			//i * spacingOfX + SPACING + spacing_x + padding
+        		float x = SPACING + spacing_x + i*xSpacing1+padding;
     		    canvas.drawText("" + (start + i),x,realHeight + (int)(fontSize * 1.5),paint);
         	}
     	}else{
     		int value1 = (stop - start)/7 + 1;
     		for(int i = 0 ; i < 7 ; i++){
-        		float x = padding+fontSize + spacing_x + i*xSpacing - fontSize/2;
+        		float x = padding+SPACING + spacing_x + i*xSpacing - fontSize/2;
     		    canvas.drawText(""+ (start +(int)(value1 * i)),x,realHeight + (int)(fontSize * 1.5),paint);
         	}
     	}        

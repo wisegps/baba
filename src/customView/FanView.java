@@ -224,7 +224,7 @@ public class FanView extends View {
 					* Math.sin(nowCenterRanges * Math.PI / 180) * 0.6;
 			double nowY = Width - Width
 					* Math.cos(nowCenterRanges * Math.PI / 180) * 0.6;
-			p.setColor(Color.RED);
+			p.setColor(Color.WHITE);
 			p.setTextSize(30);
 			String str = rangeData.getText();
 			int w = (int) p.measureText(str) / 2;

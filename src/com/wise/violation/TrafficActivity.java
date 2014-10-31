@@ -10,9 +10,12 @@ import org.json.JSONObject;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.car.CarAddActivity;
 import com.wise.car.CarUpdateActivity;
 import com.wise.car.TrafficCitiyActivity;
 import com.wise.remind.DealAddressActivity;
+import com.wise.remind.RemindAddActivity;
+
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
@@ -25,6 +28,8 @@ import data.CityData;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,7 +45,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * 车辆违章
@@ -93,6 +97,19 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		});
 		if (app.carDatas != null && app.carDatas.size() > 0) {
 			showCarTraffic();
+		}else{
+			AlertDialog.Builder dialog =new AlertDialog.Builder(TrafficActivity.this);
+			dialog.setTitle("提示");  
+			dialog.setMessage("您的账户下没有车辆，是否添加。"); 
+			dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {						
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Intent intent = new Intent(TrafficActivity.this,CarAddActivity.class);
+					startActivityForResult(intent, 2);
+				}
+			});
+			dialog.setNegativeButton("取消", null);
+			dialog.show(); 
 		}
 	}
 
@@ -272,7 +289,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			GetSystem.myLog(TAG, app.carDatas.get(index_car).toString());
 			CarData carData = app.carDatas.get(index_car);
 			ArrayList<String> citys = carData.getVio_citys();
-			if(citys.size() == 0){//提示添加城市
+			if(citys == null || citys.size() == 0){//提示添加城市
 				trafficView.setStatus(1);
 				List<CityData> chooseCityDatas = new ArrayList<CityData>();
 				Intent intent = new Intent(TrafficActivity.this, TrafficCitiyActivity.class);
@@ -445,7 +462,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 									trafficData.getVio_total());
 							intent.putExtra("total_complain",
 									trafficData.getTotal_complain());
-							startActivityForResult(intent, 2);
+							startActivityForResult(intent, 1);
 						}
 					});
 			return convertView;
@@ -779,7 +796,8 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			//添加车架号返回
 			GetSystem.myLog(TAG, app.carDatas.get(index_car).toString());
 			getFristTraffic();
-		}else if (resultCode == 3) {
+		}else if (requestCode == 1 && resultCode == 3) {
+			//评论违章返回
 			int index = data.getIntExtra("index", 0);
 			int size = data.getIntExtra("size", 0);
 			trafficViews.get(index_car).getTrafficDatas().get(index)

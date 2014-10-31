@@ -110,11 +110,13 @@
 		        android:textSize="@dimen/content"
 		        android:text="地点"/>
 		</LinearLayout>
-		<LinearLayout 
+		<LinearLayout
+		    android:id="@+id/ll_content" 
 		    android:layout_width="fill_parent"
 		    android:layout_height="fill_parent"
 		    android:orientation="vertical"
 		    android:gravity="center_horizontal"
+		    android:background="@color/white"
 		    android:layout_above="@id/ll_bottom">
 		    <TextView
 				android:id="@+id/tv_name"

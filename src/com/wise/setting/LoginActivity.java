@@ -74,7 +74,6 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	String account;
 	String pwd;
 	
-	boolean fastTrack = false;
 	AppApplication app;
 
 	@Override
@@ -110,7 +109,6 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
 		progressBar.setVisibility(View.GONE);
-		fastTrack = getIntent().getBooleanExtra("fastTrack", false);
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -123,7 +121,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 			case R.id.tv_register:
 				Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
 				intent.putExtra("mark", 0);
-				intent.putExtra("fastTrack", fastTrack);
+				intent.putExtra("fastTrack", true);
 				startActivity(intent);
 				break;
 			case R.id.tv_rest_pwd:
@@ -307,7 +305,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 												RegisterActivity.class);
 										intent1.putExtra("mark", 2);
 										intent1.putExtra("platform", platform);
-										intent1.putExtra("fastTrack", fastTrack);
+										intent1.putExtra("fastTrack", true);
 										startActivity(intent1);
 									}
 								}).show();

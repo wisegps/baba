@@ -36,7 +36,10 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/iv_me"
             android:background="@drawable/chat_i_shuru"
-            android:padding="@dimen/margins"
+            android:paddingLeft="@dimen/margins"
+            android:paddingTop="@dimen/margins"
+            android:paddingBottom="@dimen/margins"
+            android:paddingRight="15dp"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />
     </RelativeLayout>

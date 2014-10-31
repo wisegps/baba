@@ -1,5 +1,6 @@
 package com.wise.state;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,11 @@ import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.Volley;
 import com.baidu.lbsapi.auth.LBSAuthManagerListener;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -48,6 +54,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -100,15 +109,18 @@ public class FaultActivity extends FragmentActivity {
 	private static final int get_health = 11;
 	/** 获取驾驶指数 **/
 	private static final int get_device = 12;
+	/**获取广告**/
+	private static final int get_ad = 13;
 
 	ImageView iv_weather, iv_noti;
 	TextView tv_city, tv_weather_time, tv_weather, tv_advice, tv_joy,
-			tv_happy_time;
+			tv_happy_time,tv_content;
+	RelativeLayout rl_ad;
 	int index = 0;
 	private FragmentManager fragmentManager;
 	ParentSlide smv_content;
 	NoticeScrollTextView nstv_message;
-	HScrollLayout hs_car;
+	HScrollLayout hs_car,hs_photo;
 	MyBroadCastReceiver myBroadCastReceiver;
 	IntentFilter intentFilter;
 
@@ -122,12 +134,15 @@ public class FaultActivity extends FragmentActivity {
 	private GeoCoder mGeoCoder = null;
 	int completed;
 	AppApplication app;
+	LinearLayout ll_image;
+	int image_position = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fault);
+		mQueue = Volley.newRequestQueue(this);
 		app = (AppApplication)getApplication();
 		GetSystem.myLog(TAG, "onCreate");
 		mGeoCoder = GeoCoder.newInstance();
@@ -183,14 +198,10 @@ public class FaultActivity extends FragmentActivity {
 				index = view;
 				getTotalData();
 			}
-
 			@Override
-			public void OnLastView() {
-			}
-
+			public void OnLastView() {}
 			@Override
-			public void OnFinish(int index) {
-			}
+			public void OnFinish(int index) {}
 		});
 		String Month = GetSystem.GetNowMonth().getMonth();
 		startMonth = Month + "-01";
@@ -203,6 +214,27 @@ public class FaultActivity extends FragmentActivity {
 					+ "/tips?auth_code=" + app.auth_code;
 			getMessage(url);
 			getCounter();
+			if(app.carDatas.size() == 0){//如果没有车则显示
+				rl_ad = (RelativeLayout)findViewById(R.id.rl_ad);
+				rl_ad.setVisibility(View.VISIBLE);
+				tv_content = (TextView)findViewById(R.id.tv_content);
+				tv_content.setOnClickListener(onClickListener);
+				ll_image = (LinearLayout)findViewById(R.id.ll_image);
+				hs_photo = (HScrollLayout) findViewById(R.id.hs_photo);
+				getAD();
+				hs_photo.setOnViewChangeListener(new OnViewChangeListener() {					
+					@Override
+					public void OnViewChange(int view) {
+						image_position = view;
+						tv_content.setText(adDatas.get(view).getContent());
+						changeImage(view);
+					}					
+					@Override
+					public void OnLastView() {}					
+					@Override
+					public void OnFinish(int index) {}
+				});
+			}
 		} else {// 未登录
 			GetSystem.myLog(TAG, "未登录,app.carDatas = " + app.carDatas.size());
 			// 给个临时id
@@ -212,7 +244,6 @@ public class FaultActivity extends FragmentActivity {
 			String url = Constant.BaseUrl + "customer/0/tips";
 			getMessage(url);
 			Intent intent = new Intent(FaultActivity.this, LoginActivity.class);
-			intent.putExtra("fastTrack", true);
 			startActivity(intent);
 		}
 		myBroadCastReceiver = new MyBroadCastReceiver();
@@ -242,6 +273,121 @@ public class FaultActivity extends FragmentActivity {
 		public void engineInitFail() {
 		}
 	};
+	private void getAD(){
+		String url = Constant.BaseUrl + "base/AD";
+		new NetThread.GetDataThread(handler, url, get_ad).start();
+	}
+	private void setImageView(String result){
+		try {
+			JSONArray jsonArray = new JSONArray(result);
+			for(int i = 0 ; i < jsonArray.length() ; i++){
+				View view_image = LayoutInflater.from(this).inflate(R.layout.item_nocar_image, null);
+				hs_photo.addView(view_image);
+				ImageView iv_pic = (ImageView)view_image.findViewById(R.id.iv_pic);
+				ADView aView = new ADView();
+				aView.setImageView(iv_pic);
+				adViews.add(aView);
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				AData aData = new AData();
+				aData.setImage(jsonObject.getString("image"));
+				aData.setContent(jsonObject.getString("content"));
+				aData.setUrl(jsonObject.getString("url"));
+				adDatas.add(aData);
+				
+				ImageView imageView = new ImageView(getApplicationContext());
+	            imageView.setImageResource(R.drawable.round_press);
+	            imageView.setPadding(5, 0, 5, 0);
+	            ll_image.addView(imageView);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}				
+	}
+	private void changeImage(int index) {
+		for (int i = 0; i < ll_image.getChildCount(); i++) {
+			ImageView imageView = (ImageView) ll_image.getChildAt(i);
+			if (index == i) {
+				imageView.setImageResource(R.drawable.round_press);
+			} else {
+				imageView.setImageResource(R.drawable.round_press);
+			}
+		}
+	}
+	RequestQueue mQueue;
+	private void getImage(){
+		for(final AData aData : adDatas){
+			System.out.println("getImage");
+			mQueue.add(new ImageRequest(aData.getImage(), new Response.Listener<Bitmap>() {
+				@Override
+				public void onResponse(Bitmap response) {
+					for(int i = 0 ; i < adDatas.size() ; i++){
+						if(adDatas.get(i).getImage().equals(aData.getImage())){
+							setImageWidthHeight(adViews.get(i).getImageView(), response);
+							adViews.get(i).getImageView().setImageBitmap(response);
+						}
+					}
+				}
+			}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
+				@Override
+				public void onErrorResponse(VolleyError error) {
+					error.printStackTrace();
+				}
+			}));
+		}
+	}
+	/** 计算设置图片的宽高 **/
+	private void setImageWidthHeight(ImageView iv_pic , Bitmap bitmap) {
+		DisplayMetrics metrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		int widthPixels = metrics.widthPixels;
+
+		double ratio = bitmap.getWidth() / (widthPixels * 1.0);
+		int scaledHeight = (int) (bitmap.getHeight() / ratio);
+
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+				widthPixels, scaledHeight);
+		iv_pic.setLayoutParams(params);
+	}
+	List<ADView> adViews = new ArrayList<ADView>();
+	List<AData> adDatas = new ArrayList<AData>();
+	private class ADView{
+		ImageView imageView;
+		public ImageView getImageView() {
+			return imageView;
+		}
+		public void setImageView(ImageView imageView) {
+			this.imageView = imageView;
+		}		
+	}
+	private class AData{
+		private String image;
+		private String content;
+		private String url;
+		public String getImage() {
+			return image;
+		}
+		public void setImage(String image) {
+			this.image = image;
+		}
+		public String getContent() {
+			return content;
+		}
+		public void setContent(String content) {
+			this.content = content;
+		}
+		public String getUrl() {
+			return url;
+		}
+		public void setUrl(String url) {
+			this.url = url;
+		}
+		@Override
+		public String toString() {
+			return "AData [image=" + image + ", content=" + content + ", url="
+					+ url + "]";
+		}		
+	}
+	
 	private String getSdcardDir() {
 		if (Environment.getExternalStorageState().equalsIgnoreCase(
 				Environment.MEDIA_MOUNTED)) {
@@ -330,6 +476,11 @@ public class FaultActivity extends FragmentActivity {
 				break;
 			case R.id.ll_adress:
 				goCarMap();
+				break;
+			case R.id.tv_content:
+				Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse(adDatas.get(image_position).getUrl()));  
+		        it.setClassName("com.android.browser", "com.android.browser.BrowserActivity");  
+		        startActivity(it);  
 				break;
 			}
 		}
@@ -421,21 +572,29 @@ public class FaultActivity extends FragmentActivity {
 				try {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					int drive_score = jsonObject.getInt("drive_score");
-					carViews.get(msg.arg1).getTcv_drive()
-							.setProgress(drive_score);
-					carViews.get(msg.arg1).getTv_drive()
-							.setText(String.valueOf(drive_score));
+					if(drive_score != 0){
+						carViews.get(msg.arg1).getTcv_drive().setProgress(drive_score);
+						carViews.get(msg.arg1).getTv_drive().setText(String.valueOf(drive_score));
+						// 存在本地
+						SharedPreferences preferences1 = getSharedPreferences(
+								Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+						Editor editor1 = preferences1.edit();
+						editor1.putString(Constant.sp_drive_score
+								+ app.carDatas.get(msg.arg1).getObj_id(),
+								msg.obj.toString());
+						editor1.commit();
+					}
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				// 存在本地
-				SharedPreferences preferences1 = getSharedPreferences(
-						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-				Editor editor1 = preferences1.edit();
-				editor1.putString(Constant.sp_drive_score
-						+ app.carDatas.get(msg.arg1).getObj_id(),
-						msg.obj.toString());
-				editor1.commit();
+				
+				break;
+			case get_ad:
+				setImageView(msg.obj.toString());
+				getImage();
+				changeImage(0);
+				tv_content.setText(adDatas.get(0).getContent());
 				break;
 			}
 		}
@@ -474,36 +633,29 @@ public class FaultActivity extends FragmentActivity {
 						.start();
 			} catch (Exception e) {
 				e.printStackTrace();
+			}			
+			//从服务器获取体检信息
+			String url1;
+			try {
+				url1 = Constant.BaseUrl + "device/" + device_id
+						+ "/health_exam?auth_code=" + app.auth_code + "&brand=" + 
+						URLEncoder.encode(carData.getCar_brand(), "UTF-8");
+				new NetThread.GetDataThread(handler, url1, get_health, index).start();
+			} catch (UnsupportedEncodingException e1) {
+				e1.printStackTrace();
 			}
-			// 判断有没有体检分数和驾驶得分
-			SharedPreferences preferences = getSharedPreferences(
-					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-			String result = preferences.getString(Constant.sp_health_score
-					+ carData.getObj_id(), "");
-			if (result.equals("")) {
-				// 未体检过，从服务器获取体检信息
+			// 获取驾驶信息
+			try {
 				String url = Constant.BaseUrl + "device/" + device_id
-						+ "/health_exam?auth_code=" + app.auth_code;
-				new NetThread.GetDataThread(handler, url, get_health, index)
+						+ "/day_drive?auth_code=" + app.auth_code
+						+ "&day=" + GetSystem.GetNowMonth().getDay()
+						+ "&city="
+						+ URLEncoder.encode(app.City, "UTF-8")
+						+ "&gas_no=" + Gas_no;
+				new NetThread.GetDataThread(handler, url, get_device, index)
 						.start();
-			}
-			/** 驾驶信息 **/
-			String drive = preferences.getString(Constant.sp_drive_score
-					+ carData.getObj_id(), "");
-			if (drive.equals("")) {
-				// 获取驾驶信息
-				try {
-					String url = Constant.BaseUrl + "device/" + device_id
-							+ "/day_drive?auth_code=" + app.auth_code
-							+ "&day=" + GetSystem.GetNowMonth().getDay()
-							+ "&city="
-							+ URLEncoder.encode(app.City, "UTF-8")
-							+ "&gas_no=" + Gas_no;
-					new NetThread.GetDataThread(handler, url, get_device, index)
-							.start();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		// 获取限行信息
@@ -575,13 +727,18 @@ public class FaultActivity extends FragmentActivity {
 	private void jsonCarLinit(String result, int index) {
 		try {
 			CarView carView = carViews.get(index);
-			JSONObject jsonObject = new JSONObject(result);
-			String limit = jsonObject.getString("limit");
-			carView.getTv_xx().setText(limit);
-			app.carDatas.get(index).setLimit(limit);
+			if(result == null || result.equals("")){
+				carView.getTv_xx().setText("不限");
+				app.carDatas.get(index).setLimit("不限");
+			}else{
+				JSONObject jsonObject = new JSONObject(result);
+				String limit = jsonObject.getString("limit");
+				carView.getTv_xx().setText(limit);
+				app.carDatas.get(index).setLimit(limit);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}				
 	}
 
 	/**
@@ -1147,7 +1304,36 @@ public class FaultActivity extends FragmentActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == 3) {
 			// 修改车辆信息
+			System.out.println("修改车辆信息1");
 			initDataView();
+			System.out.println("修改车辆信息2");
+			if(app.carDatas.size() == 0){
+				System.out.println("显示广告");
+				rl_ad = (RelativeLayout)findViewById(R.id.rl_ad);
+				rl_ad.setVisibility(View.VISIBLE);
+				tv_content = (TextView)findViewById(R.id.tv_content);
+				tv_content.setOnClickListener(onClickListener);
+				ll_image = (LinearLayout)findViewById(R.id.ll_image);
+				hs_photo = (HScrollLayout) findViewById(R.id.hs_photo);
+				getAD();
+				hs_photo.setOnViewChangeListener(new OnViewChangeListener() {					
+					@Override
+					public void OnViewChange(int view) {
+						image_position = view;
+						tv_content.setText(adDatas.get(view).getContent());
+						changeImage(view);
+					}					
+					@Override
+					public void OnLastView() {}					
+					@Override
+					public void OnFinish(int index) {}
+				});
+			}else{
+				System.out.println("隐藏广告");
+				if(rl_ad != null){
+					rl_ad.setVisibility(View.GONE);
+				}
+			}
 		} else if (requestCode == 0) {
 			// 修改城市返回,在onResume里刷新了城市
 		} else if (requestCode == 1) {
@@ -1219,6 +1405,35 @@ public class FaultActivity extends FragmentActivity {
 				getMessage(url);
 				getCounter();
 				noticeFragment.ResetNotice();
+				
+				if(app.carDatas.size() == 0){
+					System.out.println("显示广告");
+					rl_ad = (RelativeLayout)findViewById(R.id.rl_ad);
+					rl_ad.setVisibility(View.VISIBLE);
+					tv_content = (TextView)findViewById(R.id.tv_content);
+					tv_content.setOnClickListener(onClickListener);
+					ll_image = (LinearLayout)findViewById(R.id.ll_image);
+					hs_photo = (HScrollLayout) findViewById(R.id.hs_photo);
+					getAD();
+					hs_photo.setOnViewChangeListener(new OnViewChangeListener() {					
+						@Override
+						public void OnViewChange(int view) {
+							image_position = view;
+							tv_content.setText(adDatas.get(view).getContent());
+							changeImage(view);
+						}					
+						@Override
+						public void OnLastView() {}					
+						@Override
+						public void OnFinish(int index) {}
+					});
+				}else{
+					System.out.println("隐藏广告");
+					if(rl_ad != null){
+						rl_ad.setVisibility(View.GONE);
+					}
+				}
+				
 			} else if (action.equals(Constant.A_LoginOut)) {
 				setLoginView();
 				String url = Constant.BaseUrl + "customer/0/tips";

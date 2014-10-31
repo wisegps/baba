@@ -40,6 +40,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.View;
 
 public class GetSystem {
 	private static final String TAG = "GetSystem";
@@ -645,25 +646,30 @@ public class GetSystem {
 
 	/**
 	 * 分享
-	 * 
 	 * @param mContext
 	 * @param Content
 	 * @param imagePath
 	 * @param Lat
 	 * @param Lon
+	 * @param Title
+	 * @param mapUrl
 	 */
 	public static void share(Context mContext, String Content,
-			String imagePath, float Lat, float Lon, String Title, String mapUrl) {
+			String imagePath, float Lat, float Lon, String title, String titleUrl) {
 		final OnekeyShare oks = new OnekeyShare();
 		oks.setNotification(R.drawable.ic_launcher, "app_name");
 		oks.setAddress("");
-		oks.setTitle(Title);
-		oks.setTitleUrl(mapUrl);
+		oks.setTitle(title);
+		oks.setTitleUrl("http://www.bibibaba.cn/");
 		oks.setText(Content + " (来自@叭叭,点击下载http://dl.bibibaba.cn/ )");
 		oks.setImagePath(imagePath);
 		// oks.setImageUrl("http://img.appgo.cn/imgs/sharesdk/content/2013/07/25/1374723172663.jpg");
 		oks.setUrl("http://www.sharesdk.cn");
 		oks.setFilePath(imagePath);
+		System.out.println("titleUrl = " + titleUrl);
+		System.out.println("title = " + title);
+		//qq share params must have titleUrl and (title or summary or imageUrl)
+
 		// oks.setComment("share");
 		// oks.setSite("wise");
 		// oks.setSiteUrl("http://sharesdk.cn");
@@ -726,44 +732,27 @@ public class GetSystem {
 		}
 		return hexValue.toString();
 	}
-
-	/**
-	 * 获取音频文件时长
-	 * 
-	 * @param file
-	 * @return
-	 * @throws IOException
-	 */
-	public static long getAmrDuration(File file) throws IOException {
-		long duration = -1;
-		int[] packedSize = { 12, 13, 15, 17, 19, 20, 26, 31, 5, 0, 0, 0, 0, 0,
-				0, 0 };
-		RandomAccessFile randomAccessFile = null;
-		try {
-			randomAccessFile = new RandomAccessFile(file, "rw");
-			long length = file.length();// 文件的长度
-			int pos = 6;// 设置初始位置
-			int frameCount = 0;// 初始帧数
-			int packedPos = -1;
-			// ///////////////////////////////////////////////////
-			byte[] datas = new byte[1];// 初始数据值
-			while (pos <= length) {
-				randomAccessFile.seek(pos);
-				if (randomAccessFile.read(datas, 0, 1) != 1) {
-					duration = length > 0 ? ((length - 6) / 650) : 0;
-					break;
-				}
-				packedPos = (datas[0] >> 3) & 0x0F;
-				pos += packedSize[packedPos] + 1;
-				frameCount++;
-			}
-			// ///////////////////////////////////////////////////
-			duration += frameCount * 20;// 帧数*20
-		} finally {
-			if (randomAccessFile != null) {
-				randomAccessFile.close();
-			}
-		}
-		return duration;
-	}
+	/**把view里的内容映射城图片，地图不行**/
+	public static Bitmap getViewBitmap(View v) {
+        v.clearFocus(); //
+        v.setPressed(false); //
+        // 能画缓存就返回false
+        boolean willNotCache = v.willNotCacheDrawing();
+        v.setWillNotCacheDrawing(false);
+        int color = v.getDrawingCacheBackgroundColor();
+        v.setDrawingCacheBackgroundColor(0);
+        if (color != 0) {
+            v.destroyDrawingCache();
+        }
+        v.buildDrawingCache();
+        Bitmap cacheBitmap = v.getDrawingCache();
+        if (cacheBitmap == null) {
+            return null;
+        }
+        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+        v.destroyDrawingCache();
+        v.setWillNotCacheDrawing(willNotCache);
+        v.setDrawingCacheBackgroundColor(color);
+        return bitmap;
+    }
 }
