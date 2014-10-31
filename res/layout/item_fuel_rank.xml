@@ -62,7 +62,6 @@
             android:text="flasdjfosdf"/>
         <RelativeLayout
             android:layout_marginBottom="@dimen/margins" 
-            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent">
             <ImageView
@@ -77,6 +76,7 @@
                 android:layout_marginRight="@dimen/margins"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+            	android:visibility="gone"
                 android:src="@drawable/icon_zan_reply"/>
         </RelativeLayout>
     </LinearLayout>

@@ -28,6 +28,8 @@
     <xlist.XListView
         android:id="@+id/lv_notice"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="fill_parent"
+        android:divider="@null"
+        android:footerDividersEnabled="true"
         android:cacheColorHint="#00000000"></xlist.XListView>  
 </LinearLayout>

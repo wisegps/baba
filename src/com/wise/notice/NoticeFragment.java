@@ -30,6 +30,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 /**
@@ -245,7 +246,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				holder.tv_content = (TextView) convertView.findViewById(R.id.tv_content);
 				holder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
 				holder.iv_image = (CircleImageView) convertView.findViewById(R.id.iv_image);
-				holder.ll_fm_notice = (RelativeLayout) convertView.findViewById(R.id.ll_fm_notice);
+				holder.ll_fm_notice = (LinearLayout) convertView.findViewById(R.id.ll_fm_notice);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
@@ -297,7 +298,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			TextView tv_content;
 			TextView tv_time;
 			CircleImageView iv_image;
-			RelativeLayout ll_fm_notice;
+			LinearLayout ll_fm_notice;
 		}
 	}
 

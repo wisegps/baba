@@ -218,7 +218,6 @@ public class FaultActivity extends FragmentActivity {
 				rl_ad = (RelativeLayout)findViewById(R.id.rl_ad);
 				rl_ad.setVisibility(View.VISIBLE);
 				tv_content = (TextView)findViewById(R.id.tv_content);
-				tv_content.setOnClickListener(onClickListener);
 				ll_image = (LinearLayout)findViewById(R.id.ll_image);
 				hs_photo = (HScrollLayout) findViewById(R.id.hs_photo);
 				getAD();
@@ -284,6 +283,7 @@ public class FaultActivity extends FragmentActivity {
 				View view_image = LayoutInflater.from(this).inflate(R.layout.item_nocar_image, null);
 				hs_photo.addView(view_image);
 				ImageView iv_pic = (ImageView)view_image.findViewById(R.id.iv_pic);
+				iv_pic.setOnClickListener(onClickListener);
 				ADView aView = new ADView();
 				aView.setImageView(iv_pic);
 				adViews.add(aView);
@@ -293,10 +293,12 @@ public class FaultActivity extends FragmentActivity {
 				aData.setContent(jsonObject.getString("content"));
 				aData.setUrl(jsonObject.getString("url"));
 				adDatas.add(aData);
-				
-				ImageView imageView = new ImageView(getApplicationContext());
-	            imageView.setImageResource(R.drawable.round_press);
-	            imageView.setPadding(5, 0, 5, 0);
+					            
+	            ImageView imageView = new ImageView(this);
+				imageView.setImageResource(R.drawable.round_press);
+				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(15, 15);
+				lp.setMargins(5, 0, 5, 0);
+				imageView.setLayoutParams(lp);
 	            ll_image.addView(imageView);
 			}
 		} catch (Exception e) {
@@ -307,7 +309,7 @@ public class FaultActivity extends FragmentActivity {
 		for (int i = 0; i < ll_image.getChildCount(); i++) {
 			ImageView imageView = (ImageView) ll_image.getChildAt(i);
 			if (index == i) {
-				imageView.setImageResource(R.drawable.round_press);
+				imageView.setImageResource(R.drawable.round);
 			} else {
 				imageView.setImageResource(R.drawable.round_press);
 			}
@@ -477,7 +479,7 @@ public class FaultActivity extends FragmentActivity {
 			case R.id.ll_adress:
 				goCarMap();
 				break;
-			case R.id.tv_content:
+			case R.id.iv_pic:
 				Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse(adDatas.get(image_position).getUrl()));  
 		        it.setClassName("com.android.browser", "com.android.browser.BrowserActivity");  
 		        startActivity(it);  
