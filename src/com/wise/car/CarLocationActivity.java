@@ -202,7 +202,7 @@ public class CarLocationActivity extends Activity {
 			// 围栏监听
 			case R.id.fence_update:
 				if (app.isTest) {
-					Toast.makeText(CarLocationActivity.this, "演示帐号",
+					Toast.makeText(CarLocationActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
@@ -210,7 +210,7 @@ public class CarLocationActivity extends Activity {
 				break;
 			case R.id.fence_delete:
 				if (app.isTest) {
-					Toast.makeText(CarLocationActivity.this, "演示帐号",
+					Toast.makeText(CarLocationActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}

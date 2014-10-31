@@ -98,7 +98,7 @@ public class CarUpdateActivity extends Activity {
 				break;
 			case R.id.iv_save:
 				if(app.isTest){
-					Toast.makeText(CarUpdateActivity.this, "演示帐号", Toast.LENGTH_SHORT).show();
+					Toast.makeText(CarUpdateActivity.this, "演示账号不支持该功能", Toast.LENGTH_SHORT).show();
 					return;
 				}
 				Save();
@@ -221,20 +221,20 @@ public class CarUpdateActivity extends Activity {
 		String frame_no = et_frame_no.getText().toString();
 
 		for (CityData cityData : chooseCityDatas) {
-			// 发送机号
+			// 发动机号
 			if (cityData.getEngine() == 0) {
 
 			} else {
 				if (cityData.getEngineno() == 1) {// 全部
 					if (engine_no.length() == 0) {
-						Toast.makeText(CarUpdateActivity.this, "需要完整的发送机号",
+						Toast.makeText(CarUpdateActivity.this, "需要完整的发动机号",
 								Toast.LENGTH_SHORT).show();
 						return;
 					}
 				} else {
 					if (engine_no.length() < cityData.getEngineno()) {
 						Toast.makeText(CarUpdateActivity.this,
-								"需要发送机号的后" + cityData.getEngineno() + "位",
+								"需要发动机号的后" + cityData.getEngineno() + "位",
 								Toast.LENGTH_SHORT).show();
 						return;
 					}
@@ -366,17 +366,28 @@ public class CarUpdateActivity extends Activity {
 
 		et_nick_name.setText(carData.getNick_name());
 		if (carData.getObj_name() != null && !carData.getObj_name().equals("")) {
-			et_obj_name.setText(carData.getObj_name().substring(1,
-					carData.getObj_name().length()));
-			choose_car_province.setText(carData.getObj_name().substring(0, 1));
+			if(app.isTest){
+				et_obj_name.setText(carData.getObj_name().substring(1,4) + "***");
+			}else{
+				et_obj_name.setText(carData.getObj_name().substring(1,
+						carData.getObj_name().length()));
+				choose_car_province.setText(carData.getObj_name().substring(0, 1));
+			}
 		} else {
 			et_obj_name.setText(carData.getObj_name());
 		}
 		tv_models.setText(carData.getCar_series() + carData.getCar_type());
 		tv_gas_no.setText(carData.getGas_no());
-
-		et_engine_no.setText(carData.getEngine_no());
-		et_frame_no.setText(carData.getFrame_no());
+		if(app.isTest){
+			et_engine_no.setText("01****");
+		}else{
+			et_engine_no.setText(carData.getEngine_no());
+		}
+		if(app.isTest){
+			et_frame_no.setText("61**");
+		}else{
+			et_frame_no.setText(carData.getFrame_no());
+		}
 
 		tv_insurance_company.setText(carData.getInsurance_company());
 		et_insurance_tel.setText(carData.getInsurance_tel());
@@ -587,9 +598,9 @@ public class CarUpdateActivity extends Activity {
 				}
 			}
 			if (isNeedAllEngine) {
-				et_engine_no.setHint("需要完整的发送机号");
+				et_engine_no.setHint("需要完整的发动机号");
 			} else {
-				et_engine_no.setHint("需要发送机号的后" + Engineno + "位");
+				et_engine_no.setHint("需要发动机号的后" + Engineno + "位");
 			}
 		} else {
 			// 选填，隐藏

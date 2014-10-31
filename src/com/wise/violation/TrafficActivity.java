@@ -14,8 +14,6 @@ import com.wise.car.CarAddActivity;
 import com.wise.car.CarUpdateActivity;
 import com.wise.car.TrafficCitiyActivity;
 import com.wise.remind.DealAddressActivity;
-import com.wise.remind.RemindAddActivity;
-
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
@@ -105,7 +103,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					Intent intent = new Intent(TrafficActivity.this,CarAddActivity.class);
-					startActivityForResult(intent, 2);
+					startActivityForResult(intent, 4);
 				}
 			});
 			dialog.setNegativeButton("取消", null);
@@ -298,6 +296,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			}else{
 				getFristTraffic();
 			}
+			//TODO 还要判断车架号
 		}
 	}
 
@@ -747,7 +746,6 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 				carData.setVio_citys(vio_citys);
 				carData.setVio_citys_code(vio_citys_code);
 				carData.setProvince(provinces);
-				//TODO engine_no 有null可能 判断车架号和发动机号
 				String engine_no = carData.getEngine_no();
 				String frame_no = carData.getFrame_no();
 
@@ -758,6 +756,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 					} else {
 						if (cityData.getEngineno() == 1) {// 全部
 							if (engine_no == null || engine_no.length() == 0) {
+								//TODO 还要判断车架号
 								turnCarUpdate();
 								return;
 							}
@@ -808,6 +807,11 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 					.setAdapter(
 							new TrafficAdapter(trafficViews.get(index_car)
 									.getTrafficDatas()));
+		}else if(requestCode == 4 && resultCode == 3){
+			//添加车辆返回
+			if (app.carDatas != null && app.carDatas.size() > 0) {
+				showCarTraffic();
+			}
 		}
 	}
 	

@@ -128,7 +128,7 @@ public class RemindActivity extends Activity {
 				break;
 			case R.id.bt_edit:
 				if (app.isTest) {
-					Toast.makeText(RemindActivity.this, "演示帐号",
+					Toast.makeText(RemindActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
@@ -139,7 +139,7 @@ public class RemindActivity extends Activity {
 				break;
 			case R.id.bt_delete:
 				if (app.isTest) {
-					Toast.makeText(RemindActivity.this, "演示帐号",
+					Toast.makeText(RemindActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}

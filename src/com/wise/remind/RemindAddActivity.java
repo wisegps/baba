@@ -118,7 +118,7 @@ public class RemindAddActivity extends Activity {
 				break;
 			case R.id.iv_ok:
 				if (app.isTest) {
-					Toast.makeText(RemindAddActivity.this, "演示帐号",
+					Toast.makeText(RemindAddActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}

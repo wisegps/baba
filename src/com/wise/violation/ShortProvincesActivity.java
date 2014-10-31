@@ -42,10 +42,14 @@ public class ShortProvincesActivity extends Activity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			String province = provinces[arg2];
-			Intent intent = new Intent();
-			intent.putExtra("province", province);
-			ShortProvincesActivity.this.setResult(6, intent);
-			ShortProvincesActivity.this.finish();
+			if(province.equals("")){
+				
+			}else{
+				Intent intent = new Intent();
+				intent.putExtra("province", province);
+				ShortProvincesActivity.this.setResult(6, intent);
+				ShortProvincesActivity.this.finish();
+			}
 		}
 	};
 
