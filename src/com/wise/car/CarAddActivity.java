@@ -95,8 +95,9 @@ public class CarAddActivity extends Activity {
 				break;
 			case R.id.iv_add:
 				if (app.isTest) {
-					Toast.makeText(CarAddActivity.this, "演示帐号",
+					Toast.makeText(CarAddActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
+
 					return;
 				}
 				addCar();

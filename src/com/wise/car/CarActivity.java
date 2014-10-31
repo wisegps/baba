@@ -242,7 +242,7 @@ public class CarActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					if (app.isTest) {
-						Toast.makeText(CarActivity.this, "演示帐号",
+						Toast.makeText(CarActivity.this, "演示账号不支持该功能",
 								Toast.LENGTH_SHORT).show();
 						return;
 					}
@@ -265,7 +265,7 @@ public class CarActivity extends Activity {
 					@Override
 					public void onClick(View v) {
 						if (app.isTest) {
-							Toast.makeText(CarActivity.this, "演示帐号",
+							Toast.makeText(CarActivity.this, "演示账号不支持该功能",
 									Toast.LENGTH_SHORT).show();
 							return;
 						}
@@ -285,7 +285,7 @@ public class CarActivity extends Activity {
 					@Override
 					public void onClick(View v) {
 						if (app.isTest) {
-							Toast.makeText(CarActivity.this, "演示帐号",
+							Toast.makeText(CarActivity.this, "演示账号不支持该功能",
 									Toast.LENGTH_SHORT).show();
 							return;
 						}
@@ -302,7 +302,7 @@ public class CarActivity extends Activity {
 					@Override
 					public void onClick(View v) {
 						if (app.isTest) {
-							Toast.makeText(CarActivity.this, "演示帐号",
+							Toast.makeText(CarActivity.this, "演示账号不支持该功能",
 									Toast.LENGTH_SHORT).show();
 							return;
 						}

@@ -45,29 +45,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:text="2014-12-01"
-                android:textColor="@color/common"
+                android:textColor="@color/Green"
                 android:textSize="@dimen/main" />
 
             <ImageView
                 android:id="@+id/iv_activity_travel_data_previous"
-                android:layout_width="@dimen/double_margins"
+                android:layout_width="40dp"
                 android:layout_height="@dimen/double_margins"
+                android:paddingLeft="@dimen/margins"
+                android:paddingRight="@dimen/margins"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/tv_travel_date"
                 android:contentDescription="@string/app_name"
-                android:src="@drawable/body_icon_arrow_contrary" />
+                android:src="@drawable/btn_jiantou_lvse_you" />
 
             <ImageView
                 android:id="@+id/iv_activity_travel_data_next"
-                android:layout_width="@dimen/double_margins"
+                android:layout_width="40dp"
                 android:layout_height="@dimen/double_margins"
+                android:paddingLeft="@dimen/margins"
+                android:paddingRight="@dimen/margins"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/tv_travel_date"
                 android:contentDescription="@string/app_name"
-                android:src="@drawable/body_icon_arrow2" />
+                android:src="@drawable/btn_jiantou_lvse_zuo" />
         </RelativeLayout>
 
         <TableLayout

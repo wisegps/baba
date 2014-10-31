@@ -308,7 +308,7 @@ public class FaultDetectionActivity extends Activity {
 						}
 						break;
 					// 救援
-					case R.id.rescue:
+					case R.id.risk:
 						String phone = app.carDatas.get(index)
 								.getInsurance_tel();
 						Log.e("my_log", "======>" + phone);
@@ -318,7 +318,7 @@ public class FaultDetectionActivity extends Activity {
 						startActivity(in_1);
 						break;
 					// 报险
-					case R.id.risk:
+					case R.id.rescue:
 						String tel = app.carDatas.get(index)
 								.getMaintain_tel();
 						Log.e("my_log", "======>" + tel);

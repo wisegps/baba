@@ -137,7 +137,7 @@ public class SearchMapActivity extends Activity {
 			@Override
 			public void OnCollect(int index) {
 				if (app.isTest) {
-					Toast.makeText(SearchMapActivity.this, "演示帐号",
+					Toast.makeText(SearchMapActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}

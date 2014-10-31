@@ -30,6 +30,7 @@ public class NoticeActivity extends FragmentActivity{
 				finish();
 			}
 		});
+        noticeFragment.setBackButtonVISIBLE();
         
         Intent intent1 = getIntent();		
 		boolean isSpecify = intent1.getBooleanExtra("isSpecify", false);

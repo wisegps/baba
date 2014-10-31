@@ -3,12 +3,9 @@ package com.wise.setting;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
-import model.BaseData;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.litepal.crud.DataSupport;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.CollectionActivity;
@@ -111,6 +108,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		progressBar.setVisibility(View.GONE);
 
 		findViewById(R.id.btn_show).setOnClickListener(onClickListener);
+		app.isTest = false;
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -196,6 +194,8 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
+			bt_login.setEnabled(false);
+			progressBar.setVisibility(View.VISIBLE);
 		}
 		String url = Constant.BaseUrl + "user_login?account=" + account
 				+ "&password=" + GetSystem.getM5DEndo(pwd);
@@ -203,11 +203,11 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	}
 
 	private void jsonLogin(String str) {
+		progressBar.setVisibility(View.GONE);
+		bt_login.setEnabled(true);
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			if (jsonObject.getString("status_code").equals("0")) {
-				// 登录进度条显示
-				progressBar.setVisibility(View.VISIBLE);
 				app.cust_id = jsonObject.getString("cust_id");
 				app.auth_code = jsonObject.getString("auth_code");
 				if (!app.isTest) {
@@ -230,7 +230,6 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-			progressBar.setVisibility(View.VISIBLE);
 		}
 	}
 

@@ -22,12 +22,15 @@
             android:layout_height="@dimen/title_hight"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margins"
+            android:visibility="gone"
             android:padding="@dimen/margins"
             android:src="@drawable/nav_back" />
     </RelativeLayout>
     <xlist.XListView
         android:id="@+id/lv_notice"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="fill_parent"
+        android:divider="@null"
+        android:footerDividersEnabled="true"
         android:cacheColorHint="#00000000"></xlist.XListView>  
 </LinearLayout>

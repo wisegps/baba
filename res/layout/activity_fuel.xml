@@ -382,14 +382,14 @@
                     android:id="@+id/tv_speed_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/navy"
+                    android:textColor="@color/Green"
                     android:textSize="@dimen/main" />
 
                 <TextView
                     android:id="@+id/tv_speed_avg_fuel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/navy"
+                    android:textColor="@color/Green"
                     android:textSize="@dimen/main" />
 
                 <TextView
@@ -397,7 +397,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/double_margins"
-                    android:textColor="@color/navy"
+                    android:textColor="@color/Green"
                     android:textSize="@dimen/main" />
             </LinearLayout>
         </LinearLayout>

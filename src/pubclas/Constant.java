@@ -9,7 +9,7 @@ import android.os.Environment;
  * @author honesty
  */
 public class Constant {
-	public static boolean isLog = true;
+	public static boolean isLog = false;
 	/**在阿里云上url**/
 	public static String oss_url = "http://img.bibibaba.cn/";
 	// public static String oss_url = "http://baba-img.oss-cn-hangzhou.aliyuncs.com/photo/";
@@ -192,5 +192,5 @@ public class Constant {
 			R.drawable.icon_cw_xuxian, R.drawable.icon_xx_notice,
 			R.drawable.icon_xx_notice };
 	public static String[] items_note_mode = { "不重复", "按月重复", "按周重复", "按日重复",
-			"末月按周重复，其他按周重复" };
+			"末月按周重复，其他按月重复" };
 }

@@ -144,8 +144,7 @@
                     android:background="@null"
                     android:inputType="phone"
                     android:maxLength="11"
-                    android:textColor="@color/navy"
-                    android:textSize="@dimen/content" />
+                    android:textColor="@color/navy"/>
             </LinearLayout>
 
             <View
