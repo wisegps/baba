@@ -43,6 +43,7 @@
 		        android:layout_height="30dp"		        
 		        android:layout_centerVertical="true"
 		        android:padding="5dp"
+		        android:scaleType="fitEnd"
 		        android:src="@drawable/sound_me_2"/>
 	    </RelativeLayout>
 	    <TextView

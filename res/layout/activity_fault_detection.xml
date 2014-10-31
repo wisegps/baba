@@ -304,6 +304,7 @@
 		            android:paddingBottom="@dimen/margins"
 		            android:paddingTop="@dimen/margins"
 		            android:text="问一下"
+		            android:visibility="gone"
 		            android:textColor="@color/white"
 		            android:textSize="@dimen/title" />
 		

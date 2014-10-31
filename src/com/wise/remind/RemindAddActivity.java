@@ -17,9 +17,16 @@ import widget.adapters.NumericWheelAdapter;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.car.CarAddActivity;
+import com.wise.setting.CaptchaActivity;
+import com.wise.setting.RegisterActivity;
+
 import data.CarData;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -189,8 +196,18 @@ public class RemindAddActivity extends Activity {
 				ll_mileage.setVisibility(View.GONE);
 				ll_content.setVisibility(View.GONE);
 				if (app.carDatas.size() == 0 || app.carDatas == null) {
-					Toast.makeText(RemindAddActivity.this, "您还没有添加爱车",
-							Toast.LENGTH_SHORT).show();
+					AlertDialog.Builder dialog =new AlertDialog.Builder(RemindAddActivity.this);
+					dialog.setTitle("提示");  
+					dialog.setMessage("您的账户下没有车辆，是否添加。"); 
+					dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Intent intent = new Intent(RemindAddActivity.this,CarAddActivity.class);
+							startActivityForResult(intent, 2);
+						}
+					});
+					dialog.setNegativeButton("取消", null);
+					dialog.show(); 
 				}
 			}
 		}
@@ -209,8 +226,18 @@ public class RemindAddActivity extends Activity {
 						.valueOf(app.carDatas.get(
 								s_car.getSelectedItemPosition()).getObj_id())));
 			} else {
-				Toast.makeText(RemindAddActivity.this, "您还没有添加爱车",
-						Toast.LENGTH_SHORT).show();
+				AlertDialog.Builder dialog =new AlertDialog.Builder(RemindAddActivity.this);
+				dialog.setTitle("提示");  
+				dialog.setMessage("您的账户下没有车辆，是否添加。"); 
+				dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {						
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(RemindAddActivity.this,CarAddActivity.class);
+						startActivityForResult(intent, 2);
+					}
+				});
+				dialog.setNegativeButton("取消", null);
+				dialog.show(); 
 				return;
 			}
 		} else {
@@ -430,5 +457,17 @@ public class RemindAddActivity extends Activity {
 	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == 2 && resultCode == 3){
+			//添加车辆返回
+			ArrayAdapter<String> car = new ArrayAdapter<String>(
+					RemindAddActivity.this, android.R.layout.simple_spinner_item,
+					getCars());
+			car.setDropDownViewResource(R.layout.drop_down_item);
+			s_car.setAdapter(car);
+		}
 	}
 }

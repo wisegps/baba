@@ -25,8 +25,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
 import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
@@ -127,9 +127,9 @@ public class TravelActivity extends Activity {
 			String distance = "行驶总里程：" + jsonObject.getString("total_distance")
 					+ "KM";
 			tv_distance.setText(distance);
-			String fuel = "油耗：" + jsonObject.getString("avg_fuel") + "L";
+			String fuel = "油耗：" + jsonObject.getString("total_fuel") + "L";
 			tv_fuel.setText(fuel);
-			String hk_fuel = "百公里油耗：" + jsonObject.getString("total_fuel")
+			String hk_fuel = "百公里油耗：" + jsonObject.getString("avg_fuel")
 					+ "L";
 			tv_hk_fuel.setText(hk_fuel);
 			String fee = "花费：" + jsonObject.getString("total_fee") + "元";
@@ -311,27 +311,20 @@ public class TravelActivity extends Activity {
 				public void onClick(View v) {
 					Intent intent = new Intent(TravelActivity.this,
 							TravelMapActivity.class);
-					intent.putExtra("StartTime", travelDatas.get(position)
-							.getStartTime());
-					intent.putExtra("StopTime", travelDatas.get(position)
-							.getStopTime());
-					intent.putExtra("Start_place", travelDatas.get(position)
-							.getStart_place());
-					intent.putExtra("End_place", travelDatas.get(position)
-							.getEnd_place());
-					intent.putExtra("SpacingDistance", travelDatas
-							.get(position).getSpacingDistance());
-					intent.putExtra("SpacingTime", travelDatas.get(position)
-							.getSpacingTime());
-					intent.putExtra("AverageOil", travelDatas.get(position)
-							.getAverageOil());
-					intent.putExtra("Oil", travelDatas.get(position).getOil());
-					intent.putExtra("Speed", travelDatas.get(position)
-							.getSpeed());
-					intent.putExtra("Cost", travelDatas.get(position).getCost());
+					intent.putExtra("StartTime", travelData.getStartTime());
+					intent.putExtra("StopTime", travelData.getStopTime());
+					intent.putExtra("Start_place", travelData.getStart_place());
+					intent.putExtra("End_place", travelData.getEnd_place());
+					intent.putExtra("SpacingDistance", travelData.getSpacingDistance());
+					intent.putExtra("SpacingTime", travelData.getSpacingTime());
+					intent.putExtra("AverageOil", travelData.getAverageOil());
+					intent.putExtra("Oil", travelData.getOil());
+					intent.putExtra("Speed", travelData.getSpeed());
+					intent.putExtra("Cost", travelData.getCost());
 					intent.putExtra("index", index);
-					intent.putExtra("device", app.carDatas.get(index)
-							.getDevice_id());
+					intent.putExtra("device", app.carDatas.get(index).getDevice_id());
+					intent.putExtra("Lat", travelData.getStart_lat());
+					intent.putExtra("Lon", travelData.getStart_lon());
 					TravelActivity.this.startActivity(intent);
 				}
 			});
@@ -484,36 +477,45 @@ public class TravelActivity extends Activity {
 
 		@Override
 		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
-			String strInfo = arg0.getAddress();
-			strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
-					strInfo.length());
-			if (isFrist) {// 起点位置取完，在取结束位置
-				travelDatas.get(i).setStart_place("起点：" + strInfo);
-				isFrist = false;
-				double lat = Double.valueOf(travelDatas.get(i).getEnd_lat());
-				double lon = Double.valueOf(travelDatas.get(i).getEnd_lon());
-				LatLng latLng = new LatLng(lat, lon);
-				mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
-						.location(latLng));
-				i++;
-			} else {
-				travelDatas.get(i - 1).setEnd_place("终点：" + strInfo);
-				if (travelDatas.size() == i) {
-					System.out.println("递归完毕");
-				} else {
-					isFrist = true;
-					double lat = Double.valueOf(travelDatas.get(i)
-							.getStart_lat());
-					double lon = Double.valueOf(travelDatas.get(i)
-							.getStart_lon());
+			try {
+				Log.d(TAG, "arg0.getAddress() = " + arg0.getAddress());
+				String strInfo = "";
+				if (arg0 == null || arg0.error != SearchResult.ERRORNO.NO_ERROR) {
+					
+				}else{
+					strInfo = arg0.getAddress();
+					strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
+							strInfo.length());
+				}			
+				if (isFrist) {// 起点位置取完，在取结束位置
+					travelDatas.get(i).setStart_place("起点：" + strInfo);
+					isFrist = false;
+					double lat = Double.valueOf(travelDatas.get(i).getEnd_lat());
+					double lon = Double.valueOf(travelDatas.get(i).getEnd_lon());
 					LatLng latLng = new LatLng(lat, lon);
 					mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
 							.location(latLng));
+					i++;
+				} else {
+					travelDatas.get(i - 1).setEnd_place("终点：" + strInfo);
+					if (travelDatas.size() == i) {
+						System.out.println("递归完毕");
+					} else {
+						isFrist = true;
+						double lat = Double.valueOf(travelDatas.get(i)
+								.getStart_lat());
+						double lon = Double.valueOf(travelDatas.get(i)
+								.getStart_lon());
+						LatLng latLng = new LatLng(lat, lon);
+						mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
+								.location(latLng));
+					}
 				}
-			}
-			travelAdapter.notifyDataSetChanged();
+				travelAdapter.notifyDataSetChanged();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
 		}
-
 	};
 
 	@Override

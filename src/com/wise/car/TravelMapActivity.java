@@ -34,6 +34,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,6 +43,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +62,7 @@ public class TravelMapActivity extends Activity {
 	ProgressDialog Dialog = null; // progress
 	String device = "";
 	Intent intent;
+	LinearLayout ll_content;
 	AppApplication app;
 
 	@Override
@@ -67,6 +71,7 @@ public class TravelMapActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_travel_map);
 		app = (AppApplication)getApplication();
+		ll_content = (LinearLayout)findViewById(R.id.ll_content);
 		ImageView iv_activity_travel_share = (ImageView) findViewById(R.id.iv_activity_travel_share);
 		iv_activity_travel_share.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_travel_map);
@@ -103,7 +108,10 @@ public class TravelMapActivity extends Activity {
 
 		String StartTime = intent.getStringExtra("StartTime");
 		String StopTime = intent.getStringExtra("StopTime");
-
+		
+		LatLng carLocat = new LatLng(Double.valueOf(intent.getStringExtra("Lat")), Double.valueOf(intent.getStringExtra("Lon")));
+		MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(carLocat);
+		mBaiduMap.animateMapStatus(u);
 		try {
 			String url = Constant.BaseUrl + "device/" + device
 					+ "/gps_data?auth_code=" + app.auth_code
@@ -124,14 +132,16 @@ public class TravelMapActivity extends Activity {
 				finish();
 				break;
 			case R.id.iv_activity_travel_share:
+				final Bitmap bitmap1 = GetSystem.getViewBitmap(ll_content);
 				// TODO 截图
 				mBaiduMap.snapshot(new SnapshotReadyCallback() {
 					public void onSnapshotReady(Bitmap snapshot) {
+						Bitmap bitmap4 = createBitmap(bitmap1, snapshot);
 						File file = new File("/mnt/sdcard/test.png");
 						FileOutputStream out;
 						try {
 							out = new FileOutputStream(file);
-							if (snapshot.compress(Bitmap.CompressFormat.PNG,
+							if (bitmap4.compress(Bitmap.CompressFormat.PNG,
 									80, out)) {
 								out.flush();
 								out.close();
@@ -181,11 +191,17 @@ public class TravelMapActivity extends Activity {
 	};
 
 	private void jsonData(String result) {
+		if(result == null || result.equals("") || mMapView == null){
+			return;
+		}
 		try {
+			JSONArray jsonArray = new JSONArray(result);
+			if(jsonArray.length() == 0){
+				return;
+			}
 			LatLngBounds.Builder builder = new Builder();
 			// 添加折线
 			List<LatLng> points = new ArrayList<LatLng>();
-			JSONArray jsonArray = new JSONArray(result);
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				double Lat = Double.valueOf(jsonObject.getString("lat"));
@@ -236,16 +252,32 @@ public class TravelMapActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		mMapView.onDestroy();
+		if(mMapView != null){
+			mMapView.onDestroy();
+			mMapView = null;
+		}
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		mMapView.onResume();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
+		mMapView.onPause();
+	}
+	private Bitmap createBitmap(Bitmap bitmap , Bitmap bitmap2){
+		int w = bitmap.getWidth();
+		int h = bitmap.getHeight() + bitmap2.getHeight();
+		Bitmap newb = Bitmap.createBitmap( w, h, Config.ARGB_8888 );
+		Canvas cv = new Canvas(newb);
+		cv.drawBitmap(bitmap, 0, 0, null);
+		cv.drawBitmap(bitmap2, 0, bitmap.getHeight(), null);
+		cv.save(Canvas.ALL_SAVE_FLAG);
+		cv.restore();
+		return newb;
 	}
 }

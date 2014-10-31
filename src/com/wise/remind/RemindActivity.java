@@ -1,5 +1,9 @@
 package com.wise.remind;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
@@ -12,6 +16,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,6 +26,7 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 /**
@@ -34,6 +40,7 @@ public class RemindActivity extends Activity{
 	RemindData remindData;
 	TextView tv_content;
 	RelativeLayout rl_Note,rl_body;
+	LinearLayout ll_content;
 	AppApplication app;
 	
 	@Override
@@ -42,6 +49,7 @@ public class RemindActivity extends Activity{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_remind);
 		app = (AppApplication)getApplication();
+		ll_content = (LinearLayout)findViewById(R.id.ll_content);
 		rl_Note = (RelativeLayout)findViewById(R.id.rl_Note);
 		rl_body = (RelativeLayout)findViewById(R.id.rl_body);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
@@ -128,9 +136,30 @@ public class RemindActivity extends Activity{
 			case R.id.bt_place:
 				ToDealAdress();
 				break;
+			case R.id.bt_share:
+				Bitmap bitmap = GetSystem.getViewBitmap(ll_content);
+				savePic(bitmap , "/mnt/sdcard/test.png");
+				GetSystem.share(getApplicationContext(), "", "/mnt/sdcard/test.png", 0, 0, "提醒", "");
+				break;
 			}
 		}
 	};
+	
+	private static void savePic(Bitmap b, String strFileName) {
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(strFileName);
+            if (null != fos) {
+                b.compress(Bitmap.CompressFormat.PNG, 90, fos);
+                fos.flush();
+                fos.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {

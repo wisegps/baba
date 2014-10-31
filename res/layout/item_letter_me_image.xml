@@ -42,7 +42,7 @@
 		        android:scaleType="matrix"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"/>		        
-		    <TextView 
+		    <customView.TimTextView 
 		        android:id="@+id/tv_send_in"
 		        android:visibility="gone"
 		        android:layout_width="wrap_content"
@@ -51,7 +51,7 @@
 		        android:textSize="12sp"
 		        android:textColor="@color/white"
 		        android:gravity="center"
-		        android:text="上传中"/>
+		        android:text="上传中."/>
 	    </RelativeLayout>
     </RelativeLayout>    
 </LinearLayout>

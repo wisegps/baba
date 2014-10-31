@@ -28,6 +28,7 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.show.ImageDetailsActivity;
 import customView.CircleImageView;
+import customView.TimTextView;
 import customView.WaitLinearLayout.OnFinishListener;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -447,7 +448,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		pairs.add(new BasicNameValuePair("voice_len", String.valueOf(voice_len)));
 		new NetThread.postDataThread(handler, url, pairs, send_letter).start();
 		et_content.setText("");
-		//TODO 添加显示
+		//添加显示
 		LetterData letterData = new LetterData();
 		letterData.setContent(content);
 		letterData.setChatType(revisionType(false , Integer.valueOf(type) * 2 + 1));
@@ -676,7 +677,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					viewMeImage = new ViewMeImage();
 					viewMeImage.tv_time = (TextView) convertView
 							.findViewById(R.id.tv_time);
-					viewMeImage.tv_send_in = (TextView) convertView
+					viewMeImage.tv_send_in = (TimTextView) convertView
 							.findViewById(R.id.tv_send_in);
 					viewMeImage.iv_me = (CircleImageView) convertView
 							.findViewById(R.id.iv_me);
@@ -806,6 +807,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					viewFriendSound.iv_friend.setImageResource(R.drawable.icon_people_no);
 				}
 				viewFriendSound.tv_sound_lenght.setText(letterData.getVoice_len() + "\"");
+				
 				viewFriendSound.iv_friend_sound.setOnClickListener(new OnClickListener() {						
 					@Override
 					public void onClick(View v) {
@@ -865,8 +867,10 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						float Scale = Blur.calculateScale(image.getHeight(), image.getWidth(), 100);
 						viewMeImage.tv_send_in.setVisibility(View.VISIBLE);
 						viewMeImage.tv_send_in.setLayoutParams(new RelativeLayout.LayoutParams((int)(image.getWidth() * Scale), (int)(image.getHeight() * Scale)));
+						viewMeImage.tv_send_in.startTim();
 					}else{
 						viewMeImage.tv_send_in.setVisibility(View.GONE);
+						viewMeImage.tv_send_in.setStop(true);
 					}
 					
 				}else{
@@ -886,6 +890,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					viewMeSound.iv_me.setImageResource(R.drawable.icon_people_no);
 				}
 				viewMeSound.tv_sound_lenght.setText(letterData.getVoice_len() + "\"");
+				//TODO viewMeSound.iv_me_sound.setLayoutParams(new RelativeLayout.LayoutParams(500, LayoutParams.WRAP_CONTENT));
+				
 				viewMeSound.iv_me_sound.setOnClickListener(new OnClickListener() {						
 					@Override
 					public void onClick(View v) {
@@ -936,7 +942,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			TextView tv_time;
 			CircleImageView iv_me;
 			ImageView iv_me_pic;
-			TextView tv_send_in;
+			TimTextView tv_send_in;
 		}
 		class ViewMeSound {
 			TextView tv_time;
@@ -1170,7 +1176,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				e.printStackTrace();
 			}
 		}		
-		//TODO 先显示
+		//先显示
 		LetterData letterData = new LetterData();
 		letterData.setContent("");
 		letterData.setChatType(MeImage);

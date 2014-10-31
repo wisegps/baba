@@ -3,7 +3,6 @@ package com.wise.car;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
@@ -103,6 +102,9 @@ public class CarActivity extends Activity {
 				app.carDatas.addAll(JsonData.jsonCarInfo(msg.obj
 						.toString()));
 				carAdapter.notifyDataSetChanged();
+				//发送更新车辆广播
+				Intent intent = new Intent(Constant.A_RefreshHomeCar);
+				sendBroadcast(intent);
 				new GetImageThread().start();
 				break;
 			case get_image:
@@ -128,7 +130,7 @@ public class CarActivity extends Activity {
 				app.carDatas.get(index).setDevice_id("");
 				carAdapter.notifyDataSetChanged();
 			}
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -143,7 +145,7 @@ public class CarActivity extends Activity {
 				carAdapter.notifyDataSetChanged();
 				isRefresh = true;
 			}
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
