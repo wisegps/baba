@@ -221,7 +221,7 @@ public class CarUpdateActivity extends Activity {
 		String frame_no = et_frame_no.getText().toString();
 
 		for (CityData cityData : chooseCityDatas) {
-			// 发送机号
+			// 发动机号
 			if (cityData.getEngine() == 0) {
 
 			} else {
