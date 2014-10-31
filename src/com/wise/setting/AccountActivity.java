@@ -121,7 +121,7 @@ public class AccountActivity extends Activity implements
 				break;
 			case R.id.tv_name:
 				if (app.isTest) {
-					Toast.makeText(AccountActivity.this, "演示帐号",
+					Toast.makeText(AccountActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
@@ -133,7 +133,7 @@ public class AccountActivity extends Activity implements
 				break;
 			case R.id.tv_sex:
 				if (app.isTest) {
-					Toast.makeText(AccountActivity.this, "演示帐号",
+					Toast.makeText(AccountActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
@@ -141,7 +141,7 @@ public class AccountActivity extends Activity implements
 				break;
 			case R.id.tv_update_pwd:
 				if (app.isTest) {
-					Toast.makeText(AccountActivity.this, "演示帐号",
+					Toast.makeText(AccountActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
@@ -150,7 +150,7 @@ public class AccountActivity extends Activity implements
 				break;
 			case R.id.tv_phone:
 				if (app.isTest) {
-					Toast.makeText(AccountActivity.this, "演示帐号",
+					Toast.makeText(AccountActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
@@ -162,7 +162,7 @@ public class AccountActivity extends Activity implements
 				break;
 			case R.id.tv_email:
 				if (app.isTest) {
-					Toast.makeText(AccountActivity.this, "演示帐号",
+					Toast.makeText(AccountActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
@@ -174,7 +174,7 @@ public class AccountActivity extends Activity implements
 				break;
 			case R.id.iv_pic:
 				if (app.isTest) {
-					Toast.makeText(AccountActivity.this, "演示帐号",
+					Toast.makeText(AccountActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
@@ -182,7 +182,7 @@ public class AccountActivity extends Activity implements
 				break;
 			case R.id.tv_birth:
 				if (app.isTest) {
-					Toast.makeText(AccountActivity.this, "演示帐号",
+					Toast.makeText(AccountActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}

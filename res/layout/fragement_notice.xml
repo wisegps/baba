@@ -22,6 +22,7 @@
             android:layout_height="@dimen/title_hight"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margins"
+            android:visibility="gone"
             android:padding="@dimen/margins"
             android:src="@drawable/nav_back" />
     </RelativeLayout>

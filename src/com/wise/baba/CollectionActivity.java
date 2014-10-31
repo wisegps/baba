@@ -162,7 +162,7 @@ public class CollectionActivity extends Activity implements IXListViewListener {
 		@Override
 		public void Delete(int position) {
 			if (app.isTest) {
-				Toast.makeText(CollectionActivity.this, "演示帐号",
+				Toast.makeText(CollectionActivity.this, "演示账号不支持该功能",
 						Toast.LENGTH_SHORT).show();
 				return;
 			}

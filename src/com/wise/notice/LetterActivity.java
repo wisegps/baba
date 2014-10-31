@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Blur;
 import pubclas.Constant;
+import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import xlist.XListView;
@@ -32,6 +33,7 @@ import customView.TimTextView;
 import customView.WaitLinearLayout.OnFinishListener;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -144,6 +146,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	type noSoundPlay;
 	enum type {friend,me};
 	AppApplication app;
+	ProgressDialog myDialog = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -219,6 +222,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		myBroadCastReceiver = new MyBroadCastReceiver();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(Constant.A_ReceiverLetter);
+		intentFilter.addAction(Constant.A_City);
 		registerReceiver(myBroadCastReceiver, intentFilter);
 		getFriendInfo();
 		btn_rcd.setOnTouchListener(new OnTouchListener() {
@@ -256,6 +260,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				break;
 			case R.id.iv_location:
 				ll_menu.setVisibility(View.GONE);
+				myDialog = ProgressDialog.show(LetterActivity.this,"提示", "地理位置获取中...");
+                myDialog.setCancelable(true);
+                new GetLocation(LetterActivity.this);
 				break;
 			case R.id.et_content:
 				if(ll_menu.getVisibility() == View.VISIBLE){
@@ -1088,7 +1095,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-			}
+			}else if (action.equals(Constant.A_City)) {
+				if(myDialog != null){
+					myDialog.dismiss();
+				}
+            	et_content.setText(intent.getStringExtra("AddrStr"));
+            }
 		}
 	}
 

@@ -220,6 +220,7 @@ public class FaultActivity extends FragmentActivity {
 				tv_content = (TextView)findViewById(R.id.tv_content);
 				ll_image = (LinearLayout)findViewById(R.id.ll_image);
 				hs_photo = (HScrollLayout) findViewById(R.id.hs_photo);
+				hs_photo.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, getAdHeight()));
 				getAD();
 				hs_photo.setOnViewChangeListener(new OnViewChangeListener() {					
 					@Override
@@ -349,6 +350,17 @@ public class FaultActivity extends FragmentActivity {
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 				widthPixels, scaledHeight);
 		iv_pic.setLayoutParams(params);
+	}
+	/**获取控件的高度**/
+	public int getAdHeight(){
+		//690*512宽高
+		int imageWidth = 690;
+		int imageHeight = 512;
+		DisplayMetrics metrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		int widthPixels = metrics.widthPixels;
+		double ratio = imageWidth / (widthPixels * 1.0);
+		return (int) (imageHeight / ratio);
 	}
 	List<ADView> adViews = new ArrayList<ADView>();
 	List<AData> adDatas = new ArrayList<AData>();

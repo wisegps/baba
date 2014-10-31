@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="2014-12-01"
-                android:textColor="@color/common"
+                android:textColor="@color/Green"
                 android:textSize="@dimen/main" />
 
             <ImageView

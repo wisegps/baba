@@ -49,6 +49,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	XListView lv_notice;
 	List<NoticeData> noticeDatas = new ArrayList<NoticeData>();
 	AppApplication app;
+	ImageView iv_fm_back;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,8 +61,11 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication)getActivity().getApplication();
-		ImageView iv_fm_back = (ImageView) getActivity().findViewById(R.id.iv_fm_back);
+		iv_fm_back = (ImageView) getActivity().findViewById(R.id.iv_fm_back);
 		iv_fm_back.setOnClickListener(onClickListener);
+		if(isVisible){
+			iv_fm_back.setVisibility(View.VISIBLE);
+		}
 		lv_notice = (XListView) getActivity().findViewById(R.id.lv_notice);
 		lv_notice.setOnFinishListener(onFinishListener);
 		lv_notice.setPullLoadEnable(false);
@@ -107,6 +111,10 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 
 	public void SetBtnListener(BtnListener btnListener) {
 		this.btnListener = btnListener;
+	}
+	boolean isVisible = false;
+	public void setBackButtonVISIBLE(){
+		isVisible = true;
 	}
 
 	public interface BtnListener {

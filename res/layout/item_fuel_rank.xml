@@ -19,7 +19,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margins"
-        android:paddingBottom="@dimen/margins"
+        android:paddingBottom="5dp"
         android:orientation="vertical">
         <RelativeLayout
             android:layout_margin="5dp"
@@ -61,7 +61,6 @@
             android:textColor="@color/navy"
             android:text="flasdjfosdf"/>
         <RelativeLayout
-            android:layout_marginBottom="@dimen/margins" 
             android:layout_height="wrap_content"
             android:layout_width="fill_parent">
             <ImageView

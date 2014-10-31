@@ -94,7 +94,7 @@
         android:id="@+id/tv_note"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:gravity="center_horizontal"
         android:text="账号密码错误!"
         android:textColor="@color/pink"
@@ -129,7 +129,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:orientation="horizontal" >
@@ -147,15 +147,19 @@
             android:layout_height="wrap_content"
             android:src="@drawable/side_sina" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_show"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="10dp"
-        android:background="@drawable/bg_bt_yellow"
-        android:text="体验演示"
-        android:textSize="15sp" />
-
+    <RelativeLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+	    <Button
+	        android:id="@+id/btn_show"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="10dp"
+	        android:background="@null"
+	        android:text="立即体验！"
+	        android:layout_alignParentBottom="true"
+	        android:layout_centerHorizontal="true"
+	        android:textColor="@color/Green"
+	        android:textSize="@dimen/content" />
+    </RelativeLayout>
 </LinearLayout>
