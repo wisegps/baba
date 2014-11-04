@@ -6,9 +6,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.car.SearchMapActivity;
+import com.wise.notice.LetterActivity;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,18 +38,22 @@ public class FaultDetailActivity extends Activity{
 	String fault_content;
 	List<FaultData> faultDatas = new ArrayList<FaultData>();
 	int[][] colors = {{83,181,220},{106,195,149},{133,208,66},{245,149,91},{248,127,96},{255,105,105}};
+	AppApplication app;
+	int index;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fault_detail);
+		app = (AppApplication)getApplication();
 		rl_no_fault = (RelativeLayout)findViewById(R.id.rl_no_fault);
 		lv_fault = (ListView)findViewById(R.id.lv_fault);
 		tv_fault = (TextView)findViewById(R.id.tv_fault);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		fault_content = getIntent().getStringExtra("fault_content");
+		index = getIntent().getIntExtra("index", 0);
 		jsonData();
 		if(faultDatas.size() == 0){
 			rl_no_fault.setVisibility(View.VISIBLE);
@@ -53,6 +62,11 @@ public class FaultDetailActivity extends Activity{
 			FaultAdapter faultAdapter = new FaultAdapter();
 			lv_fault.setAdapter(faultAdapter);
 		}
+		findViewById(R.id.rescue).setOnClickListener(onClickListener);
+		findViewById(R.id.risk).setOnClickListener(onClickListener);
+		findViewById(R.id.ask).setOnClickListener(onClickListener);
+		findViewById(R.id.mechanics).setOnClickListener(onClickListener);
+		findViewById(R.id.tv_ask_expert).setOnClickListener(onClickListener);
 	}
 	OnClickListener onClickListener = new OnClickListener() {		
 		@Override
@@ -61,7 +75,36 @@ public class FaultDetailActivity extends Activity{
 			case R.id.iv_back:
 				finish();
 				break;
-			default:
+			case R.id.tv_ask_expert:
+				Intent intent = new Intent(FaultDetailActivity.this, LetterActivity.class);
+				intent.putExtra("cust_id", "12");
+				intent.putExtra("cust_name", "专家");
+				startActivity(intent);
+				break;
+			case R.id.rescue:
+				String tel = app.carDatas.get(index)
+				.getMaintain_tel();
+				Intent in_2 = new Intent(Intent.ACTION_DIAL,
+						Uri.parse("tel:" + (tel != null ? tel : "")));
+				startActivity(in_2);
+				break;
+			case R.id.risk:
+				String phone = app.carDatas.get(index)
+				.getInsurance_tel();
+				Intent in_1 = new Intent(
+						Intent.ACTION_DIAL,
+						Uri.parse("tel:" + (phone != null ? phone : "")));
+				startActivity(in_1);
+				break;
+			case R.id.mechanics:
+				Intent in = new Intent(FaultDetailActivity.this,
+						SearchMapActivity.class);
+				in.putExtra("index", index);
+				in.putExtra("keyWord", "维修店");
+				in.putExtra("key", "汽车维修");
+				in.putExtra("latitude", 0);
+				in.putExtra("longitude", 0);
+				startActivity(in);
 				break;
 			}
 		}

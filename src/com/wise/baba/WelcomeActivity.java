@@ -58,7 +58,6 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		ShareSDK.initSDK(this);
 		setContentView(R.layout.activity_welcome);
 		app = (AppApplication)getApplication();
-		
 		GetSystem.myLog(TAG, "启动程序-------------------------------------------");
 		clearData();
 		Intent intent = getIntent();

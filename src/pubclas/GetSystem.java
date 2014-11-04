@@ -37,6 +37,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
@@ -755,4 +757,19 @@ public class GetSystem {
         v.setDrawingCacheBackgroundColor(color);
         return bitmap;
     }
+	/**
+	 * 判断当前网络是否wifi
+	 * @param mContext
+	 * @return
+	 */
+	public static boolean isWifi(Context mContext) {  
+	    ConnectivityManager connectivityManager = (ConnectivityManager) mContext  
+	            .getSystemService(Context.CONNECTIVITY_SERVICE);  
+	    NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();  
+	    if (activeNetInfo != null  
+	            && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {  
+	        return true;  
+	    }  
+	    return false;  
+	}
 }
