@@ -310,10 +310,11 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 					getString(R.string.dialog_message));
 			progressDialog.setCancelable(true);
 			on = 0;
+		}else{
+			jsonBrands(baseDatas.get(0).getContent());
 		}	
 		String url = Constant.BaseUrl + "base/car_brand";
 		new NetThread.GetDataThread(handler, url, GET_BRANK,on).start();
-		jsonBrands(baseDatas.get(0).getContent());
 	}
 	/**
 	 * 获取车型
@@ -323,10 +324,11 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		List<BaseData> baseDatas = DataSupport.where("Title = ?",carBrankTitle + carBrankId).find(BaseData.class);
 		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null){
 			on = 0;
+		}else{
+			jsonSeries(baseDatas.get(0).getContent());
 		}
 		String url = Constant.BaseUrl + "base/car_series?pid=" + carBrankId;
 		new NetThread.GetDataThread(handler, url, GET_SERIES,on).start();
-		jsonSeries(baseDatas.get(0).getContent());
 	}
 	/**
 	 * 获取车款
@@ -337,10 +339,11 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		List<BaseData> baseDatas = DataSupport.where("Title = ?",carSeriesTitle + carSeriesId).find(BaseData.class);
 		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
 			on = 0;
+		}else{
+			jsonType(baseDatas.get(0).getContent());
 		}
 		String url = Constant.BaseUrl + "base/car_type?pid=" + carSeriesId;
 		new NetThread.GetDataThread(handler, url, GET_TYPE,on).start();
-		jsonType(baseDatas.get(0).getContent());
 	}
 	
 	private void jsonBrands(String result){
