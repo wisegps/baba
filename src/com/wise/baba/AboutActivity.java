@@ -37,7 +37,7 @@ public class AboutActivity extends Activity{
 				case UpdateStatus.No:
 					Toast.makeText(AboutActivity.this, "没有更新", Toast.LENGTH_SHORT).show();
 					break;
-				}
+				} 
 			}
 		});
 	}
