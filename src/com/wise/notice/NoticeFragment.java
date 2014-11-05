@@ -29,9 +29,9 @@ import android.view.View.OnClickListener;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 /**
  * 通知列表
@@ -46,10 +46,11 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	
 	NoticeAdapter noticeAdapter;
 	BtnListener btnListener;
-	XListView lv_notice;
+	XListView lv_notice,lv_friend;
 	List<NoticeData> noticeDatas = new ArrayList<NoticeData>();
 	AppApplication app;
 	ImageView iv_fm_back;
+	Button bt_info,bt_friend;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,6 +67,15 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		if(isVisible){
 			iv_fm_back.setVisibility(View.VISIBLE);
 		}
+		bt_info = (Button)getActivity().findViewById(R.id.bt_info);
+		bt_info.setOnClickListener(onClickListener);
+		bt_friend = (Button)getActivity().findViewById(R.id.bt_friend);
+		bt_friend.setOnClickListener(onClickListener);
+		setFriendDatas();
+		lv_friend = (XListView)getActivity().findViewById(R.id.lv_friend);
+		FriendAdapter friendAdapter = new FriendAdapter();
+		lv_friend.setAdapter(friendAdapter);
+		
 		lv_notice = (XListView) getActivity().findViewById(R.id.lv_notice);
 		lv_notice.setOnFinishListener(onFinishListener);
 		lv_notice.setPullLoadEnable(false);
@@ -97,9 +107,18 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			case R.id.iv_fm_back:
 				btnListener.Back();
 				break;
+			case R.id.bt_info:
+				lv_notice.setVisibility(View.VISIBLE);
+				lv_friend.setVisibility(View.GONE);
+				break;
+			case R.id.bt_friend:
+				lv_notice.setVisibility(View.GONE);
+				lv_friend.setVisibility(View.VISIBLE);
+				break;				
 			}
 		}
 	};
+	
 	OnFinishListener onFinishListener = new OnFinishListener() {		
 		@Override
 		public void OnFinish(int index) {
@@ -223,6 +242,57 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	private class FriendData{
+		private String name;
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}		
+	}
+	List<FriendData> friendDatas = new ArrayList<FriendData>();
+	private void setFriendDatas(){
+		for(int i = 0 ; i < 12 ; i++){
+			FriendData friendData = new FriendData();
+			friendData.setName("客户经理"+i);
+		}
+	}
+	class FriendAdapter extends BaseAdapter{
+		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		@Override
+		public int getCount() {
+			return friendDatas.size();
+		}
+		@Override
+		public Object getItem(int position) {
+			return friendDatas.get(position);
+		}
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ViewHolder holder;
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.item_notice, null);
+				holder = new ViewHolder();
+				holder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+				holder.iv_image = (CircleImageView) convertView.findViewById(R.id.iv_image);
+				convertView.setTag(holder);
+			} else {
+				holder = (ViewHolder) convertView.getTag();
+			}
+			FriendData friendData = friendDatas.get(position);
+			holder.tv_name.setText(friendData.getName());
+			return convertView;
+		}
+		private class ViewHolder {
+			TextView tv_name;
+			CircleImageView iv_image;
 		}
 	}
 
