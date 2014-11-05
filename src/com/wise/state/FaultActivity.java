@@ -255,7 +255,7 @@ public class FaultActivity extends FragmentActivity {
 		new CycleNstvThread().start();
 
 		UmengUpdateAgent.update(this);
-		GetLocation getLocation = new GetLocation(FaultActivity.this);
+		//GetLocation getLocation = new GetLocation(FaultActivity.this);
 		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(),
                 mNaviEngineInitListener, new LBSAuthManagerListener() {
                     @Override
