@@ -97,9 +97,11 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	private static final int FriendText = 0;
 	private static final int FriendImage = 2;
 	private static final int FriendSound = 4;
+	private static final int FriendMap = 6;
 	private static final int MeText = 1;
 	private static final int MeImage = 3;
 	private static final int MeSound = 5;
+	private static final int MeMap = 7;
 	
 	private static final int send_letter = 1;
 	private static final int get_data = 2;
@@ -260,9 +262,10 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				break;
 			case R.id.iv_location:
 				ll_menu.setVisibility(View.GONE);
-				myDialog = ProgressDialog.show(LetterActivity.this,"提示", "地理位置获取中...");
-                myDialog.setCancelable(true);
-                new GetLocation(LetterActivity.this);
+				startActivityForResult(new Intent(LetterActivity.this, LetterSendMapActivity.class),3);
+				//myDialog = ProgressDialog.show(LetterActivity.this,"提示", "地理位置获取中...");
+                //myDialog.setCancelable(true);
+                //new GetLocation(LetterActivity.this);
 				break;
 			case R.id.et_content:
 				if(ll_menu.getVisibility() == View.VISIBLE){
@@ -1146,7 +1149,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				saveImage(getPath(uri));
 			}
 			return;
+		}else if(requestCode == 3 && resultCode ==3){
+			String adress = data.getStringExtra("adress");
+			double latitude = data.getDoubleExtra("latitude", 0);
+			double longitude = data.getDoubleExtra("longitude", 0);
+			System.out.println(adress + "," + latitude + "," + longitude);
+			return;
 		}
+		//TODO 
 	}
 
 	private void saveImage(final String path) {
@@ -1614,4 +1624,5 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			}
 		}
 	}
+	
 }

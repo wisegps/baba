@@ -1,4 +1,4 @@
-package com.wise.notice;
+package com.wise.state;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,18 +7,19 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
-import pubclas.Judge;
 import pubclas.NetThread;
-import xlist.XListView;
-import xlist.XListView.IXListViewListener;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.BarcodeActivity;
-import com.wise.car.DevicesAddActivity;
-import com.wise.show.PhotoActivity;
-
+import com.wise.notice.FriendAddActivity;
+import com.wise.notice.LetterActivity;
+import com.wise.notice.ServiceProviderInfoActivity;
+import com.wise.notice.SmsActivity;
 import customView.CircleImageView;
 import customView.WaitLinearLayout.OnFinishListener;
+import xlist.XListView;
+import xlist.XListView.IXListViewListener;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,29 +27,28 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-/**
- * 通知列表
- * @author honesty
- *
- */
-public class NoticeFragment extends Fragment implements IXListViewListener{
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * 服务商主界面
+ *@author honesty
+ **/
+public class ServiceProviderActivity extends Activity implements IXListViewListener{
+	
 	private final int getNotice = 1;
 	private final int refreshNotice = 3;
 	private final int getFriendImage = 2;
@@ -62,58 +62,35 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	Button bt_info,bt_friend;
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragement_notice, container, false);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		app = (AppApplication)getActivity().getApplication();
-		iv_add = (ImageView) getActivity().findViewById(R.id.iv_add);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.fragement_notice);
+		app = (AppApplication)getApplication();
+		iv_add = (ImageView) findViewById(R.id.iv_add);
 		iv_add.setOnClickListener(onClickListener);
-		iv_fm_back = (ImageView) getActivity().findViewById(R.id.iv_fm_back);
+		iv_fm_back = (ImageView)findViewById(R.id.iv_fm_back);
 		iv_fm_back.setOnClickListener(onClickListener);
-		if(isVisible){
-			iv_fm_back.setVisibility(View.VISIBLE);
-		}
-		bt_info = (Button)getActivity().findViewById(R.id.bt_info);
+		bt_info = (Button)findViewById(R.id.bt_info);
 		bt_info.setOnClickListener(onClickListener);
-		bt_friend = (Button)getActivity().findViewById(R.id.bt_friend);
+		bt_friend = (Button)findViewById(R.id.bt_friend);
 		bt_friend.setOnClickListener(onClickListener);
 		setFriendDatas();
-		lv_friend = (XListView)getActivity().findViewById(R.id.lv_friend);
+		lv_friend = (XListView)findViewById(R.id.lv_friend);
 		FriendAdapter friendAdapter = new FriendAdapter();
 		lv_friend.setAdapter(friendAdapter);
 		lv_friend.setPullLoadEnable(false);
 		lv_friend.setPullRefreshEnable(false);
 		lv_friend.setOnItemClickListener(onItemClickListener);
 		
-		lv_notice = (XListView) getActivity().findViewById(R.id.lv_notice);
+		lv_notice = (XListView)findViewById(R.id.lv_notice);
 		lv_notice.setOnFinishListener(onFinishListener);
 		lv_notice.setPullLoadEnable(false);
 		lv_notice.setPullRefreshEnable(true);
 		lv_notice.setXListViewListener(this);
 		noticeAdapter = new NoticeAdapter();
 		lv_notice.setAdapter(noticeAdapter);
-		if(Judge.isLogin(app)){
-			getData();
-		}
 	}
 	
-	
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		if(Judge.isLogin(app)){
-			getData();
-		}
-	}
-
-
-
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -134,10 +111,10 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				break;
 			case R.id.tv_letter:
 				//TODO 处理数据
-				startActivity(new Intent(getActivity(), FriendAddActivity.class));
+				startActivity(new Intent(ServiceProviderActivity.this, FriendAddActivity.class));
 				break;
 			case R.id.tv_Comments:
-				startActivityForResult(new Intent(getActivity(),
+				startActivityForResult(new Intent(ServiceProviderActivity.this,
 						BarcodeActivity.class), 0);
 				break;
 			}
@@ -215,7 +192,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	}
 	/**点击通知**/
 	private void clickSms(int position){
-		Intent intent = new Intent(getActivity(), SmsActivity.class);
+		Intent intent = new Intent(ServiceProviderActivity.this, SmsActivity.class);
 		intent.putExtra("type", noticeDatas.get(position).getType());
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -223,7 +200,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	/**点击私信**/
 	private void clickLetter(int position){
 		NoticeData noticeData = noticeDatas.get(position);
-		Intent intent = new Intent(getActivity(), LetterActivity.class);
+		Intent intent = new Intent(ServiceProviderActivity.this, LetterActivity.class);
 		intent.putExtra("cust_id", noticeData.getFriend_id());
 		intent.putExtra("cust_name", noticeData.getFriend_name());
 		intent.putExtra("logo", noticeData.getLogo());
@@ -283,7 +260,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			//去介绍界面
-			Intent intent = new Intent(getActivity(), ServiceProviderInfoActivity.class);
+			Intent intent = new Intent(ServiceProviderActivity.this, ServiceProviderInfoActivity.class);
 			intent.putExtra("name", friendDatas.get(arg2 - 1).getName());
 			startActivity(intent);
 		}
@@ -297,7 +274,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		}
 	}
 	class FriendAdapter extends BaseAdapter{
-		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		LayoutInflater inflater = LayoutInflater.from(ServiceProviderActivity.this);
 		@Override
 		public int getCount() {
 			return friendDatas.size();
@@ -333,7 +310,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	}
 
 	class NoticeAdapter extends BaseAdapter {
-		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		LayoutInflater inflater = LayoutInflater.from(ServiceProviderActivity.this);
 
 		@Override
 		public int getCount() {
@@ -561,6 +538,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		}
 	}
 	String refresh = "";
+
 	@Override
 	public void onRefresh() {
 		refresh = "";
@@ -568,7 +546,6 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				+ "/get_relations?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, refreshNotice).start();
 	}
-
 	@Override
 	public void onLoadMore() {}
 	private void onLoadOver() {
@@ -581,7 +558,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	PopupWindow mPopupWindow;
 	private void showMenu() {
 		LayoutInflater mLayoutInflater = LayoutInflater
-				.from(getActivity());
+				.from(ServiceProviderActivity.this);
 		View popunwindwow = mLayoutInflater.inflate(
 				R.layout.item_menu_vertical, null);
 		TextView tv_letter = (TextView) popunwindwow
@@ -598,6 +575,6 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
 		mPopupWindow.setFocusable(true);
 		mPopupWindow.setOutsideTouchable(true);
-		mPopupWindow.showAsDropDown(getActivity().findViewById(R.id.iv_add), 0, 0);
+		mPopupWindow.showAsDropDown(ServiceProviderActivity.this.findViewById(R.id.iv_add), 0, 0);
 	}
 }

@@ -151,6 +151,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.state.ServiceOperatActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.state.FaultDetailActivity"
             android:screenOrientation="portrait" >
         </activity>
@@ -191,7 +195,16 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.notice.LetterSendMapActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.notice.LetterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
+        </activity>
+        <activity
+            android:name="com.wise.notice.ServiceProviderInfoActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
         </activity>
@@ -372,6 +385,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.notice.FriendAddActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.remind.RemindListActivity"
             android:screenOrientation="portrait" >
         </activity>
@@ -515,7 +532,6 @@
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="DhT4kz88wR3r5yCl6tQCpaNW" />
+            android:value="0QNTY4tnP9Tv6ghXpGa6XXOm" />
     </application>
-
 </manifest>

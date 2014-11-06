@@ -11,6 +11,8 @@ import cn.sharesdk.framework.ShareSDK;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
 import com.wise.state.FaultActivity;
+import com.wise.state.ServiceOperatActivity;
+
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
 import data.CarData;
@@ -41,6 +43,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
     boolean isLoging = false;
     /**登录发生异常**/
     boolean isException = false;
+    /**是否获取个人信息**/
+    boolean isCustomer = false;
     /**界面关闭关闭线程**/
 	boolean isDestory = false;
     boolean isWait = false;
@@ -157,10 +161,13 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
         editor1.putString(Constant.sp_customer + app.cust_id, str);
         editor1.commit();
 		try {
+			isCustomer = true;
 			JSONObject jsonObject = new JSONObject(str);
 			app.cust_name = jsonObject.getString("cust_name");
+			app.cust_type = jsonObject.getInt("cust_type");
 		} catch (JSONException e) {
 			e.printStackTrace();
+			isCustomer = false;
 		}
 	}
 	
@@ -200,7 +207,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
         		if(isException){//程序异常
         			GetSystem.myLog(TAG, "isException runFast");
         			ll_wait.runFast();
-        		}else if(isLoging){//登录流程走完
+        		}else if(isLoging &&isCustomer){//登录流程走完
         			GetSystem.myLog(TAG, "isLoging runFast");
                 	ll_wait.runFast();
             	}
@@ -257,7 +264,12 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
         			GetSystem.myLog(TAG, "runFast isLoging");
         			app.carDatas.clear();
         			app.carDatas.addAll(JsonData.jsonCarInfo(strData));
-            		Intent intent = new Intent(WelcomeActivity.this, FaultActivity.class);
+        			Intent intent;
+        			if(app.cust_type == 0){
+                		intent = new Intent(WelcomeActivity.this, FaultActivity.class);
+        			}else{
+        				intent = new Intent(WelcomeActivity.this, ServiceOperatActivity.class);
+        			}
     				if(isSpecify){
     	    			intent.putExtra("isSpecify", isSpecify);
     	    			intent.putExtras(bundle);

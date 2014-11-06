@@ -23,6 +23,7 @@ public class AppApplication extends LitePalApplication {
     public String cust_id;
     /**用户名称**/
     public String cust_name = "";
+    public int cust_type = 0;
     /**通知数目**/
     public int noti_count = 0;
     /**违章数目**/

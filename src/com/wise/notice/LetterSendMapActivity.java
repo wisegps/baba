@@ -1,5 +1,8 @@
-package com.wise.car;
+package com.wise.notice;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -14,8 +17,7 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -34,8 +36,11 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMap.OnMapStatusChangeListener;
+import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
@@ -50,20 +55,25 @@ import com.baidu.mapapi.overlayutil.PoiOverlay;
 import com.baidu.mapapi.search.core.CityInfo;
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
 import com.baidu.mapapi.search.poi.PoiDetailResult;
-import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-import com.wise.setting.AccountActivity;
+import com.wise.car.TravelMapActivity;
+import com.wise.violation.ShortProvincesActivity;
 
 import data.AdressData;
 import data.CarData;
 
-public class SearchMapActivity extends Activity {
+public class LetterSendMapActivity extends Activity {
 	private PoiSearch mPoiSearch = null;
 	private BaiduMap mBaiduMap = null;
 	private MapView mMapView = null;
@@ -78,25 +88,32 @@ public class SearchMapActivity extends Activity {
 	// 定位相关
 	LocationClient mLocClient;
 	public MyLocationListenner myListener = new MyLocationListenner();
+	private GeoCoder mGeoCoder = null;
+	TextView tv_adress;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_search_map);
+		setContentView(R.layout.activity_letter_send_map);
 		app = (AppApplication) getApplication();
 		int index = getIntent().getIntExtra("index", 0);
 		carData = app.carDatas.get(index);
-		String keyWord = getIntent().getStringExtra("keyWord");
-		String key = getIntent().getStringExtra("key");
+		//String keyWord = getIntent().getStringExtra("keyWord");
+		//String key = getIntent().getStringExtra("key");
+		TextView tv_send = (TextView)findViewById(R.id.tv_send);
+		tv_send.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_search_map);
 		mBaiduMap = mMapView.getMap();
 		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(12));
+		mBaiduMap.setOnMapStatusChangeListener(onMapStatusChangeListener);
 		mPoiSearch = PoiSearch.newInstance();
 		mPoiSearch.setOnGetPoiSearchResultListener(poiListener);
-
-		TextView name = (TextView) findViewById(R.id.name);
-		name.setText(keyWord);
+		mGeoCoder = GeoCoder.newInstance();
+		mGeoCoder.setOnGetGeoCodeResultListener(listener);
+		tv_adress = (TextView)findViewById(R.id.tv_adress);
+		//TextView name = (TextView) findViewById(R.id.name);
+		//name.setText(keyWord);
 
 		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
 			@Override
@@ -105,40 +122,40 @@ public class SearchMapActivity extends Activity {
 			}
 		});
 		getCarLocation();
-		if (keyWord.equals("4S店")) {
-			// 4S店数据去自己服务器读取
-			String car_brand = carData.getCar_brand();
-			SharedPreferences preferences = getSharedPreferences(
-					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-			String City = preferences.getString(Constant.sp_city, "深圳");
-			try {
-				String url = Constant.BaseUrl + "base/dealer?city="
-						+ URLEncoder.encode(City, "UTF-8") + "&brand="
-						+ URLEncoder.encode(car_brand, "UTF-8") + "&lon="
-						+ carData.getLon() + "&lat=" + carData.getLat()
-						+ "&cust_id=" + app.cust_id;
-				new Thread(new NetThread.GetDataThread(handler, url, get4s))
-						.start();
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-		} else {
-			// 搜索关键字
-			mPoiSearch.searchNearby((new PoiNearbySearchOption()).keyword(key)
-					.location(new LatLng(carData.getLat(), carData.getLon()))
-					.radius(5000));
-		}
+//		if (keyWord.equals("4S店")) {
+//			// 4S店数据去自己服务器读取
+//			String car_brand = carData.getCar_brand();
+//			SharedPreferences preferences = getSharedPreferences(
+//					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+//			String City = preferences.getString(Constant.sp_city, "深圳");
+//			try {
+//				String url = Constant.BaseUrl + "base/dealer?city="
+//						+ URLEncoder.encode(City, "UTF-8") + "&brand="
+//						+ URLEncoder.encode(car_brand, "UTF-8") + "&lon="
+//						+ carData.getLon() + "&lat=" + carData.getLat()
+//						+ "&cust_id=" + app.cust_id;
+//				new Thread(new NetThread.GetDataThread(handler, url, get4s))
+//						.start();
+//			} catch (UnsupportedEncodingException e) {
+//				e.printStackTrace();
+//			}
+//		} else {
+//			// 搜索关键字
+//			mPoiSearch.searchNearby((new PoiNearbySearchOption()).keyword(key)
+//					.location(new LatLng(carData.getLat(), carData.getLon()))
+//					.radius(5000));
+//		}
 
 		lv_activity_search_map = (ListView) findViewById(R.id.lv_activity_search_map);
 		lv_activity_search_map.setOnItemClickListener(onItemClickListener);
-		adressAdapter = new AdressAdapter(SearchMapActivity.this, adressDatas,
-				SearchMapActivity.this);
+		adressAdapter = new AdressAdapter(LetterSendMapActivity.this, adressDatas,
+				LetterSendMapActivity.this);
 		lv_activity_search_map.setAdapter(adressAdapter);
 		adressAdapter.setOnCollectListener(new OnCollectListener() {
 			@Override
 			public void OnCollect(int index) {
 				if (app.isTest) {
-					Toast.makeText(SearchMapActivity.this, "演示账号不支持该功能",
+					Toast.makeText(LetterSendMapActivity.this, "演示账号不支持该功能",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
@@ -158,7 +175,7 @@ public class SearchMapActivity extends Activity {
 				sb.append("," + adressData.getAdress());
 				sb.append("," + adressData.getPhone());
 				sb.append("," + url);
-				GetSystem.share(SearchMapActivity.this, sb.toString(), "",
+				GetSystem.share(LetterSendMapActivity.this, sb.toString(), "",
 						(float) adressData.getLat(),
 						(float) adressData.getLon(), "地点", url);
 			}
@@ -175,6 +192,40 @@ public class SearchMapActivity extends Activity {
 		mLocClient.setLocOption(option);
 		mLocClient.start();
 	}
+	OnClickListener onClickListener = new OnClickListener() {		
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.tv_send:
+				//截图
+				mBaiduMap.snapshot(new SnapshotReadyCallback() {
+					public void onSnapshotReady(Bitmap snapshot) {
+						File file = new File(Constant.TemporaryMapImage);
+						FileOutputStream out;
+						try {
+							out = new FileOutputStream(file);
+							if (snapshot.compress(Bitmap.CompressFormat.JPEG,
+									80, out)) {
+								out.flush();
+								out.close();
+							}
+							Intent intent = new Intent();
+							intent.putExtra("adress", adress);
+							intent.putExtra("latitude", latitude);
+							intent.putExtra("longitude", longitude);
+							LetterSendMapActivity.this.setResult(3, intent);
+							finish();
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				break;
+			}
+		}
+	};
 
 	// 当前车辆位子
 	private void getCarLocation() {
@@ -241,7 +292,7 @@ public class SearchMapActivity extends Activity {
 				try {
 					// 百度jar包里的图片
 					Bitmap bitmap = BitmapFactory
-							.decodeStream(SearchMapActivity.this.getAssets()
+							.decodeStream(LetterSendMapActivity.this.getAssets()
 									.open(imagePath));
 					marker = new MarkerOptions().position(latLng).icon(
 							BitmapDescriptorFactory.fromBitmap(bitmap));
@@ -302,7 +353,7 @@ public class SearchMapActivity extends Activity {
 
 			if (result == null
 					|| result.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {
-				Toast.makeText(SearchMapActivity.this, "抱歉，没找到结果",
+				Toast.makeText(LetterSendMapActivity.this, "抱歉，没找到结果",
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
@@ -354,7 +405,7 @@ public class SearchMapActivity extends Activity {
 					strInfo += ",";
 				}
 				strInfo += "找到结果";
-				Toast.makeText(SearchMapActivity.this, strInfo,
+				Toast.makeText(LetterSendMapActivity.this, strInfo,
 						Toast.LENGTH_LONG).show();
 			}
 
@@ -363,10 +414,10 @@ public class SearchMapActivity extends Activity {
 		@Override
 		public void onGetPoiDetailResult(PoiDetailResult result) {
 			if (result.error != SearchResult.ERRORNO.NO_ERROR) {
-				Toast.makeText(SearchMapActivity.this, "抱歉，未找到结果",
+				Toast.makeText(LetterSendMapActivity.this, "抱歉，未找到结果",
 						Toast.LENGTH_SHORT).show();
 			} else {
-				Toast.makeText(SearchMapActivity.this,
+				Toast.makeText(LetterSendMapActivity.this,
 						result.getName() + ": " + result.getAddress(),
 						Toast.LENGTH_SHORT).show();
 			}
@@ -408,8 +459,56 @@ public class SearchMapActivity extends Activity {
 		    MyLocationConfiguration config = new MyLocationConfiguration(null,
 		            true, mCurrentMarker);
 		    mBaiduMap.setMyLocationConfigeration(config);
+		    if(isFirstLoc){
+		    	isFirstLoc = false;
+			    MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
+						.newLatLng(new LatLng(location.getLatitude(),
+								location.getLongitude()));
+				mBaiduMap.setMapStatus(mapStatusUpdate);
+				mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(new LatLng(location.getLatitude(), location.getLongitude())));
+				latitude = location.getLatitude();
+				longitude = location.getLongitude();
+		    }
 		}
 	}
+	OnMapStatusChangeListener onMapStatusChangeListener = new OnMapStatusChangeListener() {		
+		@Override
+		public void onMapStatusChangeStart(MapStatus arg0) {
+			System.out.println("onMapStatusChangeStart");
+		}
+		
+		@Override
+		public void onMapStatusChangeFinish(MapStatus arg0) {
+			//移动完毕，获取地图中心位置
+			mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(arg0.target));
+			latitude = arg0.target.latitude;
+			longitude = arg0.target.longitude;
+		}
+		
+		@Override
+		public void onMapStatusChange(MapStatus arg0) {
+			System.out.println("onMapStatusChange");
+		}
+	};
+	String adress = "";
+	double latitude = 0;
+	double longitude = 0;
+	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
+		@Override
+		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
+			if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+				// 没有检索到结果
+			} else {
+				adress = result.getAddress();
+				tv_adress.setText(adress);
+			}
+		}
+
+		@Override
+		public void onGetGeoCodeResult(GeoCodeResult arg0) {
+
+		}
+	};
 
 	@Override
 	protected void onPause() {
