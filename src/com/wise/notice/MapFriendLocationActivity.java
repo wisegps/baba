@@ -1,5 +1,6 @@
 package com.wise.notice;
 
+import pubclas.GetSystem;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -21,12 +22,10 @@ import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
-import com.baidu.mapapi.map.InfoWindow.OnInfoWindowClickListener;
 import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
@@ -63,24 +62,24 @@ public class MapFriendLocationActivity extends Activity {
 		//朋友位置
 		BitmapDescriptor bdC = BitmapDescriptorFactory
 				.fromResource(R.drawable.icon_location);
-		LatLng llF = new LatLng(latitude, longitude);
+		llF = new LatLng(latitude, longitude);
 		OverlayOptions ooF = new MarkerOptions().position(llF).icon(bdC)
-				.perspective(false).anchor(0.5f, 0.5f);
+				.perspective(false).anchor(0.5f, 1f);
 		mBaiduMap.addOverlay(ooF);
 		//居中
 		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(llF);
 		mBaiduMap.setMapStatus(mapStatusUpdate);
 		//弹出框
 		View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.item_map_popup, null);
-		InfoWindow mInfoWindow = new InfoWindow(view, llF, 1);
+		TextView tv_adress = (TextView)view.findViewById(R.id.tv_adress);
+		tv_adress.setText(adress);
+		LinearLayout ll_adress = (LinearLayout)view.findViewById(R.id.ll_adress);
+		ll_adress.setOnClickListener(onClickListener);
+		InfoWindow mInfoWindow = new InfoWindow(view, llF, -45);
 		mBaiduMap.showInfoWindow(mInfoWindow);
-		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
-
+		
+		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
+		iv_back.setOnClickListener(onClickListener);
 		// 开启定位图层
 		mBaiduMap.setMyLocationEnabled(true);
 		// 定位初始化
@@ -99,12 +98,18 @@ public class MapFriendLocationActivity extends Activity {
 			switch (v.getId()) {
 			case R.id.tv_send:
 				break;
+			case R.id.ll_adress:
+				GetSystem.FindCar(MapFriendLocationActivity.this, llM, llF, "", "");
+				break;
+			case R.id.iv_back:
+				finish();
+				break;
 			}
 		}
 	};
 
-	double latitude = 0;
-	double longitude = 0;
+	LatLng llM;
+	LatLng llF;
 
 	private class MyLocationListenner implements BDLocationListener {
 		@Override
@@ -123,8 +128,7 @@ public class MapFriendLocationActivity extends Activity {
 		    MyLocationConfiguration config = new MyLocationConfiguration(null,
 		            true, mCurrentMarker);
 		    mBaiduMap.setMyLocationConfigeration(config);
-		    latitude = location.getLatitude();
-			longitude = location.getLongitude();
+		    llM = new LatLng(location.getLatitude(), location.getLongitude());
 		}
 	}
 	

@@ -195,6 +195,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.notice.MapFriendLocationActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.notice.LetterSendMapActivity"
             android:screenOrientation="portrait" >
         </activity>

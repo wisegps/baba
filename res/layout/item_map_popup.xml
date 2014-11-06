@@ -2,14 +2,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@drawable/popup"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/margins"
+    android:paddingRight="@dimen/margins"
+    android:id="@+id/ll_adress"
     android:orientation="horizontal" >
     <TextView 
         android:id="@+id/tv_adress"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textColor="@color/navy"
+        android:layout_marginRight="@dimen/margins"/>
     <TextView 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/navy"
         android:text="导航"
         android:drawableRight="@drawable/body_icon_arrow2"/>
 </LinearLayout>

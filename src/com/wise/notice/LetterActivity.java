@@ -1154,6 +1154,11 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			double latitude = data.getDoubleExtra("latitude", 0);
 			double longitude = data.getDoubleExtra("longitude", 0);
 			System.out.println(adress + "," + latitude + "," + longitude);
+			Intent intent = new Intent(LetterActivity.this, MapFriendLocationActivity.class);
+			intent.putExtra("adress", adress);
+			intent.putExtra("latitude", latitude);
+			intent.putExtra("longitude", longitude);
+			startActivity(intent);
 			return;
 		}
 		//TODO 
