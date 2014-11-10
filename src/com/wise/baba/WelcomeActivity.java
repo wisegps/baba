@@ -12,6 +12,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
 import com.wise.state.FaultActivity;
 import com.wise.state.ServiceOperatActivity;
+import com.wise.state.ServiceProviderActivity;
 
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
@@ -268,7 +269,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
         			if(app.cust_type == 0){
                 		intent = new Intent(WelcomeActivity.this, FaultActivity.class);
         			}else{
-        				intent = new Intent(WelcomeActivity.this, ServiceOperatActivity.class);
+        				intent = new Intent(WelcomeActivity.this, ServiceProviderActivity.class);
         			}
     				if(isSpecify){
     	    			intent.putExtra("isSpecify", isSpecify);

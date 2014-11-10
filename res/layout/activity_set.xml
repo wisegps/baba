@@ -77,6 +77,15 @@
 	            android:layout_height="15dp"
 	            android:visibility="gone"
 	            android:src="@drawable/icon_xx_service"/>
+	        <ImageView 
+	            android:id="@+id/iv_eweima"          
+	            android:layout_centerVertical="true"
+	            android:layout_width="35dp"
+	            android:layout_height="35dp"
+	            android:layout_marginRight="@dimen/margins"
+	            android:padding="@dimen/margins"
+	            android:layout_alignParentRight="true"
+	            android:src="@drawable/icon_xx_service"/>
 	    </RelativeLayout>
 	    <RelativeLayout 
 	        android:id="@+id/rl_city" 

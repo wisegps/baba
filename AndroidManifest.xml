@@ -151,6 +151,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.state.ServiceProviderActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.state.ServiceOperatActivity"
             android:screenOrientation="portrait" >
         </activity>

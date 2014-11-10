@@ -6,6 +6,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.CollectionActivity;
@@ -14,6 +18,8 @@ import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.notice.NoticeActivity;
 import com.wise.remind.RemindListActivity;
+import com.wise.state.FaultActivity;
+import com.wise.state.ServiceProviderActivity;
 import com.wise.violation.TrafficActivity;
 import pubclas.Constant;
 import pubclas.GetSystem;
@@ -33,6 +39,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -57,6 +66,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	private static final String TAG = "LoginActivity";
 
 	private final static int login_account = 1;
+	private static final int get_customer = 2;
 	private static final int get_data = 3;
 	private final static int login = 4;
 	private final static int login_sso = 5;
@@ -178,6 +188,9 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				Intent intent1 = LoginActivity.this.getIntent();
 				getActivityState(intent1);
 				break;
+			case get_customer:
+				jsonCustomer(msg.obj.toString());
+				break;
 			}
 		}
 	};
@@ -221,12 +234,46 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 					editor.commit();
 				}
 				setJpush();
-				getData();
-				setResult(1);
-				finish();
-
+				getCustomer();
 			} else {
 				tv_note.setVisibility(View.VISIBLE);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	private void getCustomer(){
+		String url = Constant.BaseUrl + "customer/" + app.cust_id+ "?auth_code=" + app.auth_code;
+		new NetThread.GetDataThread(handler, url, get_customer).start();
+	}
+	/**获取个人信息**/
+	private void jsonCustomer(String str) {
+		SharedPreferences preferences1 = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+        Editor editor1 = preferences1.edit();
+        editor1.putString(Constant.sp_customer + app.cust_id, str);
+        editor1.commit();
+		try {
+			JSONObject jsonObject = new JSONObject(str);			
+			if(jsonObject.opt("status_code") == null){				
+		        int cust_type = jsonObject.getInt("cust_type");
+		        if(cust_type == app.cust_type){
+		        	//用户类型不变
+		        }else{
+		        	//用户类型变化，需要关闭主界面，重新打开新的主界面
+		        	//发送广播关闭界面
+		        	// 发广播
+					Intent intent = new Intent(Constant.A_ChangeCustomerType);
+					sendBroadcast(intent);
+		        	if(cust_type == 0){
+		        		startActivity(new Intent(LoginActivity.this, FaultActivity.class));
+		        	}else{
+		        		startActivity(new Intent(LoginActivity.this, ServiceProviderActivity.class));
+		        	}
+		        }
+		        app.cust_type = cust_type;
+				setResult(1);
+				finish();
+				getData();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -333,9 +380,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				app.auth_code = jsonObject.getString("auth_code");
 				JPushInterface.resumePush(getApplicationContext());
 				setJpush();
-				getData();
-				setResult(1);
-				finish();
+				getCustomer();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

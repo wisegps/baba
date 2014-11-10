@@ -23,6 +23,8 @@ import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
 import com.wise.car.CarAddActivity;
 import com.wise.car.ModelsActivity;
+import com.wise.state.ServiceProviderActivity;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -318,13 +320,22 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 						+ app.cust_id + "?auth_code="
 						+ app.auth_code;
 				new NetThread.GetDataThread(handler, url, get_customer).start();
-				if (fastTrack) {
-					// 设置
-					Intent intent = new Intent(RegisterInfoActivity.this,CarAddActivity.class);
-					intent.putExtra("fastTrack", true);
-					startActivity(intent);
-					ManageActivity.getActivityInstance().exit();
-				}
+				if(cust_type.equals("2")){
+					//服务商
+					startActivity(new Intent(RegisterInfoActivity.this, ServiceProviderActivity.class));
+					//发更换用户类型广播
+					Intent intent = new Intent(Constant.A_ChangeCustomerType);
+					sendBroadcast(intent);
+				}else{
+					//非服务商需要跳转到添加车辆
+					if (fastTrack) {
+						// 设置
+						Intent intent = new Intent(RegisterInfoActivity.this,CarAddActivity.class);
+						intent.putExtra("fastTrack", true);
+						startActivity(intent);
+						ManageActivity.getActivityInstance().exit();
+					}
+				}				
 				JPushInterface.resumePush(getApplicationContext());
 				setJpush();
 				Intent intent = new Intent(Constant.A_RefreshHomeCar);

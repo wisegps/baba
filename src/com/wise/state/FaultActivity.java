@@ -250,6 +250,7 @@ public class FaultActivity extends FragmentActivity {
 		intentFilter = new IntentFilter();
 		intentFilter.addAction(Constant.A_RefreshHomeCar);
 		intentFilter.addAction(Constant.A_LoginOut);
+		intentFilter.addAction(Constant.A_ChangeCustomerType);
 		registerReceiver(myBroadCastReceiver, intentFilter);
 
 		new CycleNstvThread().start();
@@ -1471,6 +1472,9 @@ public class FaultActivity extends FragmentActivity {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}else if(action.equals(Constant.A_ChangeCustomerType)){
+				//类型改变，关闭界面
+				finish();
 			}
 		}
 	}

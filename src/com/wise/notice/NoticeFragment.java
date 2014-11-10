@@ -15,6 +15,7 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.BarcodeActivity;
 import com.wise.car.DevicesAddActivity;
+import com.wise.setting.SetActivity;
 import com.wise.show.PhotoActivity;
 
 import customView.CircleImageView;
@@ -59,7 +60,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	List<NoticeData> noticeDatas = new ArrayList<NoticeData>();
 	AppApplication app;
 	ImageView iv_fm_back,iv_add;
-	Button bt_info,bt_friend;
+	Button bt_info,bt_friend,bt_set;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,6 +83,8 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		bt_info.setOnClickListener(onClickListener);
 		bt_friend = (Button)getActivity().findViewById(R.id.bt_friend);
 		bt_friend.setOnClickListener(onClickListener);
+		bt_set = (Button)getActivity().findViewById(R.id.bt_set);
+		bt_set.setOnClickListener(onClickListener);
 		setFriendDatas();
 		lv_friend = (XListView)getActivity().findViewById(R.id.lv_friend);
 		FriendAdapter friendAdapter = new FriendAdapter();
@@ -128,7 +131,10 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			case R.id.bt_friend:
 				lv_notice.setVisibility(View.GONE);
 				lv_friend.setVisibility(View.VISIBLE);
-				break;		
+				break;
+			case R.id.bt_set:
+				startActivity(new Intent(getActivity(), SetActivity.class));
+				break;
 			case R.id.iv_add:
 				showMenu();
 				break;

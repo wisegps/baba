@@ -149,6 +149,8 @@ public class Constant {
 	public static String A_RefreshHomeCar = "com.wise.baba.refresh_home_car";
 	/** 注销广播 **/
 	public static String A_LoginOut = "com.wise.baba.login_out";
+	/**改变用户类别**/
+	public static String A_ChangeCustomerType = "com.wise.baba.change_customer_type";
 	/** 收到私信通知 **/
 	public static String A_ReceiverLetter = "com.wise.baba.letter";
 	/**

@@ -42,18 +42,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
-
         <Button
             android:id="@+id/bt_info"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/bg_green_lights"
+            android:background="@drawable/bg_green"
             android:padding="@dimen/margins"
             android:text="信息"
             android:textColor="@color/white"
             android:textSize="@dimen/bt" />
-
         <Button
             android:id="@+id/bt_friend"
             android:layout_width="fill_parent"
@@ -62,6 +60,16 @@
             android:background="@drawable/bg_green"
             android:padding="@dimen/margins"
             android:text="好友"
+            android:textColor="@color/white"
+            android:textSize="@dimen/bt" />
+        <Button
+            android:id="@+id/bt_set"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_green"
+            android:padding="@dimen/margins"
+            android:text="设置"
             android:textColor="@color/white"
             android:textSize="@dimen/bt" />
     </LinearLayout>

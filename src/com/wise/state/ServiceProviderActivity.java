@@ -7,29 +7,38 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
+import pubclas.Judge;
 import pubclas.NetThread;
 import com.wise.baba.AppApplication;
+import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.car.BarcodeActivity;
 import com.wise.notice.FriendAddActivity;
 import com.wise.notice.LetterActivity;
 import com.wise.notice.ServiceProviderInfoActivity;
 import com.wise.notice.SmsActivity;
+import com.wise.setting.SetActivity;
+
 import customView.CircleImageView;
 import customView.WaitLinearLayout.OnFinishListener;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
@@ -40,6 +49,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -61,9 +71,12 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 	ImageView iv_fm_back,iv_add;
 	Button bt_info,bt_friend;
 	
+	MyBroadCastReceiver myBroadCastReceiver;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.fragement_notice);
 		app = (AppApplication)getApplication();
 		iv_add = (ImageView) findViewById(R.id.iv_add);
@@ -74,6 +87,8 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 		bt_info.setOnClickListener(onClickListener);
 		bt_friend = (Button)findViewById(R.id.bt_friend);
 		bt_friend.setOnClickListener(onClickListener);
+		Button bt_set = (Button)findViewById(R.id.bt_set);
+		bt_set.setOnClickListener(onClickListener);
 		setFriendDatas();
 		lv_friend = (XListView)findViewById(R.id.lv_friend);
 		FriendAdapter friendAdapter = new FriendAdapter();
@@ -89,6 +104,11 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 		lv_notice.setXListViewListener(this);
 		noticeAdapter = new NoticeAdapter();
 		lv_notice.setAdapter(noticeAdapter);
+		
+		myBroadCastReceiver = new MyBroadCastReceiver();
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(Constant.A_ChangeCustomerType);
+		registerReceiver(myBroadCastReceiver, intentFilter);
 	}
 	
 	OnClickListener onClickListener = new OnClickListener() {
@@ -106,6 +126,9 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 				lv_notice.setVisibility(View.GONE);
 				lv_friend.setVisibility(View.VISIBLE);
 				break;		
+			case R.id.bt_set:
+				startActivity(new Intent(ServiceProviderActivity.this, SetActivity.class));
+				break;
 			case R.id.iv_add:
 				showMenu();
 				break;
@@ -577,4 +600,40 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 		mPopupWindow.setOutsideTouchable(true);
 		mPopupWindow.showAsDropDown(ServiceProviderActivity.this.findViewById(R.id.iv_add), 0, 0);
 	}
+	class MyBroadCastReceiver extends BroadcastReceiver{
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if(action.equals(Constant.A_ChangeCustomerType)){
+				//类型改变，关闭界面
+				finish();
+			}
+		}}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(myBroadCastReceiver);
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(Judge.isLogin(app)){
+			getData();
+		}
+	}
+	long waitTime = 2000;
+	long touchTime = 0;
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		long currentTime = System.currentTimeMillis();
+		if (touchTime == 0 || (currentTime - touchTime) >= waitTime) {
+			Toast.makeText(this, "再按一次退出客户端", Toast.LENGTH_SHORT)
+					.show();
+			touchTime = currentTime;
+		} else {
+			finish();
+		}
+		return true;
+	}
+	
 }
