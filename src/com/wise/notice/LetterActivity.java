@@ -1176,7 +1176,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		final String bigFile = Constant.VehiclePath + big_pic;
 		try {
 			bigOutputStream = new FileOutputStream(bigFile);
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 90,
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 60,
 					bigOutputStream);// 把数据写入文件
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
