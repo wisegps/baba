@@ -697,8 +697,10 @@ public class FaultActivity extends FragmentActivity {
 					.getJSONObject("active_gps_data");
 			double lat = jsonObject.getDouble("lat");
 			double lon = jsonObject.getDouble("lon");
+			int direct = jsonObject.getInt("direct");
 			String gpsTime = jsonObject.getString("gps_time");
 			LatLng latLng = new LatLng(lat, lon);
+			app.carDatas.get(index).setDirect(direct);
 			app.carDatas.get(index).setLat(lat);
 			app.carDatas.get(index).setLon(lon);
 			app.carDatas.get(index).setGps_time(

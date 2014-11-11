@@ -459,7 +459,7 @@ public class CarLocationActivity extends Activity {
 				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
 		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0.5f)
-				.position(circle).icon(bitmap);
+				.position(circle).icon(bitmap).rotate(carData.getDirect());
 		// 在地图上添加Marker，并显示
 		carMarker = (Marker) (mBaiduMap.addOverlay(option));
 		points.add(circle);
@@ -513,6 +513,7 @@ public class CarLocationActivity extends Activity {
 			double lon = jsonObject.getDouble("lon");
 			carData.setLat(lat);
 			carData.setLon(lon);
+			carData.setDirect(jsonObject.getInt("direct"));
 			getCarLocation();
 		} catch (JSONException e) {
 			e.printStackTrace();
