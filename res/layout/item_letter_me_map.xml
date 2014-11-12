@@ -34,22 +34,24 @@
 	        android:id="@id/rl_content" 
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:orientation="horizontal"
 	        android:layout_toLeftOf="@id/iv_me"
 	        android:background="@drawable/chat_i_shuru">
 		    <ImageView
 		        android:id="@+id/iv_me_map" 
 		        android:scaleType="matrix"
 		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"/>		        
-		    <TextView 
-		        android:id="@+id/tv_adress"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentBottom="true"
-		        android:background="@drawable/bg_map_address"
-		        android:textColor="@color/white"
-		        android:text="南山区珠光路斯蒂芬撒"/>
+		        android:layout_height="wrap_content"/>
+		    <LinearLayout 
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"		        
+		        android:layout_alignParentBottom="true">		        
+			    <TextView 
+			        android:id="@+id/tv_adress"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:background="@drawable/bg_map_address"
+			        android:textColor="@color/white"/>
+		    </LinearLayout>		        
 	    </RelativeLayout>
     </RelativeLayout>    
 </LinearLayout>

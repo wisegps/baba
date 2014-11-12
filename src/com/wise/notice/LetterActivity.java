@@ -24,10 +24,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
-import com.baidu.mapapi.search.geocode.GeoCodeResult;
-import com.baidu.mapapi.search.geocode.GeoCoder;
-import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.show.ImageDetailsActivity;
@@ -85,18 +81,15 @@ import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
 
 /**
- * 私信
- * 1：布局优化，解决图片上传阴影问题
-2：语音优化，语言的时间越长显示越长
-3：图片加上发送中状态
-4：发送失败提示，可以从发。
+ * 私信 1：布局优化，解决图片上传阴影问题 2：语音优化，语言的时间越长显示越长 3：图片加上发送中状态 4：发送失败提示，可以从发。
+ * 
  * @author honesty
- *
+ * 
  */
 @SuppressLint("NewApi")
 public class LetterActivity extends Activity implements IXListViewListener {
 	private static final String TAG = "LetterActivity";
-	
+
 	private static final int FriendText = 0;
 	private static final int FriendImage = 2;
 	private static final int FriendSound = 4;
@@ -107,7 +100,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	private static final int MeSound = 5;
 	private static final int MeFile = 7;
 	private static final int MeMap = 9;
-	
+
 	private static final int send_letter = 1;
 	private static final int get_data = 2;
 	private static final int refresh_data = 3;
@@ -116,18 +109,18 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	private static final int putOssImage = 5;
 	private static final int getPersionImage = 6;
 	private static final int getOssSound = 7;
-	
-	TextView tv_friend, btn_rcd,tv_send;
+
+	TextView tv_friend, btn_rcd, tv_send;
 	XListView lv_letter;
 	List<LetterData> letterDatas = new ArrayList<LetterData>();
 	LetterAdapter letterAdapter;
 	EditText et_content;
-	ImageView ivPopUp, volume,ivNowPlay;
+	ImageView ivPopUp, volume, ivNowPlay;
 	RelativeLayout btn_bottom;
 	LinearLayout voice_rcd_hint_loading, voice_rcd_hint_rcding,
-			voice_rcd_hint_tooshort,ll_menu;
+			voice_rcd_hint_tooshort, ll_menu;
 	View rcChat_popup;
-	ImageView img1, sc_img1,iv_expand;
+	ImageView img1, sc_img1, iv_expand;
 	LinearLayout del_re;
 	RequestQueue mQueue;
 	Bitmap imageFriend = null;
@@ -145,35 +138,38 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	String voiceName;
 	SoundMeter mSensor;
 	int flag = 1;
-	/**当前播放谁的语言，播放完毕后需要使用它来改变不同的图片**/
+	/** 当前播放谁的语言，播放完毕后需要使用它来改变不同的图片 **/
 	type noSoundPlay;
-	enum type {friend,me};
+
+	enum type {
+		friend, me
+	};
+
 	AppApplication app;
 	ProgressDialog myDialog = null;
-	private GeoCoder mGeoCoder = null;
+	int mapWidth = 300;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_letter);	
-		app = (AppApplication)getApplication();
+		setContentView(R.layout.activity_letter);
+		app = (AppApplication) getApplication();
 		mQueue = Volley.newRequestQueue(this);
-		mGeoCoder = GeoCoder.newInstance();
-		mGeoCoder.setOnGetGeoCodeResultListener(listener);
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		int width = dm.widthPixels;
+		mapWidth = (int) (width * 0.6);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		iv_expand = (ImageView)findViewById(R.id.iv_expand);
+		iv_expand = (ImageView) findViewById(R.id.iv_expand);
 		iv_expand.setOnClickListener(onClickListener);
-		ll_menu = (LinearLayout)findViewById(R.id.ll_menu);
-		ImageView iv_gallery = (ImageView)findViewById(R.id.iv_gallery);
+		ll_menu = (LinearLayout) findViewById(R.id.ll_menu);
+		ImageView iv_gallery = (ImageView) findViewById(R.id.iv_gallery);
 		iv_gallery.setOnClickListener(onClickListener);
-		ImageView iv_camera = (ImageView)findViewById(R.id.iv_camera);
+		ImageView iv_camera = (ImageView) findViewById(R.id.iv_camera);
 		iv_camera.setOnClickListener(onClickListener);
-		ImageView iv_location = (ImageView)findViewById(R.id.iv_location);
+		ImageView iv_location = (ImageView) findViewById(R.id.iv_location);
 		iv_location.setOnClickListener(onClickListener);
 		volume = (ImageView) findViewById(R.id.volume);
 		ivPopUp = (ImageView) findViewById(R.id.ivPopUp);
@@ -196,10 +192,10 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		lv_letter.setAdapter(letterAdapter);
 		lv_letter.setOnFinishListener(onFinishListener);
 		lv_letter.setOnScrollListener(onScrollListener);
-		lv_letter.setOnTouchListener(new OnTouchListener() {			
+		lv_letter.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if(ll_menu.getVisibility() == View.VISIBLE){
+				if (ll_menu.getVisibility() == View.VISIBLE) {
 					ll_menu.setVisibility(View.GONE);
 				}
 				return false;
@@ -221,8 +217,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					+ friend_id + ".png");
 		}
 		// 读取自己对应的图片
-		if (new File(Constant.userIconPath + app.cust_id + ".png")
-				.exists()) {
+		if (new File(Constant.userIconPath + app.cust_id + ".png").exists()) {
 			imageMe = BitmapFactory.decodeFile(Constant.userIconPath
 					+ app.cust_id + ".png");
 		}
@@ -237,7 +232,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		btn_rcd.setOnTouchListener(new OnTouchListener() {
 
 			public boolean onTouch(View v, MotionEvent event) {
-				//按下语音录制按钮时返回false执行父类OnTouch
+				// 按下语音录制按钮时返回false执行父类OnTouch
 				return false;
 			}
 		});
@@ -269,10 +264,11 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				break;
 			case R.id.iv_location:
 				ll_menu.setVisibility(View.GONE);
-				startActivityForResult(new Intent(LetterActivity.this, LetterSendMapActivity.class),3);
+				startActivityForResult(new Intent(LetterActivity.this,
+						LetterSendMapActivity.class), 3);
 				break;
 			case R.id.et_content:
-				if(ll_menu.getVisibility() == View.VISIBLE){
+				if (ll_menu.getVisibility() == View.VISIBLE) {
 					ll_menu.setVisibility(View.GONE);
 				}
 				break;
@@ -286,7 +282,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
-				send(content, "", "0",0.0,0.0);
+				send(content, "", "0", 0.0, 0.0);
 				break;
 			case R.id.iv_back:
 				back();
@@ -307,8 +303,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				break;
 			case R.id.letter_copy:
 				LetterActivity.copyContent(letterCopy, LetterActivity.this);
-				Toast.makeText(LetterActivity.this, "复制成功",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(LetterActivity.this, "复制成功", Toast.LENGTH_SHORT)
+						.show();
 				if (popupWindow.isShowing()) {
 					popupWindow.dismiss();
 				}
@@ -316,23 +312,27 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			}
 		}
 	};
-	TextWatcher textWatcher = new TextWatcher() {		
+	TextWatcher textWatcher = new TextWatcher() {
 		@Override
-		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			if(s.length() != 0){
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			if (s.length() != 0) {
 				iv_expand.setVisibility(View.INVISIBLE);
 				tv_send.setVisibility(View.VISIBLE);
-			}else{
+			} else {
 				iv_expand.setVisibility(View.VISIBLE);
 				tv_send.setVisibility(View.INVISIBLE);
 			}
-		}		
+		}
+
 		@Override
 		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {}		
+				int after) {
+		}
+
 		@Override
 		public void afterTextChanged(Editable s) {
-			
+
 		}
 	};
 
@@ -399,12 +399,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				break;
 
 			case get_data:
-				List<LetterData> lDatas = jsonData(msg.obj.toString());				
+				List<LetterData> lDatas = jsonData(msg.obj.toString());
 				letterDatas.addAll(lDatas);
 				letterAdapter.notifyDataSetChanged();
 				lv_letter.setSelection(lv_letter.getBottom());
 				// 读取图片
-				handler.postDelayed(new Runnable() {					
+				handler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
 						getPersionImage();
@@ -426,19 +426,19 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				break;
 			case getOssSound:
 				String sound_url = Constant.oss_url + soundName;
-				send("0", sound_url, "2",0.0,0.0);
+				send("0", sound_url, "2", 0.0, 0.0);
 				break;
 			}
 		}
 	};
-	
+
 	OnFinishListener onFinishListener = new OnFinishListener() {
 		@Override
 		public void OnFinish(int index) {
 			List<LetterData> lDatas = jsonData(refresh);
 			letterDatas.addAll(0, lDatas);
 			letterAdapter.notifyDataSetChanged();
-			System.out.println("lDatas.size() = "+letterDatas.size());
+			System.out.println("lDatas.size() = " + letterDatas.size());
 			lv_letter.setSelection(lDatas.size());
 			onLoadOver();
 		}
@@ -450,9 +450,10 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	 * @param url
 	 *            url,
 	 * @param type
-	 *            类型,0:文本 1:图片 2:语音, 3:文件  4:位置
+	 *            类型,0:文本 1:图片 2:语音, 3:文件 4:位置
 	 */
-	private void send(String content, String oss_url, String type,double lat,double lon) {
+	private void send(String content, String oss_url, String type, double lat,
+			double lon) {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id
 				+ "/send_chat?auth_code=" + app.auth_code;
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -466,10 +467,11 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		pairs.add(new BasicNameValuePair("lon", String.valueOf(lon)));
 		new NetThread.postDataThread(handler, url, pairs, send_letter).start();
 		et_content.setText("");
-		//添加显示
+		// 添加显示
 		LetterData letterData = new LetterData();
 		letterData.setContent(content);
-		letterData.setChatType(revisionType(false , Integer.valueOf(type) * 2 + 1));
+		letterData.setChatType(revisionType(false,
+				Integer.valueOf(type) * 2 + 1));
 		letterData.setUrl(oss_url);
 		letterData.setSend_time(GetSystem.GetNowTime());
 		letterData.setVoice_len(voice_len);
@@ -505,20 +507,25 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			for (int i = (jsonArray.length() - 1); i >= 0; i--) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				LetterData letterData = new LetterData();
-				if(jsonObject.opt("voice_len") == null){
+				if (jsonObject.opt("voice_len") == null) {
 					letterData.setVoice_len(0);
-				}else{
+				} else {
 					letterData.setVoice_len(jsonObject.getInt("voice_len"));
 				}
-				if(jsonObject.opt("lat") == null){
+				if (jsonObject.opt("lat") == null) {
 					letterData.setLat(0);
-				}else{
+				} else {
 					letterData.setLat(jsonObject.getDouble("lat"));
 				}
-				if(jsonObject.opt("lon") == null){
+				if (jsonObject.opt("lon") == null) {
 					letterData.setLon(0);
-				}else{
+				} else {
 					letterData.setLon(jsonObject.getDouble("lon"));
+				}
+				if (jsonObject.opt("address") == null) {
+					letterData.setAdress("");
+				} else {
+					letterData.setAdress(jsonObject.getString("address"));
 				}
 				letterData.setChat_id(jsonObject.getInt("chat_id"));
 				letterData.setContent(jsonObject.getString("content"));
@@ -529,13 +536,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				letterData.setSend_time(send_time);
 				int type = jsonObject.getInt("type");
 				if (sender_id.equals(friend_id)) {// 好友,//0文本，1图片，2音乐
-					letterData.setChatType(revisionType(true,type * 2));
-				} else {					
-					letterData.setChatType(revisionType(false,type * 2 + 1));
+					letterData.setChatType(revisionType(true, type * 2));
+				} else {
+					letterData.setChatType(revisionType(false, type * 2 + 1));
 				}
 				letterData.setUrl(jsonObject.getString("url"));
 				letterData.setSendIn(false);
-				System.out.println(letterData.toString());
 				lDatas.add(letterData);
 			}
 		} catch (JSONException e) {
@@ -592,14 +598,15 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			}
 		}
 	}
-	
+
 	private PopupWindow popupWindow;
+
 	// 弹出框显示复制分享等功能
 	private void initPopWindow(View v) {
-		View letterView = LayoutInflater.from(LetterActivity.this)
-				.inflate(R.layout.letter_popupwidow, null);
-		popupWindow = new PopupWindow(letterView,
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		View letterView = LayoutInflater.from(LetterActivity.this).inflate(
+				R.layout.letter_popupwidow, null);
+		popupWindow = new PopupWindow(letterView, LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT);
 		popupWindow.setBackgroundDrawable(new BitmapDrawable());
 		popupWindow.setFocusable(true);
 		popupWindow.setOutsideTouchable(true);
@@ -609,8 +616,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				.setOnClickListener(onClickListener);
 		popupWindow.update();
 	}
-	
-	OnLongClickListener onLongClickListener = new OnLongClickListener() {		
+
+	OnLongClickListener onLongClickListener = new OnLongClickListener() {
 		@Override
 		public boolean onLongClick(View v) {
 			initPopWindow(v);
@@ -618,7 +625,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			return false;
 		}
 	};
-	
+
 	class LetterAdapter extends BaseAdapter {
 		LayoutInflater inflater = LayoutInflater.from(LetterActivity.this);
 
@@ -640,20 +647,23 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			int Type = getItemViewType(position);
-			
+
 			ViewFriendText viewFriendText = null;
 			ViewFriendImage viewFriendImage = null;
 			ViewFriendSound viewFriendSound = null;
+			ViewFriendFile viewFriendFile = null;
+			ViewFriendMap viewFriendMap = null;
 			ViewMeText viewMeText = null;
 			ViewMeImage viewMeImage = null;
 			ViewMeSound viewMeSound = null;
+			ViewMeFile viewMeFile = null;
 			ViewMeMap viewMeMap = null;
-			
+
 			if (convertView == null) {
 				switch (Type) {
 				case FriendText:
-					convertView = inflater.inflate(R.layout.item_letter_friend_text,
-							null);
+					convertView = inflater.inflate(
+							R.layout.item_letter_friend_text, null);
 					viewFriendText = new ViewFriendText();
 					viewFriendText.tv_time = (TextView) convertView
 							.findViewById(R.id.tv_time);
@@ -664,8 +674,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					convertView.setTag(viewFriendText);
 					break;
 				case FriendImage:
-					convertView = inflater.inflate(R.layout.item_letter_friend_image,
-							null);
+					convertView = inflater.inflate(
+							R.layout.item_letter_friend_image, null);
 					viewFriendImage = new ViewFriendImage();
 					viewFriendImage.tv_time = (TextView) convertView
 							.findViewById(R.id.tv_time);
@@ -676,8 +686,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					convertView.setTag(viewFriendImage);
 					break;
 				case FriendSound:
-					convertView = inflater.inflate(R.layout.item_letter_friend_sound,
-							null);
+					convertView = inflater.inflate(
+							R.layout.item_letter_friend_sound, null);
 					viewFriendSound = new ViewFriendSound();
 					viewFriendSound.tv_time = (TextView) convertView
 							.findViewById(R.id.tv_time);
@@ -689,9 +699,35 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							.findViewById(R.id.iv_friend_sound);
 					convertView.setTag(viewFriendSound);
 					break;
+				case FriendFile:
+					convertView = inflater.inflate(
+							R.layout.item_letter_friend_file, null);
+					viewFriendFile = new ViewFriendFile();
+					viewFriendFile.tv_time = (TextView) convertView
+							.findViewById(R.id.tv_time);
+					viewFriendFile.iv_friend = (CircleImageView) convertView
+							.findViewById(R.id.iv_friend);
+					viewFriendFile.tv_friend_content = (TextView) convertView
+							.findViewById(R.id.tv_friend_content);
+					convertView.setTag(viewFriendFile);
+					break;
+				case FriendMap:
+					convertView = inflater.inflate(
+							R.layout.item_letter_friend_map, null);
+					viewFriendMap = new ViewFriendMap();
+					viewFriendMap.tv_time = (TextView) convertView
+							.findViewById(R.id.tv_time);
+					viewFriendMap.tv_adress = (TextView) convertView
+							.findViewById(R.id.tv_adress);
+					viewFriendMap.iv_friend = (CircleImageView) convertView
+							.findViewById(R.id.iv_friend);
+					viewFriendMap.iv_friend_map = (ImageView) convertView
+							.findViewById(R.id.iv_friend_map);
+					convertView.setTag(viewFriendMap);
+					break;
 				case MeText:
-					convertView = inflater.inflate(R.layout.item_letter_me_text,
-							null);
+					convertView = inflater.inflate(
+							R.layout.item_letter_me_text, null);
 					viewMeText = new ViewMeText();
 					viewMeText.tv_time = (TextView) convertView
 							.findViewById(R.id.tv_time);
@@ -702,8 +738,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					convertView.setTag(viewMeText);
 					break;
 				case MeImage:
-					convertView = inflater.inflate(R.layout.item_letter_me_image,
-							null);
+					convertView = inflater.inflate(
+							R.layout.item_letter_me_image, null);
 					viewMeImage = new ViewMeImage();
 					viewMeImage.tv_time = (TextView) convertView
 							.findViewById(R.id.tv_time);
@@ -716,8 +752,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					convertView.setTag(viewMeImage);
 					break;
 				case MeSound:
-					convertView = inflater.inflate(R.layout.item_letter_me_sound,
-							null);
+					convertView = inflater.inflate(
+							R.layout.item_letter_me_sound, null);
 					viewMeSound = new ViewMeSound();
 					viewMeSound.tv_time = (TextView) convertView
 							.findViewById(R.id.tv_time);
@@ -729,8 +765,19 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							.findViewById(R.id.tv_sound_lenght);
 					convertView.setTag(viewMeSound);
 					break;
+				case MeFile:
+					convertView = inflater.inflate(
+							R.layout.item_letter_me_file, null);
+					viewMeFile = new ViewMeFile();
+					viewMeFile.tv_time = (TextView) convertView
+							.findViewById(R.id.tv_time);
+					viewMeFile.iv_me = (CircleImageView) convertView
+							.findViewById(R.id.iv_me);
+					viewMeFile.tv_me_content = (TextView) convertView
+							.findViewById(R.id.tv_me_content);
+					convertView.setTag(viewMeFile);
+					break;
 				case MeMap:
-					//ViewMeMap
 					convertView = inflater.inflate(R.layout.item_letter_me_map,
 							null);
 					viewMeMap = new ViewMeMap();
@@ -738,9 +785,11 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							.findViewById(R.id.tv_time);
 					viewMeMap.iv_me = (CircleImageView) convertView
 							.findViewById(R.id.iv_me);
-					viewMeMap.iv_me_map = (ImageView) convertView.findViewById(R.id.iv_me_map);
-					viewMeMap.tv_adress = (TextView) convertView.findViewById(R.id.tv_adress);
-					convertView.setTag(viewMeSound);
+					viewMeMap.iv_me_map = (ImageView) convertView
+							.findViewById(R.id.iv_me_map);
+					viewMeMap.tv_adress = (TextView) convertView
+							.findViewById(R.id.tv_adress);
+					convertView.setTag(viewMeMap);
 					break;
 				}
 			} else {
@@ -754,6 +803,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				case FriendSound:
 					viewFriendSound = (ViewFriendSound) convertView.getTag();
 					break;
+				case FriendFile:
+					viewFriendFile = (ViewFriendFile) convertView.getTag();
+					break;
+				case FriendMap:
+					viewFriendMap = (ViewFriendMap) convertView.getTag();
+					break;
 				case MeText:
 					viewMeText = (ViewMeText) convertView.getTag();
 					break;
@@ -763,11 +818,17 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				case MeSound:
 					viewMeSound = (ViewMeSound) convertView.getTag();
 					break;
+				case MeFile:
+					viewMeFile = (ViewMeFile) convertView.getTag();
+					break;
+				case MeMap:
+					viewMeMap = (ViewMeMap) convertView.getTag();
+					break;
 				}
 			}
 			boolean isTimeShow = false;
 			final LetterData letterData = letterDatas.get(position);
-			if (position == 0) { //第一条特殊考虑
+			if (position == 0) { // 第一条特殊考虑
 				// 最后一条
 				String now_time = letterData.getSend_time();
 				// 得到间隔分钟
@@ -790,168 +851,256 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			}
 			switch (Type) {
 			case FriendText:
-				if(isTimeShow){
+				if (isTimeShow) {
 					viewFriendText.tv_time.setVisibility(View.VISIBLE);
-					viewFriendText.tv_time.setText(letterData.getSend_time().substring(5, 16));
-				}else{
+					viewFriendText.tv_time.setText(letterData.getSend_time()
+							.substring(5, 16));
+				} else {
 					viewFriendText.tv_time.setVisibility(View.GONE);
 				}
 				if (imageFriend != null) {
 					viewFriendText.iv_friend.setImageBitmap(imageFriend);
 				} else {
-					viewFriendText.iv_friend.setImageResource(R.drawable.icon_people_no);
+					viewFriendText.iv_friend
+							.setImageResource(R.drawable.icon_people_no);
 				}
-				viewFriendText.tv_friend_content.setText(letterData.getContent());
-				viewFriendText.tv_friend_content.setOnLongClickListener(onLongClickListener);
+				viewFriendText.tv_friend_content.setText(letterData
+						.getContent());
+				viewFriendText.tv_friend_content
+						.setOnLongClickListener(onLongClickListener);
 				break;
 			case FriendImage:
-				if(isTimeShow){
+				if (isTimeShow) {
 					viewFriendImage.tv_time.setVisibility(View.VISIBLE);
-					viewFriendImage.tv_time.setText(letterData.getSend_time().substring(5, 16));
-				}else{
+					viewFriendImage.tv_time.setText(letterData.getSend_time()
+							.substring(5, 16));
+				} else {
 					viewFriendImage.tv_time.setVisibility(View.GONE);
 				}
 				if (imageFriend != null) {
 					viewFriendImage.iv_friend.setImageBitmap(imageFriend);
 				} else {
-					viewFriendImage.iv_friend.setImageResource(R.drawable.icon_people_no);
+					viewFriendImage.iv_friend
+							.setImageResource(R.drawable.icon_people_no);
 				}
-				//显示
+				// 显示
 				String imageUrl = letterData.getUrl();
 				int lastSlashIndex = imageUrl.lastIndexOf("/");
 				final String imageName = imageUrl.substring(lastSlashIndex + 1);
 				if (new File(getImagePath(imageUrl)).exists()) {
 					Bitmap image = BitmapFactory
 							.decodeFile(Constant.VehiclePath + imageName);
-					image = Blur.scaleImage(image, 100);					
-					viewFriendImage.iv_friend_pic.setImageBitmap(Blur.toRoundCorner(image, 5));
-					viewFriendImage.iv_friend_pic.setOnClickListener(new OnClickListener() {							
-						@Override
-						public void onClick(View v) {
-							Intent intent = new Intent(LetterActivity.this, ImageDetailsActivity.class);
-							intent.putExtra("image_path", Constant.VehiclePath + imageName);
-							startActivity(intent);
-						}
-					});
-				}else{
+					image = Blur.scaleImage(image, 100);
+					viewFriendImage.iv_friend_pic.setImageBitmap(Blur
+							.toRoundCorner(image, 5));
+					viewFriendImage.iv_friend_pic
+							.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									Intent intent = new Intent(
+											LetterActivity.this,
+											ImageDetailsActivity.class);
+									intent.putExtra("image_path",
+											Constant.VehiclePath + imageName);
+									startActivity(intent);
+								}
+							});
+				} else {
 					viewFriendImage.iv_friend_pic.setImageBitmap(null);
 				}
 				break;
 			case FriendSound:
-				if(isTimeShow){
+				if (isTimeShow) {
 					viewFriendSound.tv_time.setVisibility(View.VISIBLE);
-					viewFriendSound.tv_time.setText(letterData.getSend_time().substring(5, 16));
-				}else{
+					viewFriendSound.tv_time.setText(letterData.getSend_time()
+							.substring(5, 16));
+				} else {
 					viewFriendSound.tv_time.setVisibility(View.GONE);
 				}
 				if (imageFriend != null) {
 					viewFriendSound.iv_friend.setImageBitmap(imageFriend);
 				} else {
-					viewFriendSound.iv_friend.setImageResource(R.drawable.icon_people_no);
+					viewFriendSound.iv_friend
+							.setImageResource(R.drawable.icon_people_no);
 				}
-				viewFriendSound.tv_sound_lenght.setText(letterData.getVoice_len() + "\"");
-				
-				viewFriendSound.iv_friend_sound.setOnClickListener(new OnClickListener() {						
-					@Override
-					public void onClick(View v) {
-						playMusic(getImagePath(letterData.getUrl())) ;
-						noSoundPlay = type.friend;
-						ivNowPlay = (ImageView)v;
-						((ImageView)v).setImageResource(R.drawable.sound_friend);  
-						AnimationDrawable animationDrawable = (AnimationDrawable) ((ImageView)v).getDrawable();  
-		                animationDrawable.start();  
-					}
-				});
+				viewFriendSound.tv_sound_lenght.setText(letterData
+						.getVoice_len() + "\"");
+
+				viewFriendSound.iv_friend_sound
+						.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								playMusic(getImagePath(letterData.getUrl()));
+								noSoundPlay = type.friend;
+								ivNowPlay = (ImageView) v;
+								((ImageView) v)
+										.setImageResource(R.drawable.sound_friend);
+								AnimationDrawable animationDrawable = (AnimationDrawable) ((ImageView) v)
+										.getDrawable();
+								animationDrawable.start();
+							}
+						});
+				break;
+			case FriendMap:
+				if (isTimeShow) {
+					viewFriendMap.tv_time.setVisibility(View.VISIBLE);
+					viewFriendMap.tv_time.setText(letterData.getSend_time()
+							.substring(5, 16));
+				} else {
+					viewFriendMap.tv_time.setVisibility(View.GONE);
+				}
+				if (imageFriend != null) {
+					viewFriendMap.iv_friend.setImageBitmap(imageFriend);
+				} else {
+					viewFriendMap.iv_friend.setImageResource(R.drawable.icon_people_no);
+				}
+				viewFriendMap.tv_adress
+				.setLayoutParams(new LinearLayout.LayoutParams(mapWidth,LinearLayout.LayoutParams.WRAP_CONTENT));
+				viewFriendMap.tv_adress.setText(letterData.getAdress());
+				String imageUrl3 = letterData.getUrl();
+				int lastSlashIndex3 = imageUrl3.lastIndexOf("/");
+				final String imageName3 = imageUrl3
+						.substring(lastSlashIndex3 + 1);
+				if (new File(getImagePath(imageUrl3)).exists()) {
+					Bitmap image = BitmapFactory
+							.decodeFile(Constant.VehiclePath + imageName3);
+					image = Blur.scaleWidthImage(image, mapWidth);
+					viewFriendMap.iv_friend_map.setImageBitmap(Blur.toRoundCorner(
+							image, 5));
+					//TODO 地址大小
+					viewFriendMap.iv_friend_map
+							.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									Intent intent = new Intent(
+											LetterActivity.this,
+											MapFriendLocationActivity.class);
+									intent.putExtra("adress",
+											letterData.getAdress());
+									intent.putExtra("latitude",
+											letterData.getLat());
+									intent.putExtra("longitude",
+											letterData.getLon());
+									startActivity(intent);
+								}
+							});
+				} else {
+					viewFriendMap.iv_friend_map.setImageBitmap(null);
+				}
 				break;
 			case MeText:
-				if(isTimeShow){
+				if (isTimeShow) {
 					viewMeText.tv_time.setVisibility(View.VISIBLE);
-					viewMeText.tv_time.setText(letterData.getSend_time().substring(5, 16));
-				}else{
+					viewMeText.tv_time.setText(letterData.getSend_time()
+							.substring(5, 16));
+				} else {
 					viewMeText.tv_time.setVisibility(View.GONE);
 				}
 				if (imageMe != null) {
 					viewMeText.iv_me.setImageBitmap(imageMe);
 				} else {
-					viewMeText.iv_me.setImageResource(R.drawable.icon_people_no);
+					viewMeText.iv_me
+							.setImageResource(R.drawable.icon_people_no);
 				}
 				viewMeText.tv_me_content.setText(letterData.getContent());
-				viewMeText.tv_me_content.setOnLongClickListener(onLongClickListener);
+				viewMeText.tv_me_content
+						.setOnLongClickListener(onLongClickListener);
 				break;
 			case MeImage:
-				if(isTimeShow){
+				if (isTimeShow) {
 					viewMeImage.tv_time.setVisibility(View.VISIBLE);
-					viewMeImage.tv_time.setText(letterData.getSend_time().substring(5, 16));
-				}else{
+					viewMeImage.tv_time.setText(letterData.getSend_time()
+							.substring(5, 16));
+				} else {
 					viewMeImage.tv_time.setVisibility(View.GONE);
 				}
 				if (imageMe != null) {
 					viewMeImage.iv_me.setImageBitmap(imageMe);
 				} else {
-					viewMeImage.iv_me.setImageResource(R.drawable.icon_people_no);
+					viewMeImage.iv_me
+							.setImageResource(R.drawable.icon_people_no);
 				}
-				//显示
+				// 显示
 				String imageUrl1 = letterData.getUrl();
 				int lastSlashIndex1 = imageUrl1.lastIndexOf("/");
-				final String imageName1 = imageUrl1.substring(lastSlashIndex1 + 1);
+				final String imageName1 = imageUrl1
+						.substring(lastSlashIndex1 + 1);
 				if (new File(getImagePath(imageUrl1)).exists()) {
-					Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath + imageName1);
+					Bitmap image = BitmapFactory
+							.decodeFile(Constant.VehiclePath + imageName1);
 					image = Blur.scaleImage(image, 100);
-					viewMeImage.iv_me_pic.setImageBitmap(Blur.toRoundCorner(image, 5));
-					viewMeImage.iv_me_pic.setOnClickListener(new OnClickListener() {							
-						@Override
-						public void onClick(View v) {
-							Intent intent = new Intent(LetterActivity.this, ImageDetailsActivity.class);
-							intent.putExtra("image_path", Constant.VehiclePath + imageName1);
-							startActivity(intent);
-						}
-					});
-					if(letterData.isSendIn){
-						float Scale = Blur.calculateScale(image.getHeight(), image.getWidth(), 100);
+					viewMeImage.iv_me_pic.setImageBitmap(Blur.toRoundCorner(
+							image, 5));
+					viewMeImage.iv_me_pic
+							.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									Intent intent = new Intent(
+											LetterActivity.this,
+											ImageDetailsActivity.class);
+									intent.putExtra("image_path",
+											Constant.VehiclePath + imageName1);
+									startActivity(intent);
+								}
+							});
+					if (letterData.isSendIn) {
+						float Scale = Blur.calculateScale(image.getHeight(),
+								image.getWidth(), 100);
 						viewMeImage.tv_send_in.setVisibility(View.VISIBLE);
-						viewMeImage.tv_send_in.setLayoutParams(new RelativeLayout.LayoutParams((int)(image.getWidth() * Scale), (int)(image.getHeight() * Scale)));
+						viewMeImage.tv_send_in
+								.setLayoutParams(new RelativeLayout.LayoutParams(
+										(int) (image.getWidth() * Scale),
+										(int) (image.getHeight() * Scale)));
 						viewMeImage.tv_send_in.startTim();
-					}else{
+					} else {
 						viewMeImage.tv_send_in.setVisibility(View.GONE);
 						viewMeImage.tv_send_in.setStop(true);
 					}
-					
-				}else{
+
+				} else {
 					viewMeImage.iv_me_pic.setImageBitmap(null);
 				}
 				break;
 			case MeSound:
-				if(isTimeShow){
+				if (isTimeShow) {
 					viewMeSound.tv_time.setVisibility(View.VISIBLE);
-					viewMeSound.tv_time.setText(letterData.getSend_time().substring(5, 16));
-				}else{
+					viewMeSound.tv_time.setText(letterData.getSend_time()
+							.substring(5, 16));
+				} else {
 					viewMeSound.tv_time.setVisibility(View.GONE);
 				}
 				if (imageMe != null) {
 					viewMeSound.iv_me.setImageBitmap(imageMe);
 				} else {
-					viewMeSound.iv_me.setImageResource(R.drawable.icon_people_no);
+					viewMeSound.iv_me
+							.setImageResource(R.drawable.icon_people_no);
 				}
-				viewMeSound.tv_sound_lenght.setText(letterData.getVoice_len() + "\"");
-				//TODO viewMeSound.iv_me_sound.setLayoutParams(new RelativeLayout.LayoutParams(500, LayoutParams.WRAP_CONTENT));
-				
-				viewMeSound.iv_me_sound.setOnClickListener(new OnClickListener() {						
-					@Override
-					public void onClick(View v) {
-						playMusic(getImagePath(letterData.getUrl())) ;
-						noSoundPlay = type.me;
-						ivNowPlay = (ImageView)v;
-						((ImageView)v).setImageResource(R.drawable.sound_me);  
-						AnimationDrawable animationDrawable = (AnimationDrawable) ((ImageView)v).getDrawable();  
-		                animationDrawable.start();  
-					}
-				});
+				viewMeSound.tv_sound_lenght.setText(letterData.getVoice_len()
+						+ "\"");
+				// TODO viewMeSound.iv_me_sound.setLayoutParams(new
+				// RelativeLayout.LayoutParams(500, LayoutParams.WRAP_CONTENT));
+
+				viewMeSound.iv_me_sound
+						.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								playMusic(getImagePath(letterData.getUrl()));
+								noSoundPlay = type.me;
+								ivNowPlay = (ImageView) v;
+								((ImageView) v)
+										.setImageResource(R.drawable.sound_me);
+								AnimationDrawable animationDrawable = (AnimationDrawable) ((ImageView) v)
+										.getDrawable();
+								animationDrawable.start();
+							}
+						});
 				break;
 			case MeMap:
-				if(isTimeShow){
+				if (isTimeShow) {
 					viewMeMap.tv_time.setVisibility(View.VISIBLE);
-					viewMeMap.tv_time.setText(letterData.getSend_time().substring(5, 16));
-				}else{
+					viewMeMap.tv_time.setText(letterData.getSend_time()
+							.substring(5, 16));
+				} else {
 					viewMeMap.tv_time.setVisibility(View.GONE);
 				}
 				if (imageMe != null) {
@@ -959,32 +1108,47 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				} else {
 					viewMeMap.iv_me.setImageResource(R.drawable.icon_people_no);
 				}
-				//显示
-				System.out.println("地图地址 ："+ letterData.getUrl());
+				// 显示
+				viewMeMap.tv_adress
+				.setLayoutParams(new LinearLayout.LayoutParams(mapWidth,LinearLayout.LayoutParams.WRAP_CONTENT));
+				
+				viewMeMap.tv_adress.setText(letterData.getAdress());
+				System.out.println("地图地址 ：" + letterData.getUrl());
 				String imageUrl2 = letterData.getUrl();
 				int lastSlashIndex2 = imageUrl2.lastIndexOf("/");
-				final String imageName2 = imageUrl2.substring(lastSlashIndex2 + 1);
+				final String imageName2 = imageUrl2
+						.substring(lastSlashIndex2 + 1);
 				if (new File(getImagePath(imageUrl2)).exists()) {
-					Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath + imageName2);
-					image = Blur.scaleImage(image, 500);
-					viewMeMap.iv_me_map.setImageBitmap(Blur.toRoundCorner(image, 5));
-					viewMeMap.iv_me_map.setOnClickListener(new OnClickListener() {							
-						@Override
-						public void onClick(View v) {
-							Intent intent = new Intent(LetterActivity.this, MapFriendLocationActivity.class);
-							intent.putExtra("adress", letterData.getAdress());
-							intent.putExtra("latitude", letterData.getLat());
-							intent.putExtra("longitude", letterData.getLon());
-							startActivity(intent);
-						}
-					});					
-				}else{
+					Bitmap image = BitmapFactory
+							.decodeFile(Constant.VehiclePath + imageName2);
+					image = Blur.scaleWidthImage(image, mapWidth);
+					
+					viewMeMap.iv_me_map.setImageBitmap(Blur.toRoundCorner(
+							image, 5));
+					viewMeMap.iv_me_map
+							.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									Intent intent = new Intent(
+											LetterActivity.this,
+											MapFriendLocationActivity.class);
+									intent.putExtra("adress",
+											letterData.getAdress());
+									intent.putExtra("latitude",
+											letterData.getLat());
+									intent.putExtra("longitude",
+											letterData.getLon());
+									startActivity(intent);
+								}
+							});
+				} else {
 					viewMeMap.iv_me_map.setImageBitmap(null);
 				}
 				break;
 			}
 			return convertView;
 		}
+
 		@Override
 		public int getItemViewType(int position) {
 			LetterData letterData = letterDatas.get(position);
@@ -993,42 +1157,66 @@ public class LetterActivity extends Activity implements IXListViewListener {
 
 		@Override
 		public int getViewTypeCount() {
-			return 6;
+			return 10;
 		}
-		class ViewFriendText{
+
+		class ViewFriendText {
 			TextView tv_time;
 			CircleImageView iv_friend;
 			TextView tv_friend_content;
 		}
+
 		class ViewFriendImage {
 			TextView tv_time;
 			CircleImageView iv_friend;
 			ImageView iv_friend_pic;
 		}
+
 		class ViewFriendSound {
 			TextView tv_time;
 			CircleImageView iv_friend;
 			TextView tv_sound_lenght;
 			ImageView iv_friend_sound;
 		}
-		
+		class ViewFriendFile {
+			TextView tv_time;
+			CircleImageView iv_friend;
+			TextView tv_friend_content;
+		}
+
+		class ViewFriendMap {
+			TextView tv_time;
+			CircleImageView iv_friend;
+			TextView tv_adress;
+			ImageView iv_friend_map;
+		}
+
 		class ViewMeText {
 			TextView tv_time;
 			CircleImageView iv_me;
 			TextView tv_me_content;
 		}
+
 		class ViewMeImage {
 			TextView tv_time;
 			CircleImageView iv_me;
 			ImageView iv_me_pic;
 			TimTextView tv_send_in;
 		}
+
 		class ViewMeSound {
 			TextView tv_time;
 			CircleImageView iv_me;
 			TextView tv_sound_lenght;
 			ImageView iv_me_sound;
 		}
+		
+		class ViewMeFile {
+			TextView tv_time;
+			CircleImageView iv_me;
+			TextView tv_me_content;
+		}
+
 		class ViewMeMap {
 			TextView tv_time;
 			CircleImageView iv_me;
@@ -1036,7 +1224,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			ImageView iv_me_map;
 		}
 	}
-	
+
 	class LetterData {
 		int chatType;
 		String content;
@@ -1051,38 +1239,48 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		double lat;
 		double lon;
 		String adress;
-		boolean isSendIn;		
-		
+		boolean isSendIn;
+
 		public String getAdress() {
 			return adress;
 		}
+
 		public void setAdress(String adress) {
 			this.adress = adress;
 		}
+
 		public double getLat() {
 			return lat;
 		}
+
 		public void setLat(double lat) {
 			this.lat = lat;
 		}
+
 		public double getLon() {
 			return lon;
 		}
+
 		public void setLon(double lon) {
 			this.lon = lon;
 		}
+
 		public boolean isSendIn() {
 			return isSendIn;
 		}
+
 		public void setSendIn(boolean isSendIn) {
 			this.isSendIn = isSendIn;
 		}
+
 		public int getVoice_len() {
 			return voice_len;
 		}
+
 		public void setVoice_len(int voice_len) {
 			this.voice_len = voice_len;
 		}
+
 		public String getUrl() {
 			return url;
 		}
@@ -1105,7 +1303,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 
 		public void setChat_id(int chat_id) {
 			this.chat_id = chat_id;
-		}	
+		}
 
 		public int getChatType() {
 			return chatType;
@@ -1154,6 +1352,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		public void setRelat_id(int relat_id) {
 			this.relat_id = relat_id;
 		}
+
 		@Override
 		public String toString() {
 			return "LetterData [chatType=" + chatType + ", content=" + content
@@ -1163,7 +1362,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					+ chat_id + ", url=" + url + ", voice_len=" + voice_len
 					+ ", lat=" + lat + ", lon=" + lon + ", adress=" + adress
 					+ ", isSendIn=" + isSendIn + "]";
-		}		
+		}
 	}
 
 	class MyBroadCastReceiver extends BroadcastReceiver {
@@ -1179,13 +1378,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						// 如果是当前朋友发来的私信则显示
 						LetterData letterData = new LetterData();
 						letterData.setContent(content);
-						letterData.setChatType(revisionType(true,jsonObject.getInt("msg_type") * 2));
+						letterData.setChatType(revisionType(true,
+								jsonObject.getInt("msg_type") * 2));
 						letterData.setSend_time(GetSystem.GetNowTime());
 						letterData.setUrl(jsonObject.getString("url"));
-						letterDatas.add(letterData);						
+						letterDatas.add(letterData);
 						letterAdapter.notifyDataSetChanged();
 						lv_letter.setSelection(lv_letter.getBottom());
-						handler.postDelayed(new Runnable() {					
+						handler.postDelayed(new Runnable() {
 							@Override
 							public void run() {
 								getPersionImage();
@@ -1195,12 +1395,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-			}else if (action.equals(Constant.A_City)) {
-				if(myDialog != null){
+			} else if (action.equals(Constant.A_City)) {
+				if (myDialog != null) {
 					myDialog.dismiss();
 				}
-            	et_content.setText(intent.getStringExtra("AddrStr"));
-            }
+				et_content.setText(intent.getStringExtra("AddrStr"));
+			}
 		}
 	}
 
@@ -1226,69 +1426,73 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	@Override
 	public void onLoadMore() {
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		System.out.println("requestCode = " + requestCode + " , resultCode = " + resultCode);
-		if(resultCode == Activity.RESULT_CANCELED){
+		System.out.println("requestCode = " + requestCode + " , resultCode = "
+				+ resultCode);
+		if (resultCode == Activity.RESULT_CANCELED) {
 			ll_menu.setVisibility(View.VISIBLE);
 			return;
-		}else if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+		} else if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
 			// 拍照返回
-			saveImageSD((Constant.VehiclePath + Constant.TemporaryImage),1,0.0,0.0,"");
+			saveImageSD((Constant.VehiclePath + Constant.TemporaryImage), 1,
+					0.0, 0.0, "");
 			return;
-		}else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
+		} else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
 			// 图库返回
 			if (data != null) {
 				// 获取图片路径
 				Uri uri = data.getData();
-				saveImageSD(getPath(uri),1,0.0,0.0,"");
+				saveImageSD(getPath(uri), 1, 0.0, 0.0, "");
 			}
 			return;
-		}else if(requestCode == 3 && resultCode ==3){
-			//选着位置后返回
+		} else if (requestCode == 3 && resultCode == 3) {
+			// 选着位置后返回
 			String adress = data.getStringExtra("adress");
 			String mapPath = data.getStringExtra("mapPath");
 			double latitude = data.getDoubleExtra("latitude", 0);
 			double longitude = data.getDoubleExtra("longitude", 0);
-			saveImageSD(mapPath,4,latitude,longitude,adress);
+			saveImageSD(mapPath, 4, latitude, longitude, adress);
 			return;
 		}
 	}
+
 	/**
 	 * 图库和拍照的图片需要压缩处理在发送
+	 * 
 	 * @param path
 	 */
-	private void saveImageSD(final String path,final int Type,final double lat,final double lon,String adress) {
+	private void saveImageSD(final String path, final int Type,
+			final double lat, final double lon, final String address) {
 		// 设置图像的名称和地址
-		final String big_pic = app.cust_id + System.currentTimeMillis() + ".png";
+		final String big_pic = app.cust_id + System.currentTimeMillis()
+				+ ".png";
 		final String oss_url = Constant.oss_url + big_pic;
 		// 判断文件夹是否为空
 		File filePath = new File(Constant.VehiclePath);
 		if (!filePath.exists()) {
 			filePath.mkdirs();
 		}
-		
+
 		// 获取手机分辨率,选出最小的
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		int widthPixels = metrics.widthPixels;
 		int heightPixels = metrics.heightPixels;
-		int newWidth = widthPixels > heightPixels ? heightPixels
-				: widthPixels;
-		
-		Bitmap bitmap = Blur.decodeSampledBitmapFromPath(path,
-				newWidth, newWidth);
-		//存大图像
+		int newWidth = widthPixels > heightPixels ? heightPixels : widthPixels;
+
+		Bitmap bitmap = Blur.decodeSampledBitmapFromPath(path, newWidth,
+				newWidth);
+		// 存大图像
 		bitmap = Blur.scaleImage(bitmap, newWidth);
 
 		FileOutputStream bigOutputStream = null;
 		final String bigFile = Constant.VehiclePath + big_pic;
 		try {
 			bigOutputStream = new FileOutputStream(bigFile);
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 90,
-					bigOutputStream);// 把数据写入文件
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bigOutputStream);// 把数据写入文件
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
@@ -1298,8 +1502,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}		
-		//先显示
+		}
+		// 先显示
 		LetterData letterData = new LetterData();
 		letterData.setContent("");
 		letterData.setChatType(Type * 2 + 1);
@@ -1309,7 +1513,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		letterData.setSendIn(true);
 		letterData.setLat(lat);
 		letterData.setLon(lon);
-		letterData.setAdress(adress);
+		letterData.setAdress(address);
 		letterDatas.add(letterData);
 		letterAdapter.notifyDataSetChanged();
 		lv_letter.setSelection(lv_letter.getBottom());
@@ -1318,7 +1522,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		// 存到服务器
 		new Thread(new Runnable() {
 			@Override
-			public void run() {				
+			public void run() {
 				// 上传大图图片到阿里云
 				PutObjectTask bigTask = new PutObjectTask(Constant.oss_path,
 						big_pic, "image/jpg", bigFile, Constant.oss_accessId,
@@ -1329,16 +1533,17 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 				pairs.add(new BasicNameValuePair("cust_name", app.cust_name));
 				pairs.add(new BasicNameValuePair("friend_id", friend_id));
-				pairs.add(new BasicNameValuePair("type", ""+Type));
+				pairs.add(new BasicNameValuePair("type", "" + Type));
 				pairs.add(new BasicNameValuePair("url", oss_url));
 				pairs.add(new BasicNameValuePair("content", ""));
 				pairs.add(new BasicNameValuePair("voice_len", "0"));
 				pairs.add(new BasicNameValuePair("lat", String.valueOf(lat)));
 				pairs.add(new BasicNameValuePair("lon", String.valueOf(lon)));
+				pairs.add(new BasicNameValuePair("address", address));
 				String result = NetThread.postData(url, pairs);
 				GetSystem.myLog(TAG, result);
-				for(LetterData letterData : letterDatas){
-					if(letterData.getUrl().equals(oss_url)){
+				for (LetterData letterData : letterDatas) {
+					if (letterData.getUrl().equals(oss_url)) {
 						letterData.setSendIn(false);
 						Message message = new Message();
 						message.what = putOssImage;
@@ -1378,6 +1583,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		cursor.moveToFirst();
 		return cursor.getString(column_index);
 	}
+
 	private String getImagePath(String imageUrl) {
 		int lastSlashIndex = imageUrl.lastIndexOf("/");
 		String imageName = imageUrl.substring(lastSlashIndex + 1);
@@ -1415,6 +1621,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	private void getPersionImage() {
 		int start = lv_letter.getFirstVisiblePosition();
 		int stop = lv_letter.getLastVisiblePosition();
+		// 循环读取图片
 		for (int i = start; i < stop; i++) {
 			if (start == 0 || stop == (letterDatas.size() - 1)) {
 
@@ -1422,7 +1629,6 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				// 判断图片是否存在
 				if (new File(getImagePath(letterDatas.get(i - 1).getUrl()))
 						.exists()) {
-
 				} else {
 					if (isThreadRun(i - 1)) {
 						// 如果图片正在读取则跳过
@@ -1486,12 +1692,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			handler.sendMessage(message);
 		}
 	}
-	
+
 	int voice_len = 0;
-	
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		
+
 		if (!Environment.getExternalStorageDirectory().exists()) {
 			Toast.makeText(this, "No SDCard", Toast.LENGTH_LONG).show();
 			return false;
@@ -1554,7 +1760,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					stop();
 					endVoiceT = System.currentTimeMillis();
 					flag = 1;
-					
+
 					int time = (int) ((endVoiceT - startVoiceT) / 1000);
 					voice_len = time;
 					GetSystem.myLog(TAG, "time = " + time);
@@ -1666,16 +1872,18 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			break;
 		}
 	}
+
 	private void playMusic(String name) {
 		try {
 			if (mMediaPlayer.isPlaying()) {
 				mMediaPlayer.stop();
-				AnimationDrawable animationDrawable = (AnimationDrawable) ivNowPlay.getDrawable();  
-                animationDrawable.stop(); 
-				if(noSoundPlay == type.me){
-	                ivNowPlay.setImageResource(R.drawable.sound_me_2);
-				}else{
-	                ivNowPlay.setImageResource(R.drawable.sound_friend_2);
+				AnimationDrawable animationDrawable = (AnimationDrawable) ivNowPlay
+						.getDrawable();
+				animationDrawable.stop();
+				if (noSoundPlay == type.me) {
+					ivNowPlay.setImageResource(R.drawable.sound_me_2);
+				} else {
+					ivNowPlay.setImageResource(R.drawable.sound_friend_2);
 				}
 			}
 			mMediaPlayer.reset();
@@ -1684,12 +1892,13 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			mMediaPlayer.start();
 			mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
 				public void onCompletion(MediaPlayer mp) {
-					AnimationDrawable animationDrawable = (AnimationDrawable) ivNowPlay.getDrawable();  
-	                animationDrawable.stop(); 
-					if(noSoundPlay == type.me){
-		                ivNowPlay.setImageResource(R.drawable.sound_me_2);
-					}else{
-		                ivNowPlay.setImageResource(R.drawable.sound_friend_2);
+					AnimationDrawable animationDrawable = (AnimationDrawable) ivNowPlay
+							.getDrawable();
+					animationDrawable.stop();
+					if (noSoundPlay == type.me) {
+						ivNowPlay.setImageResource(R.drawable.sound_me_2);
+					} else {
+						ivNowPlay.setImageResource(R.drawable.sound_friend_2);
 					}
 				}
 			});
@@ -1699,10 +1908,11 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		}
 
 	}
-	private void back(){
-		if(ll_menu.getVisibility() == View.VISIBLE){
+
+	private void back() {
+		if (ll_menu.getVisibility() == View.VISIBLE) {
 			ll_menu.setVisibility(View.GONE);
-		}else{
+		} else {
 			if (mMediaPlayer.isPlaying()) {
 				mMediaPlayer.stop();
 			}
@@ -1718,30 +1928,17 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	/**防止超过0-9之间的数据**/
-	private int revisionType(boolean isFriend , int Type){
-		if(Type >= 0 && Type <= 9){
+
+	/** 防止超过0-9之间的数据 **/
+	private int revisionType(boolean isFriend, int Type) {
+		if (Type >= 0 && Type <= 9) {
 			return Type;
-		}else{
-			if(isFriend){
+		} else {
+			if (isFriend) {
 				return 0;
-			}else{
+			} else {
 				return 1;
 			}
 		}
 	}
-	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
-		
-		@Override
-		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void onGetGeoCodeResult(GeoCodeResult arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-	};
 }

@@ -266,6 +266,10 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 							noticeData.setContent("[图片]");
 						}else if(type == 2){
 							noticeData.setContent("[语音]");
+						}else if(type == 3){
+							noticeData.setContent("[文件]");
+						}else if(type == 4){
+							noticeData.setContent("[位置]");
 						}
 					}
 					noticeDatas.add(noticeData);
