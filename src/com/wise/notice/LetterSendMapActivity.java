@@ -213,6 +213,7 @@ public class LetterSendMapActivity extends Activity {
 							intent.putExtra("adress", adress);
 							intent.putExtra("latitude", latitude);
 							intent.putExtra("longitude", longitude);
+							intent.putExtra("mapPath", Constant.TemporaryMapImage);
 							LetterSendMapActivity.this.setResult(3, intent);
 							finish();
 						} catch (FileNotFoundException e) {

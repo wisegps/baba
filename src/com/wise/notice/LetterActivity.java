@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Blur;
 import pubclas.Constant;
-import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import xlist.XListView;
@@ -25,6 +24,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.show.ImageDetailsActivity;
@@ -97,11 +100,13 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	private static final int FriendText = 0;
 	private static final int FriendImage = 2;
 	private static final int FriendSound = 4;
-	private static final int FriendMap = 6;
+	private static final int FriendFile = 6;
+	private static final int FriendMap = 8;
 	private static final int MeText = 1;
 	private static final int MeImage = 3;
 	private static final int MeSound = 5;
-	private static final int MeMap = 7;
+	private static final int MeFile = 7;
+	private static final int MeMap = 9;
 	
 	private static final int send_letter = 1;
 	private static final int get_data = 2;
@@ -140,15 +145,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	String voiceName;
 	SoundMeter mSensor;
 	int flag = 1;
-	/**文字，语音，图片**/
-	int type_text = 0;
-	int type_pic = 1;
-	int type_sound = 2;
 	/**当前播放谁的语言，播放完毕后需要使用它来改变不同的图片**/
 	type noSoundPlay;
 	enum type {friend,me};
 	AppApplication app;
 	ProgressDialog myDialog = null;
+	private GeoCoder mGeoCoder = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +159,11 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		setContentView(R.layout.activity_letter);	
 		app = (AppApplication)getApplication();
 		mQueue = Volley.newRequestQueue(this);
+		mGeoCoder = GeoCoder.newInstance();
+		mGeoCoder.setOnGetGeoCodeResultListener(listener);
+		DisplayMetrics dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		int width = dm.widthPixels;
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		iv_expand = (ImageView)findViewById(R.id.iv_expand);
@@ -263,9 +270,6 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			case R.id.iv_location:
 				ll_menu.setVisibility(View.GONE);
 				startActivityForResult(new Intent(LetterActivity.this, LetterSendMapActivity.class),3);
-				//myDialog = ProgressDialog.show(LetterActivity.this,"提示", "地理位置获取中...");
-                //myDialog.setCancelable(true);
-                //new GetLocation(LetterActivity.this);
 				break;
 			case R.id.et_content:
 				if(ll_menu.getVisibility() == View.VISIBLE){
@@ -282,7 +286,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
-				send(content, "", "0");
+				send(content, "", "0",0.0,0.0);
 				break;
 			case R.id.iv_back:
 				back();
@@ -422,17 +426,19 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				break;
 			case getOssSound:
 				String sound_url = Constant.oss_url + soundName;
-				send("0", sound_url, "2");
+				send("0", sound_url, "2",0.0,0.0);
 				break;
 			}
 		}
 	};
+	
 	OnFinishListener onFinishListener = new OnFinishListener() {
 		@Override
 		public void OnFinish(int index) {
 			List<LetterData> lDatas = jsonData(refresh);
 			letterDatas.addAll(0, lDatas);
 			letterAdapter.notifyDataSetChanged();
+			System.out.println("lDatas.size() = "+letterDatas.size());
 			lv_letter.setSelection(lDatas.size());
 			onLoadOver();
 		}
@@ -444,9 +450,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	 * @param url
 	 *            url,
 	 * @param type
-	 *            类型,0:文本 1:图片 2:语音
+	 *            类型,0:文本 1:图片 2:语音, 3:文件  4:位置
 	 */
-	private void send(String content, String oss_url, String type) {
+	private void send(String content, String oss_url, String type,double lat,double lon) {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id
 				+ "/send_chat?auth_code=" + app.auth_code;
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -456,6 +462,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		pairs.add(new BasicNameValuePair("url", oss_url));
 		pairs.add(new BasicNameValuePair("content", content));
 		pairs.add(new BasicNameValuePair("voice_len", String.valueOf(voice_len)));
+		pairs.add(new BasicNameValuePair("lat", String.valueOf(lat)));
+		pairs.add(new BasicNameValuePair("lon", String.valueOf(lon)));
 		new NetThread.postDataThread(handler, url, pairs, send_letter).start();
 		et_content.setText("");
 		//添加显示
@@ -502,6 +510,16 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				}else{
 					letterData.setVoice_len(jsonObject.getInt("voice_len"));
 				}
+				if(jsonObject.opt("lat") == null){
+					letterData.setLat(0);
+				}else{
+					letterData.setLat(jsonObject.getDouble("lat"));
+				}
+				if(jsonObject.opt("lon") == null){
+					letterData.setLon(0);
+				}else{
+					letterData.setLon(jsonObject.getDouble("lon"));
+				}
 				letterData.setChat_id(jsonObject.getInt("chat_id"));
 				letterData.setContent(jsonObject.getString("content"));
 				String sender_id = jsonObject.getString("sender_id");
@@ -517,6 +535,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				}
 				letterData.setUrl(jsonObject.getString("url"));
 				letterData.setSendIn(false);
+				System.out.println(letterData.toString());
 				lDatas.add(letterData);
 			}
 		} catch (JSONException e) {
@@ -628,6 +647,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			ViewMeText viewMeText = null;
 			ViewMeImage viewMeImage = null;
 			ViewMeSound viewMeSound = null;
+			ViewMeMap viewMeMap = null;
 			
 			if (convertView == null) {
 				switch (Type) {
@@ -707,6 +727,19 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							.findViewById(R.id.iv_me_sound);
 					viewMeSound.tv_sound_lenght = (TextView) convertView
 							.findViewById(R.id.tv_sound_lenght);
+					convertView.setTag(viewMeSound);
+					break;
+				case MeMap:
+					//ViewMeMap
+					convertView = inflater.inflate(R.layout.item_letter_me_map,
+							null);
+					viewMeMap = new ViewMeMap();
+					viewMeMap.tv_time = (TextView) convertView
+							.findViewById(R.id.tv_time);
+					viewMeMap.iv_me = (CircleImageView) convertView
+							.findViewById(R.id.iv_me);
+					viewMeMap.iv_me_map = (ImageView) convertView.findViewById(R.id.iv_me_map);
+					viewMeMap.tv_adress = (TextView) convertView.findViewById(R.id.tv_adress);
 					convertView.setTag(viewMeSound);
 					break;
 				}
@@ -914,6 +947,41 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					}
 				});
 				break;
+			case MeMap:
+				if(isTimeShow){
+					viewMeMap.tv_time.setVisibility(View.VISIBLE);
+					viewMeMap.tv_time.setText(letterData.getSend_time().substring(5, 16));
+				}else{
+					viewMeMap.tv_time.setVisibility(View.GONE);
+				}
+				if (imageMe != null) {
+					viewMeMap.iv_me.setImageBitmap(imageMe);
+				} else {
+					viewMeMap.iv_me.setImageResource(R.drawable.icon_people_no);
+				}
+				//显示
+				System.out.println("地图地址 ："+ letterData.getUrl());
+				String imageUrl2 = letterData.getUrl();
+				int lastSlashIndex2 = imageUrl2.lastIndexOf("/");
+				final String imageName2 = imageUrl2.substring(lastSlashIndex2 + 1);
+				if (new File(getImagePath(imageUrl2)).exists()) {
+					Bitmap image = BitmapFactory.decodeFile(Constant.VehiclePath + imageName2);
+					image = Blur.scaleImage(image, 500);
+					viewMeMap.iv_me_map.setImageBitmap(Blur.toRoundCorner(image, 5));
+					viewMeMap.iv_me_map.setOnClickListener(new OnClickListener() {							
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(LetterActivity.this, MapFriendLocationActivity.class);
+							intent.putExtra("adress", letterData.getAdress());
+							intent.putExtra("latitude", letterData.getLat());
+							intent.putExtra("longitude", letterData.getLon());
+							startActivity(intent);
+						}
+					});					
+				}else{
+					viewMeMap.iv_me_map.setImageBitmap(null);
+				}
+				break;
 			}
 			return convertView;
 		}
@@ -943,6 +1011,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			TextView tv_sound_lenght;
 			ImageView iv_friend_sound;
 		}
+		
 		class ViewMeText {
 			TextView tv_time;
 			CircleImageView iv_me;
@@ -960,6 +1029,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			TextView tv_sound_lenght;
 			ImageView iv_me_sound;
 		}
+		class ViewMeMap {
+			TextView tv_time;
+			CircleImageView iv_me;
+			TextView tv_adress;
+			ImageView iv_me_map;
+		}
 	}
 	
 	class LetterData {
@@ -973,8 +1048,29 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		int chat_id;
 		String url;
 		int voice_len;
+		double lat;
+		double lon;
+		String adress;
 		boolean isSendIn;		
 		
+		public String getAdress() {
+			return adress;
+		}
+		public void setAdress(String adress) {
+			this.adress = adress;
+		}
+		public double getLat() {
+			return lat;
+		}
+		public void setLat(double lat) {
+			this.lat = lat;
+		}
+		public double getLon() {
+			return lon;
+		}
+		public void setLon(double lon) {
+			this.lon = lon;
+		}
 		public boolean isSendIn() {
 			return isSendIn;
 		}
@@ -1058,15 +1154,16 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		public void setRelat_id(int relat_id) {
 			this.relat_id = relat_id;
 		}
-
 		@Override
 		public String toString() {
-			return "LetterData [type=" + chatType + ", content=" + content
+			return "LetterData [chatType=" + chatType + ", content=" + content
 					+ ", friend_id=" + friend_id + ", friend_name="
 					+ friend_name + ", logo=" + logo + ", send_time="
 					+ send_time + ", relat_id=" + relat_id + ", chat_id="
-					+ chat_id + ", url=" + url + "]";
-		}
+					+ chat_id + ", url=" + url + ", voice_len=" + voice_len
+					+ ", lat=" + lat + ", lon=" + lon + ", adress=" + adress
+					+ ", isSendIn=" + isSendIn + "]";
+		}		
 	}
 
 	class MyBroadCastReceiver extends BroadcastReceiver {
@@ -1139,32 +1236,31 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			return;
 		}else if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
 			// 拍照返回
-			saveImage(Constant.VehiclePath + Constant.TemporaryImage);
+			saveImageSD((Constant.VehiclePath + Constant.TemporaryImage),1,0.0,0.0,"");
 			return;
 		}else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
 			// 图库返回
 			if (data != null) {
 				// 获取图片路径
 				Uri uri = data.getData();
-				saveImage(getPath(uri));
+				saveImageSD(getPath(uri),1,0.0,0.0,"");
 			}
 			return;
 		}else if(requestCode == 3 && resultCode ==3){
+			//选着位置后返回
 			String adress = data.getStringExtra("adress");
+			String mapPath = data.getStringExtra("mapPath");
 			double latitude = data.getDoubleExtra("latitude", 0);
 			double longitude = data.getDoubleExtra("longitude", 0);
-			System.out.println(adress + "," + latitude + "," + longitude);
-			Intent intent = new Intent(LetterActivity.this, MapFriendLocationActivity.class);
-			intent.putExtra("adress", adress);
-			intent.putExtra("latitude", latitude);
-			intent.putExtra("longitude", longitude);
-			startActivity(intent);
+			saveImageSD(mapPath,4,latitude,longitude,adress);
 			return;
 		}
-		//TODO 
 	}
-
-	private void saveImage(final String path) {
+	/**
+	 * 图库和拍照的图片需要压缩处理在发送
+	 * @param path
+	 */
+	private void saveImageSD(final String path,final int Type,final double lat,final double lon,String adress) {
 		// 设置图像的名称和地址
 		final String big_pic = app.cust_id + System.currentTimeMillis() + ".png";
 		final String oss_url = Constant.oss_url + big_pic;
@@ -1206,11 +1302,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		//先显示
 		LetterData letterData = new LetterData();
 		letterData.setContent("");
-		letterData.setChatType(MeImage);
+		letterData.setChatType(Type * 2 + 1);
 		letterData.setUrl(oss_url);
 		letterData.setSend_time(GetSystem.GetNowTime());
 		letterData.setVoice_len(0);
 		letterData.setSendIn(true);
+		letterData.setLat(lat);
+		letterData.setLon(lon);
+		letterData.setAdress(adress);
 		letterDatas.add(letterData);
 		letterAdapter.notifyDataSetChanged();
 		lv_letter.setSelection(lv_letter.getBottom());
@@ -1230,10 +1329,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 				pairs.add(new BasicNameValuePair("cust_name", app.cust_name));
 				pairs.add(new BasicNameValuePair("friend_id", friend_id));
-				pairs.add(new BasicNameValuePair("type", "1"));
+				pairs.add(new BasicNameValuePair("type", ""+Type));
 				pairs.add(new BasicNameValuePair("url", oss_url));
 				pairs.add(new BasicNameValuePair("content", ""));
 				pairs.add(new BasicNameValuePair("voice_len", "0"));
+				pairs.add(new BasicNameValuePair("lat", String.valueOf(lat)));
+				pairs.add(new BasicNameValuePair("lon", String.valueOf(lon)));
 				String result = NetThread.postData(url, pairs);
 				GetSystem.myLog(TAG, result);
 				for(LetterData letterData : letterDatas){
@@ -1617,9 +1718,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	/**防止超过0-5之间的数据**/
+	/**防止超过0-9之间的数据**/
 	private int revisionType(boolean isFriend , int Type){
-		if(Type >= 0 && Type <= 5){
+		if(Type >= 0 && Type <= 9){
 			return Type;
 		}else{
 			if(isFriend){
@@ -1629,5 +1730,18 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			}
 		}
 	}
-	
+	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
+		
+		@Override
+		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onGetGeoCodeResult(GeoCodeResult arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
 }
