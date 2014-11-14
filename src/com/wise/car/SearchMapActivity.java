@@ -58,8 +58,6 @@ import com.baidu.mapapi.search.poi.PoiSearch;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-import com.wise.setting.AccountActivity;
-
 import data.AdressData;
 import data.CarData;
 
@@ -124,9 +122,10 @@ public class SearchMapActivity extends Activity {
 			}
 		} else {
 			// 搜索关键字
+			key = "天安门";
 			mPoiSearch.searchNearby((new PoiNearbySearchOption()).keyword(key)
 					.location(new LatLng(carData.getLat(), carData.getLon()))
-					.radius(5000));
+					.radius(5000000));
 		}
 
 		lv_activity_search_map = (ListView) findViewById(R.id.lv_activity_search_map);

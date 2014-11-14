@@ -266,10 +266,10 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
         			app.carDatas.clear();
         			app.carDatas.addAll(JsonData.jsonCarInfo(strData));
         			Intent intent;
-        			if(app.cust_type == 0){
-                		intent = new Intent(WelcomeActivity.this, FaultActivity.class);
-        			}else{
+        			if(app.cust_type == 2){
         				intent = new Intent(WelcomeActivity.this, ServiceProviderActivity.class);
+        			}else{
+                		intent = new Intent(WelcomeActivity.this, FaultActivity.class);
         			}
     				if(isSpecify){
     	    			intent.putExtra("isSpecify", isSpecify);
@@ -303,7 +303,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		app.auth_code = null;
 		app.cust_id = null;
 		app.cust_name = "";
-		app.carDatas = new ArrayList<CarData>();
+		app.carDatas.clear();
+		app.friendDatas.clear();
 		GetSystem.myLog(TAG, "clearData,app.carDatas = " + app.carDatas.size());
 	}
 }

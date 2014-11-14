@@ -7,6 +7,7 @@ import org.litepal.LitePalApplication;
 import com.baidu.mapapi.SDKInitializer;
 
 import data.CarData;
+import data.FriendData;
 import pubclas.GetSystem;
 
 /**
@@ -47,7 +48,8 @@ public class AppApplication extends LitePalApplication {
     public double Lon = 0;
     /**车辆信息**/
     public List<CarData> carDatas = new ArrayList<CarData>();
-    
+    /**好友信息**/
+    public List<FriendData> friendDatas = new ArrayList<FriendData>();
 	@Override
     public void onCreate() {
 	    super.onCreate();

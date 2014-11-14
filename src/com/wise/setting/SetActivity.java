@@ -32,8 +32,6 @@ import com.wise.baba.R;
 import com.wise.baba.SelectCityActivity;
 import com.wise.car.CarActivity;
 import com.wise.car.OfflineActivity;
-import com.wise.state.ServiceProviderActivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -72,7 +70,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 	private static final int get_pic = 3;
 	
 	TextView tv_login,tv_city;
-	ImageView iv_logo,iv_sex,iv_service;
+	ImageView iv_logo,iv_sex,iv_service,iv_eweima;
 	Button bt_login_out;
 	RequestQueue mQueue;
 	Platform platformQQ;
@@ -95,7 +93,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
         rl_login.setOnClickListener(onClickListener);
         RelativeLayout rl_city = (RelativeLayout)findViewById(R.id.rl_city);
         rl_city.setOnClickListener(onClickListener);
-        ImageView iv_eweima = (ImageView)findViewById(R.id.iv_eweima);
+        iv_eweima = (ImageView)findViewById(R.id.iv_eweima);
         iv_eweima.setOnClickListener(onClickListener);
 		tv_login = (TextView)findViewById(R.id.tv_login);
 		tv_city = (TextView)findViewById(R.id.tv_city);
@@ -152,6 +150,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 		        app.carDatas.clear();
 		        Intent intent = new Intent(Constant.A_LoginOut);
 	            sendBroadcast(intent);
+	            iv_eweima.setVisibility(View.GONE);
 		        bt_login_out.setVisibility(View.GONE);
 		        tv_login.setText("登录/注册");
 		        iv_sex.setVisibility(View.GONE);
@@ -224,6 +223,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 		try {
 			JSONObject jsonObject = new JSONObject(str);			
 			if(jsonObject.opt("status_code") == null){
+				iv_eweima.setVisibility(View.VISIBLE);
 				bt_login_out.setVisibility(View.VISIBLE);
 				app.cust_name = jsonObject.getString("cust_name");
 		        GetSystem.myLog(TAG, "cust_name = " + app.cust_name);
@@ -301,7 +301,7 @@ public class SetActivity extends Activity implements TagAliasCallback{
 		PopupWindow mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT);
 		mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
-		mPopupWindow.setBackgroundDrawable(null);
+		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
 		mPopupWindow.setFocusable(true);
 		mPopupWindow.setOutsideTouchable(true);
 		mPopupWindow.showAtLocation(iv_logo, Gravity.CENTER, 0, 0);

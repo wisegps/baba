@@ -25,14 +25,28 @@
 	        android:layout_centerVertical="true"
 	        android:src="@drawable/nav_back"/>
 	</RelativeLayout>
-	<EditText 
-        android:id="@+id/et_name"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/et_back"
-        android:padding="10dp"
-        android:maxLength="11"
-        android:layout_margin="@dimen/margins"
-        android:textColor="@color/blue"
-        android:hint="手机号码/邮箱"/>
+	<RelativeLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_margin="@dimen/margins">	    
+		<EditText 
+	        android:id="@+id/et_name"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/et_back"
+	        android:padding="10dp"
+	        android:imeOptions="actionSearch"
+	        android:singleLine="true"
+	        android:textColor="@color/blue"
+	        android:hint="手机号码/邮箱"/>
+		<ImageView 
+		    android:id="@+id/iv_search"
+		    android:layout_width="40dp"
+		    android:layout_height="40dp"
+		    android:padding="5dp"
+		    android:layout_marginRight="5dp"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+		    android:src="@drawable/tool_search"/>
+	</RelativeLayout>
 </LinearLayout>

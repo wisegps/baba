@@ -70,7 +70,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 	boolean fastTrack = false;
 	String pwd = "";
 	String account = "";
-	String cust_type = "0";
+	int cust_type = 0;
 	String sex = "0";
 	String platform = "";
 
@@ -173,17 +173,17 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 			case R.id.rb_no_car:
 				ll_models.setVisibility(View.GONE);
 				ll_type.setVisibility(View.GONE);
-				cust_type = "0";
+				cust_type = 0;
 				break;
 			case R.id.rb_car:
 				ll_models.setVisibility(View.VISIBLE);
 				ll_type.setVisibility(View.GONE);
-				cust_type = "1";
+				cust_type = 1;
 				break;
 			case R.id.rb_service:
 				ll_models.setVisibility(View.GONE);
 				ll_type.setVisibility(View.VISIBLE);
-				cust_type = "2";
+				cust_type = 2;
 				break;
 			}
 		}
@@ -254,7 +254,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 				}
 				params.add(new BasicNameValuePair("password", GetSystem
 						.getM5DEndo(pwd)));
-				params.add(new BasicNameValuePair("cust_type", cust_type));
+				params.add(new BasicNameValuePair("cust_type", ""+cust_type));
 				params.add(new BasicNameValuePair("sex", sex));
 				params.add(new BasicNameValuePair("birth", GetBirth()));
 				params.add(new BasicNameValuePair("province", app.Province));
@@ -320,7 +320,8 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 						+ app.cust_id + "?auth_code="
 						+ app.auth_code;
 				new NetThread.GetDataThread(handler, url, get_customer).start();
-				if(cust_type.equals("2")){
+				app.cust_type = cust_type;
+				if(cust_type == 2){
 					//服务商
 					startActivity(new Intent(RegisterInfoActivity.this, ServiceProviderActivity.class));
 					//发更换用户类型广播

@@ -29,7 +29,11 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-
+/**
+ * 在地图查看发送的位置
+ * @author honesty
+ *
+ */
 public class MapFriendLocationActivity extends Activity {
 	
 	private BaiduMap mBaiduMap = null;
@@ -56,7 +60,7 @@ public class MapFriendLocationActivity extends Activity {
 		tv_send.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_search_map);
 		mBaiduMap = mMapView.getMap();
-		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(12));
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
 		//TextView name = (TextView) findViewById(R.id.name);
 		//name.setText(keyWord);
 		//朋友位置

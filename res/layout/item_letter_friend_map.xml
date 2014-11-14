@@ -51,6 +51,7 @@
 			        android:id="@+id/tv_adress"
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
+			        android:singleLine="true"
 			        android:background="@drawable/bg_map_address"
 			        android:textColor="@color/white"/>
 		    </LinearLayout>

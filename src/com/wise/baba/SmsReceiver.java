@@ -20,7 +20,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
+/**
+ * 接受推送
+ * @author honesty
+ *
+ */
 public class SmsReceiver extends BroadcastReceiver{
 	private static final String TAG = "SmsReceiver";
 	@Override

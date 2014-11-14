@@ -44,6 +44,7 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
@@ -67,12 +68,13 @@ import com.baidu.mapapi.search.poi.PoiSearch;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-import com.wise.car.TravelMapActivity;
-import com.wise.violation.ShortProvincesActivity;
-
 import data.AdressData;
 import data.CarData;
-
+/**
+ * 发送图片位置
+ * @author honesty
+ *
+ */
 public class LetterSendMapActivity extends Activity {
 	private PoiSearch mPoiSearch = null;
 	private BaiduMap mBaiduMap = null;
@@ -105,7 +107,7 @@ public class LetterSendMapActivity extends Activity {
 		tv_send.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_search_map);
 		mBaiduMap = mMapView.getMap();
-		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(12));
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
 		mBaiduMap.setOnMapStatusChangeListener(onMapStatusChangeListener);
 		mPoiSearch = PoiSearch.newInstance();
 		mPoiSearch.setOnGetPoiSearchResultListener(poiListener);
@@ -469,13 +471,23 @@ public class LetterSendMapActivity extends Activity {
 				mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(new LatLng(location.getLatitude(), location.getLongitude())));
 				latitude = location.getLatitude();
 				longitude = location.getLongitude();
+				//在地图上添加标记
+				LatLng latLng = new LatLng(latitude,longitude);
+				OverlayOptions marker = new MarkerOptions().position(latLng).anchor(0.5f, 1.0f).icon(
+							BitmapDescriptorFactory
+									.fromResource(R.drawable.icon_location));
+				mark = (Marker)(mBaiduMap.addOverlay(marker));
 		    }
 		}
 	}
+	Marker mark = null;
 	OnMapStatusChangeListener onMapStatusChangeListener = new OnMapStatusChangeListener() {		
 		@Override
 		public void onMapStatusChangeStart(MapStatus arg0) {
 			System.out.println("onMapStatusChangeStart");
+			if(mark != null){
+				mark.remove();
+			}
 		}
 		
 		@Override
@@ -484,6 +496,13 @@ public class LetterSendMapActivity extends Activity {
 			mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(arg0.target));
 			latitude = arg0.target.latitude;
 			longitude = arg0.target.longitude;
+
+			//在地图上添加标记
+			LatLng latLng = new LatLng(latitude,longitude);
+			OverlayOptions marker = new MarkerOptions().position(latLng).anchor(0.5f, 1.0f).icon(
+						BitmapDescriptorFactory
+								.fromResource(R.drawable.icon_location));
+			mark = (Marker)(mBaiduMap.addOverlay(marker));
 		}
 		
 		@Override

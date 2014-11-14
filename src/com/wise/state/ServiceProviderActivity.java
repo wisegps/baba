@@ -10,17 +10,17 @@ import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
 import com.wise.baba.AppApplication;
-import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.car.BarcodeActivity;
 import com.wise.notice.FriendAddActivity;
+import com.wise.notice.FriendInfoActivity;
 import com.wise.notice.LetterActivity;
-import com.wise.notice.ServiceProviderInfoActivity;
 import com.wise.notice.SmsActivity;
+import com.wise.notice.SureFriendActivity;
 import com.wise.setting.SetActivity;
-
 import customView.CircleImageView;
 import customView.WaitLinearLayout.OnFinishListener;
+import data.FriendData;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import android.app.Activity;
@@ -59,9 +59,11 @@ import android.widget.AdapterView.OnItemClickListener;
  **/
 public class ServiceProviderActivity extends Activity implements IXListViewListener{
 	
-	private final int getNotice = 1;
-	private final int refreshNotice = 3;
-	private final int getFriendImage = 2;
+	private final static int getNotice = 1;
+	private final static int getFriendImage = 2;
+	private final static int refreshNotice = 3;
+	private final static int get_all_friend = 4;
+	private final static int get_friend_logo = 5;
 	
 	NoticeAdapter noticeAdapter;
 	BtnListener btnListener;
@@ -69,7 +71,8 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 	List<NoticeData> noticeDatas = new ArrayList<NoticeData>();
 	AppApplication app;
 	ImageView iv_fm_back,iv_add;
-	Button bt_info,bt_friend;
+	Button bt_info,bt_friend,bt_set;
+	FriendAdapter friendAdapter;
 	
 	MyBroadCastReceiver myBroadCastReceiver;
 	
@@ -81,36 +84,43 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 		app = (AppApplication)getApplication();
 		iv_add = (ImageView) findViewById(R.id.iv_add);
 		iv_add.setOnClickListener(onClickListener);
-		iv_fm_back = (ImageView)findViewById(R.id.iv_fm_back);
+		iv_fm_back = (ImageView) findViewById(R.id.iv_fm_back);
 		iv_fm_back.setOnClickListener(onClickListener);
+		if(isVisible){
+			iv_fm_back.setVisibility(View.VISIBLE);
+		}
 		bt_info = (Button)findViewById(R.id.bt_info);
 		bt_info.setOnClickListener(onClickListener);
 		bt_friend = (Button)findViewById(R.id.bt_friend);
 		bt_friend.setOnClickListener(onClickListener);
-		Button bt_set = (Button)findViewById(R.id.bt_set);
+		bt_set = (Button)findViewById(R.id.bt_set);
 		bt_set.setOnClickListener(onClickListener);
-		setFriendDatas();
 		lv_friend = (XListView)findViewById(R.id.lv_friend);
-		FriendAdapter friendAdapter = new FriendAdapter();
+		friendAdapter = new FriendAdapter();
 		lv_friend.setAdapter(friendAdapter);
 		lv_friend.setPullLoadEnable(false);
 		lv_friend.setPullRefreshEnable(false);
 		lv_friend.setOnItemClickListener(onItemClickListener);
+		lv_friend.setOnScrollListener(onScrollListener);
+		getFriendData();
 		
-		lv_notice = (XListView)findViewById(R.id.lv_notice);
+		lv_notice = (XListView) findViewById(R.id.lv_notice);
 		lv_notice.setOnFinishListener(onFinishListener);
 		lv_notice.setPullLoadEnable(false);
 		lv_notice.setPullRefreshEnable(true);
 		lv_notice.setXListViewListener(this);
 		noticeAdapter = new NoticeAdapter();
 		lv_notice.setAdapter(noticeAdapter);
+		lv_notice.setOnScrollListener(onScrollListener);
+		if(Judge.isLogin(app)){
+			getData();
+		}
 		
 		myBroadCastReceiver = new MyBroadCastReceiver();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(Constant.A_ChangeCustomerType);
 		registerReceiver(myBroadCastReceiver, intentFilter);
 	}
-	
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -125,7 +135,7 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 			case R.id.bt_friend:
 				lv_notice.setVisibility(View.GONE);
 				lv_friend.setVisibility(View.VISIBLE);
-				break;		
+				break;
 			case R.id.bt_set:
 				startActivity(new Intent(ServiceProviderActivity.this, SetActivity.class));
 				break;
@@ -133,12 +143,11 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 				showMenu();
 				break;
 			case R.id.tv_letter:
-				//TODO 处理数据
 				startActivity(new Intent(ServiceProviderActivity.this, FriendAddActivity.class));
 				break;
 			case R.id.tv_Comments:
 				startActivityForResult(new Intent(ServiceProviderActivity.this,
-						BarcodeActivity.class), 0);
+						BarcodeActivity.class), 1);
 				break;
 			}
 		}
@@ -168,11 +177,15 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 	public void ClearNotice(){
 		noticeDatas.clear();
 		noticeAdapter.notifyDataSetChanged();
+		app.friendDatas.clear();
+		friendAdapter.notifyDataSetChanged();
 	}
 	/**刷新通知**/
 	public void ResetNotice(){
 		noticeDatas.clear();
 		getData();
+		app.friendDatas.clear();
+		getFriendData();
 	}
 
 	Handler handler = new Handler() {
@@ -191,6 +204,12 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 
 			case getFriendImage:
 				noticeAdapter.notifyDataSetChanged();
+				break;
+			case get_friend_logo:
+				friendAdapter.notifyDataSetChanged();
+				break;
+			case get_all_friend:
+				jsonFriendData(msg.obj.toString());
 				break;
 			}
 		}
@@ -260,51 +279,77 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 							noticeData.setContent("[图片]");
 						}else if(type == 2){
 							noticeData.setContent("[语音]");
+						}else if(type == 3){
+							noticeData.setContent("[文件]");
+						}else if(type == 4){
+							noticeData.setContent("[位置]");
 						}
 					}
 					noticeDatas.add(noticeData);
 				}				
 			}
+			getPersionImage();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	private class FriendData{
-		private String name;
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}		
-	}
+	/**好友列表点击**/
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			//去介绍界面
-			Intent intent = new Intent(ServiceProviderActivity.this, ServiceProviderInfoActivity.class);
-			intent.putExtra("name", friendDatas.get(arg2 - 1).getName());
-			startActivity(intent);
+			if(arg2 == 1){
+				//新的朋友(我添加的和别人添加我的)
+				startActivityForResult(new Intent(ServiceProviderActivity.this, SureFriendActivity.class), 3);
+			}else{
+				//去介绍界面
+				Intent intent = new Intent(ServiceProviderActivity.this, FriendInfoActivity.class);
+				intent.putExtra("FriendId", String.valueOf(app.friendDatas.get(arg2 - 1).getFriend_id()));
+				intent.putExtra("name", app.friendDatas.get(arg2 - 1).getFriend_name());
+				intent.putExtra("isShow", true);
+				startActivity(intent);
+			}
 		}
 	};
-	List<FriendData> friendDatas = new ArrayList<FriendData>();
-	private void setFriendDatas(){
-		for(int i = 0 ; i < 12 ; i++){
-			FriendData friendData = new FriendData();
-			friendData.setName("客户经理"+i);
-			friendDatas.add(friendData);
+	/**获取好友数据**/
+	private void getFriendData(){
+		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/get_friends?auth_code=" + app.auth_code;
+		new NetThread.GetDataThread(handler, url, get_all_friend).start();
+	}
+	private void jsonFriendData(String result){
+		try {
+			app.friendDatas.clear();
+			FriendData fData = new FriendData();
+			fData.setFriend_name("新的朋友");
+			app.friendDatas.add(fData);
+			JSONArray jsonArray = new JSONArray(result);
+			for(int i = 0 ; i < jsonArray.length() ; i++){
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				FriendData friendData = new FriendData();
+				friendData.setSex(jsonObject.getInt("sex"));
+				friendData.setLogo(jsonObject.getString("logo"));
+				friendData.setFriend_name(jsonObject.getString("friend_name"));
+				friendData.setFriend_type(jsonObject.getInt("friend_type"));
+				friendData.setFriend_id(jsonObject.getInt("friend_id"));
+				friendData.setUser_id(jsonObject.getInt("user_id"));
+				friendData.setFriend_relat_id(jsonObject.getInt("friend_relat_id"));
+				app.friendDatas.add(friendData);
+			}
+			friendAdapter.notifyDataSetChanged();
+			getFriendLogo();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	class FriendAdapter extends BaseAdapter{
 		LayoutInflater inflater = LayoutInflater.from(ServiceProviderActivity.this);
 		@Override
 		public int getCount() {
-			return friendDatas.size();
+			return app.friendDatas.size();
 		}
 		@Override
 		public Object getItem(int position) {
-			return friendDatas.get(position);
+			return app.friendDatas.get(position);
 		}
 		@Override
 		public long getItemId(int position) {
@@ -322,8 +367,19 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-			FriendData friendData = friendDatas.get(position);
-			holder.tv_name.setText(friendData.getName());
+			FriendData friendData = app.friendDatas.get(position);
+			holder.tv_name.setText(friendData.getFriend_name());
+			if(position == 0){
+				//第一项是新的朋友
+				holder.iv_image.setImageResource(R.drawable.icon_people_no);
+			}else{
+				if(new File(Constant.userIconPath + friendData.getFriend_id() + ".png").exists()){
+					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + friendData.getFriend_id() + ".png");
+					holder.iv_image.setImageBitmap(image);
+				}else{
+					holder.iv_image.setImageResource(R.drawable.icon_people_no);
+				}
+			}			
 			return convertView;
 		}
 		private class ViewHolder {
@@ -495,7 +551,14 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 				break;
 			case OnScrollListener.SCROLL_STATE_IDLE://停止
 				//读取图片
-				getPersionImage();
+				switch (view.getId()) {
+				case R.id.lv_friend:
+					getFriendLogo();
+					break;
+				case R.id.lv_notice:
+					getPersionImage();
+					break;
+				}
 				break;
 			}
 		}
@@ -506,11 +569,44 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 		}
 	};
 	
+	private void getFriendLogo(){
+		int start = lv_friend.getFirstVisiblePosition();
+		if(start == 0){
+			start = 1;
+		}
+		int stop = lv_friend.getLastVisiblePosition();
+		for(int i = start ; i < stop ; i++){
+			if(i >= app.friendDatas.size()){
+				return ;
+			}
+			FriendData friendData = app.friendDatas.get(i);
+			if(friendData.getLogo() != null && (!friendData.getLogo().equals(""))){
+				//判断图片是否存在
+				if(new File(Constant.userIconPath + friendData.getFriend_id() + ".png").exists()){
+					
+				}else{
+					if(isFriendThreadRun(i)){
+						//如果图片正在读取则跳过
+					}else{
+						FriendId.add(i);
+						new FriendThread(i).start();
+					}
+				}
+			}					
+		}
+	}
+	
 	/**获取显示区域的图片**/
 	private void getPersionImage(){
 		int start = lv_notice.getFirstVisiblePosition();
+		if(start != 0){
+			start--;
+		}
 		int stop = lv_notice.getLastVisiblePosition();		
-		for(int i = start ; i <= stop ; i++){
+		for(int i = start ; i < stop ; i++){
+			if(i >= noticeDatas.size()){
+				return ;
+			}
 			NoticeData noticeData = noticeDatas.get(i);
 			if(noticeData.getFriend_type() == 99){
 				//判断图片是否存在
@@ -527,6 +623,18 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 			}					
 		}
 	}
+	
+	List<Integer> FriendId = new ArrayList<Integer>();
+	/**判断图片是否开启了线程正在读图**/
+	private boolean isFriendThreadRun(int positon){
+		for(int i = 0 ; i < FriendId.size() ; i++){
+			if(positon == FriendId.get(i)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	List<Integer> photoThreadId = new ArrayList<Integer>();
 	/**判断图片是否开启了线程正在读图**/
 	private boolean isThreadRun(int positon){
@@ -537,6 +645,31 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 		}
 		return false;
 	}
+	
+	class FriendThread extends Thread{
+		int position;
+		public FriendThread(int position){
+			this.position = position;
+		}
+		@Override
+		public void run() {
+			super.run();
+			Bitmap bitmap = GetSystem.getBitmapFromURL(app.friendDatas.get(position).getLogo());
+			if(bitmap != null){
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, app.friendDatas.get(position).getFriend_id() + ".png",100);
+			}
+			for (int i = 0; i < FriendId.size(); i++) {
+				if (FriendId.get(i) == position) {
+					FriendId.remove(i);
+					break;
+				}
+			}
+			Message message = new Message();
+			message.what = get_friend_logo;
+			handler.sendMessage(message);
+		}
+	}
+	
 	class ImageThread extends Thread{
 		int position;
 		public ImageThread(int position){
@@ -560,8 +693,8 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 			handler.sendMessage(message);
 		}
 	}
+	
 	String refresh = "";
-
 	@Override
 	public void onRefresh() {
 		refresh = "";
@@ -569,6 +702,7 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 				+ "/get_relations?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, refreshNotice).start();
 	}
+
 	@Override
 	public void onLoadMore() {}
 	private void onLoadOver() {
@@ -600,6 +734,27 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 		mPopupWindow.setOutsideTouchable(true);
 		mPopupWindow.showAsDropDown(ServiceProviderActivity.this.findViewById(R.id.iv_add), 0, 0);
 	}
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == 1 && resultCode == 2){
+			String FriendId = data.getStringExtra("result");
+			//二维码扫描后跳转到用户信息界面
+			Intent intent = new Intent(ServiceProviderActivity.this, FriendInfoActivity.class);
+			intent.putExtra("FriendId", FriendId);
+			startActivityForResult(intent, 2);
+			return;
+		}if(requestCode == 2 && resultCode == 2){
+			//TODO 添加朋友返回
+		}if(requestCode == 3 && resultCode == 2){
+			//确认接受朋友返回，刷新数据
+			getFriendData();
+		}
+	}
+	
+	
+	
+	
 	class MyBroadCastReceiver extends BroadcastReceiver{
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -634,6 +789,5 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 			finish();
 		}
 		return true;
-	}
-	
+	}	
 }

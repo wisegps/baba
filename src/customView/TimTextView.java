@@ -18,7 +18,7 @@ public class TimTextView extends TextView{
 	
 	private int status = 1;
 	private boolean isStop = false;
-	private int span = 200;
+	private int span = 300;
 
 	public TimTextView(Context context) {
 		super(context);
