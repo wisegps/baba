@@ -43,7 +43,6 @@
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/amp1"
             android:gravity="center_vertical"
             android:text="家" />
 
@@ -54,7 +53,7 @@
             android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            android:src="@drawable/amp7" />
+            android:src="@drawable/amp1" />
     </LinearLayout>
 
     <LinearLayout
@@ -70,7 +69,6 @@
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/amp1"
             android:gravity="center_vertical"
             android:text="公司" />
 
@@ -81,7 +79,7 @@
             android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
-            android:src="@drawable/amp7" />
+            android:src="@drawable/amp1" />
     </LinearLayout>
 
 </LinearLayout>

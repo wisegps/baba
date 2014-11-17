@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AddressActivity extends Activity {
 	TextView tv_home, tv_company;
@@ -58,24 +59,35 @@ public class AddressActivity extends Activity {
 		}
 	};
 
-	String name = "";
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == ChooseAddressActivity.ADDRESSCODE) {
-			name = data.getExtras().getString("name");
+			String name = data.getExtras().getString("name");
+			boolean myLocat = data.getExtras().getBoolean("myLoct");
 			if (requestCode == HOME) {
 				if (name != null && !name.equals("")) {
 					tv_home.setText("家" + "\n" + name);
+				} else if (myLocat) {
+					tv_home.setText("家");
+					Toast.makeText(AddressActivity.this, "定位失败",
+							Toast.LENGTH_SHORT).show();
 				} else {
 					tv_home.setText("家");
+					Toast.makeText(AddressActivity.this, "未搜索到结果",
+							Toast.LENGTH_SHORT).show();
 				}
 			} else if (requestCode == COMPANY) {
 				if (name != null && !name.equals("")) {
 					tv_company.setText("公司" + "\n" + name);
+				} else if (myLocat) {
+					tv_company.setText("公司");
+					Toast.makeText(AddressActivity.this, "定位失败",
+							Toast.LENGTH_SHORT).show();
 				} else {
 					tv_company.setText("公司");
+					Toast.makeText(AddressActivity.this, "未搜索到结果",
+							Toast.LENGTH_SHORT).show();
 				}
 			}
 		}
