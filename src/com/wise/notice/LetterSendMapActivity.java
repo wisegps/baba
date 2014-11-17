@@ -6,20 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import nadapter.AdressAdapter;
-import nadapter.AdressAdapter.OnCollectListener;
 import pubclas.Constant;
-import pubclas.GetSystem;
 import pubclas.NetThread;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -50,8 +41,6 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.model.LatLngBounds;
-import com.baidu.mapapi.model.LatLngBounds.Builder;
 import com.baidu.mapapi.overlayutil.PoiOverlay;
 import com.baidu.mapapi.search.core.CityInfo;
 import com.baidu.mapapi.search.core.PoiInfo;
@@ -63,6 +52,7 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
 import com.baidu.mapapi.search.poi.PoiDetailResult;
+import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 import com.baidu.mapapi.utils.DistanceUtil;
@@ -71,11 +61,12 @@ import com.wise.baba.R;
 import data.AdressData;
 import data.CarData;
 /**
- * 发送图片位置
+ * 选择位置发送
  * @author honesty
  *
  */
 public class LetterSendMapActivity extends Activity {
+	
 	private PoiSearch mPoiSearch = null;
 	private BaiduMap mBaiduMap = null;
 	private MapView mMapView = null;
@@ -84,14 +75,13 @@ public class LetterSendMapActivity extends Activity {
 	private final int getIsCollect = 1;
 	private final int get4s = 2;
 	AppApplication app;
-	List<AdressData> adressDatas = new ArrayList<AdressData>();
-	ListView lv_activity_search_map;
-	AdressAdapter adressAdapter;
+	ListView lv_info;
 	// 定位相关
 	LocationClient mLocClient;
 	public MyLocationListenner myListener = new MyLocationListenner();
 	private GeoCoder mGeoCoder = null;
 	TextView tv_adress;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +91,7 @@ public class LetterSendMapActivity extends Activity {
 		app = (AppApplication) getApplication();
 		int index = getIntent().getIntExtra("index", 0);
 		carData = app.carDatas.get(index);
+		//lv_info
 		//String keyWord = getIntent().getStringExtra("keyWord");
 		//String key = getIntent().getStringExtra("key");
 		TextView tv_send = (TextView)findViewById(R.id.tv_send);
@@ -148,40 +139,9 @@ public class LetterSendMapActivity extends Activity {
 //					.radius(5000));
 //		}
 
-		lv_activity_search_map = (ListView) findViewById(R.id.lv_activity_search_map);
-		lv_activity_search_map.setOnItemClickListener(onItemClickListener);
-		adressAdapter = new AdressAdapter(LetterSendMapActivity.this, adressDatas,
-				LetterSendMapActivity.this);
-		lv_activity_search_map.setAdapter(adressAdapter);
-		adressAdapter.setOnCollectListener(new OnCollectListener() {
-			@Override
-			public void OnCollect(int index) {
-				if (app.isTest) {
-					Toast.makeText(LetterSendMapActivity.this, "演示账号不支持该功能",
-							Toast.LENGTH_SHORT).show();
-					return;
-				}
-				adressDatas.get(index).setIs_collect(true);
-				adressAdapter.notifyDataSetChanged();
-			}
-
-			@Override
-			public void OnShare(int index) {
-				AdressData adressData = adressDatas.get(index);
-				String url = "http://api.map.baidu.com/geocoder?location="
-						+ adressData.getLat() + "," + adressData.getLon()
-						+ "&coord_type=bd09ll&output=html";
-				StringBuffer sb = new StringBuffer();
-				sb.append("【地点】");
-				sb.append(adressData.getName());
-				sb.append("," + adressData.getAdress());
-				sb.append("," + adressData.getPhone());
-				sb.append("," + url);
-				GetSystem.share(LetterSendMapActivity.this, sb.toString(), "",
-						(float) adressData.getLat(),
-						(float) adressData.getLon(), "地点", url);
-			}
-		});
+		lv_info = (ListView) findViewById(R.id.lv_info);
+		lv_info.setOnItemClickListener(onItemClickListener);
+		
 		// 开启定位图层
 		mBaiduMap.setMyLocationEnabled(true);
 		// 定位初始化
@@ -250,103 +210,20 @@ public class LetterSendMapActivity extends Activity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case getIsCollect:
-				jsonCollect(msg.obj.toString());
-				adressAdapter.notifyDataSetChanged();
 				break;
 			case get4s:
-				jsonDealAdress(msg.obj.toString());
-				adressAdapter.notifyDataSetChanged();
 				break;
 			}
 		}
 
 	};
 
-	private void jsonDealAdress(String result) {
-		try {
-			LatLngBounds.Builder builder = new Builder();
-			JSONArray jsonArray = new JSONArray(result);
-			for (int i = 0; i < jsonArray.length(); i++) {// TODO
-				if (i == 10) {
-					// 只显示10个
-					break;
-				}
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				AdressData adressData = new AdressData();
-				adressData.setAdress(jsonObject.getString("address"));
-				adressData.setName(jsonObject.getString("name"));
-				adressData.setPhone(jsonObject.getString("tel"));
-				adressData.setLat(jsonObject.getDouble("lat"));
-				adressData.setLon(jsonObject.getDouble("lon"));
-				adressData.setDistance(jsonObject.getInt("distance"));
-				if (jsonObject.getString("is_collect").equals("1")) {
-					// 收藏
-					adressData.setIs_collect(true);
-				} else {
-					// 未收藏
-					adressData.setIs_collect(false);
-				}
-				adressDatas.add(adressData);
-				LatLng latLng = new LatLng(adressDatas.get(i).getLat(),
-						adressDatas.get(i).getLon());
-				OverlayOptions marker;
-				// 图片名称
-				String imagePath = "Icon_mark" + (i + 1) + ".png";
-				try {
-					// 百度jar包里的图片
-					Bitmap bitmap = BitmapFactory
-							.decodeStream(LetterSendMapActivity.this.getAssets()
-									.open(imagePath));
-					marker = new MarkerOptions().position(latLng).icon(
-							BitmapDescriptorFactory.fromBitmap(bitmap));
-				} catch (IOException e) {
-					e.printStackTrace();
-					marker = new MarkerOptions().position(latLng).icon(
-							BitmapDescriptorFactory
-									.fromResource(R.drawable.body_icon_outset));
-				}
-				mBaiduMap.addOverlay(marker);
-				builder.include(latLng);
-			}
-			LatLngBounds bounds = builder.build();
-			MapStatusUpdate u1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
-			mBaiduMap.animateMapStatus(u1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 解析返回的数据
-	 * 
-	 * @param result
-	 */
-	private void jsonCollect(String result) {
-		try {
-			JSONArray jsonArray = new JSONArray(result);
-			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				String name = jsonObject.getString("name");
-				for (int j = 0; j < adressDatas.size(); j++) {
-					if (adressDatas.get(j).getName().equals(name)) {
-						adressDatas.get(j).setIs_collect(true);
-						break;
-					}
-				}
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
 
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
-					.newLatLng(new LatLng(adressDatas.get(arg2).getLat(),
-							adressDatas.get(arg2).getLon()));
-			mBaiduMap.setMapStatus(mapStatusUpdate);
+			
 		}
 	};
 
@@ -380,23 +257,12 @@ public class LetterSendMapActivity extends Activity {
 					adressData.setLat(mkPoiInfo.location.latitude);
 					adressData.setLon(mkPoiInfo.location.longitude);
 					adressData.setDistance(distance);
-					adressDatas.add(adressData);
-					str = str + mkPoiInfo.name + ",";
+					System.out.println("name = " + mkPoiInfo.name + " , address = " + mkPoiInfo.address);
+					//adressDatas.add(adressData);
+					//str = str + mkPoiInfo.name + ",";
 				}
 				// Collections.sort(adressDatas, new Comparator());// 排序
-				adressAdapter.notifyDataSetChanged();
-				// 判断是否收藏
-				String url;
-				try {
-					url = Constant.BaseUrl + "favorite/is_collect?auth_code="
-							+ app.auth_code + "&names="
-							+ URLEncoder.encode(str, "UTF-8") + "&cust_id="
-							+ app.cust_id;
-					new Thread(new NetThread.GetDataThread(handler, url,
-							getIsCollect)).start();
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
+				//adressAdapter.notifyDataSetChanged();
 				return;
 			}
 			if (result.error == SearchResult.ERRORNO.AMBIGUOUS_KEYWORD) {
@@ -521,6 +387,10 @@ public class LetterSendMapActivity extends Activity {
 			} else {
 				adress = result.getAddress();
 				tv_adress.setText(adress);
+				//找到地址后找对应的周边poi
+//				mPoiSearch.searchNearby((new PoiNearbySearchOption()).keyword(adress)
+//						.location(new LatLng(latitude, longitude))
+//						.radius(5000));
 			}
 		}
 

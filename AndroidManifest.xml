@@ -199,6 +199,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.notice.SetCompetActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.notice.SureFriendActivity"
             android:screenOrientation="portrait" >
         </activity>

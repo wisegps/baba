@@ -12,7 +12,7 @@
         android:paddingRight="20dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="@dimen/main"
         android:text="设置备注"/>
     <View 
@@ -27,7 +27,7 @@
         android:paddingRight="20dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="@dimen/main"
         android:text="设置好友权限"/>
     <View 
@@ -41,7 +41,7 @@
         android:paddingRight="20dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="@dimen/main"
         android:text="删除"/>
 </LinearLayout>

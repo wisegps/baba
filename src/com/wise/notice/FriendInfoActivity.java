@@ -15,8 +15,6 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-import com.wise.state.ServiceProviderActivity;
-
 import data.FriendData;
 import android.app.Activity;
 import android.content.Intent;
@@ -116,6 +114,7 @@ public class FriendInfoActivity extends Activity{
 				break;
 			case R.id.tv_compet:
 				startActivity(new Intent(FriendInfoActivity.this, SetCompetActivity.class));
+				mPopupWindow.dismiss();
 				break;
 			}
 		}		
