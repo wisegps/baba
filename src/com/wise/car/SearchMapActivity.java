@@ -40,6 +40,7 @@ import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
@@ -170,7 +171,7 @@ public class SearchMapActivity extends Activity {
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
 		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(1000);
+		option.setScanSpan(30000);
 		mLocClient.setLocOption(option);
 		mLocClient.start();
 	}
@@ -182,8 +183,8 @@ public class SearchMapActivity extends Activity {
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
-		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
-				.position(circle).icon(bitmap);
+		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0.5f)
+				.position(circle).icon(bitmap).rotate(carData.getDirect());
 		// 在地图上添加Marker，并显示
 		mBaiduMap.addOverlay(option);
 	}
@@ -401,13 +402,11 @@ public class SearchMapActivity extends Activity {
 					.direction(100).latitude(location.getLatitude())
 					.longitude(location.getLongitude()).build();
 			mBaiduMap.setMyLocationData(locData);
-			// if (isFirstLoc) {
-			// isFirstLoc = false;
-			// LatLng ll = new LatLng(location.getLatitude(),
-			// location.getLongitude());
-			// MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
-			// mBaiduMap.animateMapStatus(u);
-			// }
+			BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
+		            .fromResource(R.drawable.person);
+		    MyLocationConfiguration config = new MyLocationConfiguration(null,
+		            true, mCurrentMarker);
+		    mBaiduMap.setMyLocationConfigeration(config);
 		}
 	}
 

@@ -160,9 +160,9 @@ public class RemindActivity extends Activity {
 				break;
 			case R.id.bt_share:
 				Bitmap bitmap = GetSystem.getViewBitmap(ll_content);
-				savePic(bitmap, "/mnt/sdcard/test.png");
+				savePic(bitmap, "/mnt/sdcard/Picture.png");
 				GetSystem.share(getApplicationContext(), "",
-						"/mnt/sdcard/test.png", 0, 0, "提醒", "");
+						"/mnt/sdcard/Picture.png", 0, 0, "提醒", "");
 				break;
 			}
 		}
@@ -173,7 +173,7 @@ public class RemindActivity extends Activity {
 		try {
 			fos = new FileOutputStream(strFileName);
 			if (null != fos) {
-				b.compress(Bitmap.CompressFormat.PNG, 90, fos);
+				b.compress(Bitmap.CompressFormat.JPEG, 60, fos);
 				fos.flush();
 				fos.close();
 			}

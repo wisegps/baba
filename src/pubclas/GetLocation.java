@@ -77,7 +77,6 @@ public class GetLocation {
 				// }				
 				app.Adress = location.getAddrStr();				
 				app.City = city;
-				app.Province = province;
 	            //发送定位城市广播，选择城市用到
 	            Intent intent = new Intent(Constant.A_City);
 	            intent.putExtra("City", city);

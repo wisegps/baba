@@ -24,6 +24,7 @@ import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Polyline;
@@ -111,7 +112,7 @@ public class CarLocationActivity extends Activity {
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
 		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(1000);
+		option.setScanSpan(30000);
 		mLocClient.setLocOption(option);
 		mLocClient.start();
 		getCarLocation();
@@ -304,7 +305,7 @@ public class CarLocationActivity extends Activity {
 	TextView fence_distance_date;
 
 	/**
-	 * TODO 显示围栏
+	 * 显示围栏
 	 */
 	private void ShowFence() {
 		int Height = ll_location_bottom.getMeasuredHeight();
@@ -414,7 +415,7 @@ public class CarLocationActivity extends Activity {
 		}
 		if (carData.getGeofence() != null
 				&& !carData.getGeofence().equals("null")) {
-			// TODO 如果有围栏数据，则以围栏的坐标画圆
+			//如果有围栏数据，则以围栏的坐标画圆
 			LatLng circle = new LatLng(fence_lat, fence_lon);
 			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 					.newLatLng(circle);
@@ -474,12 +475,12 @@ public class CarLocationActivity extends Activity {
 					.newMapStatus(mapStatus);
 			mBaiduMap.setMapStatus(mapStatusUpdate);
 		}
-		// 构建Marker图标
+		//TODO  构建Marker图标
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
-		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
-				.position(circle).icon(bitmap);
+		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0.5f)
+				.position(circle).icon(bitmap).rotate(carData.getDirect());
 		// 在地图上添加Marker，并显示
 		carMarker = (Marker) (mBaiduMap.addOverlay(option));
 		points.add(circle);
@@ -533,6 +534,7 @@ public class CarLocationActivity extends Activity {
 			double lon = jsonObject.getDouble("lon");
 			carData.setLat(lat);
 			carData.setLon(lon);
+			carData.setDirect(jsonObject.getInt("direct"));
 			getCarLocation();
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -591,9 +593,14 @@ public class CarLocationActivity extends Activity {
 			MyLocationData locData = new MyLocationData.Builder()
 					.accuracy(location.getRadius())
 					// 此处设置开发者获取到的方向信息，顺时针0-360
-					.direction(100).latitude(location.getLatitude())
+					.direction(0).latitude(location.getLatitude())
 					.longitude(location.getLongitude()).build();
 			mBaiduMap.setMyLocationData(locData);
+			BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
+		            .fromResource(R.drawable.person);
+		    MyLocationConfiguration config = new MyLocationConfiguration(null,
+		            true, mCurrentMarker);
+		    mBaiduMap.setMyLocationConfigeration(config);
 			if (isFirstLoc) {
 				isFirstLoc = false;
 				ll = new LatLng(location.getLatitude(), location.getLongitude());

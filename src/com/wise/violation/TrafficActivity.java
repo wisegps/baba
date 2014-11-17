@@ -280,7 +280,11 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 	private void GetTraffic() {
 		// 判断数据时候读取，读取了就不再读
 		String Nick_name = app.carDatas.get(index_car).getNick_name();
-		tv_car.setText(Nick_name);
+		if(Nick_name == null){
+			tv_car.setText("");
+		}else{
+			tv_car.setText(Nick_name);
+		}
 		changeImage(index_car);
 		TrafficView trafficView = trafficViews.get(index_car);
 		if (trafficView.getTrafficDatas() == null) {

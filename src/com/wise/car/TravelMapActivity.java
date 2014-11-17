@@ -137,16 +137,16 @@ public class TravelMapActivity extends Activity {
 				mBaiduMap.snapshot(new SnapshotReadyCallback() {
 					public void onSnapshotReady(Bitmap snapshot) {
 						Bitmap bitmap4 = createBitmap(bitmap1, snapshot);
-						File file = new File("/mnt/sdcard/test.png");
+						File file = new File("/mnt/sdcard/Picture.png");
 						FileOutputStream out;
 						try {
 							out = new FileOutputStream(file);
-							if (bitmap4.compress(Bitmap.CompressFormat.PNG,
-									80, out)) {
+							if (bitmap4.compress(Bitmap.CompressFormat.JPEG,
+									60, out)) {
 								out.flush();
 								out.close();
 							}
-							String imagePath = "/mnt/sdcard/test.png";
+							String imagePath = "/mnt/sdcard/Picture.png";
 							StringBuffer sb = new StringBuffer();
 							sb.append("【行程】");
 							sb.append(intent.getStringExtra("StartTime")

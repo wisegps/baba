@@ -28,6 +28,10 @@ public class CarData {
     private String insurance_no;
     private String limit;
     /**
+     * 车方向
+     */
+    private int direct;
+    /**
      * 保险公司
      */
     public String insurance_company;
@@ -284,6 +288,12 @@ public class CarData {
 	}
 	public void setGeofence(String geofence) {
 		this.geofence = geofence;
+	}	
+	public int getDirect() {
+		return direct;
+	}
+	public void setDirect(int direct) {
+		this.direct = direct;
 	}
 	@Override
 	public String toString() {

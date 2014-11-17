@@ -916,29 +916,28 @@ public class FaultDetectionActivity extends Activity {
 
 	/** 获取健康数据 **/
 	private void getData(int index) {
-		String Device_id = app.carDatas.get(index).getDevice_id();
-		if (Device_id == null || Device_id.equals("")) {
-			Intent intent = new Intent(FaultDetectionActivity.this,
-					DevicesAddActivity.class);
-			intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
-			startActivityForResult(intent, 2);
-		} else {
-			if (isCheck) {
-				Toast.makeText(FaultDetectionActivity.this, "体检进行中",
-						Toast.LENGTH_SHORT).show();
-				return;
-			}
-			initapp();
-			String url;
-			try {
-				url = Constant.BaseUrl + "device/" + Device_id
-						+ "/health_exam?auth_code=" + app.auth_code + "&brand=" + 
-								URLEncoder.encode(app.carDatas.get(index).getCar_brand(), "UTF-8");
+		try {
+			String Device_id = app.carDatas.get(index).getDevice_id();
+			if (Device_id == null || Device_id.equals("")) {
+				Intent intent = new Intent(FaultDetectionActivity.this,
+						DevicesAddActivity.class);
+				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
+				startActivityForResult(intent, 2);
+			} else {
+				if (isCheck) {
+					Toast.makeText(FaultDetectionActivity.this, "体检进行中",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				initapp();
+				String url = Constant.BaseUrl + "device/" + Device_id
+							+ "/health_exam?auth_code=" + app.auth_code + "&brand=" + 
+									URLEncoder.encode(app.carDatas.get(index).getCar_brand(), "UTF-8");
 				new NetThread.GetDataThread(handler, url, getData, index).start();
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
 			}
-		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 
 	String result = "";

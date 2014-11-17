@@ -52,6 +52,7 @@ public class TravelActivity extends Activity {
 	private GeoCoder mGeoCoder = null;
 	int index;
 	AppApplication app;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -180,8 +181,10 @@ public class TravelActivity extends Activity {
 				double lon = Double.valueOf(travelDatas.get(i).getStart_lon());
 				LatLng latLng = new LatLng(lat, lon);
 				System.out.println("获取位置");
-				mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
-						.location(latLng));
+				if(mGeoCoder != null){
+					mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
+							.location(latLng));
+				}
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -478,40 +481,42 @@ public class TravelActivity extends Activity {
 		@Override
 		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
 			try {
-				Log.d(TAG, "arg0.getAddress() = " + arg0.getAddress());
-				String strInfo = "";
-				if (arg0 == null || arg0.error != SearchResult.ERRORNO.NO_ERROR) {
-					
-				}else{
-					strInfo = arg0.getAddress();
-					strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
-							strInfo.length());
-				}			
-				if (isFrist) {// 起点位置取完，在取结束位置
-					travelDatas.get(i).setStart_place("起点：" + strInfo);
-					isFrist = false;
-					double lat = Double.valueOf(travelDatas.get(i).getEnd_lat());
-					double lon = Double.valueOf(travelDatas.get(i).getEnd_lon());
-					LatLng latLng = new LatLng(lat, lon);
-					mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
-							.location(latLng));
-					i++;
-				} else {
-					travelDatas.get(i - 1).setEnd_place("终点：" + strInfo);
-					if (travelDatas.size() == i) {
-						System.out.println("递归完毕");
-					} else {
-						isFrist = true;
-						double lat = Double.valueOf(travelDatas.get(i)
-								.getStart_lat());
-						double lon = Double.valueOf(travelDatas.get(i)
-								.getStart_lon());
+				if(mGeoCoder != null){
+					Log.d(TAG, "arg0.getAddress() = " + arg0.getAddress());
+					String strInfo = "";
+					if (arg0 == null || arg0.error != SearchResult.ERRORNO.NO_ERROR) {
+						
+					}else{
+						strInfo = arg0.getAddress();
+						strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
+								strInfo.length());
+					}			
+					if (isFrist) {// 起点位置取完，在取结束位置
+						travelDatas.get(i).setStart_place("起点：" + strInfo);
+						isFrist = false;
+						double lat = Double.valueOf(travelDatas.get(i).getEnd_lat());
+						double lon = Double.valueOf(travelDatas.get(i).getEnd_lon());
 						LatLng latLng = new LatLng(lat, lon);
 						mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
 								.location(latLng));
+						i++;
+					} else {
+						travelDatas.get(i - 1).setEnd_place("终点：" + strInfo);
+						if (travelDatas.size() == i) {
+							System.out.println("递归完毕");
+						} else {
+							isFrist = true;
+							double lat = Double.valueOf(travelDatas.get(i)
+									.getStart_lat());
+							double lon = Double.valueOf(travelDatas.get(i)
+									.getStart_lon());
+							LatLng latLng = new LatLng(lat, lon);
+							mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
+									.location(latLng));
+						}
 					}
-				}
-				travelAdapter.notifyDataSetChanged();
+					travelAdapter.notifyDataSetChanged();
+				}				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}			
@@ -522,6 +527,7 @@ public class TravelActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		mGeoCoder.destroy();
+		mGeoCoder = null;
 	}
 
 	@Override

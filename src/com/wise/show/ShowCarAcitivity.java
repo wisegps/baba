@@ -213,7 +213,7 @@ public class ShowCarAcitivity extends Activity{
 		        final String bigFile = Constant.VehiclePath + big_pic;
 		        try {
 		        	bigOutputStream = new FileOutputStream(bigFile);
-		            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bigOutputStream);// 把数据写入文件
+		            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bigOutputStream);// 把数据写入文件
 		        } catch (FileNotFoundException e) {
 		            e.printStackTrace();
 		        } finally {
@@ -231,7 +231,7 @@ public class ShowCarAcitivity extends Activity{
 				final String smallFile = Constant.VehiclePath + small_pic;
 				try {
 					smallOutputStream = new FileOutputStream(smallFile);
-					bitmap.compress(Bitmap.CompressFormat.JPEG, 90, smallOutputStream);// 把数据写入文件
+					bitmap.compress(Bitmap.CompressFormat.JPEG, 80, smallOutputStream);// 把数据写入文件
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} finally {

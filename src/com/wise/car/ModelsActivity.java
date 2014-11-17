@@ -206,10 +206,14 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		// 设置右侧触摸监听
 		sideBar.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
 			public void onTouchingLetterChanged(String s) {
-				int position = brandAdapter.getPositionForSection(s.charAt(0));
-				if (position != -1) {
-					lv_brand.setSelection(position);
-				}
+				try {
+					int position = brandAdapter.getPositionForSection(s.charAt(0));
+					if (position != -1) {
+						lv_brand.setSelection(position);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}				
 			}
 		});
 		getDate(carBrankTitle, Constant.BaseUrl + "base/car_brand",GET_BRANK);		
@@ -545,7 +549,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		FileOutputStream b = null;
 		try {
 			b = new FileOutputStream(fileName);
-			bitmap.compress(Bitmap.CompressFormat.PNG, 100, b);// 把数据写入文件
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// 把数据写入文件
 			Message msg = new Message();
 			msg.what = get_image;
 			handler.sendMessage(msg);

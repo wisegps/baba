@@ -56,7 +56,7 @@ public class TestActivity extends Activity{
 		String fileName = Constant.userIconPath + "100.png";
 		try {
 			b = new FileOutputStream(fileName);
-			bitmap.compress(Bitmap.CompressFormat.PNG, 100, b);// 把数据写入文件
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 80, b);// 把数据写入文件
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
