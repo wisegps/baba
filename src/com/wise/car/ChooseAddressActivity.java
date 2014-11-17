@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -86,7 +87,7 @@ public class ChooseAddressActivity extends Activity {
 		mGeoCoder.setOnGetGeoCodeResultListener(onCoderResultListener);
 
 		AdressData myAdress = new AdressData();
-		myAdress.setIcon(R.drawable.amp1);
+		myAdress.setIcon(R.drawable.icon_place);
 		myAdress.setAdress("我的位置");
 		adressDatas.add(myAdress);
 
@@ -120,7 +121,7 @@ public class ChooseAddressActivity extends Activity {
 				} else {
 					adressDatas.clear();
 					AdressData myAdress = new AdressData();
-					myAdress.setIcon(R.drawable.amp1);
+					myAdress.setIcon(R.drawable.icon_place);
 					myAdress.setAdress("我的位置");
 					adressDatas.add(myAdress);
 					chooseAdapter.notifyDataSetChanged();
@@ -258,7 +259,7 @@ public class ChooseAddressActivity extends Activity {
 
 			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
 				AdressData myAdress = new AdressData();
-				myAdress.setIcon(R.drawable.amp1);
+				myAdress.setIcon(R.drawable.icon_place);
 				myAdress.setAdress("我的位置");
 				adressDatas.add(myAdress);
 				PoiOverlay overlay = new PoiOverlay(mBaiduMap);
@@ -274,7 +275,7 @@ public class ChooseAddressActivity extends Activity {
 					adName = mkPoiInfo.name + "\n" + mkPoiInfo.address;
 					adressData.setAdress(adName);
 					adressData.setName(mkPoiInfo.name);
-					adressData.setIcon(R.drawable.amp2);
+					adressData.setIcon(R.drawable.toolbar_icon_search);
 					adressDatas.add(adressData);
 				}
 				chooseAdapter.notifyDataSetChanged();

@@ -99,6 +99,8 @@ public class SearchLocationActivity extends Activity {
 				Activity.MODE_PRIVATE);
 		String name = preferences.getString("name", "");
 		int icon = preferences.getInt("icon", 0);
+		double history_lat = preferences.getLong("history_lat", 0);
+		double history_lon = preferences.getLong("history_lon", 0);
 		if (icon == 0 && name.equals("")) {
 			search_history.setVisibility(View.GONE);
 		} else {
@@ -106,6 +108,8 @@ public class SearchLocationActivity extends Activity {
 			AdressData adressData = new AdressData();
 			adressData.setAdress(name);
 			adressData.setIcon(icon);
+			adressData.setLat(history_lat);
+			adressData.setLon(history_lon);
 			historyDatas.add(adressData);
 		}
 
@@ -123,16 +127,26 @@ public class SearchLocationActivity extends Activity {
 				if (adressDatas.size() == 0 || adressDatas == null) {
 					editor.putString("name", historyDatas.get(position)
 							.getAdress());
-					editor.putInt("icon", R.drawable.amp1);
+					editor.putInt("icon", R.drawable.toolbar_icon_search);
+					editor.putLong("history_lat",
+							(long) historyDatas.get(position).getLat());
+					editor.putLong("history_lon",
+							(long) historyDatas.get(position).getLon());
+					editor.commit();
 					editor.commit();
 					i.putExtra("history_lat", historyDatas.get(position)
 							.getLat());
 					i.putExtra("history_lon", historyDatas.get(position)
 							.getLon());
+
 				} else {
 					editor.putString("name", adressDatas.get(position)
 							.getAdress());
-					editor.putInt("icon", R.drawable.amp1);
+					editor.putInt("icon", R.drawable.toolbar_icon_search);
+					editor.putLong("history_lat",
+							(long) adressDatas.get(position).getLat());
+					editor.putLong("history_lon",
+							(long) adressDatas.get(position).getLon());
 					editor.commit();
 
 					i.putExtra("history_lat", adressDatas.get(position)
@@ -173,7 +187,7 @@ public class SearchLocationActivity extends Activity {
 					adName = mkPoiInfo.name + "\n" + mkPoiInfo.address;
 					adressData.setAdress(adName);
 					adressData.setName(mkPoiInfo.name);
-					adressData.setIcon(R.drawable.amp1);
+					adressData.setIcon(R.drawable.toolbar_icon_search);
 					adressData.setLat(mkPoiInfo.location.latitude);
 					adressData.setLon(mkPoiInfo.location.longitude);
 					adressDatas.add(adressData);

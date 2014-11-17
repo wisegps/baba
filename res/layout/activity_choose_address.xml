@@ -24,7 +24,7 @@
                 android:layout_height="fill_parent"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/margins"
-                android:src="@drawable/amp1" />
+                android:src="@drawable/body_icon_arrow_contrary" />
 
             <EditText
                 android:id="@+id/tv_search"
@@ -32,7 +32,7 @@
                 android:layout_height="fill_parent"
                 android:layout_toRightOf="@id/iv_back"
                 android:background="@drawable/bg_adress"
-                android:drawableLeft="@drawable/amp1"
+                android:drawableLeft="@drawable/toolbar_icon_search"
                 android:gravity="center_vertical"
                 android:hint="输入名称或地址" />
         </RelativeLayout>
@@ -56,9 +56,10 @@
                 android:layout_width="0dip"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                android:drawableLeft="@drawable/amp1"
-                android:gravity="center_vertical"
-                android:text="地图选点" />
+                android:drawableLeft="@drawable/icon_place"
+                android:gravity="center"
+                android:text="地图选点"
+                android:textSize="@dimen/double_margins" />
 
             <View
                 android:layout_width="0.5dp"
@@ -71,9 +72,10 @@
                 android:layout_height="fill_parent"
                 android:layout_marginLeft="20dip"
                 android:layout_weight="1"
-                android:drawableLeft="@drawable/amp1"
-                android:gravity="center_vertical"
-                android:text="收藏选点" />
+                android:drawableLeft="@drawable/body_icon_collect"
+                android:gravity="center"
+                android:text="收藏选点"
+                android:textSize="@dimen/double_margins" />
         </LinearLayout>
 
         <ListView
