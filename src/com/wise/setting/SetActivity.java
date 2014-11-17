@@ -24,6 +24,7 @@ import com.wise.baba.AboutActivity;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.SelectCityActivity;
+import com.wise.car.AddressActivity;
 import com.wise.car.CarActivity;
 import com.wise.car.OfflineActivity;
 
@@ -45,65 +46,71 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 /**
  * 设置界面
+ * 
  * @author Administrator
- *
+ * 
  */
-public class SetActivity extends Activity implements TagAliasCallback{
-	
+public class SetActivity extends Activity implements TagAliasCallback {
+
 	private static final String TAG = "SetActivity";
 	private static final int get_customer = 2;
 	private static final int get_pic = 3;
-	
-	TextView tv_login,tv_city;
-	ImageView iv_logo,iv_sex,iv_service;
+
+	TextView tv_login, tv_city;
+	ImageView iv_logo, iv_sex, iv_service;
 	Button bt_login_out;
 	RequestQueue mQueue;
 	Platform platformQQ;
-    Platform platformSina;
-    Platform platformWhat;
-    AppApplication app;
-    
+	Platform platformSina;
+	Platform platformWhat;
+	AppApplication app;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_set);
-		app = (AppApplication)getApplication();
-        JPushInterface.init(getApplicationContext());
+		app = (AppApplication) getApplication();
+		JPushInterface.init(getApplicationContext());
 		mQueue = Volley.newRequestQueue(this);
 		ShareSDK.initSDK(this);
-        platformQQ = ShareSDK.getPlatform(SetActivity.this, QZone.NAME);
-        platformSina = ShareSDK.getPlatform(SetActivity.this, SinaWeibo.NAME);
-        RelativeLayout rl_login = (RelativeLayout)findViewById(R.id.rl_login);
-        rl_login.setOnClickListener(onClickListener);
-        RelativeLayout rl_city = (RelativeLayout)findViewById(R.id.rl_city);
-        rl_city.setOnClickListener(onClickListener);
-		tv_login = (TextView)findViewById(R.id.tv_login);
-		tv_city = (TextView)findViewById(R.id.tv_city);
-		iv_logo = (ImageView)findViewById(R.id.iv_logo);
-		iv_sex = (ImageView)findViewById(R.id.iv_sex);
-		iv_service = (ImageView)findViewById(R.id.iv_service);
-		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
+		platformQQ = ShareSDK.getPlatform(SetActivity.this, QZone.NAME);
+		platformSina = ShareSDK.getPlatform(SetActivity.this, SinaWeibo.NAME);
+		RelativeLayout rl_login = (RelativeLayout) findViewById(R.id.rl_login);
+		rl_login.setOnClickListener(onClickListener);
+		RelativeLayout rl_city = (RelativeLayout) findViewById(R.id.rl_city);
+		rl_city.setOnClickListener(onClickListener);
+		tv_login = (TextView) findViewById(R.id.tv_login);
+		tv_city = (TextView) findViewById(R.id.tv_city);
+		iv_logo = (ImageView) findViewById(R.id.iv_logo);
+		iv_sex = (ImageView) findViewById(R.id.iv_sex);
+		iv_service = (ImageView) findViewById(R.id.iv_service);
+		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		TextView tv_car = (TextView)findViewById(R.id.tv_car);
+		TextView tv_car = (TextView) findViewById(R.id.tv_car);
 		tv_car.setOnClickListener(onClickListener);
-		TextView tv_offline_map = (TextView)findViewById(R.id.tv_offline_map);
+		TextView tv_offline_map = (TextView) findViewById(R.id.tv_offline_map);
 		tv_offline_map.setOnClickListener(onClickListener);
-		TextView tv_feedback = (TextView)findViewById(R.id.tv_feedback);
+		// 常用地址
+		findViewById(R.id.tv_address).setOnClickListener(onClickListener);
+
+		TextView tv_feedback = (TextView) findViewById(R.id.tv_feedback);
 		tv_feedback.setOnClickListener(onClickListener);
-		TextView tv_about = (TextView)findViewById(R.id.tv_about);
+		TextView tv_about = (TextView) findViewById(R.id.tv_about);
 		tv_about.setOnClickListener(onClickListener);
-		bt_login_out = (Button)findViewById(R.id.bt_login_out);
+		bt_login_out = (Button) findViewById(R.id.bt_login_out);
 		bt_login_out.setOnClickListener(onClickListener);
 		getSpData();
-		
+
 		String url = Constant.BaseUrl + "customer/" + app.cust_id
 				+ "?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, get_customer).start();
 	}
-	OnClickListener onClickListener = new OnClickListener() {		
+
+	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
@@ -111,148 +118,178 @@ public class SetActivity extends Activity implements TagAliasCallback{
 				finish();
 				break;
 			case R.id.rl_login:
-				if(!Judge.isLogin(app)){
-					startActivityForResult(new Intent(SetActivity.this, LoginActivity.class), 1);
-				}else{
-					startActivity(new Intent(SetActivity.this, AccountActivity.class));
+				if (!Judge.isLogin(app)) {
+					startActivityForResult(new Intent(SetActivity.this,
+							LoginActivity.class), 1);
+				} else {
+					startActivity(new Intent(SetActivity.this,
+							AccountActivity.class));
 				}
 				break;
 			case R.id.tv_car:
-				if(!Judge.isLogin(app)){
-					startActivity(new Intent(SetActivity.this, LoginActivity.class));
-				}else{
-					startActivity(new Intent(SetActivity.this, CarActivity.class));
+				if (!Judge.isLogin(app)) {
+					startActivity(new Intent(SetActivity.this,
+							LoginActivity.class));
+				} else {
+					startActivity(new Intent(SetActivity.this,
+							CarActivity.class));
 				}
 				break;
 			case R.id.bt_login_out:
-				SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-		        Editor editor = preferences.edit();
-		        editor.putString(Constant.sp_pwd, "");
-			    editor.putString(Constant.sp_account, "");
-		        editor.commit();
-		        app.cust_id = null ;
-		        app.auth_code = null;
-		        app.carDatas.clear();
-		        Intent intent = new Intent(Constant.A_LoginOut);
-	            sendBroadcast(intent);
-		        bt_login_out.setVisibility(View.GONE);
-		        tv_login.setText("登录/注册");
-		        iv_sex.setVisibility(View.GONE);
-		        iv_service.setVisibility(View.GONE);
-		        iv_logo.setImageResource(R.drawable.icon_add);
-		        platformQQ.removeAccount();
-		        platformSina.removeAccount();
-		        JPushInterface.stopPush(getApplicationContext());
+				SharedPreferences preferences = getSharedPreferences(
+						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+				Editor editor = preferences.edit();
+				editor.putString(Constant.sp_pwd, "");
+				editor.putString(Constant.sp_account, "");
+				editor.commit();
+				app.cust_id = null;
+				app.auth_code = null;
+				app.carDatas.clear();
+				Intent intent = new Intent(Constant.A_LoginOut);
+				sendBroadcast(intent);
+				bt_login_out.setVisibility(View.GONE);
+				tv_login.setText("登录/注册");
+				iv_sex.setVisibility(View.GONE);
+				iv_service.setVisibility(View.GONE);
+				iv_logo.setImageResource(R.drawable.icon_add);
+				platformQQ.removeAccount();
+				platformSina.removeAccount();
+				JPushInterface.stopPush(getApplicationContext());
 				break;
 			case R.id.tv_offline_map:
-				startActivity(new Intent(SetActivity.this, OfflineActivity.class));
+				startActivity(new Intent(SetActivity.this,
+						OfflineActivity.class));
 				break;
 			case R.id.tv_feedback:
-				//startActivity(new Intent(SetActivity.this, FeedBackActivity.class));
+				// startActivity(new Intent(SetActivity.this,
+				// FeedBackActivity.class));
 				FeedbackAgent agent = new FeedbackAgent(SetActivity.this);
-			    agent.startFeedbackActivity();
+				agent.startFeedbackActivity();
 				break;
 			case R.id.tv_about:
 				startActivity(new Intent(SetActivity.this, AboutActivity.class));
 				break;
 			case R.id.rl_city:
-				startActivityForResult(new Intent(SetActivity.this, SelectCityActivity.class), 2);
+				startActivityForResult(new Intent(SetActivity.this,
+						SelectCityActivity.class), 2);
+				break;
+			case R.id.tv_address:
+				// 常用地址
+				if (!Judge.isLogin(app)) {
+					startActivity(new Intent(SetActivity.this,
+							LoginActivity.class));
+				} else {
+					startActivity(new Intent(SetActivity.this,
+							AddressActivity.class));
+				}
 				break;
 			}
 		}
 	};
-	
-	Handler handler = new Handler(){
+
+	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case get_customer:
-				jsonCustomer(msg.obj.toString(),true);
+				jsonCustomer(msg.obj.toString(), true);
 				break;
 			case get_pic:
 				iv_logo.setImageBitmap(bitmap);
 				break;
 			}
-		}		
+		}
 	};
-	
-	private void getSpData(){
+
+	private void getSpData() {
 		tv_city.setText(app.City);
 	}
-	
+
 	private void GetCustomer() {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-		String customer = preferences.getString(Constant.sp_customer + app.cust_id, "");
-		if(customer.equals("")){
-			
-		}else{
-			jsonCustomer(customer,false);
+		String customer = preferences.getString(Constant.sp_customer
+				+ app.cust_id, "");
+		if (customer.equals("")) {
+
+		} else {
+			jsonCustomer(customer, false);
 		}
-		
+
 	}
-	/**获取个人信息**/
-	private void jsonCustomer(String str,boolean isSave) {
-		if(isSave){
-			SharedPreferences preferences1 = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-	        Editor editor1 = preferences1.edit();
-	        editor1.putString(Constant.sp_customer + app.cust_id, str);
-	        editor1.commit();
+
+	/** 获取个人信息 **/
+	private void jsonCustomer(String str, boolean isSave) {
+		if (isSave) {
+			SharedPreferences preferences1 = getSharedPreferences(
+					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+			Editor editor1 = preferences1.edit();
+			editor1.putString(Constant.sp_customer + app.cust_id, str);
+			editor1.commit();
 		}
 		try {
-			JSONObject jsonObject = new JSONObject(str);			
-			if(jsonObject.opt("status_code") == null){
+			JSONObject jsonObject = new JSONObject(str);
+			if (jsonObject.opt("status_code") == null) {
 				bt_login_out.setVisibility(View.VISIBLE);
 				app.cust_name = jsonObject.getString("cust_name");
-		        GetSystem.myLog(TAG, "cust_name = " + app.cust_name);
-		        Bitmap bimage = BitmapFactory.decodeFile(Constant.userIconPath + app.cust_id + ".png");
-		        if(bimage != null){
-		        	iv_logo.setImageBitmap(bimage);
-		        }
-		        iv_sex.setVisibility(View.VISIBLE);
-		        String sex = jsonObject.getString("sex");
-		        if(sex.equals("0")){
-			        iv_sex.setImageResource(R.drawable.icon_man);
-		        }else{
-		        	iv_sex.setImageResource(R.drawable.icon_woman);
-		        }
-		        int cust_type = jsonObject.getInt("cust_type");
-		        //如果是服务商显示标志
-		        if(cust_type == 2){
-		        	iv_service.setVisibility(View.VISIBLE);
-		        }else{
-		        	iv_service.setVisibility(View.GONE);
-		        }
-		        tv_login.setText(jsonObject.getString("cust_name"));
-		        String logo = jsonObject.getString("logo");
-		        if(logo == null || logo.equals("")){
-		        	
-		        }else{
-		        	mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {
-						@Override
-						public void onResponse(Bitmap response) {
-							GetSystem.saveImageSD(response, Constant.userIconPath, app.cust_id + ".png",100);
-							iv_logo.setImageBitmap(response);
-						}
-					}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
-						@Override
-						public void onErrorResponse(VolleyError error) {
-							error.printStackTrace();
-						}
-					}));
-		        }		        
+				GetSystem.myLog(TAG, "cust_name = " + app.cust_name);
+				Bitmap bimage = BitmapFactory.decodeFile(Constant.userIconPath
+						+ app.cust_id + ".png");
+				if (bimage != null) {
+					iv_logo.setImageBitmap(bimage);
+				}
+				iv_sex.setVisibility(View.VISIBLE);
+				String sex = jsonObject.getString("sex");
+				if (sex.equals("0")) {
+					iv_sex.setImageResource(R.drawable.icon_man);
+				} else {
+					iv_sex.setImageResource(R.drawable.icon_woman);
+				}
+				int cust_type = jsonObject.getInt("cust_type");
+				// 如果是服务商显示标志
+				if (cust_type == 2) {
+					iv_service.setVisibility(View.VISIBLE);
+				} else {
+					iv_service.setVisibility(View.GONE);
+				}
+				tv_login.setText(jsonObject.getString("cust_name"));
+				String logo = jsonObject.getString("logo");
+				if (logo == null || logo.equals("")) {
+
+				} else {
+					mQueue.add(new ImageRequest(logo,
+							new Response.Listener<Bitmap>() {
+								@Override
+								public void onResponse(Bitmap response) {
+									GetSystem.saveImageSD(response,
+											Constant.userIconPath, app.cust_id
+													+ ".png", 100);
+									iv_logo.setImageBitmap(response);
+								}
+							}, 0, 0, Config.RGB_565,
+							new Response.ErrorListener() {
+								@Override
+								public void onErrorResponse(VolleyError error) {
+									error.printStackTrace();
+								}
+							}));
+				}
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
+
 	Bitmap bitmap;
-	class imageThread extends Thread{
+
+	class imageThread extends Thread {
 		String url;
-		public imageThread(String Url){
+
+		public imageThread(String Url) {
 			url = Url;
 		}
+
 		@Override
 		public void run() {
 			super.run();
@@ -262,29 +299,34 @@ public class SetActivity extends Activity implements TagAliasCallback{
 			handler.sendMessage(message);
 		}
 	}
-		
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);		
+		super.onActivityResult(requestCode, resultCode, data);
 		GetSystem.myLog(TAG, "requestCode = " + ",resultCode= " + resultCode);
-		if(requestCode == 1 && resultCode == 1){
+		if (requestCode == 1 && resultCode == 1) {
 			GetSystem.myLog(TAG, "登录返回");
-			String url = Constant.BaseUrl + "customer/" + app.cust_id+ "?auth_code=" + app.auth_code;
+			String url = Constant.BaseUrl + "customer/" + app.cust_id
+					+ "?auth_code=" + app.auth_code;
 			new NetThread.GetDataThread(handler, url, get_customer).start();
 			setResult(1);
 			finish();
-		}else if(resultCode == 2){
+		} else if (resultCode == 2) {
 			tv_city.setText(app.City);
 		}
 	}
+
 	@Override
-	public void gotResult(int arg0, String arg1, Set<String> arg2) {}
+	public void gotResult(int arg0, String arg1, Set<String> arg2) {
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		GetCustomer();
 		MobclickAgent.onResume(this);
 	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();

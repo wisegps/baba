@@ -345,7 +345,6 @@ public class SearchMapActivity extends Activity {
 				return;
 			}
 			if (result.error == SearchResult.ERRORNO.AMBIGUOUS_KEYWORD) {
-
 				// 当输入关键字在本市没有找到，但在其他城市找到时，返回包含该关键字信息的城市列表
 				String strInfo = "在";
 				for (CityInfo cityInfo : result.getSuggestCityList()) {

@@ -93,19 +93,39 @@
         android:id="@+id/mv_car_location"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/ll_main"
         android:layout_above="@id/ll_location_bottom"
+        android:layout_below="@id/ll_main"
         android:clickable="true" />
 
-    <ImageView
-        android:id="@+id/iv_streetview" 
-        android:layout_width="wrap_content"
-        android:layout_marginTop="@dimen/margins"
-        android:layout_marginRight="@dimen/margins"
-        android:layout_height="30dp"
+    <TextView
+        android:id="@+id/search_address"
+        android:layout_width="fill_parent"
+        android:layout_height="36dp"
         android:layout_below="@id/ll_main"
-        android:scaleType="fitEnd"
+        android:layout_margin="@dimen/margins"
+        android:background="@color/gray_bg"
+        android:drawableLeft="@drawable/amp1"
+        android:gravity="center_vertical"
+        android:text="搜地点，找路线" />
+
+    <ImageView
+        android:id="@+id/iv_streetview"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
         android:layout_alignParentRight="true"
-        android:visibility="visible"
-        android:src="@drawable/streetview"/>
+        android:layout_below="@id/ll_main"
+        android:layout_marginRight="@dimen/margins"
+        android:layout_marginTop="@dimen/margins"
+        android:scaleType="fitEnd"
+        android:src="@drawable/streetview"
+        android:visibility="visible" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_main"
+        android:layout_toRightOf="@id/iv_streetview"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
 </RelativeLayout>

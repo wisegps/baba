@@ -117,6 +117,7 @@ public class CarLocationActivity extends Activity {
 		getCarLocation();
 
 		// 就初始化控件
+		findViewById(R.id.search_address).setOnClickListener(onClickListener);
 		findViewById(R.id.bt_location_findCar).setOnClickListener(
 				onClickListener);
 		findViewById(R.id.bt_location_travel).setOnClickListener(
@@ -152,12 +153,32 @@ public class CarLocationActivity extends Activity {
 
 	boolean isStop = true;
 
+	private static final int SEARCH_CODE = 8;
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == SearchLocationActivity.HISTORY_CODE) {
+			LatLng llg = new LatLng(data.getExtras().getDouble("history_lat"),
+					data.getExtras().getDouble("history_lon"));
+			// 定位以车辆为中心
+			MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
+			mBaiduMap.animateMapStatus(u);
+			setTransitRoute(ll, llg);
+		}
+	}
+
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.iv_back:
 				finish();
+				break;
+			case R.id.search_address:// TODO 搜索
+				Intent search = new Intent(CarLocationActivity.this,
+						SearchLocationActivity.class);
+				startActivityForResult(search, SEARCH_CODE);
 				break;
 			case R.id.bt_location_findCar:// 寻车,客户端导航
 				LatLng carLocat = new LatLng(carData.getLat(), carData.getLon());
