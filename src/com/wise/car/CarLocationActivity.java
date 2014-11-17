@@ -88,6 +88,8 @@ public class CarLocationActivity extends Activity {
 	List<LatLng> points = new ArrayList<LatLng>();
 	AppApplication app;
 
+	TextView searchAddress;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -118,7 +120,8 @@ public class CarLocationActivity extends Activity {
 		getCarLocation();
 
 		// 就初始化控件
-		findViewById(R.id.search_address).setOnClickListener(onClickListener);
+		searchAddress = (TextView) findViewById(R.id.search_address);
+		searchAddress.setOnClickListener(onClickListener);
 		findViewById(R.id.bt_location_findCar).setOnClickListener(
 				onClickListener);
 		findViewById(R.id.bt_location_travel).setOnClickListener(
@@ -160,6 +163,10 @@ public class CarLocationActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == SearchLocationActivity.HISTORY_CODE) {
+			String re_name = data.getExtras().getString("re_name");
+			if (re_name != null && !re_name.equals("")) {
+				searchAddress.setText(re_name);
+			}
 			LatLng llg = new LatLng(data.getExtras().getDouble("history_lat"),
 					data.getExtras().getDouble("history_lon"));
 			// 定位以车辆为中心
@@ -415,7 +422,7 @@ public class CarLocationActivity extends Activity {
 		}
 		if (carData.getGeofence() != null
 				&& !carData.getGeofence().equals("null")) {
-			//如果有围栏数据，则以围栏的坐标画圆
+			// 如果有围栏数据，则以围栏的坐标画圆
 			LatLng circle = new LatLng(fence_lat, fence_lon);
 			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 					.newLatLng(circle);
@@ -475,7 +482,7 @@ public class CarLocationActivity extends Activity {
 					.newMapStatus(mapStatus);
 			mBaiduMap.setMapStatus(mapStatusUpdate);
 		}
-		//TODO  构建Marker图标
+		// TODO 构建Marker图标
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
@@ -597,10 +604,10 @@ public class CarLocationActivity extends Activity {
 					.longitude(location.getLongitude()).build();
 			mBaiduMap.setMyLocationData(locData);
 			BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
-		            .fromResource(R.drawable.person);
-		    MyLocationConfiguration config = new MyLocationConfiguration(null,
-		            true, mCurrentMarker);
-		    mBaiduMap.setMyLocationConfigeration(config);
+					.fromResource(R.drawable.person);
+			MyLocationConfiguration config = new MyLocationConfiguration(null,
+					true, mCurrentMarker);
+			mBaiduMap.setMyLocationConfigeration(config);
 			if (isFirstLoc) {
 				isFirstLoc = false;
 				ll = new LatLng(location.getLatitude(), location.getLongitude());

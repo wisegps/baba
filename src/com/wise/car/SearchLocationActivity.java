@@ -8,7 +8,6 @@ import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
 import com.baidu.mapapi.search.poi.PoiDetailResult;
-import com.baidu.mapapi.search.poi.PoiDetailSearchOption;
 import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
@@ -64,7 +63,6 @@ public class SearchLocationActivity extends Activity {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				Log.e("my_log", "====>" + s.toString());
 				if (s != null && !(s.toString()).equals("")) {
 					adressDatas.clear();
 					// 搜索关键字
@@ -98,6 +96,7 @@ public class SearchLocationActivity extends Activity {
 		SharedPreferences preferences = getSharedPreferences("history_search",
 				Activity.MODE_PRIVATE);
 		String name = preferences.getString("name", "");
+		String adName = preferences.getString("adName", "");
 		int icon = preferences.getInt("icon", 0);
 		double history_lat = preferences.getLong("history_lat", 0);
 		double history_lon = preferences.getLong("history_lon", 0);
@@ -106,7 +105,8 @@ public class SearchLocationActivity extends Activity {
 		} else {
 			search_history.setVisibility(View.VISIBLE);
 			AdressData adressData = new AdressData();
-			adressData.setAdress(name);
+			adressData.setAdress(adName);
+			adressData.setName(name);
 			adressData.setIcon(icon);
 			adressData.setLat(history_lat);
 			adressData.setLon(history_lon);
@@ -125,8 +125,10 @@ public class SearchLocationActivity extends Activity {
 				SharedPreferences.Editor editor = preferences.edit();
 				Intent i = new Intent();
 				if (adressDatas.size() == 0 || adressDatas == null) {
-					editor.putString("name", historyDatas.get(position)
+					editor.putString("adName", historyDatas.get(position)
 							.getAdress());
+					editor.putString("name", historyDatas.get(position)
+							.getName());
 					editor.putInt("icon", R.drawable.toolbar_icon_search);
 					editor.putLong("history_lat",
 							(long) historyDatas.get(position).getLat());
@@ -138,10 +140,13 @@ public class SearchLocationActivity extends Activity {
 							.getLat());
 					i.putExtra("history_lon", historyDatas.get(position)
 							.getLon());
+					i.putExtra("re_name", historyDatas.get(position).getName());
 
 				} else {
-					editor.putString("name", adressDatas.get(position)
+					editor.putString("adName", adressDatas.get(position)
 							.getAdress());
+					editor.putString("name", adressDatas.get(position)
+							.getName());
 					editor.putInt("icon", R.drawable.toolbar_icon_search);
 					editor.putLong("history_lat",
 							(long) adressDatas.get(position).getLat());
@@ -153,6 +158,7 @@ public class SearchLocationActivity extends Activity {
 							.getLat());
 					i.putExtra("history_lon", adressDatas.get(position)
 							.getLon());
+					i.putExtra("re_name", adressDatas.get(position).getName());
 				}
 				setResult(HISTORY_CODE, i);
 				finish();
