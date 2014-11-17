@@ -114,6 +114,9 @@ public class FriendInfoActivity extends Activity{
 			case R.id.iv_menu:
 				showMenu();
 				break;
+			case R.id.tv_compet:
+				startActivity(new Intent(FriendInfoActivity.this, SetCompetActivity.class));
+				break;
 			}
 		}		
 	};
