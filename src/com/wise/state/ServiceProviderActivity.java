@@ -303,11 +303,12 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 				startActivityForResult(new Intent(ServiceProviderActivity.this, SureFriendActivity.class), 3);
 			}else{
 				//去介绍界面
-				Intent intent = new Intent(ServiceProviderActivity.this, FriendInfoActivity.class);
-				intent.putExtra("FriendId", String.valueOf(app.friendDatas.get(arg2 - 1).getFriend_id()));
-				intent.putExtra("name", app.friendDatas.get(arg2 - 1).getFriend_name());
-				intent.putExtra("isShow", true);
-				startActivity(intent);
+//				Intent intent = new Intent(ServiceProviderActivity.this, FriendInfoActivity.class);
+//				intent.putExtra("FriendId", String.valueOf(app.friendDatas.get(arg2 - 1).getFriend_id()));
+//				intent.putExtra("name", app.friendDatas.get(arg2 - 1).getFriend_name());
+//				intent.putExtra("isShow", true);
+//				startActivity(intent);
+				startActivity(new Intent(ServiceProviderActivity.this, ServiceManageActivity.class));
 			}
 		}
 	};
