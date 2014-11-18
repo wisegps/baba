@@ -48,6 +48,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -122,6 +123,10 @@ public class CarLocationActivity extends Activity {
 		// 就初始化控件
 		searchAddress = (TextView) findViewById(R.id.search_address);
 		searchAddress.setOnClickListener(onClickListener);
+
+		findViewById(R.id.search_home).setOnClickListener(onClickListener);
+		findViewById(R.id.search_company).setOnClickListener(onClickListener);
+
 		findViewById(R.id.bt_location_findCar).setOnClickListener(
 				onClickListener);
 		findViewById(R.id.bt_location_travel).setOnClickListener(
@@ -258,6 +263,41 @@ public class CarLocationActivity extends Activity {
 				intent.putExtra("lat", latitude);
 				intent.putExtra("lon", longitude);
 				startActivity(intent);
+				break;
+
+			case R.id.search_home:
+				SharedPreferences preferences = getSharedPreferences(
+						"search_name", Activity.MODE_PRIVATE);
+				double homeLat = preferences.getLong("homeLat", 0);
+				double homeLon = preferences.getLong("homeLon", 0);
+				if (homeLat == 0 && homeLon == 0) {
+					Toast.makeText(CarLocationActivity.this, "常用家地址未设置",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					LatLng homeLocat = new LatLng(homeLat, homeLon);
+					// 定位以车辆为中心
+					MapStatusUpdate mu = MapStatusUpdateFactory
+							.newLatLng(homeLocat);
+					mBaiduMap.animateMapStatus(mu);
+					setTransitRoute(ll, homeLocat);
+				}
+				break;
+			case R.id.search_company:
+				SharedPreferences preferences1 = getSharedPreferences(
+						"search_name", Activity.MODE_PRIVATE);
+				double companyLat = preferences1.getLong("companyLat", 0);
+				double companyLon = preferences1.getLong("companyLon", 0);
+				if (companyLat == 0 && companyLon == 0) {
+					Toast.makeText(CarLocationActivity.this, "常用公司地址未设置",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					LatLng companyLocat = new LatLng(companyLat, companyLon);
+					// 定位以车辆为中心
+					MapStatusUpdate mu = MapStatusUpdateFactory
+							.newLatLng(companyLocat);
+					mBaiduMap.animateMapStatus(mu);
+					setTransitRoute(ll, companyLocat);
+				}
 				break;
 			}
 		}

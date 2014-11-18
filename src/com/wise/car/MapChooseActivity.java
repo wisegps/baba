@@ -76,6 +76,8 @@ public class MapChooseActivity extends Activity {
 	}
 
 	boolean isFirstLoc = true;
+	double latitude = 0;
+	double longitude = 0;
 
 	private class MyLocationListenner implements BDLocationListener {
 		@Override
@@ -89,6 +91,8 @@ public class MapChooseActivity extends Activity {
 					.direction(100).latitude(location.getLatitude())
 					.longitude(location.getLongitude()).build();
 			mBaiduMap.setMyLocationData(locData);
+			latitude = location.getLatitude();
+			longitude = location.getLongitude();
 			if (isFirstLoc) {
 				isFirstLoc = false;
 				LatLng ll = new LatLng(location.getLatitude(),
@@ -116,6 +120,8 @@ public class MapChooseActivity extends Activity {
 				public void onClick(View v) {
 					Intent i = new Intent();
 					i.putExtra("name", name);
+					i.putExtra("latitude", latitude);
+					i.putExtra("longitude", longitude);
 					setResult(MAPPOINT, i);
 					finish();
 				}
