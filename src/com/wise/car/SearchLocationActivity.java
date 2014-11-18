@@ -3,6 +3,10 @@ package com.wise.car;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -92,27 +96,17 @@ public class SearchLocationActivity extends Activity {
 		search_history = (ListView) findViewById(R.id.search_history);
 		SharedPreferences preferences = getSharedPreferences("history_search",
 				Activity.MODE_PRIVATE);
-		String name = preferences.getString("name", "");
-		String adName = preferences.getString("adName", "");
-		int icon = preferences.getInt("icon", 0);
-		double history_lat = preferences.getLong("history_lat", 0);
-		double history_lon = preferences.getLong("history_lon", 0);
-		if (icon == 0 && name.equals("")) {
+		String historyJson = preferences.getString("historyJson", "");
+		getJsonData(historyJson);
+		if (historyDatas.size() == 0 || historyDatas == null) {
 			search_history.setVisibility(View.GONE);
 		} else {
 			search_history.setVisibility(View.VISIBLE);
-			AdressData adressData = new AdressData();
-			adressData.setAdress(adName);
-			adressData.setName(name);
-			adressData.setIcon(icon);
-			adressData.setLat(history_lat);
-			adressData.setLon(history_lon);
-			historyDatas.add(adressData);
 		}
-
 		searchAdapter = new SearchAdapter();
 		searchAdapter.setDate(historyDatas);
 		search_history.setAdapter(searchAdapter);
+
 		search_history.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -121,42 +115,94 @@ public class SearchLocationActivity extends Activity {
 						"history_search", Activity.MODE_PRIVATE);
 				SharedPreferences.Editor editor = preferences.edit();
 				Intent i = new Intent();
+				JSONObject historyJson = new JSONObject();
+				JSONArray historyArray = new JSONArray();
 				if (adressDatas.size() == 0 || adressDatas == null) {
-					editor.putString("adName", historyDatas.get(position)
-							.getAdress());
-					editor.putString("name", historyDatas.get(position)
-							.getName());
-					editor.putInt("icon", R.drawable.toolbar_icon_search);
-					editor.putLong("history_lat",
-							(long) historyDatas.get(position).getLat());
-					editor.putLong("history_lon",
-							(long) historyDatas.get(position).getLon());
-					editor.commit();
-					editor.commit();
 					i.putExtra("history_lat", historyDatas.get(position)
 							.getLat());
 					i.putExtra("history_lon", historyDatas.get(position)
 							.getLon());
 					i.putExtra("re_name", historyDatas.get(position).getName());
-
+					AdressData data_1 = historyDatas.get(position);
+					historyDatas.remove(position);
+					historyDatas.add(0, data_1);
+					try {
+						for (AdressData data : historyDatas) {
+							JSONObject adressData = new JSONObject();
+							adressData.put("adName", data.getAdress());
+							adressData.put("name", data.getName());
+							adressData.put("history_lat", data.getLat());
+							adressData.put("history_lon", data.getLon());
+							historyArray.put(adressData);
+						}
+						historyJson.put("historyJson", historyArray);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
 				} else {
-					editor.putString("adName", adressDatas.get(position)
-							.getAdress());
-					editor.putString("name", adressDatas.get(position)
-							.getName());
-					editor.putInt("icon", R.drawable.toolbar_icon_search);
-					editor.putLong("history_lat",
-							(long) adressDatas.get(position).getLat());
-					editor.putLong("history_lon",
-							(long) adressDatas.get(position).getLon());
-					editor.commit();
-
 					i.putExtra("history_lat", adressDatas.get(position)
 							.getLat());
 					i.putExtra("history_lon", adressDatas.get(position)
 							.getLon());
 					i.putExtra("re_name", adressDatas.get(position).getName());
+					try {
+						if (historyDatas.size() == 0 || historyDatas == null) {
+							JSONObject jsonObject = new JSONObject();
+							jsonObject.put("adName", adressDatas.get(position)
+									.getAdress());
+							jsonObject.put("name", adressDatas.get(position)
+									.getName());
+							jsonObject.put("history_lat",
+									adressDatas.get(position).getLat());
+							jsonObject.put("history_lon",
+									adressDatas.get(position).getLon());
+							historyArray.put(jsonObject);
+						} else {
+							int one = 0;
+							boolean flag = false;
+							for (int j = 0; j < historyDatas.size(); j++) {
+								if (historyDatas
+										.get(j)
+										.getAdress()
+										.equals(adressDatas.get(position)
+												.getAdress())) {
+									flag = true;
+									one = j;
+									break;
+								}
+							}
+							if (flag) {
+								AdressData data_1 = historyDatas.get(one);
+								historyDatas.remove(one);
+								historyDatas.add(0, data_1);
+							} else {
+								JSONObject object = new JSONObject();
+								object.put("adName", adressDatas.get(position)
+										.getAdress());
+								object.put("name", adressDatas.get(position)
+										.getName());
+								object.put("history_lat",
+										adressDatas.get(position).getLat());
+								object.put("history_lon",
+										adressDatas.get(position).getLon());
+								historyArray.put(object);
+							}
+							for (AdressData data : historyDatas) {
+								JSONObject adressData = new JSONObject();
+								adressData.put("adName", data.getAdress());
+								adressData.put("name", data.getName());
+								adressData.put("history_lat", data.getLat());
+								adressData.put("history_lon", data.getLon());
+								historyArray.put(adressData);
+							}
+						}
+						historyJson.put("historyJson", historyArray);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
 				}
+				editor.putString("historyJson", historyJson.toString());
+				editor.commit();
 				setResult(HISTORY_CODE, i);
 				finish();
 			}
@@ -165,9 +211,34 @@ public class SearchLocationActivity extends Activity {
 		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Intent i = new Intent();
+				i.putExtra("re_name", "");
+				setResult(HISTORY_CODE, i);
 				finish();
 			}
 		});
+	}
+
+	private void getJsonData(String str) {
+		try {
+			JSONObject jsonObject = new JSONObject(str);
+			JSONArray jsonArray = jsonObject.getJSONArray("historyJson");
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject object = jsonArray.getJSONObject(i);
+				String name = object.getString("name");
+				String adName = object.getString("adName");
+				double history_lat = object.getLong("history_lat");
+				double history_lon = object.getLong("history_lon");
+				AdressData adressData = new AdressData();
+				adressData.setAdress(adName);
+				adressData.setName(name);
+				adressData.setLat(history_lat);
+				adressData.setLon(history_lon);
+				historyDatas.add(adressData);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 	OnGetPoiSearchResultListener poiListener = new OnGetPoiSearchResultListener() {
@@ -190,7 +261,6 @@ public class SearchLocationActivity extends Activity {
 					adName = mkPoiInfo.name + "\n" + mkPoiInfo.address;
 					adressData.setAdress(adName);
 					adressData.setName(mkPoiInfo.name);
-					adressData.setIcon(R.drawable.toolbar_icon_search);
 					adressData.setLat(mkPoiInfo.location.latitude);
 					adressData.setLon(mkPoiInfo.location.longitude);
 					adressDatas.add(adressData);
@@ -252,7 +322,7 @@ public class SearchLocationActivity extends Activity {
 				mHolder = (Holder) convertView.getTag();
 			}
 			if (show != null && show.size() != 0) {
-				mHolder.icon.setImageResource(show.get(position).getIcon());
+				// mHolder.icon.setImageResource(show.get(position).getIcon());
 				mHolder.textView.setText(show.get(position).getAdress());
 			}
 			return convertView;

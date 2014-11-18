@@ -166,13 +166,16 @@ public class CarLocationActivity extends Activity {
 			String re_name = data.getExtras().getString("re_name");
 			if (re_name != null && !re_name.equals("")) {
 				searchAddress.setText(re_name);
+				LatLng llg = new LatLng(data.getExtras().getDouble(
+						"history_lat"), data.getExtras().getDouble(
+						"history_lon"));
+				// 定位以车辆为中心
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
+				mBaiduMap.animateMapStatus(u);
+				setTransitRoute(ll, llg);
+			} else {
+				getCarLocation();
 			}
-			LatLng llg = new LatLng(data.getExtras().getDouble("history_lat"),
-					data.getExtras().getDouble("history_lon"));
-			// 定位以车辆为中心
-			MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
-			mBaiduMap.animateMapStatus(u);
-			setTransitRoute(ll, llg);
 		}
 	}
 
