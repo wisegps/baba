@@ -19,11 +19,9 @@ import data.AdressData;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +62,6 @@ public class SearchLocationActivity extends Activity {
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
 				if (s != null && !(s.toString()).equals("")) {
-					adressDatas.clear();
 					// 搜索关键字
 					mPoiSearch.searchNearby(new PoiNearbySearchOption()
 							.radius(1000000000).keyword(s.toString())
@@ -178,13 +175,13 @@ public class SearchLocationActivity extends Activity {
 		public void onGetPoiResult(PoiResult result) {
 			if (result == null
 					|| result.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {
-				Toast.makeText(SearchLocationActivity.this, "抱歉，没找到结果",
-						Toast.LENGTH_SHORT).show();
+				search_history.setVisibility(View.GONE);
 				return;
 			}
 
 			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
 				search_history.setVisibility(View.VISIBLE);
+				adressDatas.clear();
 				PoiInfo mkPoiInfo = null;
 				String adName = "";
 				for (int i = 0; i < result.getAllPoi().size(); i++) {

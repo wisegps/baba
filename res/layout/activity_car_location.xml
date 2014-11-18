@@ -103,7 +103,7 @@
         android:layout_height="36dp"
         android:layout_below="@id/ll_main"
         android:layout_margin="@dimen/margins"
-        android:background="@color/gray_bg"
+        android:background="#CCCCCC"
         android:drawableLeft="@drawable/toolbar_icon_search"
         android:gravity="center_vertical"
         android:text="搜地点，找路线" />
