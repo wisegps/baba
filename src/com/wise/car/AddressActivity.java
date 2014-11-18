@@ -76,12 +76,15 @@ public class AddressActivity extends Activity {
 			SharedPreferences preferences = getSharedPreferences("search_name",
 					Activity.MODE_PRIVATE);
 			SharedPreferences.Editor editor = preferences.edit();
-
 			String name = data.getExtras().getString("name");
+			double latitude = data.getExtras().getDouble("latitude");
+			double longitude = data.getExtras().getDouble("longitude");
 			boolean myLocat = data.getExtras().getBoolean("myLoct");
 			if (requestCode == HOME) {
 				if (name != null && !name.equals("")) {
 					tv_home.setText("家\n" + name);
+					editor.putLong("homeLat", (long) latitude);
+					editor.putLong("homeLon", (long) longitude);
 					editor.putString("name", name);
 				} else if (myLocat) {
 					tv_home.setText("家");
@@ -95,6 +98,8 @@ public class AddressActivity extends Activity {
 			} else if (requestCode == COMPANY) {
 				if (name != null && !name.equals("")) {
 					tv_company.setText("公司\n" + name);
+					editor.putLong("companyLat", (long) latitude);
+					editor.putLong("companyLon", (long) longitude);
 					editor.putString("company", name);
 				} else if (myLocat) {
 					tv_company.setText("公司");

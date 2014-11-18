@@ -124,9 +124,13 @@ public class ChooseAddressActivity extends Activity {
 				Intent i = new Intent();
 				if (position == 0) {
 					i.putExtra("name", myLocation);
+					i.putExtra("latitude", latitude);
+					i.putExtra("longitude", longitude);
 					i.putExtra("myLoct", true);
 				} else {
 					i.putExtra("name", adressDatas.get(position).getName());
+					i.putExtra("latitude", adressDatas.get(position).getLat());
+					i.putExtra("longitude", adressDatas.get(position).getLon());
 					i.putExtra("myLoct", false);
 				}
 				setResult(ADDRESSCODE, i);
@@ -160,6 +164,8 @@ public class ChooseAddressActivity extends Activity {
 	};
 
 	String myLocation = "";
+	double latitude = 0;
+	double longitude = 0;
 
 	private class MyLocationListenner implements BDLocationListener {
 		@Override
@@ -170,6 +176,8 @@ public class ChooseAddressActivity extends Activity {
 			}
 			if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
 				myLocation = location.getAddrStr();
+				latitude = location.getLatitude();
+				longitude = location.getLongitude();
 			} else {
 				myLocation = "";
 			}
@@ -185,6 +193,8 @@ public class ChooseAddressActivity extends Activity {
 			String name = data.getExtras().getString("name");
 			Intent i = new Intent();
 			i.putExtra("name", name);
+			i.putExtra("latitude", data.getExtras().getDouble("latitude"));
+			i.putExtra("longitude", data.getExtras().getDouble("longitude"));
 			i.putExtra("myLoct", false);
 			setResult(ADDRESSCODE, i);
 			finish();
@@ -214,6 +224,8 @@ public class ChooseAddressActivity extends Activity {
 					adName = mkPoiInfo.name + "\n" + mkPoiInfo.address;
 					adressData.setAdress(adName);
 					adressData.setName(mkPoiInfo.name);
+					adressData.setLat(mkPoiInfo.location.latitude);
+					adressData.setLon(mkPoiInfo.location.longitude);
 					adressData.setIcon(R.drawable.toolbar_icon_search);
 					adressDatas.add(adressData);
 				}
