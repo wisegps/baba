@@ -7,19 +7,19 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="45dip"
-        android:background="@color/white"
+        android:layout_height="@dimen/title_hight"
+        android:background="@color/title_back"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:padding="5dip" >
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
             android:layout_centerVertical="true"
             android:padding="@dimen/margins"
-            android:src="@drawable/body_icon_arrow_contrary" />
+            android:src="@drawable/nav_back" />
 
         <EditText
             android:id="@+id/tv_search"
@@ -29,7 +29,8 @@
             android:background="@drawable/bg_adress"
             android:drawableLeft="@drawable/toolbar_icon_search"
             android:gravity="center_vertical"
-            android:hint="输入名称或地址" />
+            android:hint="输入名称或地址"
+            android:textColor="@color/black1" />
     </RelativeLayout>
 
     <View
@@ -51,7 +52,6 @@
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/icon_place"
             android:gravity="center"
             android:text="地图选点"
             android:textSize="@dimen/double_margins" />
@@ -67,7 +67,6 @@
             android:layout_height="fill_parent"
             android:layout_marginLeft="20dip"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/body_icon_collect"
             android:gravity="center"
             android:text="收藏选点"
             android:textSize="@dimen/double_margins" />

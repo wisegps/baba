@@ -62,7 +62,7 @@ public class ChooseAddressActivity extends Activity {
 		app = (AppApplication) getApplication();
 
 		AdressData myAdress = new AdressData();
-		myAdress.setIcon(R.drawable.icon_place);
+		myAdress.setIcon(R.drawable.toolbar_icon_search);
 		myAdress.setAdress("我的位置");
 		adressDatas.add(myAdress);
 
@@ -98,14 +98,13 @@ public class ChooseAddressActivity extends Activity {
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
 				if (s != null && !(s.toString()).equals("")) {
-					adressDatas.clear();
 					// 搜索关键字
 					mPoiSearch.searchInCity((new PoiCitySearchOption()).city(
 							app.City).keyword(s.toString()));
 				} else {
 					adressDatas.clear();
 					AdressData myAdress = new AdressData();
-					myAdress.setIcon(R.drawable.icon_place);
+					myAdress.setIcon(R.drawable.toolbar_icon_search);
 					myAdress.setAdress("我的位置");
 					adressDatas.add(myAdress);
 					chooseAdapter.notifyDataSetChanged();
@@ -202,8 +201,9 @@ public class ChooseAddressActivity extends Activity {
 				return;
 			}
 			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
+				adressDatas.clear();
 				AdressData myAdress = new AdressData();
-				myAdress.setIcon(R.drawable.icon_place);
+				myAdress.setIcon(R.drawable.toolbar_icon_search);
 				myAdress.setAdress("我的位置");
 				adressDatas.add(myAdress);
 				PoiInfo mkPoiInfo = null;

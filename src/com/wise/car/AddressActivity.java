@@ -4,6 +4,7 @@ import com.wise.baba.R;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -28,6 +29,15 @@ public class AddressActivity extends Activity {
 		findViewById(R.id.iv_back).setOnClickListener(onClickListener);
 		findViewById(R.id.ad_delete).setOnClickListener(onClickListener);
 		findViewById(R.id.ad_delete_1).setOnClickListener(onClickListener);
+
+		SharedPreferences preferences = getSharedPreferences("search_name",
+				Activity.MODE_PRIVATE);
+		String name = preferences.getString("name", "");
+		String company = preferences.getString("company", "");
+
+		tv_home.setText("家\n" + name);
+		tv_company.setText("公司\n" + company);
+
 	}
 
 	private static final int HOME = 1;
@@ -63,11 +73,16 @@ public class AddressActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == ChooseAddressActivity.ADDRESSCODE) {
+			SharedPreferences preferences = getSharedPreferences("search_name",
+					Activity.MODE_PRIVATE);
+			SharedPreferences.Editor editor = preferences.edit();
+
 			String name = data.getExtras().getString("name");
 			boolean myLocat = data.getExtras().getBoolean("myLoct");
 			if (requestCode == HOME) {
 				if (name != null && !name.equals("")) {
-					tv_home.setText("家" + "\n" + name);
+					tv_home.setText("家\n" + name);
+					editor.putString("name", name);
 				} else if (myLocat) {
 					tv_home.setText("家");
 					Toast.makeText(AddressActivity.this, "定位失败",
@@ -79,7 +94,8 @@ public class AddressActivity extends Activity {
 				}
 			} else if (requestCode == COMPANY) {
 				if (name != null && !name.equals("")) {
-					tv_company.setText("公司" + "\n" + name);
+					tv_company.setText("公司\n" + name);
+					editor.putString("company", name);
 				} else if (myLocat) {
 					tv_company.setText("公司");
 					Toast.makeText(AddressActivity.this, "定位失败",
@@ -90,6 +106,7 @@ public class AddressActivity extends Activity {
 							Toast.LENGTH_SHORT).show();
 				}
 			}
+			editor.commit();
 		}
 
 	}
