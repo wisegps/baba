@@ -25,6 +25,15 @@
 	        android:padding="@dimen/margins"
 	        android:layout_centerVertical="true"
 	        android:src="@drawable/nav_back"/>
+	    <ImageView
+             android:id="@+id/iv_clear_obd"
+             android:layout_width="@dimen/title_hight"
+             android:layout_height="@dimen/title_hight"
+             android:layout_alignParentRight="true"
+             android:layout_centerVertical="true"
+             android:layout_marginRight="@dimen/margins"
+             android:padding="@dimen/margins"
+             android:src="@drawable/bg_set" />
 	</RelativeLayout>
 	<RelativeLayout
 	    android:id="@+id/rl_no_fault"

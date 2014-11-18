@@ -2,14 +2,24 @@ package com.wise.state;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import pubclas.Constant;
+import pubclas.NetThread;
+
 import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +37,10 @@ import android.widget.TextView;
  *
  */
 public class FaultDetailActivity extends Activity{
+	
+	private static final int clear_obd = 1;
+	private String COMMAND_CLEAR_ODBERR = "16448";
+	
 	RelativeLayout rl_no_fault;
 	ListView lv_fault;
 	TextView tv_fault;
@@ -34,17 +48,24 @@ public class FaultDetailActivity extends Activity{
 	List<FaultData> faultDatas = new ArrayList<FaultData>();
 	int[][] colors = {{83,181,220},{106,195,149},{133,208,66},{245,149,91},{248,127,96},{255,105,105}};
 	
+	AppApplication app;
+	String device_id;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fault_detail);
+		app = (AppApplication) getApplication();
 		rl_no_fault = (RelativeLayout)findViewById(R.id.rl_no_fault);
 		lv_fault = (ListView)findViewById(R.id.lv_fault);
 		tv_fault = (TextView)findViewById(R.id.tv_fault);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
+		ImageView iv_clear_obd = (ImageView)findViewById(R.id.iv_clear_obd);
+		iv_clear_obd.setOnClickListener(onClickListener);
 		fault_content = getIntent().getStringExtra("fault_content");
+		device_id = getIntent().getStringExtra("device_id");
 		jsonData();
 		if(faultDatas.size() == 0){
 			rl_no_fault.setVisibility(View.VISIBLE);
@@ -61,11 +82,36 @@ public class FaultDetailActivity extends Activity{
 			case R.id.iv_back:
 				finish();
 				break;
-			default:
+			case R.id.iv_clear_obd:
+				clearObd();
 				break;
 			}
 		}
 	};
+	Handler handler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case clear_obd:
+				jsonObd(msg.obj.toString());
+				break;
+
+			default:
+				break;
+			}
+		}		
+	};
+	private void clearObd(){
+		String url = Constant.BaseUrl + "command?auth_code=" + app.auth_code;
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("device_id", device_id));
+		params.add(new BasicNameValuePair("cmd_type", COMMAND_CLEAR_ODBERR));
+		new NetThread.postDataThread(handler, url, params, clear_obd).start();
+	}
+	private void jsonObd(String result){
+		System.out.println(result);
+	}
 	private void jsonData(){
 		try {
 			JSONObject jObject = new JSONObject(fault_content);

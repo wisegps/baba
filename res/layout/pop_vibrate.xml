@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#CCFFFFFF"
+    android:orientation="vertical"
+    android:padding="@dimen/margins" >    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="震动灵敏度"
+            android:textSize="@dimen/content" />
+		<RelativeLayout 
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content">
+	        <TextView
+	            android:id="@+id/tv_vibrate"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentRight="true"
+	            android:layout_centerVertical="true"
+	            android:text="关"
+	            android:textSize="@dimen/content" />	        
+	        <SeekBar
+	            android:id="@+id/sb_vibrate"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_toLeftOf="@id/tv_vibrate"
+	            android:max="9" />
+		</RelativeLayout>
+    </LinearLayout>
+    <Button
+        android:id="@+id/bt_set_vibrate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"        
+        android:layout_margin="10dp"
+        android:background="@drawable/bg_fence"
+        android:text="设置震灵敏度"
+        android:textColor="@color/white" />
+</LinearLayout>

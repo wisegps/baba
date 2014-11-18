@@ -27,6 +27,15 @@
             android:layout_marginLeft="@dimen/margins"
             android:padding="@dimen/margins"
             android:src="@drawable/nav_back" />
+        <ImageView
+             android:id="@+id/iv_vibratealert"
+             android:layout_width="@dimen/title_hight"
+             android:layout_height="@dimen/title_hight"
+             android:layout_alignParentRight="true"
+             android:layout_centerVertical="true"
+             android:layout_marginRight="@dimen/margins"
+             android:padding="@dimen/margins"
+             android:src="@drawable/bg_set" />
     </RelativeLayout>
 
     <LinearLayout
