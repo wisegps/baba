@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * 故障明细列表
@@ -108,9 +109,22 @@ public class FaultDetailActivity extends Activity{
 		params.add(new BasicNameValuePair("device_id", device_id));
 		params.add(new BasicNameValuePair("cmd_type", COMMAND_CLEAR_ODBERR));
 		new NetThread.postDataThread(handler, url, params, clear_obd).start();
+		System.out.println("device_id = " + device_id);
+		System.out.println("COMMAND_CLEAR_ODBERR = " + COMMAND_CLEAR_ODBERR);
 	}
 	private void jsonObd(String result){
 		System.out.println(result);
+		try {
+			JSONObject jsonObject = new JSONObject(result);
+			if(jsonObject.getInt("status_code") == 0){
+				Toast.makeText(getApplicationContext(), "清除故障码成功", Toast.LENGTH_SHORT).show();
+			}else{
+				Toast.makeText(getApplicationContext(), "清除故障码失败", Toast.LENGTH_SHORT).show();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(getApplicationContext(), "清除故障码失败", Toast.LENGTH_SHORT).show();
+		}
 	}
 	private void jsonData(){
 		try {

@@ -643,12 +643,23 @@ public class CarLocationActivity extends Activity {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("device_id", carData.getDevice_id()));
 		params.add(new BasicNameValuePair("cmd_type", COMMAND_VIBRATEALERT));
-		params.add(new BasicNameValuePair("params", "{sensitivity: }" + vibrate));
+		params.add(new BasicNameValuePair("params", "{sensitivity: " + vibrate +"}"));
 		new NetThread.postDataThread(handler, url, params, set_vibrate).start();
 	}
 	
 	private void jsonVibrate(String result){
 		System.out.println(result);
+		try {
+			JSONObject jsonObject = new JSONObject(result);
+			if(jsonObject.getInt("status_code") == 0){
+				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度成功", Toast.LENGTH_SHORT).show();
+			}else{
+				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度失败", Toast.LENGTH_SHORT).show();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(getApplicationContext(), "设置震动报警灵敏度失败", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	boolean isFirstLoc = true;
