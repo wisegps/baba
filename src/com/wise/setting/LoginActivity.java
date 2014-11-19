@@ -183,23 +183,37 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	};
 
 	private void Login() {
-		if (app.isTest) {
-			account = "demo@bibibaba.cn";
-			pwd = "demo123";
-		} else {
-			account = et_account.getText().toString().trim();
-			pwd = et_pwd.getText().toString().trim();
-			if (account.equals("") || pwd.equals("")) {
-				Toast.makeText(LoginActivity.this, "请输入账号密码",
-						Toast.LENGTH_SHORT).show();
-				return;
+		if(GetSystem.isNetworkAvailable(LoginActivity.this)){
+			if (app.isTest) {
+				account = "demo@bibibaba.cn";
+				pwd = "demo123";
+			} else {
+				account = et_account.getText().toString().trim();
+				pwd = et_pwd.getText().toString().trim();
+				if (account.equals("") || pwd.equals("")) {
+					Toast.makeText(LoginActivity.this, "请输入账号密码",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				bt_login.setEnabled(false);
+				progressBar.setVisibility(View.VISIBLE);
 			}
-			bt_login.setEnabled(false);
-			progressBar.setVisibility(View.VISIBLE);
-		}
-		String url = Constant.BaseUrl + "user_login?account=" + account
-				+ "&password=" + GetSystem.getM5DEndo(pwd);
-		new NetThread.GetDataThread(handler, url, login_account).start();
+			String url = Constant.BaseUrl + "user_login?account=" + account
+					+ "&password=" + GetSystem.getM5DEndo(pwd);
+			new NetThread.GetDataThread(handler, url, login_account).start();
+		}else{
+			AlertDialog.Builder dialog =new AlertDialog.Builder(LoginActivity.this);
+			dialog.setTitle("提示");  
+			dialog.setMessage("当前网络未连接"); 
+			dialog.setPositiveButton("去打开", new DialogInterface.OnClickListener() {				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					   startActivity(new Intent("android.settings.WIFI_SETTINGS"));  
+				}
+			});
+			dialog.setNegativeButton("取消", null);
+			dialog.show();
+		}		
 	}
 
 	private void jsonLogin(String str) {

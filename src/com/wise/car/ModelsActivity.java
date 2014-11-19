@@ -118,8 +118,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			logoUrl = brankModel.getLogoUrl();
 			if(isNeedModel){
 				// 点击品牌列表 选择车型
-				getDate(carBrankTitle + carBrankId, Constant.BaseUrl
-						+ "base/car_series?pid=" + carBrankId, GET_SERIES);
+				getSeriesData(carBrankId);
 			}else{
 				Intent intent = new Intent();
 				intent.putExtra("brank", carBrank);
@@ -138,8 +137,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			carSeriesId = str[0];
 			carSerie = str[1];
 			if(isNeedType){
-				getDate(carSeriesTitle + carSeriesId, Constant.BaseUrl
-						+ "base/car_type?pid=" + carSeriesId, GET_TYPE);
+				getTypeData(carSeriesId);
 			}else{
 				Intent intent = new Intent();
 				intent.putExtra("brank", carBrank);
@@ -206,17 +204,13 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		// 设置右侧触摸监听
 		sideBar.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
 			public void onTouchingLetterChanged(String s) {
-				try {
-					int position = brandAdapter.getPositionForSection(s.charAt(0));
-					if (position != -1) {
-						lv_brand.setSelection(position);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}				
+				int position = brandAdapter.getPositionForSection(s.charAt(0));
+				if (position != -1) {
+					lv_brand.setSelection(position);
+				}
 			}
 		});
-		getDate(carBrankTitle, Constant.BaseUrl + "base/car_brand",GET_BRANK);		
+		getModelsData();		
 	}
 	Handler handler = new Handler(){
 		@Override
@@ -229,7 +223,16 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			case GET_BRANK:
 				String brankData = msg.obj.toString();
 				//TODO 存到数据库
-				insertDatabases(carBrankTitle, brankData, ModelsActivity.this);
+				if(msg.arg1 == 0){//数据库没有记录，插入数据
+					insertDatabases(carBrankTitle, brankData, ModelsActivity.this);
+				}else{//数据库存在记录，更新数据
+					if(!msg.obj.toString().equals("")){
+						//更新数据库
+						BaseData baseData = new BaseData();
+						baseData.setContent(brankData);
+						baseData.updateAll("Title = ?" , "carBrank");
+					}
+				}
 				if (brankData.equals("")) {
 					Toast.makeText(getApplicationContext(), "获取数据失败，稍后再试", Toast.LENGTH_SHORT).show();
 				}else{
@@ -257,18 +260,36 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 				}).start();
 
 				break;
-			case GET_SERIES: // 车型
-				String seriesData = msg.obj.toString();				
-				insertDatabases(carBrankTitle + carBrankId, seriesData,
-						ModelsActivity.this);
-
+			case GET_SERIES: // 车型				
+				String seriesData = msg.obj.toString();
+				if(msg.arg1 == 0){
+					insertDatabases(carBrankTitle + carBrankId, seriesData,
+							ModelsActivity.this);
+				}else{
+					if(!seriesData.equals("")){
+						//更新数据库
+						BaseData baseData = new BaseData();
+						baseData.setContent(seriesData);
+						baseData.updateAll("Title = ?" , carBrankTitle + carBrankId);
+					}
+				}
+				
 				jsonSeries(seriesData);
 				break;
 			case GET_TYPE: // 车款
 				String resultType = msg.obj.toString();
-				// 更新数据库
-				insertDatabases(carSeriesTitle + carSeriesId, resultType,
-						ModelsActivity.this);
+				if(msg.arg1 == 0){
+					// 更新数据库
+					insertDatabases(carSeriesTitle + carSeriesId, resultType,
+							ModelsActivity.this);
+				}else{
+					if(!resultType.equals("")){
+						//更新数据库
+						BaseData baseData = new BaseData();
+						baseData.setContent(resultType);
+						baseData.updateAll("Title = ?" , carSeriesTitle + carSeriesId);
+					}
+				}				
 				jsonType(resultType);
 				break;
 			case get_image:
@@ -277,30 +298,54 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 			}
 		}		
 	};
-
 	/**
-	 * @param whereValues 查询数据库时搜索条件
-	 * @param url 数据库没有数据 服务器获取的地址
-	 * @param handlerWhat 服务器获取handler异步处理的标识
+	 * 获取品牌
 	 */
-	private void getDate(String whereValues, String url, int handlerWhat) {		
-		List<BaseData> baseDatas = DataSupport.where("Title = ?",whereValues).find(BaseData.class);
-		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
+	private void getModelsData(){//TODO 获取品牌
+		int on = 1;//数据库存在记录
+		List<BaseData> baseDatas = DataSupport.where("Title = ?",carBrankTitle).find(BaseData.class);
+		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null){
 			progressDialog = ProgressDialog.show(ModelsActivity.this,
 					getString(R.string.dialog_title),
 					getString(R.string.dialog_message));
 			progressDialog.setCancelable(true);
-			new NetThread.GetDataThread(handler, url, handlerWhat).start();
+			on = 0;
 		}else{
-			if(handlerWhat == GET_BRANK){
-				jsonBrands(baseDatas.get(0).getContent());
-			}else if(handlerWhat == GET_SERIES){
-				jsonSeries(baseDatas.get(0).getContent());
-			}else if(handlerWhat == GET_TYPE){
-				jsonType(baseDatas.get(0).getContent());
-			}
-		}
+			jsonBrands(baseDatas.get(0).getContent());
+		}	
+		String url = Constant.BaseUrl + "base/car_brand";
+		new NetThread.GetDataThread(handler, url, GET_BRANK,on).start();
 	}
+	/**
+	 * 获取车型
+	 */
+	private void getSeriesData(String carBrankId){
+		int on = 1;//数据库存在记录
+		List<BaseData> baseDatas = DataSupport.where("Title = ?",carBrankTitle + carBrankId).find(BaseData.class);
+		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null){
+			on = 0;
+		}else{
+			jsonSeries(baseDatas.get(0).getContent());
+		}
+		String url = Constant.BaseUrl + "base/car_series?pid=" + carBrankId;
+		new NetThread.GetDataThread(handler, url, GET_SERIES,on).start();
+	}
+	/**
+	 * 获取车款
+	 * @param carBrankId
+	 */
+	private void getTypeData(String carSeriesId){
+		int on = 1;//数据库存在记录
+		List<BaseData> baseDatas = DataSupport.where("Title = ?",carSeriesTitle + carSeriesId).find(BaseData.class);
+		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
+			on = 0;
+		}else{
+			jsonType(baseDatas.get(0).getContent());
+		}
+		String url = Constant.BaseUrl + "base/car_type?pid=" + carSeriesId;
+		new NetThread.GetDataThread(handler, url, GET_TYPE,on).start();
+	}
+	
 	private void jsonBrands(String result){
 		if(progressDialog != null){
 			progressDialog.dismiss();
@@ -377,7 +422,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 				String[] typeStr = new String[2];
 				try {
 					typeStr[0] = jsonArray.getJSONObject(i).getString("id");
-					typeStr[1] = jsonArray.getJSONObject(i).getString("name");
+					typeStr[1] = jsonArray.getJSONObject(i).getString("go_name") + "  " + jsonArray.getJSONObject(i).getString("name");
 					carTypes.add(typeStr);
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -549,7 +594,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		FileOutputStream b = null;
 		try {
 			b = new FileOutputStream(fileName);
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// 把数据写入文件
+			bitmap.compress(Bitmap.CompressFormat.PNG, 100, b);// 把数据写入文件
 			Message msg = new Message();
 			msg.what = get_image;
 			handler.sendMessage(msg);

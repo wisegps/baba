@@ -94,6 +94,7 @@ public class CarLocationActivity extends Activity {
 	AppApplication app;
 
 	TextView searchAddress;
+	ImageView iv_traffic;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +106,10 @@ public class CarLocationActivity extends Activity {
 		iv_more.setOnClickListener(onClickListener);
 		ImageView iv_maplayers = (ImageView) findViewById(R.id.iv_maplayers);
 		iv_maplayers.setOnClickListener(onClickListener);
-		ImageView iv_streetview = (ImageView) findViewById(R.id.iv_streetview);
-		iv_streetview.setOnClickListener(onClickListener);
+		ImageView iv_streetscape = (ImageView) findViewById(R.id.iv_streetscape);
+		iv_streetscape.setOnClickListener(onClickListener);
+		iv_traffic = (ImageView) findViewById(R.id.iv_traffic);
+		iv_traffic.setOnClickListener(onClickListener);
 		TextView tv_car_name = (TextView) findViewById(R.id.tv_car_name);
 		index = getIntent().getIntExtra("index", 0);
 		carData = app.carDatas.get(index);
@@ -182,7 +185,6 @@ public class CarLocationActivity extends Activity {
 				LatLng llg = new LatLng(data.getExtras().getDouble(
 						"history_lat"), data.getExtras().getDouble(
 						"history_lon"));
-				// TODO 位置
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
 				mBaiduMap.setMapStatus(u);
 				setTransitRoute(ll, llg);
@@ -199,7 +201,7 @@ public class CarLocationActivity extends Activity {
 			case R.id.iv_back:
 				finish();
 				break;
-			case R.id.search_address:// TODO 搜索
+			case R.id.search_address:
 				Intent search = new Intent(CarLocationActivity.this,
 						SearchLocationActivity.class);
 				startActivityForResult(search, SEARCH_CODE);
@@ -236,7 +238,6 @@ public class CarLocationActivity extends Activity {
 				ShowFence();
 				break;
 			case R.id.iv_maplayers:
-				//TODO 弹出图层
 				ShowPopMapLayers();
 				break;
 			// 周边点击弹出Popupwindow监听事件
@@ -279,7 +280,7 @@ public class CarLocationActivity extends Activity {
 						+ app.auth_code;
 				new NetThread.DeleteThread(handler, url, DELETE).start();
 				break;
-			case R.id.iv_streetview:
+			case R.id.iv_streetscape:
 				// 进入街景
 				Intent intent = new Intent(CarLocationActivity.this,
 						PanoramaDemoActivityMain.class);
@@ -326,9 +327,57 @@ public class CarLocationActivity extends Activity {
 					setTransitRoute(ll, companyLocat);
 				}
 				break;
+			case R.id.iv_satellite:
+				MapType = 0;
+				setMapLayers();
+				iv_satellite.setBackgroundResource(R.drawable.bd_wallet_my_bank_card_list_item_bg_normal);
+				mBaiduMap.setMapType(BaiduMap.MAP_TYPE_SATELLITE);
+				break;
+			case R.id.iv_plain:
+				MapType = 1;
+				setMapLayers();
+				iv_plain.setBackgroundResource(R.drawable.bd_wallet_my_bank_card_list_item_bg_normal);
+				mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+				mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(new MapStatus.Builder().overlook(0).build()), 1000);
+				break;
+			case R.id.iv_3d:
+				MapType = 2;
+				setMapLayers();
+				iv_3d.setBackgroundResource(R.drawable.bd_wallet_my_bank_card_list_item_bg_normal);
+				mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+				mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(new MapStatus.Builder().overlook(-30).build()), 1000);
+				break;
+			case R.id.iv_traffic:
+				if(isTraffic){
+					isTraffic = false;
+					iv_traffic.setImageResource(R.drawable.main_icon_roadcondition_off);
+					Toast.makeText(CarLocationActivity.this, "实时路况已关闭", Toast.LENGTH_SHORT).show();
+				}else{
+					isTraffic = true;
+					iv_traffic.setImageResource(R.drawable.main_icon_roadcondition_on);
+					Toast.makeText(CarLocationActivity.this, "实时路况已打开", Toast.LENGTH_SHORT).show();
+				}
+				mBaiduMap.setTrafficEnabled(isTraffic);
+				break;
+			case R.id.tv_common_adress:
+				//常用地址
+				if(mPopupWindow != null){
+					mPopupWindow.dismiss();
+				}
+				startActivity(new Intent(CarLocationActivity.this, AddressActivity.class));
+				break;
 			}
 		}
 	};
+	/**地图类型**/
+	int MapType = 1;
+	/**实时路口**/
+	boolean isTraffic = false;
+	private void setMapLayers(){
+		iv_satellite.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
+		iv_plain.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
+		iv_3d.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
+	}
 
 	private void showDialog(final LatLng startLocat, final LatLng carLocat) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -623,9 +672,9 @@ public class CarLocationActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
+	ImageView iv_satellite,iv_plain,iv_3d;
 	/**显示图层**/
 	private void ShowPopMapLayers() {
-		int Height = ll_location_bottom.getMeasuredHeight();
 		LayoutInflater mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_maplayers,
 				null);
@@ -634,8 +683,24 @@ public class CarLocationActivity extends Activity {
 		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
 		mPopupWindow.setFocusable(true);
 		mPopupWindow.setOutsideTouchable(true);
-		mPopupWindow.showAtLocation(findViewById(R.id.bt_location_periphery),
-				Gravity.BOTTOM, 0, Height);
+		mPopupWindow.showAsDropDown(findViewById(R.id.iv_maplayers), 0, 0);
+		iv_satellite = (ImageView) popunwindwow.findViewById(R.id.iv_satellite);
+		iv_satellite.setOnClickListener(onClickListener);
+		iv_plain = (ImageView) popunwindwow.findViewById(R.id.iv_plain);
+		iv_plain.setOnClickListener(onClickListener);
+		iv_3d = (ImageView) popunwindwow.findViewById(R.id.iv_3d);
+		iv_3d.setOnClickListener(onClickListener);
+		switch (MapType) {
+		case 0:
+			iv_satellite.setBackgroundResource(R.drawable.bd_wallet_my_bank_card_list_item_bg_normal);
+			break;
+		case 1:
+			iv_plain.setBackgroundResource(R.drawable.bd_wallet_my_bank_card_list_item_bg_normal);
+			break;
+		case 2:
+			iv_3d.setBackgroundResource(R.drawable.bd_wallet_my_bank_card_list_item_bg_normal);
+			break;
+		}
 	}
 
 	/**
@@ -682,6 +747,9 @@ public class CarLocationActivity extends Activity {
 		TextView tv_vibrate = (TextView) popunwindwow
 				.findViewById(R.id.tv_vibrate);
 		tv_vibrate.setOnClickListener(onClickListener);
+		TextView tv_common_adress = (TextView) popunwindwow
+				.findViewById(R.id.tv_common_adress);
+		tv_common_adress.setOnClickListener(onClickListener);
 		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT);
 		mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
@@ -755,6 +823,7 @@ public class CarLocationActivity extends Activity {
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if(jsonObject.getInt("status_code") == 0){
+				carData.setSensitivity(vibrate);
 				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度成功", Toast.LENGTH_SHORT).show();
 			}else{
 				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度失败", Toast.LENGTH_SHORT).show();

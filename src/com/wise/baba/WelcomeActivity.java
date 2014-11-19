@@ -10,6 +10,7 @@ import cn.jpush.android.api.TagAliasCallback;
 import cn.sharesdk.framework.ShareSDK;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
+import com.wise.setting.LoginActivity;
 import com.wise.state.FaultActivity;
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
@@ -19,7 +20,9 @@ import pubclas.GetSystem;
 import pubclas.JsonData;
 import pubclas.NetThread;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -71,8 +74,21 @@ public class WelcomeActivity extends Activity implements TagAliasCallback{
 		ll_wait.setWheelImage(R.drawable.wheel_white);
 		ll_wait.setShadowImage(R.drawable.shadow_white);
 		ll_wait.startWheel();
-		
-		getLogin();
+		if(GetSystem.isNetworkAvailable(WelcomeActivity.this)){
+			getLogin();
+		}else{
+			AlertDialog.Builder dialog =new AlertDialog.Builder(WelcomeActivity.this);
+			dialog.setTitle("提示");  
+			dialog.setMessage("当前网络未连接"); 
+			dialog.setPositiveButton("去打开", new DialogInterface.OnClickListener() {				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					   startActivity(new Intent("android.settings.WIFI_SETTINGS"));  
+				}
+			});
+			dialog.setNegativeButton("取消", null);
+			dialog.show();
+		}
 		MobclickAgent.setDebugMode(true);
 		FeedbackAgent agent = new FeedbackAgent(this);
 		agent.sync();
