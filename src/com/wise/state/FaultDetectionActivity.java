@@ -1,6 +1,5 @@
 package com.wise.state;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -189,6 +188,7 @@ public class FaultDetectionActivity extends Activity {
 									FaultDetectionActivity.this,
 									FaultDetailActivity.class);
 							intent1.putExtra("fault_content", fault_content);
+							intent1.putExtra("device_id", Device_id);
 							startActivity(intent1);
 						}
 

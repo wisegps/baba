@@ -1,0 +1,26 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_white_shade"
+    android:orientation="horizontal" >
+    <ImageView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:background="@drawable/bd_wallet_blue_color_bg_selector"
+        android:src="@drawable/main_map_mode_satellite_normal"/>
+    <ImageView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:background="@drawable/bd_wallet_blue_color_bg_selector"
+        android:src="@drawable/main_map_mode_plain_normal"/>
+    <ImageView 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:background="@drawable/bd_wallet_blue_color_bg_selector"
+        android:src="@drawable/main_map_mode_3d_normal"/>
+</LinearLayout>
