@@ -54,6 +54,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -157,8 +158,8 @@ public class CarLocationActivity extends Activity {
 								+ carData.getDevice_id()
 								+ "/active_gps_data?auth_code=" + app.auth_code
 								+ "&update_time=2014-01-01%2019:06:43";
-						new NetThread.GetDataThread(handler, gpsUrl, get_gps)
-								.start();
+						// new NetThread.GetDataThread(handler, gpsUrl,
+						// get_gps).start();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -181,9 +182,9 @@ public class CarLocationActivity extends Activity {
 				LatLng llg = new LatLng(data.getExtras().getDouble(
 						"history_lat"), data.getExtras().getDouble(
 						"history_lon"));
-				// 定位以车辆为中心
+				// TODO 位置
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
-				mBaiduMap.animateMapStatus(u);
+				mBaiduMap.setMapStatus(u);
 				setTransitRoute(ll, llg);
 			} else {
 				getCarLocation();
@@ -290,8 +291,10 @@ public class CarLocationActivity extends Activity {
 			case R.id.search_home:
 				SharedPreferences preferences = getSharedPreferences(
 						"search_name", Activity.MODE_PRIVATE);
-				double homeLat = preferences.getLong("homeLat", 0);
-				double homeLon = preferences.getLong("homeLon", 0);
+				double homeLat = Double.valueOf(preferences.getString(
+						"homeLat", ""));
+				double homeLon = Double.valueOf(preferences.getString(
+						"homeLon", ""));
 				if (homeLat == 0 && homeLon == 0) {
 					Toast.makeText(CarLocationActivity.this, "常用家地址未设置",
 							Toast.LENGTH_SHORT).show();
@@ -307,8 +310,10 @@ public class CarLocationActivity extends Activity {
 			case R.id.search_company:
 				SharedPreferences preferences1 = getSharedPreferences(
 						"search_name", Activity.MODE_PRIVATE);
-				double companyLat = preferences1.getLong("companyLat", 0);
-				double companyLon = preferences1.getLong("companyLon", 0);
+				double companyLat = Double.valueOf(preferences1.getString(
+						"companyLat", ""));
+				double companyLon = Double.valueOf(preferences1.getString(
+						"companyLon", ""));
 				if (companyLat == 0 && companyLon == 0) {
 					Toast.makeText(CarLocationActivity.this, "常用公司地址未设置",
 							Toast.LENGTH_SHORT).show();
@@ -325,7 +330,7 @@ public class CarLocationActivity extends Activity {
 		}
 	};
 
-	private void showDialog() {
+	private void showDialog(final LatLng startLocat, final LatLng carLocat) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				CarLocationActivity.this);
 		builder.setTitle("寻车").setMessage("是否进行路径导航？");
@@ -333,8 +338,10 @@ public class CarLocationActivity extends Activity {
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				LatLng startLocat = new LatLng(latitude, longitude);
-				LatLng carLocat = new LatLng(carData.getLat(), carData.getLon());
+				// LatLng startLocat = new LatLng(latitude, longitude);
+				// LatLng carLocat = new LatLng(carData.getLat(),
+				// carData.getLon());
+				Log.d("my_log", carLocat.latitude + " , " + carLocat.longitude);
 				GetSystem.FindCar(CarLocationActivity.this, startLocat,
 						carLocat, "", "");
 			}
@@ -795,8 +802,10 @@ public class CarLocationActivity extends Activity {
 		PlanNode edNode = PlanNode.withLocation(stopLatLng);
 		mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(
 				edNode));
+		showDialog(startLatLng, stopLatLng);
 	}
 
+	DrivingRouteOverlay drOverlay;
 	OnGetRoutePlanResultListener onGetRoutePlanResultListener = new OnGetRoutePlanResultListener() {
 		@Override
 		public void onGetWalkingRouteResult(WalkingRouteResult arg0) {
@@ -814,12 +823,14 @@ public class CarLocationActivity extends Activity {
 				return;
 			}
 			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
-				DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaiduMap);
-				mBaiduMap.setOnMarkerClickListener(overlay);
-				overlay.setData(result.getRouteLines().get(0));
-				overlay.addToMap();
-				// overlay.zoomToSpan();
-				showDialog();
+				if (drOverlay != null) {
+					drOverlay.removeFromMap();
+				}
+				drOverlay = new DrivingRouteOverlay(mBaiduMap);
+				mBaiduMap.setOnMarkerClickListener(drOverlay);
+				drOverlay.setData(result.getRouteLines().get(0));
+				drOverlay.addToMap();
+
 			} else {
 				Toast.makeText(CarLocationActivity.this, "抱歉，未找到结果",
 						Toast.LENGTH_SHORT).show();
