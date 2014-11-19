@@ -9,17 +9,17 @@ import com.wise.baba.R.string;
  * @author keven.cheng
  */
 public class CarData {	
-    public int obj_id;
+	private int obj_id;
     /**品牌**/
-    public String car_brand;
+    private String car_brand;
     private String car_brand_id;
     /**车型**/
-    public String car_series;
+    private String car_series;
     private String car_series_id;
-    public String car_type;
+    private String car_type;
     private String car_type_id;
-    public String engine_no;//发送机
-    public String frame_no;//车架号
+    private String engine_no;//发送机
+    private String frame_no;//车架号
 	private String regNo;//登记证
     private String gas_no;
     private String insurance_tel;
@@ -34,37 +34,46 @@ public class CarData {
     /**
      * 保险公司
      */
-    public String insurance_company;
+    private String insurance_company;
     /**
      * 保险时间
      */
-    public String insurance_date;
-    public String geofence;
+    private String insurance_date;
+    private String geofence;
     /**
      * 年检日期
      */
-    public String annual_inspect_date;
+    private String annual_inspect_date;
     /**
      * 保养
      */
-    public String maintain_company;
-    public String maintain_last_mileage;
-    public String maintain_next_mileage;
-    public String buy_date;    
+    private String maintain_company;
+    private String maintain_last_mileage;
+    private String maintain_next_mileage;
+    private String buy_date;    
     
 	public String obj_name;
 	private String maintain_last_date;
 	private String logoPath;
 	private String device_id;
 	private String serial;
-	public int Type;		//布局控制
-	public String Adress;  //车辆位置
-	public String gps_time; //定位时间
-	public double Lat; 
-	public double Lon;
-	public ArrayList<String> vio_citys;
-	public ArrayList<String> vio_citys_code;
-	public ArrayList<String> province;
+	private int Type;		//布局控制
+	private String Adress;  //车辆位置
+	private String gps_time; //定位时间
+	private double Lat; 
+	private double Lon;
+	private ArrayList<String> vio_citys;
+	private ArrayList<String> vio_citys_code;
+	private ArrayList<String> province;
+	/**震动灵敏度**/
+	private int sensitivity;	
+	
+	public int getSensitivity() {
+		return sensitivity;
+	}
+	public void setSensitivity(int sensitivity) {
+		this.sensitivity = sensitivity;
+	}
 	public String getCar_brand_id() {
 		return car_brand_id;
 	}

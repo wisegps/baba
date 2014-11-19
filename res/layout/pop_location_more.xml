@@ -2,35 +2,33 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#CC50B7DE"
     android:orientation="vertical">
     <TextView
         android:id="@+id/tv_vibrate" 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#CC50B7DE"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="@dimen/main"
         android:text="设置震动灵敏度"/>
     <View 
         android:layout_width="fill_parent"
         android:layout_height="0.5dp"
-        android:visibility="gone"
         android:background="@color/white"/>
     <TextView 
+        android:id="@+id/tv_common_adress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#CC50B7DE"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:visibility="gone"
-        android:textColor="@color/white"
+        android:textColor="@color/color_white"
         android:textSize="@dimen/main"
-        android:text="关注"/>
+        android:text="常用地址"/>
 </LinearLayout>
