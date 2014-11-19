@@ -15,7 +15,12 @@ import pubclas.NetThread;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.setting.RegisterActivity;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +56,8 @@ public class FaultDetailActivity extends Activity{
 	
 	AppApplication app;
 	String device_id;
+	ImageView iv_clear_obd;
+	ProgressDialog myDialog = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +70,7 @@ public class FaultDetailActivity extends Activity{
 		tv_fault = (TextView)findViewById(R.id.tv_fault);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		ImageView iv_clear_obd = (ImageView)findViewById(R.id.iv_clear_obd);
+		iv_clear_obd = (ImageView)findViewById(R.id.iv_clear_obd);
 		iv_clear_obd.setOnClickListener(onClickListener);
 		fault_content = getIntent().getStringExtra("fault_content");
 		device_id = getIntent().getStringExtra("device_id");
@@ -84,7 +91,16 @@ public class FaultDetailActivity extends Activity{
 				finish();
 				break;
 			case R.id.iv_clear_obd:
-				clearObd();
+				AlertDialog.Builder dialog = new AlertDialog.Builder(FaultDetailActivity.this);   
+				dialog.setTitle("提示");  
+				dialog.setMessage("请先启动车辆，再进行故障码清除。"); 
+				dialog.setPositiveButton("车辆已启动", new DialogInterface.OnClickListener() {					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						clearObd();
+					}
+				}).setNegativeButton("取消", null)
+				.show(); 
 				break;
 			}
 		}
@@ -104,6 +120,8 @@ public class FaultDetailActivity extends Activity{
 		}		
 	};
 	private void clearObd(){
+		myDialog = ProgressDialog.show(FaultDetailActivity.this,"提示", "正在清除故障码…");
+        myDialog.setCancelable(true);
 		String url = Constant.BaseUrl + "command?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("device_id", device_id));
@@ -114,6 +132,9 @@ public class FaultDetailActivity extends Activity{
 	}
 	private void jsonObd(String result){
 		System.out.println(result);
+		if(myDialog != null){
+			myDialog.dismiss();
+		}
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if(jsonObject.getInt("status_code") == 0){
@@ -132,6 +153,11 @@ public class FaultDetailActivity extends Activity{
 			int max_level = jObject.getInt("max_level");
 			String advice = jObject.getString("advice");
 			JSONArray jsonArray = jObject.getJSONArray("data");
+			if(jsonArray.length() == 0){
+				iv_clear_obd.setVisibility(View.GONE);
+			}else{
+				iv_clear_obd.setVisibility(View.VISIBLE);
+			}
 			if(max_level < 0){
 				max_level = 0;
 			};
