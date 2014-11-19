@@ -111,7 +111,7 @@
         android:layout_width="fill_parent"
         android:layout_height="36dp"
         android:layout_below="@id/ll_main"
-        android:layout_margin="5dip"
+        android:layout_margin="3dip"
         android:background="@drawable/bg_adress"
         android:orientation="horizontal" >
 

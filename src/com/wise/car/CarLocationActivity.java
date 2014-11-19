@@ -223,7 +223,7 @@ public class CarLocationActivity extends Activity {
 				showMorePop();
 				break;
 			case R.id.tv_vibrate:
-				if(mPopupWindow != null){
+				if (mPopupWindow != null) {
 					mPopupWindow.dismiss();
 				}
 				showVibratePop();
@@ -235,7 +235,7 @@ public class CarLocationActivity extends Activity {
 				ShowFence();
 				break;
 			case R.id.iv_maplayers:
-				//TODO 弹出图层
+				// TODO 弹出图层
 				ShowPopMapLayers();
 				break;
 			// 周边点击弹出Popupwindow监听事件
@@ -291,12 +291,14 @@ public class CarLocationActivity extends Activity {
 				SharedPreferences preferences = getSharedPreferences(
 						"search_name", Activity.MODE_PRIVATE);
 				double homeLat = Double.valueOf(preferences.getString(
-						"homeLat", ""));
+						"homeLat", "0"));
 				double homeLon = Double.valueOf(preferences.getString(
-						"homeLon", ""));
+						"homeLon", "0"));
 				if (homeLat == 0 && homeLon == 0) {
 					Toast.makeText(CarLocationActivity.this, "常用家地址未设置",
 							Toast.LENGTH_SHORT).show();
+					startActivity(new Intent(CarLocationActivity.this,
+							AddressActivity.class));
 				} else {
 					LatLng homeLocat = new LatLng(homeLat, homeLon);
 					// 定位以车辆为中心
@@ -310,12 +312,14 @@ public class CarLocationActivity extends Activity {
 				SharedPreferences preferences1 = getSharedPreferences(
 						"search_name", Activity.MODE_PRIVATE);
 				double companyLat = Double.valueOf(preferences1.getString(
-						"companyLat", ""));
+						"companyLat", "0"));
 				double companyLon = Double.valueOf(preferences1.getString(
-						"companyLon", ""));
+						"companyLon", "0"));
 				if (companyLat == 0 && companyLon == 0) {
 					Toast.makeText(CarLocationActivity.this, "常用公司地址未设置",
 							Toast.LENGTH_SHORT).show();
+					startActivity(new Intent(CarLocationActivity.this,
+							AddressActivity.class));
 				} else {
 					LatLng companyLocat = new LatLng(companyLat, companyLon);
 					// 定位以车辆为中心
@@ -340,7 +344,7 @@ public class CarLocationActivity extends Activity {
 				// LatLng startLocat = new LatLng(latitude, longitude);
 				// LatLng carLocat = new LatLng(carData.getLat(),
 				// carData.getLon());
-				Log.d("my_log", carLocat.latitude + " , " + carLocat.longitude);
+				Log.e("my_log", carLocat.latitude + " , " + carLocat.longitude);
 				GetSystem.FindCar(CarLocationActivity.this, startLocat,
 						carLocat, "", "");
 			}
@@ -434,7 +438,7 @@ public class CarLocationActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
-		//TODO SEKBAR
+		// TODO SEKBAR
 		fence_distance
 				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 					@Override
@@ -622,7 +626,8 @@ public class CarLocationActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
-	/**显示图层**/
+
+	/** 显示图层 **/
 	private void ShowPopMapLayers() {
 		int Height = ll_location_bottom.getMeasuredHeight();
 		LayoutInflater mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -672,12 +677,13 @@ public class CarLocationActivity extends Activity {
 				.findViewById(R.id.tv_item_car_location_wash);
 		tv_item_car_location_wash.setOnClickListener(onClickListener);
 	}
-	/**显示更多菜单**/
-	private void showMorePop(){
+
+	/** 显示更多菜单 **/
+	private void showMorePop() {
 		LayoutInflater mLayoutInflater = LayoutInflater
 				.from(CarLocationActivity.this);
-		View popunwindwow = mLayoutInflater.inflate(
-				R.layout.pop_location_more, null);
+		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_location_more,
+				null);
 		TextView tv_vibrate = (TextView) popunwindwow
 				.findViewById(R.id.tv_vibrate);
 		tv_vibrate.setOnClickListener(onClickListener);
@@ -689,65 +695,79 @@ public class CarLocationActivity extends Activity {
 		mPopupWindow.setOutsideTouchable(true);
 		mPopupWindow.showAsDropDown(findViewById(R.id.iv_more), 0, 0);
 	}
-	/**显示设置震动窗口**/
-	private void showVibratePop(){
+
+	/** 显示设置震动窗口 **/
+	private void showVibratePop() {
 		int Height = ll_location_bottom.getMeasuredHeight();
 		LayoutInflater mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_vibrate,
-				null);
-		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
+		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_vibrate, null);
+		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT);
 		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
 		mPopupWindow.setFocusable(true);
 		mPopupWindow.setOutsideTouchable(true);
 		mPopupWindow.showAtLocation(findViewById(R.id.bt_location_periphery),
 				Gravity.BOTTOM, 0, Height);
-		Button bt_set_vibrate = (Button)popunwindwow.findViewById(R.id.bt_set_vibrate);
+		Button bt_set_vibrate = (Button) popunwindwow
+				.findViewById(R.id.bt_set_vibrate);
 		bt_set_vibrate.setOnClickListener(onClickListener);
-		final TextView tv_vibrate = (TextView)popunwindwow.findViewById(R.id.tv_vibrate);
-		//TODO 刷新
-		SeekBar sb_vibrate = (SeekBar)popunwindwow.findViewById(R.id.sb_vibrate);
-		sb_vibrate.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {			
+		final TextView tv_vibrate = (TextView) popunwindwow
+				.findViewById(R.id.tv_vibrate);
+		// TODO 刷新
+		SeekBar sb_vibrate = (SeekBar) popunwindwow
+				.findViewById(R.id.sb_vibrate);
+		sb_vibrate.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {}			
+			public void onStopTrackingTouch(SeekBar seekBar) {
+			}
+
 			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {}			
+			public void onStartTrackingTouch(SeekBar seekBar) {
+			}
+
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
-				if(progress == 0){
+				if (progress == 0) {
 					tv_vibrate.setText("关");
 					vibrate = 0;
-				}else{
+				} else {
 					tv_vibrate.setText("" + progress);
 					vibrate = progress;
 				}
 			}
 		});
 	}
+
 	private String COMMAND_VIBRATEALERT = "16391";
 	int vibrate = 0;
-	/**设置震动**/
-	private void setVibrate(){
+
+	/** 设置震动 **/
+	private void setVibrate() {
 		String url = Constant.BaseUrl + "command?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("device_id", carData.getDevice_id()));
 		params.add(new BasicNameValuePair("cmd_type", COMMAND_VIBRATEALERT));
-		params.add(new BasicNameValuePair("params", "{sensitivity: " + vibrate +"}"));
+		params.add(new BasicNameValuePair("params", "{sensitivity: " + vibrate
+				+ "}"));
 		new NetThread.postDataThread(handler, url, params, set_vibrate).start();
 	}
-	
-	private void jsonVibrate(String result){
+
+	private void jsonVibrate(String result) {
 		System.out.println(result);
 		try {
 			JSONObject jsonObject = new JSONObject(result);
-			if(jsonObject.getInt("status_code") == 0){
-				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度成功", Toast.LENGTH_SHORT).show();
-			}else{
-				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度失败", Toast.LENGTH_SHORT).show();
+			if (jsonObject.getInt("status_code") == 0) {
+				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度成功",
+						Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度失败",
+						Toast.LENGTH_SHORT).show();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Toast.makeText(getApplicationContext(), "设置震动报警灵敏度失败", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), "设置震动报警灵敏度失败",
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 
