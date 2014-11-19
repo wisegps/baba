@@ -640,7 +640,7 @@ public class FaultActivity extends FragmentActivity {
 						.start();
 				// 获取gps信息
 				String gpsUrl = Constant.BaseUrl + "device/" + device_id
-						+ "/active_gps_data?auth_code=" + app.auth_code
+						+ "?auth_code=" + app.auth_code
 						+ "&update_time=2014-01-01%2019:06:43";
 				new NetThread.GetDataThread(handler, gpsUrl, get_gps, index)
 						.start();		
@@ -694,6 +694,13 @@ public class FaultActivity extends FragmentActivity {
 							"T", " ")));
 			GetSystem.myLog(TAG, "lat = " + lat + " , Lon = " + lon);
 			mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
+			
+			JSONObject jObject = new JSONObject(str).getJSONObject("params");
+			int sensitivity = 0;
+			if(jObject.opt("sensitivity") != null){
+				sensitivity = jObject.getInt("sensitivity");
+			}
+			app.carDatas.get(index).setSensitivity(sensitivity);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

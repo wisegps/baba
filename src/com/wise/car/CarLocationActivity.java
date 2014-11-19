@@ -65,6 +65,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -682,6 +683,9 @@ public class CarLocationActivity extends Activity {
 		mPopupWindow.setOutsideTouchable(true);
 		mPopupWindow.showAsDropDown(findViewById(R.id.iv_more), 0, 0);
 	}
+	
+	ProgressBar pb_vibrate;
+	
 	/**显示设置震动窗口**/
 	private void showVibratePop(){
 		int Height = ll_location_bottom.getMeasuredHeight();
@@ -694,6 +698,7 @@ public class CarLocationActivity extends Activity {
 		mPopupWindow.setOutsideTouchable(true);
 		mPopupWindow.showAtLocation(findViewById(R.id.bt_location_periphery),
 				Gravity.BOTTOM, 0, Height);
+		pb_vibrate = (ProgressBar)popunwindwow.findViewById(R.id.pb_vibrate);
 		Button bt_set_vibrate = (Button)popunwindwow.findViewById(R.id.bt_set_vibrate);
 		bt_set_vibrate.setOnClickListener(onClickListener);
 		final TextView tv_vibrate = (TextView)popunwindwow.findViewById(R.id.tv_vibrate);
@@ -721,6 +726,7 @@ public class CarLocationActivity extends Activity {
 	int vibrate = 0;
 	/**设置震动**/
 	private void setVibrate(){
+		pb_vibrate.setVisibility(View.VISIBLE);
 		String url = Constant.BaseUrl + "command?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("device_id", carData.getDevice_id()));
@@ -731,6 +737,7 @@ public class CarLocationActivity extends Activity {
 	
 	private void jsonVibrate(String result){
 		System.out.println(result);
+		pb_vibrate.setVisibility(View.GONE);
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if(jsonObject.getInt("status_code") == 0){
