@@ -711,6 +711,13 @@ public class CarLocationActivity extends Activity {
 		final TextView tv_vibrate = (TextView)popunwindwow.findViewById(R.id.tv_vibrate);
 		//TODO 刷新
 		SeekBar sb_vibrate = (SeekBar)popunwindwow.findViewById(R.id.sb_vibrate);
+		vibrate = carData.getSensitivity();
+		sb_vibrate.setProgress(carData.getSensitivity());
+		if(carData.getSensitivity() == 0){
+			tv_vibrate.setText("关");
+		}else{
+			tv_vibrate.setText(""+carData.getSensitivity());
+		}
 		sb_vibrate.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {			
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {}			
