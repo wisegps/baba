@@ -83,8 +83,8 @@ public class AddressActivity extends Activity {
 			if (requestCode == HOME) {
 				if (name != null && !name.equals("")) {
 					tv_home.setText("家\n" + name);
-					editor.putLong("homeLat", (long) latitude);
-					editor.putLong("homeLon", (long) longitude);
+					editor.putString("homeLat", String.valueOf(latitude));
+					editor.putString("homeLon", String.valueOf(longitude));
 					editor.putString("name", name);
 				} else if (myLocat) {
 					tv_home.setText("家");
@@ -98,8 +98,8 @@ public class AddressActivity extends Activity {
 			} else if (requestCode == COMPANY) {
 				if (name != null && !name.equals("")) {
 					tv_company.setText("公司\n" + name);
-					editor.putLong("companyLat", (long) latitude);
-					editor.putLong("companyLon", (long) longitude);
+					editor.putString("companyLat", String.valueOf(latitude));
+					editor.putString("companyLon", String.valueOf(longitude));
 					editor.putString("company", name);
 				} else if (myLocat) {
 					tv_company.setText("公司");

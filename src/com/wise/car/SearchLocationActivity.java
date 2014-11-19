@@ -26,6 +26,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -227,8 +228,8 @@ public class SearchLocationActivity extends Activity {
 				JSONObject object = jsonArray.getJSONObject(i);
 				String name = object.getString("name");
 				String adName = object.getString("adName");
-				double history_lat = object.getLong("history_lat");
-				double history_lon = object.getLong("history_lon");
+				double history_lat = object.getDouble("history_lat");
+				double history_lon = object.getDouble("history_lon");
 				AdressData adressData = new AdressData();
 				adressData.setAdress(adName);
 				adressData.setName(name);
