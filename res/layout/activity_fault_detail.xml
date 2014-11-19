@@ -34,7 +34,7 @@
              android:visibility="gone"
              android:layout_marginRight="@dimen/margins"
              android:padding="@dimen/margins"
-             android:src="@drawable/bg_set" />
+             android:src="@drawable/icon_clean" />
 	</RelativeLayout>
 	<RelativeLayout
 	    android:id="@+id/rl_no_fault"

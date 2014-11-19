@@ -27,15 +27,16 @@
             android:layout_marginLeft="@dimen/margins"
             android:padding="@dimen/margins"
             android:src="@drawable/nav_back" />
+
         <ImageView
-             android:id="@+id/iv_vibratealert"
-             android:layout_width="@dimen/title_hight"
-             android:layout_height="@dimen/title_hight"
-             android:layout_alignParentRight="true"
-             android:layout_centerVertical="true"
-             android:layout_marginRight="@dimen/margins"
-             android:padding="@dimen/margins"
-             android:src="@drawable/bg_set" />
+            android:id="@+id/iv_vibratealert"
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margins"
+            android:padding="@dimen/margins"
+            android:src="@drawable/bg_set" />
     </RelativeLayout>
 
     <LinearLayout
@@ -156,5 +157,31 @@
         android:layout_toRightOf="@id/iv_streetview"
         android:orientation="horizontal" >
     </LinearLayout>
-
+	<LinearLayout 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/ll_main"
+	    android:layout_marginTop="60dp"
+	    android:layout_alignParentRight="true"
+	    android:orientation="vertical">
+	    <ImageView 
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
+	        android:padding="10dp"
+	        android:background="@drawable/main_button"
+	        android:src="@drawable/main_icon_roadcondition_off"/>
+	    <ImageView 
+	        android:id="@+id/iv_maplayers"
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
+	        android:padding="10dp"
+	        android:background="@drawable/main_button"
+	        android:src="@drawable/main_icon_maplayers"/>
+	    <ImageView 
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
+	        android:padding="10dp"
+	        android:background="@drawable/main_button"
+	        android:src="@drawable/main_map_icon_streetscape"/>
+	</LinearLayout>
 </RelativeLayout>

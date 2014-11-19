@@ -101,6 +101,8 @@ public class CarLocationActivity extends Activity {
 		app = (AppApplication) getApplication();
 		ImageView iv_vibratealert = (ImageView) findViewById(R.id.iv_vibratealert);
 		iv_vibratealert.setOnClickListener(onClickListener);
+		ImageView iv_maplayers = (ImageView) findViewById(R.id.iv_maplayers);
+		iv_maplayers.setOnClickListener(onClickListener);
 		ImageView iv_streetview = (ImageView) findViewById(R.id.iv_streetview);
 		iv_streetview.setOnClickListener(onClickListener);
 		TextView tv_car_name = (TextView) findViewById(R.id.tv_car_name);
@@ -225,7 +227,10 @@ public class CarLocationActivity extends Activity {
 			case R.id.bt_location_fence:// 围栏
 				ShowFence();
 				break;
-
+			case R.id.iv_maplayers:
+				//TODO 弹出图层
+				ShowPopMapLayers();
+				break;
 			// 周边点击弹出Popupwindow监听事件
 			case R.id.tv_item_car_location_oil:// 加油站
 				ToSearchMap("加油站", "加油站");
@@ -603,6 +608,20 @@ public class CarLocationActivity extends Activity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	/**显示图层**/
+	private void ShowPopMapLayers() {
+		int Height = ll_location_bottom.getMeasuredHeight();
+		LayoutInflater mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_maplayers,
+				null);
+		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.FILL_PARENT,
+				LayoutParams.WRAP_CONTENT);
+		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+		mPopupWindow.setFocusable(true);
+		mPopupWindow.setOutsideTouchable(true);
+		mPopupWindow.showAtLocation(findViewById(R.id.bt_location_periphery),
+				Gravity.BOTTOM, 0, Height);
 	}
 
 	/**
