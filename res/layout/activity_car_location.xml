@@ -29,7 +29,7 @@
             android:src="@drawable/nav_back" />
 
         <ImageView
-            android:id="@+id/iv_vibratealert"
+            android:id="@+id/iv_more"
             android:layout_width="@dimen/title_hight"
             android:layout_height="@dimen/title_hight"
             android:layout_alignParentRight="true"

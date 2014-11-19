@@ -99,8 +99,8 @@ public class CarLocationActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_location);
 		app = (AppApplication) getApplication();
-		ImageView iv_vibratealert = (ImageView) findViewById(R.id.iv_vibratealert);
-		iv_vibratealert.setOnClickListener(onClickListener);
+		ImageView iv_more = (ImageView) findViewById(R.id.iv_more);
+		iv_more.setOnClickListener(onClickListener);
 		ImageView iv_maplayers = (ImageView) findViewById(R.id.iv_maplayers);
 		iv_maplayers.setOnClickListener(onClickListener);
 		ImageView iv_streetview = (ImageView) findViewById(R.id.iv_streetview);
@@ -218,7 +218,13 @@ public class CarLocationActivity extends Activity {
 			case R.id.bt_location_periphery:// 周边
 				ShowPop();// 弹出popupwidow显示
 				break;
-			case R.id.iv_vibratealert:
+			case R.id.iv_more:
+				showMorePop();
+				break;
+			case R.id.tv_vibrate:
+				if(mPopupWindow != null){
+					mPopupWindow.dismiss();
+				}
 				showVibratePop();
 				break;
 			case R.id.bt_set_vibrate:
@@ -658,6 +664,23 @@ public class CarLocationActivity extends Activity {
 		TextView tv_item_car_location_wash = (TextView) popunwindwow
 				.findViewById(R.id.tv_item_car_location_wash);
 		tv_item_car_location_wash.setOnClickListener(onClickListener);
+	}
+	/**显示更多菜单**/
+	private void showMorePop(){
+		LayoutInflater mLayoutInflater = LayoutInflater
+				.from(CarLocationActivity.this);
+		View popunwindwow = mLayoutInflater.inflate(
+				R.layout.pop_location_more, null);
+		TextView tv_vibrate = (TextView) popunwindwow
+				.findViewById(R.id.tv_vibrate);
+		tv_vibrate.setOnClickListener(onClickListener);
+		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT);
+		mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
+		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+		mPopupWindow.setFocusable(true);
+		mPopupWindow.setOutsideTouchable(true);
+		mPopupWindow.showAsDropDown(findViewById(R.id.iv_more), 0, 0);
 	}
 	/**显示设置震动窗口**/
 	private void showVibratePop(){
