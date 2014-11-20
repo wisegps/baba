@@ -16,6 +16,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * 常用地址
+ *
+ */
 public class AddressActivity extends Activity {
 	TextView tv_home, tv_company;
 	ImageView ad_delete, ad_delete_1;

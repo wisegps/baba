@@ -27,9 +27,8 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
-import com.baidu.mapapi.map.Polyline;
-import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.Stroke;
+import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -118,6 +117,8 @@ public class CarLocationActivity extends Activity {
 		iv_back.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_car_location);
 		mBaiduMap = mMapView.getMap();
+		UiSettings mUiSettings = mBaiduMap.getUiSettings();
+		mUiSettings.setCompassEnabled(true);
 		// 开启定位图层
 		mBaiduMap.setMyLocationEnabled(true);
 		// 定位初始化
@@ -125,6 +126,7 @@ public class CarLocationActivity extends Activity {
 		mLocClient.registerLocationListener(myListener);
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
+		option.setIsNeedAddress(true);
 		option.setCoorType("bd09ll"); // 设置坐标类型
 		option.setScanSpan(30000);
 		mLocClient.setLocOption(option);
@@ -161,8 +163,7 @@ public class CarLocationActivity extends Activity {
 								+ carData.getDevice_id()
 								+ "/active_gps_data?auth_code=" + app.auth_code
 								+ "&update_time=2014-01-01%2019:06:43";
-						// new NetThread.GetDataThread(handler, gpsUrl,
-						// get_gps).start();
+						 new NetThread.GetDataThread(handler, gpsUrl,get_gps).start();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -609,7 +610,7 @@ public class CarLocationActivity extends Activity {
 
 	LatLng circle;
 	Marker carMarker = null;
-	Polyline carLine = null;
+	//Polyline carLine = null;
 
 	// 当前车辆位子
 	private void getCarLocation() {
@@ -631,15 +632,15 @@ public class CarLocationActivity extends Activity {
 				.position(circle).icon(bitmap).rotate(carData.getDirect());
 		// 在地图上添加Marker，并显示
 		carMarker = (Marker) (mBaiduMap.addOverlay(option));
-		points.add(circle);
-		if (points.size() > 1) {
-			if (carLine != null) {
-				carLine.remove();
-			}
-			OverlayOptions ooPolyline = new PolylineOptions().width(5)
-					.color(0xAAFF0000).points(points);
-			carLine = (Polyline) (mBaiduMap.addOverlay(ooPolyline));
-		}
+//		points.add(circle);
+//		if (points.size() > 1) {
+//			if (carLine != null) {
+//				carLine.remove();
+//			}
+//			OverlayOptions ooPolyline = new PolylineOptions().width(5)
+//					.color(0xAAFF0000).points(points);
+//			carLine = (Polyline) (mBaiduMap.addOverlay(ooPolyline));
+//		}
 	}
 
 	Handler handler = new Handler() {
