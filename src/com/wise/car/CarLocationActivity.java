@@ -28,7 +28,6 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Polyline;
-import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
@@ -89,8 +88,7 @@ public class CarLocationActivity extends Activity {
 	/** 获取gps信息 **/
 	private static final int get_gps = 1;
 	private static final int set_vibrate = 2;
-	/** 车辆轨迹 **/
-	List<LatLng> points = new ArrayList<LatLng>();
+
 	AppApplication app;
 
 	TextView searchAddress;
@@ -631,15 +629,6 @@ public class CarLocationActivity extends Activity {
 				.position(circle).icon(bitmap).rotate(carData.getDirect());
 		// 在地图上添加Marker，并显示
 		carMarker = (Marker) (mBaiduMap.addOverlay(option));
-		points.add(circle);
-		if (points.size() > 1) {
-			if (carLine != null) {
-				carLine.remove();
-			}
-			OverlayOptions ooPolyline = new PolylineOptions().width(5)
-					.color(0xAAFF0000).points(points);
-			carLine = (Polyline) (mBaiduMap.addOverlay(ooPolyline));
-		}
 	}
 
 	Handler handler = new Handler() {
