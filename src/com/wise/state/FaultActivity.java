@@ -262,7 +262,6 @@ public class FaultActivity extends FragmentActivity {
 	}
 	private NaviEngineInitListener mNaviEngineInitListener = new NaviEngineInitListener() {
 		public void engineInitSuccess() {
-			System.out.println("---------------true");
 		}
 
 		public void engineInitStart() {

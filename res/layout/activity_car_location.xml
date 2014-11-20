@@ -122,6 +122,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:drawableLeft="@drawable/toolbar_icon_search"
+            android:layout_marginLeft="5dp"
             android:gravity="center_vertical"
             android:text="搜地点，找路线" />
 
