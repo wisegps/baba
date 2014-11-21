@@ -171,9 +171,11 @@ public class ChooseAddressActivity extends Activity {
 		@Override
 		public void onReceiveLocation(BDLocation location) {
 			// map view 销毁后不在处理新接收的位置
+			System.out.println("onReceiveLocation");
 			if (location == null) {
 				return;
 			}
+			System.out.println("location.getLocType() = " + location.getLocType());
 			if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
 				myLocation = location.getAddrStr();
 				latitude = location.getLatitude();

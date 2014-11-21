@@ -1,6 +1,5 @@
 package com.wise.state;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
-import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;

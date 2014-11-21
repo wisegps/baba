@@ -236,11 +236,9 @@ public class TravelMapActivity extends Activity {
 				// 在地图上添加Marker，并显示
 				mBaiduMap.addOverlay(end);
 			}
-			
-
 			if (points.size() > 1) {
-				OverlayOptions ooPolyline = new PolylineOptions().width(5)
-						.color(0xAAFF0000).points(points);
+				OverlayOptions ooPolyline = new PolylineOptions()
+						.color(0xFF0BA882).points(points);
 				mBaiduMap.addOverlay(ooPolyline);
 			}
 
