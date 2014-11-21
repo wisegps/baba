@@ -58,7 +58,11 @@
             android:text="寻车"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
-
+	
+				<View 
+				    android:layout_height="fill_parent"
+				    android:layout_width="0.5dp"
+				    android:background="@color/white"/>
         <Button
             android:id="@+id/bt_location_travel"
             android:layout_width="fill_parent"
@@ -71,7 +75,11 @@
             android:text="行程"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
-
+	
+				<View 
+				    android:layout_height="fill_parent"
+				    android:layout_width="0.5dp"
+				    android:background="@color/white"/>
         <Button
             android:id="@+id/bt_location_periphery"
             android:layout_width="fill_parent"
@@ -84,7 +92,11 @@
             android:text="周边"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
-
+	
+				<View 
+				    android:layout_height="fill_parent"
+				    android:layout_width="0.5dp"
+				    android:background="@color/white"/>
         <Button
             android:id="@+id/bt_location_fence"
             android:layout_width="fill_parent"
