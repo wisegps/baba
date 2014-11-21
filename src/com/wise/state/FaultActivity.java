@@ -262,7 +262,6 @@ public class FaultActivity extends FragmentActivity {
 	}
 	private NaviEngineInitListener mNaviEngineInitListener = new NaviEngineInitListener() {
 		public void engineInitSuccess() {
-			System.out.println("---------------true");
 		}
 
 		public void engineInitStart() {
@@ -1476,7 +1475,10 @@ public class FaultActivity extends FragmentActivity {
 			} else {
 				try {
 					GetSystem.myLog(TAG, "获取位置信息");
-					app.carDatas.get(index).setAdress(result.getAddress());
+					String adress = result.getAddress();
+					int startIndex = adress.indexOf("省") + 1;
+					adress = adress.substring(startIndex, adress.length());
+					app.carDatas.get(index).setAdress(adress);
 					String gpsTime = app.carDatas.get(index).getGps_time();
 					String gpsData = gpsTime.substring(0, 10);// 取出日期
 					String nowData = GetSystem.GetNowDay();
@@ -1496,7 +1498,7 @@ public class FaultActivity extends FragmentActivity {
 					carViews.get(index).getLl_adress()
 							.setVisibility(View.VISIBLE);
 					carViews.get(index).getTv_adress()
-							.setText(result.getAddress() + "  " + showTime);
+							.setText(adress + "  " + showTime);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

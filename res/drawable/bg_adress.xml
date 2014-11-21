@@ -7,6 +7,6 @@
         android:color="#30000000" />
 	<!-- 圆角 -->  
 	<corners
-        android:radius="8dp"/>
+        android:radius="5dp"/>
 
 </shape>

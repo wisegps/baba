@@ -145,7 +145,8 @@
             android:text="常用地址"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />
-
+		
+        
         <TextView
             android:id="@+id/tv_offline_map"
             android:layout_width="fill_parent"

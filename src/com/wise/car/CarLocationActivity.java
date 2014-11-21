@@ -136,8 +136,8 @@ public class CarLocationActivity extends Activity {
 		searchAddress = (TextView) findViewById(R.id.search_address);
 		searchAddress.setOnClickListener(onClickListener);
 
-		findViewById(R.id.search_home).setOnClickListener(onClickListener);
-		findViewById(R.id.search_company).setOnClickListener(onClickListener);
+		findViewById(R.id.iv_home).setOnClickListener(onClickListener);
+		findViewById(R.id.iv_conpany).setOnClickListener(onClickListener);
 
 		findViewById(R.id.bt_location_findCar).setOnClickListener(
 				onClickListener);
@@ -292,7 +292,7 @@ public class CarLocationActivity extends Activity {
 				startActivity(intent);
 				break;
 
-			case R.id.search_home:
+			case R.id.iv_home:
 				SharedPreferences preferences = getSharedPreferences(
 						"search_name", Activity.MODE_PRIVATE);
 				double homeLat = Double.valueOf(preferences.getString(
@@ -313,7 +313,7 @@ public class CarLocationActivity extends Activity {
 					setTransitRoute(ll, homeLocat);
 				}
 				break;
-			case R.id.search_company:
+			case R.id.iv_conpany:
 				SharedPreferences preferences1 = getSharedPreferences(
 						"search_name", Activity.MODE_PRIVATE);
 				double companyLat = Double.valueOf(preferences1.getString(
@@ -500,7 +500,7 @@ public class CarLocationActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
-		// TODO SEKBAR
+		//SEKBAR
 		fence_distance
 				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 					@Override
@@ -799,7 +799,7 @@ public class CarLocationActivity extends Activity {
 
 		final TextView tv_vibrate = (TextView) popunwindwow
 				.findViewById(R.id.tv_vibrate);
-		// TODO 刷新
+		//刷新
 		SeekBar sb_vibrate = (SeekBar) popunwindwow
 				.findViewById(R.id.sb_vibrate);
 		vibrate = carData.getSensitivity();
@@ -893,14 +893,14 @@ public class CarLocationActivity extends Activity {
 			app.Lon = longitude;
 			MyLocationData locData = new MyLocationData.Builder()
 					.accuracy(location.getRadius())
-					// 此处设置开发者获取到的方向信息，顺时针0-360
+					//TODO  此处设置开发者获取到的方向信息，顺时针0-360
 					.direction(0).latitude(location.getLatitude())
 					.longitude(location.getLongitude()).build();
 			mBaiduMap.setMyLocationData(locData);
 			BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
 					.fromResource(R.drawable.person);
 			MyLocationConfiguration config = new MyLocationConfiguration(null,
-					true, mCurrentMarker);
+					false, mCurrentMarker);
 			mBaiduMap.setMyLocationConfigeration(config);
 			if (isFirstLoc) {
 				isFirstLoc = false;

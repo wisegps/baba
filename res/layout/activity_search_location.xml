@@ -41,12 +41,11 @@
         android:id="@+id/search_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dip"
+        android:layout_margin="5dp"
         android:background="@drawable/bg_adress"
         android:cacheColorHint="#00000000"
         android:divider="@color/gay_line"
-        android:dividerHeight="0.5dp"
-        android:listSelector="#00000000"
-        android:padding="5dip" />
+        android:listSelector="@color/transparent"
+        android:dividerHeight="0.5dp"/>
 
 </LinearLayout>
