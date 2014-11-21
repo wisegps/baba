@@ -170,7 +170,6 @@ public class CarLocationActivity extends Activity {
 	}
 
 	boolean isStop = true;
-
 	private static final int SEARCH_CODE = 8;
 
 	@Override
@@ -404,9 +403,6 @@ public class CarLocationActivity extends Activity {
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// LatLng startLocat = new LatLng(latitude, longitude);
-				// LatLng carLocat = new LatLng(carData.getLat(),
-				// carData.getLon());
 				Log.e("my_log", carLocat.latitude + " , " + carLocat.longitude);
 				GetSystem.FindCar(CarLocationActivity.this, startLocat,
 						carLocat, "", "");
@@ -629,6 +625,7 @@ public class CarLocationActivity extends Activity {
 				.position(circle).icon(bitmap).rotate(carData.getDirect());
 		// 在地图上添加Marker，并显示
 		carMarker = (Marker) (mBaiduMap.addOverlay(option));
+		// 常用地址导航
 	}
 
 	Handler handler = new Handler() {
@@ -921,6 +918,7 @@ public class CarLocationActivity extends Activity {
 		PlanNode edNode = PlanNode.withLocation(stopLatLng);
 		mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(
 				edNode));
+		Log.e("my_log", "===1111===>");
 		showDialog(startLatLng, stopLatLng);
 	}
 

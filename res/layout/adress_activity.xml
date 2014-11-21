@@ -44,8 +44,8 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/title_hight"
-        android:layout_margin="@dimen/margins"
+        android:layout_height="60dip"
+        android:layout_margin="8dip"
         android:background="@drawable/bg_adress"
         android:orientation="horizontal"
         android:padding="8dip" >
@@ -55,37 +55,37 @@
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="家" />
 
         <ImageView
             android:id="@+id/ad_navigation"
-            android:layout_width="wrap_content"
+            android:layout_width="36dip"
             android:layout_height="fill_parent"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="8dip"
+            android:layout_marginRight="5dip"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@drawable/lbs"
             android:visibility="gone" />
 
         <ImageView
             android:id="@+id/ad_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dip"
+            android:layout_height="fill_parent"
             android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
-            android:background="#55333333"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@drawable/map_delete"
             android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/title_hight"
-        android:layout_margin="@dimen/margins"
+        android:layout_height="60dip"
+        android:layout_margin="8dip"
         android:background="@drawable/bg_adress"
         android:orientation="horizontal"
         android:padding="8dip" >
@@ -95,30 +95,29 @@
             android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_marginLeft="5dip"
-            android:layout_marginRight="8dip"
+            android:layout_marginRight="5dip"
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="公司" />
 
         <ImageView
             android:id="@+id/ad_navigation_1"
-            android:layout_width="wrap_content"
+            android:layout_width="36dip"
             android:layout_height="fill_parent"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="8dip"
+            android:layout_marginRight="5dip"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@drawable/lbs"
             android:visibility="gone" />
 
         <ImageView
             android:id="@+id/ad_delete_1"
-            android:layout_width="wrap_content"
+            android:layout_width="36dip"
             android:layout_height="fill_parent"
             android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
-            android:background="#55333333"
-            android:scaleType="fitCenter"
+            android:scaleType="center"
             android:src="@drawable/map_delete"
             android:visibility="gone" />
     </LinearLayout>
@@ -127,11 +126,10 @@
         android:id="@+id/my_address_add"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_margin="@dimen/margins"
+        android:layout_margin="8dip"
         android:cacheColorHint="#00000000"
         android:divider="#00000000"
-        android:dividerHeight="5dp"
-        android:listSelector="#00000000"
-        android:padding="5dip" />
+        android:dividerHeight="8dp"
+        android:listSelector="#00000000" />
 
 </LinearLayout>
