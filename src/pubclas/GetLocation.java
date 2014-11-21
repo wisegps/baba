@@ -31,7 +31,7 @@ public class GetLocation {
 		option.setCoorType("all");// 返回的定位结果包含地址信息
 		option.setCoorType("bd09ll");// 返回的定位结果是百度经纬度,默认值gcj02
 		option.setIsNeedAddress(true);
-		option.setScanSpan(60000);// 设置发起定位请求的间隔时间为5000ms
+		option.setScanSpan(60000);// 设置发起定位请求的间隔时间为ms
 		mLocationClient.setLocOption(option);
 	}
 	private static final String TAG = "MyLocationListener";

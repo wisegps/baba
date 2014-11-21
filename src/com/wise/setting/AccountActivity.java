@@ -405,7 +405,7 @@ public class AccountActivity extends Activity implements
 		String fileName = Constant.userIconPath + app.cust_id + ".png";
 		try {
 			b = new FileOutputStream(fileName);
-			bitmap.compress(Bitmap.CompressFormat.PNG, 100, b);// 把数据写入文件
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// 把数据写入文件
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {

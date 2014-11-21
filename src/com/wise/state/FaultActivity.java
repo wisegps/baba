@@ -1,6 +1,5 @@
 package com.wise.state;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
-import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
@@ -265,7 +263,6 @@ public class FaultActivity extends FragmentActivity {
 	}
 	private NaviEngineInitListener mNaviEngineInitListener = new NaviEngineInitListener() {
 		public void engineInitSuccess() {
-			System.out.println("---------------true");
 		}
 
 		public void engineInitStart() {
@@ -493,9 +490,8 @@ public class FaultActivity extends FragmentActivity {
 				goCarMap();
 				break;
 			case R.id.iv_pic:
-				Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse(adDatas.get(image_position).getUrl()));  
-		        it.setClassName("com.android.browser", "com.android.browser.BrowserActivity");  
-		        startActivity(it);  
+		        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(adDatas.get(image_position).getUrl()));  
+		        startActivity(intent);  
 				break;
 			}
 		}
@@ -617,21 +613,21 @@ public class FaultActivity extends FragmentActivity {
 
 	/** 获取当前车辆需要显示的所有数据 **/
 	private void getTotalData() {
-		if (app.carDatas == null || app.carDatas.size() == 0) {
-			return;
-		}
-		CarData carData = app.carDatas.get(index);
-		String device_id = carData.getDevice_id();
-		if (device_id == null || device_id.equals("")) {
-
-		} else {
-			String Gas_no = "";
-			if (carData.getGas_no() == null || carData.getGas_no().equals("")) {
-				Gas_no = "93#(92#)";
-			} else {
-				Gas_no = carData.getGas_no();
+		try {
+			if (app.carDatas == null || app.carDatas.size() == 0) {
+				return;
 			}
-			try {
+			CarData carData = app.carDatas.get(index);
+			String device_id = carData.getDevice_id();
+			if (device_id == null || device_id.equals("")) {
+
+			} else {
+				String Gas_no = "";
+				if (carData.getGas_no() == null || carData.getGas_no().equals("")) {
+					Gas_no = "93#(92#)";
+				} else {
+					Gas_no = carData.getGas_no();
+				}
 				// 获取当前月的数据
 				String url = Constant.BaseUrl + "device/" + device_id
 						+ "/total?auth_code=" + app.auth_code
@@ -642,53 +638,40 @@ public class FaultActivity extends FragmentActivity {
 						.start();
 				// 获取gps信息
 				String gpsUrl = Constant.BaseUrl + "device/" + device_id
-						+ "/active_gps_data?auth_code=" + app.auth_code
+						+ "?auth_code=" + app.auth_code
 						+ "&update_time=2014-01-01%2019:06:43";
 				new NetThread.GetDataThread(handler, gpsUrl, get_gps, index)
-						.start();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}			
-			//从服务器获取体检信息
-			String url1;
-			try {
-				url1 = Constant.BaseUrl + "device/" + device_id
-						+ "/health_exam?auth_code=" + app.auth_code + "&brand=" + 
-						URLEncoder.encode(carData.getCar_brand(), "UTF-8");
+						.start();		
+				//从服务器获取体检信息
+				String url1 = Constant.BaseUrl + "device/" + device_id
+							+ "/health_exam?auth_code=" + app.auth_code + "&brand=" + 
+							URLEncoder.encode(carData.getCar_brand(), "UTF-8");
 				new NetThread.GetDataThread(handler, url1, get_health, index).start();
-			} catch (UnsupportedEncodingException e1) {
-				e1.printStackTrace();
-			}
-			// 获取驾驶信息
-			try {
-				String url = Constant.BaseUrl + "device/" + device_id
+				// 获取驾驶信息
+				String url2 = Constant.BaseUrl + "device/" + device_id
 						+ "/day_drive?auth_code=" + app.auth_code
 						+ "&day=" + GetSystem.GetNowMonth().getDay()
 						+ "&city="
 						+ URLEncoder.encode(app.City, "UTF-8")
 						+ "&gas_no=" + Gas_no;
-				new NetThread.GetDataThread(handler, url, get_device, index)
+				new NetThread.GetDataThread(handler, url2, get_device, index)
 						.start();
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
-		}
-		// 获取限行信息
-		if (app.City == null || carData.getObj_name() == null
-				|| app.City.equals("") || carData.getObj_name().equals("")) {
+			// 获取限行信息
+			if (app.City == null || carData.getObj_name() == null
+					|| app.City.equals("") || carData.getObj_name().equals("")) {
 
-		} else {
-			try {
+			} else {
 				String url = Constant.BaseUrl + "base/ban?city="
 						+ URLEncoder.encode(app.City, "UTF-8")
 						+ "&obj_name="
 						+ URLEncoder.encode(carData.getObj_name(), "UTF-8");
 				new NetThread.GetDataThread(handler, url, Get_carLimit, index)
 						.start();
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
-		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 
 	/** 获取GPS信息 **/
@@ -698,8 +681,10 @@ public class FaultActivity extends FragmentActivity {
 					.getJSONObject("active_gps_data");
 			double lat = jsonObject.getDouble("lat");
 			double lon = jsonObject.getDouble("lon");
+			int direct = jsonObject.getInt("direct");
 			String gpsTime = jsonObject.getString("gps_time");
 			LatLng latLng = new LatLng(lat, lon);
+			app.carDatas.get(index).setDirect(direct);
 			app.carDatas.get(index).setLat(lat);
 			app.carDatas.get(index).setLon(lon);
 			app.carDatas.get(index).setGps_time(
@@ -707,6 +692,13 @@ public class FaultActivity extends FragmentActivity {
 							"T", " ")));
 			GetSystem.myLog(TAG, "lat = " + lat + " , Lon = " + lon);
 			mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
+			
+			JSONObject jObject = new JSONObject(str).getJSONObject("params");
+			int sensitivity = 0;
+			if(jObject.opt("sensitivity") != null){
+				sensitivity = jObject.getInt("sensitivity");
+			}
+			app.carDatas.get(index).setSensitivity(sensitivity);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -1487,7 +1479,10 @@ public class FaultActivity extends FragmentActivity {
 			} else {
 				try {
 					GetSystem.myLog(TAG, "获取位置信息");
-					app.carDatas.get(index).setAdress(result.getAddress());
+					String adress = result.getAddress();
+					int startIndex = adress.indexOf("省") + 1;
+					adress = adress.substring(startIndex, adress.length());
+					app.carDatas.get(index).setAdress(adress);
 					String gpsTime = app.carDatas.get(index).getGps_time();
 					String gpsData = gpsTime.substring(0, 10);// 取出日期
 					String nowData = GetSystem.GetNowDay();
@@ -1507,7 +1502,7 @@ public class FaultActivity extends FragmentActivity {
 					carViews.get(index).getLl_adress()
 							.setVisibility(View.VISIBLE);
 					carViews.get(index).getTv_adress()
-							.setText(result.getAddress() + "  " + showTime);
+							.setText(adress + "  " + showTime);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

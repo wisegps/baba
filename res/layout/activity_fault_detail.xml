@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -25,133 +25,64 @@
 	        android:padding="@dimen/margins"
 	        android:layout_centerVertical="true"
 	        android:src="@drawable/nav_back"/>
+	    <ImageView
+             android:id="@+id/iv_clear_obd"
+             android:layout_width="@dimen/title_hight"
+             android:layout_height="@dimen/title_hight"
+             android:layout_alignParentRight="true"
+             android:layout_centerVertical="true"
+             android:visibility="gone"
+             android:layout_marginRight="@dimen/margins"
+             android:padding="@dimen/margins"
+             android:src="@drawable/icon_clean" />
 	</RelativeLayout>
-	<LinearLayout
-		        android:id="@+id/ll_bottom"
-		        android:layout_alignParentBottom="true"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:orientation="horizontal" >
-		
-		        <TextView
-		            android:id="@+id/rescue"
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1"
-		            android:background="@drawable/bg_yellow"
-		            android:gravity="center_horizontal"
-		            android:paddingBottom="@dimen/margins"
-		            android:paddingTop="@dimen/margins"
-		            android:text="救援"
-		            android:textColor="@color/white"
-		            android:textSize="@dimen/title" />
-		
-		        <TextView
-		            android:id="@+id/risk"
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1"
-		            android:background="@drawable/bg_yellow"
-		            android:gravity="center_horizontal"
-		            android:paddingBottom="@dimen/margins"
-		            android:paddingTop="@dimen/margins"
-		            android:text="报险"
-		            android:textColor="@color/white"
-		            android:textSize="@dimen/title" />
-		
-		        <TextView
-		            android:id="@+id/ask"
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1"
-		            android:background="@drawable/bg_yellow"
-		            android:gravity="center_horizontal"
-		            android:paddingBottom="@dimen/margins"
-		            android:paddingTop="@dimen/margins"
-		            android:text="问一下"
-		            android:visibility="gone"
-		            android:textColor="@color/white"
-		            android:textSize="@dimen/title" />
-		
-		        <TextView
-		            android:id="@+id/mechanics"
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1"
-		            android:background="@drawable/bg_yellow"
-		            android:gravity="center_horizontal"
-		            android:paddingBottom="@dimen/margins"
-		            android:paddingTop="@dimen/margins"
-		            android:text="找汽修"
-		            android:textColor="@color/white"
-		            android:textSize="@dimen/title" />
-		        <TextView
-		            android:id="@+id/tv_ask_expert"
-		            android:layout_width="fill_parent"
-		            android:layout_height="wrap_content"
-		            android:layout_weight="1"
-		            android:background="@drawable/bg_yellow"
-		            android:gravity="center_horizontal"
-		            android:paddingBottom="@dimen/margins"
-		            android:paddingTop="@dimen/margins"
-		            android:text="问专家"
-		            android:textColor="@color/white"
-		            android:textSize="@dimen/title" />
-		    </LinearLayout>
+	<RelativeLayout
+	    android:id="@+id/rl_no_fault"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent">
+	    <RelativeLayout 
+            android:layout_centerInParent="true"
+               android:layout_width="264dp"
+               android:layout_height="162dp">                
+            <ImageView
+                android:id="@+id/iv_nothing"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:src="@drawable/icon_reminder" />	            
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="@color/white"
+                android:textSize="@dimen/title" 
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="25dp"
+                android:text="没有故障记录"/>
+           </RelativeLayout>
+	</RelativeLayout>
 	<LinearLayout 
-	    android:layout_above="@id/ll_bottom"
-	    android:layout_below="@id/ll_main"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:orientation="vertical">
-	    <RelativeLayout
-		    android:id="@+id/rl_no_fault"
-		    android:layout_width="fill_parent"
-		    android:layout_height="fill_parent">
-		    <RelativeLayout 
-	            android:layout_centerInParent="true"
-	               android:layout_width="264dp"
-	               android:layout_height="162dp">                
-	            <ImageView
-	                android:id="@+id/iv_nothing"
-	                android:layout_width="fill_parent"
-	                android:layout_height="fill_parent"
-	                android:src="@drawable/icon_reminder" />	            
-	            <TextView
-	                android:layout_width="fill_parent"
-	                android:layout_height="wrap_content"
-	                android:gravity="center_horizontal"
-	                android:textColor="@color/white"
-	                android:textSize="@dimen/title" 
-	                android:layout_alignParentBottom="true"
-	                android:layout_marginBottom="25dp"
-	                android:text="没有故障记录"/>
-	           </RelativeLayout>
-		</RelativeLayout>
-		<LinearLayout 
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:padding="@dimen/margins"
-		    android:orientation="horizontal">
-		    <ImageView 
-		        android:layout_width="20dp"
-		        android:layout_height="20dp"
-		        android:layout_marginRight="5dp"
-		        android:src="@drawable/icon_guzhang_abnormal"/>
-			<TextView	    
-		        android:id="@+id/tv_fault"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:textSize="@dimen/main"
-		        android:textColor="@color/navy"/>
-		</LinearLayout>
-		<View
-	        android:layout_width="fill_parent"
-	        android:layout_height="0.5dp"
-	        android:background="@color/line" />
-	    <ListView 
-	        android:id="@+id/lv_fault"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"></ListView>
-	</LinearLayout>	
-</RelativeLayout>
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:padding="@dimen/margins"
+	    android:orientation="horizontal">
+	    <ImageView 
+	        android:layout_width="20dp"
+	        android:layout_height="20dp"
+	        android:layout_marginRight="5dp"
+	        android:src="@drawable/icon_guzhang_abnormal"/>
+		<TextView	    
+	        android:id="@+id/tv_fault"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="@dimen/main"
+	        android:textColor="@color/navy"/>
+	</LinearLayout>
+	<View
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/line" />
+    <ListView 
+        android:id="@+id/lv_fault"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"></ListView>
+</LinearLayout>

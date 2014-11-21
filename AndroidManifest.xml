@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wise.baba"
-    android:versionCode="19"
-    android:versionName="1.037" >
+    android:versionCode="22"
+    android:versionName="1.040" >
 
     <supports-screens
         android:anyDensity="true"
@@ -57,16 +57,16 @@
             android:name=".WelcomeActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >            
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" >
-            
         </activity>
         <activity
             android:name=".BNavigatorActivity"
@@ -270,6 +270,18 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.car.AddressActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.ChooseAddressActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.MapChooseActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.car.CarAddActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
@@ -326,6 +338,10 @@
         </activity>
         <activity
             android:name="com.wise.car.SearchMapActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.SearchLocationActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity

@@ -14,7 +14,6 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -101,11 +100,7 @@ public class CaptchaActivity extends Activity{
 				}
 				break;
 			case R.id.tv_send_captcha:
-				AlertDialog.Builder dialog = new AlertDialog.Builder(CaptchaActivity.this); 
-				dialog.setTitle("提示");  
-				dialog.setMessage("如果您多次发送验证码手机都接收不到，请联系客服QQ:2046723941解决。"); 
-				dialog.setPositiveButton("确定", null);
-				dialog.show();
+				//GetCaptcha();
 				break;
 			case R.id.iv_back:
 				finish();

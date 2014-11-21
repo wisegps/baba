@@ -183,7 +183,7 @@ public class SearchMapActivity extends Activity {
 				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
 		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0.5f)
-				.position(circle).icon(bitmap);
+				.position(circle).icon(bitmap).rotate(carData.getDirect());
 		// 在地图上添加Marker，并显示
 		mBaiduMap.addOverlay(option);
 	}
@@ -345,7 +345,6 @@ public class SearchMapActivity extends Activity {
 				return;
 			}
 			if (result.error == SearchResult.ERRORNO.AMBIGUOUS_KEYWORD) {
-
 				// 当输入关键字在本市没有找到，但在其他城市找到时，返回包含该关键字信息的城市列表
 				String strInfo = "在";
 				for (CityInfo cityInfo : result.getSuggestCityList()) {

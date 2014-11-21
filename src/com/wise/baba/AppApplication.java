@@ -12,9 +12,11 @@ import pubclas.GetSystem;
 
 /**
  * 初始化地图
+ * 
  * @author honesty
  */
 public class AppApplication extends LitePalApplication {
+
     private static final String TAG = "AppApplication";	
     /**演示true **/
     public boolean isTest = false;
@@ -50,11 +52,12 @@ public class AppApplication extends LitePalApplication {
     public List<CarData> carDatas = new ArrayList<CarData>();
     /**好友信息**/
     public List<FriendData> friendDatas = new ArrayList<FriendData>();
+
 	@Override
-    public void onCreate() {
-	    super.onCreate();
+	public void onCreate() {
+		super.onCreate();
 		GetSystem.myLog(TAG, "onCreate");
-		//百度地图初始化
+		// 百度地图初始化
 		SDKInitializer.initialize(getApplicationContext());
 	}
 }

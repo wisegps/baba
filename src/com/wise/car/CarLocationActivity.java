@@ -27,9 +27,8 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
-import com.baidu.mapapi.map.Polyline;
-import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.Stroke;
+import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -48,21 +47,25 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,9 +87,12 @@ public class CarLocationActivity extends Activity {
 
 	/** 获取gps信息 **/
 	private static final int get_gps = 1;
-	/** 车辆轨迹 **/
-	List<LatLng> points = new ArrayList<LatLng>();
+	private static final int set_vibrate = 2;
+
 	AppApplication app;
+
+	TextView searchAddress;
+	ImageView iv_traffic;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +100,14 @@ public class CarLocationActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_location);
 		app = (AppApplication) getApplication();
-		ImageView iv_streetview = (ImageView) findViewById(R.id.iv_streetview);
-		iv_streetview.setOnClickListener(onClickListener);
+		ImageView iv_more = (ImageView) findViewById(R.id.iv_more);
+		iv_more.setOnClickListener(onClickListener);
+		ImageView iv_maplayers = (ImageView) findViewById(R.id.iv_maplayers);
+		iv_maplayers.setOnClickListener(onClickListener);
+		ImageView iv_streetscape = (ImageView) findViewById(R.id.iv_streetscape);
+		iv_streetscape.setOnClickListener(onClickListener);
+		iv_traffic = (ImageView) findViewById(R.id.iv_traffic);
+		iv_traffic.setOnClickListener(onClickListener);
 		TextView tv_car_name = (TextView) findViewById(R.id.tv_car_name);
 		index = getIntent().getIntExtra("index", 0);
 		carData = app.carDatas.get(index);
@@ -104,6 +116,8 @@ public class CarLocationActivity extends Activity {
 		iv_back.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_car_location);
 		mBaiduMap = mMapView.getMap();
+		UiSettings mUiSettings = mBaiduMap.getUiSettings();
+		mUiSettings.setCompassEnabled(true);
 		// 开启定位图层
 		mBaiduMap.setMyLocationEnabled(true);
 		// 定位初始化
@@ -111,6 +125,7 @@ public class CarLocationActivity extends Activity {
 		mLocClient.registerLocationListener(myListener);
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
+		option.setIsNeedAddress(true);
 		option.setCoorType("bd09ll"); // 设置坐标类型
 		option.setScanSpan(30000);
 		mLocClient.setLocOption(option);
@@ -118,6 +133,12 @@ public class CarLocationActivity extends Activity {
 		getCarLocation();
 
 		// 就初始化控件
+		searchAddress = (TextView) findViewById(R.id.search_address);
+		searchAddress.setOnClickListener(onClickListener);
+
+		findViewById(R.id.iv_home).setOnClickListener(onClickListener);
+		findViewById(R.id.iv_conpany).setOnClickListener(onClickListener);
+
 		findViewById(R.id.bt_location_findCar).setOnClickListener(
 				onClickListener);
 		findViewById(R.id.bt_location_travel).setOnClickListener(
@@ -152,6 +173,26 @@ public class CarLocationActivity extends Activity {
 	}
 
 	boolean isStop = true;
+	private static final int SEARCH_CODE = 8;
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == SearchLocationActivity.HISTORY_CODE) {
+			String re_name = data.getExtras().getString("re_name");
+			if (re_name != null && !re_name.equals("")) {
+				searchAddress.setText(re_name);
+				LatLng llg = new LatLng(data.getExtras().getDouble(
+						"history_lat"), data.getExtras().getDouble(
+						"history_lon"));
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
+				mBaiduMap.setMapStatus(u);
+				setTransitRoute(ll, llg);
+			} else {
+				getCarLocation();
+			}
+		}
+	}
 
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
@@ -159,6 +200,11 @@ public class CarLocationActivity extends Activity {
 			switch (v.getId()) {
 			case R.id.iv_back:
 				finish();
+				break;
+			case R.id.search_address:
+				Intent search = new Intent(CarLocationActivity.this,
+						SearchLocationActivity.class);
+				startActivityForResult(search, SEARCH_CODE);
 				break;
 			case R.id.bt_location_findCar:// 寻车,客户端导航
 				LatLng carLocat = new LatLng(carData.getLat(), carData.getLon());
@@ -176,10 +222,27 @@ public class CarLocationActivity extends Activity {
 			case R.id.bt_location_periphery:// 周边
 				ShowPop();// 弹出popupwidow显示
 				break;
+			case R.id.iv_more:
+				showMorePop();
+				break;
+			case R.id.tv_vibrate:
+				if (mPopupWindow != null) {
+					mPopupWindow.dismiss();
+				}
+				showVibratePop();
+				break;
+			case R.id.bt_set_vibrate:
+				setVibrate();
+				break;
 			case R.id.bt_location_fence:// 围栏
 				ShowFence();
 				break;
+			case R.id.iv_maplayers:
 
+				// TODO 弹出图层
+
+				ShowPopMapLayers();
+				break;
 			// 周边点击弹出Popupwindow监听事件
 			case R.id.tv_item_car_location_oil:// 加油站
 				ToSearchMap("加油站", "加油站");
@@ -220,7 +283,7 @@ public class CarLocationActivity extends Activity {
 						+ app.auth_code;
 				new NetThread.DeleteThread(handler, url, DELETE).start();
 				break;
-			case R.id.iv_streetview:
+			case R.id.iv_streetscape:
 				// 进入街景
 				Intent intent = new Intent(CarLocationActivity.this,
 						PanoramaDemoActivityMain.class);
@@ -228,11 +291,114 @@ public class CarLocationActivity extends Activity {
 				intent.putExtra("lon", longitude);
 				startActivity(intent);
 				break;
+
+			case R.id.iv_home:
+				SharedPreferences preferences = getSharedPreferences(
+						"search_name", Activity.MODE_PRIVATE);
+				double homeLat = Double.valueOf(preferences.getString(
+						"homeLat", "0"));
+				double homeLon = Double.valueOf(preferences.getString(
+						"homeLon", "0"));
+				if (homeLat == 0 && homeLon == 0) {
+					Toast.makeText(CarLocationActivity.this, "常用家地址未设置",
+							Toast.LENGTH_SHORT).show();
+					startActivity(new Intent(CarLocationActivity.this,
+							AddressActivity.class));
+				} else {
+					LatLng homeLocat = new LatLng(homeLat, homeLon);
+					// 定位以车辆为中心
+					MapStatusUpdate mu = MapStatusUpdateFactory
+							.newLatLng(homeLocat);
+					mBaiduMap.animateMapStatus(mu);
+					setTransitRoute(ll, homeLocat);
+				}
+				break;
+			case R.id.iv_conpany:
+				SharedPreferences preferences1 = getSharedPreferences(
+						"search_name", Activity.MODE_PRIVATE);
+				double companyLat = Double.valueOf(preferences1.getString(
+						"companyLat", "0"));
+				double companyLon = Double.valueOf(preferences1.getString(
+						"companyLon", "0"));
+				if (companyLat == 0 && companyLon == 0) {
+					Toast.makeText(CarLocationActivity.this, "常用公司地址未设置",
+							Toast.LENGTH_SHORT).show();
+					startActivity(new Intent(CarLocationActivity.this,
+							AddressActivity.class));
+				} else {
+					LatLng companyLocat = new LatLng(companyLat, companyLon);
+					// 定位以车辆为中心
+					MapStatusUpdate mu = MapStatusUpdateFactory
+							.newLatLng(companyLocat);
+					mBaiduMap.animateMapStatus(mu);
+					setTransitRoute(ll, companyLocat);
+				}
+				break;
+			case R.id.iv_satellite:
+				MapType = 0;
+				setMapLayers();
+				iv_satellite
+						.setBackgroundResource(R.drawable.bd_wallet_my_bank_card_list_item_bg_normal);
+				mBaiduMap.setMapType(BaiduMap.MAP_TYPE_SATELLITE);
+				break;
+			case R.id.iv_plain:
+				MapType = 1;
+				setMapLayers();
+				iv_plain.setBackgroundResource(R.drawable.bd_wallet_my_bank_card_list_item_bg_normal);
+				mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+				mBaiduMap.animateMapStatus(MapStatusUpdateFactory
+						.newMapStatus(new MapStatus.Builder().overlook(0)
+								.build()), 1000);
+				break;
+			case R.id.iv_3d:
+				MapType = 2;
+				setMapLayers();
+				iv_3d.setBackgroundResource(R.drawable.bd_wallet_my_bank_card_list_item_bg_normal);
+				mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+				mBaiduMap.animateMapStatus(MapStatusUpdateFactory
+						.newMapStatus(new MapStatus.Builder().overlook(-30)
+								.build()), 1000);
+				break;
+			case R.id.iv_traffic:
+				if (isTraffic) {
+					isTraffic = false;
+					iv_traffic
+							.setImageResource(R.drawable.main_icon_roadcondition_off);
+					Toast.makeText(CarLocationActivity.this, "实时路况已关闭",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					isTraffic = true;
+					iv_traffic
+							.setImageResource(R.drawable.main_icon_roadcondition_on);
+					Toast.makeText(CarLocationActivity.this, "实时路况已打开",
+							Toast.LENGTH_SHORT).show();
+				}
+				mBaiduMap.setTrafficEnabled(isTraffic);
+				break;
+			case R.id.tv_common_adress:
+				// 常用地址
+				if (mPopupWindow != null) {
+					mPopupWindow.dismiss();
+				}
+				startActivity(new Intent(CarLocationActivity.this,
+						AddressActivity.class));
+				break;
 			}
 		}
 	};
+	/** 地图类型 **/
+	int MapType = 1;
+	/** 实时路口 **/
+	boolean isTraffic = false;
 
-	private void showDialog() {
+	private void setMapLayers() {
+		iv_satellite
+				.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
+		iv_plain.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
+		iv_3d.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
+	}
+
+	private void showDialog(final LatLng startLocat, final LatLng carLocat) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				CarLocationActivity.this);
 		builder.setTitle("寻车").setMessage("是否进行路径导航？");
@@ -240,8 +406,7 @@ public class CarLocationActivity extends Activity {
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				LatLng startLocat = new LatLng(latitude, longitude);
-				LatLng carLocat = new LatLng(carData.getLat(), carData.getLon());
+				Log.e("my_log", carLocat.latitude + " , " + carLocat.longitude);
 				GetSystem.FindCar(CarLocationActivity.this, startLocat,
 						carLocat, "", "");
 			}
@@ -335,6 +500,7 @@ public class CarLocationActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
+		//SEKBAR
 		fence_distance
 				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 					@Override
@@ -394,7 +560,7 @@ public class CarLocationActivity extends Activity {
 		}
 		if (carData.getGeofence() != null
 				&& !carData.getGeofence().equals("null")) {
-			//如果有围栏数据，则以围栏的坐标画圆
+			// 如果有围栏数据，则以围栏的坐标画圆
 			LatLng circle = new LatLng(fence_lat, fence_lon);
 			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 					.newLatLng(circle);
@@ -440,7 +606,8 @@ public class CarLocationActivity extends Activity {
 
 	LatLng circle;
 	Marker carMarker = null;
-	Polyline carLine = null;
+
+	// Polyline carLine = null;
 
 	// 当前车辆位子
 	private void getCarLocation() {
@@ -454,23 +621,15 @@ public class CarLocationActivity extends Activity {
 					.newMapStatus(mapStatus);
 			mBaiduMap.setMapStatus(mapStatusUpdate);
 		}
-		//TODO  构建Marker图标
+		// 构建Marker图标
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
 		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0.5f)
-				.position(circle).icon(bitmap);
+				.position(circle).icon(bitmap).rotate(carData.getDirect());
 		// 在地图上添加Marker，并显示
 		carMarker = (Marker) (mBaiduMap.addOverlay(option));
-		points.add(circle);
-		if (points.size() > 1) {
-			if (carLine != null) {
-				carLine.remove();
-			}
-			OverlayOptions ooPolyline = new PolylineOptions().width(5)
-					.color(0xAAFF0000).points(points);
-			carLine = (Polyline) (mBaiduMap.addOverlay(ooPolyline));
-		}
+
 	}
 
 	Handler handler = new Handler() {
@@ -497,6 +656,9 @@ public class CarLocationActivity extends Activity {
 			case get_gps:
 				jsonGps(msg.obj.toString());
 				break;
+			case set_vibrate:
+				jsonVibrate(msg.obj.toString());
+				break;
 			}
 		}
 	};
@@ -513,9 +675,46 @@ public class CarLocationActivity extends Activity {
 			double lon = jsonObject.getDouble("lon");
 			carData.setLat(lat);
 			carData.setLon(lon);
+			carData.setDirect(jsonObject.getInt("direct"));
 			getCarLocation();
 		} catch (JSONException e) {
 			e.printStackTrace();
+		}
+	}
+
+	/** 显示图层 **/
+
+	ImageView iv_satellite, iv_plain, iv_3d;
+
+	/** 显示图层 **/
+
+	private void ShowPopMapLayers() {
+		LayoutInflater mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_maplayers,
+				null);
+		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.FILL_PARENT,
+				LayoutParams.WRAP_CONTENT);
+		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+		mPopupWindow.setFocusable(true);
+		mPopupWindow.setOutsideTouchable(true);
+		mPopupWindow.showAsDropDown(findViewById(R.id.iv_maplayers), 0, 0);
+		iv_satellite = (ImageView) popunwindwow.findViewById(R.id.iv_satellite);
+		iv_satellite.setOnClickListener(onClickListener);
+		iv_plain = (ImageView) popunwindwow.findViewById(R.id.iv_plain);
+		iv_plain.setOnClickListener(onClickListener);
+		iv_3d = (ImageView) popunwindwow.findViewById(R.id.iv_3d);
+		iv_3d.setOnClickListener(onClickListener);
+		switch (MapType) {
+		case 0:
+			iv_satellite
+					.setBackgroundResource(R.drawable.bd_wallet_my_bank_card_list_item_bg_normal);
+			break;
+		case 1:
+			iv_plain.setBackgroundResource(R.drawable.bd_wallet_my_bank_card_list_item_bg_normal);
+			break;
+		case 2:
+			iv_3d.setBackgroundResource(R.drawable.bd_wallet_my_bank_card_list_item_bg_normal);
+			break;
 		}
 	}
 
@@ -555,6 +754,130 @@ public class CarLocationActivity extends Activity {
 		tv_item_car_location_wash.setOnClickListener(onClickListener);
 	}
 
+	/** 显示更多菜单 **/
+	private void showMorePop() {
+		LayoutInflater mLayoutInflater = LayoutInflater
+				.from(CarLocationActivity.this);
+		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_location_more,
+				null);
+		TextView tv_vibrate = (TextView) popunwindwow
+				.findViewById(R.id.tv_vibrate);
+		tv_vibrate.setOnClickListener(onClickListener);
+		TextView tv_common_adress = (TextView) popunwindwow
+				.findViewById(R.id.tv_common_adress);
+		tv_common_adress.setOnClickListener(onClickListener);
+		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT);
+		mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
+		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+		mPopupWindow.setFocusable(true);
+		mPopupWindow.setOutsideTouchable(true);
+		mPopupWindow.showAsDropDown(findViewById(R.id.iv_more), 0, 0);
+	}
+
+	ProgressBar pb_vibrate;
+
+	/** 显示设置震动窗口 **/
+	private void showVibratePop() {
+		int Height = ll_location_bottom.getMeasuredHeight();
+		LayoutInflater mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_vibrate, null);
+		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT);
+		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+		mPopupWindow.setFocusable(true);
+		mPopupWindow.setOutsideTouchable(true);
+		mPopupWindow.showAtLocation(findViewById(R.id.bt_location_periphery),
+				Gravity.BOTTOM, 0, Height);
+
+		Button bt_set_vibrate = (Button) popunwindwow
+				.findViewById(R.id.bt_set_vibrate);
+
+		pb_vibrate = (ProgressBar) popunwindwow.findViewById(R.id.pb_vibrate);
+
+		bt_set_vibrate.setOnClickListener(onClickListener);
+
+		final TextView tv_vibrate = (TextView) popunwindwow
+				.findViewById(R.id.tv_vibrate);
+		//刷新
+		SeekBar sb_vibrate = (SeekBar) popunwindwow
+				.findViewById(R.id.sb_vibrate);
+		vibrate = carData.getSensitivity();
+		sb_vibrate.setProgress(carData.getSensitivity());
+		if (carData.getSensitivity() == 0) {
+			tv_vibrate.setText("关");
+		} else {
+			tv_vibrate.setText("" + carData.getSensitivity());
+		}
+		sb_vibrate.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+			}
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				if (progress == 0) {
+					tv_vibrate.setText("关");
+					vibrate = 0;
+				} else {
+					tv_vibrate.setText("" + progress);
+					vibrate = progress;
+				}
+			}
+		});
+	}
+
+	private String COMMAND_VIBRATEALERT = "16391";
+	int vibrate = 0;
+
+	/** 设置震动 **/
+	private void setVibrate() {
+		pb_vibrate.setVisibility(View.VISIBLE);
+
+		String url = Constant.BaseUrl + "command?auth_code=" + app.auth_code;
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("device_id", carData.getDevice_id()));
+		params.add(new BasicNameValuePair("cmd_type", COMMAND_VIBRATEALERT));
+		params.add(new BasicNameValuePair("params", "{sensitivity: " + vibrate
+				+ "}"));
+		new NetThread.postDataThread(handler, url, params, set_vibrate).start();
+	}
+
+	private void jsonVibrate(String result) {
+		System.out.println(result);
+		pb_vibrate.setVisibility(View.GONE);
+		try {
+			JSONObject jsonObject = new JSONObject(result);
+
+			if (jsonObject.getInt("status_code") == 0) {
+				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度成功",
+						Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度失败",
+						Toast.LENGTH_SHORT).show();
+
+				if (jsonObject.getInt("status_code") == 0) {
+					carData.setSensitivity(vibrate);
+					Toast.makeText(getApplicationContext(), "设置震动报警灵敏度成功",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(getApplicationContext(), "设置震动报警灵敏度失败",
+							Toast.LENGTH_SHORT).show();
+
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(getApplicationContext(), "设置震动报警灵敏度失败",
+					Toast.LENGTH_SHORT).show();
+		}
+	}
+
 	boolean isFirstLoc = true;
 	LatLng ll;
 
@@ -570,15 +893,15 @@ public class CarLocationActivity extends Activity {
 			app.Lon = longitude;
 			MyLocationData locData = new MyLocationData.Builder()
 					.accuracy(location.getRadius())
-					// 此处设置开发者获取到的方向信息，顺时针0-360
+					//TODO  此处设置开发者获取到的方向信息，顺时针0-360
 					.direction(0).latitude(location.getLatitude())
 					.longitude(location.getLongitude()).build();
 			mBaiduMap.setMyLocationData(locData);
 			BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
-		            .fromResource(R.drawable.person);
-		    MyLocationConfiguration config = new MyLocationConfiguration(null,
-		            true, mCurrentMarker);
-		    mBaiduMap.setMyLocationConfigeration(config);
+					.fromResource(R.drawable.person);
+			MyLocationConfiguration config = new MyLocationConfiguration(null,
+					false, mCurrentMarker);
+			mBaiduMap.setMyLocationConfigeration(config);
 			if (isFirstLoc) {
 				isFirstLoc = false;
 				ll = new LatLng(location.getLatitude(), location.getLongitude());
@@ -599,8 +922,11 @@ public class CarLocationActivity extends Activity {
 		PlanNode edNode = PlanNode.withLocation(stopLatLng);
 		mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(
 				edNode));
+		Log.e("my_log", "===1111===>");
+		showDialog(startLatLng, stopLatLng);
 	}
 
+	DrivingRouteOverlay drOverlay;
 	OnGetRoutePlanResultListener onGetRoutePlanResultListener = new OnGetRoutePlanResultListener() {
 		@Override
 		public void onGetWalkingRouteResult(WalkingRouteResult arg0) {
@@ -618,12 +944,14 @@ public class CarLocationActivity extends Activity {
 				return;
 			}
 			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
-				DrivingRouteOverlay overlay = new DrivingRouteOverlay(mBaiduMap);
-				mBaiduMap.setOnMarkerClickListener(overlay);
-				overlay.setData(result.getRouteLines().get(0));
-				overlay.addToMap();
-				// overlay.zoomToSpan();
-				showDialog();
+				if (drOverlay != null) {
+					drOverlay.removeFromMap();
+				}
+				drOverlay = new DrivingRouteOverlay(mBaiduMap);
+				mBaiduMap.setOnMarkerClickListener(drOverlay);
+				drOverlay.setData(result.getRouteLines().get(0));
+				drOverlay.addToMap();
+
 			} else {
 				Toast.makeText(CarLocationActivity.this, "抱歉，未找到结果",
 						Toast.LENGTH_SHORT).show();

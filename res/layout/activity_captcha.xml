@@ -101,5 +101,6 @@
 	    android:textSize="@dimen/content"
 	    android:textColor="@color/blue_press"
 	    android:gravity="center_horizontal"
+	    android:visibility="gone"
 	    android:text="收不到验证码？"/>		
 </LinearLayout>

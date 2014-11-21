@@ -27,6 +27,16 @@
             android:layout_marginLeft="@dimen/margins"
             android:padding="@dimen/margins"
             android:src="@drawable/nav_back" />
+
+        <ImageView
+            android:id="@+id/iv_more"
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margins"
+            android:padding="@dimen/margins"
+            android:src="@drawable/bg_set" />
     </RelativeLayout>
 
     <LinearLayout
@@ -93,19 +103,87 @@
         android:id="@+id/mv_car_location"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/ll_main"
         android:layout_above="@id/ll_location_bottom"
+        android:layout_below="@id/ll_main"
         android:clickable="true" />
 
-    <ImageView
-        android:id="@+id/iv_streetview" 
-        android:layout_width="wrap_content"
-        android:layout_marginTop="@dimen/margins"
-        android:layout_marginRight="@dimen/margins"
-        android:layout_height="30dp"
+    <LinearLayout
+        android:id="@+id/ll_search"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/ll_main"
-        android:scaleType="fitEnd"
+        android:layout_margin="5dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_adress"
+        android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/search_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/toolbar_icon_search"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="搜地点，找路线" />
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:background="@color/gay_line" />
+		<ImageView
+		    android:id="@+id/iv_home" 
+		    android:layout_width="40dp"
+		    android:layout_height="40dp"
+		    android:paddingTop="10dp"
+		    android:paddingBottom="10dp"
+		    android:paddingRight="5dp"
+		    android:paddingLeft="10dp"
+		    android:src="@drawable/home"/>
+		<ImageView 
+		    android:id="@+id/iv_conpany" 
+		    android:layout_width="40dp"
+		    android:layout_height="40dp"
+		    android:paddingTop="10dp"
+		    android:paddingBottom="10dp"
+		    android:paddingRight="10dp"
+		    android:paddingLeft="5dp"
+		    android:src="@drawable/conpany"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:visibility="visible"
-        android:src="@drawable/streetview"/>
+        android:layout_marginRight="5dp"
+        android:layout_below="@id/ll_search"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/iv_traffic"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/main_button"
+            android:padding="10dp"
+            android:src="@drawable/main_icon_roadcondition_off" />
+
+        <ImageView
+            android:id="@+id/iv_maplayers"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/main_button"
+            android:padding="10dp"
+            android:src="@drawable/main_icon_maplayers" />
+
+        <ImageView
+            android:id="@+id/iv_streetscape"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/main_button"
+            android:padding="10dp"
+            android:src="@drawable/main_map_icon_streetscape" />
+    </LinearLayout>
+
 </RelativeLayout>

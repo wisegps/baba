@@ -648,6 +648,7 @@ public class GetSystem {
 
 	/**
 	 * 分享
+	 * 
 	 * @param mContext
 	 * @param Content
 	 * @param imagePath
@@ -657,7 +658,8 @@ public class GetSystem {
 	 * @param mapUrl
 	 */
 	public static void share(Context mContext, String Content,
-			String imagePath, float Lat, float Lon, String title, String titleUrl) {
+			String imagePath, float Lat, float Lon, String title,
+			String titleUrl) {
 		final OnekeyShare oks = new OnekeyShare();
 		oks.setNotification(R.drawable.ic_launcher, "app_name");
 		oks.setAddress("");
@@ -670,7 +672,7 @@ public class GetSystem {
 		oks.setFilePath(imagePath);
 		System.out.println("titleUrl = " + titleUrl);
 		System.out.println("title = " + title);
-		//qq share params must have titleUrl and (title or summary or imageUrl)
+		// qq share params must have titleUrl and (title or summary or imageUrl)
 
 		// oks.setComment("share");
 		// oks.setSite("wise");
@@ -734,42 +736,51 @@ public class GetSystem {
 		}
 		return hexValue.toString();
 	}
-	/**把view里的内容映射城图片，地图不行**/
+
+	/** 把view里的内容映射城图片，地图不行 **/
 	public static Bitmap getViewBitmap(View v) {
-        v.clearFocus(); //
-        v.setPressed(false); //
-        // 能画缓存就返回false
-        boolean willNotCache = v.willNotCacheDrawing();
-        v.setWillNotCacheDrawing(false);
-        int color = v.getDrawingCacheBackgroundColor();
-        v.setDrawingCacheBackgroundColor(0);
-        if (color != 0) {
-            v.destroyDrawingCache();
-        }
-        v.buildDrawingCache();
-        Bitmap cacheBitmap = v.getDrawingCache();
-        if (cacheBitmap == null) {
-            return null;
-        }
-        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
-        v.destroyDrawingCache();
-        v.setWillNotCacheDrawing(willNotCache);
-        v.setDrawingCacheBackgroundColor(color);
-        return bitmap;
-    }
+		v.clearFocus(); //
+		v.setPressed(false); //
+		// 能画缓存就返回false
+		boolean willNotCache = v.willNotCacheDrawing();
+		v.setWillNotCacheDrawing(false);
+		int color = v.getDrawingCacheBackgroundColor();
+		v.setDrawingCacheBackgroundColor(0);
+		if (color != 0) {
+			v.destroyDrawingCache();
+		}
+		v.buildDrawingCache();
+		Bitmap cacheBitmap = v.getDrawingCache();
+		if (cacheBitmap == null) {
+			return null;
+		}
+		Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+		v.destroyDrawingCache();
+		v.setWillNotCacheDrawing(willNotCache);
+		v.setDrawingCacheBackgroundColor(color);
+		return bitmap;
+	}
+
 	/**
-	 * 判断当前网络是否wifi
-	 * @param mContext
+	 * 判断网络是否可用
+	 * 
+	 * @param context
 	 * @return
 	 */
-	public static boolean isWifi(Context mContext) {  
-	    ConnectivityManager connectivityManager = (ConnectivityManager) mContext  
-	            .getSystemService(Context.CONNECTIVITY_SERVICE);  
-	    NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();  
-	    if (activeNetInfo != null  
-	            && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {  
-	        return true;  
-	    }  
-	    return false;  
+	public static boolean isNetworkAvailable(Context context) {
+		ConnectivityManager cm = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (cm == null) {
+		} else {
+			NetworkInfo[] info = cm.getAllNetworkInfo();
+			if (info != null) {
+				for (int i = 0; i < info.length; i++) {
+					if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

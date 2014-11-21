@@ -1,6 +1,5 @@
 package com.wise.state;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +16,6 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.DevicesAddActivity;
 import com.wise.car.SearchMapActivity;
-import com.wise.notice.LetterActivity;
-
 import customView.FaultDeletionView;
 import customView.OnViewChangeListener;
 import data.CarData;
@@ -127,7 +124,6 @@ public class FaultDetectionActivity extends Activity {
 		findViewById(R.id.risk).setOnClickListener(onClickListener);
 		findViewById(R.id.ask).setOnClickListener(onClickListener);
 		findViewById(R.id.mechanics).setOnClickListener(onClickListener);
-		findViewById(R.id.tv_ask_expert).setOnClickListener(onClickListener);
 	}
 
 	private void fristSetLeftRight() {
@@ -172,12 +168,7 @@ public class FaultDetectionActivity extends Activity {
 			} else if (v.getId() == R.id.iv_back) {
 				Back();
 				finish();
-			}else if(v.getId() == R.id.tv_ask_expert){
-				Intent intent = new Intent(FaultDetectionActivity.this, LetterActivity.class);
-				intent.putExtra("cust_id", "12");
-				intent.putExtra("cust_name", "专家");
-				startActivity(intent);
-			}else {
+			} else {
 				try {
 					String Device_id = app.carDatas.get(index)
 							.getDevice_id();
@@ -197,7 +188,7 @@ public class FaultDetectionActivity extends Activity {
 									FaultDetectionActivity.this,
 									FaultDetailActivity.class);
 							intent1.putExtra("fault_content", fault_content);
-							intent1.putExtra("index", index);
+							intent1.putExtra("device_id", Device_id);
 							startActivity(intent1);
 						}
 
@@ -925,29 +916,28 @@ public class FaultDetectionActivity extends Activity {
 
 	/** 获取健康数据 **/
 	private void getData(int index) {
-		String Device_id = app.carDatas.get(index).getDevice_id();
-		if (Device_id == null || Device_id.equals("")) {
-			Intent intent = new Intent(FaultDetectionActivity.this,
-					DevicesAddActivity.class);
-			intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
-			startActivityForResult(intent, 2);
-		} else {
-			if (isCheck) {
-				Toast.makeText(FaultDetectionActivity.this, "体检进行中",
-						Toast.LENGTH_SHORT).show();
-				return;
-			}
-			initapp();
-			String url;
-			try {
-				url = Constant.BaseUrl + "device/" + Device_id
-						+ "/health_exam?auth_code=" + app.auth_code + "&brand=" + 
-								URLEncoder.encode(app.carDatas.get(index).getCar_brand(), "UTF-8");
+		try {
+			String Device_id = app.carDatas.get(index).getDevice_id();
+			if (Device_id == null || Device_id.equals("")) {
+				Intent intent = new Intent(FaultDetectionActivity.this,
+						DevicesAddActivity.class);
+				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
+				startActivityForResult(intent, 2);
+			} else {
+				if (isCheck) {
+					Toast.makeText(FaultDetectionActivity.this, "体检进行中",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				initapp();
+				String url = Constant.BaseUrl + "device/" + Device_id
+							+ "/health_exam?auth_code=" + app.auth_code + "&brand=" + 
+									URLEncoder.encode(app.carDatas.get(index).getCar_brand(), "UTF-8");
 				new NetThread.GetDataThread(handler, url, getData, index).start();
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
 			}
-		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 
 	String result = "";

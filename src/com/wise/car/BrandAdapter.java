@@ -171,7 +171,7 @@ public class BrandAdapter extends BaseAdapter{
 				Log.e("BrandAdapter/b == null ?",b == null ? "null":"no");
 	            b = new FileOutputStream(fileName);  
 	            if(b != null){
-	            	bitmap.compress(Bitmap.CompressFormat.PNG, 100, b);// 把数据写入文件
+	            	bitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// 把数据写入文件
 	            }
 	        } catch (FileNotFoundException e) {  
 	        	Log.e("BrandAdapter","FileNotFoundException");
