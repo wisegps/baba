@@ -5,7 +5,8 @@ import pubclas.DensityUtil;
 import com.wise.baba.R;
 import com.wise.fragment.FragmentFault;
 import com.wise.fragment.FragmentPersionInfo;
-import com.wise.remind.RemindFragment;
+import com.wise.fragment.FragmentRemind;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -109,9 +110,9 @@ public class ServiceManageActivity extends FragmentActivity {
 			ll_bottom.addView(textView);
 		}	
 		fragments.add(new FragmentFault());
-		fragments.add(new RemindFragment());
+		fragments.add(new FragmentRemind());
 		fragments.add(FragmentPersionInfo.newInstance(true, FriendId));
-		fragments.add(new RemindFragment());
+		fragments.add(new FragmentRemind());
 	}
 	
 	class MyFragmentPagerAdapter extends FragmentPagerAdapter{
