@@ -38,7 +38,7 @@ import android.widget.Toast;
 
 /**
  * 常用地址
- *
+ * 
  */
 public class AddressActivity extends Activity {
 	TextView tv_home, tv_company;
