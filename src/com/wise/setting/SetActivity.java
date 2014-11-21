@@ -63,8 +63,11 @@ import android.widget.Toast;
  * @author Administrator
  *
  */
-public class SetActivity extends Activity implements TagAliasCallback{
-	
+
+
+public class SetActivity extends Activity implements TagAliasCallback {
+
+	private static final String abc = "adafsd";
 	private static final String TAG = "SetActivity";
 	private static final int get_customer = 2;
 	private static final int get_pic = 3;

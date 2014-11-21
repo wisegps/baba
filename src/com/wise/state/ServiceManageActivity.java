@@ -3,18 +3,21 @@ package com.wise.state;
 import java.util.ArrayList;
 import pubclas.DensityUtil;
 import com.wise.baba.R;
-import android.app.Activity;
+import com.wise.fragment.FragmentFault;
+import com.wise.fragment.FragmentPersionInfo;
+import com.wise.remind.RemindFragment;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,27 +26,42 @@ import android.widget.TextView;
  * 
  * @author honesty
  **/
-public class ServiceManageActivity extends Activity {
+public class ServiceManageActivity extends FragmentActivity {
 
 	LinearLayout ll_bottom;
 	ViewPager vp_manage;
 	
-	ArrayList<View> pageViews = new ArrayList<View>();
+	ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+	int FriendId = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_service_manage);
+		FriendId = getIntent().getIntExtra("FriendId", 0);
 		ll_bottom = (LinearLayout) findViewById(R.id.ll_bottom);
 		vp_manage = (ViewPager)findViewById(R.id.vp_manage);
 		setData();
-		vp_manage.setAdapter(new ServicePageAdapter());
+		vp_manage.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager()));
+		vp_manage.setOnPageChangeListener(new MyOnPageChangeListener());
 	}
 	OnClickListener onClickListener = new OnClickListener() {		
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
+			case 0:
+				vp_manage.setCurrentItem(0);
+				break;
+			case 1:
+				vp_manage.setCurrentItem(1);
+				break;
+			case 2:
+				vp_manage.setCurrentItem(2);
+				break;
+			case 3:
+				vp_manage.setCurrentItem(3);
+				break;
 			case R.id.bt_odb_data:
 				
 				break;
@@ -54,11 +72,30 @@ public class ServiceManageActivity extends Activity {
 			}
 		}
 	};
+	
+	public class MyOnPageChangeListener implements OnPageChangeListener{
+		@Override
+		public void onPageScrollStateChanged(int arg0) {}
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2) {}
+		@Override
+		public void onPageSelected(int arg0) {
+			setBackground();
+			ll_bottom.getChildAt(arg0).setBackgroundColor(getResources().getColor(R.color.yellow_dete_press));
+		}		
+	}
+	
+	private void setBackground(){
+		for(int i = 0 ; i < ll_bottom.getChildCount() ; i++){
+			ll_bottom.getChildAt(i).setBackgroundResource(R.drawable.bg_yellow);
+		}
+	}
 
 	private void setData() {
-		for(int i = 0 ; i < 2 ; i++){
+		String[] names = {"车况","车务信息","客户信息","位置"};
+		for(int i = 0 ; i < names.length ; i++){
 			TextView textView = new TextView(getApplicationContext());
-			textView.setText("客户功能");
+			textView.setText(names[i]);
 			textView.setLayoutParams(new LinearLayout.LayoutParams(
 					LinearLayout.LayoutParams.MATCH_PARENT,
 					LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
@@ -67,45 +104,27 @@ public class ServiceManageActivity extends Activity {
 			textView.setPadding(0,DensityUtil.dip2px(getApplicationContext(), 10),0,DensityUtil.dip2px(getApplicationContext(), 10));
 			textView.setGravity(Gravity.CENTER);
 			textView.setTextColor(Color.WHITE);
+			textView.setId(i);
+			textView.setOnClickListener(onClickListener);
 			ll_bottom.addView(textView);
-		}
-		View view_offline_down1 = LayoutInflater.from(this).inflate(
-				R.layout.pv_service_obd, null);
-		Button bt_odb_data = (Button)view_offline_down1.findViewById(R.id.bt_odb_data);
-		bt_odb_data.setOnClickListener(onClickListener);
-		Button bt_odb_fault = (Button)view_offline_down1.findViewById(R.id.bt_odb_fault);
-		bt_odb_fault.setOnClickListener(onClickListener);
-		pageViews.add(view_offline_down1);
-		View view_offline_down = LayoutInflater.from(this).inflate(
-				R.layout.pv_service_remind, null);
-		pageViews.add(view_offline_down);
+		}	
+		fragments.add(new FragmentFault());
+		fragments.add(new RemindFragment());
+		fragments.add(FragmentPersionInfo.newInstance(true, FriendId));
+		fragments.add(new RemindFragment());
 	}
 	
-	class ServicePageAdapter extends PagerAdapter {
+	class MyFragmentPagerAdapter extends FragmentPagerAdapter{
+		public MyFragmentPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
+		@Override
+		public Fragment getItem(int arg0) {
+			return fragments.get(arg0);
+		}
 		@Override
 		public int getCount() {
-			return pageViews.size();
-		}
-
-		@Override
-		public boolean isViewFromObject(View arg0, Object arg1) {
-			return arg0 == arg1;
-		}
-
-		@Override
-		public int getItemPosition(Object object) {
-			return super.getItemPosition(object);
-		}
-
-		@Override
-		public void destroyItem(View container, int position, Object object) {
-			((ViewPager) container).removeView(pageViews.get(position));
-		}
-
-		@Override
-		public Object instantiateItem(ViewGroup container, int position) {
-			((ViewPager) container).addView(pageViews.get(position));
-			return pageViews.get(position);
-		}
+			return fragments.size();
+		}		
 	}
 }
