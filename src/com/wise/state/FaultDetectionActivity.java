@@ -16,6 +16,8 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.DevicesAddActivity;
 import com.wise.car.SearchMapActivity;
+import com.wise.notice.LetterActivity;
+
 import customView.FaultDeletionView;
 import customView.OnViewChangeListener;
 import data.CarData;
@@ -124,6 +126,7 @@ public class FaultDetectionActivity extends Activity {
 		findViewById(R.id.risk).setOnClickListener(onClickListener);
 		findViewById(R.id.ask).setOnClickListener(onClickListener);
 		findViewById(R.id.mechanics).setOnClickListener(onClickListener);
+		findViewById(R.id.tv_ask_expert).setOnClickListener(onClickListener);
 	}
 
 	private void fristSetLeftRight() {
@@ -168,7 +171,12 @@ public class FaultDetectionActivity extends Activity {
 			} else if (v.getId() == R.id.iv_back) {
 				Back();
 				finish();
-			} else {
+			} else if(v.getId() == R.id.tv_ask_expert){
+				Intent intent = new Intent(FaultDetectionActivity.this, LetterActivity.class);
+				intent.putExtra("cust_id", "12");
+				intent.putExtra("cust_name", "专家");
+				startActivity(intent);
+			}else {
 				try {
 					String Device_id = app.carDatas.get(index)
 							.getDevice_id();

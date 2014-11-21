@@ -320,6 +320,18 @@
 		            android:text="找汽修"
 		            android:textColor="@color/white"
 		            android:textSize="@dimen/title" />
+		        <TextView
+		            android:id="@+id/tv_ask_expert"
+		            android:layout_width="fill_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_weight="1"
+		            android:background="@drawable/bg_yellow"
+		            android:gravity="center_horizontal"
+		            android:paddingBottom="@dimen/margins"
+		            android:paddingTop="@dimen/margins"
+		            android:text="问专家"
+		            android:textColor="@color/white"
+		            android:textSize="@dimen/title" />
 		    </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
