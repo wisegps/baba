@@ -88,8 +88,7 @@ public class CarLocationActivity extends Activity {
 	/** 获取gps信息 **/
 	private static final int get_gps = 1;
 	private static final int set_vibrate = 2;
-	/** 车辆轨迹 **/
-	List<LatLng> points = new ArrayList<LatLng>();
+
 	AppApplication app;
 
 	TextView searchAddress;
@@ -163,7 +162,8 @@ public class CarLocationActivity extends Activity {
 								+ carData.getDevice_id()
 								+ "/active_gps_data?auth_code=" + app.auth_code
 								+ "&update_time=2014-01-01%2019:06:43";
-						 new NetThread.GetDataThread(handler, gpsUrl,get_gps).start();
+						new NetThread.GetDataThread(handler, gpsUrl, get_gps)
+								.start();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -173,7 +173,6 @@ public class CarLocationActivity extends Activity {
 	}
 
 	boolean isStop = true;
-
 	private static final int SEARCH_CODE = 8;
 
 	@Override
@@ -407,9 +406,6 @@ public class CarLocationActivity extends Activity {
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// LatLng startLocat = new LatLng(latitude, longitude);
-				// LatLng carLocat = new LatLng(carData.getLat(),
-				// carData.getLon());
 				Log.e("my_log", carLocat.latitude + " , " + carLocat.longitude);
 				GetSystem.FindCar(CarLocationActivity.this, startLocat,
 						carLocat, "", "");
@@ -610,7 +606,8 @@ public class CarLocationActivity extends Activity {
 
 	LatLng circle;
 	Marker carMarker = null;
-	//Polyline carLine = null;
+
+	// Polyline carLine = null;
 
 	// 当前车辆位子
 	private void getCarLocation() {
@@ -632,15 +629,7 @@ public class CarLocationActivity extends Activity {
 				.position(circle).icon(bitmap).rotate(carData.getDirect());
 		// 在地图上添加Marker，并显示
 		carMarker = (Marker) (mBaiduMap.addOverlay(option));
-//		points.add(circle);
-//		if (points.size() > 1) {
-//			if (carLine != null) {
-//				carLine.remove();
-//			}
-//			OverlayOptions ooPolyline = new PolylineOptions().width(5)
-//					.color(0xAAFF0000).points(points);
-//			carLine = (Polyline) (mBaiduMap.addOverlay(ooPolyline));
-//		}
+
 	}
 
 	Handler handler = new Handler() {
@@ -933,6 +922,7 @@ public class CarLocationActivity extends Activity {
 		PlanNode edNode = PlanNode.withLocation(stopLatLng);
 		mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(
 				edNode));
+		Log.e("my_log", "===1111===>");
 		showDialog(startLatLng, stopLatLng);
 	}
 
