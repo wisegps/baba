@@ -199,6 +199,8 @@ public class AddressActivity extends Activity {
 			String name = data.getExtras().getString("name");
 			double latitude = data.getExtras().getDouble("latitude");
 			double longitude = data.getExtras().getDouble("longitude");
+			System.out.println("latitude = " + latitude);
+			System.out.println("longitude = " + longitude);
 			boolean myLocat = data.getExtras().getBoolean("myLoct");
 			if (requestCode == HOME) {
 				if (name != null && !name.equals("")) {
