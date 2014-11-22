@@ -14,7 +14,6 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.model.LatLng;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 
 import data.AdressData;
@@ -23,7 +22,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +36,7 @@ import android.widget.Toast;
 
 /**
  * 常用地址
- *
+ * 
  */
 public class AddressActivity extends Activity {
 	TextView tv_home, tv_company;
@@ -423,6 +421,9 @@ public class AddressActivity extends Activity {
 			mHolder.addressNavigation.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					Log.e("my_log", "======>"
+							+ adressDatas.get(position).getLat() + ";"
+							+ adressDatas.get(position).getLon());
 					GetSystem.FindCar(AddressActivity.this, ll, new LatLng(
 							adressDatas.get(position).getLat(), adressDatas
 									.get(position).getLon()), "", "");

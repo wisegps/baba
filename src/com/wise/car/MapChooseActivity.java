@@ -24,6 +24,7 @@ import com.wise.baba.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -76,8 +77,6 @@ public class MapChooseActivity extends Activity {
 	}
 
 	boolean isFirstLoc = true;
-	double latitude = 0;
-	double longitude = 0;
 
 	private class MyLocationListenner implements BDLocationListener {
 		@Override
@@ -91,8 +90,6 @@ public class MapChooseActivity extends Activity {
 					.direction(100).latitude(location.getLatitude())
 					.longitude(location.getLongitude()).build();
 			mBaiduMap.setMyLocationData(locData);
-			latitude = location.getLatitude();
-			longitude = location.getLongitude();
 			if (isFirstLoc) {
 				isFirstLoc = false;
 				LatLng ll = new LatLng(location.getLatitude(),
@@ -111,7 +108,7 @@ public class MapChooseActivity extends Activity {
 		 * 地图单击事件回调函数 
 		 * @param point 点击的地理坐标 
 		 */
-		public void onMapClick(LatLng point) {
+		public void onMapClick(final LatLng point) {
 			mGeoCoder
 					.reverseGeoCode(new ReverseGeoCodeOption().location(point));
 			Button button = new Button(getApplicationContext());
@@ -120,8 +117,10 @@ public class MapChooseActivity extends Activity {
 				public void onClick(View v) {
 					Intent i = new Intent();
 					i.putExtra("name", name);
-					i.putExtra("latitude", latitude);
-					i.putExtra("longitude", longitude);
+					i.putExtra("latitude", point.latitude);
+					i.putExtra("longitude", point.longitude);
+					Log.e("my_log", "======>" + point.latitude + ";"
+							+ point.longitude);
 					setResult(MAPPOINT, i);
 					finish();
 				}
