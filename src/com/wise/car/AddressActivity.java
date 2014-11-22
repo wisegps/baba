@@ -98,7 +98,9 @@ public class AddressActivity extends Activity {
 				Activity.MODE_PRIVATE);
 		String name = preferences.getString("name", "");
 		String company = preferences.getString("company", "");
-
+		System.out.println("name : " + preferences.getString("name", ""));
+		System.out.println("homeLat : " + preferences.getString("homeLat", ""));
+		System.out.println("homeLon : " + preferences.getString("homeLon", ""));
 		if (name.equals("") || name == null) {
 			tv_home.setText("家");
 		} else {

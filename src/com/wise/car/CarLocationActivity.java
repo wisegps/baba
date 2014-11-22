@@ -116,6 +116,7 @@ public class CarLocationActivity extends Activity {
 		iv_back.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_car_location);
 		mBaiduMap = mMapView.getMap();
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
 		UiSettings mUiSettings = mBaiduMap.getUiSettings();
 		mUiSettings.setCompassEnabled(true);
 		// 开启定位图层
@@ -299,8 +300,11 @@ public class CarLocationActivity extends Activity {
 						"homeLat", "0"));
 				double homeLon = Double.valueOf(preferences.getString(
 						"homeLon", "0"));
-				if (homeLat == 0 && homeLon == 0) {
-					Toast.makeText(CarLocationActivity.this, "常用家地址未设置",
+				System.out.println("name : " + preferences.getString("name", ""));
+				System.out.println("homeLat : " + homeLat);
+				System.out.println("homeLon : " + homeLon);
+				if (homeLat == 0.0 && homeLon == 0.0) {
+					Toast.makeText(CarLocationActivity.this, "家的地址未设置",
 							Toast.LENGTH_SHORT).show();
 					startActivity(new Intent(CarLocationActivity.this,
 							AddressActivity.class));
@@ -321,7 +325,7 @@ public class CarLocationActivity extends Activity {
 				double companyLon = Double.valueOf(preferences1.getString(
 						"companyLon", "0"));
 				if (companyLat == 0 && companyLon == 0) {
-					Toast.makeText(CarLocationActivity.this, "常用公司地址未设置",
+					Toast.makeText(CarLocationActivity.this, "公司的地址未设置",
 							Toast.LENGTH_SHORT).show();
 					startActivity(new Intent(CarLocationActivity.this,
 							AddressActivity.class));
