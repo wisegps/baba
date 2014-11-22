@@ -383,6 +383,14 @@ public class CarLocationActivity extends Activity {
 				startActivity(new Intent(CarLocationActivity.this,
 						AddressActivity.class));
 				break;
+			case R.id.tv_offline_map:
+				//离线地图
+				if (mPopupWindow != null) {
+					mPopupWindow.dismiss();
+				}
+				startActivity(new Intent(CarLocationActivity.this,
+						OfflineActivity.class));
+				break;
 			}
 		}
 	};
@@ -766,6 +774,9 @@ public class CarLocationActivity extends Activity {
 		TextView tv_common_adress = (TextView) popunwindwow
 				.findViewById(R.id.tv_common_adress);
 		tv_common_adress.setOnClickListener(onClickListener);
+		TextView tv_offline_map = (TextView) popunwindwow
+				.findViewById(R.id.tv_offline_map);
+		tv_offline_map.setOnClickListener(onClickListener);
 		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT);
 		mPopupWindow.setAnimationStyle(R.style.PopupAnimation);

@@ -95,8 +95,6 @@ public class SetActivity extends Activity implements TagAliasCallback {
 		tv_car.setOnClickListener(onClickListener);
 		TextView tv_offline_map = (TextView) findViewById(R.id.tv_offline_map);
 		tv_offline_map.setOnClickListener(onClickListener);
-		// 常用地址
-		findViewById(R.id.tv_address).setOnClickListener(onClickListener);
 
 		TextView tv_feedback = (TextView) findViewById(R.id.tv_feedback);
 		tv_feedback.setOnClickListener(onClickListener);
@@ -173,16 +171,6 @@ public class SetActivity extends Activity implements TagAliasCallback {
 			case R.id.rl_city:
 				startActivityForResult(new Intent(SetActivity.this,
 						SelectCityActivity.class), 2);
-				break;
-			case R.id.tv_address:
-				// 常用地址
-				if (!Judge.isLogin(app)) {
-					startActivity(new Intent(SetActivity.this,
-							LoginActivity.class));
-				} else {
-					startActivity(new Intent(SetActivity.this,
-							AddressActivity.class));
-				}
 				break;
 			}
 		}

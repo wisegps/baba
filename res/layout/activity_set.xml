@@ -130,21 +130,6 @@
             android:text="我的爱车"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/gay_line" />
-
-        <TextView
-            android:id="@+id/tv_address"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_white"
-            android:padding="@dimen/double_margins"
-            android:text="常用地址"
-            android:textColor="@color/navy"
-            android:textSize="@dimen/content" />
 		
         
         <TextView
