@@ -24,6 +24,7 @@ import com.wise.baba.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -118,6 +119,8 @@ public class MapChooseActivity extends Activity {
 					i.putExtra("name", name);
 					i.putExtra("latitude", point.latitude);
 					i.putExtra("longitude", point.longitude);
+					Log.e("my_log", "======>" + point.latitude + ";"
+							+ point.longitude);
 					setResult(MAPPOINT, i);
 					finish();
 				}
