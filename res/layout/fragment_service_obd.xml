@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_white_shade"
+    android:background="@color/gay_line"
     android:orientation="vertical" >
     <RelativeLayout 
     	android:id="@+id/ll_main"
@@ -19,28 +19,10 @@
 	         android:textSize="@dimen/title"
 	         android:textColor="@color/white" />
 	</RelativeLayout>
-    <LinearLayout 
+    <ListView 
+        android:id="@+id/lv_obd"
+        android:layout_margin="5dp"
+        android:background="@drawable/bg_adress"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/bt_odb_data" 
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ODB数据"/>
-        <Button 
-            android:id="@+id/bt_odb_fault" 
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="ODB故障"/>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/ll_odb"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical">
-        
-    </LinearLayout>
+        android:layout_height="wrap_content"></ListView>
 </LinearLayout>

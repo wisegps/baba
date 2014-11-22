@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import pubclas.DensityUtil;
 import com.wise.baba.R;
 import com.wise.fragment.FragmentFault;
+import com.wise.fragment.FragmentLocation;
 import com.wise.fragment.FragmentPersionInfo;
 import com.wise.fragment.FragmentRemind;
 
@@ -43,6 +44,7 @@ public class ServiceManageActivity extends FragmentActivity {
 		FriendId = getIntent().getIntExtra("FriendId", 0);
 		ll_bottom = (LinearLayout) findViewById(R.id.ll_bottom);
 		vp_manage = (ViewPager)findViewById(R.id.vp_manage);
+		vp_manage.setOffscreenPageLimit(3);
 		setData();
 		vp_manage.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager()));
 		vp_manage.setOnPageChangeListener(new MyOnPageChangeListener());
@@ -62,13 +64,6 @@ public class ServiceManageActivity extends FragmentActivity {
 				break;
 			case 3:
 				vp_manage.setCurrentItem(3);
-				break;
-			case R.id.bt_odb_data:
-				
-				break;
-
-			case R.id.bt_odb_fault:
-				
 				break;
 			}
 		}
@@ -112,7 +107,7 @@ public class ServiceManageActivity extends FragmentActivity {
 		fragments.add(new FragmentFault());
 		fragments.add(new FragmentRemind());
 		fragments.add(FragmentPersionInfo.newInstance(true, FriendId));
-		fragments.add(new FragmentRemind());
+		fragments.add(new FragmentLocation());
 	}
 	
 	class MyFragmentPagerAdapter extends FragmentPagerAdapter{
