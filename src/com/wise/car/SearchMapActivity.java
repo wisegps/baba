@@ -183,7 +183,7 @@ public class SearchMapActivity extends Activity {
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
-		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0.5f)
+		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
 				.position(circle).icon(bitmap).rotate(carData.getDirect());
 		// 在地图上添加Marker，并显示
 		mBaiduMap.addOverlay(option);
