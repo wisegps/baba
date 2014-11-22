@@ -466,7 +466,7 @@ public class GetSystem {
 						intent.putExtras(arg0);
 						mActivity.startActivity(intent);
 					}
-					
+
 					@Override
 					public void onJumpToDownloader() {
 						// TODO Auto-generated method stub

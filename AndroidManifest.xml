@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wise.baba"
     android:versionCode="22"
-    android:versionName="1.040" >
+    android:versionName="1.0401" >
 
     <supports-screens
         android:anyDensity="true"
@@ -531,7 +531,7 @@
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="sdYNIhpougikt9nMqiGt3fSa" />
+            android:value="0QNTY4tnP9Tv6ghXpGa6XXOm" />
     </application>
 
 </manifest>

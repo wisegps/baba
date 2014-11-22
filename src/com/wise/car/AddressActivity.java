@@ -19,6 +19,9 @@ import com.wise.baba.R;
 import data.AdressData;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -28,6 +31,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -46,6 +51,7 @@ public class AddressActivity extends Activity {
 	List<AdressData> adressDatas = new ArrayList<AdressData>();
 	AddressAdapter addressAdapter = null;
 
+	int index = -1;// 记录更新常用地址的位置下标
 	// 定位相关
 	LocationClient mLocClient;
 	public MyLocationListenner myListener = new MyLocationListenner();
@@ -112,15 +118,28 @@ public class AddressActivity extends Activity {
 		addressAdapter = new AddressAdapter();
 		addListView.setAdapter(addressAdapter);
 
+		// 点击修改常用地址
+		addListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				index = position;
+				startActivityForResult(new Intent(AddressActivity.this,
+						ChooseAddressActivity.class), UPDATE);
+			}
+		});
+
 		getJsonData();
 		if (adressDatas.size() == 0 || adressDatas == null) {
 			addListView.setVisibility(View.GONE);
 		}
 	}
 
-	private static final int HOME = 1;
-	private static final int COMPANY = 2;
-	private static final int ADD = 3;
+	private static final int HOME = 1;// 家请求码
+	private static final int COMPANY = 2;// 公司请求码
+	private static final int ADD = 3;// 添加请求码
+	private static final int UPDATE = 4;// 修改请求码
 
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
@@ -148,28 +167,58 @@ public class AddressActivity extends Activity {
 						companyLat, companyLon), "", "");
 				break;
 			case R.id.ad_delete:
-				tv_home.setText("家");
-				ad_delete.setVisibility(View.GONE);
-				ad_navigation.setVisibility(View.GONE);
-				SharedPreferences home = getSharedPreferences("search_name",
-						Activity.MODE_PRIVATE);
-				SharedPreferences.Editor editor = home.edit();
-				editor.remove("name");
-				editor.remove("homeLat");
-				editor.remove("homeLon");
-				editor.commit();
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						AddressActivity.this);
+				builder.setTitle("提示")
+						.setMessage("确定删除此常用地址")
+						.setCancelable(false)
+						.setPositiveButton("确定",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										tv_home.setText("家");
+										ad_delete.setVisibility(View.GONE);
+										ad_navigation.setVisibility(View.GONE);
+										SharedPreferences home = getSharedPreferences(
+												"search_name",
+												Activity.MODE_PRIVATE);
+										SharedPreferences.Editor editor = home
+												.edit();
+										editor.remove("name");
+										editor.remove("homeLat");
+										editor.remove("homeLon");
+										editor.commit();
+									}
+								}).setNegativeButton("取消", null).create()
+						.show();
 				break;
 			case R.id.ad_delete_1:
-				tv_company.setText("公司");
-				ad_delete_1.setVisibility(View.GONE);
-				ad_navigation_1.setVisibility(View.GONE);
-				SharedPreferences company = getSharedPreferences("search_name",
-						Activity.MODE_PRIVATE);
-				SharedPreferences.Editor editor_1 = company.edit();
-				editor_1.remove("company");
-				editor_1.remove("companyLat");
-				editor_1.remove("companyLon");
-				editor_1.commit();
+				AlertDialog.Builder builder_1 = new AlertDialog.Builder(
+						AddressActivity.this);
+				builder_1
+						.setTitle("提示")
+						.setMessage("确定删除此常用地址")
+						.setCancelable(false)
+						.setPositiveButton("确定",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										tv_company.setText("公司");
+										ad_delete_1.setVisibility(View.GONE);
+										ad_navigation_1
+												.setVisibility(View.GONE);
+										SharedPreferences company = getSharedPreferences(
+												"search_name",
+												Activity.MODE_PRIVATE);
+										SharedPreferences.Editor editor_1 = company
+												.edit();
+										editor_1.remove("company");
+										editor_1.remove("companyLat");
+										editor_1.remove("companyLon");
+										editor_1.commit();
+									}
+								}).setNegativeButton("取消", null).create()
+						.show();
 				break;
 			case R.id.tv_home:
 				startActivityForResult(new Intent(AddressActivity.this,
@@ -191,15 +240,14 @@ public class AddressActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == ChooseAddressActivity.ADDRESSCODE) {
-			SharedPreferences preferences = getSharedPreferences("search_name",
-					Activity.MODE_PRIVATE);
-			SharedPreferences.Editor editor = preferences.edit();
 			String name = data.getExtras().getString("name");
 			double latitude = data.getExtras().getDouble("latitude");
 			double longitude = data.getExtras().getDouble("longitude");
-			System.out.println("latitude = " + latitude);
-			System.out.println("longitude = " + longitude);
 			boolean myLocat = data.getExtras().getBoolean("myLoct");
+
+			SharedPreferences preferences = getSharedPreferences("search_name",
+					Activity.MODE_PRIVATE);
+			SharedPreferences.Editor editor = preferences.edit();
 			if (requestCode == HOME) {
 				if (name != null && !name.equals("")) {
 					tv_home.setText("家\n" + name);
@@ -294,6 +342,51 @@ public class AddressActivity extends Activity {
 					Toast.makeText(AddressActivity.this, "未搜索到结果",
 							Toast.LENGTH_SHORT).show();
 				}
+			} else if (requestCode == UPDATE) {
+				if (name != null && !name.equals("")) {
+					boolean flag = true;
+					for (AdressData adress : adressDatas) {
+						if (adress.getName().equals(name)) {
+							Toast.makeText(AddressActivity.this, "常用地址已存在",
+									Toast.LENGTH_SHORT).show();
+							flag = false;
+							break;
+						}
+					}
+					if (flag) {
+						AdressData adressData = new AdressData();
+						adressData.setName(name);
+						adressData.setLat(latitude);
+						adressData.setLon(longitude);
+						adressDatas.set(index, adressData);
+						SharedPreferences preferences2 = getSharedPreferences(
+								"address_add", Activity.MODE_PRIVATE);
+						SharedPreferences.Editor editor2 = preferences2.edit();
+						JSONObject object = new JSONObject();
+						JSONArray addJsonArray = new JSONArray();
+						try {
+							for (AdressData adress : adressDatas) {
+								JSONObject jsonObject = new JSONObject();
+								jsonObject.put("addressName", adress.getName());
+								jsonObject.put("addressLat", adress.getLat());
+								jsonObject.put("addressLon", adress.getLon());
+								addJsonArray.put(jsonObject);
+							}
+							object.put("addJsonArray", addJsonArray);
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						editor2.putString("addJsonArray", object.toString());
+						editor2.commit();
+						addressAdapter.notifyDataSetChanged();
+					}
+				} else if (myLocat) {
+					Toast.makeText(AddressActivity.this, "更新定位失败",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(AddressActivity.this, "未搜索到结果",
+							Toast.LENGTH_SHORT).show();
+				}
 			}
 			editor.commit();
 		}
@@ -382,48 +475,73 @@ public class AddressActivity extends Activity {
 			mHolder.addressDelete.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					SharedPreferences preferences = getSharedPreferences(
-							"address_add", Activity.MODE_PRIVATE);
-					SharedPreferences.Editor editor = preferences.edit();
-					if (adressDatas.size() == 1) {
-						editor.clear();
-						editor.commit();
-						adressDatas.clear();
-						addListView.setVisibility(View.GONE);
-					} else {
-						addListView.setVisibility(View.VISIBLE);
-						editor.clear();
-						adressDatas.remove(position);
-						JSONObject object = new JSONObject();
-						JSONArray addJsonArray = new JSONArray();
-						try {
-							for (AdressData adressData : adressDatas) {
-								JSONObject jsonObject = new JSONObject();
-								jsonObject.put("addressName",
-										adressData.getName());
-								jsonObject.put("addressLat",
-										adressData.getLat());
-								jsonObject.put("addressLon",
-										adressData.getLon());
-								addJsonArray.put(jsonObject);
-							}
-							object.put("addJsonArray", addJsonArray);
-							editor.putString("addJsonArray", object.toString());
-							editor.commit();
-							addressAdapter.notifyDataSetChanged();
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					}
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+							AddressActivity.this);
+					builder.setTitle("提示")
+							.setMessage("确定删除此常用地址")
+							.setCancelable(false)
+							.setPositiveButton("确定",
+									new DialogInterface.OnClickListener() {
+										public void onClick(
+												DialogInterface dialog, int id) {
+											SharedPreferences preferences = getSharedPreferences(
+													"address_add",
+													Activity.MODE_PRIVATE);
+											SharedPreferences.Editor editor = preferences
+													.edit();
+											if (adressDatas.size() == 1) {
+												editor.clear();
+												editor.commit();
+												adressDatas.clear();
+												addListView
+														.setVisibility(View.GONE);
+											} else {
+												addListView
+														.setVisibility(View.VISIBLE);
+												editor.clear();
+												adressDatas.remove(position);
+												JSONObject object = new JSONObject();
+												JSONArray addJsonArray = new JSONArray();
+												try {
+													for (AdressData adressData : adressDatas) {
+														JSONObject jsonObject = new JSONObject();
+														jsonObject
+																.put("addressName",
+																		adressData
+																				.getName());
+														jsonObject
+																.put("addressLat",
+																		adressData
+																				.getLat());
+														jsonObject
+																.put("addressLon",
+																		adressData
+																				.getLon());
+														addJsonArray
+																.put(jsonObject);
+													}
+													object.put("addJsonArray",
+															addJsonArray);
+													editor.putString(
+															"addJsonArray",
+															object.toString());
+													editor.commit();
+													addressAdapter
+															.notifyDataSetChanged();
+												} catch (JSONException e) {
+													e.printStackTrace();
+												}
+											}
+										}
+									}).setNegativeButton("取消", null).create()
+							.show();
+
 				}
 			});
 
 			mHolder.addressNavigation.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Log.e("my_log", "======>"
-							+ adressDatas.get(position).getLat() + ";"
-							+ adressDatas.get(position).getLon());
 					GetSystem.FindCar(AddressActivity.this, ll, new LatLng(
 							adressDatas.get(position).getLat(), adressDatas
 									.get(position).getLon()), "", "");
