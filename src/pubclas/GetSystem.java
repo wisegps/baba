@@ -22,9 +22,11 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.NaviPara;
+import com.baidu.navisdk.BNaviPoint;
 import com.baidu.navisdk.BaiduNaviManager;
 import com.baidu.navisdk.BaiduNaviManager.OnStartNavigationListener;
 import com.baidu.navisdk.comapi.routeplan.RoutePlanParams.NE_RoutePlan_Mode;
+import com.baidu.navisdk.util.common.CoordinateTransformUtil;
 import com.wise.baba.BNavigatorActivity;
 import com.wise.baba.R;
 import data.TimeData;
@@ -447,26 +449,28 @@ public class GetSystem {
 	 */
 	public static void FindCar(final Activity mActivity, LatLng pt1,
 			LatLng pt2, String str1, String str2) {
-		System.out.println("开始导航" + pt1.latitude + " , " + pt2.latitude);
-		BaiduNaviManager.getInstance().launchNavigator(mActivity, pt1.latitude,
-				pt1.longitude, "", pt2.latitude, pt2.longitude, "",
-				NE_RoutePlan_Mode.ROUTE_PLAN_MOD_MIN_TIME, // 算路方式
-				true, // 真实导航
-				BaiduNaviManager.STRATEGY_FORCE_ONLINE_PRIORITY, // 在离线策略
-				new OnStartNavigationListener() { // 跳转监听
-
+		BNaviPoint startPoint = new BNaviPoint(pt1.longitude, pt1.latitude, "", BNaviPoint.CoordinateType.BD09_MC);
+		BNaviPoint endPoint = new BNaviPoint(pt2.longitude, pt2.latitude, "", BNaviPoint.CoordinateType.BD09_MC);
+		BaiduNaviManager.getInstance().launchNavigator(
+				mActivity, 
+				startPoint, 
+				endPoint, 
+				NE_RoutePlan_Mode.ROUTE_PLAN_MOD_MIN_TIME, 
+				true, 
+				BaiduNaviManager.STRATEGY_FORCE_ONLINE_PRIORITY, new OnStartNavigationListener() {
+					
 					@Override
-					public void onJumpToNavigator(Bundle configParams) {
-						System.out.println("onJumpToNavigator");
+					public void onJumpToNavigator(Bundle arg0) {
 						Intent intent = new Intent(mActivity,
 								BNavigatorActivity.class);
-						intent.putExtras(configParams);
+						intent.putExtras(arg0);
 						mActivity.startActivity(intent);
 					}
 
 					@Override
 					public void onJumpToDownloader() {
-						System.out.println("onJumpToDownloader");
+						// TODO Auto-generated method stub
+						
 					}
 				});
 	}
