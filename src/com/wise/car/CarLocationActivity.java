@@ -500,7 +500,7 @@ public class CarLocationActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
-		//SEKBAR
+		// SEKBAR
 		fence_distance
 				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 					@Override
@@ -799,7 +799,7 @@ public class CarLocationActivity extends Activity {
 
 		final TextView tv_vibrate = (TextView) popunwindwow
 				.findViewById(R.id.tv_vibrate);
-		//刷新
+		// 刷新
 		SeekBar sb_vibrate = (SeekBar) popunwindwow
 				.findViewById(R.id.sb_vibrate);
 		vibrate = carData.getSensitivity();
@@ -893,7 +893,7 @@ public class CarLocationActivity extends Activity {
 			app.Lon = longitude;
 			MyLocationData locData = new MyLocationData.Builder()
 					.accuracy(location.getRadius())
-					//TODO  此处设置开发者获取到的方向信息，顺时针0-360
+					// TODO 此处设置开发者获取到的方向信息，顺时针0-360
 					.direction(0).latitude(location.getLatitude())
 					.longitude(location.getLongitude()).build();
 			mBaiduMap.setMyLocationData(locData);

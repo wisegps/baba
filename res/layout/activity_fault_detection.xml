@@ -280,7 +280,10 @@
 		            android:text="救援"
 		            android:textColor="@color/white"
 		            android:textSize="@dimen/title" />
-		
+				<View 
+				    android:layout_height="fill_parent"
+				    android:layout_width="0.5dp"
+				    android:background="@color/white"/>
 		        <TextView
 		            android:id="@+id/risk"
 		            android:layout_width="fill_parent"
@@ -292,8 +295,11 @@
 		            android:paddingTop="@dimen/margins"
 		            android:text="报险"
 		            android:textColor="@color/white"
-		            android:textSize="@dimen/title" />
-		
+		            android:textSize="@dimen/title" />		
+				<View 
+				    android:layout_height="fill_parent"
+				    android:layout_width="0.5dp"
+				    android:background="@color/white"/>
 		        <TextView
 		            android:id="@+id/ask"
 		            android:layout_width="fill_parent"
@@ -307,7 +313,6 @@
 		            android:visibility="gone"
 		            android:textColor="@color/white"
 		            android:textSize="@dimen/title" />
-		
 		        <TextView
 		            android:id="@+id/mechanics"
 		            android:layout_width="fill_parent"
@@ -319,7 +324,11 @@
 		            android:paddingTop="@dimen/margins"
 		            android:text="找汽修"
 		            android:textColor="@color/white"
-		            android:textSize="@dimen/title" />
+		            android:textSize="@dimen/title" />		
+				<View 
+				    android:layout_height="fill_parent"
+				    android:layout_width="0.5dp"
+				    android:background="@color/white"/>
 		        <TextView
 		            android:id="@+id/tv_ask_expert"
 		            android:layout_width="fill_parent"
