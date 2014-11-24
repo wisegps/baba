@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f8f2f8"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -42,10 +41,10 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="45dip"
-        android:layout_margin="5dip"
+        android:layout_margin="9dip"
         android:background="@drawable/bg_adress"
         android:orientation="horizontal"
-        android:padding="5dip" >
+        android:padding="1dip" >
 
         <TextView
             android:id="@+id/map_choose"
@@ -60,13 +59,13 @@
         <View
             android:layout_width="0.5dp"
             android:layout_height="fill_parent"
+            android:layout_gravity="center_horizontal"
             android:background="@color/gay_line" />
 
         <TextView
             android:id="@+id/collection_choose"
             android:layout_width="0dip"
             android:layout_height="fill_parent"
-            android:layout_marginLeft="20dip"
             android:layout_weight="1"
             android:background="@drawable/bg_baba"
             android:gravity="center"
@@ -79,11 +78,10 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dip"
-        android:background="@drawable/bg_adress"
+        android:background="@drawable/bg_adress_map"
         android:cacheColorHint="#00000000"
         android:divider="@color/gay_line"
         android:dividerHeight="0.5dp"
-        android:listSelector="#00000000"
-        android:padding="5dip" />
+        android:listSelector="#00000000" />
 
 </LinearLayout>
