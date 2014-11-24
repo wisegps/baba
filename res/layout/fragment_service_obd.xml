@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@color/gay_line"
+    android:background="@color/white"
     android:orientation="vertical" >
     <RelativeLayout 
     	android:id="@+id/ll_main"
@@ -22,7 +22,7 @@
     <ListView 
         android:id="@+id/lv_obd"
         android:layout_margin="5dp"
-        android:background="@drawable/bg_adress"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="wrap_content"
+        android:dividerHeight="@dimen/margins"></ListView>
 </LinearLayout>

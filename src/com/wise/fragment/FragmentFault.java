@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import com.wise.baba.R;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,15 @@ import android.widget.TextView;
  *@author honesty
  **/
 public class FragmentFault extends Fragment{
+	
+	static int friend_id;
+	ArrayList<ObdData> obdDatas = new ArrayList<ObdData>();
+	
+	public static FragmentFault newInstance(int Friend_id){
+		FragmentFault fragmentFault = new FragmentFault();
+		friend_id = Friend_id;
+		return fragmentFault;
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -29,6 +40,16 @@ public class FragmentFault extends Fragment{
 		setData();
 		ObdAdapter obdAdapter = new ObdAdapter();
 		lv_obd.setAdapter(obdAdapter);
+		//getData();
+	}
+	Handler handler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+		}		
+	};
+	private void getData(){
+		
 	}
 	
 	class ObdAdapter extends BaseAdapter{
@@ -51,62 +72,56 @@ public class FragmentFault extends Fragment{
 			if(convertView == null){
 				convertView = inflater.inflate(R.layout.item_obd, null);
 				holder = new ViewHolder();
-				holder.tv_content = (TextView)convertView.findViewById(R.id.tv_content);
+				holder.tv_car_name = (TextView)convertView.findViewById(R.id.tv_car_name);
+				holder.tv_obd_data = (TextView)convertView.findViewById(R.id.tv_obd_data);
+				holder.tv_obd_fault = (TextView)convertView.findViewById(R.id.tv_obd_fault);
 				convertView.setTag(holder);
 			}else{
 				holder = (ViewHolder) convertView.getTag();
 			}
 			ObdData obdData = obdDatas.get(position);
-			holder.tv_content.setText(obdData.getName());
-			switch (obdData.type) {
-			case 0:
-				holder.tv_content.setTextSize(18);
-				break;
-			case 1:
-				holder.tv_content.setTextSize(14);
-				break;
-			case 2:
-				holder.tv_content.setTextSize(14);
-				break;
-			}
+			holder.tv_car_name.setText(obdData.getName());
+			holder.tv_obd_data.setText(obdData.getData());
+			holder.tv_obd_fault.setText(obdData.getFault());
 			return convertView;
 		}
 		class ViewHolder{
-			TextView tv_content;
+			TextView tv_car_name;
+			TextView tv_obd_data;
+			TextView tv_obd_fault;
 		}
 	}
 	
-	ArrayList<ObdData> obdDatas = new ArrayList<ObdData>();
 	private void setData(){
 		for(int i = 0 ; i < 3 ; i++){
-			ObdData obdData3 = new ObdData();
-			obdData3.setName("车辆名称：" + i);
-			obdData3.setType(0);
-			ObdData obdData2 = new ObdData();
-			obdData2.setName("OBD数据：" + i);
-			obdData2.setType(1);
 			ObdData obdData = new ObdData();
-			obdData.setName("OBD故障：" + i);
-			obdData.setType(2);
-			obdDatas.add(obdData3);
-			obdDatas.add(obdData2);
+			obdData.setName("车辆名称：" + i);
+			obdData.setData("OBD数据：车辆油耗正常，没有急刹车");
+			obdData.setFault("OBD故障：车辆温度过高。空气质量超标");
 			obdDatas.add(obdData);
 		}
 	}
 	private class ObdData{
 		String name;
-		int type;
+		String data;
+		String fault;
 		public String getName() {
 			return name;
 		}
 		public void setName(String name) {
 			this.name = name;
 		}
-		public int getType() {
-			return type;
+		public String getData() {
+			return data;
 		}
-		public void setType(int type) {
-			this.type = type;
-		}		
+		public void setData(String data) {
+			this.data = data;
+		}
+		public String getFault() {
+			return fault;
+		}
+		public void setFault(String fault) {
+			this.fault = fault;
+		}			
 	}
 }
