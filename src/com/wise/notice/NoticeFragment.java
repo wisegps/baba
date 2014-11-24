@@ -72,9 +72,6 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		lv_notice.setXListViewListener(this);
 		noticeAdapter = new NoticeAdapter();
 		lv_notice.setAdapter(noticeAdapter);
-		if(Judge.isLogin(app)){
-			getData();
-		}
 	}
 	
 	
@@ -138,10 +135,14 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			case getNotice:
 				jsonData(msg.obj.toString());
 				noticeAdapter.notifyDataSetChanged();
+				System.out.println("getNotice");
+				getPersionImage();
 				break;
 			case refreshNotice:
 				refresh = msg.obj.toString();
 				lv_notice.runFast(0);
+				System.out.println("refreshNotice");
+				getPersionImage();
 				break;
 
 			case getFriendImage:
@@ -389,6 +390,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				break;
 			case OnScrollListener.SCROLL_STATE_IDLE://停止
 				//读取图片
+				System.out.println("SCROLL_STATE_IDLE");
 				getPersionImage();
 				break;
 			}
@@ -403,22 +405,28 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	/**获取显示区域的图片**/
 	private void getPersionImage(){
 		int start = lv_notice.getFirstVisiblePosition();
-		int stop = lv_notice.getLastVisiblePosition();		
+		int stop = lv_notice.getLastVisiblePosition();	
+		System.out.println("start = " + start + ", stop = " + stop);
 		for(int i = start ; i <= stop ; i++){
-			NoticeData noticeData = noticeDatas.get(i);
-			if(noticeData.getFriend_type() == 99){
-				//判断图片是否存在
-				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png").exists()){
-					
-				}else{
-					if(isThreadRun(i)){
-						//如果图片正在读取则跳过
+			//防止数组越界
+			if(i >= noticeDatas.size()){
+				break;
+			}else{
+				NoticeData noticeData = noticeDatas.get(i);
+				if(noticeData.getFriend_type() == 99){
+					//判断图片是否存在
+					if(new File(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png").exists()){
+						
 					}else{
-						photoThreadId.add(i);
-						new ImageThread(i).start();
+						if(isThreadRun(i)){
+							//如果图片正在读取则跳过
+						}else{
+							photoThreadId.add(i);
+							new ImageThread(i).start();
+						}
 					}
 				}
-			}					
+			}								
 		}
 	}
 	List<Integer> photoThreadId = new ArrayList<Integer>();
@@ -441,7 +449,12 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			super.run();
 			Bitmap bitmap = GetSystem.getBitmapFromURL(noticeDatas.get(position).getLogo());
 			if(bitmap != null){
-				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(noticeDatas.get(position).getLogo()) + ".png",100);
+				String logo = noticeDatas.get(position).getLogo();
+				if(logo == null || logo.equals("")){
+					
+				}else{
+					GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(logo) + ".png",100);
+				}
 			}
 			for (int i = 0; i < photoThreadId.size(); i++) {
 				if (photoThreadId.get(i) == position) {

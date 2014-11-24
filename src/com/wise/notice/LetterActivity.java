@@ -1300,9 +1300,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		int start = lv_letter.getFirstVisiblePosition();
 		int stop = lv_letter.getLastVisiblePosition();
 		for (int i = start; i < stop; i++) {
-			if (start == 0 || stop == (letterDatas.size() - 1)) {
-
-			} else {
+			if(i >= letterDatas.size()){
+				break;
+			}else{
 				// 判断图片是否存在
 				if (new File(getImagePath(letterDatas.get(i - 1).getUrl()))
 						.exists()) {
