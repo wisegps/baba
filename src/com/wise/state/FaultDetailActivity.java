@@ -15,16 +15,21 @@ import pubclas.NetThread;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.car.SearchMapActivity;
+import com.wise.notice.LetterActivity;
 import com.wise.setting.RegisterActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,6 +63,7 @@ public class FaultDetailActivity extends Activity{
 	String device_id;
 	ImageView iv_clear_obd;
 	ProgressDialog myDialog = null;
+	int index;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +74,18 @@ public class FaultDetailActivity extends Activity{
 		rl_no_fault = (RelativeLayout)findViewById(R.id.rl_no_fault);
 		lv_fault = (ListView)findViewById(R.id.lv_fault);
 		tv_fault = (TextView)findViewById(R.id.tv_fault);
+		findViewById(R.id.rescue).setOnClickListener(onClickListener);
+		findViewById(R.id.risk).setOnClickListener(onClickListener);
+		findViewById(R.id.ask).setOnClickListener(onClickListener);
+		findViewById(R.id.mechanics).setOnClickListener(onClickListener);
+		findViewById(R.id.tv_ask_expert).setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		iv_clear_obd = (ImageView)findViewById(R.id.iv_clear_obd);
 		iv_clear_obd.setOnClickListener(onClickListener);
 		fault_content = getIntent().getStringExtra("fault_content");
 		device_id = getIntent().getStringExtra("device_id");
+		index = getIntent().getIntExtra("index", 0);
 		jsonData();
 		if(faultDatas.size() == 0){
 			rl_no_fault.setVisibility(View.VISIBLE);
@@ -101,6 +113,47 @@ public class FaultDetailActivity extends Activity{
 					}
 				}).setNegativeButton("取消", null)
 				.show(); 
+				break;
+				// 救援
+			case R.id.risk:
+				String phone = app.carDatas.get(index)
+						.getInsurance_tel();
+				Log.e("my_log", "======>" + phone);
+				Intent in_1 = new Intent(
+						Intent.ACTION_DIAL,
+						Uri.parse("tel:" + (phone != null ? phone : "")));
+				startActivity(in_1);
+				break;
+			// 报险
+			case R.id.rescue:
+				String tel = app.carDatas.get(index)
+						.getMaintain_tel();
+				Log.e("my_log", "======>" + tel);
+				Intent in_2 = new Intent(Intent.ACTION_DIAL,
+						Uri.parse("tel:" + (tel != null ? tel : "")));
+				startActivity(in_2);
+				break;
+			// 问一下
+			case R.id.ask:
+				Toast.makeText(FaultDetailActivity.this, "更新中.....",
+						Toast.LENGTH_SHORT).show();
+				break;
+			// 找气修
+			case R.id.mechanics:
+				Intent in = new Intent(FaultDetailActivity.this,
+						SearchMapActivity.class);
+				in.putExtra("index", index);
+				in.putExtra("keyWord", "维修店");
+				in.putExtra("key", "汽车维修");
+				in.putExtra("latitude", 0);
+				in.putExtra("longitude", 0);
+				startActivity(in);
+				break;
+			case R.id.tv_ask_expert:
+				Intent intent = new Intent(FaultDetailActivity.this, LetterActivity.class);
+				intent.putExtra("cust_id", "12");
+				intent.putExtra("cust_name", "专家");
+				startActivity(intent);
 				break;
 			}
 		}

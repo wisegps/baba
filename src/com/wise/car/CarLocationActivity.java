@@ -116,6 +116,7 @@ public class CarLocationActivity extends Activity {
 		iv_back.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_car_location);
 		mBaiduMap = mMapView.getMap();
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
 		UiSettings mUiSettings = mBaiduMap.getUiSettings();
 		mUiSettings.setCompassEnabled(true);
 		// 开启定位图层
@@ -299,8 +300,11 @@ public class CarLocationActivity extends Activity {
 						"homeLat", "0"));
 				double homeLon = Double.valueOf(preferences.getString(
 						"homeLon", "0"));
-				if (homeLat == 0 && homeLon == 0) {
-					Toast.makeText(CarLocationActivity.this, "常用家地址未设置",
+				System.out.println("name : " + preferences.getString("name", ""));
+				System.out.println("homeLat : " + homeLat);
+				System.out.println("homeLon : " + homeLon);
+				if (homeLat == 0.0 && homeLon == 0.0) {
+					Toast.makeText(CarLocationActivity.this, "家的地址未设置",
 							Toast.LENGTH_SHORT).show();
 					startActivity(new Intent(CarLocationActivity.this,
 							AddressActivity.class));
@@ -321,7 +325,7 @@ public class CarLocationActivity extends Activity {
 				double companyLon = Double.valueOf(preferences1.getString(
 						"companyLon", "0"));
 				if (companyLat == 0 && companyLon == 0) {
-					Toast.makeText(CarLocationActivity.this, "常用公司地址未设置",
+					Toast.makeText(CarLocationActivity.this, "公司的地址未设置",
 							Toast.LENGTH_SHORT).show();
 					startActivity(new Intent(CarLocationActivity.this,
 							AddressActivity.class));
@@ -382,6 +386,14 @@ public class CarLocationActivity extends Activity {
 				}
 				startActivity(new Intent(CarLocationActivity.this,
 						AddressActivity.class));
+				break;
+			case R.id.tv_offline_map:
+				//离线地图
+				if (mPopupWindow != null) {
+					mPopupWindow.dismiss();
+				}
+				startActivity(new Intent(CarLocationActivity.this,
+						OfflineActivity.class));
 				break;
 			}
 		}
@@ -625,8 +637,8 @@ public class CarLocationActivity extends Activity {
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.body_icon_location2);
 		// 构建MarkerOption，用于在地图上添加Marker
-		OverlayOptions option = new MarkerOptions().anchor(0.5f, 0.5f)
-				.position(circle).icon(bitmap).rotate(carData.getDirect());
+		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
+				.position(circle).icon(bitmap);
 		// 在地图上添加Marker，并显示
 		carMarker = (Marker) (mBaiduMap.addOverlay(option));
 
@@ -766,6 +778,9 @@ public class CarLocationActivity extends Activity {
 		TextView tv_common_adress = (TextView) popunwindwow
 				.findViewById(R.id.tv_common_adress);
 		tv_common_adress.setOnClickListener(onClickListener);
+		TextView tv_offline_map = (TextView) popunwindwow
+				.findViewById(R.id.tv_offline_map);
+		tv_offline_map.setOnClickListener(onClickListener);
 		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT);
 		mPopupWindow.setAnimationStyle(R.style.PopupAnimation);

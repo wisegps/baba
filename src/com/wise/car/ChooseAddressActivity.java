@@ -42,7 +42,7 @@ public class ChooseAddressActivity extends Activity {
 	private AppApplication app;
 	private PoiSearch mPoiSearch = null;
 	private EditText tv_search;
-
+	TextView map_choose, collection_choose;
 	// 定位相关
 	LocationClient mLocClient;
 	public MyLocationListenner myListener = new MyLocationListenner();
@@ -139,9 +139,11 @@ public class ChooseAddressActivity extends Activity {
 		});
 
 		findViewById(R.id.iv_back).setOnClickListener(onClickListener);
-		findViewById(R.id.map_choose).setOnClickListener(onClickListener);
-		findViewById(R.id.collection_choose)
-				.setOnClickListener(onClickListener);
+		map_choose = (TextView) findViewById(R.id.map_choose);
+		map_choose.setOnClickListener(onClickListener);
+		collection_choose = (TextView) findViewById(R.id.collection_choose);
+		collection_choose.setOnClickListener(onClickListener);
+
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -175,7 +177,8 @@ public class ChooseAddressActivity extends Activity {
 			if (location == null) {
 				return;
 			}
-			System.out.println("location.getLocType() = " + location.getLocType());
+			System.out.println("location.getLocType() = "
+					+ location.getLocType());
 			if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
 				myLocation = location.getAddrStr();
 				latitude = location.getLatitude();

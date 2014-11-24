@@ -238,7 +238,7 @@ public class TravelMapActivity extends Activity {
 			}
 			if (points.size() > 1) {
 				OverlayOptions ooPolyline = new PolylineOptions()
-						.color(0xFF0BA882).points(points);
+						.color(0xFF0000C6).points(points);
 				mBaiduMap.addOverlay(ooPolyline);
 			}
 

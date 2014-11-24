@@ -197,6 +197,7 @@ public class FaultDetectionActivity extends Activity {
 									FaultDetailActivity.class);
 							intent1.putExtra("fault_content", fault_content);
 							intent1.putExtra("device_id", Device_id);
+							intent1.putExtra("index", index);
 							startActivity(intent1);
 						}
 

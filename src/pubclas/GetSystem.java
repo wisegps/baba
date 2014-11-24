@@ -449,8 +449,6 @@ public class GetSystem {
 	 */
 	public static void FindCar(final Activity mActivity, LatLng pt1,
 			LatLng pt2, String str1, String str2) {
-		System.out.println("起点：" + pt1.latitude + " , " + pt1.longitude);
-		System.out.println("终点：" + pt2.latitude + " , " + pt2.longitude);
 		BNaviPoint startPoint = new BNaviPoint(pt1.longitude, pt1.latitude, "", BNaviPoint.CoordinateType.BD09_MC);
 		BNaviPoint endPoint = new BNaviPoint(pt2.longitude, pt2.latitude, "", BNaviPoint.CoordinateType.BD09_MC);
 		BaiduNaviManager.getInstance().launchNavigator(
@@ -468,7 +466,7 @@ public class GetSystem {
 						intent.putExtras(arg0);
 						mActivity.startActivity(intent);
 					}
-					
+
 					@Override
 					public void onJumpToDownloader() {
 						// TODO Auto-generated method stub

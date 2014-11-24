@@ -109,7 +109,7 @@ public class SetActivity extends Activity implements TagAliasCallback {
 		tv_car.setOnClickListener(onClickListener);
 		TextView tv_offline_map = (TextView)findViewById(R.id.tv_offline_map);
 		tv_offline_map.setOnClickListener(onClickListener);
-		TextView tv_feedback = (TextView)findViewById(R.id.tv_feedback);
+		TextView tv_feedback = (TextView) findViewById(R.id.tv_feedback);
 		tv_feedback.setOnClickListener(onClickListener);
 		TextView tv_about = (TextView)findViewById(R.id.tv_about);
 		tv_about.setOnClickListener(onClickListener);
@@ -180,6 +180,8 @@ public class SetActivity extends Activity implements TagAliasCallback {
 			case R.id.iv_eweima:
 				//TODO 打开二维码
 				openErWeiMa();
+				startActivityForResult(new Intent(SetActivity.this,
+						SelectCityActivity.class), 2);
 				break;
 			}
 		}

@@ -119,8 +119,6 @@ public class MapChooseActivity extends Activity {
 					i.putExtra("name", name);
 					i.putExtra("latitude", point.latitude);
 					i.putExtra("longitude", point.longitude);
-					Log.e("my_log", "======>" + point.latitude + ";"
-							+ point.longitude);
 					setResult(MAPPOINT, i);
 					finish();
 				}
