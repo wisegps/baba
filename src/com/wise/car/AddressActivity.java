@@ -78,9 +78,10 @@ public class AddressActivity extends Activity {
 
 		tv_home = (TextView) findViewById(R.id.tv_home);
 		tv_company = (TextView) findViewById(R.id.tv_company);
-		LinearLayout ll_home = (LinearLayout)findViewById(R.id.ll_home);
+		LinearLayout ll_home = (LinearLayout) findViewById(R.id.ll_home);
 		ll_home.setOnClickListener(onClickListener);
-		tv_company.setOnClickListener(onClickListener);
+		LinearLayout ll_company = (LinearLayout) findViewById(R.id.ll_company);
+		ll_company.setOnClickListener(onClickListener);
 
 		ad_delete = (ImageView) findViewById(R.id.ad_delete);
 		ad_delete_1 = (ImageView) findViewById(R.id.ad_delete_1);
@@ -224,7 +225,7 @@ public class AddressActivity extends Activity {
 				startActivityForResult(new Intent(AddressActivity.this,
 						ChooseAddressActivity.class), HOME);
 				break;
-			case R.id.tv_company:
+			case R.id.ll_company:
 				startActivityForResult(new Intent(AddressActivity.this,
 						ChooseAddressActivity.class), COMPANY);
 				break;

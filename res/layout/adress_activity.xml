@@ -53,7 +53,7 @@
             android:layout_width="fill_parent"
             android:layout_height="60dip"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/bg_baba"
+            android:background="@drawable/bg_adress"
             android:orientation="horizontal"
             android:padding="8dip" >
 
@@ -90,6 +90,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_company"
             android:layout_width="fill_parent"
             android:layout_height="60dip"
             android:layout_marginBottom="8dp"
