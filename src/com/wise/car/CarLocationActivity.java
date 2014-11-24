@@ -385,7 +385,7 @@ public class CarLocationActivity extends Activity {
 						AddressActivity.class));
 				break;
 			case R.id.tv_offline_map:
-				//离线地图
+				// 离线地图
 				if (mPopupWindow != null) {
 					mPopupWindow.dismiss();
 				}
@@ -934,7 +934,6 @@ public class CarLocationActivity extends Activity {
 		PlanNode edNode = PlanNode.withLocation(stopLatLng);
 		mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(
 				edNode));
-		Log.e("my_log", "===1111===>");
 		showDialog(startLatLng, stopLatLng);
 	}
 
