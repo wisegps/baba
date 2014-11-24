@@ -220,9 +220,9 @@ public class SetActivity extends Activity implements TagAliasCallback {
 			if (jsonObject.opt("status_code") == null) {
 				bt_login_out.setVisibility(View.VISIBLE);
 				app.cust_name = jsonObject.getString("cust_name");
-				GetSystem.myLog(TAG, "cust_name = " + app.cust_name);
+				final String logo = jsonObject.getString("logo");
 				Bitmap bimage = BitmapFactory.decodeFile(Constant.userIconPath
-						+ app.cust_id + ".png");
+						+ GetSystem.getM5DEndo(logo) + ".png");
 				if (bimage != null) {
 					iv_logo.setImageBitmap(bimage);
 				}
@@ -241,7 +241,6 @@ public class SetActivity extends Activity implements TagAliasCallback {
 					iv_service.setVisibility(View.GONE);
 				}
 				tv_login.setText(jsonObject.getString("cust_name"));
-				String logo = jsonObject.getString("logo");
 				if (logo == null || logo.equals("")) {
 
 				} else {
@@ -250,7 +249,7 @@ public class SetActivity extends Activity implements TagAliasCallback {
 								@Override
 								public void onResponse(Bitmap response) {
 									GetSystem.saveImageSD(response,
-											Constant.userIconPath, app.cust_id
+											Constant.userIconPath, GetSystem.getM5DEndo(logo)
 													+ ".png", 100);
 									iv_logo.setImageBitmap(response);
 								}

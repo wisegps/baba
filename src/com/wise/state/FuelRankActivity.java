@@ -182,8 +182,8 @@ public class FuelRankActivity extends Activity{
 			viewHolder.tv_est.setText("里程" + fuelData.getMileage() + "km 油耗" +fuelData.getAvg_fuel() + "L/100km");
 			viewHolder.tv_avg.setText(fuelData.getCar_type() + " (" +fuelData.getAvg_fuel() + "L/100km)");
 			//读取用户对应的图片
-			if(new File(Constant.userIconPath + fuelData.getCust_id() + ".png").exists()){
-				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + fuelData.getCust_id() + ".png");
+			if(new File(Constant.userIconPath + GetSystem.getM5DEndo(fuelData.getLogo()) + ".png").exists()){
+				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(fuelData.getLogo()) + ".png");
 				viewHolder.iv_icon.setImageBitmap(image);
 			}
 			viewHolder.iv_letter.setOnClickListener(new OnClickListener() {				
@@ -292,7 +292,7 @@ public class FuelRankActivity extends Activity{
 				
 			}else{
 				//判断图片是否存在
-				if(new File(Constant.userIconPath + fuelDatas.get(i).getCust_id() + ".png").exists()){
+				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(fuelDatas.get(i).getLogo()) + ".png").exists()){
 					
 				}else{
 					if(isThreadRun(i)){
@@ -325,7 +325,7 @@ public class FuelRankActivity extends Activity{
 			super.run();
 			Bitmap bitmap = GetSystem.getBitmapFromURL(fuelDatas.get(position).getLogo());
 			if(bitmap != null){
-				GetSystem.saveImageSD(bitmap, Constant.userIconPath, fuelDatas.get(position).getCust_id() + ".png",100);
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(fuelDatas.get(position).getLogo()) + ".png",100);
 			}
 			for (int i = 0; i < photoThreadId.size(); i++) {
 				if (photoThreadId.get(i) == position) {

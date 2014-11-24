@@ -211,14 +211,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			imageFriend = BitmapFactory.decodeFile(Constant.userIconPath
 					+ GetSystem.getM5DEndo(logo) + ".png");
 		}
-		// 读取自己对应的图片
-		if (new File(Constant.userIconPath + app.cust_id + ".png")
-				.exists()) {
-			imageMe = BitmapFactory.decodeFile(Constant.userIconPath
-					+ app.cust_id + ".png");
-		}
-		getFristData();
 		getLogo();// 判断是否有需要从网上读取的图片
+		getFristData();
 		myBroadCastReceiver = new MyBroadCastReceiver();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(Constant.A_ReceiverLetter);
@@ -542,18 +536,24 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						}, 0, 0, Config.RGB_565, null));
 			}
 		}
-		if (imageMe == null) {
-			String meLogo = "";
-			SharedPreferences preferences = getSharedPreferences(
-					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-			String customer = preferences.getString(Constant.sp_customer
-					+ app.cust_id, "");
-			try {
-				JSONObject jsonObject = new JSONObject(customer);
-				meLogo = jsonObject.getString("logo");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		//获取自己信息
+		String meLogo = "";
+		SharedPreferences preferences = getSharedPreferences(
+				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		String customer = preferences.getString(Constant.sp_customer
+				+ app.cust_id, "");
+		try {
+			JSONObject jsonObject = new JSONObject(customer);
+			meLogo = jsonObject.getString("logo");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// 读取自己对应的图片
+		if (new File(Constant.userIconPath + GetSystem.getM5DEndo(meLogo) + ".png")
+				.exists()) {
+			imageMe = BitmapFactory.decodeFile(Constant.userIconPath
+					+ GetSystem.getM5DEndo(meLogo) + ".png");
+		}else{
 			if (!meLogo.equals("")) {
 				// 获取自己头像
 				mQueue.add(new ImageRequest(meLogo,
