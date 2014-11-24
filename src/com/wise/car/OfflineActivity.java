@@ -1,12 +1,15 @@
 package com.wise.car;
 
 import java.util.ArrayList;
+import pubclas.GetSystem;
 import com.baidu.mapapi.map.offline.MKOLSearchRecord;
 import com.baidu.mapapi.map.offline.MKOLUpdateElement;
 import com.baidu.mapapi.map.offline.MKOfflineMap;
 import com.baidu.mapapi.map.offline.MKOfflineMapListener;
 import com.wise.baba.R;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -180,47 +183,105 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 	OnGroupClickListener onGroupClickListener = new OnGroupClickListener() {		
 		@Override
 		public boolean onGroupClick(ExpandableListView parent, View v,
-				int groupPosition, long id) {
-			CitysData citysData = allCities.get(groupPosition);
-			citysData.setExpandable(!citysData.isExpandable);
-			if(citysData.isGroup){
-				
-			}else{
-				if(citysData.isDown){
+				final int groupPosition, long id) {
+			
+			if(GetSystem.isWifi(getApplicationContext())){
+				CitysData citysData = allCities.get(groupPosition);
+				citysData.setExpandable(!citysData.isExpandable);
+				if(citysData.isGroup){
 					
 				}else{
-					mOffline.start(citysData.getCityID());
-					citysData.setDown(true);
-					viewPager.setCurrentItem(0);
-				}				
+					if(citysData.isDown){
+						
+					}else{
+						mOffline.start(citysData.getCityID());
+						citysData.setDown(true);
+						viewPager.setCurrentItem(0);
+					}				
+				}
+				citysAdapter.notifyDataSetChanged();
+			}else{
+				AlertDialog.Builder dialog = new AlertDialog.Builder(OfflineActivity.this); 
+				dialog.setTitle("提示");  
+				dialog.setMessage("您现在处于非WIFI状态，下载需要耗费流量，是否继续？"); 
+				dialog.setNegativeButton("取消", null);
+				dialog.setPositiveButton("确定", new DialogInterface.OnClickListener(){
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						CitysData citysData = allCities.get(groupPosition);
+						citysData.setExpandable(!citysData.isExpandable);
+						if(citysData.isGroup){
+							
+						}else{
+							if(citysData.isDown){
+								
+							}else{
+								mOffline.start(citysData.getCityID());
+								citysData.setDown(true);
+								viewPager.setCurrentItem(0);
+							}				
+						}
+						citysAdapter.notifyDataSetChanged();
+					}});
+				dialog.show();
 			}
-			citysAdapter.notifyDataSetChanged();
+			
 			return false;
 		}
 	};
 	OnChildClickListener onChildClickListener = new OnChildClickListener() {		
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v,
-				int groupPosition, int childPosition, long id) {
-			CitysData citysData = lists.get(groupPosition).get(childPosition);
-			if(citysData.isDown){
-				
-			}else{
-				if(childPosition == 0){
-					//点击的是全省地图包
-					for(CitysData citysData2 : lists.get(groupPosition)){
-						citysData2.setDown(true);
-					}
+				final int groupPosition, final int childPosition, long id) {
+			if(GetSystem.isWifi(getApplicationContext())){
+				CitysData citysData = lists.get(groupPosition).get(childPosition);
+				if(citysData.isDown){
+					
 				}else{
-					citysData.setDown(true);
+					if(childPosition == 0){
+						//点击的是全省地图包
+						for(CitysData citysData2 : lists.get(groupPosition)){
+							citysData2.setDown(true);
+						}
+					}else{
+						citysData.setDown(true);
+					}
+					mOffline.start(citysData.getCityID());
+					viewPager.setCurrentItem(0);
+					citysAdapter.notifyDataSetChanged();
 				}
-				mOffline.start(citysData.getCityID());
-				viewPager.setCurrentItem(0);
-				citysAdapter.notifyDataSetChanged();
+			}else{
+				AlertDialog.Builder dialog = new AlertDialog.Builder(OfflineActivity.this); 
+				dialog.setTitle("提示");  
+				dialog.setMessage("您现在处于非WIFI状态，下载需要耗费流量，是否继续？"); 
+				dialog.setNegativeButton("取消", null);
+				dialog.setPositiveButton("确定", new DialogInterface.OnClickListener(){
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						CitysData citysData = lists.get(groupPosition).get(childPosition);
+						if(citysData.isDown){
+							
+						}else{
+							if(childPosition == 0){
+								//点击的是全省地图包
+								for(CitysData citysData2 : lists.get(groupPosition)){
+									citysData2.setDown(true);
+								}
+							}else{
+								citysData.setDown(true);
+							}
+							mOffline.start(citysData.getCityID());
+							viewPager.setCurrentItem(0);
+							citysAdapter.notifyDataSetChanged();
+						}
+					}});
+				dialog.show();
 			}
+			
 			return false;
 		}
 	};
+	
 	class CitysAdapter extends BaseExpandableListAdapter{
 
 		@Override
@@ -353,10 +414,28 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 					}					
 				}
 			});
+			//TODO 控制
+			System.out.println("m.status = " + m.status);
+			if(m.status == MKOLUpdateElement.SUSPENDED){
+				viewHolder.bt_update.setText("下载地图");
+				viewHolder.bt_update.setEnabled(true);
+			}else if(m.status == MKOLUpdateElement.DOWNLOADING){
+				viewHolder.bt_update.setText("暂停");
+				viewHolder.bt_update.setEnabled(true);
+			}else if(m.status == MKOLUpdateElement.FINISHED){
+				viewHolder.bt_update.setText("下载地图");
+				viewHolder.bt_update.setEnabled(false);
+			}
 			viewHolder.bt_update.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {
-					mOffline.start(m.cityID);
+					if(m.status == MKOLUpdateElement.SUSPENDED){
+						mOffline.start(m.cityID);
+					}else if(m.status == MKOLUpdateElement.DOWNLOADING){
+						mOffline.pause(m.cityID);
+						setOfflineCityData();
+						citysAdapter.notifyDataSetChanged();
+					}
 				}
 			});
 			viewHolder.bt_delete.setOnClickListener(new OnClickListener() {				
