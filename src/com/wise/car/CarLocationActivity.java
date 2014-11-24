@@ -300,9 +300,6 @@ public class CarLocationActivity extends Activity {
 						"homeLat", "0"));
 				double homeLon = Double.valueOf(preferences.getString(
 						"homeLon", "0"));
-				System.out.println("name : " + preferences.getString("name", ""));
-				System.out.println("homeLat : " + homeLat);
-				System.out.println("homeLon : " + homeLon);
 				if (homeLat == 0.0 && homeLon == 0.0) {
 					Toast.makeText(CarLocationActivity.this, "家的地址未设置",
 							Toast.LENGTH_SHORT).show();
@@ -388,7 +385,7 @@ public class CarLocationActivity extends Activity {
 						AddressActivity.class));
 				break;
 			case R.id.tv_offline_map:
-				//离线地图
+				// 离线地图
 				if (mPopupWindow != null) {
 					mPopupWindow.dismiss();
 				}
@@ -937,7 +934,6 @@ public class CarLocationActivity extends Activity {
 		PlanNode edNode = PlanNode.withLocation(stopLatLng);
 		mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(
 				edNode));
-		Log.e("my_log", "===1111===>");
 		showDialog(startLatLng, stopLatLng);
 	}
 

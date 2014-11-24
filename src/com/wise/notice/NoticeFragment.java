@@ -103,9 +103,6 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		noticeAdapter = new NoticeAdapter();
 		lv_notice.setAdapter(noticeAdapter);
 		lv_notice.setOnScrollListener(onScrollListener);
-		if(Judge.isLogin(app)){
-			getData();
-		}
 		if(app.cust_type != 2){
 			//用户
 			bt_set.setVisibility(View.GONE);
@@ -190,10 +187,14 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			case getNotice:
 				jsonData(msg.obj.toString());
 				noticeAdapter.notifyDataSetChanged();
+				System.out.println("getNotice");
+				getPersionImage();
 				break;
 			case refreshNotice:
 				refresh = msg.obj.toString();
 				lv_notice.runFast(0);
+				System.out.println("refreshNotice");
+				getPersionImage();
 				break;
 
 			case getFriendImage:
@@ -444,8 +445,8 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				break;
 			case 99://私信
 				//读取用户对应的图片
-				if(new File(Constant.userIconPath + noticeData.getFriend_id() + ".png").exists()){
-					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + noticeData.getFriend_id() + ".png");
+				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png").exists()){
+					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png");
 					holder.iv_image.setImageBitmap(image);
 				}else{
 					holder.iv_image.setImageResource(R.drawable.icon_people_no);
@@ -674,7 +675,12 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			super.run();
 			Bitmap bitmap = GetSystem.getBitmapFromURL(noticeDatas.get(position).getLogo());
 			if(bitmap != null){
-				GetSystem.saveImageSD(bitmap, Constant.userIconPath, noticeDatas.get(position).getFriend_id() + ".png",100);
+				String logo = noticeDatas.get(position).getLogo();
+				if(logo == null || logo.equals("")){
+					
+				}else{
+					GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(logo) + ".png",100);
+				}
 			}
 			for (int i = 0; i < photoThreadId.size(); i++) {
 				if (photoThreadId.get(i) == position) {

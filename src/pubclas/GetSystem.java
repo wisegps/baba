@@ -787,4 +787,19 @@ public class GetSystem {
 		}
 		return false;
 	}
+	/**
+	 * 判断当前网络是否wifi
+	 * @param mContext
+	 * @return
+	 */
+	public static boolean isWifi(Context mContext) {  
+	    ConnectivityManager connectivityManager = (ConnectivityManager) mContext  
+	            .getSystemService(Context.CONNECTIVITY_SERVICE);  
+	    NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();  
+	    if (activeNetInfo != null  
+	            && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {  
+	        return true;  
+	    }  
+	    return false;  
+	}
 }

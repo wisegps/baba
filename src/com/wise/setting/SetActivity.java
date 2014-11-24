@@ -231,43 +231,47 @@ public class SetActivity extends Activity implements TagAliasCallback {
 				iv_eweima.setVisibility(View.VISIBLE);
 				bt_login_out.setVisibility(View.VISIBLE);
 				app.cust_name = jsonObject.getString("cust_name");
-		        GetSystem.myLog(TAG, "cust_name = " + app.cust_name);
-		        Bitmap bimage = BitmapFactory.decodeFile(Constant.userIconPath + app.cust_id + ".png");
-		        if(bimage != null){
-		        	iv_logo.setImageBitmap(bimage);
-		        }
-		        iv_sex.setVisibility(View.VISIBLE);
-		        String sex = jsonObject.getString("sex");
-		        if(sex.equals("0")){
-			        iv_sex.setImageResource(R.drawable.icon_man);
-		        }else{
-		        	iv_sex.setImageResource(R.drawable.icon_woman);
-		        }
-		        int cust_type = jsonObject.getInt("cust_type");
-		        //如果是服务商显示标志
-		        if(cust_type == 2){
-		        	iv_service.setVisibility(View.VISIBLE);
-		        }else{
-		        	iv_service.setVisibility(View.GONE);
-		        }
 		        tv_login.setText(jsonObject.getString("cust_name"));
-		        String logo = jsonObject.getString("logo");
-		        if(logo == null || logo.equals("")){
-		        	
-		        }else{
-		        	mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {
-						@Override
-						public void onResponse(Bitmap response) {
-							GetSystem.saveImageSD(response, Constant.userIconPath, app.cust_id + ".png",100);
-							iv_logo.setImageBitmap(response);
-						}
-					}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
-						@Override
-						public void onErrorResponse(VolleyError error) {
-							error.printStackTrace();
-						}
-					}));
-		        }		        
+		        final String logo = jsonObject.getString("logo");
+				Bitmap bimage = BitmapFactory.decodeFile(Constant.userIconPath
+						+ GetSystem.getM5DEndo(logo) + ".png");
+				if (bimage != null) {
+					iv_logo.setImageBitmap(bimage);
+				}
+				iv_sex.setVisibility(View.VISIBLE);
+				String sex = jsonObject.getString("sex");
+				if (sex.equals("0")) {
+					iv_sex.setImageResource(R.drawable.icon_man);
+				} else {
+					iv_sex.setImageResource(R.drawable.icon_woman);
+				}
+				int cust_type = jsonObject.getInt("cust_type");
+				// 如果是服务商显示标志
+				if (cust_type == 2) {
+					iv_service.setVisibility(View.VISIBLE);
+				} else {
+					iv_service.setVisibility(View.GONE);
+				}
+				if (logo == null || logo.equals("")) {
+
+				} else {
+					mQueue.add(new ImageRequest(logo,
+							new Response.Listener<Bitmap>() {
+								@Override
+								public void onResponse(Bitmap response) {
+									GetSystem.saveImageSD(response,
+											Constant.userIconPath, GetSystem.getM5DEndo(logo)
+													+ ".png", 100);
+									iv_logo.setImageBitmap(response);
+								}
+							}, 0, 0, Config.RGB_565,
+							new Response.ErrorListener() {
+								@Override
+								public void onErrorResponse(VolleyError error) {
+									error.printStackTrace();
+								}
+							}));
+				}
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

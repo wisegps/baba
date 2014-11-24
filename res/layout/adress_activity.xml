@@ -49,6 +49,7 @@
         android:padding="8dp" >
 
         <LinearLayout
+            android:id="@+id/ll_home"
             android:layout_width="fill_parent"
             android:layout_height="60dip"
             android:layout_marginBottom="8dp"
@@ -63,7 +64,6 @@
                 android:layout_marginLeft="5dip"
                 android:layout_marginRight="5dip"
                 android:layout_weight="1"
-                android:background="@drawable/bg_baba"
                 android:gravity="center_vertical"
                 android:text="家" />
 
@@ -90,6 +90,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_company"
             android:layout_width="fill_parent"
             android:layout_height="60dip"
             android:layout_marginBottom="8dp"

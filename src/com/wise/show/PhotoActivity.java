@@ -325,7 +325,7 @@ public class PhotoActivity extends Activity {
 			} else {
 				// 判断图片是否存在
 				if (new File(Constant.userIconPath
-						+ photoDatas.get(i - 1).getCust_id() + ".png").exists()) {
+						+ GetSystem.getM5DEndo(photoDatas.get(i - 1).getIcon()) + ".png").exists()) {
 
 				} else {
 					if (isThreadRun(i - 1)) {
@@ -364,8 +364,8 @@ public class PhotoActivity extends Activity {
 			Bitmap bitmap = GetSystem.getBitmapFromURL(photoDatas.get(position)
 					.getIcon());
 			if (bitmap != null) {
-				GetSystem.saveImageSD(bitmap, Constant.userIconPath, photoDatas
-						.get(position).getCust_id() + ".png", 100);
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(photoDatas
+						.get(position).getIcon()) + ".png", 100);
 			}
 			for (int i = 0; i < photoThreadId.size(); i++) {
 				if (photoThreadId.get(i) == position) {
@@ -561,10 +561,10 @@ public class PhotoActivity extends Activity {
 			holder.tv_time.setText(GetSystem.showData(spacingData,
 					photoData.getCreate_time()));
 			// 读取用户对应的图片
-			if (new File(Constant.userIconPath + photoData.getCust_id()
-					+ ".png").exists()) {
+			if (new File(Constant.userIconPath + GetSystem.getM5DEndo(photoData.getIcon()
+					+ ".png")).exists()) {
 				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath
-						+ photoData.getCust_id() + ".png");
+						+ GetSystem.getM5DEndo(photoData.getIcon()) + ".png");
 				holder.iv_logo.setImageBitmap(image);
 			} else {
 				holder.iv_logo.setImageResource(R.drawable.icon_add);
@@ -664,11 +664,11 @@ public class PhotoActivity extends Activity {
 			JSONObject jsonObject = new JSONObject(result);
 			// 获取用户id
 			cust_id = jsonObject.getString("cust_id");
-			String icon = jsonObject.getString("icon");
+			final String icon = jsonObject.getString("icon");
 			// 读取用户对应的图片
-			if (new File(Constant.userIconPath + cust_id + ".png").exists()) {
+			if (new File(Constant.userIconPath + GetSystem.getM5DEndo(icon) + ".png").exists()) {
 				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath
-						+ cust_id + ".png");
+						+ GetSystem.getM5DEndo(icon) + ".png");
 				iv_persion_icon.setImageBitmap(image);
 			} else {
 				if (!icon.equals("")) {
@@ -678,7 +678,7 @@ public class PhotoActivity extends Activity {
 								@Override
 								public void onResponse(Bitmap response) {
 									GetSystem.saveImageSD(response,
-											Constant.userIconPath, cust_id
+											Constant.userIconPath, GetSystem.getM5DEndo(icon)
 													+ ".png", 100);
 									iv_persion_icon.setImageBitmap(response);
 								}
