@@ -105,8 +105,8 @@ public class ServiceManageActivity extends FragmentActivity {
 			ll_bottom.addView(textView);
 		}	
 		fragments.add(FragmentFault.newInstance(FriendId));
-		fragments.add(new FragmentRemind());
-		fragments.add(FragmentPersionInfo.newInstance(true, FriendId));
+		fragments.add(FragmentRemind.newInstance(FriendId,true));
+		fragments.add(FragmentPersionInfo.newInstance(FriendId,true));
 		fragments.add(new FragmentLocation());
 	}
 	

@@ -43,17 +43,26 @@ public class FragmentRemind extends Fragment{
 	private static final String TAG = "RemindActivity";
     private static final int get_remind = 1;
     
-    TextView tv_name,tv_date,tv_date_last,tv_date_next;
+    TextView tv_car_name,tv_date,tv_date_last,tv_date_next;
     LinearLayout ll_frist;
     RelativeLayout rl_Note;
     List<RemindData> remindDatas = new ArrayList<RemindData>();
     RemindAdapter remindAdapter;
     AppApplication app;
+    static int friend_id;
+    static boolean isService;
+    
+    public static FragmentRemind newInstance(int Friend_id,boolean is_Service){
+    	FragmentRemind fragmentRemind = new FragmentRemind();
+		friend_id = Friend_id;
+		isService = is_Service;
+		return fragmentRemind;
+	}
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
     		Bundle savedInstanceState) {
-    	return inflater.inflate(R.layout.activity_car_remind, container, false);
+    	return inflater.inflate(R.layout.fragment_car_remind, container, false);
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -64,10 +73,15 @@ public class FragmentRemind extends Fragment{
         ll_frist.setOnClickListener(onClickListener);
         tv_date_last = (TextView)getActivity().findViewById(R.id.tv_date_last);
         tv_date_next = (TextView)getActivity().findViewById(R.id.tv_date_next);
-        tv_name = (TextView)getActivity().findViewById(R.id.tv_name);
+        tv_car_name = (TextView)getActivity().findViewById(R.id.tv_car_name);
 		tv_date = (TextView)getActivity().findViewById(R.id.tv_date);
-        ImageView iv_back = (ImageView)getActivity().findViewById(R.id.iv_back);
-        iv_back.setOnClickListener(onClickListener);
+        ImageView iv_remind_back = (ImageView)getActivity().findViewById(R.id.iv_remind_back);
+        if(isService){
+        	iv_remind_back.setVisibility(View.INVISIBLE);
+        }else{
+        	iv_remind_back.setVisibility(View.VISIBLE);
+        }
+        iv_remind_back.setOnClickListener(onClickListener);
         ImageView iv_add = (ImageView) getActivity().findViewById(R.id.iv_add);
         iv_add.setOnClickListener(onClickListener);
         getData();
@@ -78,7 +92,7 @@ public class FragmentRemind extends Fragment{
     }
     
     private void getData(){
-    	String url = Constant.BaseUrl + "customer/" + app.cust_id + "/reminder?auth_code=" + app.auth_code;
+    	String url = Constant.BaseUrl + "customer/" + friend_id + "/reminder?auth_code=" + app.auth_code;
     	new Thread(new NetThread.GetDataThread(handler, url, get_remind)).start();
     }
 
@@ -95,7 +109,7 @@ public class FragmentRemind extends Fragment{
             		RemindData remindData = remindDatas.get(0);
             		ll_frist.setVisibility(View.VISIBLE);
             		String title = "距离" + getCarName(remindData.getObj_id()) + Constant.items_note_type[remindData.getRemind_type()];
-            		tv_name.setText(title);            		
+            		tv_car_name.setText(title);            		
             		int count_time = GetSystem.isTimeOut(remindData.getRemind_time());
             		if(count_time > 0){
             			tv_date.setText(GetSystem.jsTime(count_time));
@@ -120,11 +134,13 @@ public class FragmentRemind extends Fragment{
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-            case R.id.iv_back:
-                //finish();
+            case R.id.iv_remind_back:
+                getActivity().finish();
                 break;
-            case R.id.iv_add:
-            	startActivityForResult(new Intent(getActivity(), RemindAddActivity.class),2);
+            case R.id.iv_add://friend_id
+            	Intent intent1 = new Intent(getActivity(), RemindAddActivity.class);
+            	intent1.putExtra("cust_id", String.valueOf(friend_id));
+            	startActivityForResult(intent1,2);
             	break;
             case R.id.ll_frist:
             	Intent intent = new Intent(getActivity(), RemindActivity.class);

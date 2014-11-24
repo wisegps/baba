@@ -58,15 +58,15 @@ public class FragmentPersionInfo extends Fragment{
 	
 	RequestQueue mQueue;
 	AppApplication app;
-	static boolean isShow;
+	static boolean isService;
 	static int FriendId = 0;
 	String FriendName;
 	String name = "honesty";
 	
-	public static FragmentPersionInfo newInstance(boolean is_show ,int Friend_id){
+	public static FragmentPersionInfo newInstance(int Friend_id , boolean is_Service){
 		FragmentPersionInfo fragmentPersionInfo = new FragmentPersionInfo();
 		FriendId = Friend_id;
-		isShow = is_show;
+		isService = is_Service;
 		return fragmentPersionInfo;
 	}
 	
@@ -93,13 +93,12 @@ public class FragmentPersionInfo extends Fragment{
 		bt_add_friend.setOnClickListener(onClickListener);
 		bt_send_message = (Button)getActivity().findViewById(R.id.bt_send_message);
 		bt_send_message.setOnClickListener(onClickListener);
-		//Intent intent = getIntent();
-		//boolean isShow = intent.getBooleanExtra("isShow", false);
-		//String Friendid = intent.getStringExtra("FriendId");
-		//String name = intent.getStringExtra("name");
-		if(isShow){
+		System.out.println("isService = " + isService);
+		if(isService){
+			iv_back.setVisibility(View.INVISIBLE);
 			getFriendInfoId();
 		}else{
+			iv_back.setVisibility(View.VISIBLE);
 			if(FriendId == 0){
 				//通过搜索跳转
 				getFriendInfoName(name);
