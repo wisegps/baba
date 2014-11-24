@@ -117,7 +117,9 @@ public class RemindListActivity extends Activity {
                 finish();
                 break;
             case R.id.iv_add:
-            	startActivityForResult(new Intent(RemindListActivity.this, RemindAddActivity.class),2);
+            	Intent intent1 = new Intent(RemindListActivity.this, RemindAddActivity.class);
+            	intent1.putExtra("cust_id", app.cust_id);
+            	startActivityForResult(intent1,2);
             	break;
             case R.id.ll_frist:
             	Intent intent = new Intent(RemindListActivity.this, RemindActivity.class);
