@@ -207,9 +207,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		logo = getIntent().getStringExtra("logo");
 		tv_friend.setText(cust_name);
 		// 读取朋友对应的图片
-		if (new File(Constant.userIconPath + friend_id + ".png").exists()) {
+		if (new File(Constant.userIconPath + GetSystem.getM5DEndo(logo) + ".png").exists()) {
 			imageFriend = BitmapFactory.decodeFile(Constant.userIconPath
-					+ friend_id + ".png");
+					+ GetSystem.getM5DEndo(logo) + ".png");
 		}
 		// 读取自己对应的图片
 		if (new File(Constant.userIconPath + app.cust_id + ".png")
@@ -534,7 +534,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							@Override
 							public void onResponse(Bitmap response) {
 								GetSystem.saveImageSD(response,
-										Constant.userIconPath, friend_id
+										Constant.userIconPath, GetSystem.getM5DEndo(logo)
 												+ ".png", 100);
 								imageFriend = response;
 								letterAdapter.notifyDataSetChanged();

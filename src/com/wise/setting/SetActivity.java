@@ -24,10 +24,8 @@ import com.wise.baba.AboutActivity;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.SelectCityActivity;
-import com.wise.car.AddressActivity;
 import com.wise.car.CarActivity;
 import com.wise.car.OfflineActivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -265,7 +263,7 @@ public class SetActivity extends Activity implements TagAliasCallback {
 							}));
 				}
 			}
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

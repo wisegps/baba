@@ -31,7 +31,6 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 /**
  * 通知列表
@@ -289,8 +288,8 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				break;
 			case 99://私信
 				//读取用户对应的图片
-				if(new File(Constant.userIconPath + noticeData.getFriend_id() + ".png").exists()){
-					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + noticeData.getFriend_id() + ".png");
+				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png").exists()){
+					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png");
 					holder.iv_image.setImageBitmap(image);
 				}else{
 					holder.iv_image.setImageResource(R.drawable.icon_people_no);
@@ -409,7 +408,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			NoticeData noticeData = noticeDatas.get(i);
 			if(noticeData.getFriend_type() == 99){
 				//判断图片是否存在
-				if(new File(Constant.userIconPath + noticeData.getFriend_id() + ".png").exists()){
+				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png").exists()){
 					
 				}else{
 					if(isThreadRun(i)){
@@ -442,7 +441,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			super.run();
 			Bitmap bitmap = GetSystem.getBitmapFromURL(noticeDatas.get(position).getLogo());
 			if(bitmap != null){
-				GetSystem.saveImageSD(bitmap, Constant.userIconPath, noticeDatas.get(position).getFriend_id() + ".png",100);
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(noticeDatas.get(position).getLogo()) + ".png",100);
 			}
 			for (int i = 0; i < photoThreadId.size(); i++) {
 				if (photoThreadId.get(i) == position) {

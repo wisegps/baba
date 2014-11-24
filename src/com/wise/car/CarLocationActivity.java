@@ -300,9 +300,6 @@ public class CarLocationActivity extends Activity {
 						"homeLat", "0"));
 				double homeLon = Double.valueOf(preferences.getString(
 						"homeLon", "0"));
-				System.out.println("name : " + preferences.getString("name", ""));
-				System.out.println("homeLat : " + homeLat);
-				System.out.println("homeLon : " + homeLon);
 				if (homeLat == 0.0 && homeLon == 0.0) {
 					Toast.makeText(CarLocationActivity.this, "家的地址未设置",
 							Toast.LENGTH_SHORT).show();

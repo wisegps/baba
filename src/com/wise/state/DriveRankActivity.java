@@ -181,8 +181,8 @@ public class DriveRankActivity extends Activity{
 			viewHolder.tv_est.setText("里程" + driveData.getMileage() + "km 平均得分" +driveData.getDriver_score());
 			viewHolder.tv_avg.setText(driveData.getCar_type() + " (" +driveData.getEst_fuel() + "L/100km)");
 			//读取用户对应的图片
-			if(new File(Constant.userIconPath + driveData.getCust_id() + ".png").exists()){
-				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + driveData.getCust_id() + ".png");
+			if(new File(Constant.userIconPath + GetSystem.getM5DEndo(driveData.getLogo()) + ".png").exists()){
+				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(driveData.getLogo()) + ".png");
 				viewHolder.iv_icon.setImageBitmap(image);
 			}
 			viewHolder.iv_letter.setOnClickListener(new OnClickListener() {				
@@ -289,8 +289,8 @@ public class DriveRankActivity extends Activity{
 			if(start == 0){
 				
 			}else{
-				//判断图片是否存在
-				if(new File(Constant.userIconPath + driveDatas.get(i).getCust_id() + ".png").exists()){
+				//判断图片是否存在GetSystem.getM5DEndo(driveData.getLogo())
+				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(driveDatas.get(i).getLogo()) + ".png").exists()){
 					
 				}else{
 					if(isThreadRun(i)){
@@ -323,7 +323,7 @@ public class DriveRankActivity extends Activity{
 			super.run();
 			Bitmap bitmap = GetSystem.getBitmapFromURL(driveDatas.get(position).getLogo());
 			if(bitmap != null){
-				GetSystem.saveImageSD(bitmap, Constant.userIconPath, driveDatas.get(position).getCust_id() + ".png",100);
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(driveDatas.get(position).getLogo()) + ".png",100);
 			}
 			for (int i = 0; i < photoThreadId.size(); i++) {
 				if (photoThreadId.get(i) == position) {

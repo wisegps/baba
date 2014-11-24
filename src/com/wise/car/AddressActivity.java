@@ -35,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,8 +78,8 @@ public class AddressActivity extends Activity {
 
 		tv_home = (TextView) findViewById(R.id.tv_home);
 		tv_company = (TextView) findViewById(R.id.tv_company);
-
-		tv_home.setOnClickListener(onClickListener);
+		LinearLayout ll_home = (LinearLayout)findViewById(R.id.ll_home);
+		ll_home.setOnClickListener(onClickListener);
 		tv_company.setOnClickListener(onClickListener);
 
 		ad_delete = (ImageView) findViewById(R.id.ad_delete);
@@ -98,9 +99,6 @@ public class AddressActivity extends Activity {
 				Activity.MODE_PRIVATE);
 		String name = preferences.getString("name", "");
 		String company = preferences.getString("company", "");
-		System.out.println("name : " + preferences.getString("name", ""));
-		System.out.println("homeLat : " + preferences.getString("homeLat", ""));
-		System.out.println("homeLon : " + preferences.getString("homeLon", ""));
 		if (name.equals("") || name == null) {
 			tv_home.setText("家");
 		} else {
@@ -222,7 +220,7 @@ public class AddressActivity extends Activity {
 								}).setNegativeButton("取消", null).create()
 						.show();
 				break;
-			case R.id.tv_home:
+			case R.id.ll_home:
 				startActivityForResult(new Intent(AddressActivity.this,
 						ChooseAddressActivity.class), HOME);
 				break;
