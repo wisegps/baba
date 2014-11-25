@@ -448,9 +448,10 @@ public class GetSystem {
 	 * @param str2
 	 */
 	public static void FindCar(final Activity mActivity, LatLng pt1,
-			LatLng pt2, String str1, String str2) {
+			final LatLng pt2, String str1, String str2) {
 		BNaviPoint startPoint = new BNaviPoint(pt1.longitude, pt1.latitude, "", BNaviPoint.CoordinateType.BD09_MC);
 		BNaviPoint endPoint = new BNaviPoint(pt2.longitude, pt2.latitude, "", BNaviPoint.CoordinateType.BD09_MC);
+		Log.e("my_log", "====>" + pt1.latitude + ";" + pt1.longitude);
 		BaiduNaviManager.getInstance().launchNavigator(
 				mActivity, 
 				startPoint, 
@@ -463,6 +464,8 @@ public class GetSystem {
 					public void onJumpToNavigator(Bundle arg0) {
 						Intent intent = new Intent(mActivity,
 								BNavigatorActivity.class);
+						arg0.putDouble("navLatitude", pt2.latitude);
+						arg0.putDouble("navLongitude", pt2.longitude);
 						intent.putExtras(arg0);
 						mActivity.startActivity(intent);
 					}
