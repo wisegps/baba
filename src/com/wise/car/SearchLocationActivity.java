@@ -37,6 +37,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,9 +46,13 @@ public class SearchLocationActivity extends Activity {
 	private AppApplication app;
 	private EditText ed_search;
 	private ListView search_history;
+	private ListView oftenAdress;
+	LinearLayout ll_oftenAddress;
 	List<AdressData> adressDatas = new ArrayList<AdressData>();
 	List<AdressData> historyDatas = new ArrayList<AdressData>();
+	List<AdressData> oftenDatas = new ArrayList<AdressData>();
 	SearchAdapter searchAdapter = null;
+	SearchAdapter oftenAdapter = null;
 	private PoiSearch mPoiSearch = null;
 
 	public static final int HISTORY_CODE = 1;
@@ -94,6 +99,28 @@ public class SearchLocationActivity extends Activity {
 
 			}
 		});
+
+		ll_oftenAddress = (LinearLayout) findViewById(R.id.ll_oftenAddress);
+		oftenAdress = (ListView) findViewById(R.id.list_often_adres);
+		oftenAdapter = new SearchAdapter();
+		getOftenJsonData();
+		oftenAdress.setAdapter(oftenAdapter);
+
+		// 常用地址监听
+		oftenAdress.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Intent i = new Intent();
+				i.putExtra("history_lat", oftenDatas.get(position).getLat());
+				i.putExtra("history_lon", oftenDatas.get(position).getLon());
+				i.putExtra("re_name", oftenDatas.get(position).getAdress());
+				setResult(HISTORY_CODE, i);
+				finish();
+			}
+		});
+
 		search_history = (ListView) findViewById(R.id.search_history);
 		SharedPreferences preferences = getSharedPreferences("history_search",
 				Activity.MODE_PRIVATE);
@@ -220,6 +247,37 @@ public class SearchLocationActivity extends Activity {
 		});
 	}
 
+	private void getOftenJsonData() {
+		SharedPreferences preferences = getSharedPreferences("address_add",
+				Activity.MODE_PRIVATE);
+		String addJsonArray = preferences.getString("addJsonArray", "");
+		if (addJsonArray == null || addJsonArray.equals("")) {
+			ll_oftenAddress.setVisibility(View.GONE);
+			oftenAdapter.setDate(oftenDatas);
+		} else {
+			ll_oftenAddress.setVisibility(View.VISIBLE);
+			try {
+				JSONObject jsonObject = new JSONObject(addJsonArray);
+				JSONArray jsonArray = jsonObject.getJSONArray("addJsonArray");
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject object = jsonArray.getJSONObject(i);
+					String addressName = object.getString("addressName");
+					double addressLat = object.getDouble("addressLat");
+					double addressLon = object.getDouble("addressLon");
+					AdressData adressData = new AdressData();
+					adressData.setAdress(addressName);
+					adressData.setLat(addressLat);
+					adressData.setLon(addressLon);
+					oftenDatas.add(adressData);
+				}
+				oftenAdapter.setDate(oftenDatas);
+				oftenAdapter.notifyDataSetChanged();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	private void getJsonData(String str) {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
@@ -299,7 +357,7 @@ public class SearchLocationActivity extends Activity {
 
 		@Override
 		public Object getItem(int position) {
-			return show.get(position);
+			return show != null ? show.get(position) : null;
 		}
 
 		@Override
