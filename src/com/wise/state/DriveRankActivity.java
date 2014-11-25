@@ -289,7 +289,7 @@ public class DriveRankActivity extends Activity{
 			if(start == 0){
 				
 			}else{
-				//判断图片是否存在GetSystem.getM5DEndo(driveData.getLogo())
+				//判断图片是否存在
 				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(driveDatas.get(i).getLogo()) + ".png").exists()){
 					
 				}else{

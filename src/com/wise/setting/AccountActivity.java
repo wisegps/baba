@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Blur;
 import pubclas.Constant;
+import pubclas.GetSystem;
 import pubclas.NetThread;
 import pubclas.UploadUtil;
 import pubclas.UploadUtil.OnUploadProcessListener;
@@ -26,8 +27,6 @@ import com.android.volley.toolbox.Volley;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-import com.wise.car.CarActivity;
-
 import customView.PopView;
 import customView.PopView.OnItemClickListener;
 import android.app.Activity;
@@ -393,7 +392,7 @@ public class AccountActivity extends Activity implements
 			finish();
 		}
 	}
-
+	String fileName;
 	private void UpdateBitmap(Bitmap bitmap) {
 		File filePath = new File(Constant.userIconPath);
 		if (!filePath.exists()) {
@@ -402,7 +401,7 @@ public class AccountActivity extends Activity implements
 		bitmap = Blur.scaleImage(bitmap, 150);
 		bitmap = Blur.getSquareBitmap(bitmap);
 		FileOutputStream b = null;
-		String fileName = Constant.userIconPath + app.cust_id + ".png";
+		fileName = Constant.userIconPath + app.cust_id + ".png";
 		try {
 			b = new FileOutputStream(fileName);
 			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// 把数据写入文件
@@ -431,6 +430,8 @@ public class AccountActivity extends Activity implements
 			JSONObject jsonObject = new JSONObject(str);
 			if (jsonObject.getString("status_code").equals("0")) {
 				String ImageUrl = jsonObject.getString("image_file_url");
+				File file = new File(fileName);
+				file.renameTo(new File(Constant.userIconPath + GetSystem.getM5DEndo(ImageUrl) + ".png"));
 				String url = Constant.BaseUrl + "customer/" + app.cust_id
 						+ "/field?auth_code=" + app.auth_code;
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -447,7 +448,13 @@ public class AccountActivity extends Activity implements
 
 	@Override
 	public void onUploadDone(int responseCode, String message) {
-		jsonUpdatePic(message);
+		if(responseCode == 1){
+			jsonUpdatePic(message);
+		}else if(responseCode == 2){
+			Toast.makeText(AccountActivity.this, "文件不存在", Toast.LENGTH_SHORT).show();
+		}else if(responseCode == 3){
+			Toast.makeText(AccountActivity.this, "服务器接受失败", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override

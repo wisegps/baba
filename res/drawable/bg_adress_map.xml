@@ -7,17 +7,5 @@
     <stroke
         android:width="0.5dp"
         android:color="#30000000" />
-    <!-- 圆角 -->
-    <corners
-        android:bottomLeftRadius="@dimen/corners"
-        android:bottomRightRadius="@dimen/corners"
-        android:topLeftRadius="@dimen/corners"
-        android:topRightRadius="@dimen/corners" />
-
-    <padding
-        android:bottom="0.5dp"
-        android:left="0.5dp"
-        android:right="0.5dp"
-        android:top="0.5dp" />
 
 </shape>

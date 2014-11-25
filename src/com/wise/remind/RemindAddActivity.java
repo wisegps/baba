@@ -57,6 +57,7 @@ public class RemindAddActivity extends Activity {
 	EditText et_mileage, et_content;
 	LinearLayout ll_car, ll_mileage, ll_content;
 	AppApplication app;
+	String persion_id;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class RemindAddActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_remind_add);
 		app = (AppApplication) getApplication();
+		persion_id = getIntent().getStringExtra("cust_id");
 		ll_car = (LinearLayout) findViewById(R.id.ll_car);
 		ll_mileage = (LinearLayout) findViewById(R.id.ll_mileage);
 		ll_content = (LinearLayout) findViewById(R.id.ll_content);
@@ -261,7 +263,7 @@ public class RemindAddActivity extends Activity {
 		}
 		String mileage = et_mileage.getText().toString().trim();
 		String url = Constant.BaseUrl + "reminder?auth_code=" + app.auth_code;
-		params.add(new BasicNameValuePair("cust_id", app.cust_id));
+		params.add(new BasicNameValuePair("cust_id", persion_id));
 		params.add(new BasicNameValuePair("remind_type", String.valueOf(s_type
 				.getSelectedItemPosition())));
 		params.add(new BasicNameValuePair("mileage", mileage.equals("") ? "0"
