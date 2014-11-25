@@ -318,7 +318,7 @@ public class PhotoActivity extends Activity {
 	private void getPersionImage() {
 		int start = lv_comments.getFirstVisiblePosition();
 		int stop = lv_comments.getLastVisiblePosition();
-
+		//TODO 显示图片需要调整
 		for (int i = start; i <= stop; i++) {
 			if (start == 0) {
 

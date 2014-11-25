@@ -501,6 +501,7 @@ public class GetSystem {
 	 */
 	public static Bitmap getBitmapFromURL(String Path) {
 		try {
+			GetSystem.myLog(TAG, Path);
 			URL url = new URL(Path);
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
@@ -717,6 +718,9 @@ public class GetSystem {
 	}
 
 	public static String getM5DEndo(String s) {
+		if(s == null){
+			return "";
+		}
 		MessageDigest md5 = null;
 		try {
 			md5 = MessageDigest.getInstance("MD5");

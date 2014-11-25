@@ -36,4 +36,8 @@
 	    android:textSize="@dimen/content"
 	    android:textColor="@color/navy"
 	    android:text="我没有超速"/>
+    <View 
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray_light"/>
 </LinearLayout>

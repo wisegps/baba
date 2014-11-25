@@ -320,7 +320,6 @@ public class FaultDetectionActivity extends Activity {
 					case R.id.risk:
 						String phone = app.carDatas.get(index)
 								.getInsurance_tel();
-						Log.e("my_log", "======>" + phone);
 						Intent in_1 = new Intent(
 								Intent.ACTION_DIAL,
 								Uri.parse("tel:" + (phone != null ? phone : "")));
@@ -330,7 +329,6 @@ public class FaultDetectionActivity extends Activity {
 					case R.id.rescue:
 						String tel = app.carDatas.get(index)
 								.getMaintain_tel();
-						Log.e("my_log", "======>" + tel);
 						Intent in_2 = new Intent(Intent.ACTION_DIAL,
 								Uri.parse("tel:" + (tel != null ? tel : "")));
 						startActivity(in_2);

@@ -207,10 +207,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		logo = getIntent().getStringExtra("logo");
 		tv_friend.setText(cust_name);
 		// 读取朋友对应的图片
-		if (new File(Constant.userIconPath + GetSystem.getM5DEndo(logo) + ".png").exists()) {
-			imageFriend = BitmapFactory.decodeFile(Constant.userIconPath
-					+ GetSystem.getM5DEndo(logo) + ".png");
-		}
+		if(logo != null){
+			if (new File(Constant.userIconPath + GetSystem.getM5DEndo(logo) + ".png").exists()) {
+				imageFriend = BitmapFactory.decodeFile(Constant.userIconPath
+						+ GetSystem.getM5DEndo(logo) + ".png");
+			}
+		}		
 		getLogo();// 判断是否有需要从网上读取的图片
 		getFristData();
 		myBroadCastReceiver = new MyBroadCastReceiver();
@@ -1302,17 +1304,20 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		for (int i = start; i < stop; i++) {
 			if(i >= letterDatas.size()){
 				break;
+			}
+			if(letterDatas.get(i).getLogo() == null || letterDatas.get(i).getLogo().equals("")){
+				
 			}else{
 				// 判断图片是否存在
-				if (new File(getImagePath(letterDatas.get(i - 1).getUrl()))
+				if (new File(getImagePath(letterDatas.get(i).getUrl()))
 						.exists()) {
 
 				} else {
-					if (isThreadRun(i - 1)) {
+					if (isThreadRun(i)) {
 						// 如果图片正在读取则跳过
 					} else {
-						photoThreadId.add(i - 1);
-						new ImageThread(i - 1).start();
+						photoThreadId.add(i);
+						new ImageThread(i).start();
 					}
 				}
 			}

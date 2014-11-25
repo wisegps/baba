@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -15,6 +16,7 @@ import android.view.View;
  * @version 1.0
  */
 public class TasksCompletedView extends View {
+	private Paint p;
 	// 画圆环的画笔
 	private Paint mRingPaint;
 	// 画圆环背景的画笔
@@ -59,6 +61,9 @@ public class TasksCompletedView extends View {
 	}
 
 	private void initVariable() {
+		p = new Paint();
+		p.setAntiAlias(true);
+		
 		mRingBgPaint = new Paint();
 		mRingBgPaint.setAntiAlias(true);
 		mRingBgPaint.setColor(mCircleColor);
@@ -97,6 +102,12 @@ public class TasksCompletedView extends View {
 			}
 			canvas.drawCircle(mXCenter, mYCenter, mRingRadius, mRingBgPaint);
 			canvas.drawArc(oval, -90, ((float)mProgress / mTotalProgress) * 360, false, mRingPaint);
+			if(isPress){
+				p.setColor(0x4cd8d9e1);
+			}else{
+				p.setColor(Color.WHITE);
+			}		
+			canvas.drawCircle(mXCenter, mYCenter, mRadius, p);	
 		}
 	}	
 	public void setProgress(int progress,boolean is) {
@@ -113,6 +124,23 @@ public class TasksCompletedView extends View {
 	
 	private int indexOf(int progress){
 		return (mTotalProgress - progress)/3;
+	}
+	private boolean isPress = false;
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			isPress = true;
+			break;
+		case MotionEvent.ACTION_UP:
+			isPress = false;
+			break;
+		case MotionEvent.ACTION_CANCEL:
+			isPress = false;
+			break;
+		}
+		postInvalidate();
+		return super.onTouchEvent(event);
 	}
 	
 	

@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
+import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
@@ -249,11 +250,10 @@ public class FaultActivity extends FragmentActivity {
 		intentFilter.addAction(Constant.A_RefreshHomeCar);
 		intentFilter.addAction(Constant.A_LoginOut);
 		registerReceiver(myBroadCastReceiver, intentFilter);
-
+		new GetLocation(FaultActivity.this);
 		new CycleNstvThread().start();
 
 		UmengUpdateAgent.update(this);
-		//GetLocation getLocation = new GetLocation(FaultActivity.this);
 		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(),
                 mNaviEngineInitListener, new LBSAuthManagerListener() {
                     @Override
@@ -1308,6 +1308,8 @@ public class FaultActivity extends FragmentActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		//TODO onActivityResult
+		System.out.println("requestCode = " + requestCode + ", resultCode = " + resultCode);
 		if (resultCode == 3) {
 			// 修改车辆信息
 			System.out.println("修改车辆信息1");
@@ -1343,9 +1345,11 @@ public class FaultActivity extends FragmentActivity {
 		} else if (requestCode == 0) {
 			// 修改城市返回,在onResume里刷新了城市
 		} else if (requestCode == 1) {
+			//requestCode = 1, resultCode = 2
 			// 体检返回重新布局
 			initDataView();
 		} else if (requestCode == 2) {
+			//requestCode = 2, resultCode = 0
 			// 驾驶习惯返回
 			/** 驾驶信息 **/
 			SharedPreferences preferences = getSharedPreferences(

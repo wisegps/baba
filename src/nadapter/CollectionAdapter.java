@@ -37,14 +37,14 @@ public class CollectionAdapter extends BaseAdapter {
 
     CollectionItemListener collectionItemListener = null;
     AppApplication app;
-    double currentLat;
-    double currentLon;
+    //double currentLat;
+    //double currentLon;
 
     public CollectionAdapter(Context context, List<AdressData> adrDataList) {
         this.context = context;
         app = (AppApplication)((Activity)context).getApplication();
-        currentLat = app.Lat;
-        currentLon = app.Lon;
+        //currentLat = app.Lat;
+        //currentLon = app.Lon;
         layoutInflater = LayoutInflater.from(context);
         this.adressDatas = adrDataList;
     }
@@ -144,7 +144,7 @@ public class CollectionAdapter extends BaseAdapter {
     }
 
     public void startNavi(double goLat, double goLon) {
-        LatLng pt1 = new LatLng(currentLat, currentLon);
+        LatLng pt1 = new LatLng(app.Lat, app.Lon);
         LatLng pt2 = new LatLng(goLat, goLon);
 		GetSystem.FindCar((Activity) context, pt1, pt2, "", "");
     }

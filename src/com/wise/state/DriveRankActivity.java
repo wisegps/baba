@@ -286,7 +286,10 @@ public class DriveRankActivity extends Activity{
 		int start = lv_fuel.getFirstVisiblePosition();
 		int stop = lv_fuel.getLastVisiblePosition();		
 		for(int i = start ; i <= stop ; i++){
-			if(start == 0){
+			if(i >= driveDatas.size()){
+				break;
+			}
+			if(driveDatas.get(i).getLogo() == null || driveDatas.get(i).getLogo().equals("")){
 				
 			}else{
 				//判断图片是否存在

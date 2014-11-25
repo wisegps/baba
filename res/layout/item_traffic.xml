@@ -23,7 +23,7 @@
 	            android:text="广深高速"
 	            android:layout_marginRight="5dp"
 	            android:textSize="@dimen/content"
-	            android:textColor="@color/navy"/>
+	            android:textColor="@color/color_navy"/>
 	        <TextView 
 	            android:id="@+id/tv_status"
 	            android:visibility="gone"
@@ -80,7 +80,7 @@
 	        android:text="违章地点：广深高速"
 	        android:layout_marginBottom="@dimen/margins"
 	        android:textSize="@dimen/content"
-            android:textColor="@color/navy"/>
+            android:textColor="@color/color_navy"/>
 	    <LinearLayout 
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"

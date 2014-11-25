@@ -36,6 +36,8 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -66,7 +68,6 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	Platform platformQQ;
 	Platform platformSina;
 	String platform;
-	ProgressBar progressBar;
 	Button bt_login;
 	String account;
 	String pwd;
@@ -84,7 +85,9 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		ShareSDK.initSDK(this);
 		tv_note = (TextView) findViewById(R.id.tv_note);
 		et_account = (EditText) findViewById(R.id.et_account);
+		et_account.addTextChangedListener(textWatcher);
 		et_pwd = (EditText) findViewById(R.id.et_pwd);
+		et_pwd.addTextChangedListener(textWatcher);
 		bt_login = (Button) findViewById(R.id.bt_login);
 		bt_login.setOnClickListener(onClickListener);
 		TextView tv_register = (TextView) findViewById(R.id.tv_register);
@@ -103,9 +106,6 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		String sp_account = preferences.getString(Constant.sp_account, "");
 		et_account.setText(sp_account);
-
-		progressBar = (ProgressBar) findViewById(R.id.progressBar);
-		progressBar.setVisibility(View.GONE);
 
 		findViewById(R.id.btn_show).setOnClickListener(onClickListener);
 		app.isTest = false;
@@ -195,9 +195,9 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
-				bt_login.setEnabled(false);
-				progressBar.setVisibility(View.VISIBLE);
 			}
+			bt_login.setEnabled(false);
+			bt_login.setText("登录中");
 			String url = Constant.BaseUrl + "user_login?account=" + account
 					+ "&password=" + GetSystem.getM5DEndo(pwd);
 			new NetThread.GetDataThread(handler, url, login_account).start();
@@ -217,7 +217,7 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 	}
 
 	private void jsonLogin(String str) {
-		progressBar.setVisibility(View.GONE);
+		bt_login.setText("登录");
 		bt_login.setEnabled(true);
 		try {
 			JSONObject jsonObject = new JSONObject(str);
@@ -417,4 +417,14 @@ public class LoginActivity extends Activity implements PlatformActionListener,
 		super.onPause();
 		MobclickAgent.onPause(this);
 	}
+	TextWatcher textWatcher = new TextWatcher() {	
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+			tv_note.setVisibility(View.INVISIBLE);
+		}		
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,int after) {}		
+		@Override
+		public void afterTextChanged(Editable s) {}
+	};
 }

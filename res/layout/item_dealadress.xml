@@ -32,7 +32,9 @@
         <TextView
             android:id="@+id/tv_item_dealadress_name"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"    
+            android:layout_height="wrap_content"  
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"  
             android:layout_toLeftOf="@id/iv_Collect"
             android:textSize="@dimen/content"
             android:textColor="@color/navy"

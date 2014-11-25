@@ -415,16 +415,20 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				NoticeData noticeData = noticeDatas.get(i);
 				if(noticeData.getFriend_type() == 99){
 					//判断图片是否存在
-					if(new File(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png").exists()){
+					if(noticeData.getLogo() == null || noticeData.getLogo().equals("")){
 						
 					}else{
-						if(isThreadRun(i)){
-							//如果图片正在读取则跳过
+						if(new File(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png").exists()){
+							
 						}else{
-							photoThreadId.add(i);
-							new ImageThread(i).start();
+							if(isThreadRun(i)){
+								//如果图片正在读取则跳过
+							}else{
+								photoThreadId.add(i);
+								new ImageThread(i).start();
+							}
 						}
-					}
+					}					
 				}
 			}								
 		}

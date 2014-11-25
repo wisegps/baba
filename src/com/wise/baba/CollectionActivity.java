@@ -8,9 +8,6 @@ import nadapter.CollectionAdapter.CollectionItemListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
-
-import com.wise.setting.AccountActivity;
-
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
 import pubclas.Constant;

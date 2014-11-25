@@ -2,23 +2,18 @@ package com.wise.state;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.NetThread;
-
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.SearchMapActivity;
 import com.wise.notice.LetterActivity;
-import com.wise.setting.RegisterActivity;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -118,7 +113,6 @@ public class FaultDetailActivity extends Activity{
 			case R.id.risk:
 				String phone = app.carDatas.get(index)
 						.getInsurance_tel();
-				Log.e("my_log", "======>" + phone);
 				Intent in_1 = new Intent(
 						Intent.ACTION_DIAL,
 						Uri.parse("tel:" + (phone != null ? phone : "")));
@@ -128,7 +122,6 @@ public class FaultDetailActivity extends Activity{
 			case R.id.rescue:
 				String tel = app.carDatas.get(index)
 						.getMaintain_tel();
-				Log.e("my_log", "======>" + tel);
 				Intent in_2 = new Intent(Intent.ACTION_DIAL,
 						Uri.parse("tel:" + (tel != null ? tel : "")));
 				startActivity(in_2);
@@ -202,6 +195,9 @@ public class FaultDetailActivity extends Activity{
 	}
 	private void jsonData(){
 		try {
+			if(fault_content == null || fault_content.equals("")){
+				return;
+			}
 			JSONObject jObject = new JSONObject(fault_content);
 			int max_level = jObject.getInt("max_level");
 			String advice = jObject.getString("advice");

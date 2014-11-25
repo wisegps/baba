@@ -57,8 +57,13 @@ public class SeriesAdapter extends BaseAdapter {
 	}
 	
 	public void refresh(int action,List<String[]> typeList){
-		this.action = action;
-		this.typeList = typeList;
-		this.notifyDataSetChanged();
+		try {
+			//TODO 选着车型要修改，图片的存储方式要改为地址，方便修改的时候更新图片
+			this.action = action;
+			this.typeList = typeList;
+			this.notifyDataSetChanged();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

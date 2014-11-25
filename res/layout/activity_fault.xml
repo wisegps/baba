@@ -193,7 +193,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_toRightOf="@id/tv_city_weather"
                                         android:text="[  ]"
-                                        android:textColor="@color/blue_light"
+                                        android:textColor="@color/color_blue_light"
                                         android:textSize="@dimen/content" />
 
                                     <TextView
