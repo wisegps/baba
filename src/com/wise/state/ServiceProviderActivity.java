@@ -308,9 +308,6 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 //				intent.putExtra("name", app.friendDatas.get(arg2 - 1).getFriend_name());
 //				intent.putExtra("isShow", true);
 //				startActivity(intent);
-				Intent intent = new Intent(ServiceProviderActivity.this, ServiceManageActivity.class);
-				intent.putExtra("FriendId", app.friendDatas.get(arg2 - 1).getFriend_id());
-				startActivity(intent);
 			}
 		}
 	};
@@ -362,31 +359,43 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder holder;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.item_friend, null);
+				convertView = inflater.inflate(R.layout.item_service_friend, null);
 				holder = new ViewHolder();
 				holder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+				holder.tv_manage = (TextView) convertView.findViewById(R.id.tv_manage);
 				holder.iv_image = (CircleImageView) convertView.findViewById(R.id.iv_image);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-			FriendData friendData = app.friendDatas.get(position);
+			final FriendData friendData = app.friendDatas.get(position);
 			holder.tv_name.setText(friendData.getFriend_name());
 			if(position == 0){
 				//第一项是新的朋友
 				holder.iv_image.setImageResource(R.drawable.icon_people_no);
+				holder.tv_manage.setVisibility(View.GONE);
 			}else{
-				if(new File(Constant.userIconPath + friendData.getFriend_id() + ".png").exists()){
-					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + friendData.getFriend_id() + ".png");
+				holder.tv_manage.setVisibility(View.VISIBLE);
+				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png").exists()){
+					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png");
 					holder.iv_image.setImageBitmap(image);
 				}else{
 					holder.iv_image.setImageResource(R.drawable.icon_people_no);
 				}
-			}			
+			}
+			holder.tv_manage.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+					//TODO 跳转到管理界面
+					Intent intent = new Intent(ServiceProviderActivity.this, ServiceManageActivity.class);
+					intent.putExtra("FriendId", friendData.getFriend_id());
+					startActivity(intent);
+				}
+			});
 			return convertView;
 		}
 		private class ViewHolder {
-			TextView tv_name;
+			TextView tv_name,tv_manage;
 			CircleImageView iv_image;
 		}
 	}
@@ -453,8 +462,8 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 				break;
 			case 99://私信
 				//读取用户对应的图片
-				if(new File(Constant.userIconPath + noticeData.getFriend_id() + ".png").exists()){
-					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + noticeData.getFriend_id() + ".png");
+				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png").exists()){
+					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png");
 					holder.iv_image.setImageBitmap(image);
 				}else{
 					holder.iv_image.setImageResource(R.drawable.icon_people_no);
@@ -585,7 +594,7 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 			FriendData friendData = app.friendDatas.get(i);
 			if(friendData.getLogo() != null && (!friendData.getLogo().equals(""))){
 				//判断图片是否存在
-				if(new File(Constant.userIconPath + friendData.getFriend_id() + ".png").exists()){
+				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png").exists()){
 					
 				}else{
 					if(isFriendThreadRun(i)){
@@ -613,7 +622,7 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 			NoticeData noticeData = noticeDatas.get(i);
 			if(noticeData.getFriend_type() == 99){
 				//判断图片是否存在
-				if(new File(Constant.userIconPath + noticeData.getFriend_id() + ".png").exists()){
+				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png").exists()){
 					
 				}else{
 					if(isThreadRun(i)){
@@ -659,7 +668,7 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 			super.run();
 			Bitmap bitmap = GetSystem.getBitmapFromURL(app.friendDatas.get(position).getLogo());
 			if(bitmap != null){
-				GetSystem.saveImageSD(bitmap, Constant.userIconPath, app.friendDatas.get(position).getFriend_id() + ".png",100);
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(app.friendDatas.get(position).getLogo()) + ".png",100);
 			}
 			for (int i = 0; i < FriendId.size(); i++) {
 				if (FriendId.get(i) == position) {
@@ -683,7 +692,7 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 			super.run();
 			Bitmap bitmap = GetSystem.getBitmapFromURL(noticeDatas.get(position).getLogo());
 			if(bitmap != null){
-				GetSystem.saveImageSD(bitmap, Constant.userIconPath, noticeDatas.get(position).getFriend_id() + ".png",100);
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(noticeDatas.get(position).getLogo()) + ".png",100);
 			}
 			for (int i = 0; i < photoThreadId.size(); i++) {
 				if (photoThreadId.get(i) == position) {
