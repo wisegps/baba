@@ -125,7 +125,9 @@ public class SearchLocationActivity extends Activity {
 		SharedPreferences preferences = getSharedPreferences("history_search",
 				Activity.MODE_PRIVATE);
 		String historyJson = preferences.getString("historyJson", "");
-		getJsonData(historyJson);
+		if (historyJson != null && !historyJson.equals("")) {
+			getJsonData(historyJson);
+		}
 		if (historyDatas.size() == 0 || historyDatas == null) {
 			search_history.setVisibility(View.GONE);
 		} else {
