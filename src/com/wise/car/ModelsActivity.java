@@ -204,10 +204,14 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 		// 设置右侧触摸监听
 		sideBar.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
 			public void onTouchingLetterChanged(String s) {
-				int position = brandAdapter.getPositionForSection(s.charAt(0));
-				if (position != -1) {
-					lv_brand.setSelection(position);
-				}
+				try {
+					int position = brandAdapter.getPositionForSection(s.charAt(0));
+					if (position != -1) {
+						lv_brand.setSelection(position);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}				
 			}
 		});
 		getModelsData();		

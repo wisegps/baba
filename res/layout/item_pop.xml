@@ -6,10 +6,10 @@
     android:orientation="horizontal" >
     <Button 
         android:id="@+id/bt_item_pop"
-        android:background="@drawable/et_back"
+        android:background="@drawable/bg_pop"
         android:layout_margin="@dimen/margins"
         android:padding="@dimen/margins"
-        android:textColor="@color/color_navy"        
+        android:textColor="@color/color_navy_white"        
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

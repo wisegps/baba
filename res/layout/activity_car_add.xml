@@ -108,6 +108,7 @@
 	                    android:adjustViewBounds="true"
 	                    android:background="@null"
 	                    android:scaleType="fitCenter"
+						android:inputType="textEmailAddress"
 	                    android:src="@drawable/body_icon_pulldown" />
 	            </LinearLayout>	            
 		        <EditText
@@ -125,21 +126,23 @@
 	            android:layout_height="fill_parent"
 	            android:orientation="horizontal"
 				android:layout_marginTop="10dp"
+				android:padding="10dp"
 				android:background="@drawable/et_back">	            
 			    <TextView 
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
 		            android:textSize="@dimen/content"
-				    android:padding="10dp"
 				    android:textColor="@color/navy"
+				    android:layout_marginLeft="5dp"
 		            android:text="车型:"/>
 			    <TextView 
 			        android:id="@+id/tv_models"
+			        android:layout_marginLeft="5dp"
+			        android:layout_marginRight="5dp"
 		            android:layout_width="fill_parent"
 		            android:layout_height="wrap_content"
 		            android:textSize="@dimen/content"
-		            android:textColor="@color/navy"
-				    android:padding="10dp"/>
+		            android:textColor="@color/navy"/>
 	        </LinearLayout>
 	    </LinearLayout>
 	</ScrollView>

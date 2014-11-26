@@ -15,6 +15,7 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMap.OnMapLoadedCallback;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatusUpdate;
@@ -76,7 +77,8 @@ public class TravelMapActivity extends Activity {
 		iv_activity_travel_share.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_travel_map);
 		mBaiduMap = mMapView.getMap();
-		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
+		mBaiduMap.setOnMapLoadedCallback(callback);
+		//mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
 
 		TextView tv_travel_startPlace = (TextView) findViewById(R.id.tv_travel_startPlace);
 		TextView tv_travel_stopPlace = (TextView) findViewById(R.id.tv_travel_stopPlace);
@@ -189,7 +191,7 @@ public class TravelMapActivity extends Activity {
 			}
 		}
 	};
-
+	MapStatusUpdate u1;
 	private void jsonData(String result) {
 		if(result == null || result.equals("") || mMapView == null){
 			return;
@@ -211,7 +213,7 @@ public class TravelMapActivity extends Activity {
 				builder.include(ll);
 			}
 			LatLngBounds bounds = builder.build();
-			MapStatusUpdate u1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
+			u1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
 			mBaiduMap.animateMapStatus(u1);
 
 
@@ -246,6 +248,15 @@ public class TravelMapActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
+	
+	OnMapLoadedCallback callback = new OnMapLoadedCallback() {		
+		@Override
+		public void onMapLoaded() {
+			if(u1 != null){
+				mBaiduMap.animateMapStatus(u1);
+			}
+		}
+	};
 
 	@Override
 	protected void onDestroy() {

@@ -72,11 +72,11 @@ public class CarAddActivity extends Activity {
 			bt_jump.setVisibility(View.GONE);
 		}
 		device_id = getIntent().getStringExtra("device_id");
-
+		System.out.println("app.Province = " + app.Province);
 		// 根据定位城市选定车牌号
-		for (int i = 0; i < provinces.length; i++) {
-			if (provinces[i][0].equals(app.Province)) {
-				choose_car_province.setText(provinces[i][1]);
+		for (int i = 0; i < Constant.provinces.length; i++) {
+			if (Constant.provinces[i][0].equals(app.Province)) {
+				choose_car_province.setText(Constant.provinces[i][1]);
 				break;
 			}
 		}
@@ -155,17 +155,6 @@ public class CarAddActivity extends Activity {
 					.show();
 		}
 	}
-
-	String provinces[][] = { { "北京", "京" }, { "天津", "津" }, { "河北", "冀" },
-			{ "山西", "晋" }, { "内蒙古", "蒙" }, { "辽宁", "辽" }, { "吉林", "吉" },
-			{ "黑龙江", "黑" }, { "上海", "沪" }, { "江苏", "苏" }, { "浙江", "浙" },
-			{ "安徽", "皖" }, { "福建", "闽" }, { "江西", "赣" }, { "山东", "鲁" },
-			{ "河南", "豫" }, { "湖北", "鄂" }, { "湖南", "湘" }, { "广东", "粤" },
-			{ "广西", "桂" }, { "海南", "琼" }, { "重庆", "渝" }, { "四川", "川" },
-			{ "贵州", "黔" }, { "云南", "云" }, { "西藏", "藏" }, { "陕西", "陕" },
-			{ "甘肃", "甘" }, { "青海", "青" }, { "宁夏", "宁" },
-			{ "新疆", "新" }, { "香港特别行政区", "港" }, { "澳门特别行政区", "澳" },
-			{ "台湾省", "台" } };
 
 	private void addCar() {
 		String nick_name = et_nick_name.getText().toString().trim();
