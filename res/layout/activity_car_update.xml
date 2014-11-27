@@ -120,7 +120,6 @@
                             android:adjustViewBounds="true"
                             android:background="@null"
                             android:scaleType="fitCenter"
-							android:inputType="textEmailAddress"
                             android:src="@drawable/body_icon_pulldown" />
                     </LinearLayout>
 
@@ -131,6 +130,7 @@
                         android:background="@null"
                         android:maxLength="11"
                         android:padding="10dp"
+						android:inputType="textEmailAddress"
                         android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
                 </LinearLayout>
@@ -377,6 +377,7 @@
                         android:maxLength="15"
                         android:padding="10dp"
                         android:singleLine="true"
+                        android:inputType="phone"
                         android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
                 </LinearLayout>
@@ -495,6 +496,7 @@
                         android:background="@null"
                         android:padding="10dp"
                         android:singleLine="true"
+                        android:inputType="phone"
                         android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
                 </LinearLayout>
