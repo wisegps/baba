@@ -12,7 +12,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="震动灵敏度"
+            android:text="灵敏度：(1为最高)"
             android:textSize="@dimen/content" />
 		<RelativeLayout 
 		    android:layout_width="fill_parent"
@@ -42,7 +42,7 @@
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"    
 	        android:background="@drawable/bg_fence"
-	        android:text="设置震灵敏度"
+	        android:text="设置震动灵敏度"
 	        android:textColor="@color/white" />
 	    <ProgressBar
            android:id="@+id/pb_vibrate"

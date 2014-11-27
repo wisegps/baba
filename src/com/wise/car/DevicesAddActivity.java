@@ -104,6 +104,8 @@ public class DevicesAddActivity extends Activity {
 		} else {
 			tv_jump.setVisibility(View.GONE);
 		}
+		startActivityForResult(new Intent(DevicesAddActivity.this,
+				BarcodeActivity.class), 0);
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
