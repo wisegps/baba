@@ -594,29 +594,32 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	/**获取显示区域的图片**/
 	private void getPersionImage(){
 		int start = lv_notice.getFirstVisiblePosition();
-		if(start != 0){
-			start--;
-		}
 		int stop = lv_notice.getLastVisiblePosition();		
 		for(int i = start ; i < stop ; i++){
 			if(i >= noticeDatas.size()){
 				return ;
 			}
 			NoticeData noticeData = noticeDatas.get(i);
-			if(noticeData.getFriend_type() == 99){
-				//判断图片是否存在
-				if(new File(Constant.userIconPath + noticeData.getFriend_id() + ".png").exists()){
-					
-				}else{
-					if(isThreadRun(i)){
-						//如果图片正在读取则跳过
+			
+				if(noticeData.getFriend_type() == 99){
+					//判断图片是否存在
+					if(noticeData.getLogo() == null || noticeData.getLogo().equals("")){
+						
 					}else{
-						photoThreadId.add(i);
-						new ImageThread(i).start();
-					}
+						
+						if(new File(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png").exists()){
+							
+						}else{
+							if(isThreadRun(i)){
+								//如果图片正在读取则跳过
+							}else{
+								photoThreadId.add(i);
+								new ImageThread(i).start();
+							}
+						}
+					}					
 				}
-			}					
-		}
+			}		
 	}
 	
 	List<Integer> FriendId = new ArrayList<Integer>();
@@ -673,24 +676,28 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		@Override
 		public void run() {
 			super.run();
-			Bitmap bitmap = GetSystem.getBitmapFromURL(noticeDatas.get(position).getLogo());
-			if(bitmap != null){
-				String logo = noticeDatas.get(position).getLogo();
-				if(logo == null || logo.equals("")){
-					
-				}else{
-					GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(logo) + ".png",100);
+			try {
+				Bitmap bitmap = GetSystem.getBitmapFromURL(noticeDatas.get(position).getLogo());
+				if(bitmap != null){
+					String logo = noticeDatas.get(position).getLogo();
+					if(logo == null || logo.equals("")){
+						
+					}else{
+						GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(logo) + ".png",100);
+					}
 				}
-			}
-			for (int i = 0; i < photoThreadId.size(); i++) {
-				if (photoThreadId.get(i) == position) {
-					photoThreadId.remove(i);
-					break;
+				for (int i = 0; i < photoThreadId.size(); i++) {
+					if (photoThreadId.get(i) == position) {
+						photoThreadId.remove(i);
+						break;
+					}
 				}
-			}
-			Message message = new Message();
-			message.what = getFriendImage;
-			handler.sendMessage(message);
+				Message message = new Message();
+				message.what = getFriendImage;
+				handler.sendMessage(message);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
 		}
 	}
 	

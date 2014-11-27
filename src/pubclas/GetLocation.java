@@ -74,9 +74,8 @@ public class GetLocation {
 				// if(province != null && province.length() > 0){
 				// province = province.substring(0, province.length() - 1);
 				// //去掉"省"
-				// }				
-				app.Adress = location.getAddrStr();				
-				app.City = city;
+				// }
+				app.Adress = location.getAddrStr();
 	            //发送定位城市广播，选择城市用到
 	            Intent intent = new Intent(Constant.A_City);
 	            intent.putExtra("City", city);

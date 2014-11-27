@@ -1,5 +1,6 @@
 package com.wise.state;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,9 @@ import customView.FaultDeletionView;
 import customView.OnViewChangeListener;
 import data.CarData;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -320,7 +323,6 @@ public class FaultDetectionActivity extends Activity {
 					case R.id.risk:
 						String phone = app.carDatas.get(index)
 								.getInsurance_tel();
-						Log.e("my_log", "======>" + phone);
 						Intent in_1 = new Intent(
 								Intent.ACTION_DIAL,
 								Uri.parse("tel:" + (phone != null ? phone : "")));
@@ -330,7 +332,6 @@ public class FaultDetectionActivity extends Activity {
 					case R.id.rescue:
 						String tel = app.carDatas.get(index)
 								.getMaintain_tel();
-						Log.e("my_log", "======>" + tel);
 						Intent in_2 = new Intent(Intent.ACTION_DIAL,
 								Uri.parse("tel:" + (tel != null ? tel : "")));
 						startActivity(in_2);
@@ -374,7 +375,6 @@ public class FaultDetectionActivity extends Activity {
 				break;
 			case getFault:
 				fault_content = msg.obj.toString();
-				GetSystem.myLog(TAG, "fault_content = " + fault_content);
 				break;
 			case refresh_score:
 				carViews.get(msg.arg1).getTv_score()
@@ -924,9 +924,9 @@ public class FaultDetectionActivity extends Activity {
 	}
 
 	/** 获取健康数据 **/
-	private void getData(int index) {
+	private void getData(final int index) {		
 		try {
-			String Device_id = app.carDatas.get(index).getDevice_id();
+			final String Device_id = app.carDatas.get(index).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
 				Intent intent = new Intent(FaultDetectionActivity.this,
 						DevicesAddActivity.class);
@@ -938,11 +938,26 @@ public class FaultDetectionActivity extends Activity {
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
-				initapp();
-				String url = Constant.BaseUrl + "device/" + Device_id
-							+ "/health_exam?auth_code=" + app.auth_code + "&brand=" + 
-									URLEncoder.encode(app.carDatas.get(index).getCar_brand(), "UTF-8");
-				new NetThread.GetDataThread(handler, url, getData, index).start();
+				AlertDialog.Builder dialog = new AlertDialog.Builder(FaultDetectionActivity.this);   
+				dialog.setTitle("提示");  
+				dialog.setMessage("请先启动车辆，等待1到3分钟后，再进行车辆体检。"); 
+				dialog.setPositiveButton("体检", new DialogInterface.OnClickListener() {					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						initapp();
+						String url;
+						try {
+							url = Constant.BaseUrl + "device/" + Device_id
+										+ "/health_exam?auth_code=" + app.auth_code + "&brand=" + 
+												URLEncoder.encode(app.carDatas.get(index).getCar_brand(), "UTF-8");
+
+							new NetThread.GetDataThread(handler, url, getData, index).start();
+						} catch (UnsupportedEncodingException e) {
+							e.printStackTrace();
+						}
+					}
+				}).setNegativeButton("取消", null)
+				.show(); 
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -971,8 +986,6 @@ public class FaultDetectionActivity extends Activity {
 							.getString("active_obd_err")));
 					new NetThread.postDataThread(handler, url, params, getFault)
 							.start();
-					GetSystem
-							.myLog(TAG, jsonObject.getString("active_obd_err"));
 					tv_guzhang.setText("有" + jsonErrArray.length() + "个故障");
 					tv_guzhang.setTextColor(getResources().getColor(
 							R.color.yellow));

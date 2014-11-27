@@ -415,16 +415,18 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 				}
 			});
 			//TODO 控制
-			System.out.println("m.status = " + m.status);
 			if(m.status == MKOLUpdateElement.SUSPENDED){
 				viewHolder.bt_update.setText("下载地图");
 				viewHolder.bt_update.setEnabled(true);
+				viewHolder.bt_update.setVisibility(View.VISIBLE);
 			}else if(m.status == MKOLUpdateElement.DOWNLOADING){
 				viewHolder.bt_update.setText("暂停");
 				viewHolder.bt_update.setEnabled(true);
+				viewHolder.bt_update.setVisibility(View.VISIBLE);
 			}else if(m.status == MKOLUpdateElement.FINISHED){
 				viewHolder.bt_update.setText("下载地图");
 				viewHolder.bt_update.setEnabled(false);
+				viewHolder.bt_update.setVisibility(View.VISIBLE);
 			}
 			viewHolder.bt_update.setOnClickListener(new OnClickListener() {				
 				@Override
@@ -435,6 +437,8 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 						mOffline.pause(m.cityID);
 						setOfflineCityData();
 						citysAdapter.notifyDataSetChanged();
+					}else if(m.update){
+						mOffline.start(m.cityID);
 					}
 				}
 			});
@@ -449,15 +453,19 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 			});
 			if (m.ratio != 100) {
 				viewHolder.bt_update.setEnabled(true);
+				viewHolder.bt_update.setVisibility(View.VISIBLE);
 				viewHolder.tv_city_size.setText("更新进度：" + m.ratio + "%");
 				viewHolder.tv_city_size.setTextColor(getResources().getColor(R.color.pink));
 			}else{
 				if(m.update){//可更新
 					viewHolder.bt_update.setEnabled(true);
+					viewHolder.bt_update.setVisibility(View.VISIBLE);
 					viewHolder.tv_city_size.setText("(有更新包-" + formatDataSize(m.serversize) + ")");
 					viewHolder.tv_city_size.setTextColor(getResources().getColor(R.color.Green));
 				}else{
 					viewHolder.bt_update.setEnabled(false);
+					viewHolder.bt_update.setText("下载地图");
+					viewHolder.bt_update.setVisibility(View.INVISIBLE);
 					viewHolder.tv_city_size.setText("(" + formatDataSize(m.size) + ")");
 					viewHolder.tv_city_size.setTextColor(getResources().getColor(R.color.navy));
 				}

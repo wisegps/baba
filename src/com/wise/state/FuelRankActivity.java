@@ -98,6 +98,7 @@ public class FuelRankActivity extends Activity{
 			case getData:
 				jsonData(msg.obj.toString(),msg.arg1);
 				fuelAdapter.notifyDataSetChanged();
+				getPersionImage();
 				break;
 			case getPersionImage:
 				fuelAdapter.notifyDataSetChanged();
@@ -288,7 +289,10 @@ public class FuelRankActivity extends Activity{
 		int start = lv_fuel.getFirstVisiblePosition();
 		int stop = lv_fuel.getLastVisiblePosition();		
 		for(int i = start ; i <= stop ; i++){
-			if(start == 0){
+			if(i >= fuelDatas.size()){
+				break;
+			}
+			if(fuelDatas.get(i).getLogo() == null || fuelDatas.get(i).getLogo().equals("")){
 				
 			}else{
 				//判断图片是否存在
@@ -302,7 +306,7 @@ public class FuelRankActivity extends Activity{
 						new ImageThread(i).start();
 					}
 				}
-			}			
+			}						
 		}
 	}
 	List<Integer> photoThreadId = new ArrayList<Integer>();
