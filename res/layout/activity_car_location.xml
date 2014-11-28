@@ -58,11 +58,12 @@
             android:text="寻车"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
-	
-				<View 
-				    android:layout_height="fill_parent"
-				    android:layout_width="0.5dp"
-				    android:background="@color/white"/>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="fill_parent"
+            android:background="@color/white" />
+
         <Button
             android:id="@+id/bt_location_travel"
             android:layout_width="fill_parent"
@@ -75,11 +76,12 @@
             android:text="行程"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
-	
-				<View 
-				    android:layout_height="fill_parent"
-				    android:layout_width="0.5dp"
-				    android:background="@color/white"/>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="fill_parent"
+            android:background="@color/white" />
+
         <Button
             android:id="@+id/bt_location_periphery"
             android:layout_width="fill_parent"
@@ -92,11 +94,12 @@
             android:text="周边"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
-	
-				<View 
-				    android:layout_height="fill_parent"
-				    android:layout_width="0.5dp"
-				    android:background="@color/white"/>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="fill_parent"
+            android:background="@color/white" />
+
         <Button
             android:id="@+id/bt_location_fence"
             android:layout_width="fill_parent"
@@ -125,52 +128,56 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_main"
         android:layout_margin="5dp"
-        android:gravity="center_vertical"
         android:background="@drawable/bg_adress"
+        android:gravity="center_vertical"
         android:orientation="horizontal" >
+
         <TextView
             android:id="@+id/search_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:layout_weight="1"
             android:drawableLeft="@drawable/toolbar_icon_search"
-            android:layout_marginLeft="5dp"
             android:gravity="center_vertical"
             android:singleLine="true"
             android:text="搜地点，找路线" />
+
         <View
             android:layout_width="0.5dp"
             android:layout_height="fill_parent"
-            android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
             android:background="@color/gay_line" />
-		<ImageView
-		    android:id="@+id/iv_home" 
-		    android:layout_width="40dp"
-		    android:layout_height="40dp"
-		    android:paddingTop="10dp"
-		    android:paddingBottom="10dp"
-		    android:paddingRight="5dp"
-		    android:paddingLeft="10dp"
-		    android:src="@drawable/home"/>
-		<ImageView 
-		    android:id="@+id/iv_conpany" 
-		    android:layout_width="40dp"
-		    android:layout_height="40dp"
-		    android:paddingTop="10dp"
-		    android:paddingBottom="10dp"
-		    android:paddingRight="10dp"
-		    android:paddingLeft="5dp"
-		    android:src="@drawable/conpany"/>
+
+        <ImageView
+            android:id="@+id/iv_home"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="5dp"
+            android:paddingTop="10dp"
+            android:src="@drawable/home" />
+
+        <ImageView
+            android:id="@+id/iv_conpany"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:src="@drawable/conpany" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp"
         android:layout_below="@id/ll_search"
+        android:layout_marginRight="5dp"
         android:orientation="vertical" >
 
         <ImageView
@@ -191,6 +198,14 @@
 
         <ImageView
             android:id="@+id/iv_streetscape"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/main_button"
+            android:padding="10dp"
+            android:src="@drawable/main_map_icon_streetscape" />
+
+        <ImageView
+            android:id="@+id/iv_tracking"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/main_button"

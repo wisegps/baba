@@ -106,6 +106,8 @@ public class CarLocationActivity extends Activity {
 		iv_maplayers.setOnClickListener(onClickListener);
 		ImageView iv_streetscape = (ImageView) findViewById(R.id.iv_streetscape);
 		iv_streetscape.setOnClickListener(onClickListener);
+		ImageView iv_tracking = (ImageView) findViewById(R.id.iv_tracking);
+		iv_tracking.setOnClickListener(onClickListener);
 		iv_traffic = (ImageView) findViewById(R.id.iv_traffic);
 		iv_traffic.setOnClickListener(onClickListener);
 		TextView tv_car_name = (TextView) findViewById(R.id.tv_car_name);
@@ -392,6 +394,11 @@ public class CarLocationActivity extends Activity {
 				startActivity(new Intent(CarLocationActivity.this,
 						OfflineActivity.class));
 				break;
+			case R.id.iv_tracking:
+				// 追踪
+				
+				
+				break;
 			}
 		}
 	};
@@ -415,7 +422,6 @@ public class CarLocationActivity extends Activity {
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Log.e("my_log", carLocat.latitude + " , " + carLocat.longitude);
 				GetSystem.FindCar(CarLocationActivity.this, startLocat,
 						carLocat, "", "");
 			}
