@@ -27,9 +27,12 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
+import com.baidu.mapapi.model.LatLngBounds.Builder;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
@@ -93,6 +96,10 @@ public class CarLocationActivity extends Activity {
 
 	TextView searchAddress;
 	ImageView iv_traffic;
+	// LinearLayout ll_tracking;
+
+	// 追踪点集合
+	List<CarData> carDatas = new ArrayList<CarData>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +107,8 @@ public class CarLocationActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_location);
 		app = (AppApplication) getApplication();
+
+		// ll_tracking = (LinearLayout) findViewById(R.id.ll_tracking);
 		ImageView iv_more = (ImageView) findViewById(R.id.iv_more);
 		iv_more.setOnClickListener(onClickListener);
 		ImageView iv_maplayers = (ImageView) findViewById(R.id.iv_maplayers);
@@ -396,12 +405,14 @@ public class CarLocationActivity extends Activity {
 				break;
 			case R.id.iv_tracking:
 				// 追踪
-				
-				
+				isTracking = true;
 				break;
 			}
 		}
 	};
+
+	// 开启追踪
+	boolean isTracking = false;
 	/** 地图类型 **/
 	int MapType = 1;
 	/** 实时路口 **/
@@ -629,13 +640,8 @@ public class CarLocationActivity extends Activity {
 		circle = new LatLng(carData.getLat(), carData.getLon());
 		if (carMarker != null) {
 			carMarker.remove();
-		} else {
-			MapStatus mapStatus = new MapStatus.Builder().target(circle)
-					.build();
-			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
-					.newMapStatus(mapStatus);
-			mBaiduMap.setMapStatus(mapStatusUpdate);
 		}
+
 		// 构建Marker图标
 		BitmapDescriptor bitmap = BitmapDescriptorFactory
 				.fromResource(R.drawable.body_icon_location2);
@@ -644,6 +650,11 @@ public class CarLocationActivity extends Activity {
 				.position(circle).icon(bitmap);
 		// 在地图上添加Marker，并显示
 		carMarker = (Marker) (mBaiduMap.addOverlay(option));
+
+		MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
+		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
+				.newMapStatus(mapStatus);
+		mBaiduMap.setMapStatus(mapStatusUpdate);
 
 	}
 
@@ -691,9 +702,46 @@ public class CarLocationActivity extends Activity {
 			carData.setLat(lat);
 			carData.setLon(lon);
 			carData.setDirect(jsonObject.getInt("direct"));
+
+			CarData data = new CarData();
+			data.setLat(lat);
+			data.setLon(lon);
+			carDatas.add(data);
+			if (isTracking) {
+				trackingCar();
+			}
 			getCarLocation();
 		} catch (JSONException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void trackingCar() {
+		mBaiduMap.clear();
+		LatLngBounds.Builder builder = new Builder();
+		// 添加折线
+		List<LatLng> points = new ArrayList<LatLng>();
+		for (int i = 0; i < carDatas.size(); i++) {
+			LatLng lal = new LatLng(carDatas.get(i).getLat(), carDatas.get(i)
+					.getLon());
+			points.add(lal);
+			builder.include(lal);
+		}
+		LatLngBounds bounds = builder.build();
+		MapStatusUpdate mu1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
+		mBaiduMap.animateMapStatus(mu1);
+
+		if (points.size() > 1) {
+			LatLng p1LL = points.get(0);
+			LatLng p2LL = new LatLng(
+					carDatas.get(carDatas.size() - 1).getLat(), carDatas.get(
+							carDatas.size() - 1).getLon());
+			double distance = DistanceUtil.getDistance(p1LL, p2LL);
+			if (distance > 10) {
+				OverlayOptions ooPolyline = new PolylineOptions().color(
+						0xFF0000C6).points(points);
+				mBaiduMap.addOverlay(ooPolyline);
+			}
 		}
 	}
 
@@ -987,6 +1035,7 @@ public class CarLocationActivity extends Activity {
 		mMapView.onDestroy();
 		mMapView = null;
 		isStop = false;
+		isTracking = false;
 	}
 
 	@Override
