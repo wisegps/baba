@@ -138,6 +138,7 @@ public class CaptchaActivity extends Activity{
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			valid_code = jsonObject.getString("valid_code");
+			System.out.println("valid_code = " + valid_code);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
