@@ -451,24 +451,28 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		@Override
 		public void run() {
 			super.run();
-			Bitmap bitmap = GetSystem.getBitmapFromURL(noticeDatas.get(position).getLogo());
-			if(bitmap != null){
-				String logo = noticeDatas.get(position).getLogo();
-				if(logo == null || logo.equals("")){
-					
-				}else{
-					GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(logo) + ".png",100);
+			try {
+				Bitmap bitmap = GetSystem.getBitmapFromURL(noticeDatas.get(position).getLogo());
+				if(bitmap != null){
+					String logo = noticeDatas.get(position).getLogo();
+					if(logo == null || logo.equals("")){
+						
+					}else{
+						GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(logo) + ".png",100);
+					}
 				}
-			}
-			for (int i = 0; i < photoThreadId.size(); i++) {
-				if (photoThreadId.get(i) == position) {
-					photoThreadId.remove(i);
-					break;
+				for (int i = 0; i < photoThreadId.size(); i++) {
+					if (photoThreadId.get(i) == position) {
+						photoThreadId.remove(i);
+						break;
+					}
 				}
-			}
-			Message message = new Message();
-			message.what = getFriendImage;
-			handler.sendMessage(message);
+				Message message = new Message();
+				message.what = getFriendImage;
+				handler.sendMessage(message);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
 		}
 	}
 	String refresh = "";

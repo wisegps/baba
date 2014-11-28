@@ -165,11 +165,22 @@
             android:id="@+id/iv_conpany"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:background="@drawable/bg_common"
             android:paddingBottom="10dp"
             android:paddingLeft="5dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp"
-            android:src="@drawable/conpany" />
+            android:src="@drawable/home" />
+
+        <ImageView
+            android:id="@+id/iv_conpany"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_common"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp" />
     </LinearLayout>
 
     <LinearLayout

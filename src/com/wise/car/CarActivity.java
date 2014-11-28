@@ -435,7 +435,7 @@ public class CarActivity extends Activity {
 		FileOutputStream b = null;
 		try {
 			b = new FileOutputStream(fileName);
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// 把数据写入文件
+			bitmap.compress(Bitmap.CompressFormat.PNG, 100, b);// 把数据写入文件
 			Message msg = new Message();
 			msg.what = get_image;
 			handler.sendMessage(msg);
