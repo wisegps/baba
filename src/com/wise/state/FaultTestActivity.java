@@ -11,7 +11,6 @@ import pubclas.GetSystem;
 import pubclas.NetThread;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
-import com.umeng.update.UpdateConfig;
 import com.wise.baba.AppApplication;
 import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
@@ -172,8 +171,6 @@ public class FaultTestActivity extends FragmentActivity {
 		getWeather();
 		new CycleNstvThread().start();
 		//getVersion();
-
-		UpdateConfig.setDebug(true);
 		UmengUpdateAgent.update(this);
 	}
 
