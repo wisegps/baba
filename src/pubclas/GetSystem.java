@@ -451,7 +451,6 @@ public class GetSystem {
 			final LatLng pt2, String str1, String str2) {
 		BNaviPoint startPoint = new BNaviPoint(pt1.longitude, pt1.latitude, "", BNaviPoint.CoordinateType.BD09_MC);
 		BNaviPoint endPoint = new BNaviPoint(pt2.longitude, pt2.latitude, "", BNaviPoint.CoordinateType.BD09_MC);
-		Log.e("my_log", "====>" + pt1.latitude + ";" + pt1.longitude);
 		BaiduNaviManager.getInstance().launchNavigator(
 				mActivity, 
 				startPoint, 

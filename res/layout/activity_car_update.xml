@@ -254,7 +254,6 @@
                             android:layout_weight="1"
                             android:background="@null"
                             android:hint="选填"
-							android:inputType="textEmailAddress"
                             android:padding="10dp"
                             android:textColor="@color/navy"
                             android:textSize="@dimen/content" />
@@ -303,7 +302,6 @@
                             android:layout_weight="1"
                             android:background="@null"
                             android:hint="选填"
-							android:inputType="textEmailAddress"
                             android:padding="10dp"
                             android:textColor="@color/navy"
                             android:textSize="@dimen/content" />
@@ -434,7 +432,6 @@
                         android:background="@null"
                         android:padding="10dp"
                         android:singleLine="true"
-						android:inputType="textEmailAddress"
                         android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
                 </LinearLayout>

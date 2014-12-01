@@ -38,7 +38,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/gray_light"
-            android:padding="5dp" >
+            android:padding="@dimen/margins" >
 
             <TextView
                 android:id="@+id/tv_travel_date"
@@ -51,10 +51,10 @@
 
             <ImageView
                 android:id="@+id/iv_activity_travel_data_previous"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:padding="5dp"
-                android:background="@drawable/bg_green_light"
+                android:layout_width="40dp"
+                android:layout_height="@dimen/double_margins"
+                android:paddingLeft="@dimen/margins"
+                android:paddingRight="@dimen/margins"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@id/tv_travel_date"
                 android:contentDescription="@string/app_name"
@@ -62,10 +62,8 @@
 
             <ImageView
                 android:id="@+id/iv_activity_travel_data_next"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:padding="5dp"
-                android:background="@drawable/bg_green_light"
+                android:layout_width="40dp"
+                android:layout_height="@dimen/double_margins"
                 android:paddingLeft="@dimen/margins"
                 android:paddingRight="@dimen/margins"
                 android:layout_centerVertical="true"

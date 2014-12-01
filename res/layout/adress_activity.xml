@@ -31,13 +31,12 @@
         <TextView
             android:id="@+id/address_add"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/title_hight"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/margins"
             android:gravity="center"
             android:padding="@dimen/margins"
-            android:background="@drawable/bg_common"
             android:text="添加"
             android:textColor="@color/white"
             android:textSize="@dimen/content" />
@@ -86,7 +85,6 @@
                 android:layout_gravity="center_vertical"
                 android:adjustViewBounds="true"
                 android:scaleType="center"
-                android:background="@drawable/bg_common"
                 android:src="@drawable/map_delete"
                 android:visibility="gone" />
         </LinearLayout>
@@ -113,9 +111,8 @@
 
             <ImageView
                 android:id="@+id/ad_navigation_1"
-                android:layout_width="40dp"
-		        android:layout_height="40dp"
-		        android:padding="10dp"
+                android:layout_width="36dip"
+                android:layout_height="fill_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_marginRight="5dip"
                 android:adjustViewBounds="true"
@@ -125,13 +122,11 @@
 
             <ImageView
                 android:id="@+id/ad_delete_1"
-                android:layout_width="40dp"
-		        android:layout_height="40dp"
-		        android:padding="10dp"
+                android:layout_width="36dip"
+                android:layout_height="fill_parent"
                 android:layout_gravity="center_vertical"
                 android:adjustViewBounds="true"
                 android:scaleType="center"
-                android:background="@drawable/bg_common"
                 android:src="@drawable/map_delete"
                 android:visibility="gone" />
         </LinearLayout>

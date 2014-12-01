@@ -37,7 +37,6 @@
 	    android:padding="@dimen/margins"
 	    android:textColor="@color/blue_account"
 	    android:background="@drawable/et_back"
-	    android:inputType="textEmailAddress"
 	    android:hint="请输入手机号码或邮箱"/>	
 	<Button 
 	    android:id="@+id/bt_register"

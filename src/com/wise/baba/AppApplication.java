@@ -36,10 +36,7 @@ public class AppApplication extends LitePalApplication {
 	 * 当前定位城市
 	 */
 	public String City = "";
-	/**当前选着省份**/
 	public String Province = "";
-	/**当前定位省份**/
-	public String LProvince = "";
 	/**
 	 * 当前经度
 	 */

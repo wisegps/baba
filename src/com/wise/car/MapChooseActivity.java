@@ -49,7 +49,7 @@ public class MapChooseActivity extends Activity {
 
 		mMapView = (MapView) findViewById(R.id.choose_map);
 		mBaiduMap = mMapView.getMap();
-		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(17));
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(12));
 		mBaiduMap.setOnMapClickListener(listener);
 		// 开启定位图层
 		mBaiduMap.setMyLocationEnabled(true);
@@ -123,9 +123,9 @@ public class MapChooseActivity extends Activity {
 					finish();
 				}
 			});
-			button.setBackgroundResource(R.drawable.icon_ar_popup_normal);
+			button.setBackgroundResource(R.drawable.popup);
 			button.setText("点击选择地址");
-			button.setTextColor(getResources().getColor(R.color.color_white));
+			button.setTextColor(0xff333333);
 			InfoWindow infoWindow = new InfoWindow(button, point, 0);
 			mBaiduMap.showInfoWindow(infoWindow);
 		}

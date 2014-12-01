@@ -1,7 +1,5 @@
 package com.wise.violation;
 
-import pubclas.Constant;
-
 import com.wise.baba.R;
 import android.app.Activity;
 import android.content.Intent;
@@ -43,7 +41,7 @@ public class ShortProvincesActivity extends Activity {
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			String province = Constant.provinces[arg2][1];
+			String province = provinces[arg2];
 			if(province.equals("")){
 				
 			}else{
@@ -55,7 +53,7 @@ public class ShortProvincesActivity extends Activity {
 		}
 	};
 
-	private String[] provinces1 = { "京", "津", "沪", "渝", "冀", "豫", "云", "辽", "黑",
+	private String[] provinces = { "京", "津", "沪", "渝", "冀", "豫", "云", "辽", "黑",
 			"湘", "皖", "鲁", "新", "苏", "浙", "赣", "鄂", "桂", "甘", "晋", "蒙", "陕",
 			"吉", "闽", "贵", "粤", "青", "藏", "川", "宁", "琼", "" };
 
@@ -65,12 +63,12 @@ public class ShortProvincesActivity extends Activity {
 
 		@Override
 		public int getCount() {
-			return Constant.provinces.length;
+			return provinces.length;
 		}
 
 		@Override
 		public Object getItem(int position) {
-			return Constant.provinces[position][1];
+			return provinces[position];
 		}
 
 		@Override
@@ -93,7 +91,7 @@ public class ShortProvincesActivity extends Activity {
 			}
 			holder.tv_province.setBackgroundColor(getResources().getColor(
 					R.color.white));
-			holder.tv_province.setText(Constant.provinces[position][1]);
+			holder.tv_province.setText(provinces[position]);
 			return convertView;
 		}
 

@@ -159,19 +159,56 @@
             android:paddingLeft="10dp"
             android:paddingRight="5dp"
             android:paddingTop="10dp"
-            android:background="@drawable/bg_common"
             android:src="@drawable/home" />
 
         <ImageView
             android:id="@+id/iv_conpany"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:background="@drawable/bg_common"
             android:paddingBottom="10dp"
             android:paddingLeft="5dp"
             android:paddingRight="10dp"
             android:paddingTop="10dp"
+            android:src="@drawable/home" />
+
+        <ImageView
+            android:id="@+id/iv_conpany"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@drawable/bg_common"
-            android:src="@drawable/conpany" />
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_tracking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_search"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="5dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="车辆追踪中...."
+            android:textSize="@dimen/title" />
+
+        <TextView
+            android:id="@+id/tv_tracking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dip"
+            android:background="@drawable/bg_adress"
+            android:padding="3dip"
+            android:text="取消追踪" />
     </LinearLayout>
 
     <LinearLayout
@@ -200,6 +237,14 @@
 
         <ImageView
             android:id="@+id/iv_streetscape"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/main_button"
+            android:padding="10dp"
+            android:src="@drawable/main_map_icon_streetscape" />
+
+        <ImageView
+            android:id="@+id/iv_tracking"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/main_button"
