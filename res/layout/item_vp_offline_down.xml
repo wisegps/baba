@@ -1,14 +1,61 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_alignParentBottom="true" 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_lights"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_update" 
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="@dimen/content"
+            android:padding="5dp"
+            android:textColor="@color/gray"
+            android:enabled="false"
+            android:text="全部更新"/>
+        <View 
+            android:layout_height="fill_parent"
+            android:layout_width="0.5dp"
+            android:background="@color/gay_line"/>
+        <TextView 
+            android:id="@+id/tv_down" 
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="@dimen/content"
+            android:padding="5dp"
+            android:textColor="@color/black1"
+            android:text="全部下载"/>
+        <View 
+            android:layout_height="fill_parent"
+            android:layout_width="0.5dp"
+            android:background="@color/gay_line"/>
+        <TextView 
+            android:id="@+id/tv_pause" 
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="@dimen/content"
+            android:padding="5dp"
+            android:textColor="@color/black1"
+            android:text="全部暂停"/>
+    </LinearLayout>
     <ListView
         android:id="@+id/lv_offline"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/ll_bottom"
         android:cacheColorHint="#00000000"
         android:divider="@color/gay_line"
         android:dividerHeight="0.5dp" >
     </ListView>
-</LinearLayout>
+</RelativeLayout>
