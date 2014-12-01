@@ -911,15 +911,16 @@ public class CarLocationActivity extends Activity {
 		params.add(new BasicNameValuePair("cmd_type", COMMAND_VIBRATEALERT));
 		params.add(new BasicNameValuePair("params", "{sensitivity: " + vibrate
 				+ "}"));
+		Log.e("my_log", "vibrate :" + vibrate);
 		new NetThread.postDataThread(handler, url, params, set_vibrate).start();
 	}
 
 	private void jsonVibrate(String result) {
 		System.out.println(result);
+		Log.e("my_log", "result :" + result);
 		pb_vibrate.setVisibility(View.GONE);
 		try {
 			JSONObject jsonObject = new JSONObject(result);
-
 			if (jsonObject.getInt("status_code") == 0) {
 				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度成功",
 						Toast.LENGTH_SHORT).show();
