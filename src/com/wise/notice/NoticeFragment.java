@@ -135,13 +135,11 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			case getNotice:
 				jsonData(msg.obj.toString());
 				noticeAdapter.notifyDataSetChanged();
-				System.out.println("getNotice");
 				getPersionImage();
 				break;
 			case refreshNotice:
 				refresh = msg.obj.toString();
 				lv_notice.runFast(0);
-				System.out.println("refreshNotice");
 				getPersionImage();
 				break;
 
@@ -390,7 +388,6 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				break;
 			case OnScrollListener.SCROLL_STATE_IDLE://停止
 				//读取图片
-				System.out.println("SCROLL_STATE_IDLE");
 				getPersionImage();
 				break;
 			}
@@ -406,7 +403,6 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	private void getPersionImage(){
 		int start = lv_notice.getFirstVisiblePosition();
 		int stop = lv_notice.getLastVisiblePosition();	
-		System.out.println("start = " + start + ", stop = " + stop);
 		for(int i = start ; i <= stop ; i++){
 			//防止数组越界
 			if(i >= noticeDatas.size()){

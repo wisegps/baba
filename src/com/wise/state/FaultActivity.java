@@ -39,6 +39,7 @@ import com.wise.car.CarUpdateActivity;
 import com.wise.car.DevicesAddActivity;
 import com.wise.notice.NoticeFragment;
 import com.wise.notice.NoticeFragment.BtnListener;
+import com.wise.notice.SmsActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.show.ShowActivity;
 import customView.AlwaysMarqueeTextView;
@@ -337,7 +338,6 @@ public class FaultActivity extends FragmentActivity {
 
 	private void getImage() {
 		for (final AData aData : adDatas) {
-			System.out.println("getImage");
 			mQueue.add(new ImageRequest(aData.getImage(),
 					new Response.Listener<Bitmap>() {
 						@Override
@@ -605,7 +605,6 @@ public class FaultActivity extends FragmentActivity {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				// TODO (carDatas 为空) 体检结果存起来
 				SharedPreferences preferences = getSharedPreferences(
 						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 				Editor editor = preferences.edit();
@@ -616,7 +615,6 @@ public class FaultActivity extends FragmentActivity {
 				editor.commit();
 				break;
 			case get_device:
-				// TODO (carDatas 为空) 驾驶指数
 				try {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					int drive_score = jsonObject.getInt("drive_score");
@@ -716,6 +714,7 @@ public class FaultActivity extends FragmentActivity {
 
 	/** 获取GPS信息 **/
 	private void jsonGps(String str, int index) {
+		System.out.println("解析");
 		try {
 			JSONObject jsonObject = new JSONObject(str)
 					.getJSONObject("active_gps_data");
@@ -1174,7 +1173,7 @@ public class FaultActivity extends FragmentActivity {
 	/** 滚动消息点击 **/
 	private void nstvClick() {
 		if (nsDatas == null || nsDatas.size() == 0) {
-			// 没有数据不考虑
+			//TODO  没有数据不考虑
 		} else {
 			if (index_message < nsDatas.size()) {
 				// 防止数组越界
@@ -1212,6 +1211,8 @@ public class FaultActivity extends FragmentActivity {
 					break;
 				case 4:
 					// 通知
+					startActivity(new Intent(FaultActivity.this,
+							SmsActivity.class));
 					break;
 				case 5:
 					// 问答
@@ -1227,10 +1228,10 @@ public class FaultActivity extends FragmentActivity {
 	/** 定时滚动 **/
 	private void ScrollMessage() {
 		index_message++;
-		nstv_message.snapToScreen(index_message);
-		if (index_message >= (nsDatas.size() - 1)) {
+		if (index_message >= nsDatas.size()) {
 			index_message = 0;
 		}
+		nstv_message.snapToScreen(index_message);
 	}
 
 	/** 滚动消息 **/
@@ -1262,10 +1263,10 @@ public class FaultActivity extends FragmentActivity {
 			super.run();
 			while (isCycle) {
 				try {
+					Thread.sleep(10000);
 					Message message = new Message();
 					message.what = Nstv;
 					handler.sendMessage(message);
-					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -1399,16 +1400,10 @@ public class FaultActivity extends FragmentActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		// TODO onActivityResult
-		System.out.println("requestCode = " + requestCode + ", resultCode = "
-				+ resultCode);
 		if (resultCode == 3) {
 			// 修改车辆信息
-			System.out.println("修改车辆信息1");
 			initDataView();
-			System.out.println("修改车辆信息2");
 			if (app.carDatas.size() == 0) {
-				System.out.println("显示广告");
 				rl_ad = (RelativeLayout) findViewById(R.id.rl_ad);
 				rl_ad.setVisibility(View.VISIBLE);
 				tv_content = (TextView) findViewById(R.id.tv_content);
@@ -1433,7 +1428,6 @@ public class FaultActivity extends FragmentActivity {
 					}
 				});
 			} else {
-				System.out.println("隐藏广告");
 				if (rl_ad != null) {
 					rl_ad.setVisibility(View.GONE);
 				}
@@ -1515,7 +1509,6 @@ public class FaultActivity extends FragmentActivity {
 				noticeFragment.ResetNotice();
 
 				if (app.carDatas.size() == 0) {
-					System.out.println("显示广告");
 					rl_ad = (RelativeLayout) findViewById(R.id.rl_ad);
 					rl_ad.setVisibility(View.VISIBLE);
 					tv_content = (TextView) findViewById(R.id.tv_content);
@@ -1540,7 +1533,6 @@ public class FaultActivity extends FragmentActivity {
 						}
 					});
 				} else {
-					System.out.println("隐藏广告");
 					if (rl_ad != null) {
 						rl_ad.setVisibility(View.GONE);
 					}
