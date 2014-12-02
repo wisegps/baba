@@ -171,14 +171,13 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 		tv_down.setTextColor(getResources().getColor(R.color.gray));
 		tv_pause.setEnabled(true);
 		tv_pause.setTextColor(getResources().getColor(R.color.black1));
-		System.out.println("setMapDown");
 		for(MKOLUpdateElement m : localMapList){
 			if(m.ratio != 100){
 				mOffline.start(m.cityID);
 			}
 		}
 	}
-	//TODO 暂停
+	//暂停
 	private void setMapPause(){
 		tv_pause.setEnabled(false);
 		tv_pause.setTextColor(getResources().getColor(R.color.gray));
@@ -313,14 +312,33 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 					
 				}else{
 					if(childPosition == 0){
-						//点击的是全省地图包
-						for(CitysData citysData2 : lists.get(groupPosition)){
+						//TODO 点击的是全省地图包
+						for(int i = 0 ; i < lists.get(groupPosition).size() ; i++){
+							CitysData citysData2 = lists.get(groupPosition).get(i);
 							citysData2.setDown(true);
+							if(i == 0){
+								//去掉全省										
+							}else{
+								//判断市是否有下载的
+								boolean isDown = false;
+								for(MKOLUpdateElement mkolUpdateElement : localMapList){
+									if(mkolUpdateElement.cityID == citysData2.cityID){
+										isDown = true;
+										break;
+									}else{
+										
+									}
+								}
+								if(!isDown){
+									System.out.println("下载："+citysData2.cityName);
+									mOffline.start(citysData2.getCityID());
+								}
+							}
 						}
 					}else{
 						citysData.setDown(true);
+						mOffline.start(citysData.getCityID());
 					}
-					mOffline.start(citysData.getCityID());
 					viewPager.setCurrentItem(0);
 					citysAdapter.notifyDataSetChanged();
 				}
@@ -337,14 +355,28 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 							
 						}else{
 							if(childPosition == 0){
-								//点击的是全省地图包
-								for(CitysData citysData2 : lists.get(groupPosition)){
+								//TODO 点击的是全省地图包
+								for(int i = 0 ; i < lists.get(groupPosition).size() ; i++){
+									CitysData citysData2 = lists.get(groupPosition).get(i);
 									citysData2.setDown(true);
+									if(i == 0){
+										//去掉全省										
+									}else{
+										//判断市是否有下载的
+										for(MKOLUpdateElement mkolUpdateElement : localMapList){
+											if(mkolUpdateElement.cityID == citysData2.cityID){
+												
+											}else{
+												System.out.println("下载："+citysData2.cityName);
+												mOffline.start(citysData2.getCityID());
+											}
+										}
+									}
 								}
 							}else{
 								citysData.setDown(true);
+								mOffline.start(citysData.getCityID());
 							}
-							mOffline.start(citysData.getCityID());
 							viewPager.setCurrentItem(0);
 							citysAdapter.notifyDataSetChanged();
 						}
@@ -489,7 +521,7 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 					}					
 				}
 			});
-			//TODO 控制
+			//控制
 			if(m.status == MKOLUpdateElement.SUSPENDED){
 				viewHolder.bt_update.setText("下载地图");
 				viewHolder.bt_update.setEnabled(true);
@@ -618,7 +650,7 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 		private boolean isDown;
 		private boolean isGroup;
 		private boolean isExpandable;
-		
+				
 		public boolean isExpandable() {
 			return isExpandable;
 		}
