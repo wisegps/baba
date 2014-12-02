@@ -1,5 +1,7 @@
 package com.wise.car;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
@@ -45,6 +47,8 @@ import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.state.FaultDetectionActivity;
+
 import data.CarData;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -95,7 +99,7 @@ public class CarLocationActivity extends Activity {
 	AppApplication app;
 
 	TextView searchAddress;
-	ImageView iv_traffic,iv_tracking;
+	ImageView iv_traffic, iv_tracking;
 
 	// LinearLayout ll_tracking;
 
@@ -239,7 +243,24 @@ public class CarLocationActivity extends Activity {
 				if (mPopupWindow != null) {
 					mPopupWindow.dismiss();
 				}
-				showVibratePop();
+				String rcv_time = app.carDatas.get(index).getRcv_time();
+				if ((GetSystem.spacingNowTime(rcv_time) / 60) > 10) {
+					// 弹出提示框
+					AlertDialog.Builder dialog = new AlertDialog.Builder(
+							CarLocationActivity.this);
+					dialog.setTitle("提示");
+					dialog.setMessage("请先启动终端");
+					dialog.setPositiveButton("确定",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									showVibratePop();
+								}
+							}).setNegativeButton("取消", null).show();
+				} else {
+					showVibratePop();
+				}
 				break;
 			case R.id.bt_set_vibrate:
 				setVibrate();
