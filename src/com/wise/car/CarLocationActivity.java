@@ -96,10 +96,8 @@ public class CarLocationActivity extends Activity {
 
 	TextView searchAddress;
 	ImageView iv_traffic;
-	// LinearLayout ll_tracking;
 
-	// 追踪点集合
-	List<CarData> carDatas = new ArrayList<CarData>();
+	// LinearLayout ll_tracking;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -405,7 +403,15 @@ public class CarLocationActivity extends Activity {
 				break;
 			case R.id.iv_tracking:
 				// 追踪
-				isTracking = true;
+				isTracking = !isTracking;
+				Log.e("my_log", "isTracking : " + isTracking);
+				if (!isTracking) {
+					LatLng carLocat3 = new LatLng(carData.getLat(),
+							carData.getLon());
+					MapStatusUpdate u3 = MapStatusUpdateFactory
+							.newLatLng(carLocat3);
+					mBaiduMap.animateMapStatus(u3);
+				}
 				break;
 			}
 		}
@@ -689,11 +695,16 @@ public class CarLocationActivity extends Activity {
 		}
 	};
 
+	LatLng startTracking, endTracking;
+
 	/** 获取GPS信息 **/
 	private void jsonGps(String str) {
 		if (!isStop) {
 			return;
 		}
+
+		endTracking = new LatLng(carData.getLat(), carData.getLon());
+
 		try {
 			JSONObject jsonObject = new JSONObject(str)
 					.getJSONObject("active_gps_data");
@@ -703,12 +714,10 @@ public class CarLocationActivity extends Activity {
 			carData.setLon(lon);
 			carData.setDirect(jsonObject.getInt("direct"));
 
-			CarData data = new CarData();
-			data.setLat(lat);
-			data.setLon(lon);
-			carDatas.add(data);
 			if (isTracking) {
-				trackingCar();
+				startTracking = endTracking;
+				endTracking = new LatLng(lat, lon);
+				trackingCar(startTracking, endTracking);
 			}
 			getCarLocation();
 		} catch (JSONException e) {
@@ -716,32 +725,15 @@ public class CarLocationActivity extends Activity {
 		}
 	}
 
-	private void trackingCar() {
-		mBaiduMap.clear();
-		LatLngBounds.Builder builder = new Builder();
-		// 添加折线
+	private void trackingCar(LatLng lng1, LatLng lng2) {
 		List<LatLng> points = new ArrayList<LatLng>();
-		for (int i = 0; i < carDatas.size(); i++) {
-			LatLng lal = new LatLng(carDatas.get(i).getLat(), carDatas.get(i)
-					.getLon());
-			points.add(lal);
-			builder.include(lal);
-		}
-		LatLngBounds bounds = builder.build();
-		MapStatusUpdate mu1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
-		mBaiduMap.animateMapStatus(mu1);
-
-		if (points.size() > 1) {
-			LatLng p1LL = points.get(0);
-			LatLng p2LL = new LatLng(
-					carDatas.get(carDatas.size() - 1).getLat(), carDatas.get(
-							carDatas.size() - 1).getLon());
-			double distance = DistanceUtil.getDistance(p1LL, p2LL);
-			if (distance > 10) {
-				OverlayOptions ooPolyline = new PolylineOptions().color(
-						0xFF0000C6).points(points);
-				mBaiduMap.addOverlay(ooPolyline);
-			}
+		points.add(lng1);
+		points.add(lng2);
+		double distance = DistanceUtil.getDistance(lng1, lng2);
+		if (distance > 10) {
+			OverlayOptions ooPolyline = new PolylineOptions().color(0xFF0000C6)
+					.points(points);
+			mBaiduMap.addOverlay(ooPolyline);
 		}
 	}
 
@@ -972,6 +964,7 @@ public class CarLocationActivity extends Activity {
 			if (isFirstLoc) {
 				isFirstLoc = false;
 				ll = new LatLng(location.getLatitude(), location.getLongitude());
+				endTracking = ll;
 				LatLng carLocat = new LatLng(carData.getLat(), carData.getLon());
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(carLocat);
 				mBaiduMap.animateMapStatus(u);
