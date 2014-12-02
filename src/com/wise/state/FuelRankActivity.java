@@ -186,6 +186,8 @@ public class FuelRankActivity extends Activity{
 			if(new File(Constant.userIconPath + GetSystem.getM5DEndo(fuelData.getLogo()) + ".png").exists()){
 				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(fuelData.getLogo()) + ".png");
 				viewHolder.iv_icon.setImageBitmap(image);
+			}else{
+				viewHolder.iv_icon.setImageResource(R.drawable.icon_car);
 			}
 			viewHolder.iv_letter.setOnClickListener(new OnClickListener() {				
 				@Override

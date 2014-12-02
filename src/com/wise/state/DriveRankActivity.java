@@ -33,7 +33,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
 
-/**油耗排行榜**/
+/**驾驶排行榜**/
 public class DriveRankActivity extends Activity{
 	
 	private static final int getData = 1;
@@ -184,6 +184,8 @@ public class DriveRankActivity extends Activity{
 			if(new File(Constant.userIconPath + GetSystem.getM5DEndo(driveData.getLogo()) + ".png").exists()){
 				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(driveData.getLogo()) + ".png");
 				viewHolder.iv_icon.setImageBitmap(image);
+			}else{
+				viewHolder.iv_icon.setImageResource(R.drawable.icon_car);
 			}
 			viewHolder.iv_letter.setOnClickListener(new OnClickListener() {				
 				@Override

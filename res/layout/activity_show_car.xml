@@ -43,7 +43,6 @@
         android:background="@drawable/bg_card"
         android:orientation="horizontal" >
         <TextView
-            android:id="@+id/tv_service"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="车型：大众途安2013版"
@@ -59,7 +58,6 @@
             android:layout_alignParentRight="true"
             android:text="280元"/>
         <TextView
-            android:id="@+id/tv_service"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="机油"
@@ -75,7 +73,6 @@
             android:layout_alignParentRight="true"
             android:text="120元"/>
         <TextView
-            android:id="@+id/tv_service"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="机油滤芯"
