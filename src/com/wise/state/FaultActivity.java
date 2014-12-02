@@ -1,5 +1,6 @@
 package com.wise.state;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +49,10 @@ import customView.NoticeScrollTextView;
 import customView.OnViewChangeListener;
 import customView.ParentSlide;
 import data.CarData;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -277,12 +280,12 @@ public class FaultActivity extends FragmentActivity {
 		// TODO 30秒定位，显示当前位子
 		new Thread(new Runnable() {
 			@Override
-			public void run() {					
+			public void run() {
 				while (isGetGps) {
 					SystemClock.sleep(30000);
 					if (app.carDatas == null || app.carDatas.size() == 0) {
-						
-					}else{
+
+					} else {
 						CarData carData = app.carDatas.get(index);
 						String device_id = carData.getDevice_id();
 						if (device_id == null || device_id.equals("")) {
@@ -295,7 +298,7 @@ public class FaultActivity extends FragmentActivity {
 							new NetThread.GetDataThread(handler, gpsUrl,
 									get_gps, index).start();
 						}
-					}						
+					}
 				}
 			}
 		}).start();
@@ -758,8 +761,10 @@ public class FaultActivity extends FragmentActivity {
 			double lat = jsonObject.getDouble("lat");
 			double lon = jsonObject.getDouble("lon");
 			int direct = jsonObject.getInt("direct");
+			String uni_status = jsonObject.getString("uni_status");
 			String rcv_time = jsonObject.getString("rcv_time");
 			LatLng latLng = new LatLng(lat, lon);
+			app.carDatas.get(index).setUni_status(uni_status);
 			app.carDatas.get(index).setDirect(direct);
 			app.carDatas.get(index).setLat(lat);
 			app.carDatas.get(index).setLon(lon);
@@ -1170,7 +1175,7 @@ public class FaultActivity extends FragmentActivity {
 	/** 滚动消息点击 **/
 	private void nstvClick() {
 		if (nsDatas == null || nsDatas.size() == 0) {
-			//TODO  没有数据不考虑
+			// TODO 没有数据不考虑
 		} else {
 			if (index_message < nsDatas.size()) {
 				// 防止数组越界

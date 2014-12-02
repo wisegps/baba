@@ -61,12 +61,21 @@ public class CarData {
 	private int Type; // 布局控制
 	private String Adress; // 车辆位置
 	private String gps_time; // 定位时间
-	private String rcv_time;
+	private String rcv_time;// 最后上传数据时间
+	private String uni_status;// 车辆启动状态
 	private double Lat;
 	private double Lon;
 	private ArrayList<String> vio_citys;
 	private ArrayList<String> vio_citys_code;
 	private ArrayList<String> province;
+
+	public String getUni_status() {
+		return uni_status;
+	}
+
+	public void setUni_status(String uni_status) {
+		this.uni_status = uni_status;
+	}
 
 	public String getRcv_time() {
 		return rcv_time;
