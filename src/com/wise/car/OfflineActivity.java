@@ -183,7 +183,6 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 		tv_pause.setTextColor(getResources().getColor(R.color.gray));
 		tv_down.setEnabled(true);
 		tv_down.setTextColor(getResources().getColor(R.color.black1));
-		System.out.println("setMapPause");
 		for(MKOLUpdateElement m : localMapList){
 			mOffline.pause(m.cityID);
 		}
@@ -192,7 +191,6 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 	private void setMapUpdate(){
 		tv_update.setEnabled(false);
 		tv_update.setTextColor(getResources().getColor(R.color.gray));
-		System.out.println("setMapUpdate");
 		for(MKOLUpdateElement m : localMapList){
 			if(m.update){
 				mOffline.remove(m.cityID);
@@ -330,7 +328,6 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 									}
 								}
 								if(!isDown){
-									System.out.println("下载："+citysData2.cityName);
 									mOffline.start(citysData2.getCityID());
 								}
 							}
@@ -367,7 +364,6 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 											if(mkolUpdateElement.cityID == citysData2.cityID){
 												
 											}else{
-												System.out.println("下载："+citysData2.cityName);
 												mOffline.start(citysData2.getCityID());
 											}
 										}

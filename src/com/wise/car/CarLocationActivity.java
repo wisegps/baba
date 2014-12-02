@@ -250,8 +250,8 @@ public class CarLocationActivity extends Activity {
 					AlertDialog.Builder dialog = new AlertDialog.Builder(
 							CarLocationActivity.this);
 					dialog.setTitle("提示");
-					dialog.setMessage("请先启动终端");
-					dialog.setPositiveButton("确定",
+					dialog.setMessage("请先启动车辆，等待1到3分钟后，再进行车辆体检!");
+					dialog.setPositiveButton("车辆已启动",
 							new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog,
