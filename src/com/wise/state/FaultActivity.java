@@ -221,40 +221,6 @@ public class FaultActivity extends FragmentActivity {
 			getMessage(url);
 			getCounter();
 
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					while (isGetAllData) {
-						SystemClock.sleep(30 * 60000);
-						getTotalData();
-					}
-				}
-			}).start();
-			// TODO 30秒定位，显示当前位子
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					if (app.carDatas == null || app.carDatas.size() == 0) {
-						return;
-					}
-					CarData carData = app.carDatas.get(index);
-					String device_id = carData.getDevice_id();
-					while (isGetGps) {
-						SystemClock.sleep(30000);
-						if (device_id == null || device_id.equals("")) {
-
-						} else {
-							// 获取gps信息
-							String gpsUrl = Constant.BaseUrl + "device/"
-									+ device_id + "?auth_code=" + app.auth_code
-									+ "&update_time=2014-01-01%2019:06:43";
-							new NetThread.GetDataThread(handler, gpsUrl,
-									get_gps, index).start();
-						}
-					}
-				}
-			}).start();
-
 			if (app.carDatas.size() == 0) {// 如果没有车则显示
 				rl_ad = (RelativeLayout) findViewById(R.id.rl_ad);
 				rl_ad.setVisibility(View.VISIBLE);
@@ -308,6 +274,40 @@ public class FaultActivity extends FragmentActivity {
 					}
 				});
 
+		// TODO 30秒定位，显示当前位子
+		new Thread(new Runnable() {
+			@Override
+			public void run() {					
+				while (isGetGps) {
+					SystemClock.sleep(30000);
+					if (app.carDatas == null || app.carDatas.size() == 0) {
+						
+					}else{
+						CarData carData = app.carDatas.get(index);
+						String device_id = carData.getDevice_id();
+						if (device_id == null || device_id.equals("")) {
+
+						} else {
+							// 获取gps信息
+							String gpsUrl = Constant.BaseUrl + "device/"
+									+ device_id + "?auth_code=" + app.auth_code
+									+ "&update_time=2014-01-01%2019:06:43";
+							new NetThread.GetDataThread(handler, gpsUrl,
+									get_gps, index).start();
+						}
+					}						
+				}
+			}
+		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (isGetAllData) {
+					SystemClock.sleep(30 * 60000);
+					getTotalData();
+				}
+			}
+		}).start();
 	}
 
 	private NaviEngineInitListener mNaviEngineInitListener = new NaviEngineInitListener() {

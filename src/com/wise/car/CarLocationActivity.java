@@ -95,7 +95,7 @@ public class CarLocationActivity extends Activity {
 	AppApplication app;
 
 	TextView searchAddress;
-	ImageView iv_traffic;
+	ImageView iv_traffic,iv_tracking;
 
 	// LinearLayout ll_tracking;
 
@@ -113,7 +113,7 @@ public class CarLocationActivity extends Activity {
 		iv_maplayers.setOnClickListener(onClickListener);
 		ImageView iv_streetscape = (ImageView) findViewById(R.id.iv_streetscape);
 		iv_streetscape.setOnClickListener(onClickListener);
-		ImageView iv_tracking = (ImageView) findViewById(R.id.iv_tracking);
+		iv_tracking = (ImageView) findViewById(R.id.iv_tracking);
 		iv_tracking.setOnClickListener(onClickListener);
 		iv_traffic = (ImageView) findViewById(R.id.iv_traffic);
 		iv_traffic.setOnClickListener(onClickListener);
@@ -404,7 +404,13 @@ public class CarLocationActivity extends Activity {
 			case R.id.iv_tracking:
 				// 追踪
 				isTracking = !isTracking;
-				Log.e("my_log", "isTracking : " + isTracking);
+				if(isTracking){
+					iv_tracking.setImageResource(R.drawable.car_track_no);
+					Toast.makeText(CarLocationActivity.this, "跟踪车辆", Toast.LENGTH_SHORT).show();
+				}else{
+					iv_tracking.setImageResource(R.drawable.car_track);
+					Toast.makeText(CarLocationActivity.this, "取消跟踪", Toast.LENGTH_SHORT).show();
+				}
 				if (!isTracking) {
 					mBaiduMap.clear();
 					getCarLocation();
