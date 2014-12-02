@@ -911,27 +911,16 @@ public class CarLocationActivity extends Activity {
 	}
 
 	private void jsonVibrate(String result) {
-		System.out.println(result);
-		Log.e("my_log", "result :" + result);
 		pb_vibrate.setVisibility(View.GONE);
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if (jsonObject.getInt("status_code") == 0) {
+				carData.setSensitivity(vibrate);
 				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度成功",
 						Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(getApplicationContext(), "设置震动报警灵敏度失败",
 						Toast.LENGTH_SHORT).show();
-
-				if (jsonObject.getInt("status_code") == 0) {
-					carData.setSensitivity(vibrate);
-					Toast.makeText(getApplicationContext(), "设置震动报警灵敏度成功",
-							Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(getApplicationContext(), "设置震动报警灵敏度失败",
-							Toast.LENGTH_SHORT).show();
-
-				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
