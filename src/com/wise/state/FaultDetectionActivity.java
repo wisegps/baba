@@ -930,10 +930,14 @@ public class FaultDetectionActivity extends Activity {
 			String uni_status = app.carDatas.get(index).getUni_status();
 			JSONArray jsonArray = new JSONArray(uni_status);
 			boolean state = false;
-			for (int i = 0; i < jsonArray.length(); i++) {
-				if (jsonArray.getInt(i) == 8196) {
-					state = true;
-					break;
+			if (jsonArray.toString() == null || jsonArray.toString().equals("")) {
+
+			} else {
+				for (int i = 0; i < jsonArray.length(); i++) {
+					if (jsonArray.getInt(i) == 8196) {
+						state = true;
+						break;
+					}
 				}
 			}
 			String rcv_time = app.carDatas.get(index).getRcv_time();
