@@ -220,6 +220,41 @@ public class FaultActivity extends FragmentActivity {
 					+ "/tips?auth_code=" + app.auth_code;
 			getMessage(url);
 			getCounter();
+
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					while (isGetAllData) {
+						SystemClock.sleep(30 * 60000);
+						getTotalData();
+					}
+				}
+			}).start();
+			// TODO 30秒定位，显示当前位子
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					if (app.carDatas == null || app.carDatas.size() == 0) {
+						return;
+					}
+					CarData carData = app.carDatas.get(index);
+					String device_id = carData.getDevice_id();
+					while (isGetGps) {
+						SystemClock.sleep(30000);
+						if (device_id == null || device_id.equals("")) {
+
+						} else {
+							// 获取gps信息
+							String gpsUrl = Constant.BaseUrl + "device/"
+									+ device_id + "?auth_code=" + app.auth_code
+									+ "&update_time=2014-01-01%2019:06:43";
+							new NetThread.GetDataThread(handler, gpsUrl,
+									get_gps, index).start();
+						}
+					}
+				}
+			}).start();
+
 			if (app.carDatas.size() == 0) {// 如果没有车则显示
 				rl_ad = (RelativeLayout) findViewById(R.id.rl_ad);
 				rl_ad.setVisibility(View.VISIBLE);
@@ -272,6 +307,7 @@ public class FaultActivity extends FragmentActivity {
 					public void onAuthResult(int status, String msg) {
 					}
 				});
+
 	}
 
 	private NaviEngineInitListener mNaviEngineInitListener = new NaviEngineInitListener() {
@@ -681,6 +717,7 @@ public class FaultActivity extends FragmentActivity {
 						+ "&update_time=2014-01-01%2019:06:43";
 				new NetThread.GetDataThread(handler, gpsUrl, get_gps, index)
 						.start();
+
 				// 从服务器获取体检信息
 				String url1 = Constant.BaseUrl + "device/" + device_id
 						+ "/health_exam?auth_code=" + app.auth_code + "&brand="
@@ -721,13 +758,13 @@ public class FaultActivity extends FragmentActivity {
 			double lat = jsonObject.getDouble("lat");
 			double lon = jsonObject.getDouble("lon");
 			int direct = jsonObject.getInt("direct");
-			String gpsTime = jsonObject.getString("gps_time");
+			String rcv_time = jsonObject.getString("rcv_time");
 			LatLng latLng = new LatLng(lat, lon);
 			app.carDatas.get(index).setDirect(direct);
 			app.carDatas.get(index).setLat(lat);
 			app.carDatas.get(index).setLon(lon);
-			app.carDatas.get(index).setGps_time(
-					GetSystem.ChangeTimeZone(gpsTime.substring(0, 19).replace(
+			app.carDatas.get(index).setRcv_time(
+					GetSystem.ChangeTimeZone(rcv_time.substring(0, 19).replace(
 							"T", " ")));
 			GetSystem.myLog(TAG, "lat = " + lat + " , Lon = " + lon);
 			mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
@@ -1069,52 +1106,12 @@ public class FaultActivity extends FragmentActivity {
 		setNotiView();
 		getWeather();
 		MobclickAgent.onResume(this);
-
-		isGetGps = true;
-		isGetAllData = true;
-		// TODO 30秒定位，显示当前位子
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				if (app.carDatas == null || app.carDatas.size() == 0) {
-					return;
-				}
-				CarData carData = app.carDatas.get(index);
-				String device_id = carData.getDevice_id();
-				while (isGetGps) {
-					SystemClock.sleep(30000);
-					if (device_id == null || device_id.equals("")) {
-
-					} else {
-						// 获取gps信息
-						String gpsUrl = Constant.BaseUrl + "device/"
-								+ device_id + "?auth_code=" + app.auth_code
-								+ "&update_time=2014-01-01%2019:06:43";
-						new NetThread.GetDataThread(handler, gpsUrl, get_gps,
-								index).start();
-					}
-				}
-			}
-		}).start();
-
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (isGetAllData) {
-					SystemClock.sleep(30*60000);
-					getTotalData();
-				}
-			}
-		}).start();
-
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
-		isGetGps = false;
-		isGetAllData = false;
 	}
 
 	/** 设置提醒 **/
@@ -1577,20 +1574,20 @@ public class FaultActivity extends FragmentActivity {
 					int startIndex = adress.indexOf("省") + 1;
 					adress = adress.substring(startIndex, adress.length());
 					app.carDatas.get(index).setAdress(adress);
-					String gpsTime = app.carDatas.get(index).getGps_time();
-					String gpsData = gpsTime.substring(0, 10);// 取出日期
+					String rcv_time = app.carDatas.get(index).getRcv_time();
+					String gpsData = rcv_time.substring(0, 10);// 取出日期
 					String nowData = GetSystem.GetNowDay();
 					String showTime = "";
 					if (gpsData.equals(nowData)) {
-						showTime = gpsTime.substring(11, 16);
+						showTime = rcv_time.substring(11, 16);
 					} else if (gpsData.equals(GetSystem
 							.GetNextData(nowData, -1))) {
-						showTime = "昨天" + gpsTime.substring(11, 16);
+						showTime = "昨天" + rcv_time.substring(11, 16);
 					} else if (gpsData.equals(GetSystem
 							.GetNextData(nowData, -2))) {
-						showTime = "前天" + gpsTime.substring(11, 16);
+						showTime = "前天" + rcv_time.substring(11, 16);
 					} else {
-						showTime = gpsTime.substring(5, 16);
+						showTime = rcv_time.substring(5, 16);
 					}
 					// 显示时间
 					carViews.get(index).getLl_adress()
