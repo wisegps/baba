@@ -244,7 +244,8 @@ public class CarLocationActivity extends Activity {
 					mPopupWindow.dismiss();
 				}
 				String rcv_time = app.carDatas.get(index).getRcv_time();
-				if ((GetSystem.spacingNowTime(rcv_time) / 60) > 10) {
+				if ((GetSystem.spacingNowTime(rcv_time) / 60) > 10
+						|| rcv_time == null) {
 					// 弹出提示框
 					AlertDialog.Builder dialog = new AlertDialog.Builder(
 							CarLocationActivity.this);

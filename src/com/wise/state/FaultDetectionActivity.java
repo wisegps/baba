@@ -922,14 +922,62 @@ public class FaultDetectionActivity extends Activity {
 		}
 	}
 
+	// 弹出体检提示，并且获取提示数据
+	private void getMedical(final String Device_id, final int index) {
+		if (isCheck) {
+			Toast.makeText(FaultDetectionActivity.this, "体检进行中",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+		// 弹出提示框
+		AlertDialog.Builder dialog = new AlertDialog.Builder(
+				FaultDetectionActivity.this);
+		dialog.setTitle("提示");
+		dialog.setMessage("请先启动车辆，等待1到3分钟后，再进行车辆体检!");
+		dialog.setPositiveButton("体检", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				initapp();
+				String url;
+				try {
+					url = Constant.BaseUrl
+							+ "device/"
+							+ Device_id
+							+ "/health_exam?auth_code="
+							+ app.auth_code
+							+ "&brand="
+							+ URLEncoder.encode(app.carDatas.get(index)
+									.getCar_brand(), "UTF-8");
+
+					new NetThread.GetDataThread(handler, url, getData, index)
+							.start();
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+			}
+		}).setNegativeButton("取消", null).show();
+	}
+
 	/** 获取健康数据 **/
-	private void getData(final int index) {
+	private void getData(int index) {
 		try {
-			final String Device_id = app.carDatas.get(index).getDevice_id();
-			// TODO 判断车辆是否为启动状态
+			String Device_id = app.carDatas.get(index).getDevice_id();
+			if (Device_id == null || Device_id.equals("")) {
+				Intent intent = new Intent(FaultDetectionActivity.this,
+						DevicesAddActivity.class);
+				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
+				startActivityForResult(intent, 2);
+				return;
+			}
 			String uni_status = app.carDatas.get(index).getUni_status();
-			JSONArray jsonArray = new JSONArray(uni_status);
+			String rcv_time = app.carDatas.get(index).getRcv_time();
+			if (uni_status == null || rcv_time == null) {
+				getMedical(Device_id, index);
+				return;
+			}
+			// TODO 判断车辆是否为启动状态
 			boolean state = false;
+			JSONArray jsonArray = new JSONArray(uni_status);
 			if (jsonArray.toString() == null || jsonArray.toString().equals("")) {
 
 			} else {
@@ -940,48 +988,8 @@ public class FaultDetectionActivity extends Activity {
 					}
 				}
 			}
-			String rcv_time = app.carDatas.get(index).getRcv_time();
-			if (Device_id == null || Device_id.equals("")) {
-				Intent intent = new Intent(FaultDetectionActivity.this,
-						DevicesAddActivity.class);
-				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
-				startActivityForResult(intent, 2);
-			} else if (!state || (GetSystem.spacingNowTime(rcv_time) / 60) > 10) {
-				if (isCheck) {
-					Toast.makeText(FaultDetectionActivity.this, "体检进行中",
-							Toast.LENGTH_SHORT).show();
-					return;
-				}
-				// 弹出提示框
-				AlertDialog.Builder dialog = new AlertDialog.Builder(
-						FaultDetectionActivity.this);
-				dialog.setTitle("提示");
-				dialog.setMessage("请先启动车辆，等待1到3分钟后，再进行车辆体检!");
-				dialog.setPositiveButton("体检",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								initapp();
-								String url;
-								try {
-									url = Constant.BaseUrl
-											+ "device/"
-											+ Device_id
-											+ "/health_exam?auth_code="
-											+ app.auth_code
-											+ "&brand="
-											+ URLEncoder.encode(app.carDatas
-													.get(index).getCar_brand(),
-													"UTF-8");
-
-									new NetThread.GetDataThread(handler, url,
-											getData, index).start();
-								} catch (UnsupportedEncodingException e) {
-									e.printStackTrace();
-								}
-							}
-						}).setNegativeButton("取消", null).show();
+			if (!state || (GetSystem.spacingNowTime(rcv_time) / 60) > 10) {
+				getMedical(Device_id, index);
 			} else {
 				if (isCheck) {
 					Toast.makeText(FaultDetectionActivity.this, "体检进行中",
