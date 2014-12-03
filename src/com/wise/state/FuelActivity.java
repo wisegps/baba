@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -73,7 +74,7 @@ public class FuelActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fuel);
-		app = (AppApplication)getApplication();
+		app = (AppApplication) getApplication();
 		GetSystem.myLog(TAG, "onCreate");
 		fv = (FanView) findViewById(R.id.fv);
 		tv_speed_text = (TextView) findViewById(R.id.tv_speed_text);
@@ -148,7 +149,8 @@ public class FuelActivity extends Activity {
 				RangeData rangeData = rangeDatas.get(rotateRanges);
 				if (type == FaultActivity.FUEL) {
 					tv_speed_text.setText(rangeData.getSpeed_text());
-					tv_speed_avg_fuel.setText("平均油耗：" + rangeData.getAvg_fuel());
+					tv_speed_avg_fuel.setText("平均油耗：" + rangeData.getAvg_fuel()
+							+ "/100km");
 					tv_speed_fuel.setText("油耗：" + rangeData.getFuel());
 				} else if (type == FaultActivity.DISTANCE) {
 					tv_speed_text.setText(rangeData.getSpeed_text());
@@ -323,9 +325,7 @@ public class FuelActivity extends Activity {
 			} else {
 				Gas_no = carData.getGas_no();
 			}
-			String url = Constant.BaseUrl
-					+ "device/"
-					+ carData.getDevice_id()
+			String url = Constant.BaseUrl + "device/" + carData.getDevice_id()
 					+ "/total?auth_code=" + app.auth_code + "&start_day="
 					+ fristDate + "&end_day=" + lastDate + "&city="
 					+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
@@ -346,13 +346,10 @@ public class FuelActivity extends Activity {
 			} else {
 				Gas_no = carData.getGas_no();
 			}
-			String url = Constant.BaseUrl
-					+ "device/"
-					+ carData.getDevice_id()
-					+ "/day_total?auth_code=" + app.auth_code + "&day="
-					+ Date + "&city="
-					+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
-					+ Gas_no;
+			String url = Constant.BaseUrl + "device/" + carData.getDevice_id()
+					+ "/day_total?auth_code=" + app.auth_code + "&day=" + Date
+					+ "&city=" + URLEncoder.encode(app.City, "UTF-8")
+					+ "&gas_no=" + Gas_no;
 			new NetThread.GetDataThread(handler, url, getData).start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -491,7 +488,8 @@ public class FuelActivity extends Activity {
 				if (percent1 > 0) {
 					RangeData rangeData1 = new RangeData();
 					rangeData1.setSpeed_text(speed1.getString("speed_text"));
-					rangeData1.setAvg_fuel(subData(speed1.getString("avg_fuel")));
+					rangeData1
+							.setAvg_fuel(subData(speed1.getString("avg_fuel")));
 					rangeData1.setPercent(percent1);
 					rangeData1.setFuel(speed1.getString("fuel"));
 
@@ -510,7 +508,8 @@ public class FuelActivity extends Activity {
 				if (percent2 > 0) {
 					RangeData rangeData2 = new RangeData();
 					rangeData2.setSpeed_text(speed2.getString("speed_text"));
-					rangeData2.setAvg_fuel(subData(speed2.getString("avg_fuel")));
+					rangeData2
+							.setAvg_fuel(subData(speed2.getString("avg_fuel")));
 					rangeData2.setPercent(percent2);
 					rangeData2.setFuel(speed2.getString("fuel"));
 
@@ -529,7 +528,8 @@ public class FuelActivity extends Activity {
 				if (percent3 > 0) {
 					RangeData rangeData3 = new RangeData();
 					rangeData3.setSpeed_text(speed3.getString("speed_text"));
-					rangeData3.setAvg_fuel(subData(speed3.getString("avg_fuel")));
+					rangeData3
+							.setAvg_fuel(subData(speed3.getString("avg_fuel")));
 					rangeData3.setPercent(percent3);
 					rangeData3.setFuel(speed3.getString("fuel"));
 
@@ -548,7 +548,8 @@ public class FuelActivity extends Activity {
 				if (percent4 > 0) {
 					RangeData rangeData4 = new RangeData();
 					rangeData4.setSpeed_text(speed4.getString("speed_text"));
-					rangeData4.setAvg_fuel(subData(speed4.getString("avg_fuel")));
+					rangeData4
+							.setAvg_fuel(subData(speed4.getString("avg_fuel")));
 					rangeData4.setPercent(percent4);
 					rangeData4.setFuel(speed4.getString("fuel"));
 
@@ -563,8 +564,8 @@ public class FuelActivity extends Activity {
 				RangeData rangeData = rangeDatas.get(0);
 				if (type == FaultActivity.FUEL) {
 					tv_speed_text.setText(rangeData.getSpeed_text());
-					tv_speed_avg_fuel
-							.setText("平均油耗：" + rangeData.getAvg_fuel());
+					tv_speed_avg_fuel.setText("平均油耗：" + rangeData.getAvg_fuel()
+							+ "/100km");
 					tv_speed_fuel.setText("油耗：" + rangeData.getFuel());
 				} else if (type == FaultActivity.DISTANCE) {
 					tv_speed_text.setText(rangeData.getSpeed_text());
@@ -585,12 +586,13 @@ public class FuelActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
-	/**处理数据  30L/100KM , 30L/hr  改成 30L**/
-	private String subData(String result){
+
+	/** 处理数据 30L/100KM , 30L/hr 改成 30L **/
+	private String subData(String result) {
 		int position = result.indexOf("/");
-		if(position == -1){
+		if (position == -1) {
 			return result;
-		}else{
+		} else {
 			return result.substring(0, position);
 		}
 	}
