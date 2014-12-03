@@ -98,14 +98,15 @@ public class DevicesAddActivity extends Activity {
 			String url = Constant.BaseUrl + "/device/" + old_device_id
 					+ "?auth_code=" + app.auth_code;
 			new NetThread.GetDataThread(handler, url, update_serial).start();
+		}else{
+			startActivityForResult(new Intent(DevicesAddActivity.this,
+					BarcodeActivity.class), 0);
 		}
 		if (fastTrack) {
 			tv_jump.setVisibility(View.VISIBLE);
 		} else {
 			tv_jump.setVisibility(View.GONE);
 		}
-		startActivityForResult(new Intent(DevicesAddActivity.this,
-				BarcodeActivity.class), 0);
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -339,7 +340,7 @@ public class DevicesAddActivity extends Activity {
 				JSONObject jsonObject = new JSONObject(result);
 				String status = jsonObject.getString("status");
 				if (status.equals("0") || status.equals("1")) {
-
+					et_sim.setText(jsonObject.getString("sim"));
 				} else if (status.equals("2")) {
 					et_serial.setError("序列号已经使用");
 				}
@@ -373,6 +374,7 @@ public class DevicesAddActivity extends Activity {
 		if (resultCode == 2) {
 			String result = data.getStringExtra("result");
 			et_serial.setText(result);
+			checkSerial();
 		}
 	};
 
