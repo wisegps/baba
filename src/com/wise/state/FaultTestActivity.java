@@ -256,7 +256,7 @@ public class FaultTestActivity extends FragmentActivity {
 			try {
 				//获取当前月的数据
 				String url = Constant.BaseUrl + "device/"+ device_id
-						+ "/total?auth_code=127a154df2d7850c4232542b4faa2c3d&start_day=" + startMonth + 
+						+ "/total?auth_code=" + app.auth_code + "&start_day=" + startMonth + 
 						"&end_day=" + endMonth + "&city="
 						+ URLEncoder.encode(app.City, "UTF-8")
 						+ "&gas_no=93#(92#)";

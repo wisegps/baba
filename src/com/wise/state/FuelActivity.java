@@ -326,7 +326,7 @@ public class FuelActivity extends Activity {
 			String url = Constant.BaseUrl
 					+ "device/"
 					+ carData.getDevice_id()
-					+ "/total?auth_code=127a154df2d7850c4232542b4faa2c3d&start_day="
+					+ "/total?auth_code=" + app.auth_code + "&start_day="
 					+ fristDate + "&end_day=" + lastDate + "&city="
 					+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
 					+ Gas_no;
@@ -349,7 +349,7 @@ public class FuelActivity extends Activity {
 			String url = Constant.BaseUrl
 					+ "device/"
 					+ carData.getDevice_id()
-					+ "/day_total?auth_code=127a154df2d7850c4232542b4faa2c3d&day="
+					+ "/day_total?auth_code=" + app.auth_code + "&day="
 					+ Date + "&city="
 					+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
 					+ Gas_no;
