@@ -243,6 +243,9 @@ public class CarLocationActivity extends Activity {
 				if (mPopupWindow != null) {
 					mPopupWindow.dismiss();
 				}
+				showVibratePop();
+				break;
+			case R.id.bt_set_vibrate:
 				String rcv_time = app.carDatas.get(index).getRcv_time();
 				if ((GetSystem.spacingNowTime(rcv_time) / 60) > 10
 						|| rcv_time == null) {
@@ -256,15 +259,13 @@ public class CarLocationActivity extends Activity {
 								@Override
 								public void onClick(DialogInterface dialog,
 										int which) {
-									showVibratePop();
+									setVibrate();
 								}
 							}).setNegativeButton("取消", null).show();
+
 				} else {
-					showVibratePop();
+					setVibrate();
 				}
-				break;
-			case R.id.bt_set_vibrate:
-				setVibrate();
 				break;
 			case R.id.bt_location_fence:// 围栏
 				ShowFence();
@@ -426,12 +427,14 @@ public class CarLocationActivity extends Activity {
 			case R.id.iv_tracking:
 				// 追踪
 				isTracking = !isTracking;
-				if(isTracking){
+				if (isTracking) {
 					iv_tracking.setImageResource(R.drawable.car_track_no);
-					Toast.makeText(CarLocationActivity.this, "跟踪车辆", Toast.LENGTH_SHORT).show();
-				}else{
+					Toast.makeText(CarLocationActivity.this, "跟踪车辆",
+							Toast.LENGTH_SHORT).show();
+				} else {
 					iv_tracking.setImageResource(R.drawable.car_track);
-					Toast.makeText(CarLocationActivity.this, "取消跟踪", Toast.LENGTH_SHORT).show();
+					Toast.makeText(CarLocationActivity.this, "取消跟踪",
+							Toast.LENGTH_SHORT).show();
 				}
 				if (!isTracking) {
 					mBaiduMap.clear();
