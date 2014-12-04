@@ -469,7 +469,7 @@ public class CarLocationActivity extends Activity {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(
 				CarLocationActivity.this);
 		dialog.setTitle("提示");
-		dialog.setMessage("请绑定终端");
+		dialog.setMessage("请先绑定终端");
 		dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

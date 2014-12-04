@@ -516,7 +516,7 @@ public class FaultActivity extends FragmentActivity {
 						AlertDialog.Builder dialog = new AlertDialog.Builder(
 								FaultActivity.this);
 						dialog.setTitle("提示");
-						dialog.setMessage("请添加车辆");
+						dialog.setMessage("请先添加车辆");
 						dialog.setPositiveButton("确定",
 								new DialogInterface.OnClickListener() {
 									@Override
