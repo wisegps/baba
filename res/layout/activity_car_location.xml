@@ -174,34 +174,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_tracking"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ll_search"
-        android:layout_centerHorizontal="true"
-        android:layout_marginRight="5dp"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:visibility="gone" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="车辆追踪中...."
-            android:textSize="@dimen/title" />
-
-        <TextView
-            android:id="@+id/tv_tracking"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dip"
-            android:background="@drawable/bg_adress"
-            android:padding="3dip"
-            android:text="取消追踪" />
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
