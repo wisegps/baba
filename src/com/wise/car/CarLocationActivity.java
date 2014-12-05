@@ -31,8 +31,6 @@ import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.model.LatLngBounds;
-import com.baidu.mapapi.model.LatLngBounds.Builder;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
@@ -45,8 +43,6 @@ import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-import com.wise.state.FaultActivity;
-import com.wise.state.FaultDetectionActivity;
 
 import data.CarData;
 import android.app.Activity;
@@ -121,8 +117,10 @@ public class CarLocationActivity extends Activity {
 		TextView tv_car_name = (TextView) findViewById(R.id.tv_car_name);
 		index = getIntent().getIntExtra("index", 0);
 		isHotLocation = getIntent().getBooleanExtra("isHotLocation", false);
-		carData = app.carDatas.get(index);
-		tv_car_name.setText(carData.getNick_name());
+		if (app.carDatas != null && app.carDatas.size() > 0) {
+			carData = app.carDatas.get(index);
+			tv_car_name.setText(carData.getNick_name());
+		}
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_car_location);
@@ -190,25 +188,6 @@ public class CarLocationActivity extends Activity {
 	boolean isStop = true;
 	private static final int SEARCH_CODE = 8;
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == SearchLocationActivity.HISTORY_CODE) {
-			String re_name = data.getExtras().getString("re_name");
-			if (re_name != null && !re_name.equals("")) {
-				searchAddress.setText(re_name);
-				LatLng llg = new LatLng(data.getExtras().getDouble(
-						"history_lat"), data.getExtras().getDouble(
-						"history_lon"));
-				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
-				mBaiduMap.setMapStatus(u);
-				setTransitRoute(ll, llg);
-			} else {
-				getCarLocation();
-			}
-		}
-	}
-
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -264,29 +243,33 @@ public class CarLocationActivity extends Activity {
 				showVibratePop();
 				break;
 			case R.id.bt_set_vibrate:
-				String rcv_time = app.carDatas.get(index).getRcv_time();
-				if ((GetSystem.spacingNowTime(rcv_time) / 60) > 10
-						|| rcv_time == null) {
-					// 弹出提示框
-					AlertDialog.Builder dialog = new AlertDialog.Builder(
-							CarLocationActivity.this);
-					dialog.setTitle("提示");
-					dialog.setMessage("您的车辆已离线，无法设置震动灵敏度");
-					dialog.setPositiveButton("设置",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									setVibrate();
-								}
-							}).setNegativeButton("取消", null).show();
+				if (app.carDatas != null && app.carDatas.size() > 0) {
+					String rcv_time = app.carDatas.get(index).getRcv_time();
+					if ((GetSystem.spacingNowTime(rcv_time) / 60) > 10
+							|| rcv_time == null) {
+						// 弹出提示框
+						AlertDialog.Builder dialog = new AlertDialog.Builder(
+								CarLocationActivity.this);
+						dialog.setTitle("提示");
+						dialog.setMessage("您的车辆已离线，无法设置震动灵敏度");
+						dialog.setPositiveButton("设置",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										setVibrate();
+									}
+								}).setNegativeButton("取消", null).show();
 
+					} else {
+						setVibrate();
+					}
 				} else {
-					setVibrate();
+					Toast.makeText(CarLocationActivity.this, "请先添加车辆",
+							Toast.LENGTH_SHORT).show();
 				}
 				break;
 			case R.id.iv_maplayers:
-
 				// TODO 弹出图层
 
 				ShowPopMapLayers();
@@ -469,7 +452,11 @@ public class CarLocationActivity extends Activity {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(
 				CarLocationActivity.this);
 		dialog.setTitle("提示");
-		dialog.setMessage("请先绑定终端");
+		if (app.carDatas == null || app.carDatas.size() == 0) {
+			dialog.setMessage("请先添加车辆绑定终端后使用");
+		} else {
+			dialog.setMessage("请先绑定终端");
+		}
 		dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -477,6 +464,25 @@ public class CarLocationActivity extends Activity {
 						CarActivity.class));
 			}
 		}).setNegativeButton("取消", null).show();
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == SearchLocationActivity.HISTORY_CODE) {
+			String re_name = data.getExtras().getString("re_name");
+			if (re_name != null && !re_name.equals("")) {
+				searchAddress.setText(re_name);
+				LatLng llg = new LatLng(data.getExtras().getDouble(
+						"history_lat"), data.getExtras().getDouble(
+						"history_lon"));
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
+				mBaiduMap.setMapStatus(u);
+				setTransitRoute(ll, llg);
+			} else {
+				getCarLocation();
+			}
+		}
 	}
 
 	// 开启追踪

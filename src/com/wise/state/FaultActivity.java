@@ -513,29 +513,17 @@ public class FaultActivity extends FragmentActivity {
 							LoginActivity.class));
 				} else {
 					if (app.carDatas == null || app.carDatas.size() == 0) {
-						AlertDialog.Builder dialog = new AlertDialog.Builder(
-								FaultActivity.this);
-						dialog.setTitle("提示");
-						dialog.setMessage("请先添加车辆");
-						dialog.setPositiveButton("确定",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										startActivity(new Intent(
-												FaultActivity.this,
-												CarActivity.class));
-									}
-								}).setNegativeButton("取消", null).show();
-					} else {
-						CarData carData = app.carDatas.get(index);
-						String device_id = carData.getDevice_id();
-						if (device_id == null || device_id.equals("")) {
-							goCarMap(false);
-						} else {
-							goCarMap(true);
-						}
+						goCarMap(false);
+						return;
 					}
+					CarData carData = app.carDatas.get(index);
+					String device_id = carData.getDevice_id();
+					if (device_id == null || device_id.equals("")) {
+						goCarMap(false);
+					} else {
+						goCarMap(true);
+					}
+
 				}
 				break;
 			case R.id.iv_hot_set:
