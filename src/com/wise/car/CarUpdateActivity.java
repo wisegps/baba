@@ -27,6 +27,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
@@ -48,7 +49,7 @@ import android.widget.Toast;
  * 
  */
 public class CarUpdateActivity extends Activity {
-	
+	private final String TAG = "CarUpdateActivity";
 	private final int inspection = 1;
 	private final int buy_date = 2;
 	private final int year_check = 3;
@@ -357,35 +358,34 @@ public class CarUpdateActivity extends Activity {
 	}
 
 	private void setData() {
+		Log.d(TAG, carData.toString());
 		car_brand = carData.getCar_brand();
 		car_brand_id = carData.getCar_brand_id();
 		car_series = carData.getCar_series();
 		car_series_id = carData.getCar_series_id();
 		car_type = carData.getCar_type();
 		car_type_id = carData.getCar_type_id();
-
 		et_nick_name.setText(carData.getNick_name());
+		
 		if (carData.getObj_name() != null && !carData.getObj_name().equals("")) {
 			if(app.isTest){
 				et_obj_name.setText(carData.getObj_name().substring(1,4) + "***");
+				choose_car_province.setText(carData.getObj_name().substring(0, 1));
 			}else{
 				et_obj_name.setText(carData.getObj_name().substring(1,
 						carData.getObj_name().length()));
 				choose_car_province.setText(carData.getObj_name().substring(0, 1));
 			}
 		} else {
-			et_obj_name.setText(carData.getObj_name());
+			et_obj_name.setText("");
 		}
 		tv_models.setText(carData.getCar_series() + carData.getCar_type());
 		tv_gas_no.setText(carData.getGas_no());
 		if(app.isTest){
 			et_engine_no.setText("01****");
-		}else{
-			et_engine_no.setText(carData.getEngine_no());
-		}
-		if(app.isTest){
 			et_frame_no.setText("61**");
 		}else{
+			et_engine_no.setText(carData.getEngine_no());
 			et_frame_no.setText(carData.getFrame_no());
 		}
 
@@ -403,7 +403,12 @@ public class CarUpdateActivity extends Activity {
 			CityData cityData = new CityData();
 			cityData.setCityName(carData.getVio_citys().get(i));
 			cityData.setCityCode(carData.getVio_citys_code().get(i));
-			cityData.setProvince(carData.getProvince().get(i));//TODO 异常
+			//防止数组越界
+			if(i >= carData.getProvince().size()){
+				cityData.setProvince("");
+			}else{//TODO 异常
+				cityData.setProvince(carData.getProvince().get(i));
+			}
 			chooseCityDatas.add(cityData);
 		}
 		tv_city.setText(citys);

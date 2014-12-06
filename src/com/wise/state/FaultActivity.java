@@ -1,6 +1,5 @@
 package com.wise.state;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -286,18 +285,23 @@ public class FaultActivity extends FragmentActivity {
 					if (app.carDatas == null || app.carDatas.size() == 0) {
 
 					} else {
-						CarData carData = app.carDatas.get(index);
-						String device_id = carData.getDevice_id();
-						if (device_id == null || device_id.equals("")) {
+						//防止删除车辆后数组越界
+						if(index < app.carDatas.size()){
+							CarData carData = app.carDatas.get(index);
+							String device_id = carData.getDevice_id();
+							if (device_id == null || device_id.equals("")) {
 
-						} else {
-							// 获取gps信息
-							String gpsUrl = Constant.BaseUrl + "device/"
-									+ device_id + "?auth_code=" + app.auth_code
-									+ "&update_time=2014-01-01%2019:06:43";
-							new NetThread.GetDataThread(handler, gpsUrl,
-									get_gps, index).start();
-						}
+							} else {
+								// 获取gps信息
+								String gpsUrl = Constant.BaseUrl + "device/"
+										+ device_id + "?auth_code=" + app.auth_code
+										+ "&update_time=2014-01-01%2019:06:43";
+								new NetThread.GetDataThread(handler, gpsUrl,
+										get_gps, index).start();
+							}
+						}else{
+							Log.d(TAG, "刷新位置数组越界");
+						}						
 					}
 				}
 			}
@@ -694,59 +698,62 @@ public class FaultActivity extends FragmentActivity {
 			if (app.carDatas == null || app.carDatas.size() == 0) {
 				return;
 			}
-			CarData carData = app.carDatas.get(index);
-			String device_id = carData.getDevice_id();
-			if (device_id == null || device_id.equals("")) {
+			//防止删除车辆后数组越界
+			if(index < app.carDatas.size()){
+				CarData carData = app.carDatas.get(index);
+				String device_id = carData.getDevice_id();
+				if (device_id == null || device_id.equals("")) {
 
-			} else {
-				String Gas_no = "";
-				if (carData.getGas_no() == null
-						|| carData.getGas_no().equals("")) {
-					Gas_no = "93#(92#)";
 				} else {
-					Gas_no = carData.getGas_no();
+					String Gas_no = "";
+					if (carData.getGas_no() == null
+							|| carData.getGas_no().equals("")) {
+						Gas_no = "93#(92#)";
+					} else {
+						Gas_no = carData.getGas_no();
+					}
+					// 获取当前月的数据
+					String url = Constant.BaseUrl + "device/" + device_id
+							+ "/total?auth_code=" + app.auth_code + "&start_day="
+							+ startMonth + "&end_day=" + endMonth + "&city="
+							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
+							+ Gas_no;
+					new NetThread.GetDataThread(handler, url, getData, index)
+							.start();
+					// 获取gps信息
+					String gpsUrl = Constant.BaseUrl + "device/" + device_id
+							+ "?auth_code=" + app.auth_code
+							+ "&update_time=2014-01-01%2019:06:43";
+					new NetThread.GetDataThread(handler, gpsUrl, get_gps, index)
+							.start();
+
+					// 从服务器获取体检信息
+					String url1 = Constant.BaseUrl + "device/" + device_id
+							+ "/health_exam?auth_code=" + app.auth_code + "&brand="
+							+ URLEncoder.encode(carData.getCar_brand(), "UTF-8");
+					new NetThread.GetDataThread(handler, url1, get_health, index)
+							.start();
+					// 获取驾驶信息
+					String url2 = Constant.BaseUrl + "device/" + device_id
+							+ "/day_drive?auth_code=" + app.auth_code + "&day="
+							+ GetSystem.GetNowMonth().getDay() + "&city="
+							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
+							+ Gas_no;
+					new NetThread.GetDataThread(handler, url2, get_device, index)
+							.start();
 				}
-				// 获取当前月的数据
-				String url = Constant.BaseUrl + "device/" + device_id
-						+ "/total?auth_code=" + app.auth_code + "&start_day="
-						+ startMonth + "&end_day=" + endMonth + "&city="
-						+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
-						+ Gas_no;
-				new NetThread.GetDataThread(handler, url, getData, index)
-						.start();
-				// 获取gps信息
-				String gpsUrl = Constant.BaseUrl + "device/" + device_id
-						+ "?auth_code=" + app.auth_code
-						+ "&update_time=2014-01-01%2019:06:43";
-				new NetThread.GetDataThread(handler, gpsUrl, get_gps, index)
-						.start();
+				// 获取限行信息
+				if (app.City == null || carData.getObj_name() == null
+						|| app.City.equals("") || carData.getObj_name().equals("")) {
 
-				// 从服务器获取体检信息
-				String url1 = Constant.BaseUrl + "device/" + device_id
-						+ "/health_exam?auth_code=" + app.auth_code + "&brand="
-						+ URLEncoder.encode(carData.getCar_brand(), "UTF-8");
-				new NetThread.GetDataThread(handler, url1, get_health, index)
-						.start();
-				// 获取驾驶信息
-				String url2 = Constant.BaseUrl + "device/" + device_id
-						+ "/day_drive?auth_code=" + app.auth_code + "&day="
-						+ GetSystem.GetNowMonth().getDay() + "&city="
-						+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
-						+ Gas_no;
-				new NetThread.GetDataThread(handler, url2, get_device, index)
-						.start();
-			}
-			// 获取限行信息
-			if (app.City == null || carData.getObj_name() == null
-					|| app.City.equals("") || carData.getObj_name().equals("")) {
-
-			} else {
-				String url = Constant.BaseUrl + "base/ban?city="
-						+ URLEncoder.encode(app.City, "UTF-8") + "&obj_name="
-						+ URLEncoder.encode(carData.getObj_name(), "UTF-8");
-				new NetThread.GetDataThread(handler, url, Get_carLimit, index)
-						.start();
-			}
+				} else {
+					String url = Constant.BaseUrl + "base/ban?city="
+							+ URLEncoder.encode(app.City, "UTF-8") + "&obj_name="
+							+ URLEncoder.encode(carData.getObj_name(), "UTF-8");
+					new NetThread.GetDataThread(handler, url, Get_carLimit, index)
+							.start();
+				}
+			}			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

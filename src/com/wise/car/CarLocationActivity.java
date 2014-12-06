@@ -1,7 +1,5 @@
 package com.wise.car;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
@@ -1052,12 +1050,14 @@ public class CarLocationActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		mMapView.onResume();
+		mLocClient.start();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		mMapView.onPause();
+		mLocClient.stop();
 	}
 
 }
