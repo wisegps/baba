@@ -360,7 +360,7 @@ public class FuelActivity extends Activity {
 	private void jsonData(String str) {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-			String total_fee = String.format("%.0f",
+			String total_fee = String.format("%.1f",
 					jsonObject.getDouble("total_fee"));
 			String total_distance = jsonObject.getString("total_distance");
 
@@ -375,7 +375,7 @@ public class FuelActivity extends Activity {
 				}
 				ll_fv.setVisibility(View.VISIBLE);
 			}
-			String total_fuel = String.format("%.0f",
+			String total_fuel = String.format("%.1f",
 					jsonObject.getDouble("total_fuel"));
 			String avg_fuel = jsonObject.getString("avg_fuel");
 			if (avg_fuel.equals("NaN") || avg_fuel.equals("null")) {
