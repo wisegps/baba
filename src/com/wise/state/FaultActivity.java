@@ -41,6 +41,7 @@ import com.wise.notice.NoticeFragment;
 import com.wise.notice.NoticeFragment.BtnListener;
 import com.wise.notice.SmsActivity;
 import com.wise.setting.LoginActivity;
+import com.wise.setting.SetActivity;
 import com.wise.show.ShowActivity;
 import customView.AlwaysMarqueeTextView;
 import customView.HScrollLayout;
@@ -180,6 +181,8 @@ public class FaultActivity extends FragmentActivity {
 		iv_noti = (ImageView) findViewById(R.id.iv_noti);
 		ImageView iv_menu = (ImageView) findViewById(R.id.iv_menu);
 		iv_menu.setOnClickListener(onClickListener);
+		findViewById(R.id.iv_location_hot).setOnClickListener(onClickListener);
+		findViewById(R.id.iv_hot_set).setOnClickListener(onClickListener);
 
 		smv_content = (ParentSlide) findViewById(R.id.smv_content);
 		nstv_message = (NoticeScrollTextView) findViewById(R.id.nstv_message);
@@ -508,6 +511,28 @@ public class FaultActivity extends FragmentActivity {
 			case R.id.iv_menu:
 				startActivity(new Intent(FaultActivity.this, MoreActivity.class));
 				break;
+			case R.id.iv_location_hot:
+				if (!Judge.isLogin(app)) {
+					startActivity(new Intent(FaultActivity.this,
+							LoginActivity.class));
+				} else {
+					if (app.carDatas == null || app.carDatas.size() == 0) {
+						goCarMap(false);
+						return;
+					}
+					CarData carData = app.carDatas.get(index);
+					String device_id = carData.getDevice_id();
+					if (device_id == null || device_id.equals("")) {
+						goCarMap(false);
+					} else {
+						goCarMap(true);
+					}
+
+				}
+				break;
+			case R.id.iv_hot_set:
+
+				break;
 			case R.id.bt_show:
 				startActivity(new Intent(FaultActivity.this, ShowActivity.class));
 				break;
@@ -566,7 +591,7 @@ public class FaultActivity extends FragmentActivity {
 						SelectCityActivity.class), 0);
 				break;
 			case R.id.ll_adress:
-				goCarMap();
+				goCarMap(true);
 				break;
 			case R.id.iv_pic:
 				Intent intent = new Intent(Intent.ACTION_VIEW,
@@ -934,10 +959,11 @@ public class FaultActivity extends FragmentActivity {
 	}
 
 	// 跳转到地图界面
-	private void goCarMap() {
+	private void goCarMap(boolean b) {
 		Intent intent = new Intent(FaultActivity.this,
 				CarLocationActivity.class);
 		intent.putExtra("index", index);
+		intent.putExtra("isHotLocation", b);
 		startActivity(intent);
 	}
 

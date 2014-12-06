@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- 导航条背景色 -->
     <color name="title_back">#50B7DE</color>
     <!-- 淡蓝色字体 -->
@@ -36,7 +37,7 @@
     <!-- 蓝色，首页背景 -->
     <color name="blue_bg">#E4EFF3</color>
     <!-- 黄色，故障 -->
-    <color name="yellow">#FAB466</color>    
+    <color name="yellow">#FAB466</color>
     <!-- 绿色 -->
     <color name="Green">#1ABAA5</color>
     <!-- 油耗曲线 -->
@@ -59,13 +60,13 @@
     <color name="Green_Lights">#EDF8FC</color>
     <!-- 车秀大厅 -->
     <color name="show_bg">#4D7384</color>
-    
-    
-    
-    
-    <!-- 蓝色-->
+
+    <!-- 首页字体颜色 -->
+    <color name="back">#282828</color>
+    <color name="content_gray">#8E8E8E</color>
+
+    <!-- 蓝色 -->
     <color name="blue">#53A5C4</color>
-    
     <color name="gray">#d8d9e1</color>
     <color name="gray_lights">#80d8d9e1</color>
     <color name="gray_light">#4cd8d9e1</color>
@@ -107,4 +108,5 @@
     <color name="viewfinder_frame">#FFFFFF</color>
     <color name="viewfinder_laser">#ffff0000</color>
     <color name="possible_result_points">#c0ffff00</color>
+
 </resources>
