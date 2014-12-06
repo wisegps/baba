@@ -540,14 +540,13 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				}
 			}
 			//获取自己信息
-			String meLogo = "";
 			SharedPreferences preferences = getSharedPreferences(
 					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 			String customer = preferences.getString(Constant.sp_customer
 					+ app.cust_id, "");
 			
 			JSONObject jsonObject = new JSONObject(customer);
-			meLogo = jsonObject.getString("logo");
+			final String meLogo = jsonObject.getString("logo");
 			
 			// 读取自己对应的图片
 			if (new File(Constant.userIconPath + GetSystem.getM5DEndo(meLogo) + ".png")
@@ -562,7 +561,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 								@Override
 								public void onResponse(Bitmap response) {
 									GetSystem.saveImageSD(response,
-											Constant.userIconPath, app.cust_id
+											Constant.userIconPath, GetSystem.getM5DEndo(meLogo)
 													+ ".png", 100);
 									imageMe = response;
 									letterAdapter.notifyDataSetChanged();

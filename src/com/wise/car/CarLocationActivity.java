@@ -1068,14 +1068,17 @@ public class CarLocationActivity extends Activity {
 				return;
 			}
 			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
-				if (drOverlay != null) {
-					drOverlay.removeFromMap();
+				try {
+					if (drOverlay != null) {
+						drOverlay.removeFromMap();
+					}
+					drOverlay = new DrivingRouteOverlay(mBaiduMap);
+					mBaiduMap.setOnMarkerClickListener(drOverlay);
+					drOverlay.setData(result.getRouteLines().get(0));
+					drOverlay.addToMap();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				drOverlay = new DrivingRouteOverlay(mBaiduMap);
-				mBaiduMap.setOnMarkerClickListener(drOverlay);
-				drOverlay.setData(result.getRouteLines().get(0));
-				drOverlay.addToMap();
-
 			} else {
 				Toast.makeText(CarLocationActivity.this, "抱歉，未找到结果",
 						Toast.LENGTH_SHORT).show();

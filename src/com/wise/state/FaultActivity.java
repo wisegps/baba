@@ -288,8 +288,8 @@ public class FaultActivity extends FragmentActivity {
 					if (app.carDatas == null || app.carDatas.size() == 0) {
 
 					} else {
-						//防止删除车辆后数组越界
-						if(index < app.carDatas.size()){
+						// 防止删除车辆后数组越界
+						if (index < app.carDatas.size()) {
 							CarData carData = app.carDatas.get(index);
 							String device_id = carData.getDevice_id();
 							if (device_id == null || device_id.equals("")) {
@@ -297,14 +297,15 @@ public class FaultActivity extends FragmentActivity {
 							} else {
 								// 获取gps信息
 								String gpsUrl = Constant.BaseUrl + "device/"
-										+ device_id + "?auth_code=" + app.auth_code
+										+ device_id + "?auth_code="
+										+ app.auth_code
 										+ "&update_time=2014-01-01%2019:06:43";
 								new NetThread.GetDataThread(handler, gpsUrl,
 										get_gps, index).start();
 							}
-						}else{
+						} else {
 							Log.d(TAG, "刷新位置数组越界");
-						}						
+						}
 					}
 				}
 			}
@@ -723,8 +724,8 @@ public class FaultActivity extends FragmentActivity {
 			if (app.carDatas == null || app.carDatas.size() == 0) {
 				return;
 			}
-			//防止删除车辆后数组越界
-			if(index < app.carDatas.size()){
+			// 防止删除车辆后数组越界
+			if (index < app.carDatas.size()) {
 				CarData carData = app.carDatas.get(index);
 				String device_id = carData.getDevice_id();
 				if (device_id == null || device_id.equals("")) {
@@ -739,8 +740,9 @@ public class FaultActivity extends FragmentActivity {
 					}
 					// 获取当前月的数据
 					String url = Constant.BaseUrl + "device/" + device_id
-							+ "/total?auth_code=" + app.auth_code + "&start_day="
-							+ startMonth + "&end_day=" + endMonth + "&city="
+							+ "/total?auth_code=" + app.auth_code
+							+ "&start_day=" + startMonth + "&end_day="
+							+ endMonth + "&city="
 							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
 							+ Gas_no;
 					new NetThread.GetDataThread(handler, url, getData, index)
@@ -753,32 +755,39 @@ public class FaultActivity extends FragmentActivity {
 							.start();
 
 					// 从服务器获取体检信息
-					String url1 = Constant.BaseUrl + "device/" + device_id
-							+ "/health_exam?auth_code=" + app.auth_code + "&brand="
-							+ URLEncoder.encode(carData.getCar_brand(), "UTF-8");
-					new NetThread.GetDataThread(handler, url1, get_health, index)
-							.start();
+					String url1 = Constant.BaseUrl
+							+ "device/"
+							+ device_id
+							+ "/health_exam?auth_code="
+							+ app.auth_code
+							+ "&brand="
+							+ URLEncoder
+									.encode(carData.getCar_brand(), "UTF-8");
+					new NetThread.GetDataThread(handler, url1, get_health,
+							index).start();
 					// 获取驾驶信息
 					String url2 = Constant.BaseUrl + "device/" + device_id
 							+ "/day_drive?auth_code=" + app.auth_code + "&day="
 							+ GetSystem.GetNowMonth().getDay() + "&city="
 							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
 							+ Gas_no;
-					new NetThread.GetDataThread(handler, url2, get_device, index)
-							.start();
+					new NetThread.GetDataThread(handler, url2, get_device,
+							index).start();
 				}
 				// 获取限行信息
 				if (app.City == null || carData.getObj_name() == null
-						|| app.City.equals("") || carData.getObj_name().equals("")) {
+						|| app.City.equals("")
+						|| carData.getObj_name().equals("")) {
 
 				} else {
 					String url = Constant.BaseUrl + "base/ban?city="
-							+ URLEncoder.encode(app.City, "UTF-8") + "&obj_name="
+							+ URLEncoder.encode(app.City, "UTF-8")
+							+ "&obj_name="
 							+ URLEncoder.encode(carData.getObj_name(), "UTF-8");
-					new NetThread.GetDataThread(handler, url, Get_carLimit, index)
-							.start();
+					new NetThread.GetDataThread(handler, url, Get_carLimit,
+							index).start();
 				}
-			}			
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -786,33 +795,35 @@ public class FaultActivity extends FragmentActivity {
 
 	/** 获取GPS信息 **/
 	private void jsonGps(String str, int index) {
-		System.out.println("解析");
 		try {
-			JSONObject jsonObject = new JSONObject(str)
-					.getJSONObject("active_gps_data");
-			double lat = jsonObject.getDouble("lat");
-			double lon = jsonObject.getDouble("lon");
-			int direct = jsonObject.getInt("direct");
-			String uni_status = jsonObject.getString("uni_status");
-			String rcv_time = jsonObject.getString("rcv_time");
-			LatLng latLng = new LatLng(lat, lon);
-			app.carDatas.get(index).setUni_status(uni_status);
-			app.carDatas.get(index).setDirect(direct);
-			app.carDatas.get(index).setLat(lat);
-			app.carDatas.get(index).setLon(lon);
-			app.carDatas.get(index).setRcv_time(
-					GetSystem.ChangeTimeZone(rcv_time.substring(0, 19).replace(
-							"T", " ")));
-			GetSystem.myLog(TAG, "lat = " + lat + " , Lon = " + lon);
-			mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
-					.location(latLng));
+			if (index < app.carDatas.size()) {
+				JSONObject jsonObject = new JSONObject(str)
+						.getJSONObject("active_gps_data");
+				double lat = jsonObject.getDouble("lat");
+				double lon = jsonObject.getDouble("lon");
+				int direct = jsonObject.getInt("direct");
+				String uni_status = jsonObject.getString("uni_status");
+				String rcv_time = jsonObject.getString("rcv_time");
+				LatLng latLng = new LatLng(lat, lon);
+				app.carDatas.get(index).setUni_status(uni_status);
+				app.carDatas.get(index).setDirect(direct);
+				app.carDatas.get(index).setLat(lat);
+				app.carDatas.get(index).setLon(lon);
+				app.carDatas.get(index).setRcv_time(
+						GetSystem.ChangeTimeZone(rcv_time.substring(0, 19)
+								.replace("T", " ")));
+				GetSystem.myLog(TAG, "lat = " + lat + " , Lon = " + lon);
+				mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
+						.location(latLng));
 
-			JSONObject jObject = new JSONObject(str).getJSONObject("params");
-			int sensitivity = 0;
-			if (jObject.opt("sensitivity") != null) {
-				sensitivity = jObject.getInt("sensitivity");
+				JSONObject jObject = new JSONObject(str)
+						.getJSONObject("params");
+				int sensitivity = 0;
+				if (jObject.opt("sensitivity") != null) {
+					sensitivity = jObject.getInt("sensitivity");
+				}
+				app.carDatas.get(index).setSensitivity(sensitivity);
 			}
-			app.carDatas.get(index).setSensitivity(sensitivity);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -826,26 +837,32 @@ public class FaultActivity extends FragmentActivity {
 					|| jsonObject.toString().equals("")) {
 				return;
 			}
-			CarView carView = carViews.get(index);
-			carView.getTv_fee().setText(
-					String.format("%.0f", jsonObject.getDouble("total_fee")));// 花费
-			carView.getTv_fuel().setText(
-					String.format("%.0f", jsonObject.getDouble("total_fuel")));// 油耗
-			// 剩余里程显示
-			if ((jsonObject.getString("left_distance")).equals("null")) {
-				carView.getTv_distance().setText(String.format("%.0f", 0.0));
-			} else if (jsonObject.getDouble("left_distance") == 0) {
-				carView.getTv_distance().setText(
-						String.format("%.0f",
-								jsonObject.getDouble("total_distance")));// 里程
-			} else {
-				carView.getTv_current_distance().setText("剩余里程");
-				carView.getTv_distance().setText(
-						String.format("%.0f",
-								jsonObject.getDouble("left_distance")));// 里程
+			if(index < carViews.size()){
+				CarView carView = carViews.get(index);
+				carView.getTv_fee().setText(
+						String.format("%.0f", jsonObject.getDouble("total_fee")));// 花费
+				carView.getTv_fuel().setText(
+						String.format("%.0f", jsonObject.getDouble("total_fuel")));// 油耗
+				// 剩余里程显示
+				if ((jsonObject.getString("left_distance")).equals("null")) {
+					carView.getTv_distance().setText(String.format("%.0f", 0.0));
+				} else if (jsonObject.getDouble("left_distance") == 0) {
+					carView.getTv_distance().setText(
+							String.format("%.0f",
+									jsonObject.getDouble("total_distance")));// 里程
+				} else {
+					carView.getTv_current_distance().setText("剩余里程");
+					try {
+						carView.getTv_distance().setText(
+								String.format("%.0f",
+										jsonObject.getDouble("left_distance")));// 里程
+					} catch (Exception e) {
+						carView.getTv_distance().setText(
+								String.format("0"));// 里程
+					}
+				}
 			}
-
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -969,6 +986,12 @@ public class FaultActivity extends FragmentActivity {
 
 	/** 滑动车辆布局 **/
 	private void initDataView() {// 布局
+		// 删除车辆后重新布局，如果删除的是最后一个车辆，则重置为第一个车
+		if (index < app.carDatas.size()) {
+
+		} else {
+			index = 0;
+		}
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		hs_car.removeAllViews();
@@ -1533,6 +1556,7 @@ public class FaultActivity extends FragmentActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
+			GetSystem.myLog(TAG, action);
 			if (action.equals(Constant.A_RefreshHomeCar)) {
 				GetSystem.myLog(TAG, "A_RefreshHomeCar");
 				initDataView();

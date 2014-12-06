@@ -45,6 +45,7 @@ import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 public class GetSystem {
 	private static final String TAG = "GetSystem";
@@ -449,6 +450,10 @@ public class GetSystem {
 	 */
 	public static void FindCar(final Activity mActivity, LatLng pt1,
 			final LatLng pt2, String str1, String str2) {
+		if(pt1 == null || pt2 == null){
+			Toast.makeText(mActivity, "坐标错误,无法开启导航", Toast.LENGTH_SHORT).show();
+			return;
+		}
 		BNaviPoint startPoint = new BNaviPoint(pt1.longitude, pt1.latitude, "", BNaviPoint.CoordinateType.BD09_MC);
 		BNaviPoint endPoint = new BNaviPoint(pt2.longitude, pt2.latitude, "", BNaviPoint.CoordinateType.BD09_MC);
 		BaiduNaviManager.getInstance().launchNavigator(

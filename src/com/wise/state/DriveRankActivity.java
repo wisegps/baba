@@ -129,7 +129,7 @@ public class DriveRankActivity extends Activity{
 				driveData.setCar_type(series);
 				driveDatas.add(driveData);
 			}
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

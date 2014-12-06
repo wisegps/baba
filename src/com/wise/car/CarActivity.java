@@ -351,6 +351,7 @@ public class CarActivity extends Activity {
 	}
 
 	private void onBack() {
+		System.out.println("isRefresh = " + isRefresh);
 		if (isRefresh) {
 			// 发广播
 			Intent intent = new Intent(Constant.A_RefreshHomeCar);
