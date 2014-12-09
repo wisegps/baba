@@ -53,6 +53,8 @@ public class SmsActivity extends Activity implements IXListViewListener{
 	HScrollLayout hsl_sms;    
     int index_view = 0;
     AppApplication app;
+
+	List<SmsView> smsViews;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +112,7 @@ public class SmsActivity extends Activity implements IXListViewListener{
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
 			List<SmsData> smsDatas = smsViews.get(index_view).getSmsDatas();
 			System.out.println("arg2 = " + arg2);
-			if(arg2 !=0 && arg2 != (smsDatas.size()+1)){
+			if(smsDatas != null && arg2 !=0 && arg2 != (smsDatas.size()+1)){
 				System.out.println(smsDatas.get(arg2 -1).toString());
 			    String Type = smsDatas.get(arg2 -1).getMsg_type();
 	            if(Type.equals("0")){
@@ -188,7 +190,6 @@ public class SmsActivity extends Activity implements IXListViewListener{
 		}
 	};
 	
-	List<SmsView> smsViews;
 	private void showSms() {
 		smsViews = new ArrayList<SmsView>();
 		hsl_sms.removeAllViews();

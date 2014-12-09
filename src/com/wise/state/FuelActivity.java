@@ -362,7 +362,8 @@ public class FuelActivity extends Activity {
 			JSONObject jsonObject = new JSONObject(str);
 			String total_fee = String.format("%.1f",
 					jsonObject.getDouble("total_fee"));
-			String total_distance = jsonObject.getString("total_distance");
+			String total_distance = String.format("%.1f",
+					jsonObject.getDouble("total_distance"));
 
 			if (total_fee.equals("0") && total_distance.equals("0")) {
 				ll_chart.setVisibility(View.GONE);

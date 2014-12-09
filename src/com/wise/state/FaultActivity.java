@@ -840,21 +840,21 @@ public class FaultActivity extends FragmentActivity {
 			if(index < carViews.size()){
 				CarView carView = carViews.get(index);
 				carView.getTv_fee().setText(
-						String.format("%.0f", jsonObject.getDouble("total_fee")));// 花费
+						String.format("%.1f", jsonObject.getDouble("total_fee")));// 花费
 				carView.getTv_fuel().setText(
-						String.format("%.0f", jsonObject.getDouble("total_fuel")));// 油耗
+						String.format("%.1f", jsonObject.getDouble("total_fuel")));// 油耗
 				// 剩余里程显示
 				if ((jsonObject.getString("left_distance")).equals("null")) {
 					carView.getTv_distance().setText(String.format("%.0f", 0.0));
 				} else if (jsonObject.getDouble("left_distance") == 0) {
 					carView.getTv_distance().setText(
-							String.format("%.0f",
+							String.format("%.1f",
 									jsonObject.getDouble("total_distance")));// 里程
 				} else {
 					carView.getTv_current_distance().setText("剩余里程");
 					try {
 						carView.getTv_distance().setText(
-								String.format("%.0f",
+								String.format("%.1f",
 										jsonObject.getDouble("left_distance")));// 里程
 					} catch (Exception e) {
 						carView.getTv_distance().setText(
