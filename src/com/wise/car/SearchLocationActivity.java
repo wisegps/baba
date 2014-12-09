@@ -305,31 +305,34 @@ public class SearchLocationActivity extends Activity {
 	OnGetPoiSearchResultListener poiListener = new OnGetPoiSearchResultListener() {
 		@Override
 		public void onGetPoiResult(PoiResult result) {
-			if (result == null
-					|| result.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {
-				search_history.setVisibility(View.GONE);
-				return;
-			}
-
-			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
-				search_history.setVisibility(View.VISIBLE);
-				adressDatas.clear();
-				PoiInfo mkPoiInfo = null;
-				String adName = "";
-				for (int i = 0; i < result.getAllPoi().size(); i++) {
-					mkPoiInfo = result.getAllPoi().get(i);
-					AdressData adressData = new AdressData();
-					adName = mkPoiInfo.name + "\n" + mkPoiInfo.address;
-					adressData.setAdress(adName);
-					adressData.setName(mkPoiInfo.name);
-					adressData.setLat(mkPoiInfo.location.latitude);
-					adressData.setLon(mkPoiInfo.location.longitude);
-					adressDatas.add(adressData);
+			try {
+				if (result == null
+						|| result.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {
+					search_history.setVisibility(View.GONE);
+					return;
 				}
-				searchAdapter.setDate(adressDatas);
-				searchAdapter.notifyDataSetChanged();
-				return;
-			}
+				if (result.error == SearchResult.ERRORNO.NO_ERROR) {
+					search_history.setVisibility(View.VISIBLE);
+					adressDatas.clear();
+					PoiInfo mkPoiInfo = null;
+					String adName = "";
+					for (int i = 0; i < result.getAllPoi().size(); i++) {
+						mkPoiInfo = result.getAllPoi().get(i);
+						AdressData adressData = new AdressData();
+						adName = mkPoiInfo.name + "\n" + mkPoiInfo.address;
+						adressData.setAdress(adName);
+						adressData.setName(mkPoiInfo.name);
+						adressData.setLat(mkPoiInfo.location.latitude);
+						adressData.setLon(mkPoiInfo.location.longitude);
+						adressDatas.add(adressData);
+					}
+					searchAdapter.setDate(adressDatas);
+					searchAdapter.notifyDataSetChanged();
+					return;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
 		}
 
 		@Override

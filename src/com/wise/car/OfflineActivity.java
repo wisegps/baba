@@ -1,6 +1,7 @@
 package com.wise.car;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import pubclas.GetSystem;
 import com.baidu.mapapi.map.offline.MKOLSearchRecord;
 import com.baidu.mapapi.map.offline.MKOLUpdateElement;
@@ -36,7 +37,7 @@ import android.widget.TextView;
  **/
 public class OfflineActivity extends Activity implements MKOfflineMapListener{
 	
-	TextView tv_offline,tv_citys;
+	TextView tv_offline,tv_citys,tv_update,tv_down,tv_pause;
 	ViewPager viewPager;
 	ArrayList<View> pageViews = new ArrayList<View>();
 	private MKOfflineMap mOffline = null;
@@ -79,6 +80,15 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 			case R.id.tv_citys:
 				viewPager.setCurrentItem(1);
 				break;
+			case R.id.tv_update:
+				setMapUpdate();
+				break;
+			case R.id.tv_down:
+				setMapDown();
+				break;
+			case R.id.tv_pause:
+				setMapPause();
+				break;				
 			}
 		}
 	};
@@ -145,8 +155,63 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 		localMapList = mOffline.getAllUpdateInfo();
 		if (localMapList == null) {
 			localMapList = new ArrayList<MKOLUpdateElement>();
-		}	
+		}
+		Collections.sort(localMapList, new Comparator());// 排序
 		offlineAdapter.notifyDataSetChanged();
+		for(MKOLUpdateElement m : localMapList){
+			if(m.update){
+				tv_update.setEnabled(true);
+				tv_update.setTextColor(getResources().getColor(R.color.black1));
+				break;
+			}
+		}
+	}
+	private void setMapDown(){
+		tv_down.setEnabled(false);
+		tv_down.setTextColor(getResources().getColor(R.color.gray));
+		tv_pause.setEnabled(true);
+		tv_pause.setTextColor(getResources().getColor(R.color.black1));
+		for(MKOLUpdateElement m : localMapList){
+			if(m.ratio != 100){
+				mOffline.start(m.cityID);
+			}
+		}
+	}
+	//暂停
+	private void setMapPause(){
+		tv_pause.setEnabled(false);
+		tv_pause.setTextColor(getResources().getColor(R.color.gray));
+		tv_down.setEnabled(true);
+		tv_down.setTextColor(getResources().getColor(R.color.black1));
+		for(MKOLUpdateElement m : localMapList){
+			mOffline.pause(m.cityID);
+		}
+	}
+	/**更新**/
+	private void setMapUpdate(){
+		tv_update.setEnabled(false);
+		tv_update.setTextColor(getResources().getColor(R.color.gray));
+		for(MKOLUpdateElement m : localMapList){
+			if(m.update){
+				mOffline.remove(m.cityID);
+				mOffline.start(m.cityID);
+			}
+		}
+	}
+	class Comparator implements java.util.Comparator<MKOLUpdateElement> {
+		@Override
+		public int compare(MKOLUpdateElement lhs, MKOLUpdateElement rhs) {
+			int m1 = lhs.cityID;
+			int m2 = rhs.cityID;
+			int result = 0;
+			if (m1 > m2) {
+				result = 1;
+			}
+			if (m1 < m2) {
+				result = -1;
+			}
+			return result;
+		}
 	}
 	/**离线地图包大小转换**/
 	public String formatDataSize(int size) {
@@ -164,6 +229,12 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 		ListView lv_offline = (ListView)view_offline_down.findViewById(R.id.lv_offline);
 		offlineAdapter = new OfflineAdapter();
 		lv_offline.setAdapter(offlineAdapter);
+		tv_update = (TextView)view_offline_down.findViewById(R.id.tv_update);
+		tv_update.setOnClickListener(onClickListener);
+		tv_down = (TextView)view_offline_down.findViewById(R.id.tv_down);
+		tv_down.setOnClickListener(onClickListener);
+		tv_pause = (TextView)view_offline_down.findViewById(R.id.tv_pause);
+		tv_pause.setOnClickListener(onClickListener);
 		setOfflineCityData();
 		
 		View view_citys = LayoutInflater.from(this).inflate(
@@ -239,14 +310,32 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 					
 				}else{
 					if(childPosition == 0){
-						//点击的是全省地图包
-						for(CitysData citysData2 : lists.get(groupPosition)){
+						//TODO 点击的是全省地图包
+						for(int i = 0 ; i < lists.get(groupPosition).size() ; i++){
+							CitysData citysData2 = lists.get(groupPosition).get(i);
 							citysData2.setDown(true);
+							if(i == 0){
+								//去掉全省										
+							}else{
+								//判断市是否有下载的
+								boolean isDown = false;
+								for(MKOLUpdateElement mkolUpdateElement : localMapList){
+									if(mkolUpdateElement.cityID == citysData2.cityID){
+										isDown = true;
+										break;
+									}else{
+										
+									}
+								}
+								if(!isDown){
+									mOffline.start(citysData2.getCityID());
+								}
+							}
 						}
 					}else{
 						citysData.setDown(true);
+						mOffline.start(citysData.getCityID());
 					}
-					mOffline.start(citysData.getCityID());
 					viewPager.setCurrentItem(0);
 					citysAdapter.notifyDataSetChanged();
 				}
@@ -263,14 +352,27 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 							
 						}else{
 							if(childPosition == 0){
-								//点击的是全省地图包
-								for(CitysData citysData2 : lists.get(groupPosition)){
+								//TODO 点击的是全省地图包
+								for(int i = 0 ; i < lists.get(groupPosition).size() ; i++){
+									CitysData citysData2 = lists.get(groupPosition).get(i);
 									citysData2.setDown(true);
+									if(i == 0){
+										//去掉全省										
+									}else{
+										//判断市是否有下载的
+										for(MKOLUpdateElement mkolUpdateElement : localMapList){
+											if(mkolUpdateElement.cityID == citysData2.cityID){
+												
+											}else{
+												mOffline.start(citysData2.getCityID());
+											}
+										}
+									}
 								}
 							}else{
 								citysData.setDown(true);
+								mOffline.start(citysData.getCityID());
 							}
-							mOffline.start(citysData.getCityID());
 							viewPager.setCurrentItem(0);
 							citysAdapter.notifyDataSetChanged();
 						}
@@ -395,6 +497,7 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 				viewHolder = (ViewHolder)(convertView.getTag());
 			}
 			final MKOLUpdateElement m = localMapList.get(position);
+			viewHolder.ll_menu.setVisibility(View.GONE);
 			viewHolder.tv_city_name.setText(m.cityName);
 			viewHolder.rl_offline.setOnClickListener(new OnClickListener() {				
 				@Override
@@ -414,7 +517,7 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 					}					
 				}
 			});
-			//TODO 控制
+			//控制
 			if(m.status == MKOLUpdateElement.SUSPENDED){
 				viewHolder.bt_update.setText("下载地图");
 				viewHolder.bt_update.setEnabled(true);
@@ -438,6 +541,7 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 						setOfflineCityData();
 						citysAdapter.notifyDataSetChanged();
 					}else if(m.update){
+						mOffline.remove(m.cityID);
 						mOffline.start(m.cityID);
 					}
 				}
@@ -542,7 +646,7 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 		private boolean isDown;
 		private boolean isGroup;
 		private boolean isExpandable;
-		
+				
 		public boolean isExpandable() {
 			return isExpandable;
 		}

@@ -568,38 +568,55 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			}
 		}
 		//获取自己信息
-		String meLogo = "";
+		final String meLogo = "";
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		String customer = preferences.getString(Constant.sp_customer
 				+ app.cust_id, "");
 		try {
-			JSONObject jsonObject = new JSONObject(customer);
-			meLogo = jsonObject.getString("logo");
+			if (imageFriend == null) {
+				if (logo == null || logo.equals("")) {
+
+				} else {
+					// 获取用户头像
+					mQueue.add(new ImageRequest(logo,
+							new Response.Listener<Bitmap>() {
+								@Override
+								public void onResponse(Bitmap response) {
+									GetSystem.saveImageSD(response,
+											Constant.userIconPath, GetSystem.getM5DEndo(logo)
+													+ ".png", 100);
+									imageFriend = response;
+									letterAdapter.notifyDataSetChanged();
+								}
+							}, 0, 0, Config.RGB_565, null));
+				}
+			}
+			
+			// 读取自己对应的图片
+			if (new File(Constant.userIconPath + GetSystem.getM5DEndo(meLogo) + ".png")
+					.exists()) {
+				imageMe = BitmapFactory.decodeFile(Constant.userIconPath
+						+ GetSystem.getM5DEndo(meLogo) + ".png");
+			}else{
+				if (!meLogo.equals("")) {
+					// 获取自己头像
+					mQueue.add(new ImageRequest(meLogo,
+							new Response.Listener<Bitmap>() {
+								@Override
+								public void onResponse(Bitmap response) {
+									GetSystem.saveImageSD(response,
+											Constant.userIconPath, GetSystem.getM5DEndo(meLogo)
+													+ ".png", 100);
+									imageMe = response;
+									letterAdapter.notifyDataSetChanged();
+								}
+							}, 0, 0, Config.RGB_565, null));
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		// 读取自己对应的图片
-		if (new File(Constant.userIconPath + GetSystem.getM5DEndo(meLogo) + ".png")
-				.exists()) {
-			imageMe = BitmapFactory.decodeFile(Constant.userIconPath
-					+ GetSystem.getM5DEndo(meLogo) + ".png");
-		}else{
-			if (!meLogo.equals("")) {
-				// 获取自己头像
-				mQueue.add(new ImageRequest(meLogo,
-						new Response.Listener<Bitmap>() {
-							@Override
-							public void onResponse(Bitmap response) {
-								GetSystem.saveImageSD(response,
-										Constant.userIconPath, app.cust_id
-												+ ".png", 100);
-								imageMe = response;
-								letterAdapter.notifyDataSetChanged();
-							}
-						}, 0, 0, Config.RGB_565, null));
-			}
-		}
+		}		
 	}
 
 	private PopupWindow popupWindow;

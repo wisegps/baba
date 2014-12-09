@@ -249,7 +249,7 @@ public class AccountActivity extends Activity implements
 							}
 						}));
 			}
-		} catch (Exception e) {
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}

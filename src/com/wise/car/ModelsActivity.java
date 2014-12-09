@@ -485,26 +485,30 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 	 * @param filterStr
 	 */
 	private void filterData(String filterStr) {
-		List<BrandData> filterDateList = new ArrayList<BrandData>();
+		try {
+			List<BrandData> filterDateList = new ArrayList<BrandData>();
 
-		// 编辑框的内容为空的时候
-		if (TextUtils.isEmpty(filterStr)) {
-			filterDateList = brandDatas;
-		} else {
-			// 匹配某些类型的品牌
-			filterDateList.clear();
-			for (BrandData sortModel : brandDatas) {
-				String name = sortModel.getBrand();
-				if (name.indexOf(filterStr.toString()) != -1
-						|| characterParser.getSelling(name).startsWith(
-								filterStr.toString())) {
-					filterDateList.add(sortModel);
+			// 编辑框的内容为空的时候
+			if (TextUtils.isEmpty(filterStr)) {
+				filterDateList = brandDatas;
+			} else {
+				// 匹配某些类型的品牌
+				filterDateList.clear();
+				for (BrandData sortModel : brandDatas) {
+					String name = sortModel.getBrand();
+					if (name.indexOf(filterStr.toString()) != -1
+							|| characterParser.getSelling(name).startsWith(
+									filterStr.toString())) {
+						filterDateList.add(sortModel);
+					}
 				}
 			}
-		}
-		// 根据a-z进行排序
-		Collections.sort(filterDateList, comparator);
-		brandAdapter.updateListView(filterDateList);
+			// 根据a-z进行排序
+			Collections.sort(filterDateList, comparator);
+			brandAdapter.updateListView(filterDateList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 
 	@Override

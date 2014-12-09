@@ -69,7 +69,6 @@
 			android:layout_gravity="center_vertical"
             android:text="服务："/>
 	    <RatingBar
-	        android:id="@+id/ratingBar1"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content" />
     </LinearLayout>

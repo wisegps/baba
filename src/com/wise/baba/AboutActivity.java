@@ -35,7 +35,7 @@ public class AboutActivity extends Activity{
 			public void onUpdateReturned(int arg0, UpdateResponse arg1) {
 				switch (arg0) {
 				case UpdateStatus.No:
-					Toast.makeText(AboutActivity.this, "没有更新", Toast.LENGTH_SHORT).show();
+					Toast.makeText(AboutActivity.this, "无更新", Toast.LENGTH_SHORT).show();
 					break;
 				} 
 			}
@@ -58,5 +58,10 @@ public class AboutActivity extends Activity{
 	private void setVersion(){
 		//Alpha Beta
 		tv_version.setText("叭叭V"+ GetSystem.GetVersion(AboutActivity.this, Constant.PackageName) + " Alpha");
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		UmengUpdateAgent.setUpdateListener(null);
 	}
 }

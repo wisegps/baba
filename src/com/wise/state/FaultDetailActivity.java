@@ -111,20 +111,28 @@ public class FaultDetailActivity extends Activity{
 				break;
 				// 救援
 			case R.id.risk:
-				String phone = app.carDatas.get(index)
-						.getInsurance_tel();
-				Intent in_1 = new Intent(
-						Intent.ACTION_DIAL,
-						Uri.parse("tel:" + (phone != null ? phone : "")));
-				startActivity(in_1);
+				try{//平板没有电话模块异常
+					String phone = app.carDatas.get(index)
+							.getInsurance_tel();
+					Intent in_1 = new Intent(
+							Intent.ACTION_DIAL,
+							Uri.parse("tel:" + (phone != null ? phone : "")));
+					startActivity(in_1);
+				}catch (Exception e) {
+					e.printStackTrace();
+				}				
 				break;
 			// 报险
 			case R.id.rescue:
-				String tel = app.carDatas.get(index)
-						.getMaintain_tel();
-				Intent in_2 = new Intent(Intent.ACTION_DIAL,
-						Uri.parse("tel:" + (tel != null ? tel : "")));
-				startActivity(in_2);
+				try{//平板没有电话模块异常
+					String tel = app.carDatas.get(index)
+							.getMaintain_tel();
+					Intent in_2 = new Intent(Intent.ACTION_DIAL,
+							Uri.parse("tel:" + (tel != null ? tel : "")));
+					startActivity(in_2);
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
 				break;
 			// 问一下
 			case R.id.ask:

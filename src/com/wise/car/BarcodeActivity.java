@@ -112,7 +112,7 @@ public class BarcodeActivity extends Activity implements Callback {
         }
         if (handler == null) {
             handler = new CaptureActivityHandler(this, decodeFormats,
-                    characterSet);
+                    characterSet);//TODO startPreview failed
         }
     }
 

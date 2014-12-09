@@ -84,7 +84,7 @@ public class FaultDetectionActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fault_detection);
-		app = (AppApplication)getApplication();
+		app = (AppApplication) getApplication();
 		initView();
 		ll_fault = (LinearLayout) findViewById(R.id.ll_fault);
 		iv_right = (ImageView) findViewById(R.id.iv_right);
@@ -174,15 +174,15 @@ public class FaultDetectionActivity extends Activity {
 			} else if (v.getId() == R.id.iv_back) {
 				Back();
 				finish();
-			} else if(v.getId() == R.id.tv_ask_expert){
-				Intent intent = new Intent(FaultDetectionActivity.this, LetterActivity.class);
+			} else if (v.getId() == R.id.tv_ask_expert) {
+				Intent intent = new Intent(FaultDetectionActivity.this,
+						LetterActivity.class);
 				intent.putExtra("cust_id", "12");
 				intent.putExtra("cust_name", "专家");
 				startActivity(intent);
-			}else {
+			} else {
 				try {
-					String Device_id = app.carDatas.get(index)
-							.getDevice_id();
+					String Device_id = app.carDatas.get(index).getDevice_id();
 					Intent intent2 = new Intent(FaultDetectionActivity.this,
 							DevicesAddActivity.class);
 					Intent intent = new Intent(FaultDetectionActivity.this,
@@ -191,8 +191,8 @@ public class FaultDetectionActivity extends Activity {
 					switch (v.getId()) {
 					case R.id.rl_guzhang:
 						if (Device_id == null || Device_id.equals("")) {
-							intent.putExtra("car_id",
-									app.carDatas.get(index).getObj_id());
+							intent.putExtra("car_id", app.carDatas.get(index)
+									.getObj_id());
 							startActivityForResult(intent2, 2);
 						} else {
 							Intent intent1 = new Intent(
@@ -207,8 +207,8 @@ public class FaultDetectionActivity extends Activity {
 						break;
 					case R.id.rl_dianyuan:
 						if (Device_id == null || Device_id.equals("")) {
-							intent.putExtra("car_id",
-									app.carDatas.get(index).getObj_id());
+							intent.putExtra("car_id", app.carDatas.get(index)
+									.getObj_id());
 							startActivityForResult(intent2, 2);
 						} else {
 							intent.putExtra("title", "电源系统");
@@ -230,8 +230,8 @@ public class FaultDetectionActivity extends Activity {
 						break;
 					case R.id.rl_jinqi:
 						if (Device_id == null || Device_id.equals("")) {
-							intent.putExtra("car_id",
-									app.carDatas.get(index).getObj_id());
+							intent.putExtra("car_id", app.carDatas.get(index)
+									.getObj_id());
 							startActivityForResult(intent2, 2);
 						} else {
 							intent.putExtra("title", "进气系统");
@@ -253,8 +253,8 @@ public class FaultDetectionActivity extends Activity {
 						break;
 					case R.id.rl_daisu:
 						if (Device_id == null || Device_id.equals("")) {
-							intent.putExtra("car_id",
-									app.carDatas.get(index).getObj_id());
+							intent.putExtra("car_id", app.carDatas.get(index)
+									.getObj_id());
 							startActivityForResult(intent2, 2);
 						} else {
 							intent.putExtra("title", "怠速控制系统");
@@ -276,8 +276,8 @@ public class FaultDetectionActivity extends Activity {
 						break;
 					case R.id.rl_lengque:
 						if (Device_id == null || Device_id.equals("")) {
-							intent.putExtra("car_id",
-									app.carDatas.get(index).getObj_id());
+							intent.putExtra("car_id", app.carDatas.get(index)
+									.getObj_id());
 							startActivityForResult(intent2, 2);
 						} else {
 							intent.putExtra("title", "冷却系统");
@@ -298,8 +298,8 @@ public class FaultDetectionActivity extends Activity {
 						break;
 					case R.id.rl_paifang:
 						if (Device_id == null || Device_id.equals("")) {
-							intent.putExtra("car_id",
-									app.carDatas.get(index).getObj_id());
+							intent.putExtra("car_id", app.carDatas.get(index)
+									.getObj_id());
 							startActivityForResult(intent2, 2);
 						} else {
 							intent.putExtra("title", "排放系统");
@@ -321,20 +321,27 @@ public class FaultDetectionActivity extends Activity {
 						break;
 					// 救援
 					case R.id.risk:
-						String phone = app.carDatas.get(index)
-								.getInsurance_tel();
-						Intent in_1 = new Intent(
-								Intent.ACTION_DIAL,
-								Uri.parse("tel:" + (phone != null ? phone : "")));
-						startActivity(in_1);
+						try{//平板没有电话模块异常
+							String phone = app.carDatas.get(index)
+									.getInsurance_tel();
+							Intent in_1 = new Intent(
+									Intent.ACTION_DIAL,
+									Uri.parse("tel:" + (phone != null ? phone : "")));
+							startActivity(in_1);
+						}catch (Exception e) {
+							e.printStackTrace();
+						}
 						break;
 					// 报险
 					case R.id.rescue:
-						String tel = app.carDatas.get(index)
-								.getMaintain_tel();
-						Intent in_2 = new Intent(Intent.ACTION_DIAL,
-								Uri.parse("tel:" + (tel != null ? tel : "")));
-						startActivity(in_2);
+						try{//平板没有电话模块异常
+							String tel = app.carDatas.get(index).getMaintain_tel();
+							Intent in_2 = new Intent(Intent.ACTION_DIAL,
+									Uri.parse("tel:" + (tel != null ? tel : "")));
+							startActivity(in_2);
+						}catch (Exception e) {
+							e.printStackTrace();
+						}
 						break;
 					// 问一下
 					case R.id.ask:
@@ -583,8 +590,8 @@ public class FaultDetectionActivity extends Activity {
 								+ "device/fault_desc_new?auth_code="
 								+ app.auth_code;
 						List<NameValuePair> params = new ArrayList<NameValuePair>();
-						params.add(new BasicNameValuePair("brand",
-								app.carDatas.get(index).getCar_brand()));
+						params.add(new BasicNameValuePair("brand", app.carDatas
+								.get(index).getCar_brand()));
 						params.add(new BasicNameValuePair("obd_err", jsonObject
 								.getString("active_obd_err")));
 						new NetThread.postDataThread(handler, url, params,
@@ -923,45 +930,101 @@ public class FaultDetectionActivity extends Activity {
 		}
 	}
 
+	// 弹出体检提示，并且获取提示数据
+	private void getMedical(final String Device_id, final int index) {
+		if (isCheck) {
+			Toast.makeText(FaultDetectionActivity.this, "体检进行中",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+		// 弹出提示框
+		AlertDialog.Builder dialog = new AlertDialog.Builder(
+				FaultDetectionActivity.this);
+		dialog.setTitle("提示");
+		dialog.setMessage("请先启动车辆，等待1到3分钟后，再进行车辆体检!");
+		dialog.setPositiveButton("体检", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				initapp();
+				String url;
+				try {
+					url = Constant.BaseUrl
+							+ "device/"
+							+ Device_id
+							+ "/health_exam?auth_code="
+							+ app.auth_code
+							+ "&brand="
+							+ URLEncoder.encode(app.carDatas.get(index)
+									.getCar_brand(), "UTF-8");
+
+					new NetThread.GetDataThread(handler, url, getData, index)
+							.start();
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+			}
+		}).setNegativeButton("取消", null).show();
+	}
+
 	/** 获取健康数据 **/
-	private void getData(final int index) {		
+	private void getData(int index) {
 		try {
-			final String Device_id = app.carDatas.get(index).getDevice_id();
+			String Device_id = app.carDatas.get(index).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
 				Intent intent = new Intent(FaultDetectionActivity.this,
 						DevicesAddActivity.class);
 				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
 				startActivityForResult(intent, 2);
+				return;
+			}
+			String uni_status = app.carDatas.get(index).getUni_status();
+			String rcv_time = app.carDatas.get(index).getRcv_time();
+			if (uni_status == null || rcv_time == null) {
+				getMedical(Device_id, index);
+				return;
+			}
+			// TODO 判断车辆是否为启动状态
+			boolean state = false;
+			JSONArray jsonArray = new JSONArray(uni_status);
+			if (jsonArray.toString() == null || jsonArray.toString().equals("")) {
+
+			} else {
+				for (int i = 0; i < jsonArray.length(); i++) {
+					if (jsonArray.getInt(i) == 8196) {
+						state = true;
+						break;
+					}
+				}
+			}
+			if (!state || (GetSystem.spacingNowTime(rcv_time) / 60) > 10) {
+				getMedical(Device_id, index);
 			} else {
 				if (isCheck) {
 					Toast.makeText(FaultDetectionActivity.this, "体检进行中",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
-				AlertDialog.Builder dialog = new AlertDialog.Builder(FaultDetectionActivity.this);   
-				dialog.setTitle("提示");  
-				dialog.setMessage("请先启动车辆，等待1到3分钟后，再进行车辆体检。"); 
-				dialog.setPositiveButton("体检", new DialogInterface.OnClickListener() {					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						initapp();
-						String url;
-						try {
-							url = Constant.BaseUrl + "device/" + Device_id
-										+ "/health_exam?auth_code=" + app.auth_code + "&brand=" + 
-												URLEncoder.encode(app.carDatas.get(index).getCar_brand(), "UTF-8");
+				initapp();
+				String url;
+				try {
+					url = Constant.BaseUrl
+							+ "device/"
+							+ Device_id
+							+ "/health_exam?auth_code="
+							+ app.auth_code
+							+ "&brand="
+							+ URLEncoder.encode(app.carDatas.get(index)
+									.getCar_brand(), "UTF-8");
 
-							new NetThread.GetDataThread(handler, url, getData, index).start();
-						} catch (UnsupportedEncodingException e) {
-							e.printStackTrace();
-						}
-					}
-				}).setNegativeButton("取消", null)
-				.show(); 
+					new NetThread.GetDataThread(handler, url, getData, index)
+							.start();
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 
 	String result = "";
@@ -980,8 +1043,8 @@ public class FaultDetectionActivity extends Activity {
 							+ "device/fault_desc_new?auth_code="
 							+ app.auth_code;
 					List<NameValuePair> params = new ArrayList<NameValuePair>();
-					params.add(new BasicNameValuePair("brand",
-							app.carDatas.get(index).getCar_brand()));
+					params.add(new BasicNameValuePair("brand", app.carDatas
+							.get(index).getCar_brand()));
 					params.add(new BasicNameValuePair("obd_err", jsonObject
 							.getString("active_obd_err")));
 					new NetThread.postDataThread(handler, url, params, getFault)
@@ -1155,9 +1218,8 @@ public class FaultDetectionActivity extends Activity {
 			SharedPreferences preferences = getSharedPreferences(
 					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 			Editor editor = preferences.edit();
-			editor.putString(
-					Constant.sp_health_score
-							+ app.carDatas.get(index).getObj_id(), str);
+			editor.putString(Constant.sp_health_score
+					+ app.carDatas.get(index).getObj_id(), str);
 			editor.commit();
 			carViews.get(index).getTv_title().setText("健康指数");
 		} catch (JSONException e) {

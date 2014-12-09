@@ -39,7 +39,9 @@ import com.wise.car.CarUpdateActivity;
 import com.wise.car.DevicesAddActivity;
 import com.wise.notice.NoticeFragment;
 import com.wise.notice.NoticeFragment.BtnListener;
+import com.wise.notice.SmsActivity;
 import com.wise.setting.LoginActivity;
+import com.wise.setting.SetActivity;
 import com.wise.show.ShowActivity;
 import customView.AlwaysMarqueeTextView;
 import customView.HScrollLayout;
@@ -47,8 +49,10 @@ import customView.NoticeScrollTextView;
 import customView.OnViewChangeListener;
 import customView.ParentSlide;
 import data.CarData;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -60,10 +64,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -108,18 +114,18 @@ public class FaultActivity extends FragmentActivity {
 	private static final int get_health = 11;
 	/** 获取驾驶指数 **/
 	private static final int get_device = 12;
-	/**获取广告**/
+	/** 获取广告 **/
 	private static final int get_ad = 13;
 
 	ImageView iv_weather, iv_noti;
 	TextView tv_city, tv_weather_time, tv_weather, tv_advice, tv_joy,
-			tv_happy_time,tv_content;
+			tv_happy_time, tv_content;
 	RelativeLayout rl_ad;
 	int index = 0;
 	private FragmentManager fragmentManager;
 	ParentSlide smv_content;
 	NoticeScrollTextView nstv_message;
-	HScrollLayout hs_car,hs_photo;
+	HScrollLayout hs_car, hs_photo;
 	MyBroadCastReceiver myBroadCastReceiver;
 	IntentFilter intentFilter;
 
@@ -142,7 +148,7 @@ public class FaultActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fault);
 		mQueue = Volley.newRequestQueue(this);
-		app = (AppApplication)getApplication();
+		app = (AppApplication) getApplication();
 		GetSystem.myLog(TAG, "onCreate");
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
@@ -175,6 +181,8 @@ public class FaultActivity extends FragmentActivity {
 		iv_noti = (ImageView) findViewById(R.id.iv_noti);
 		ImageView iv_menu = (ImageView) findViewById(R.id.iv_menu);
 		iv_menu.setOnClickListener(onClickListener);
+		findViewById(R.id.iv_location_hot).setOnClickListener(onClickListener);
+		findViewById(R.id.iv_hot_set).setOnClickListener(onClickListener);
 
 		smv_content = (ParentSlide) findViewById(R.id.smv_content);
 		nstv_message = (NoticeScrollTextView) findViewById(R.id.nstv_message);
@@ -197,10 +205,14 @@ public class FaultActivity extends FragmentActivity {
 				index = view;
 				getTotalData();
 			}
+
 			@Override
-			public void OnLastView() {}
+			public void OnLastView() {
+			}
+
 			@Override
-			public void OnFinish(int index) {}
+			public void OnFinish(int index) {
+			}
 		});
 		String Month = GetSystem.GetNowMonth().getMonth();
 		startMonth = Month + "-01";
@@ -213,25 +225,31 @@ public class FaultActivity extends FragmentActivity {
 					+ "/tips?auth_code=" + app.auth_code;
 			getMessage(url);
 			getCounter();
-			if(app.carDatas.size() == 0){//如果没有车则显示
-				rl_ad = (RelativeLayout)findViewById(R.id.rl_ad);
+
+			if (app.carDatas.size() == 0) {// 如果没有车则显示
+				rl_ad = (RelativeLayout) findViewById(R.id.rl_ad);
 				rl_ad.setVisibility(View.VISIBLE);
-				tv_content = (TextView)findViewById(R.id.tv_content);
-				ll_image = (LinearLayout)findViewById(R.id.ll_image);
+				tv_content = (TextView) findViewById(R.id.tv_content);
+				ll_image = (LinearLayout) findViewById(R.id.ll_image);
 				hs_photo = (HScrollLayout) findViewById(R.id.hs_photo);
-				hs_photo.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, getAdHeight()));
+				hs_photo.setLayoutParams(new RelativeLayout.LayoutParams(
+						RelativeLayout.LayoutParams.MATCH_PARENT, getAdHeight()));
 				getAD();
-				hs_photo.setOnViewChangeListener(new OnViewChangeListener() {					
+				hs_photo.setOnViewChangeListener(new OnViewChangeListener() {
 					@Override
 					public void OnViewChange(int view) {
 						image_position = view;
 						tv_content.setText(adDatas.get(view).getContent());
 						changeImage(view);
-					}					
+					}
+
 					@Override
-					public void OnLastView() {}					
+					public void OnLastView() {
+					}
+
 					@Override
-					public void OnFinish(int index) {}
+					public void OnFinish(int index) {
+					}
 				});
 			}
 		} else {// 未登录
@@ -256,11 +274,54 @@ public class FaultActivity extends FragmentActivity {
 
 		UmengUpdateAgent.update(this);
 		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(),
-                mNaviEngineInitListener, new LBSAuthManagerListener() {
-                    @Override
-                    public void onAuthResult(int status, String msg) {}
-                });
+				mNaviEngineInitListener, new LBSAuthManagerListener() {
+					@Override
+					public void onAuthResult(int status, String msg) {
+					}
+				});
+
+		// TODO 30秒定位，显示当前位子
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (isGetGps) {
+					SystemClock.sleep(30000);
+					if (app.carDatas == null || app.carDatas.size() == 0) {
+
+					} else {
+						// 防止删除车辆后数组越界
+						if (index < app.carDatas.size()) {
+							CarData carData = app.carDatas.get(index);
+							String device_id = carData.getDevice_id();
+							if (device_id == null || device_id.equals("")) {
+
+							} else {
+								// 获取gps信息
+								String gpsUrl = Constant.BaseUrl + "device/"
+										+ device_id + "?auth_code="
+										+ app.auth_code
+										+ "&update_time=2014-01-01%2019:06:43";
+								new NetThread.GetDataThread(handler, gpsUrl,
+										get_gps, index).start();
+							}
+						} else {
+							Log.d(TAG, "刷新位置数组越界");
+						}
+					}
+				}
+			}
+		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (isGetAllData) {
+					SystemClock.sleep(30 * 60000);
+					getTotalData();
+				}
+			}
+		}).start();
 	}
+
 	private NaviEngineInitListener mNaviEngineInitListener = new NaviEngineInitListener() {
 		public void engineInitSuccess() {
 		}
@@ -271,17 +332,21 @@ public class FaultActivity extends FragmentActivity {
 		public void engineInitFail() {
 		}
 	};
-	private void getAD(){
+
+	private void getAD() {
 		String url = Constant.BaseUrl + "base/AD";
 		new NetThread.GetDataThread(handler, url, get_ad).start();
 	}
-	private void setImageView(String result){
+
+	private void setImageView(String result) {
 		try {
 			JSONArray jsonArray = new JSONArray(result);
-			for(int i = 0 ; i < jsonArray.length() ; i++){
-				View view_image = LayoutInflater.from(this).inflate(R.layout.item_nocar_image, null);
+			for (int i = 0; i < jsonArray.length(); i++) {
+				View view_image = LayoutInflater.from(this).inflate(
+						R.layout.item_nocar_image, null);
 				hs_photo.addView(view_image);
-				ImageView iv_pic = (ImageView)view_image.findViewById(R.id.iv_pic);
+				ImageView iv_pic = (ImageView) view_image
+						.findViewById(R.id.iv_pic);
 				iv_pic.setOnClickListener(onClickListener);
 				ADView aView = new ADView();
 				aView.setImageView(iv_pic);
@@ -292,18 +357,20 @@ public class FaultActivity extends FragmentActivity {
 				aData.setContent(jsonObject.getString("content"));
 				aData.setUrl(jsonObject.getString("url"));
 				adDatas.add(aData);
-					            
-	            ImageView imageView = new ImageView(this);
+
+				ImageView imageView = new ImageView(this);
 				imageView.setImageResource(R.drawable.round_press);
-				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(15, 15);
+				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+						15, 15);
 				lp.setMargins(5, 0, 5, 0);
 				imageView.setLayoutParams(lp);
-	            ll_image.addView(imageView);
+				ll_image.addView(imageView);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}				
+		}
 	}
+
 	private void changeImage(int index) {
 		for (int i = 0; i < ll_image.getChildCount(); i++) {
 			ImageView imageView = (ImageView) ll_image.getChildAt(i);
@@ -314,30 +381,36 @@ public class FaultActivity extends FragmentActivity {
 			}
 		}
 	}
+
 	RequestQueue mQueue;
-	private void getImage(){
-		for(final AData aData : adDatas){
-			System.out.println("getImage");
-			mQueue.add(new ImageRequest(aData.getImage(), new Response.Listener<Bitmap>() {
-				@Override
-				public void onResponse(Bitmap response) {
-					for(int i = 0 ; i < adDatas.size() ; i++){
-						if(adDatas.get(i).getImage().equals(aData.getImage())){
-							setImageWidthHeight(adViews.get(i).getImageView(), response);
-							adViews.get(i).getImageView().setImageBitmap(response);
+
+	private void getImage() {
+		for (final AData aData : adDatas) {
+			mQueue.add(new ImageRequest(aData.getImage(),
+					new Response.Listener<Bitmap>() {
+						@Override
+						public void onResponse(Bitmap response) {
+							for (int i = 0; i < adDatas.size(); i++) {
+								if (adDatas.get(i).getImage()
+										.equals(aData.getImage())) {
+									setImageWidthHeight(adViews.get(i)
+											.getImageView(), response);
+									adViews.get(i).getImageView()
+											.setImageBitmap(response);
+								}
+							}
 						}
-					}
-				}
-			}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
-				@Override
-				public void onErrorResponse(VolleyError error) {
-					error.printStackTrace();
-				}
-			}));
+					}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
+						@Override
+						public void onErrorResponse(VolleyError error) {
+							error.printStackTrace();
+						}
+					}));
 		}
 	}
+
 	/** 计算设置图片的宽高 **/
-	private void setImageWidthHeight(ImageView iv_pic , Bitmap bitmap) {
+	private void setImageWidthHeight(ImageView iv_pic, Bitmap bitmap) {
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		int widthPixels = metrics.widthPixels;
@@ -349,9 +422,10 @@ public class FaultActivity extends FragmentActivity {
 				widthPixels, scaledHeight);
 		iv_pic.setLayoutParams(params);
 	}
-	/**获取控件的高度**/
-	public int getAdHeight(){
-		//690*512宽高
+
+	/** 获取控件的高度 **/
+	public int getAdHeight() {
+		// 690*512宽高
 		int imageWidth = 690;
 		int imageHeight = 512;
 		DisplayMetrics metrics = new DisplayMetrics();
@@ -360,46 +434,58 @@ public class FaultActivity extends FragmentActivity {
 		double ratio = imageWidth / (widthPixels * 1.0);
 		return (int) (imageHeight / ratio);
 	}
+
 	List<ADView> adViews = new ArrayList<ADView>();
 	List<AData> adDatas = new ArrayList<AData>();
-	private class ADView{
+
+	private class ADView {
 		ImageView imageView;
+
 		public ImageView getImageView() {
 			return imageView;
 		}
+
 		public void setImageView(ImageView imageView) {
 			this.imageView = imageView;
-		}		
+		}
 	}
-	private class AData{
+
+	private class AData {
 		private String image;
 		private String content;
 		private String url;
+
 		public String getImage() {
 			return image;
 		}
+
 		public void setImage(String image) {
 			this.image = image;
 		}
+
 		public String getContent() {
 			return content;
 		}
+
 		public void setContent(String content) {
 			this.content = content;
 		}
+
 		public String getUrl() {
 			return url;
 		}
+
 		public void setUrl(String url) {
 			this.url = url;
 		}
+
 		@Override
 		public String toString() {
 			return "AData [image=" + image + ", content=" + content + ", url="
 					+ url + "]";
-		}		
+		}
 	}
-	
+
 	private String getSdcardDir() {
 		if (Environment.getExternalStorageState().equalsIgnoreCase(
 				Environment.MEDIA_MOUNTED)) {
@@ -427,6 +513,28 @@ public class FaultActivity extends FragmentActivity {
 			case R.id.iv_menu:
 				startActivity(new Intent(FaultActivity.this, MoreActivity.class));
 				break;
+			case R.id.iv_location_hot:
+				if (!Judge.isLogin(app)) {
+					startActivity(new Intent(FaultActivity.this,
+							LoginActivity.class));
+				} else {
+					if (app.carDatas == null || app.carDatas.size() == 0) {
+						goCarMap(false);
+						return;
+					}
+					CarData carData = app.carDatas.get(index);
+					String device_id = carData.getDevice_id();
+					if (device_id == null || device_id.equals("")) {
+						goCarMap(false);
+					} else {
+						goCarMap(true);
+					}
+
+				}
+				break;
+			case R.id.iv_hot_set:
+
+				break;
 			case R.id.bt_show:
 				startActivity(new Intent(FaultActivity.this, ShowActivity.class));
 				break;
@@ -434,8 +542,7 @@ public class FaultActivity extends FragmentActivity {
 				GetSystem.myLog(TAG, "tasks_view : app.carDatas.size() = "
 						+ app.carDatas.size());
 				if (app.carDatas != null && app.carDatas.size() != 0) {
-					String Device_id = app.carDatas.get(index)
-							.getDevice_id();
+					String Device_id = app.carDatas.get(index).getDevice_id();
 					if (Device_id == null || Device_id.equals("")) {
 						Intent intent = new Intent(FaultActivity.this,
 								DevicesAddActivity.class);
@@ -452,8 +559,7 @@ public class FaultActivity extends FragmentActivity {
 				break;
 			case R.id.tcv_drive:
 				if (app.carDatas != null && app.carDatas.size() != 0) {
-					String Device_id = app.carDatas.get(index)
-							.getDevice_id();
+					String Device_id = app.carDatas.get(index).getDevice_id();
 					if (Device_id == null || Device_id.equals("")) {
 						Intent intent = new Intent(FaultActivity.this,
 								DevicesAddActivity.class);
@@ -487,11 +593,12 @@ public class FaultActivity extends FragmentActivity {
 						SelectCityActivity.class), 0);
 				break;
 			case R.id.ll_adress:
-				goCarMap();
+				goCarMap(true);
 				break;
 			case R.id.iv_pic:
-		        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(adDatas.get(image_position).getUrl()));  
-		        startActivity(intent);  
+				Intent intent = new Intent(Intent.ACTION_VIEW,
+						Uri.parse(adDatas.get(image_position).getUrl()));
+				startActivity(intent);
 				break;
 			}
 		}
@@ -509,8 +616,7 @@ public class FaultActivity extends FragmentActivity {
 			if (Device_id == null || Device_id.equals("")) {
 				Intent intent = new Intent(FaultActivity.this,
 						DevicesAddActivity.class);
-				intent.putExtra("car_id", app.carDatas.get(index)
-						.getObj_id());
+				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
 				startActivityForResult(intent, 2);
 			} else {
 				Intent intent = new Intent(FaultActivity.this,
@@ -569,37 +675,39 @@ public class FaultActivity extends FragmentActivity {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				//TODO (carDatas 为空) 体检结果存起来
 				SharedPreferences preferences = getSharedPreferences(
 						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 				Editor editor = preferences.edit();
-				editor.putString(Constant.sp_health_score
-						+ app.carDatas.get(msg.arg1).getObj_id(),
+				editor.putString(
+						Constant.sp_health_score
+								+ app.carDatas.get(msg.arg1).getObj_id(),
 						msg.obj.toString());
 				editor.commit();
 				break;
 			case get_device:
-				// TODO (carDatas 为空) 驾驶指数
 				try {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					int drive_score = jsonObject.getInt("drive_score");
-					if(drive_score != 0){
-						carViews.get(msg.arg1).getTcv_drive().setProgress(drive_score);
-						carViews.get(msg.arg1).getTv_drive().setText(String.valueOf(drive_score));
+					if (drive_score != 0) {
+						carViews.get(msg.arg1).getTcv_drive()
+								.setProgress(drive_score);
+						carViews.get(msg.arg1).getTv_drive()
+								.setText(String.valueOf(drive_score));
 						// 存在本地
 						SharedPreferences preferences1 = getSharedPreferences(
-								Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+								Constant.sharedPreferencesName,
+								Context.MODE_PRIVATE);
 						Editor editor1 = preferences1.edit();
 						editor1.putString(Constant.sp_drive_score
 								+ app.carDatas.get(msg.arg1).getObj_id(),
 								msg.obj.toString());
 						editor1.commit();
 					}
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 				break;
 			case get_ad:
 				setImageView(msg.obj.toString());
@@ -617,88 +725,106 @@ public class FaultActivity extends FragmentActivity {
 			if (app.carDatas == null || app.carDatas.size() == 0) {
 				return;
 			}
-			CarData carData = app.carDatas.get(index);
-			String device_id = carData.getDevice_id();
-			if (device_id == null || device_id.equals("")) {
+			// 防止删除车辆后数组越界
+			if (index < app.carDatas.size()) {
+				CarData carData = app.carDatas.get(index);
+				String device_id = carData.getDevice_id();
+				if (device_id == null || device_id.equals("")) {
 
-			} else {
-				String Gas_no = "";
-				if (carData.getGas_no() == null || carData.getGas_no().equals("")) {
-					Gas_no = "93#(92#)";
 				} else {
-					Gas_no = carData.getGas_no();
-				}
-				// 获取当前月的数据
-				String url = Constant.BaseUrl + "device/" + device_id
-						+ "/total?auth_code=" + app.auth_code
-						+ "&start_day=" + startMonth + "&end_day=" + endMonth
-						+ "&city=" + URLEncoder.encode(app.City, "UTF-8")
-						+ "&gas_no=" + Gas_no;
-				new NetThread.GetDataThread(handler, url, getData, index)
-						.start();
-				// 获取gps信息
-				String gpsUrl = Constant.BaseUrl + "device/" + device_id
-						+ "?auth_code=" + app.auth_code
-						+ "&update_time=2014-01-01%2019:06:43";
-				new NetThread.GetDataThread(handler, gpsUrl, get_gps, index)
-						.start();		
-				//从服务器获取体检信息
-				String url1 = Constant.BaseUrl + "device/" + device_id
-							+ "/health_exam?auth_code=" + app.auth_code + "&brand=" + 
-							URLEncoder.encode(carData.getCar_brand(), "UTF-8");
-				new NetThread.GetDataThread(handler, url1, get_health, index).start();
-				// 获取驾驶信息
-				String url2 = Constant.BaseUrl + "device/" + device_id
-						+ "/day_drive?auth_code=" + app.auth_code
-						+ "&day=" + GetSystem.GetNowMonth().getDay()
-						+ "&city="
-						+ URLEncoder.encode(app.City, "UTF-8")
-						+ "&gas_no=" + Gas_no;
-				new NetThread.GetDataThread(handler, url2, get_device, index)
-						.start();
-			}
-			// 获取限行信息
-			if (app.City == null || carData.getObj_name() == null
-					|| app.City.equals("") || carData.getObj_name().equals("")) {
+					String Gas_no = "";
+					if (carData.getGas_no() == null
+							|| carData.getGas_no().equals("")) {
+						Gas_no = "93#(92#)";
+					} else {
+						Gas_no = carData.getGas_no();
+					}
+					// 获取当前月的数据
+					String url = Constant.BaseUrl + "device/" + device_id
+							+ "/total?auth_code=" + app.auth_code
+							+ "&start_day=" + startMonth + "&end_day="
+							+ endMonth + "&city="
+							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
+							+ Gas_no;
+					new NetThread.GetDataThread(handler, url, getData, index)
+							.start();
+					// 获取gps信息
+					String gpsUrl = Constant.BaseUrl + "device/" + device_id
+							+ "?auth_code=" + app.auth_code
+							+ "&update_time=2014-01-01%2019:06:43";
+					new NetThread.GetDataThread(handler, gpsUrl, get_gps, index)
+							.start();
 
-			} else {
-				String url = Constant.BaseUrl + "base/ban?city="
-						+ URLEncoder.encode(app.City, "UTF-8")
-						+ "&obj_name="
-						+ URLEncoder.encode(carData.getObj_name(), "UTF-8");
-				new NetThread.GetDataThread(handler, url, Get_carLimit, index)
-						.start();
+					// 从服务器获取体检信息
+					String url1 = Constant.BaseUrl
+							+ "device/"
+							+ device_id
+							+ "/health_exam?auth_code="
+							+ app.auth_code
+							+ "&brand="
+							+ URLEncoder
+									.encode(carData.getCar_brand(), "UTF-8");
+					new NetThread.GetDataThread(handler, url1, get_health,
+							index).start();
+					// 获取驾驶信息
+					String url2 = Constant.BaseUrl + "device/" + device_id
+							+ "/day_drive?auth_code=" + app.auth_code + "&day="
+							+ GetSystem.GetNowMonth().getDay() + "&city="
+							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
+							+ Gas_no;
+					new NetThread.GetDataThread(handler, url2, get_device,
+							index).start();
+				}
+				// 获取限行信息
+				if (app.City == null || carData.getObj_name() == null
+						|| app.City.equals("")
+						|| carData.getObj_name().equals("")) {
+
+				} else {
+					String url = Constant.BaseUrl + "base/ban?city="
+							+ URLEncoder.encode(app.City, "UTF-8")
+							+ "&obj_name="
+							+ URLEncoder.encode(carData.getObj_name(), "UTF-8");
+					new NetThread.GetDataThread(handler, url, Get_carLimit,
+							index).start();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 
 	/** 获取GPS信息 **/
 	private void jsonGps(String str, int index) {
 		try {
-			JSONObject jsonObject = new JSONObject(str)
-					.getJSONObject("active_gps_data");
-			double lat = jsonObject.getDouble("lat");
-			double lon = jsonObject.getDouble("lon");
-			int direct = jsonObject.getInt("direct");
-			String gpsTime = jsonObject.getString("gps_time");
-			LatLng latLng = new LatLng(lat, lon);
-			app.carDatas.get(index).setDirect(direct);
-			app.carDatas.get(index).setLat(lat);
-			app.carDatas.get(index).setLon(lon);
-			app.carDatas.get(index).setGps_time(
-					GetSystem.ChangeTimeZone(gpsTime.substring(0, 19).replace(
-							"T", " ")));
-			GetSystem.myLog(TAG, "lat = " + lat + " , Lon = " + lon);
-			mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
-			
-			JSONObject jObject = new JSONObject(str).getJSONObject("params");
-			int sensitivity = 0;
-			if(jObject.opt("sensitivity") != null){
-				sensitivity = jObject.getInt("sensitivity");
+			if (index < app.carDatas.size()) {
+				JSONObject jsonObject = new JSONObject(str)
+						.getJSONObject("active_gps_data");
+				double lat = jsonObject.getDouble("lat");
+				double lon = jsonObject.getDouble("lon");
+				int direct = jsonObject.getInt("direct");
+				String uni_status = jsonObject.getString("uni_status");
+				String rcv_time = jsonObject.getString("rcv_time");
+				LatLng latLng = new LatLng(lat, lon);
+				app.carDatas.get(index).setUni_status(uni_status);
+				app.carDatas.get(index).setDirect(direct);
+				app.carDatas.get(index).setLat(lat);
+				app.carDatas.get(index).setLon(lon);
+				app.carDatas.get(index).setRcv_time(
+						GetSystem.ChangeTimeZone(rcv_time.substring(0, 19)
+								.replace("T", " ")));
+				GetSystem.myLog(TAG, "lat = " + lat + " , Lon = " + lon);
+				mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
+						.location(latLng));
+
+				JSONObject jObject = new JSONObject(str)
+						.getJSONObject("params");
+				int sensitivity = 0;
+				if (jObject.opt("sensitivity") != null) {
+					sensitivity = jObject.getInt("sensitivity");
+				}
+				app.carDatas.get(index).setSensitivity(sensitivity);
 			}
-			app.carDatas.get(index).setSensitivity(sensitivity);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -708,24 +834,36 @@ public class FaultActivity extends FragmentActivity {
 	private void jsonData(String str, int index) {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-			CarView carView = carViews.get(index);
-			carView.getTv_fee().setText(
-					String.format("%.0f", jsonObject.getDouble("total_fee")));// 花费
-			carView.getTv_fuel().setText(
-					String.format("%.0f", jsonObject.getDouble("total_fuel")));// 油耗
-			// 剩余里程显示
-			if (jsonObject.getDouble("left_distance") == 0) {
-				carView.getTv_distance().setText(
-						String.format("%.0f",
-								jsonObject.getDouble("total_distance")));// 里程
-			} else {
-				carView.getTv_current_distance().setText("剩余里程");
-				carView.getTv_distance().setText(
-						String.format("%.0f",
-								jsonObject.getDouble("left_distance")));// 里程
+			if (jsonObject.toString() == null
+					|| jsonObject.toString().equals("")) {
+				return;
 			}
-
-		} catch (JSONException e) {
+			if(index < carViews.size()){
+				CarView carView = carViews.get(index);
+				carView.getTv_fee().setText(
+						String.format("%.1f", jsonObject.getDouble("total_fee")));// 花费
+				carView.getTv_fuel().setText(
+						String.format("%.1f", jsonObject.getDouble("total_fuel")));// 油耗
+				// 剩余里程显示
+				if ((jsonObject.getString("left_distance")).equals("null")) {
+					carView.getTv_distance().setText(String.format("%.0f", 0.0));
+				} else if (jsonObject.getDouble("left_distance") == 0) {
+					carView.getTv_distance().setText(
+							String.format("%.1f",
+									jsonObject.getDouble("total_distance")));// 里程
+				} else {
+					carView.getTv_current_distance().setText("剩余里程");
+					try {
+						carView.getTv_distance().setText(
+								String.format("%.1f",
+										jsonObject.getDouble("left_distance")));// 里程
+					} catch (Exception e) {
+						carView.getTv_distance().setText(
+								String.format("0"));// 里程
+					}
+				}
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -734,10 +872,10 @@ public class FaultActivity extends FragmentActivity {
 	private void jsonCarLinit(String result, int index) {
 		try {
 			CarView carView = carViews.get(index);
-			if(result == null || result.equals("")){
+			if (result == null || result.equals("")) {
 				carView.getTv_xx().setText("不限");
 				app.carDatas.get(index).setLimit("不限");
-			}else{
+			} else {
 				JSONObject jsonObject = new JSONObject(result);
 				String limit = jsonObject.getString("limit");
 				carView.getTv_xx().setText(limit);
@@ -745,7 +883,7 @@ public class FaultActivity extends FragmentActivity {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}				
+		}
 	}
 
 	/**
@@ -839,15 +977,22 @@ public class FaultActivity extends FragmentActivity {
 	}
 
 	// 跳转到地图界面
-	private void goCarMap() {
+	private void goCarMap(boolean b) {
 		Intent intent = new Intent(FaultActivity.this,
 				CarLocationActivity.class);
 		intent.putExtra("index", index);
+		intent.putExtra("isHotLocation", b);
 		startActivity(intent);
 	}
 
 	/** 滑动车辆布局 **/
 	private void initDataView() {// 布局
+		// 删除车辆后重新布局，如果删除的是最后一个车辆，则重置为第一个车
+		if (index < app.carDatas.size()) {
+
+		} else {
+			index = 0;
+		}
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		hs_car.removeAllViews();
@@ -1014,6 +1159,9 @@ public class FaultActivity extends FragmentActivity {
 		}
 	}
 
+	boolean isGetGps = true;
+	boolean isGetAllData = true;
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -1084,7 +1232,7 @@ public class FaultActivity extends FragmentActivity {
 	/** 滚动消息点击 **/
 	private void nstvClick() {
 		if (nsDatas == null || nsDatas.size() == 0) {
-			// 没有数据不考虑
+			// TODO 没有数据不考虑
 		} else {
 			if (index_message < nsDatas.size()) {
 				// 防止数组越界
@@ -1122,6 +1270,8 @@ public class FaultActivity extends FragmentActivity {
 					break;
 				case 4:
 					// 通知
+					startActivity(new Intent(FaultActivity.this,
+							SmsActivity.class));
 					break;
 				case 5:
 					// 问答
@@ -1137,10 +1287,10 @@ public class FaultActivity extends FragmentActivity {
 	/** 定时滚动 **/
 	private void ScrollMessage() {
 		index_message++;
-		nstv_message.snapToScreen(index_message);
-		if (index_message >= (nsDatas.size() - 1)) {
+		if (index_message >= nsDatas.size()) {
 			index_message = 0;
 		}
+		nstv_message.snapToScreen(index_message);
 	}
 
 	/** 滚动消息 **/
@@ -1172,10 +1322,10 @@ public class FaultActivity extends FragmentActivity {
 			super.run();
 			while (isCycle) {
 				try {
+					Thread.sleep(10000);
 					Message message = new Message();
 					message.what = Nstv;
 					handler.sendMessage(message);
-					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -1309,48 +1459,46 @@ public class FaultActivity extends FragmentActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		//TODO onActivityResult
-		System.out.println("requestCode = " + requestCode + ", resultCode = " + resultCode);
 		if (resultCode == 3) {
 			// 修改车辆信息
-			System.out.println("修改车辆信息1");
 			initDataView();
-			System.out.println("修改车辆信息2");
-			if(app.carDatas.size() == 0){
-				System.out.println("显示广告");
-				rl_ad = (RelativeLayout)findViewById(R.id.rl_ad);
+			if (app.carDatas.size() == 0) {
+				rl_ad = (RelativeLayout) findViewById(R.id.rl_ad);
 				rl_ad.setVisibility(View.VISIBLE);
-				tv_content = (TextView)findViewById(R.id.tv_content);
+				tv_content = (TextView) findViewById(R.id.tv_content);
 				tv_content.setOnClickListener(onClickListener);
-				ll_image = (LinearLayout)findViewById(R.id.ll_image);
+				ll_image = (LinearLayout) findViewById(R.id.ll_image);
 				hs_photo = (HScrollLayout) findViewById(R.id.hs_photo);
 				getAD();
-				hs_photo.setOnViewChangeListener(new OnViewChangeListener() {					
+				hs_photo.setOnViewChangeListener(new OnViewChangeListener() {
 					@Override
 					public void OnViewChange(int view) {
 						image_position = view;
 						tv_content.setText(adDatas.get(view).getContent());
 						changeImage(view);
-					}					
+					}
+
 					@Override
-					public void OnLastView() {}					
+					public void OnLastView() {
+					}
+
 					@Override
-					public void OnFinish(int index) {}
+					public void OnFinish(int index) {
+					}
 				});
-			}else{
-				System.out.println("隐藏广告");
-				if(rl_ad != null){
+			} else {
+				if (rl_ad != null) {
 					rl_ad.setVisibility(View.GONE);
 				}
 			}
 		} else if (requestCode == 0) {
 			// 修改城市返回,在onResume里刷新了城市
 		} else if (requestCode == 1) {
-			//requestCode = 1, resultCode = 2
+			// requestCode = 1, resultCode = 2
 			// 体检返回重新布局
 			initDataView();
 		} else if (requestCode == 2) {
-			//requestCode = 2, resultCode = 0
+			// requestCode = 2, resultCode = 0
 			// 驾驶习惯返回
 			/** 驾驶信息 **/
 			SharedPreferences preferences = getSharedPreferences(
@@ -1358,7 +1506,7 @@ public class FaultActivity extends FragmentActivity {
 			String drive = preferences.getString(Constant.sp_drive_score
 					+ app.carDatas.get(index).getObj_id(), "");
 			if (drive.equals("")) {
-				
+
 			} else {
 				try {
 					JSONObject jsonObject = new JSONObject(drive);
@@ -1378,6 +1526,8 @@ public class FaultActivity extends FragmentActivity {
 		super.onDestroy();
 		unregisterReceiver(myBroadCastReceiver);
 		isCycle = false;
+		isGetGps = false;
+		isGetAllData = false;
 	}
 
 	long waitTime = 2000;
@@ -1407,6 +1557,7 @@ public class FaultActivity extends FragmentActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
+			GetSystem.myLog(TAG, action);
 			if (action.equals(Constant.A_RefreshHomeCar)) {
 				GetSystem.myLog(TAG, "A_RefreshHomeCar");
 				initDataView();
@@ -1416,35 +1567,37 @@ public class FaultActivity extends FragmentActivity {
 				getMessage(url);
 				getCounter();
 				noticeFragment.ResetNotice();
-				
-				if(app.carDatas.size() == 0){
-					System.out.println("显示广告");
-					rl_ad = (RelativeLayout)findViewById(R.id.rl_ad);
+
+				if (app.carDatas.size() == 0) {
+					rl_ad = (RelativeLayout) findViewById(R.id.rl_ad);
 					rl_ad.setVisibility(View.VISIBLE);
-					tv_content = (TextView)findViewById(R.id.tv_content);
+					tv_content = (TextView) findViewById(R.id.tv_content);
 					tv_content.setOnClickListener(onClickListener);
-					ll_image = (LinearLayout)findViewById(R.id.ll_image);
+					ll_image = (LinearLayout) findViewById(R.id.ll_image);
 					hs_photo = (HScrollLayout) findViewById(R.id.hs_photo);
 					getAD();
-					hs_photo.setOnViewChangeListener(new OnViewChangeListener() {					
+					hs_photo.setOnViewChangeListener(new OnViewChangeListener() {
 						@Override
 						public void OnViewChange(int view) {
 							image_position = view;
 							tv_content.setText(adDatas.get(view).getContent());
 							changeImage(view);
-						}					
+						}
+
 						@Override
-						public void OnLastView() {}					
+						public void OnLastView() {
+						}
+
 						@Override
-						public void OnFinish(int index) {}
+						public void OnFinish(int index) {
+						}
 					});
-				}else{
-					System.out.println("隐藏广告");
-					if(rl_ad != null){
+				} else {
+					if (rl_ad != null) {
 						rl_ad.setVisibility(View.GONE);
 					}
 				}
-				
+
 			} else if (action.equals(Constant.A_LoginOut)) {
 				setLoginView();
 				String url = Constant.BaseUrl + "customer/0/tips";
@@ -1487,20 +1640,20 @@ public class FaultActivity extends FragmentActivity {
 					int startIndex = adress.indexOf("省") + 1;
 					adress = adress.substring(startIndex, adress.length());
 					app.carDatas.get(index).setAdress(adress);
-					String gpsTime = app.carDatas.get(index).getGps_time();
-					String gpsData = gpsTime.substring(0, 10);// 取出日期
+					String rcv_time = app.carDatas.get(index).getRcv_time();
+					String gpsData = rcv_time.substring(0, 10);// 取出日期
 					String nowData = GetSystem.GetNowDay();
 					String showTime = "";
 					if (gpsData.equals(nowData)) {
-						showTime = gpsTime.substring(11, 16);
+						showTime = rcv_time.substring(11, 16);
 					} else if (gpsData.equals(GetSystem
 							.GetNextData(nowData, -1))) {
-						showTime = "昨天" + gpsTime.substring(11, 16);
+						showTime = "昨天" + rcv_time.substring(11, 16);
 					} else if (gpsData.equals(GetSystem
 							.GetNextData(nowData, -2))) {
-						showTime = "前天" + gpsTime.substring(11, 16);
+						showTime = "前天" + rcv_time.substring(11, 16);
 					} else {
-						showTime = gpsTime.substring(5, 16);
+						showTime = rcv_time.substring(5, 16);
 					}
 					// 显示时间
 					carViews.get(index).getLl_adress()

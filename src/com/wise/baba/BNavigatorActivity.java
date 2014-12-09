@@ -118,6 +118,29 @@ public class BNavigatorActivity extends Activity {
 
 		@Override
 		public void notifyLoacteData(LocData arg0) {
+			// TODO 获取坐标点
+			// LatLng p1LL = new LatLng(arg0.latitude, arg0.longitude);
+			// LatLng p2LL = new LatLng(getIntent().getExtras().getDouble(
+			// "navLatitude"), getIntent().getExtras().getDouble(
+			// "navLongitude"));
+			// double distance = DistanceUtil.getDistance(p1LL, p2LL);
+			// if (distance < 20) {
+			// finish();
+			// }
+			//
+			// AlertDialog.Builder builder = new AlertDialog.Builder(
+			// BNavigatorActivity.this);
+			// builder.setTitle("提示")
+			// .setMessage("此时地址")
+			// .setCancelable(false)
+			// .setPositiveButton("确定",
+			// new DialogInterface.OnClickListener() {
+			// public void onClick(DialogInterface dialog,
+			// int id) {
+			//
+			// }
+			// }).setNegativeButton("取消", null).create().show();
+
 		}
 
 		@Override

@@ -15,7 +15,6 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BaiduMap.OnMapLoadedCallback;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatusUpdate;
@@ -71,14 +70,13 @@ public class TravelMapActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_travel_map);
-		app = (AppApplication)getApplication();
-		ll_content = (LinearLayout)findViewById(R.id.ll_content);
+		app = (AppApplication) getApplication();
+		ll_content = (LinearLayout) findViewById(R.id.ll_content);
 		ImageView iv_activity_travel_share = (ImageView) findViewById(R.id.iv_activity_travel_share);
 		iv_activity_travel_share.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_travel_map);
 		mBaiduMap = mMapView.getMap();
-		mBaiduMap.setOnMapLoadedCallback(callback);
-		//mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
 
 		TextView tv_travel_startPlace = (TextView) findViewById(R.id.tv_travel_startPlace);
 		TextView tv_travel_stopPlace = (TextView) findViewById(R.id.tv_travel_stopPlace);
@@ -110,15 +108,17 @@ public class TravelMapActivity extends Activity {
 
 		String StartTime = intent.getStringExtra("StartTime");
 		String StopTime = intent.getStringExtra("StopTime");
-		
-		LatLng carLocat = new LatLng(Double.valueOf(intent.getStringExtra("Lat")), Double.valueOf(intent.getStringExtra("Lon")));
+
+		LatLng carLocat = new LatLng(Double.valueOf(intent
+				.getStringExtra("Lat")), Double.valueOf(intent
+				.getStringExtra("Lon")));
 		MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(carLocat);
 		mBaiduMap.animateMapStatus(u);
 		try {
 			String url = Constant.BaseUrl + "device/" + device
-					+ "/gps_data?auth_code=" + app.auth_code
-					+ "&start_time=" + URLEncoder.encode(StartTime, "UTF-8")
-					+ "&end_time=" + URLEncoder.encode(StopTime, "UTF-8");
+					+ "/gps_data?auth_code=" + app.auth_code + "&start_time="
+					+ URLEncoder.encode(StartTime, "UTF-8") + "&end_time="
+					+ URLEncoder.encode(StopTime, "UTF-8");
 			new NetThread.GetDataThread(handler, url, get_data).start();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -191,14 +191,14 @@ public class TravelMapActivity extends Activity {
 			}
 		}
 	};
-	MapStatusUpdate u1;
+
 	private void jsonData(String result) {
-		if(result == null || result.equals("") || mMapView == null){
+		if (result == null || result.equals("") || mMapView == null) {
 			return;
 		}
 		try {
 			JSONArray jsonArray = new JSONArray(result);
-			if(jsonArray.length() == 0){
+			if (jsonArray.length() == 0) {
 				return;
 			}
 			LatLngBounds.Builder builder = new Builder();
@@ -213,9 +213,8 @@ public class TravelMapActivity extends Activity {
 				builder.include(ll);
 			}
 			LatLngBounds bounds = builder.build();
-			u1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
+			MapStatusUpdate u1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
 			mBaiduMap.animateMapStatus(u1);
-
 
 			if (points.size() > 0) {
 				// 构建Marker图标
@@ -239,8 +238,8 @@ public class TravelMapActivity extends Activity {
 				mBaiduMap.addOverlay(end);
 			}
 			if (points.size() > 1) {
-				OverlayOptions ooPolyline = new PolylineOptions()
-						.color(0xFF0000C6).points(points);
+				OverlayOptions ooPolyline = new PolylineOptions().color(
+						0xFF0000C6).points(points);
 				mBaiduMap.addOverlay(ooPolyline);
 			}
 
@@ -248,20 +247,11 @@ public class TravelMapActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
-	
-	OnMapLoadedCallback callback = new OnMapLoadedCallback() {		
-		@Override
-		public void onMapLoaded() {
-			if(u1 != null){
-				mBaiduMap.animateMapStatus(u1);
-			}
-		}
-	};
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if(mMapView != null){
+		if (mMapView != null) {
 			mMapView.onDestroy();
 			mMapView = null;
 		}
@@ -278,10 +268,11 @@ public class TravelMapActivity extends Activity {
 		super.onPause();
 		mMapView.onPause();
 	}
-	private Bitmap createBitmap(Bitmap bitmap , Bitmap bitmap2){
+
+	private Bitmap createBitmap(Bitmap bitmap, Bitmap bitmap2) {
 		int w = bitmap.getWidth();
 		int h = bitmap.getHeight() + bitmap2.getHeight();
-		Bitmap newb = Bitmap.createBitmap( w, h, Config.ARGB_8888 );
+		Bitmap newb = Bitmap.createBitmap(w, h, Config.ARGB_8888);
 		Canvas cv = new Canvas(newb);
 		cv.drawBitmap(bitmap, 0, 0, null);
 		cv.drawBitmap(bitmap2, 0, bitmap.getHeight(), null);

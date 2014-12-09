@@ -187,13 +187,11 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			case getNotice:
 				jsonData(msg.obj.toString());
 				noticeAdapter.notifyDataSetChanged();
-				System.out.println("getNotice");
 				getPersionImage();
 				break;
 			case refreshNotice:
 				refresh = msg.obj.toString();
 				lv_notice.runFast(0);
-				System.out.println("refreshNotice");
 				getPersionImage();
 				break;
 
@@ -554,7 +552,6 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 					getPersionImage();
 					break;
 				}
-				break;
 			}
 		}
 		
@@ -600,7 +597,6 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				return ;
 			}
 			NoticeData noticeData = noticeDatas.get(i);
-			
 				if(noticeData.getFriend_type() == 99){
 					//判断图片是否存在
 					if(noticeData.getLogo() == null || noticeData.getLogo().equals("")){
