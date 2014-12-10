@@ -270,8 +270,6 @@ public class CarLocationActivity extends Activity {
 				}
 				break;
 			case R.id.iv_maplayers:
-				// TODO 弹出图层
-
 				ShowPopMapLayers();
 				break;
 			// 周边点击弹出Popupwindow监听事件
@@ -438,6 +436,7 @@ public class CarLocationActivity extends Activity {
 					if (!isTracking) {
 						mBaiduMap.clear();
 						getCarLocation();
+						drawPhoneLocation(latitude, longitude);
 					}
 				} else {
 					showHotDialog();
@@ -727,7 +726,7 @@ public class CarLocationActivity extends Activity {
 				.position(circle).icon(bitmap);
 		// 在地图上添加Marker，并显示
 		carMarker = (Marker) (mBaiduMap.addOverlay(option));
-
+		
 		MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
 		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 				.newMapStatus(mapStatus);
@@ -1009,17 +1008,8 @@ public class CarLocationActivity extends Activity {
 			longitude = location.getLongitude();
 			app.Lat = latitude;
 			app.Lon = longitude;
-			MyLocationData locData = new MyLocationData.Builder()
-					.accuracy(location.getRadius())
-					// TODO 此处设置开发者获取到的方向信息，顺时针0-360
-					.direction(0).latitude(location.getLatitude())
-					.longitude(location.getLongitude()).build();
-			mBaiduMap.setMyLocationData(locData);
-			BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
-					.fromResource(R.drawable.person);
-			MyLocationConfiguration config = new MyLocationConfiguration(null,
-					false, mCurrentMarker);
-			mBaiduMap.setMyLocationConfigeration(config);
+			
+			drawPhoneLocation(latitude, longitude);			
 			if (isFirstLoc) {
 				isFirstLoc = false;
 				ll = new LatLng(location.getLatitude(), location.getLongitude());
@@ -1030,11 +1020,30 @@ public class CarLocationActivity extends Activity {
 							.newLatLng(carLocat);
 					mBaiduMap.animateMapStatus(u);
 				} else {
-					MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
-					mBaiduMap.animateMapStatus(u);
+					MapStatus mapStatus = new MapStatus.Builder().target(new LatLng(latitude, longitude)).build();
+					MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
+							.newMapStatus(mapStatus);
+					mBaiduMap.setMapStatus(mapStatusUpdate);
 				}
 			}
 		}
+	}
+	Marker phoneMark;
+	/**在地图上标记当前位置**/
+	private void drawPhoneLocation(double latitude , double longitude){
+		//如果有当前位置，则先删除
+		if(phoneMark != null){
+			phoneMark.remove();
+		}
+		LatLng latLng = new LatLng(latitude, longitude);
+		// 构建Marker图标
+		BitmapDescriptor bitmap = BitmapDescriptorFactory
+				.fromResource(R.drawable.person);
+		// 构建MarkerOption，用于在地图上添加Marker
+		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
+				.position(latLng).icon(bitmap);
+		// 在地图上添加Marker，并显示
+		phoneMark = (Marker) (mBaiduMap.addOverlay(option));
 	}
 
 	/** 画出2点之间的驾车轨迹 **/
