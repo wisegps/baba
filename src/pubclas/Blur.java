@@ -135,6 +135,25 @@ public class Blur {
 		float width = (float)newWidth/relWidth;
 		return height < width ? width : height;
 	}
+	/**
+	 * 根据宽度缩放
+	 * @param bitmap
+	 * @param newWidth
+	 * @return
+	 */
+	public static Bitmap scaleWidthImage(Bitmap bitmap , int newWidth){
+		// 获得图片的宽高
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		// 计算缩放比例
+		float scale = (float)newWidth/width;
+		// 取得想要缩放的matrix参数
+		Matrix matrix = new Matrix();
+		matrix.postScale(scale, scale);
+		// 得到新的图片
+		Bitmap newbm = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix,true);
+		return newbm;
+	}
 	/**获取圆角图片**/
 	public static Bitmap toRoundCorner(Bitmap bitmap, int pixels) {  
 	    Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),  

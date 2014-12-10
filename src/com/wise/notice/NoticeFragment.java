@@ -13,11 +13,15 @@ import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.car.BarcodeActivity;
+import com.wise.setting.SetActivity;
 import customView.CircleImageView;
 import customView.WaitLinearLayout.OnFinishListener;
+import data.FriendData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,11 +30,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 /**
  * 通知列表
@@ -39,16 +48,20 @@ import android.widget.TextView;
  */
 public class NoticeFragment extends Fragment implements IXListViewListener{
 
-	private final int getNotice = 1;
-	private final int refreshNotice = 3;
-	private final int getFriendImage = 2;
+	private final static int getNotice = 1;
+	private final static int getFriendImage = 2;
+	private final static int refreshNotice = 3;
+	private final static int get_all_friend = 4;
+	private final static int get_friend_logo = 5;
 	
 	NoticeAdapter noticeAdapter;
 	BtnListener btnListener;
-	XListView lv_notice;
+	XListView lv_notice,lv_friend;
 	List<NoticeData> noticeDatas = new ArrayList<NoticeData>();
 	AppApplication app;
-	ImageView iv_fm_back;
+	ImageView iv_fm_back,iv_add;
+	Button bt_info,bt_friend,bt_set;
+	FriendAdapter friendAdapter;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,11 +73,28 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication)getActivity().getApplication();
+		iv_add = (ImageView) getActivity().findViewById(R.id.iv_add);
+		iv_add.setOnClickListener(onClickListener);
 		iv_fm_back = (ImageView) getActivity().findViewById(R.id.iv_fm_back);
 		iv_fm_back.setOnClickListener(onClickListener);
 		if(isVisible){
 			iv_fm_back.setVisibility(View.VISIBLE);
 		}
+		bt_info = (Button)getActivity().findViewById(R.id.bt_info);
+		bt_info.setOnClickListener(onClickListener);
+		bt_friend = (Button)getActivity().findViewById(R.id.bt_friend);
+		bt_friend.setOnClickListener(onClickListener);
+		bt_set = (Button)getActivity().findViewById(R.id.bt_set);
+		bt_set.setOnClickListener(onClickListener);
+		lv_friend = (XListView)getActivity().findViewById(R.id.lv_friend);
+		friendAdapter = new FriendAdapter();
+		lv_friend.setAdapter(friendAdapter);
+		lv_friend.setPullLoadEnable(false);
+		lv_friend.setPullRefreshEnable(false);
+		lv_friend.setOnItemClickListener(onItemClickListener);
+		lv_friend.setOnScrollListener(onScrollListener);
+		getFriendData();
+		
 		lv_notice = (XListView) getActivity().findViewById(R.id.lv_notice);
 		lv_notice.setOnFinishListener(onFinishListener);
 		lv_notice.setPullLoadEnable(false);
@@ -72,17 +102,13 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		lv_notice.setXListViewListener(this);
 		noticeAdapter = new NoticeAdapter();
 		lv_notice.setAdapter(noticeAdapter);
+		lv_notice.setOnScrollListener(onScrollListener);
+//		if(app.cust_type != 2){
+//			//用户
+//			bt_set.setVisibility(View.GONE);
+//		}
 	}
 	
-	
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		if(Judge.isLogin(app)){
-			getData();
-		}
-	}
 
 
 
@@ -93,9 +119,31 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			case R.id.iv_fm_back:
 				btnListener.Back();
 				break;
+			case R.id.bt_info:
+				lv_notice.setVisibility(View.VISIBLE);
+				lv_friend.setVisibility(View.GONE);
+				break;
+			case R.id.bt_friend:
+				lv_notice.setVisibility(View.GONE);
+				lv_friend.setVisibility(View.VISIBLE);
+				break;
+			case R.id.bt_set:
+				startActivity(new Intent(getActivity(), SetActivity.class));
+				break;
+			case R.id.iv_add:
+				showMenu();
+				break;
+			case R.id.tv_letter:
+				startActivity(new Intent(getActivity(), FriendAddActivity.class));
+				break;
+			case R.id.tv_Comments:
+				startActivityForResult(new Intent(getActivity(),
+						BarcodeActivity.class), 1);
+				break;
 			}
 		}
 	};
+	
 	OnFinishListener onFinishListener = new OnFinishListener() {		
 		@Override
 		public void OnFinish(int index) {
@@ -120,11 +168,15 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 	public void ClearNotice(){
 		noticeDatas.clear();
 		noticeAdapter.notifyDataSetChanged();
+		app.friendDatas.clear();
+		friendAdapter.notifyDataSetChanged();
 	}
 	/**刷新通知**/
 	public void ResetNotice(){
 		noticeDatas.clear();
 		getData();
+		app.friendDatas.clear();
+		getFriendData();
 	}
 
 	Handler handler = new Handler() {
@@ -145,6 +197,12 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 
 			case getFriendImage:
 				noticeAdapter.notifyDataSetChanged();
+				break;
+			case get_friend_logo:
+				friendAdapter.notifyDataSetChanged();
+				break;
+			case get_all_friend:
+				jsonFriendData(msg.obj.toString());
 				break;
 			}
 		}
@@ -214,13 +272,112 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 							noticeData.setContent("[图片]");
 						}else if(type == 2){
 							noticeData.setContent("[语音]");
+						}else if(type == 3){
+							noticeData.setContent("[文件]");
+						}else if(type == 4){
+							noticeData.setContent("[位置]");
 						}
 					}
 					noticeDatas.add(noticeData);
 				}				
 			}
+			getPersionImage();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	/**好友列表点击**/
+	OnItemClickListener onItemClickListener = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			if(arg2 == 1){
+				//新的朋友(我添加的和别人添加我的)
+				startActivityForResult(new Intent(getActivity(), SureFriendActivity.class), 3);
+			}else{
+				//去介绍界面
+				Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
+				intent.putExtra("FriendId", String.valueOf(app.friendDatas.get(arg2 - 1).getFriend_id()));
+				intent.putExtra("name", app.friendDatas.get(arg2 - 1).getFriend_name());
+				intent.putExtra("isShow", true);
+				startActivity(intent);
+			}
+		}
+	};
+	/**获取好友数据**/
+	private void getFriendData(){
+		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/get_friends?auth_code=" + app.auth_code;
+		new NetThread.GetDataThread(handler, url, get_all_friend).start();
+	}
+	private void jsonFriendData(String result){
+		try {
+			app.friendDatas.clear();
+			FriendData fData = new FriendData();
+			fData.setFriend_name("新的朋友");
+			app.friendDatas.add(fData);
+			JSONArray jsonArray = new JSONArray(result);
+			for(int i = 0 ; i < jsonArray.length() ; i++){
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				FriendData friendData = new FriendData();
+				friendData.setSex(jsonObject.getInt("sex"));
+				friendData.setLogo(jsonObject.getString("logo"));
+				friendData.setFriend_name(jsonObject.getString("friend_name"));
+				friendData.setFriend_type(jsonObject.getInt("friend_type"));
+				friendData.setFriend_id(jsonObject.getInt("friend_id"));
+				friendData.setUser_id(jsonObject.getInt("user_id"));
+				friendData.setFriend_relat_id(jsonObject.getInt("friend_relat_id"));
+				app.friendDatas.add(friendData);
+			}
+			friendAdapter.notifyDataSetChanged();
+			getFriendLogo();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	class FriendAdapter extends BaseAdapter{
+		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		@Override
+		public int getCount() {
+			return app.friendDatas.size();
+		}
+		@Override
+		public Object getItem(int position) {
+			return app.friendDatas.get(position);
+		}
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ViewHolder holder;
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.item_friend, null);
+				holder = new ViewHolder();
+				holder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+				holder.iv_image = (CircleImageView) convertView.findViewById(R.id.iv_image);
+				convertView.setTag(holder);
+			} else {
+				holder = (ViewHolder) convertView.getTag();
+			}
+			FriendData friendData = app.friendDatas.get(position);
+			holder.tv_name.setText(friendData.getFriend_name());
+			if(position == 0){
+				//第一项是新的朋友
+				holder.iv_image.setImageResource(R.drawable.icon_people_no);
+			}else{
+				if(new File(Constant.userIconPath + friendData.getFriend_id() + ".png").exists()){
+					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + friendData.getFriend_id() + ".png");
+					holder.iv_image.setImageBitmap(image);
+				}else{
+					holder.iv_image.setImageResource(R.drawable.icon_people_no);
+				}
+			}			
+			return convertView;
+		}
+		private class ViewHolder {
+			TextView tv_name;
+			CircleImageView iv_image;
 		}
 	}
 
@@ -263,7 +420,6 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			holder.ll_fm_notice.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {
-					//TODO 点击
 					itemClick(position);
 				}
 			});
@@ -388,8 +544,14 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				break;
 			case OnScrollListener.SCROLL_STATE_IDLE://停止
 				//读取图片
-				getPersionImage();
-				break;
+				switch (view.getId()) {
+				case R.id.lv_friend:
+					getFriendLogo();
+					break;
+				case R.id.lv_notice:
+					getPersionImage();
+					break;
+				}
 			}
 		}
 		
@@ -399,21 +561,48 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		}
 	};
 	
+	private void getFriendLogo(){
+		int start = lv_friend.getFirstVisiblePosition();
+		if(start == 0){
+			start = 1;
+		}
+		int stop = lv_friend.getLastVisiblePosition();
+		for(int i = start ; i < stop ; i++){
+			if(i >= app.friendDatas.size()){
+				return ;
+			}
+			FriendData friendData = app.friendDatas.get(i);
+			if(friendData.getLogo() != null && (!friendData.getLogo().equals(""))){
+				//判断图片是否存在
+				if(new File(Constant.userIconPath + friendData.getFriend_id() + ".png").exists()){
+					
+				}else{
+					if(isFriendThreadRun(i)){
+						//如果图片正在读取则跳过
+					}else{
+						FriendId.add(i);
+						new FriendThread(i).start();
+					}
+				}
+			}					
+		}
+	}
+	
 	/**获取显示区域的图片**/
 	private void getPersionImage(){
 		int start = lv_notice.getFirstVisiblePosition();
-		int stop = lv_notice.getLastVisiblePosition();	
-		for(int i = start ; i <= stop ; i++){
-			//防止数组越界
+		int stop = lv_notice.getLastVisiblePosition();		
+		for(int i = start ; i < stop ; i++){
 			if(i >= noticeDatas.size()){
-				break;
-			}else{
-				NoticeData noticeData = noticeDatas.get(i);
+				return ;
+			}
+			NoticeData noticeData = noticeDatas.get(i);
 				if(noticeData.getFriend_type() == 99){
 					//判断图片是否存在
 					if(noticeData.getLogo() == null || noticeData.getLogo().equals("")){
 						
 					}else{
+						
 						if(new File(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png").exists()){
 							
 						}else{
@@ -426,9 +615,20 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 						}
 					}					
 				}
-			}								
-		}
+			}		
 	}
+	
+	List<Integer> FriendId = new ArrayList<Integer>();
+	/**判断图片是否开启了线程正在读图**/
+	private boolean isFriendThreadRun(int positon){
+		for(int i = 0 ; i < FriendId.size() ; i++){
+			if(positon == FriendId.get(i)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	List<Integer> photoThreadId = new ArrayList<Integer>();
 	/**判断图片是否开启了线程正在读图**/
 	private boolean isThreadRun(int positon){
@@ -439,6 +639,31 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		}
 		return false;
 	}
+	
+	class FriendThread extends Thread{
+		int position;
+		public FriendThread(int position){
+			this.position = position;
+		}
+		@Override
+		public void run() {
+			super.run();
+			Bitmap bitmap = GetSystem.getBitmapFromURL(app.friendDatas.get(position).getLogo());
+			if(bitmap != null){
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, app.friendDatas.get(position).getFriend_id() + ".png",100);
+			}
+			for (int i = 0; i < FriendId.size(); i++) {
+				if (FriendId.get(i) == position) {
+					FriendId.remove(i);
+					break;
+				}
+			}
+			Message message = new Message();
+			message.what = get_friend_logo;
+			handler.sendMessage(message);
+		}
+	}
+	
 	class ImageThread extends Thread{
 		int position;
 		public ImageThread(int position){
@@ -471,6 +696,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			}			
 		}
 	}
+	
 	String refresh = "";
 	@Override
 	public void onRefresh() {
@@ -488,5 +714,55 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		lv_notice.stopRefresh();
 		lv_notice.stopLoadMore();
 		lv_notice.setRefreshTime(GetSystem.GetNowTime());
+	}
+	PopupWindow mPopupWindow;
+	private void showMenu() {
+		LayoutInflater mLayoutInflater = LayoutInflater
+				.from(getActivity());
+		View popunwindwow = mLayoutInflater.inflate(
+				R.layout.item_menu_vertical, null);
+		TextView tv_letter = (TextView) popunwindwow
+				.findViewById(R.id.tv_letter);
+		tv_letter.setText("添加朋友");
+		tv_letter.setOnClickListener(onClickListener);
+		TextView tv_Comments = (TextView) popunwindwow
+				.findViewById(R.id.tv_Comments);
+		tv_Comments.setText("扫一扫");
+		tv_Comments.setOnClickListener(onClickListener);
+		mPopupWindow = new PopupWindow(popunwindwow, 320,
+				LayoutParams.WRAP_CONTENT);
+		mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
+		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+		mPopupWindow.setFocusable(true);
+		mPopupWindow.setOutsideTouchable(true);
+		mPopupWindow.showAsDropDown(getActivity().findViewById(R.id.iv_add), 0, 0);
+	}
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == 1 && resultCode == 2){
+			String FriendId = data.getStringExtra("result");
+			//二维码扫描后跳转到用户信息界面
+			Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
+			intent.putExtra("FriendId", FriendId);
+			startActivityForResult(intent, 2);
+			return;
+		}if(requestCode == 2 && resultCode == 2){
+			//TODO 添加朋友返回
+		}if(requestCode == 3 && resultCode == 2){
+			//确认接受朋友返回，刷新数据
+			getFriendData();
+		}
+	}
+	
+
+	
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		if(Judge.isLogin(app)){
+			getData();
+		}
 	}
 }
