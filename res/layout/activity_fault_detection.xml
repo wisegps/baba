@@ -253,7 +253,7 @@
                     android:layout_centerVertical="true"
                     android:drawablePadding="@dimen/margins"
                     android:drawableRight="@drawable/btn_right"
-                    android:text="三元催化剂状态良好"
+                    android:text="三元催化器状态良好"
                     android:textColor="@color/blue_press"
                     android:textSize="@dimen/content" />
             </RelativeLayout>

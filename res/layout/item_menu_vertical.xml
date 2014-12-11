@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
     <TextView
         android:id="@+id/tv_letter" 
@@ -22,7 +22,7 @@
         android:visibility="gone"
         android:background="@color/white"/>
     <TextView 
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="#CC50B7DE"
         android:paddingLeft="20dp"
@@ -39,7 +39,7 @@
         android:background="@color/white"/>
     <TextView
         android:id="@+id/tv_Comments" 
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="#CC50B7DE"
         android:paddingLeft="20dp"

@@ -729,7 +729,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				.findViewById(R.id.tv_Comments);
 		tv_Comments.setText("扫一扫");
 		tv_Comments.setOnClickListener(onClickListener);
-		mPopupWindow = new PopupWindow(popunwindwow, 320,
+		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT);
 		mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
 		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
