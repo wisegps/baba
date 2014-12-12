@@ -139,6 +139,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.setting.OilUpdateActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.setting.BindActivity"
             android:screenOrientation="portrait" >
         </activity>

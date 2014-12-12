@@ -303,7 +303,7 @@ public class FaultDetectionActivity extends Activity {
 							startActivityForResult(intent2, 2);
 						} else {
 							intent.putExtra("title", "排放系统");
-							intent.putExtra("name", "三元催化剂状态");
+							intent.putExtra("name", "三元催化器状态");
 							intent.putExtra("range",
 									jsonObject.getString("chqwd_range"));
 							intent.putExtra("if_err",
@@ -321,25 +321,27 @@ public class FaultDetectionActivity extends Activity {
 						break;
 					// 救援
 					case R.id.risk:
-						try{//平板没有电话模块异常
+						try {// 平板没有电话模块异常
 							String phone = app.carDatas.get(index)
 									.getInsurance_tel();
-							Intent in_1 = new Intent(
-									Intent.ACTION_DIAL,
-									Uri.parse("tel:" + (phone != null ? phone : "")));
+							Intent in_1 = new Intent(Intent.ACTION_DIAL,
+									Uri.parse("tel:"
+											+ (phone != null ? phone : "")));
 							startActivity(in_1);
-						}catch (Exception e) {
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 						break;
 					// 报险
 					case R.id.rescue:
-						try{//平板没有电话模块异常
-							String tel = app.carDatas.get(index).getMaintain_tel();
-							Intent in_2 = new Intent(Intent.ACTION_DIAL,
+						try {// 平板没有电话模块异常
+							String tel = app.carDatas.get(index)
+									.getMaintain_tel();
+							Intent in_2 = new Intent(
+									Intent.ACTION_DIAL,
 									Uri.parse("tel:" + (tel != null ? tel : "")));
 							startActivity(in_2);
-						}catch (Exception e) {
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 						break;

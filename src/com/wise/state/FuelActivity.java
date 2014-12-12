@@ -149,8 +149,7 @@ public class FuelActivity extends Activity {
 				RangeData rangeData = rangeDatas.get(rotateRanges);
 				if (type == FaultActivity.FUEL) {
 					tv_speed_text.setText(rangeData.getSpeed_text());
-					tv_speed_avg_fuel.setText("平均油耗：" + rangeData.getAvg_fuel()
-							+ "/100km");
+					tv_speed_avg_fuel.setText("平均油耗：" + rangeData.getAvg_fuel());
 					tv_speed_fuel.setText("油耗：" + rangeData.getFuel());
 				} else if (type == FaultActivity.DISTANCE) {
 					tv_speed_text.setText(rangeData.getSpeed_text());
@@ -470,7 +469,7 @@ public class FuelActivity extends Activity {
 				if (percent > 0) {
 					RangeData rangeData = new RangeData();
 					rangeData.setSpeed_text(idle.getString("speed_text"));
-					rangeData.setAvg_fuel(subData(idle.getString("avg_fuel")));
+					rangeData.setAvg_fuel(idle.getString("avg_fuel"));
 					rangeData.setPercent(percent);
 					rangeData.setFuel(idle.getString("fuel"));
 
@@ -490,7 +489,7 @@ public class FuelActivity extends Activity {
 					RangeData rangeData1 = new RangeData();
 					rangeData1.setSpeed_text(speed1.getString("speed_text"));
 					rangeData1
-							.setAvg_fuel(subData(speed1.getString("avg_fuel")));
+							.setAvg_fuel(speed1.getString("avg_fuel"));
 					rangeData1.setPercent(percent1);
 					rangeData1.setFuel(speed1.getString("fuel"));
 
@@ -510,7 +509,7 @@ public class FuelActivity extends Activity {
 					RangeData rangeData2 = new RangeData();
 					rangeData2.setSpeed_text(speed2.getString("speed_text"));
 					rangeData2
-							.setAvg_fuel(subData(speed2.getString("avg_fuel")));
+							.setAvg_fuel(speed2.getString("avg_fuel"));
 					rangeData2.setPercent(percent2);
 					rangeData2.setFuel(speed2.getString("fuel"));
 
@@ -530,7 +529,7 @@ public class FuelActivity extends Activity {
 					RangeData rangeData3 = new RangeData();
 					rangeData3.setSpeed_text(speed3.getString("speed_text"));
 					rangeData3
-							.setAvg_fuel(subData(speed3.getString("avg_fuel")));
+							.setAvg_fuel(speed3.getString("avg_fuel"));
 					rangeData3.setPercent(percent3);
 					rangeData3.setFuel(speed3.getString("fuel"));
 
@@ -550,7 +549,7 @@ public class FuelActivity extends Activity {
 					RangeData rangeData4 = new RangeData();
 					rangeData4.setSpeed_text(speed4.getString("speed_text"));
 					rangeData4
-							.setAvg_fuel(subData(speed4.getString("avg_fuel")));
+							.setAvg_fuel(speed4.getString("avg_fuel"));
 					rangeData4.setPercent(percent4);
 					rangeData4.setFuel(speed4.getString("fuel"));
 
@@ -565,8 +564,7 @@ public class FuelActivity extends Activity {
 				RangeData rangeData = rangeDatas.get(0);
 				if (type == FaultActivity.FUEL) {
 					tv_speed_text.setText(rangeData.getSpeed_text());
-					tv_speed_avg_fuel.setText("平均油耗：" + rangeData.getAvg_fuel()
-							+ "/100km");
+					tv_speed_avg_fuel.setText("平均油耗：" + rangeData.getAvg_fuel());
 					tv_speed_fuel.setText("油耗：" + rangeData.getFuel());
 				} else if (type == FaultActivity.DISTANCE) {
 					tv_speed_text.setText(rangeData.getSpeed_text());
@@ -585,16 +583,6 @@ public class FuelActivity extends Activity {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
-		}
-	}
-
-	/** 处理数据 30L/100KM , 30L/hr 改成 30L **/
-	private String subData(String result) {
-		int position = result.indexOf("/");
-		if (position == -1) {
-			return result;
-		} else {
-			return result.substring(0, position);
 		}
 	}
 

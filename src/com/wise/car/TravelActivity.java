@@ -11,20 +11,30 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -52,13 +62,13 @@ public class TravelActivity extends Activity {
 	private GeoCoder mGeoCoder = null;
 	int index;
 	AppApplication app;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_travel);
-		app = (AppApplication)getApplication();
+		app = (AppApplication) getApplication();
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
 		tv_travel_date = (TextView) findViewById(R.id.tv_travel_date);
@@ -130,8 +140,7 @@ public class TravelActivity extends Activity {
 			tv_distance.setText(distance);
 			String fuel = "油耗：" + jsonObject.getString("total_fuel") + "L";
 			tv_fuel.setText(fuel);
-			String hk_fuel = "百公里油耗：" + jsonObject.getString("avg_fuel")
-					+ "L";
+			String hk_fuel = "百公里油耗：" + jsonObject.getString("avg_fuel") + "L";
 			tv_hk_fuel.setText(hk_fuel);
 			String fee = "花费：" + jsonObject.getString("total_fee") + "元";
 			tv_money.setText(fee);
@@ -181,7 +190,7 @@ public class TravelActivity extends Activity {
 				double lon = Double.valueOf(travelDatas.get(i).getStart_lon());
 				LatLng latLng = new LatLng(lat, lon);
 				System.out.println("获取位置");
-				if(mGeoCoder != null){
+				if (mGeoCoder != null) {
 					mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
 							.location(latLng));
 				}
@@ -241,7 +250,7 @@ public class TravelActivity extends Activity {
 		@Override
 		public View getView(final int position, View convertView,
 				ViewGroup parent) {
-			ViewHolder holder;
+			final ViewHolder holder;
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.item_travel, null);
 				holder = new ViewHolder();
@@ -267,6 +276,12 @@ public class TravelActivity extends Activity {
 						.findViewById(R.id.iv_item_travel_map);
 				holder.iv_item_travel_share = (ImageView) convertView
 						.findViewById(R.id.iv_item_travel_share);
+				holder.iv_item_travel_record = (ImageView) convertView
+						.findViewById(R.id.iv_item_travel_record);
+				holder.iv_item_travel_delete = (ImageView) convertView
+						.findViewById(R.id.iv_item_travel_delete);
+				holder.iv_item_travel_recordShow = (ImageView) convertView
+						.findViewById(R.id.iv_item_travel_recordShow);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
@@ -279,7 +294,6 @@ public class TravelActivity extends Activity {
 			holder.tv_item_travel_startPlace.setText(travelData
 					.getStart_place());
 			holder.tv_item_travel_stopPlace.setText(travelData.getEnd_place());
-			// TODO
 			holder.tv_item_travel_spacingDistance.setText("共"
 					+ travelData.getSpacingDistance() + "公里\\"
 					+ travelData.getSpacingTime());
@@ -318,19 +332,95 @@ public class TravelActivity extends Activity {
 					intent.putExtra("StopTime", travelData.getStopTime());
 					intent.putExtra("Start_place", travelData.getStart_place());
 					intent.putExtra("End_place", travelData.getEnd_place());
-					intent.putExtra("SpacingDistance", travelData.getSpacingDistance());
+					intent.putExtra("SpacingDistance",
+							travelData.getSpacingDistance());
 					intent.putExtra("SpacingTime", travelData.getSpacingTime());
 					intent.putExtra("AverageOil", travelData.getAverageOil());
 					intent.putExtra("Oil", travelData.getOil());
 					intent.putExtra("Speed", travelData.getSpeed());
 					intent.putExtra("Cost", travelData.getCost());
 					intent.putExtra("index", index);
-					intent.putExtra("device", app.carDatas.get(index).getDevice_id());
+					intent.putExtra("device", app.carDatas.get(index)
+							.getDevice_id());
 					intent.putExtra("Lat", travelData.getStart_lat());
 					intent.putExtra("Lon", travelData.getStart_lon());
 					TravelActivity.this.startActivity(intent);
 				}
 			});
+			// TODO 录入实际油耗
+			holder.iv_item_travel_record
+					.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							AlertDialog.Builder dialog = new AlertDialog.Builder(
+									TravelActivity.this);
+							View view = (LayoutInflater
+									.from(TravelActivity.this)).inflate(
+									R.layout.item_travel_record, null);
+							final EditText et_travel_record = (EditText) view
+									.findViewById(R.id.et_travel_record);
+							dialog.setTitle("行程油耗录入");
+							dialog.setView(view);
+							dialog.setPositiveButton("确定",
+									new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											// TODO 确定后传入数据 et_travel_record
+
+										}
+									}).setNegativeButton("取消", null).show();
+						}
+					});
+			// 删除行程
+			holder.iv_item_travel_delete
+					.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							AlertDialog.Builder dialog = new AlertDialog.Builder(
+									TravelActivity.this);
+							dialog.setTitle("提示");
+							dialog.setMessage("你确定要删除本次行程数据吗？")
+									.setPositiveButton(
+											"确定",
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+													// 行程删除
+
+												}
+											}).setNegativeButton("取消", null)
+									.show();
+						}
+					});
+			holder.iv_item_travel_recordShow
+					.setOnTouchListener(new OnTouchListener() {
+						@Override
+						public boolean onTouch(View v, MotionEvent event) {
+							View view = LayoutInflater
+									.from(TravelActivity.this).inflate(
+											R.layout.item_hot, null);
+							ImageView imageView = (ImageView) view
+									.findViewById(R.id.iv_item_record);
+							imageView.setVisibility(View.GONE);
+							TextView textView = (TextView) view
+									.findViewById(R.id.tv_item_hot);
+							textView.setText("100L");
+							PopupWindow window = new PopupWindow(view,
+									LayoutParams.WRAP_CONTENT,
+									LayoutParams.WRAP_CONTENT);
+							window.setBackgroundDrawable(new BitmapDrawable());
+							window.setFocusable(true);
+							window.setOutsideTouchable(true);
+							window.showAsDropDown(
+									holder.iv_item_travel_recordShow, 45, -10);
+							return false;
+						}
+					});
 			return convertView;
 		}
 
@@ -340,7 +430,9 @@ public class TravelActivity extends Activity {
 					tv_item_travel_spacingDistance, tv_item_travel_averageOil,
 					tv_item_travel_oil, tv_item_travel_speed,
 					tv_item_travel_cost;
-			ImageView iv_item_travel_map, iv_item_travel_share;
+			ImageView iv_item_travel_map, iv_item_travel_share,
+					iv_item_travel_record, iv_item_travel_delete,
+					iv_item_travel_recordShow;
 		}
 	}
 
@@ -481,21 +573,24 @@ public class TravelActivity extends Activity {
 		@Override
 		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
 			try {
-				if(mGeoCoder != null){
+				if (mGeoCoder != null) {
 					Log.d(TAG, "arg0.getAddress() = " + arg0.getAddress());
 					String strInfo = "";
-					if (arg0 == null || arg0.error != SearchResult.ERRORNO.NO_ERROR) {
-						
-					}else{
+					if (arg0 == null
+							|| arg0.error != SearchResult.ERRORNO.NO_ERROR) {
+
+					} else {
 						strInfo = arg0.getAddress();
 						strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
 								strInfo.length());
-					}			
+					}
 					if (isFrist) {// 起点位置取完，在取结束位置
 						travelDatas.get(i).setStart_place("起点：" + strInfo);
 						isFrist = false;
-						double lat = Double.valueOf(travelDatas.get(i).getEnd_lat());
-						double lon = Double.valueOf(travelDatas.get(i).getEnd_lon());
+						double lat = Double.valueOf(travelDatas.get(i)
+								.getEnd_lat());
+						double lon = Double.valueOf(travelDatas.get(i)
+								.getEnd_lon());
 						LatLng latLng = new LatLng(lat, lon);
 						mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
 								.location(latLng));
@@ -516,10 +611,10 @@ public class TravelActivity extends Activity {
 						}
 					}
 					travelAdapter.notifyDataSetChanged();
-				}				
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
-			}			
+			}
 		}
 	};
 

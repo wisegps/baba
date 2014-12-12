@@ -99,10 +99,10 @@
 
                     <LinearLayout
                         android:id="@+id/btn_choose"
-                        android:paddingLeft="@dimen/margins"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/margins" >
 
                         <TextView
                             android:id="@+id/choose_car_province"
@@ -128,9 +128,9 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
+                        android:inputType="textEmailAddress"
                         android:maxLength="11"
                         android:padding="10dp"
-						android:inputType="textEmailAddress"
                         android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
                 </LinearLayout>
@@ -186,6 +186,34 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:drawableRight="@drawable/btn_right"
+                        android:padding="10dp"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="加油油价："
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+
+                    <EditText
+                        android:id="@+id/et_oil_price"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
                         android:padding="10dp"
                         android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
@@ -372,10 +400,10 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
+                        android:inputType="phone"
                         android:maxLength="15"
                         android:padding="10dp"
                         android:singleLine="true"
-                        android:inputType="phone"
                         android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
                 </LinearLayout>
@@ -491,9 +519,9 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
+                        android:inputType="phone"
                         android:padding="10dp"
                         android:singleLine="true"
-                        android:inputType="phone"
                         android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
                 </LinearLayout>
