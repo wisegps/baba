@@ -90,6 +90,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name=".BrowserActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".FeedBackActivity"
             android:screenOrientation="portrait" >
         </activity>
