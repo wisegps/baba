@@ -35,6 +35,8 @@ public class Constant {
 	public static String VehiclePath = BasePath + "vehicle/";
 	/** 秀爱车拍照存放地方 **/
 	public static String TemporaryImage = "0.png";
+	/** 临时图片 **/
+	public static String TemporaryMapImage = BasePath + "map.png";
 	/** 获取版本信息用到 **/
 	public static String PackageName = "com.wise.baba";
 

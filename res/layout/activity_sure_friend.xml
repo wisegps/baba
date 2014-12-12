@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/gray_bg"
+    android:orientation="vertical" >
+    <RelativeLayout 
+    	android:id="@+id/ll_main"
+	    android:layout_width="fill_parent"
+	    android:layout_height="@dimen/title_hight"
+        android:background="@color/title_back">
+	    <TextView
+	         android:layout_width="fill_parent"
+	         android:layout_height="wrap_content"
+	         android:layout_centerInParent="true"
+	         android:text="新的朋友"
+	         android:gravity="center"
+	         android:textSize="@dimen/title"
+	         android:textColor="@color/white" />
+        <ImageView 
+            android:id="@+id/iv_back"
+	        android:layout_width="@dimen/title_hight"
+	        android:layout_height="@dimen/title_hight"
+	        android:layout_marginLeft="@dimen/margins"
+	        android:padding="@dimen/margins"
+	        android:layout_centerVertical="true"
+	        android:src="@drawable/nav_back"/>
+	</RelativeLayout>
+	<ListView 
+	    android:id="@+id/lv_new_friend"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"></ListView>
+</LinearLayout>

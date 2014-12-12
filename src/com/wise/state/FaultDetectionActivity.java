@@ -565,7 +565,7 @@ public class FaultDetectionActivity extends Activity {
 				tv_lengque_icon
 						.setCompoundDrawables(drawable, null, null, null);
 
-				tv_paifang.setText("三元催化剂状态良好");
+				tv_paifang.setText("三元催化器状态良好");
 				tv_paifang.setTextColor(getResources().getColor(
 						R.color.blue_press));
 				drawable = getResources().getDrawable(
@@ -722,7 +722,7 @@ public class FaultDetectionActivity extends Activity {
 							.getBoolean("if_chqwd_err");
 					chqwd_content = jsonObject.getString("chqwd_content");
 					if (if_chqwd_err) {
-						tv_paifang.setText("三元催化剂状态良好");
+						tv_paifang.setText("三元催化器状态良好");
 						tv_paifang.setTextColor(getResources().getColor(
 								R.color.blue_press));
 						Drawable drawable = getResources().getDrawable(
@@ -732,7 +732,7 @@ public class FaultDetectionActivity extends Activity {
 						tv_paifang_icon.setCompoundDrawables(drawable, null,
 								null, null);
 					} else {
-						tv_paifang.setText("三元催化剂状态异常");
+						tv_paifang.setText("三元催化器状态异常");
 						tv_paifang.setTextColor(getResources().getColor(
 								R.color.yellow));
 						Drawable drawable = getResources().getDrawable(
@@ -1181,7 +1181,7 @@ public class FaultDetectionActivity extends Activity {
 				boolean if_chqwd_err = !jsonObject.getBoolean("if_chqwd_err");
 				chqwd_content = jsonObject.getString("chqwd_content");
 				if (if_chqwd_err) {
-					tv_paifang.setText("三元催化剂状态良好");
+					tv_paifang.setText("三元催化器状态良好");
 					tv_paifang.setTextColor(getResources().getColor(
 							R.color.blue_press));
 					Drawable drawable = getResources().getDrawable(
@@ -1191,7 +1191,7 @@ public class FaultDetectionActivity extends Activity {
 					tv_paifang_icon.setCompoundDrawables(drawable, null, null,
 							null);
 				} else {
-					tv_paifang.setText("三元催化剂状态异常");
+					tv_paifang.setText("三元催化器状态异常");
 					tv_paifang.setTextColor(getResources().getColor(
 							R.color.yellow));
 					Drawable drawable = getResources().getDrawable(
