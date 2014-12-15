@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -57,6 +58,11 @@ public class DevicesAddActivity extends Activity {
 	RelativeLayout rl_wait;
 	WaitLinearLayout ll_wait;
 
+	// 近景远景图
+	ImageView car_icon_near, car_icon_far;
+	TextView tv_icon_near_share, tv_icon_far_share;
+	AutoCompleteTextView AC_car_name;// 自动补全
+
 	int car_id;
 	/** true绑定终端，false修改终端 **/
 	boolean isBind;
@@ -64,13 +70,14 @@ public class DevicesAddActivity extends Activity {
 	/** 快速注册 **/
 	boolean fastTrack = false;
 	AppApplication app;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		ManageActivity.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_devices_add);
-		app = (AppApplication)getApplication();
+		app = (AppApplication) getApplication();
 		ll_wait = (WaitLinearLayout) findViewById(R.id.ll_wait);
 		ll_wait.setOnFinishListener(onFinishListener);
 		tv_note = (TextView) findViewById(R.id.tv_note);
@@ -88,17 +95,28 @@ public class DevicesAddActivity extends Activity {
 		iv_add = (ImageView) findViewById(R.id.iv_add);
 		iv_add.setOnClickListener(onClickListener);
 
+		// 近景远景图
+		car_icon_near = (ImageView) findViewById(R.id.car_icon_near);
+		car_icon_far = (ImageView) findViewById(R.id.car_icon_far);
+		tv_icon_near_share = (TextView) findViewById(R.id.tv_icon_near_share);
+		tv_icon_near_share.setOnClickListener(onClickListener);
+		tv_icon_far_share = (TextView) findViewById(R.id.tv_icon_far_share);
+		tv_icon_far_share.setOnClickListener(onClickListener);
+
+		// 自动补全
+		AC_car_name = (AutoCompleteTextView) findViewById(R.id.AC_car_name);
+
 		Intent intent = getIntent();
 		car_id = intent.getIntExtra("car_id", 0);
 		isBind = intent.getBooleanExtra("isBind", true);
 		fastTrack = intent.getBooleanExtra("fastTrack", false);
-		if(!isBind){
-			//接收并现实以前的终端值
+		if (!isBind) {
+			// 接收并现实以前的终端值
 			String old_device_id = intent.getStringExtra("old_device_id");
 			String url = Constant.BaseUrl + "/device/" + old_device_id
 					+ "?auth_code=" + app.auth_code;
 			new NetThread.GetDataThread(handler, url, update_serial).start();
-		}else{
+		} else {
 			startActivityForResult(new Intent(DevicesAddActivity.this,
 					BarcodeActivity.class), 0);
 		}
@@ -127,6 +145,12 @@ public class DevicesAddActivity extends Activity {
 				String url = Constant.BaseUrl + "customer/" + app.cust_id
 						+ "/vehicle?auth_code=" + app.auth_code;
 				new NetThread.GetDataThread(handler, url, get_data).start();
+				break;
+			case R.id.tv_icon_near_share:// TODO 分享近景图
+
+				break;
+			case R.id.tv_icon_far_share:// 分享远景图
+
 				break;
 			}
 		}
@@ -216,8 +240,7 @@ public class DevicesAddActivity extends Activity {
 				break;
 			case get_data:
 				app.carDatas.clear();
-				app.carDatas.addAll(JsonData.jsonCarInfo(msg.obj
-						.toString()));
+				app.carDatas.addAll(JsonData.jsonCarInfo(msg.obj.toString()));
 				Intent intent = new Intent(Constant.A_RefreshHomeCar);
 				sendBroadcast(intent);
 				ManageActivity.getActivityInstance().exit();
