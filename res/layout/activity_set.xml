@@ -8,126 +8,123 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <RelativeLayout
-            android:id="@+id/ll_main"
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/title_hight"
-            android:background="@color/title_back" >
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:text="设置中心"
-                android:textColor="@color/white"
-                android:textSize="@dimen/title" />
-
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="@dimen/title_hight"
-                android:layout_height="@dimen/title_hight"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/margins"
-                android:padding="@dimen/margins"
-                android:src="@drawable/nav_back" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_login"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margins"
-            android:background="@drawable/bg_white"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/margins"
-            android:paddingLeft="@dimen/double_margins"
-            android:paddingTop="@dimen/margins" >
-
-            <customView.CircleImageView
-                android:id="@+id/iv_logo"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/icon_people_no"
-                app:border_color="@color/white"
-                app:border_width="1dp" />
-
-            <TextView
-                android:id="@+id/tv_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/iv_logo"
-                android:padding="@dimen/margins"
-                android:text="登录/注册"
-                android:textColor="@color/navy"
-                android:textSize="@dimen/main" />
-
-            <ImageView
-                android:id="@+id/iv_sex"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/margins"
-                android:layout_toRightOf="@id/tv_login"
-                android:src="@drawable/icon_man"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/iv_service"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/iv_sex"
-                android:src="@drawable/icon_xx_service"
-                android:visibility="gone" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_city"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margins"
-            android:background="@drawable/bg_white" >
-
-            <TextView
-                android:id="@+id/tv_city"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:drawablePadding="@dimen/margins"
-                android:drawableRight="@drawable/btn_right"
-                android:padding="@dimen/double_margins"
-                android:text="深圳"
-                android:textColor="@color/Green"
-                android:textSize="@dimen/content" />
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/double_margins"
-                android:text="定位城市"
-                android:textColor="@color/navy"
-                android:textSize="@dimen/content" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/gay_line" />
-
-        <TextView
-            android:id="@+id/tv_car"
-            android:layout_width="fill_parent"
+        android:orientation="vertical">
+	    <RelativeLayout 
+	    	android:id="@+id/ll_main"
+		    android:layout_width="fill_parent"
+		    android:layout_height="@dimen/title_hight"
+	        android:background="@color/title_back">
+		    <TextView
+		         android:layout_width="fill_parent"
+		         android:layout_height="wrap_content"
+		         android:layout_centerInParent="true"
+		         android:text="设置中心"
+		         android:gravity="center"
+		         android:textSize="@dimen/title"
+		         android:textColor="@color/white" />
+		    <ImageView 
+	            android:id="@+id/iv_back"
+		        android:layout_width="@dimen/title_hight"
+		        android:layout_height="@dimen/title_hight"
+		        android:layout_marginLeft="@dimen/margins"
+		        android:padding="@dimen/margins"
+		        android:layout_centerVertical="true"
+		        android:src="@drawable/nav_back"/>
+		</RelativeLayout>
+		<RelativeLayout
+		    android:id="@+id/rl_login"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="@dimen/margins"
+	        android:paddingLeft="@dimen/double_margins"
+	        android:paddingTop="@dimen/margins"
+	        android:paddingBottom="@dimen/margins"
+	        android:background="@drawable/bg_white"
+	        android:orientation="vertical" >
+		    <customView.CircleImageView 
+                    android:id="@+id/iv_logo"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    app:border_width="1dp"
+                    android:src="@drawable/icon_people_no"
+                    app:border_color="@color/white" />
+	        <TextView
+	            android:id="@+id/tv_login"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerVertical="true"
+	            android:padding="@dimen/margins"
+	            android:layout_toRightOf="@id/iv_logo"
+	            android:text="登录/注册"
+	            android:textSize="@dimen/main"
+	            android:textColor="@color/navy" />
+	        <ImageView 
+	            android:id="@+id/iv_sex"
+	            android:layout_toRightOf="@id/tv_login"	
+	            android:layout_marginRight="@dimen/margins"            
+	            android:layout_centerVertical="true"
+	            android:layout_width="15dp"
+	            android:layout_height="15dp"
+	            android:visibility="gone"
+	            android:src="@drawable/icon_man"/>
+	        <ImageView 
+	            android:id="@+id/iv_service"
+	            android:layout_toRightOf="@id/iv_sex"	            
+	            android:layout_centerVertical="true"
+	            android:layout_width="15dp"
+	            android:layout_height="15dp"
+	            android:visibility="gone"
+	            android:src="@drawable/icon_xx_service"/>
+	        <ImageView 
+	            android:id="@+id/iv_eweima"          
+	            android:layout_centerVertical="true"
+	            android:layout_width="35dp"
+	            android:layout_height="35dp"
+	            android:layout_marginRight="@dimen/margins"
+	            android:padding="@dimen/margins"
+	            android:visibility="gone"
+	            android:layout_alignParentRight="true"
+	            android:src="@drawable/ewm"/>
+	    </RelativeLayout>
+	    <RelativeLayout 
+	        android:id="@+id/rl_city" 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="@dimen/margins"
+	        android:background="@drawable/bg_white">
+	        <TextView	            
+	            android:id="@+id/tv_city" 
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentRight="true"
+	            android:textSize="@dimen/content"
+	            android:textColor="@color/Green" 
+	            android:layout_centerVertical="true"
+	            android:drawableRight="@drawable/btn_right"
+	            android:drawablePadding="@dimen/margins"
+	            android:padding="@dimen/double_margins"
+	            android:text="深圳"/>
+	        <TextView
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:padding="@dimen/double_margins"
+	            android:textSize="@dimen/content"
+	            android:text="定位城市"
+	            android:textColor="@color/navy" />	        
+	    </RelativeLayout>
+	    <View 
+	        android:layout_width="fill_parent"
+	        android:layout_height="0.5dp"
+	        android:background="@color/gay_line"/>
+	    <TextView
+	        android:id="@+id/tv_car"
+	        android:text="我的爱车"
+	        android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_white"
             android:padding="@dimen/double_margins"
-            android:text="我的爱车"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />
 
