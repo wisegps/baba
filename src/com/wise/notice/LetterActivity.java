@@ -116,11 +116,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	LetterAdapter letterAdapter;
 	EditText et_content;
 	ImageView ivPopUp, volume, ivNowPlay;
-	RelativeLayout btn_bottom;
+	RelativeLayout btn_bottom,ll_facechoose;
 	LinearLayout voice_rcd_hint_loading, voice_rcd_hint_rcding,
 			voice_rcd_hint_tooshort, ll_menu;
 	View rcChat_popup;
-	ImageView img1, sc_img1, iv_expand;
+	ImageView img1, sc_img1;
+	ImageView iv_expand,iv_emj;
 	LinearLayout del_re;
 	RequestQueue mQueue;
 	Bitmap imageFriend = null;
@@ -162,6 +163,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		mapWidth = (int) (width * 0.6);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
+		iv_emj = (ImageView) findViewById(R.id.iv_emj);
+		iv_emj.setOnClickListener(onClickListener);
+		ll_facechoose = (RelativeLayout)findViewById(R.id.ll_facechoose);
 		iv_expand = (ImageView) findViewById(R.id.iv_expand);
 		iv_expand.setOnClickListener(onClickListener);
 		ll_menu = (LinearLayout) findViewById(R.id.ll_menu);
@@ -195,8 +199,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		lv_letter.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (ll_menu.getVisibility() == View.VISIBLE) {
+				if (ll_menu.getVisibility() == View.VISIBLE||ll_facechoose.getVisibility() == View.VISIBLE) {
 					ll_menu.setVisibility(View.GONE);
+					ll_facechoose.setVisibility(View.GONE);
 				}
 				return false;
 			}
@@ -271,6 +276,11 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				break;
 			case R.id.iv_expand:
 				ll_menu.setVisibility(View.VISIBLE);
+				ll_facechoose.setVisibility(View.GONE);
+				break;
+			case R.id.iv_emj:
+				ll_facechoose.setVisibility(View.VISIBLE);
+				ll_menu.setVisibility(View.GONE);
 				break;
 			case R.id.tv_send:
 				String content = et_content.getText().toString().trim();
@@ -1934,8 +1944,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	}
 
 	private void back() {
-		if (ll_menu.getVisibility() == View.VISIBLE) {
+		if (ll_menu.getVisibility() == View.VISIBLE||ll_facechoose.getVisibility() == View.VISIBLE) {
 			ll_menu.setVisibility(View.GONE);
+			ll_facechoose.setVisibility(View.GONE);
 		} else {
 			if (mMediaPlayer.isPlaying()) {
 				mMediaPlayer.stop();

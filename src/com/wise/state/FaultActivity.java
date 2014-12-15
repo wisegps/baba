@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
+import pubclas.FaceConversionUtil;
 import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.Judge;
@@ -278,7 +279,12 @@ public class FaultActivity extends FragmentActivity {
 					public void onAuthResult(int status, String msg) {
 					}
 				});
-
+		new Thread(new Runnable() {			
+			@Override
+			public void run() {
+				FaceConversionUtil.getInstace().getFileText(getApplication());
+			}
+		}).start();
 		// TODO 30秒定位，显示当前位子
 		new Thread(new Runnable() {
 			@Override
