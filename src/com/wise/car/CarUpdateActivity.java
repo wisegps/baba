@@ -59,6 +59,7 @@ public class CarUpdateActivity extends Activity {
 	LinearLayout ll_engine, ll_frame;
 	EditText et_nick_name, et_obj_name, et_engine_no, et_frame_no,
 			et_insurance_tel, et_insurance_no, et_maintain_tel;
+	EditText et_oil_price;// 加油价格
 	TextView tv_models, tv_gas_no, tv_city, tv_insurance_company,
 			tv_insurance_date, tv_maintain_company, tv_buy_date, tv_year_check;
 	int index = 0;
@@ -74,16 +75,16 @@ public class CarUpdateActivity extends Activity {
 	String car_type = "";
 	String car_type_id = "";
 	AppApplication app;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_update);
-		app = (AppApplication)getApplication();
+		app = (AppApplication) getApplication();
 		index = getIntent().getIntExtra("index", 0);
 		carData = app.carDatas.get(index);
-		carNewData = carData; 
+		carNewData = carData;
 		init();
 		setData();
 		setTime();
@@ -98,8 +99,9 @@ public class CarUpdateActivity extends Activity {
 				finish();
 				break;
 			case R.id.iv_save:
-				if(app.isTest){
-					Toast.makeText(CarUpdateActivity.this, "演示账号不支持该功能", Toast.LENGTH_SHORT).show();
+				if (app.isTest) {
+					Toast.makeText(CarUpdateActivity.this, "演示账号不支持该功能",
+							Toast.LENGTH_SHORT).show();
 					return;
 				}
 				Save();
@@ -109,7 +111,8 @@ public class CarUpdateActivity extends Activity {
 						ModelsActivity.class), 2);
 				break;
 			case R.id.tv_city:
-				Intent intent1 = new Intent(CarUpdateActivity.this,TrafficCitiyActivity.class);
+				Intent intent1 = new Intent(CarUpdateActivity.this,
+						TrafficCitiyActivity.class);
 				intent1.putExtra("cityDatas", (Serializable) chooseCityDatas);
 				startActivityForResult(intent1, 2);
 				break;
@@ -196,18 +199,20 @@ public class CarUpdateActivity extends Activity {
 	private void jsonSave(String str) {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-			if(jsonObject.getInt("status_code") == 0){
+			if (jsonObject.getInt("status_code") == 0) {
 				app.carDatas.set(index, carNewData);
 				setResult(3);
 				finish();
-			}else{
-				Toast.makeText(CarUpdateActivity.this, "保存失败，请重试", Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(CarUpdateActivity.this, "保存失败，请重试",
+						Toast.LENGTH_SHORT).show();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Toast.makeText(CarUpdateActivity.this, "保存失败，请重试", Toast.LENGTH_SHORT).show();
+			Toast.makeText(CarUpdateActivity.this, "保存失败，请重试",
+					Toast.LENGTH_SHORT).show();
 		}
-		
+
 	}
 
 	private void Save() {
@@ -334,8 +339,7 @@ public class CarUpdateActivity extends Activity {
 
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
 				+ "?auth_code=" + app.auth_code;
-		new NetThread.putDataThread(handler, url, params, update)
-				.start();
+		new NetThread.putDataThread(handler, url, params, update).start();
 	}
 
 	private void setTime() {
@@ -366,25 +370,28 @@ public class CarUpdateActivity extends Activity {
 		car_type = carData.getCar_type();
 		car_type_id = carData.getCar_type_id();
 		et_nick_name.setText(carData.getNick_name());
-		
+
 		if (carData.getObj_name() != null && !carData.getObj_name().equals("")) {
-			if(app.isTest){
-				et_obj_name.setText(carData.getObj_name().substring(1,4) + "***");
-				choose_car_province.setText(carData.getObj_name().substring(0, 1));
-			}else{
+			if (app.isTest) {
+				et_obj_name.setText(carData.getObj_name().substring(1, 4)
+						+ "***");
+				choose_car_province.setText(carData.getObj_name().substring(0,
+						1));
+			} else {
 				et_obj_name.setText(carData.getObj_name().substring(1,
 						carData.getObj_name().length()));
-				choose_car_province.setText(carData.getObj_name().substring(0, 1));
+				choose_car_province.setText(carData.getObj_name().substring(0,
+						1));
 			}
 		} else {
 			et_obj_name.setText("");
 		}
 		tv_models.setText(carData.getCar_series() + carData.getCar_type());
 		tv_gas_no.setText(carData.getGas_no());
-		if(app.isTest){
+		if (app.isTest) {
 			et_engine_no.setText("01****");
 			et_frame_no.setText("61**");
-		}else{
+		} else {
 			et_engine_no.setText(carData.getEngine_no());
 			et_frame_no.setText(carData.getFrame_no());
 		}
@@ -403,10 +410,10 @@ public class CarUpdateActivity extends Activity {
 			CityData cityData = new CityData();
 			cityData.setCityName(carData.getVio_citys().get(i));
 			cityData.setCityCode(carData.getVio_citys_code().get(i));
-			//防止数组越界
-			if(i >= carData.getProvince().size()){
+			// 防止数组越界
+			if (i >= carData.getProvince().size()) {
 				cityData.setProvince("");
-			}else{//TODO 异常
+			} else {// TODO 异常
 				cityData.setProvince(carData.getProvince().get(i));
 			}
 			chooseCityDatas.add(cityData);
@@ -432,6 +439,8 @@ public class CarUpdateActivity extends Activity {
 		iv_back.setOnClickListener(onClickListener);
 		et_nick_name = (EditText) findViewById(R.id.et_nick_name);
 		et_obj_name = (EditText) findViewById(R.id.et_obj_name);
+		// 油价价格
+		et_oil_price = (EditText) findViewById(R.id.et_oil_price);
 		tv_models = (TextView) findViewById(R.id.tv_models);
 		tv_models.setOnClickListener(onClickListener);
 		tv_gas_no = (TextView) findViewById(R.id.tv_gas_no);
@@ -536,14 +545,16 @@ public class CarUpdateActivity extends Activity {
 
 	/** 获取各个市违章信息 **/
 	private void getTraffic() {
-		
-		List<BaseData> bDatas = DataSupport.findAll(BaseData.class);		
-		List<BaseData> baseDatas = DataSupport.where("Title = ?","Violation").find(BaseData.class);
-		if(baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")){
+
+		List<BaseData> bDatas = DataSupport.findAll(BaseData.class);
+		List<BaseData> baseDatas = DataSupport.where("Title = ?", "Violation")
+				.find(BaseData.class);
+		if (baseDatas.size() == 0 || baseDatas.get(0).getContent() == null
+				|| baseDatas.get(0).getContent().equals("")) {
 			String url = Constant.BaseUrl + "violation/city?cuth_code="
 					+ app.auth_code;
 			new NetThread.GetDataThread(handler, url, get_traffic).start();
-		}else{
+		} else {
 			parseJson(baseDatas.get(0).getContent());
 		}
 	}
@@ -570,6 +581,7 @@ public class CarUpdateActivity extends Activity {
 							cityData.setEngineno(engineno);
 							cityData.setFrame(frame);
 							cityData.setFrameno(frameno);
+							// TODO 加油油价字段添加
 						}
 					}
 				}

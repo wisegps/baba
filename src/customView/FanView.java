@@ -75,7 +75,7 @@ public class FanView extends View {
 			RangeData rangeData = new RangeData();
 			String text = "";
 			if (type == FaultActivity.FUEL) {
-				text = Datas.get(i).getAvg_fuel();
+				text = subData(Datas.get(i).getAvg_fuel());
 			} else if (type == FaultActivity.DISTANCE) {
 				text = Datas.get(i).getDistance();
 			} else {
@@ -112,6 +112,16 @@ public class FanView extends View {
 			RecordAngle = (RecordAngle + rotateRanges) % 360;
 		}
 		postInvalidate();
+	}
+
+	/** 处理数据 30L/100KM , 30L/hr 改成 30L **/
+	private String subData(String result) {
+		int position = result.indexOf("/");
+		if (position == -1) {
+			return result;
+		} else {
+			return result.substring(0, position);
+		}
 	}
 
 	List<RangeData> rangeDatas = new ArrayList<RangeData>();

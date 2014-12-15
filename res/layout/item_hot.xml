@@ -13,6 +13,7 @@
         android:text="粤B12345"
         android:textColor="@color/common"/>
     <ImageView 
+        android:id="@+id/iv_item_record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/delete"/>

@@ -83,6 +83,7 @@
         android:layout_height="wrap_content"
         android:background="@color/gray_light"
         android:padding="@dimen/margins"
+        android:shrinkColumns="*"
         android:stretchColumns="*" >
 
         <TableRow>
@@ -94,6 +95,13 @@
                 android:text="百公里油耗：9.9l"
                 android:textColor="@color/common"
                 android:textSize="@dimen/content" />
+
+            <ImageView
+                android:id="@+id/iv_item_travel_recordShow"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitCenter"
+                android:src="@drawable/share" />
 
             <TextView
                 android:id="@+id/tv_item_travel_oil"
@@ -108,6 +116,7 @@
 
             <TextView
                 android:id="@+id/tv_item_travel_speed"
+                android:layout_span="2"
                 android:gravity="center_vertical"
                 android:text="平均速度:25.75KM/H"
                 android:textColor="@color/common"
@@ -124,24 +133,42 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" >
 
         <ImageView
             android:id="@+id/iv_item_travel_map"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:padding="10dp"
             android:layout_alignParentRight="true"
             android:contentDescription="@string/app_name"
+            android:padding="10dp"
             android:src="@drawable/lbs" />
 
         <ImageView
             android:id="@+id/iv_item_travel_share"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:padding="10dp"
             android:layout_toLeftOf="@id/iv_item_travel_map"
             android:contentDescription="@string/app_name"
+            android:padding="10dp"
+            android:src="@drawable/share" />
+
+        <ImageView
+            android:id="@+id/iv_item_travel_record"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_toLeftOf="@id/iv_item_travel_share"
+            android:contentDescription="@string/app_name"
+            android:padding="10dp"
+            android:src="@drawable/lbs" />
+
+        <ImageView
+            android:id="@+id/iv_item_travel_delete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_toLeftOf="@id/iv_item_travel_record"
+            android:contentDescription="@string/app_name"
+            android:padding="10dp"
             android:src="@drawable/share" />
     </RelativeLayout>
 

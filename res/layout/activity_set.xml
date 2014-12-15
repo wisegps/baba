@@ -127,8 +127,22 @@
             android:padding="@dimen/double_margins"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />
-		
-        
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/gay_line" />
+
+        <TextView
+            android:id="@+id/tv_oil_update"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_white"
+            android:padding="@dimen/double_margins"
+            android:text="油耗修正"
+            android:textColor="@color/navy"
+            android:textSize="@dimen/content" />
+
         <TextView
             android:id="@+id/tv_offline_map"
             android:layout_width="fill_parent"
