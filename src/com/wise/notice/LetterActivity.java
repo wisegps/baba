@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Blur;
 import pubclas.Constant;
+import pubclas.FaceConversionUtil;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import xlist.XListView;
@@ -54,6 +55,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -116,12 +118,12 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	LetterAdapter letterAdapter;
 	EditText et_content;
 	ImageView ivPopUp, volume, ivNowPlay;
-	RelativeLayout btn_bottom,ll_facechoose;
+	RelativeLayout btn_bottom, ll_facechoose;
 	LinearLayout voice_rcd_hint_loading, voice_rcd_hint_rcding,
 			voice_rcd_hint_tooshort, ll_menu;
 	View rcChat_popup;
 	ImageView img1, sc_img1;
-	ImageView iv_expand,iv_emj;
+	ImageView iv_expand, iv_emj;
 	LinearLayout del_re;
 	RequestQueue mQueue;
 	Bitmap imageFriend = null;
@@ -165,7 +167,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		iv_back.setOnClickListener(onClickListener);
 		iv_emj = (ImageView) findViewById(R.id.iv_emj);
 		iv_emj.setOnClickListener(onClickListener);
-		ll_facechoose = (RelativeLayout)findViewById(R.id.ll_facechoose);
+		ll_facechoose = (RelativeLayout) findViewById(R.id.ll_facechoose);
 		iv_expand = (ImageView) findViewById(R.id.iv_expand);
 		iv_expand.setOnClickListener(onClickListener);
 		ll_menu = (LinearLayout) findViewById(R.id.ll_menu);
@@ -199,7 +201,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		lv_letter.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (ll_menu.getVisibility() == View.VISIBLE||ll_facechoose.getVisibility() == View.VISIBLE) {
+				if (ll_menu.getVisibility() == View.VISIBLE
+						|| ll_facechoose.getVisibility() == View.VISIBLE) {
 					ll_menu.setVisibility(View.GONE);
 					ll_facechoose.setVisibility(View.GONE);
 				}
@@ -217,12 +220,13 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		logo = getIntent().getStringExtra("logo");
 		tv_friend.setText(cust_name);
 		// 读取朋友对应的图片
-		if(logo != null){
-			if (new File(Constant.userIconPath + GetSystem.getM5DEndo(logo) + ".png").exists()) {
+		if (logo != null) {
+			if (new File(Constant.userIconPath + GetSystem.getM5DEndo(logo)
+					+ ".png").exists()) {
 				imageFriend = BitmapFactory.decodeFile(Constant.userIconPath
 						+ GetSystem.getM5DEndo(logo) + ".png");
 			}
-		}		
+		}
 		getLogo();// 判断是否有需要从网上读取的图片
 		getFristData();
 		myBroadCastReceiver = new MyBroadCastReceiver();
@@ -472,6 +476,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		pairs.add(new BasicNameValuePair("voice_len", String.valueOf(voice_len)));
 		pairs.add(new BasicNameValuePair("lat", String.valueOf(lat)));
 		pairs.add(new BasicNameValuePair("lon", String.valueOf(lon)));
+		pairs.add(new BasicNameValuePair("address", ""));
 		new NetThread.postDataThread(handler, url, pairs, send_letter).start();
 		et_content.setText("");
 		// 添加显示
@@ -577,7 +582,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						}, 0, 0, Config.RGB_565, null));
 			}
 		}
-		//获取自己信息
+		// 获取自己信息
 		final String meLogo = "";
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
@@ -593,22 +598,24 @@ public class LetterActivity extends Activity implements IXListViewListener {
 							new Response.Listener<Bitmap>() {
 								@Override
 								public void onResponse(Bitmap response) {
-									GetSystem.saveImageSD(response,
-											Constant.userIconPath, GetSystem.getM5DEndo(logo)
-													+ ".png", 100);
+									GetSystem.saveImageSD(
+											response,
+											Constant.userIconPath,
+											GetSystem.getM5DEndo(logo) + ".png",
+											100);
 									imageFriend = response;
 									letterAdapter.notifyDataSetChanged();
 								}
 							}, 0, 0, Config.RGB_565, null));
 				}
 			}
-			
+
 			// 读取自己对应的图片
-			if (new File(Constant.userIconPath + GetSystem.getM5DEndo(meLogo) + ".png")
-					.exists()) {
+			if (new File(Constant.userIconPath + GetSystem.getM5DEndo(meLogo)
+					+ ".png").exists()) {
 				imageMe = BitmapFactory.decodeFile(Constant.userIconPath
 						+ GetSystem.getM5DEndo(meLogo) + ".png");
-			}else{
+			} else {
 				if (!meLogo.equals("")) {
 					// 获取自己头像
 					mQueue.add(new ImageRequest(meLogo,
@@ -616,7 +623,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 								@Override
 								public void onResponse(Bitmap response) {
 									GetSystem.saveImageSD(response,
-											Constant.userIconPath, GetSystem.getM5DEndo(meLogo)
+											Constant.userIconPath,
+											GetSystem.getM5DEndo(meLogo)
 													+ ".png", 100);
 									imageMe = response;
 									letterAdapter.notifyDataSetChanged();
@@ -626,7 +634,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 
 	private PopupWindow popupWindow;
@@ -894,8 +902,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					viewFriendText.iv_friend
 							.setImageResource(R.drawable.icon_people_no);
 				}
-				viewFriendText.tv_friend_content.setText(letterData
-						.getContent());
+				viewFriendText.tv_friend_content
+						.setText(getFaceImage(letterData.getContent()));
 				viewFriendText.tv_friend_content
 						.setOnLongClickListener(onLongClickListener);
 				break;
@@ -982,10 +990,13 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				if (imageFriend != null) {
 					viewFriendMap.iv_friend.setImageBitmap(imageFriend);
 				} else {
-					viewFriendMap.iv_friend.setImageResource(R.drawable.icon_people_no);
+					viewFriendMap.iv_friend
+							.setImageResource(R.drawable.icon_people_no);
 				}
 				viewFriendMap.tv_adress
-				.setLayoutParams(new LinearLayout.LayoutParams(mapWidth,LinearLayout.LayoutParams.WRAP_CONTENT));
+						.setLayoutParams(new LinearLayout.LayoutParams(
+								mapWidth,
+								LinearLayout.LayoutParams.WRAP_CONTENT));
 				viewFriendMap.tv_adress.setText(letterData.getAdress());
 				String imageUrl3 = letterData.getUrl();
 				int lastSlashIndex3 = imageUrl3.lastIndexOf("/");
@@ -995,9 +1006,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					Bitmap image = BitmapFactory
 							.decodeFile(Constant.VehiclePath + imageName3);
 					image = Blur.scaleWidthImage(image, mapWidth);
-					viewFriendMap.iv_friend_map.setImageBitmap(Blur.toRoundCorner(
-							image, 5));
-					//TODO 地址大小
+					viewFriendMap.iv_friend_map.setImageBitmap(Blur
+							.toRoundCorner(image, 5));
+					// TODO 地址大小
 					viewFriendMap.iv_friend_map
 							.setOnClickListener(new OnClickListener() {
 								@Override
@@ -1032,7 +1043,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					viewMeText.iv_me
 							.setImageResource(R.drawable.icon_people_no);
 				}
-				viewMeText.tv_me_content.setText(letterData.getContent());
+				viewMeText.tv_me_content.setText(getFaceImage(letterData
+						.getContent()));
 				viewMeText.tv_me_content
 						.setOnLongClickListener(onLongClickListener);
 				break;
@@ -1140,8 +1152,10 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				}
 				// 显示
 				viewMeMap.tv_adress
-				.setLayoutParams(new LinearLayout.LayoutParams(mapWidth,LinearLayout.LayoutParams.WRAP_CONTENT));
-				
+						.setLayoutParams(new LinearLayout.LayoutParams(
+								mapWidth,
+								LinearLayout.LayoutParams.WRAP_CONTENT));
+
 				viewMeMap.tv_adress.setText(letterData.getAdress());
 				System.out.println("地图地址 ：" + letterData.getUrl());
 				String imageUrl2 = letterData.getUrl();
@@ -1152,7 +1166,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					Bitmap image = BitmapFactory
 							.decodeFile(Constant.VehiclePath + imageName2);
 					image = Blur.scaleWidthImage(image, mapWidth);
-					
+
 					viewMeMap.iv_me_map.setImageBitmap(Blur.toRoundCorner(
 							image, 5));
 					viewMeMap.iv_me_map
@@ -1208,6 +1222,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			TextView tv_sound_lenght;
 			ImageView iv_friend_sound;
 		}
+
 		class ViewFriendFile {
 			TextView tv_time;
 			CircleImageView iv_friend;
@@ -1240,7 +1255,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			TextView tv_sound_lenght;
 			ImageView iv_me_sound;
 		}
-		
+
 		class ViewMeFile {
 			TextView tv_time;
 			CircleImageView iv_me;
@@ -1253,6 +1268,11 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			TextView tv_adress;
 			ImageView iv_me_map;
 		}
+	}
+
+	public SpannableString getFaceImage(String faceContent) {
+		return FaceConversionUtil.getInstace().getExpressionString(
+				LetterActivity.this, faceContent);
 	}
 
 	class LetterData {
@@ -1522,8 +1542,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		final String bigFile = Constant.VehiclePath + big_pic;
 		try {
 			bigOutputStream = new FileOutputStream(bigFile);
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 60,
-					bigOutputStream);// 把数据写入文件
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 60, bigOutputStream);// 把数据写入文件
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
@@ -1654,15 +1673,17 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		int stop = lv_letter.getLastVisiblePosition();
 		// 循环读取图片
 		for (int i = start; i < stop; i++) {
-			if(i >= letterDatas.size()){
+			if (i >= letterDatas.size()) {
 				break;
 			}
-			if(letterDatas.get(i).getLogo() == null || letterDatas.get(i).getLogo().equals("")){
-				
-			}else{
+			if (letterDatas.get(i).getUrl() == null
+					|| letterDatas.get(i).getUrl().equals("")) {
+
+			} else {
 				// 判断图片是否存在
 				if (new File(getImagePath(letterDatas.get(i).getUrl()))
 						.exists()) {
+
 				} else {
 					if (isThreadRun(i)) {
 						// 如果图片正在读取则跳过
@@ -1944,7 +1965,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	}
 
 	private void back() {
-		if (ll_menu.getVisibility() == View.VISIBLE||ll_facechoose.getVisibility() == View.VISIBLE) {
+		if (ll_menu.getVisibility() == View.VISIBLE
+				|| ll_facechoose.getVisibility() == View.VISIBLE) {
 			ll_menu.setVisibility(View.GONE);
 			ll_facechoose.setVisibility(View.GONE);
 		} else {

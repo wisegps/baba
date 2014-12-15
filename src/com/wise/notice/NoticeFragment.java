@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pubclas.Constant;
+import pubclas.FaceConversionUtil;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
@@ -26,6 +27,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -415,7 +417,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				holder = (ViewHolder) convertView.getTag();
 			}
 			NoticeData noticeData = noticeDatas.get(position);
-			holder.tv_content.setText(noticeData.getContent());
+			holder.tv_content.setText(getFaceImage(noticeData.getContent()));
 			holder.tv_type.setText(noticeData.getFriend_name());
 			holder.ll_fm_notice.setOnClickListener(new OnClickListener() {				
 				@Override
@@ -586,6 +588,11 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				}
 			}					
 		}
+	}
+	
+	public SpannableString getFaceImage(String faceContent) {
+		return FaceConversionUtil.getInstace().getExpressionString(
+				getActivity(), faceContent);
 	}
 	
 	/**获取显示区域的图片**/
