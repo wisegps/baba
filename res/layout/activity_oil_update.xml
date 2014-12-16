@@ -42,7 +42,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/small"
-                android:text="大概发送到广东飞轮海的风格快乐的考虑是否感觉圣诞节快乐攻击力倒过来速度更快了的风景卡路里"
+                android:text="对于大多数车型而言，系统会根据新车数据对油耗进行自动修正，但是如果您发现您的油耗还是不太准确，可以通过一下两种方式进行油耗修正。"
                 android:textSize="@dimen/content" />
 
             <View
@@ -54,7 +54,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/margins"
-                android:text="1.乘凉撒旦发射对方的感受得到"
+                android:text="1.车上有行车电脑，可以通过行程进行油耗修正"
                 android:textSize="@dimen/content" />
 
             <View
@@ -71,7 +71,7 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="大概发送到广东飞轮海的风格快乐的考虑是否感觉圣诞节快乐攻击力倒过来速度更qwerwtr"
+                    android:text="在结束第一次行程以后，可以进入行程界面，录入行车电脑上显示的行程油耗即可，这样经过几次录入以后，系统会自动对油耗进行修正。"
                     android:textSize="@dimen/content" />
 
                 <Button
@@ -92,7 +92,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/margins"
-                android:text="2.乘凉撒旦发射对方的感受得到"
+                android:text="2.车上没有行车电脑，通过两次加油对油耗进行修正"
                 android:textSize="@dimen/content" />
 
             <View
@@ -134,6 +134,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margins"
+                    android:inputType="number"
                     android:hint="请输入加油量:单位L" />
 
                 <Button

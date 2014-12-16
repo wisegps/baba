@@ -30,6 +30,7 @@ import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.wise.baba.AppApplication;
+import com.wise.baba.BrowserActivity;
 import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.baba.SelectCityActivity;
@@ -42,7 +43,7 @@ import com.wise.notice.NoticeFragment;
 import com.wise.notice.NoticeFragment.BtnListener;
 import com.wise.notice.SmsActivity;
 import com.wise.setting.LoginActivity;
-import com.wise.setting.SetActivity;
+import com.wise.setting.OilUpdateActivity;
 import com.wise.show.ShowActivity;
 import customView.AlwaysMarqueeTextView;
 import customView.HScrollLayout;
@@ -50,10 +51,8 @@ import customView.NoticeScrollTextView;
 import customView.OnViewChangeListener;
 import customView.ParentSlide;
 import data.CarData;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -97,10 +96,8 @@ public class FaultActivity extends FragmentActivity {
 	private static final int getData = 1;
 	/** 获取天气信息 **/
 	private static final int getWeather = 2;
-	/** 循环读取乐一乐线程 **/
-	private static final int cycle = 3;
-	/** 乐一乐 **/
-	private static final int getJoy = 4;
+	/** 本地资讯 **/
+	private static final int gethot_news = 4;
 	/** 获取滚动消息 **/
 	private static final int getMessage = 5;
 	/** 定时滚动消息 **/
@@ -119,8 +116,8 @@ public class FaultActivity extends FragmentActivity {
 	private static final int get_ad = 13;
 
 	ImageView iv_weather, iv_noti;
-	TextView tv_city, tv_weather_time, tv_weather, tv_advice, tv_joy,
-			tv_happy_time, tv_content;
+	TextView tv_city, tv_weather_time, tv_weather, tv_advice, tv_hot_content,
+			tv_host_title, tv_content;
 	RelativeLayout rl_ad;
 	int index = 0;
 	private FragmentManager fragmentManager;
@@ -176,8 +173,9 @@ public class FaultActivity extends FragmentActivity {
 		tv_weather_time = (TextView) findViewById(R.id.tv_weather_time);
 		tv_weather = (TextView) findViewById(R.id.tv_weather);
 		tv_advice = (TextView) findViewById(R.id.tv_advice);
-		tv_joy = (TextView) findViewById(R.id.tv_joy);
-		tv_happy_time = (TextView) findViewById(R.id.tv_happy_time);
+		tv_hot_content = (TextView) findViewById(R.id.tv_hot_content);
+		tv_hot_content.setOnClickListener(onClickListener);
+		tv_host_title = (TextView) findViewById(R.id.tv_host_title);
 		iv_weather = (ImageView) findViewById(R.id.iv_weather);
 		iv_noti = (ImageView) findViewById(R.id.iv_noti);
 		ImageView iv_menu = (ImageView) findViewById(R.id.iv_menu);
@@ -199,7 +197,6 @@ public class FaultActivity extends FragmentActivity {
 				smv_content.snapToScreen(0);
 			}
 		});
-		new CycleThread().start();
 		hs_car.setOnViewChangeListener(new OnViewChangeListener() {
 			@Override
 			public void OnViewChange(int view) {
@@ -605,6 +602,22 @@ public class FaultActivity extends FragmentActivity {
 						Uri.parse(adDatas.get(image_position).getUrl()));
 				startActivity(intent);
 				break;
+			case R.id.tv_hot_content:
+				Intent intent_hot = new Intent(FaultActivity.this, BrowserActivity.class);
+				intent_hot.putExtra("url", hot_url);
+				intent_hot.putExtra("title", hot_title);
+				startActivity(intent_hot);
+				break;
+			case R.id.iv_update_oil:
+				String device_id = app.carDatas.get(index).getDevice_id();
+				if(device_id == null || device_id.equals("")){
+					Toast.makeText(FaultActivity.this, "您的车没有绑定终端，不能进行油耗修正", Toast.LENGTH_SHORT).show();
+				}else{
+					Intent intent_oil = new Intent(FaultActivity.this, OilUpdateActivity.class);
+					intent_oil.putExtra("index", index);
+					startActivity(intent_oil);
+				}				
+				break;
 			}
 		}
 	};
@@ -645,11 +658,8 @@ public class FaultActivity extends FragmentActivity {
 			case getWeather:
 				jsonWeather(msg.obj.toString());
 				break;
-			case getJoy:
-				jsonJoy(msg.obj.toString());
-				break;
-			case cycle:
-				getJoy();
+			case gethot_news:
+				jsonhot_news(msg.obj.toString());
 				break;
 			case getMessage:
 				setMessageView(msg.obj.toString());
@@ -943,39 +953,25 @@ public class FaultActivity extends FragmentActivity {
 		return resId;
 	}
 
-	boolean isCycle = true;
-
-	class CycleThread extends Thread {
-		@Override
-		public void run() {
-			super.run();
-			while (isCycle) {
-				try {
-					Message message = new Message();
-					message.what = cycle;
-					handler.sendMessage(message);
-					Thread.sleep(300000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+	/** 获取热点 **/
+	private void gethot_news() {
+		try {
+			String url = Constant.BaseUrl + "base/hot_news?city=" + URLEncoder.encode(app.City, "UTF-8");
+			new NetThread.GetDataThread(handler, url, gethot_news).start();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
-
-	/** 获取乐一下 **/
-	private void getJoy() {
-		String url = Constant.BaseUrl + "base/joy";
-		new NetThread.GetDataThread(handler, url, getJoy).start();
-	}
-
+	String hot_url;
+	String hot_title;
 	/** 解析乐一下 **/
-	private void jsonJoy(String str) {
+	private void jsonhot_news(String str) {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-			tv_joy.setText(jsonObject.getString("content"));
-			tv_happy_time.setText(GetSystem.ChangeTimeZone(
-					jsonObject.getString("rcv_time").substring(0, 19)
-							.replace("T", " ")).substring(11, 16));
+			tv_hot_content.setText(jsonObject.getString("content"));
+			hot_title = jsonObject.getString("title");
+			tv_host_title.setText(hot_title);
+			hot_url = jsonObject.getString("url");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -1006,6 +1002,8 @@ public class FaultActivity extends FragmentActivity {
 			View v = LayoutInflater.from(this).inflate(R.layout.item_fault,
 					null);
 			hs_car.addView(v);
+			ImageView iv_update_oil = (ImageView)v.findViewById(R.id.iv_update_oil);
+			iv_update_oil.setOnClickListener(onClickListener);
 			RelativeLayout rl_left_complete = (RelativeLayout) v
 					.findViewById(R.id.rl_left_complete);
 			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -1172,6 +1170,7 @@ public class FaultActivity extends FragmentActivity {
 		super.onResume();
 		setNotiView();
 		getWeather();
+		gethot_news();
 		MobclickAgent.onResume(this);
 	}
 
@@ -1319,7 +1318,7 @@ public class FaultActivity extends FragmentActivity {
 			this.obj_id = obj_id;
 		}
 	}
-
+	boolean isCycle = true;
 	// 定时调整滚动消息
 	class CycleNstvThread extends Thread {
 		@Override

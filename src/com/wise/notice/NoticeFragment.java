@@ -10,6 +10,7 @@ import pubclas.FaceConversionUtil;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
+import u.aly.da;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import com.wise.baba.AppApplication;
@@ -299,10 +300,10 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			}else{
 				//去介绍界面
 				Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
+				intent.putExtra(Constant.TYPE_FRIEND, Constant.TYPE_FRIEND_INFO);
 				intent.putExtra("FriendId", String.valueOf(app.friendDatas.get(arg2 - 1).getFriend_id()));
 				intent.putExtra("name", app.friendDatas.get(arg2 - 1).getFriend_name());
-				intent.putExtra("isShow", true);
-				startActivity(intent);
+				startActivityForResult(intent, 4);
 			}
 		}
 	};
@@ -751,13 +752,27 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			String FriendId = data.getStringExtra("result");
 			//二维码扫描后跳转到用户信息界面
 			Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
+			intent.putExtra(Constant.TYPE_FRIEND, Constant.TYPE_FRIEND_INFO_CAMERA);
 			intent.putExtra("FriendId", FriendId);
 			startActivityForResult(intent, 2);
 			return;
-		}if(requestCode == 2 && resultCode == 2){
+		}else if(requestCode == 2 && resultCode == 2){
 			//TODO 添加朋友返回
-		}if(requestCode == 3 && resultCode == 2){
+		}else if(requestCode == 3 && resultCode == 2){
 			//确认接受朋友返回，刷新数据
+			getFriendData();
+		}else if(requestCode == 4 && resultCode == 2){
+			//删除好友返回
+			int deleteFriendId = data.getIntExtra("FriendId", 0);
+			//删除好友
+			for(FriendData friendData : app.friendDatas){
+				if(friendData.getFriend_id() == deleteFriendId){
+					app.friendDatas.remove(friendData);
+					break;
+				}
+			}
+			friendAdapter.notifyDataSetChanged();//刷新本地数据
+			//重新获取服务器数据，确保一致
 			getFriendData();
 		}
 	}

@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-	    <RelativeLayout 
+	    <RelativeLayout
 	    	android:id="@+id/ll_main"
 		    android:layout_width="fill_parent"
 		    android:layout_height="@dimen/title_hight"
@@ -38,7 +38,6 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/margins"
                 android:padding="@dimen/margins"
-                android:visibility="gone"
                 android:src="@drawable/bg_set" />
 		</RelativeLayout>
 		<RelativeLayout

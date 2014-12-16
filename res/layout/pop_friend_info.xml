@@ -35,6 +35,7 @@
         android:layout_height="0.5dp"
         android:background="@color/white"/>
     <TextView
+        android:id="@+id/tv_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="20dp"

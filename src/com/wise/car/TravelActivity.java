@@ -85,10 +85,15 @@ public class TravelActivity extends Activity {
 		lv_activity_travel = (ListView) findViewById(R.id.lv_activity_travel);
 
 		index = getIntent().getIntExtra("index", 0);
-		Date = GetSystem.GetNowDay();
+		String iDate = getIntent().getStringExtra("Date");
+		if(iDate != null){
+			Date = iDate;
+		}else{
+			Date = GetSystem.GetNowDay();
+		}
+		//Date = "2014-12-01";
 		tv_travel_date.setText(Date);
 		GetDataTrip();
-
 		travelAdapter = new TravelAdapter();
 		lv_activity_travel.setAdapter(travelAdapter);
 	}
@@ -228,6 +233,7 @@ public class TravelActivity extends Activity {
 		}
 
 	}
+	//TODO private void deleteTravel()
 
 	private class TravelAdapter extends BaseAdapter {
 		LayoutInflater mInflater = LayoutInflater.from(TravelActivity.this);
@@ -369,7 +375,6 @@ public class TravelActivity extends Activity {
 												DialogInterface dialog,
 												int which) {
 											// TODO 确定后传入数据 et_travel_record
-
 										}
 									}).setNegativeButton("取消", null).show();
 						}
@@ -390,8 +395,8 @@ public class TravelActivity extends Activity {
 												public void onClick(
 														DialogInterface dialog,
 														int which) {
-													// 行程删除
-
+													//TODO 行程删除
+													
 												}
 											}).setNegativeButton("取消", null)
 									.show();

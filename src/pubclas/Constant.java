@@ -9,6 +9,15 @@ import android.os.Environment;
  * @author honesty
  */
 public class Constant {
+	/**跳转好友信息界面的几种方式**/
+	public static String TYPE_FRIEND = "TYPE_FRIEND";
+	/**跳转好友信息界面,已添加好友**/
+	public static int TYPE_FRIEND_INFO = 1;
+	/**扫一扫跳转好友信息界面，未添加好友**/
+	public static int TYPE_FRIEND_INFO_CAMERA = 2;
+	/**搜索名称跳转好友信息界面，未添加好友**/
+	public static int TYPE_FRIEND_INFO_NAME = 3;
+	
 	public static boolean isLog = true;
 	/**在阿里云上url**/
 	public static String oss_url = "http://img.bibibaba.cn/";

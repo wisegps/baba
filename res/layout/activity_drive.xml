@@ -28,19 +28,36 @@
             android:padding="@dimen/margins"
             android:src="@drawable/nav_back" />
     </RelativeLayout>
-    <Button
-         android:id="@+id/bt_drive_rank"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:layout_alignParentBottom="true"
-         android:padding="@dimen/margins"
-         android:textColor="@color/white"
-         android:textSize="@dimen/bt"
-         android:background="@drawable/bg_green"
-         android:text="驾驶排行"/>
+    <LinearLayout 
+        android:id="@+id/ll_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+        android:orientation="horizontal">        
+	    <Button
+	         android:id="@+id/bt_drive_rank"
+	         android:layout_width="fill_parent"
+	         android:layout_height="wrap_content"
+	         android:layout_weight="1"
+	         android:padding="@dimen/margins"
+	         android:textColor="@color/white"
+	         android:textSize="@dimen/bt"
+	         android:background="@drawable/bg_green"
+	         android:text="驾驶排行"/>
+	    <Button
+	         android:id="@+id/bt_drive_travel"
+	         android:layout_width="fill_parent"
+	         android:layout_height="wrap_content"
+	         android:layout_weight="1"
+	         android:padding="@dimen/margins"
+	         android:textColor="@color/white"
+	         android:textSize="@dimen/bt"
+	         android:background="@drawable/bg_green"
+	         android:text="行程明细"/>
+    </LinearLayout>
     <ScrollView
         android:layout_below="@id/ll_top"
-        android:layout_above="@id/bt_drive_rank"
+        android:layout_above="@id/ll_bottom"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:scrollbars="none">

@@ -169,7 +169,7 @@
             android:layout_toLeftOf="@id/iv_item_travel_record"
             android:contentDescription="@string/app_name"
             android:padding="10dp"
-            android:src="@drawable/share" />
+            android:src="@drawable/delete" />
     </RelativeLayout>
 
     <View
