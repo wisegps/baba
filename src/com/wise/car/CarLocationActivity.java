@@ -97,6 +97,13 @@ public class CarLocationActivity extends Activity {
 	TextView searchAddress;
 	ImageView iv_traffic, iv_tracking;
 
+	/**跟踪**/
+	boolean isTracking = false;
+	/** 地图类型 **/
+	int MapType = 1;
+	/** 实时路口 **/
+	boolean isTraffic = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -168,7 +175,7 @@ public class CarLocationActivity extends Activity {
 					while (isStop) {
 						// 获取gps信息
 						try {
-							Thread.sleep(30000);
+							Thread.sleep(10000);
 							String gpsUrl = Constant.BaseUrl + "device/"
 									+ carData.getDevice_id()
 									+ "/active_gps_data?auth_code="
@@ -184,7 +191,7 @@ public class CarLocationActivity extends Activity {
 			}).start();
 		}
 	}
-
+	/**页面destory时改为false**/
 	boolean isStop = true;
 	private static final int SEARCH_CODE = 8;
 
@@ -484,13 +491,6 @@ public class CarLocationActivity extends Activity {
 		}
 	}
 
-	// 开启追踪
-	boolean isTracking = false;
-	/** 地图类型 **/
-	int MapType = 1;
-	/** 实时路口 **/
-	boolean isTraffic = false;
-
 	private void setMapLayers() {
 		iv_satellite
 				.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
@@ -706,8 +706,6 @@ public class CarLocationActivity extends Activity {
 	LatLng circle;
 	Marker carMarker = null;
 
-	// Polyline carLine = null;
-
 	// 当前车辆位子
 	private void getCarLocation() {
 		if (!isHotLocation) {
@@ -766,26 +764,27 @@ public class CarLocationActivity extends Activity {
 	};
 
 	LatLng startTracking, endTracking;
-
+	int i = 0;
 	/** 获取GPS信息 **/
 	private void jsonGps(String str) {
 		if (!isStop) {
 			return;
 		}
 
-		endTracking = new LatLng(carData.getLat(), carData.getLon());
+		startTracking = new LatLng(carData.getLat(), carData.getLon());
 
 		try {
 			JSONObject jsonObject = new JSONObject(str)
 					.getJSONObject("active_gps_data");
-			double lat = jsonObject.getDouble("lat");
-			double lon = jsonObject.getDouble("lon");
+			i++;
+			double lat = jsonObject.getDouble("lat") + i*0.01;
+			double lon = jsonObject.getDouble("lon") + i*0.01;
+			
 			carData.setLat(lat);
 			carData.setLon(lon);
 			carData.setDirect(jsonObject.getInt("direct"));
 
 			if (isTracking) {
-				startTracking = endTracking;
 				endTracking = new LatLng(lat, lon);
 				trackingCar(startTracking, endTracking);
 			}
@@ -799,7 +798,6 @@ public class CarLocationActivity extends Activity {
 		List<LatLng> points = new ArrayList<LatLng>();
 		points.add(lng1);
 		points.add(lng2);
-		// double distance = DistanceUtil.getDistance(lng1, lng2);
 		OverlayOptions ooPolyline = new PolylineOptions().color(0xFF0000C6)
 				.points(points);
 		mBaiduMap.addOverlay(ooPolyline);

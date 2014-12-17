@@ -1,2 +1,7 @@
 eclipse.preferences.version=1
+encoding//src/customView/FaceRelativeLayout.java=UTF-8
+encoding//src/data/ChatEmoji.java=UTF-8
+encoding//src/nadapter/FaceAdapter.java=UTF-8
+encoding//src/nadapter/ViewPagerAdapter.java=UTF-8
+encoding//src/pubclas/FaceConversionUtil.java=UTF-8
 encoding/<project>=UTF-8

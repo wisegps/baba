@@ -18,11 +18,6 @@
 	        android:textColor="@color/navy"
 	        android:text="我的爱车"
 	        android:textSize="@dimen/main" />	    
-	    <TextView 
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:visibility="invisible"
-	        android:layout_alignParentRight="true"/>
     </RelativeLayout>
     <LinearLayout
         android:id="@+id/ll_adress" 
@@ -197,17 +192,30 @@
             android:id="@+id/Liner_fuel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical" >
-            <TextView
-                android:layout_width="fill_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <LinearLayout 
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_horizontal"
-                android:text="本月油耗"
-                android:textColor="@color/color_navy"
-                android:textSize="@dimen/content" />
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">                
+	            <TextView
+	                android:id="@+id/tv_oil"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:layout_marginBottom="5dp"
+	                android:gravity="center_horizontal"
+	                android:text="本月油耗"
+	                android:textColor="@color/color_navy"
+	                android:textSize="@dimen/content" />
+	            <ImageView 
+	                android:id="@+id/iv_update_oil"
+	                android:layout_width="20dp"
+	                android:layout_height="20dp"	                
+	                android:src="@drawable/body_icon_help"/>
+            </LinearLayout>            
             <LinearLayout
+                android:layout_below="@id/tv_oil"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"

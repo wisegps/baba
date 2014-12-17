@@ -109,7 +109,6 @@ public class SetActivity extends Activity implements TagAliasCallback {
 		tv_car.setOnClickListener(onClickListener);
 		TextView tv_offline_map = (TextView)findViewById(R.id.tv_offline_map);
 		tv_offline_map.setOnClickListener(onClickListener);
-		findViewById(R.id.tv_oil_update).setOnClickListener(onClickListener);
 		TextView tv_feedback = (TextView) findViewById(R.id.tv_feedback);
 		tv_feedback.setOnClickListener(onClickListener);
 		TextView tv_about = (TextView)findViewById(R.id.tv_about);
@@ -143,16 +142,6 @@ public class SetActivity extends Activity implements TagAliasCallback {
 				} else {
 					startActivity(new Intent(SetActivity.this,
 							CarActivity.class));
-				}
-				break;
-			case R.id.tv_oil_update:
-				// 油耗修正
-				if (!Judge.isLogin(app)) {
-					startActivity(new Intent(SetActivity.this,
-							LoginActivity.class));
-				} else {
-					startActivity(new Intent(SetActivity.this,
-							OilUpdateActivity.class));
 				}
 				break;
 			case R.id.bt_login_out:

@@ -8,6 +8,8 @@ import pubclas.GetSystem;
 import pubclas.NetThread;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.car.TravelActivity;
+
 import data.CarData;
 import android.app.Activity;
 import android.content.Context;
@@ -48,6 +50,8 @@ public class DriveActivity extends Activity{
 		mTasksView = (TasksCompletedView)findViewById(R.id.tasks_view);
 		Button bt_drive_rank = (Button)findViewById(R.id.bt_drive_rank);
 		bt_drive_rank.setOnClickListener(onClickListener);
+		Button bt_drive_travel = (Button)findViewById(R.id.bt_drive_travel);
+		bt_drive_travel.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		ImageView iv_left = (ImageView)findViewById(R.id.iv_left);
@@ -97,6 +101,12 @@ public class DriveActivity extends Activity{
 			case R.id.bt_drive_rank:
 				//TODO 驾驶排行
 				startActivity(new Intent(DriveActivity.this, DriveRankActivity.class));
+				break;
+			case R.id.bt_drive_travel:
+				Intent intent = new Intent(DriveActivity.this, TravelActivity.class);
+				intent.putExtra("index", index_car);
+				intent.putExtra("Date", Date);
+				startActivity(intent);
 				break;
 			}
 		}

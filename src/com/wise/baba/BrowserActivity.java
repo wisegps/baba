@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * @author honesty
@@ -19,7 +22,12 @@ public class BrowserActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_browser);
+		url = getIntent().getStringExtra("url");
+		String hot_title = getIntent().getStringExtra("title");
+		TextView tv_title = (TextView)findViewById(R.id.tv_title);
+		tv_title.setText(hot_title);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		webView = (WebView) findViewById(R.id.webView);
@@ -44,12 +52,4 @@ public class BrowserActivity extends Activity {
 			}
 		}
 	};
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
-			webView.goBack();
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
 }

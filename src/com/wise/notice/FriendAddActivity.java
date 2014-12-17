@@ -1,5 +1,7 @@
 package com.wise.notice;
 
+import pubclas.Constant;
+
 import com.wise.baba.R;
 import android.app.Activity;
 import android.content.Intent;
@@ -53,8 +55,8 @@ public class FriendAddActivity extends Activity {
 				finish();
 				break;
 			case R.id.iv_search:
-				Intent intent = new Intent(FriendAddActivity.this,
-						FriendInfoActivity.class);
+				Intent intent = new Intent(FriendAddActivity.this,FriendInfoActivity.class);
+				intent.putExtra(Constant.TYPE_FRIEND, Constant.TYPE_FRIEND_INFO_NAME);
 				intent.putExtra("name", et_name.getText().toString().trim());
 				startActivityForResult(intent, 1);
 				break;
