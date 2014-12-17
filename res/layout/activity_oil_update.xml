@@ -120,7 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margins"
                     android:background="@drawable/bg_adress"
-                    android:text="完成第一次加油" />
+                    android:text="第一次加满油" />
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -142,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margins"
                     android:background="@drawable/bg_adress"
-                    android:text="完成第二次加油" />
+                    android:text="第二次加满油" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

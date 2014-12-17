@@ -17,10 +17,16 @@ import pubclas.NetThread;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.setting.LoginActivity;
+import com.wise.setting.RegisterActivity;
+
 import customView.SlidingView;
 import data.BrandData;
 import data.CarData;
+import android.R.integer;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -54,6 +60,7 @@ public class CarActivity extends Activity {
 	private static final int remove_device = 2;
 	private static final int delete_car = 3;
 	private static final int get_image = 4;
+	private static final int remove_cust = 5;
 	ListView lv_cars;
 	CarAdapter carAdapter;
 
@@ -108,6 +115,29 @@ public class CarActivity extends Activity {
 				break;
 			case get_image:
 				carAdapter.notifyDataSetChanged();
+				break;
+			case remove_cust:
+				CarData carData = app.carDatas.get(index);
+				String url = Constant.BaseUrl + "vehicle/"
+						+ carData.getObj_id() + "/device?auth_code="
+						+ app.auth_code;
+				final List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("device_id", "0"));
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						CarActivity.this);
+				builder.setTitle("提示")
+						.setMessage("是否在解除绑定的同时清除终端的所有数据？")
+						.setPositiveButton("是",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										params.add(new BasicNameValuePair(
+												"deal_data", "1"));
+									}
+								}).setNegativeButton("否", null).show();
+				new Thread(new NetThread.putDataThread(handler, url, params,
+						remove_device, index)).start();
 				break;
 			case remove_device:
 				jsonRemove(msg.obj.toString(), msg.arg1);
@@ -272,6 +302,9 @@ public class CarActivity extends Activity {
 						Intent intent = new Intent(CarActivity.this,
 								DevicesAddActivity.class);
 						intent.putExtra("car_id", carData.getObj_id());
+						intent.putExtra("car_series_id",
+								carData.getCar_series_id());
+						intent.putExtra("car_series", carData.getCar_series());
 						intent.putExtra("isBind", true);
 						startActivityForResult(intent, 2);
 					}
@@ -289,13 +322,12 @@ public class CarActivity extends Activity {
 									Toast.LENGTH_SHORT).show();
 							return;
 						}
+						index = position;
 						Intent intent = new Intent(CarActivity.this,
-								DevicesAddActivity.class);
-						intent.putExtra("car_id", carData.getObj_id());
-						intent.putExtra("isBind", false);
-						// TODO 传以前终端的值
-						intent.putExtra("old_device_id", carData.getDevice_id());
-						startActivityForResult(intent, 2);
+								RegisterActivity.class);
+						intent.putExtra("mark", 1);
+						intent.putExtra("device_update", true);
+						startActivityForResult(intent, 7);
 					}
 				});
 				holder.tv_remove.setOnClickListener(new OnClickListener() {
@@ -306,13 +338,12 @@ public class CarActivity extends Activity {
 									Toast.LENGTH_SHORT).show();
 							return;
 						}
-						String url = Constant.BaseUrl + "vehicle/"
-								+ carData.getObj_id() + "/device?auth_code="
-								+ app.auth_code;
-						List<NameValuePair> params = new ArrayList<NameValuePair>();
-						params.add(new BasicNameValuePair("device_id", "0"));
-						new Thread(new NetThread.putDataThread(handler, url,
-								params, remove_device, position)).start();
+						index = position;
+						Intent intent = new Intent(CarActivity.this,
+								RegisterActivity.class);
+						intent.putExtra("mark", 1);
+						intent.putExtra("remove", true);
+						startActivityForResult(intent, REMOVE);
 					}
 				});
 			}
@@ -329,9 +360,33 @@ public class CarActivity extends Activity {
 		}
 	}
 
+	private static final int REMOVE = 5;
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == REMOVE && resultCode == 6) {// 删除终端
+			CarData carData = app.carDatas.get(index);
+			String url_sim = Constant.BaseUrl + "device/"
+					+ carData.getDevice_id() + "/customer?auth_code="
+					+ app.auth_code;
+			List<NameValuePair> paramSim = new ArrayList<NameValuePair>();
+			paramSim.add(new BasicNameValuePair("cust_id", "0"));
+			new NetThread.putDataThread(handler, url_sim, paramSim, remove_cust)
+					.start();
+		}
+		if (requestCode == 7 && resultCode == 8) {// 修改终端
+			CarData carData = app.carDatas.get(index);
+			Intent intent = new Intent(CarActivity.this,
+					DevicesAddActivity.class);
+			intent.putExtra("car_id", carData.getObj_id());
+			intent.putExtra("isBind", false);
+			intent.putExtra("car_series_id", carData.getCar_series_id());
+			intent.putExtra("car_series", carData.getCar_series());
+			// TODO 传以前终端的值
+			intent.putExtra("old_device_id", carData.getDevice_id());
+			startActivityForResult(intent, 2);
+		}
 		if (resultCode == 1) {
 			// 绑定车辆信息成功
 			carAdapter.notifyDataSetChanged();

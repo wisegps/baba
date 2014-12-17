@@ -232,8 +232,8 @@
                 android:padding="@dimen/small"
                 android:text="一下是爱得沙发上大幅度咖啡馆还是贷款购房好看 " />
 
-            <AutoCompleteTextView
-                android:id="@+id/AC_car_name"
+            <TextView
+                android:id="@+id/car_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/amp1" />

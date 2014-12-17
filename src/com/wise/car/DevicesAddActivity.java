@@ -1,9 +1,17 @@
 package com.wise.car;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
@@ -17,7 +25,12 @@ import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
 import data.CarData;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -50,6 +63,8 @@ public class DevicesAddActivity extends Activity {
 	private static final int get_data = 6;
 	private static final int update_serial = 7;
 
+	private static final int get_far_date = 8;
+	private static final int get_far_pic = 9;
 	ImageView iv_serial;
 	ImageView iv_add;
 	EditText et_serial, et_sim;
@@ -61,12 +76,12 @@ public class DevicesAddActivity extends Activity {
 	// 近景远景图
 	ImageView car_icon_near, car_icon_far;
 	TextView tv_icon_near_share, tv_icon_far_share;
-	AutoCompleteTextView AC_car_name;// 自动补全
+	TextView car_name, car_own_name;
 
 	int car_id;
 	/** true绑定终端，false修改终端 **/
 	boolean isBind;
-	String device_id;
+	String device_id, car_series_id;
 	/** 快速注册 **/
 	boolean fastTrack = false;
 	AppApplication app;
@@ -102,14 +117,14 @@ public class DevicesAddActivity extends Activity {
 		tv_icon_near_share.setOnClickListener(onClickListener);
 		tv_icon_far_share = (TextView) findViewById(R.id.tv_icon_far_share);
 		tv_icon_far_share.setOnClickListener(onClickListener);
-
-		// 自动补全
-		AC_car_name = (AutoCompleteTextView) findViewById(R.id.AC_car_name);
+		car_name = (TextView) findViewById(R.id.car_name);
+		car_own_name = (TextView) findViewById(R.id.car_own_name);
 
 		Intent intent = getIntent();
 		car_id = intent.getIntExtra("car_id", 0);
 		isBind = intent.getBooleanExtra("isBind", true);
 		fastTrack = intent.getBooleanExtra("fastTrack", false);
+		car_series_id = intent.getStringExtra("car_series_id");
 		if (!isBind) {
 			// 接收并现实以前的终端值
 			String old_device_id = intent.getStringExtra("old_device_id");
@@ -125,6 +140,12 @@ public class DevicesAddActivity extends Activity {
 		} else {
 			tv_jump.setVisibility(View.GONE);
 		}
+	}
+
+	private void getDeviceDate() {
+		String url = Constant.BaseUrl + "base/car_series/" + car_series_id
+				+ "/far_pic" + "?auth_code=" + app.auth_code;
+		new NetThread.GetDataThread(handler, url, get_far_date).start();
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -219,9 +240,27 @@ public class DevicesAddActivity extends Activity {
 						// 绑定车辆
 						String url = Constant.BaseUrl + "vehicle/" + car_id
 								+ "/device?auth_code=" + app.auth_code;
-						List<NameValuePair> params = new ArrayList<NameValuePair>();
+						final List<NameValuePair> params = new ArrayList<NameValuePair>();
 						params.add(new BasicNameValuePair("device_id",
 								device_id));
+						if (!isBind) {
+							AlertDialog.Builder builder = new AlertDialog.Builder(
+									DevicesAddActivity.this);
+							builder.setTitle("提示")
+									.setMessage("是否在修改终端的同时将原终端的所有数据转至新终端名下？")
+									.setPositiveButton(
+											"是",
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+													params.add(new BasicNameValuePair(
+															"deal_data", "1"));
+												}
+											}).setNegativeButton("否", null)
+									.show();
+						}
 						new NetThread.putDataThread(handler, url, params,
 								update_car).start();
 					} else {
@@ -256,9 +295,54 @@ public class DevicesAddActivity extends Activity {
 					e.printStackTrace();
 				}
 				break;
+			case get_far_date:
+				jsonPicDate(msg.obj.toString());
+				break;
 			}
 		}
 	};
+
+	private Bitmap getPic(String path) {
+		try {
+			URL url = new URL(path);
+			HttpURLConnection conn;
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(5000);
+			conn.setRequestMethod("GET");
+			if (conn.getResponseCode() == 200) {
+				InputStream inputStream = conn.getInputStream();
+				Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+				return bitmap;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private void jsonPicDate(String result) {
+		try {
+			if (result.equals("")) {
+				return;
+			} else {
+				JSONObject jsonObject = new JSONObject(result);
+				String name = jsonObject.getString("name");
+				if (!name.equals("") || name != null) {
+
+				}
+				JSONArray jsonArray = jsonObject.getJSONArray("obd_far_pic");
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject object = jsonArray.getJSONObject(i);
+					if (name.equals(car_name.getText().toString())) {
+						String urlString = object.getString("small_pic_url");
+						car_icon_far.setImageBitmap(getPic(urlString));
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * 更新内存里的数据
@@ -312,8 +396,13 @@ public class DevicesAddActivity extends Activity {
 				SaveDataOver();
 			} else {
 				JSONObject jsonObject = new JSONObject(result);
+				int custID = jsonObject.getInt("cust_id");
 				String status = jsonObject.getString("status");
-				if (status.equals("0") || status.equals("1")) {
+				if (custID > 0) {
+					Toast.makeText(DevicesAddActivity.this,
+							"该终端已被其他用户绑定，无法再次绑定", Toast.LENGTH_LONG).show();
+					SaveDataOver();
+				} else if (custID == 0 || custID < 0) {
 					String sim = et_sim.getText().toString().trim();
 					device_id = jsonObject.getString("device_id");
 					String url = Constant.BaseUrl + "device/" + device_id
