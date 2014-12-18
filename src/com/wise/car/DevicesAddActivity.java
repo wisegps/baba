@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
@@ -44,6 +45,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.text.StaticLayout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -125,7 +127,9 @@ public class DevicesAddActivity extends Activity {
 
 		// 近景远景图
 		car_icon_near = (ImageView) findViewById(R.id.car_icon_near);
+		car_icon_near.setOnClickListener(onClickListener);
 		car_icon_far = (ImageView) findViewById(R.id.car_icon_far);
+		car_icon_far.setOnClickListener(onClickListener);
 		tv_icon_near_share = (TextView) findViewById(R.id.tv_icon_near_share);
 		tv_icon_near_share.setOnClickListener(onClickListener);
 		tv_icon_far_share = (TextView) findViewById(R.id.tv_icon_far_share);
@@ -168,7 +172,6 @@ public class DevicesAddActivity extends Activity {
 		// car_series_id
 				+ "/near_pic" + "?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url_1, get_near_date).start();
-		Log.e("my_log", "url===>" + url_1);
 		// 远景
 		String url = Constant.BaseUrl + "base/car_series/" + car_series_id
 				+ "/far_pic" + "?auth_code=" + app.auth_code;
@@ -195,9 +198,15 @@ public class DevicesAddActivity extends Activity {
 				new NetThread.GetDataThread(handler, url, get_data).start();
 				break;
 			case R.id.tv_icon_near_share:// TODO 分享近景图
-				picPop(REQUEST_NEAR, R.id.tv_icon_near_share);
+				saveImageSD(nearPicPath, car_icon_near, REQUEST_NEAR);
 				break;
 			case R.id.tv_icon_far_share:// 分享远景图
+				saveImageSD(farPicPath, car_icon_far, REQUEST_FAR);
+				break;
+			case R.id.car_icon_near:
+				picPop(REQUEST_NEAR, R.id.tv_icon_near_share);
+				break;
+			case R.id.car_icon_far:
 				picPop(REQUEST_FAR, R.id.tv_icon_far_share);
 				break;
 			}
@@ -352,9 +361,9 @@ public class DevicesAddActivity extends Activity {
 
 	private void jsonPicDate(String result, int type) {
 		try {
-			
+
 			if (result.equals("") || result == null || result.equals("[]")) {
-			
+
 				return;
 			} else {
 				JSONObject jsonObject = new JSONArray(result).getJSONObject(0);
@@ -562,19 +571,30 @@ public class DevicesAddActivity extends Activity {
 		}
 	};
 
-	private void picPop(final int type, int i) {
+	boolean flag = false;
+
+	private void picPop(final int type, int id) {
 		List<String> items = new ArrayList<String>();
 		items.add("拍照");
 		items.add("从手机相册中选取");
 		final PopView popView = new PopView(this);
-		popView.initView(findViewById(i));
+		popView.initView(findViewById(id));
 		popView.setData(items);
 		popView.SetOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void OnItemClick(int index) {
 				switch (index) {
 				case 0:
+					flag = true;
+					File file = new File(Constant.VehiclePath);
+					if (!file.exists()) {
+						file.mkdirs();// 创建文件夹
+					}
 					Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+					intent1.putExtra(
+							MediaStore.EXTRA_OUTPUT,
+							Uri.fromFile(new File(Constant.VehiclePath
+									+ Constant.TemporaryImage)));
 					startActivityForResult(intent1, type);
 					popView.dismiss();
 					break;
@@ -593,6 +613,9 @@ public class DevicesAddActivity extends Activity {
 		});
 	}
 
+	String nearPicPath = "";
+	String farPicPath = "";
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == 2) {
@@ -602,13 +625,23 @@ public class DevicesAddActivity extends Activity {
 		}
 		if (requestCode == REQUEST_NEAR && resultCode == Activity.RESULT_OK) {
 			if (data != null) {
-				saveImageSD(getPath(data.getData()), car_icon_near,
-						REQUEST_NEAR);
+				if (flag) {
+					nearPicPath = Constant.VehiclePath
+							+ Constant.TemporaryImage;
+				} else {
+					Uri uri = data.getData();
+					nearPicPath = getPath(uri);
+				}
 			}
 		} else if (requestCode == REQUEST_FAR
 				&& resultCode == Activity.RESULT_OK) {
 			if (data != null) {
-				saveImageSD(getPath(data.getData()), car_icon_far, REQUEST_FAR);
+				if (flag) {
+					farPicPath = Constant.VehiclePath + Constant.TemporaryImage;
+				} else {
+					Uri uri = data.getData();
+					farPicPath = getPath(uri);
+				}
 			}
 		}
 	};
@@ -620,10 +653,16 @@ public class DevicesAddActivity extends Activity {
 		int column_index = cursor
 				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 		cursor.moveToFirst();
+		Log.e("my_log", "333==>" + cursor.getString(column_index));
 		return cursor.getString(column_index);
 	}
 
 	private void saveImageSD(String path, ImageView showView, final int type) {
+		if (path == null || path.equals("")) {
+			Toast.makeText(DevicesAddActivity.this, "请选择图片或者拍照上传",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 		// 设置图像的名称和地址
 		final String small_pic = app.cust_id + System.currentTimeMillis()
 				+ "small.png";
@@ -698,11 +737,11 @@ public class DevicesAddActivity extends Activity {
 
 				String url = "";
 				if (type == REQUEST_NEAR) {
-					car_icon_near.setVisibility(View.GONE);
+					// car_icon_near.setVisibility(View.GONE);
 					url = Constant.BaseUrl + "base/car_series/" + car_series_id
 							+ "/near_pic?auth_code=" + app.auth_code;
 				} else {
-					car_icon_far.setVisibility(View.GONE);
+					// car_icon_far.setVisibility(View.GONE);
 					url = Constant.BaseUrl + "base/car_series/" + car_series_id
 							+ "/far_pic?auth_code=" + app.auth_code;
 				}
@@ -713,8 +752,8 @@ public class DevicesAddActivity extends Activity {
 				params.add(new BasicNameValuePair("author", app.cust_name));
 				if (NetThread.postData(url, params) != null
 						|| !NetThread.postData(url, params).equals("")) {
-					Toast.makeText(DevicesAddActivity.this, "上传成功",
-							Toast.LENGTH_SHORT).show();
+					// Toast.makeText(DevicesAddActivity.this, "上传成功",
+					// Toast.LENGTH_SHORT).show();
 				}
 			}
 		}).start();
