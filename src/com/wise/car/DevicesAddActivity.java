@@ -648,38 +648,44 @@ public class DevicesAddActivity extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		System.out.println("requestCode = " + requestCode);
+		System.out.println("resultCode = " + resultCode);
+		System.out.println("flag = " + flag);
 		if (resultCode == 2) {
 			String result = data.getStringExtra("result");
 			et_serial.setText(result);
 			checkSerial();
 		}
-		if (requestCode == REQUEST_NEAR && resultCode == Activity.RESULT_OK) {
-			if (data != null) {
+		if (requestCode == REQUEST_NEAR && resultCode == Activity.RESULT_OK) {			
 				if (flag) {
+					System.out.println("near 拍照");
 					saveImageSD(
 							(Constant.VehiclePath + Constant.TemporaryImage),
 							car_icon_near);
 					flag = false;
 				} else {
-					Uri uri = data.getData();
-					saveImageSD(Uri2Path.getPath(DevicesAddActivity.this, uri),
-							car_icon_near);
+					if (data != null) {
+
+						Uri uri = data.getData();
+						saveImageSD(Uri2Path.getPath(DevicesAddActivity.this, uri),
+								car_icon_near);
+					}
 				}
-			}
 		} else if (requestCode == REQUEST_FAR
 				&& resultCode == Activity.RESULT_OK) {
-			if (data != null) {
+			
 				if (flag) {
 					saveImageSD(
 							(Constant.VehiclePath + Constant.TemporaryImage),
 							car_icon_far);
 					flag = false;
 				} else {
-					Uri uri = data.getData();
-					saveImageSD(Uri2Path.getPath(DevicesAddActivity.this, uri),
-							car_icon_far);
+					if (data != null) {
+						Uri uri = data.getData();
+						saveImageSD(Uri2Path.getPath(DevicesAddActivity.this, uri),
+								car_icon_far);
+					}
 				}
-			}
 		}
 	};
 
@@ -749,6 +755,7 @@ public class DevicesAddActivity extends Activity {
 			}
 		}
 		// 图片显示
+		System.out.println("bitmap = " + bitmap);
 		showView.setImageBitmap(bitmap);
 		new Thread(new Runnable() {
 			@Override
