@@ -167,8 +167,7 @@ public class DevicesAddActivity extends Activity {
 
 	private void getDeviceDate() {
 		// 近景
-		String url_1 = Constant.BaseUrl + "base/car_series/" + "1799"
-		// car_series_id
+		String url_1 = Constant.BaseUrl + "base/car_series/" + car_series_id
 				+ "/near_pic" + "?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url_1, get_near_date).start();
 		// 远景
@@ -197,10 +196,37 @@ public class DevicesAddActivity extends Activity {
 				new NetThread.GetDataThread(handler, url, get_data).start();
 				break;
 			case R.id.tv_icon_near_share:// TODO 分享近景图
-				saveImageSD(nearPicPath, car_icon_near, REQUEST_NEAR);
+				if (oss_url_big.equals("") && oss_url_small.equals("")) {
+					Toast.makeText(DevicesAddActivity.this, "请先选择图片",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				String naerUrl = Constant.BaseUrl + "base/car_series/"
+						+ car_series_id + "/near_pic?auth_code="
+						+ app.auth_code;
+				List<NameValuePair> params1 = new ArrayList<NameValuePair>();
+				params1.add(new BasicNameValuePair("big_pic_url", oss_url_big));
+				params1.add(new BasicNameValuePair("small_pic_url",
+						oss_url_small));
+				params1.add(new BasicNameValuePair("author", app.cust_name));
+				new NetThread.postDataThread(handler, naerUrl, params1,
+						REQUEST_NEAR).start();
 				break;
 			case R.id.tv_icon_far_share:// 分享远景图
-				saveImageSD(farPicPath, car_icon_far, REQUEST_FAR);
+				if (oss_url_big.equals("") && oss_url_small.equals("")) {
+					Toast.makeText(DevicesAddActivity.this, "请先选择图片",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				String farUrl = Constant.BaseUrl + "base/car_series/"
+						+ car_series_id + "/far_pic?auth_code=" + app.auth_code;
+				List<NameValuePair> params2 = new ArrayList<NameValuePair>();
+				params2.add(new BasicNameValuePair("big_pic_url", oss_url_big));
+				params2.add(new BasicNameValuePair("small_pic_url",
+						oss_url_small));
+				params2.add(new BasicNameValuePair("author", app.cust_name));
+				new NetThread.postDataThread(handler, farUrl, params2,
+						REQUEST_FAR).start();
 				break;
 			case R.id.car_icon_near:
 				picPop(REQUEST_NEAR, R.id.tv_icon_near_share);
@@ -335,6 +361,14 @@ public class DevicesAddActivity extends Activity {
 				break;
 			case get_near_date:
 				jsonPicDate(msg.obj.toString(), get_near_date);
+				break;
+			case REQUEST_NEAR:
+				Toast.makeText(DevicesAddActivity.this, "分享成功",
+						Toast.LENGTH_SHORT).show();
+				break;
+			case REQUEST_FAR:
+				Toast.makeText(DevicesAddActivity.this, "分享成功",
+						Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
@@ -612,9 +646,6 @@ public class DevicesAddActivity extends Activity {
 		});
 	}
 
-	String nearPicPath = "";
-	String farPicPath = "";
-
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == 2) {
@@ -624,30 +655,38 @@ public class DevicesAddActivity extends Activity {
 		}
 		if (requestCode == REQUEST_NEAR && resultCode == Activity.RESULT_OK) {
 			if (data != null) {
-
 				if (flag) {
-					nearPicPath = Constant.VehiclePath
-							+ Constant.TemporaryImage;
+					saveImageSD(
+							(Constant.VehiclePath + Constant.TemporaryImage),
+							car_icon_near);
+					flag = false;
 				} else {
 					Uri uri = data.getData();
-					nearPicPath = Uri2Path
-							.getPath(DevicesAddActivity.this, uri);
+					saveImageSD(Uri2Path.getPath(DevicesAddActivity.this, uri),
+							car_icon_near);
 				}
 			}
 		} else if (requestCode == REQUEST_FAR
 				&& resultCode == Activity.RESULT_OK) {
 			if (data != null) {
 				if (flag) {
-					farPicPath = Constant.VehiclePath + Constant.TemporaryImage;
+					saveImageSD(
+							(Constant.VehiclePath + Constant.TemporaryImage),
+							car_icon_far);
+					flag = false;
 				} else {
 					Uri uri = data.getData();
-					farPicPath = Uri2Path.getPath(DevicesAddActivity.this, uri);
+					saveImageSD(Uri2Path.getPath(DevicesAddActivity.this, uri),
+							car_icon_far);
 				}
 			}
 		}
 	};
 
-	private void saveImageSD(String path, ImageView showView, final int type) {
+	String oss_url_small = "";
+	String oss_url_big = "";
+
+	private void saveImageSD(String path, ImageView showView) {
 		if (path == null || path.equals("")) {
 			Toast.makeText(DevicesAddActivity.this, "请选择图片或者拍照上传",
 					Toast.LENGTH_SHORT).show();
@@ -658,8 +697,8 @@ public class DevicesAddActivity extends Activity {
 				+ "small.png";
 		final String big_pic = app.cust_id + System.currentTimeMillis()
 				+ "big.png";
-		final String oss_url_small = Constant.oss_url + small_pic;
-		final String oss_url_big = Constant.oss_url + big_pic;
+		oss_url_small = Constant.oss_url + small_pic;
+		oss_url_big = Constant.oss_url + big_pic;
 		// 判断文件夹是否为空
 		File filePath = new File(Constant.VehiclePath);
 		if (!filePath.exists()) {
@@ -724,30 +763,9 @@ public class DevicesAddActivity extends Activity {
 						big_pic, "image/jpg", bigFile, Constant.oss_accessId,
 						Constant.oss_accessKey);
 				bigTask.getResult();
-
-				String url = "";
-				if (type == REQUEST_NEAR) {
-					// car_icon_near.setVisibility(View.GONE);
-					url = Constant.BaseUrl + "base/car_series/" + car_series_id
-							+ "/near_pic?auth_code=" + app.auth_code;
-				} else {
-					// car_icon_far.setVisibility(View.GONE);
-					url = Constant.BaseUrl + "base/car_series/" + car_series_id
-							+ "/far_pic?auth_code=" + app.auth_code;
-				}
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("big_pic_url", oss_url_big));
-				params.add(new BasicNameValuePair("small_pic_url",
-						oss_url_small));
-				params.add(new BasicNameValuePair("author", app.cust_name));
-				if (NetThread.postData(url, params) != null
-						|| !NetThread.postData(url, params).equals("")) {
-					// Toast.makeText(DevicesAddActivity.this, "上传成功",
-					// Toast.LENGTH_SHORT).show();
-				}
 			}
 		}).start();
-	};
+	}
 
 	@Override
 	protected void onResume() {
