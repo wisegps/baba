@@ -263,16 +263,17 @@
                         android:layout_width="fill_parent"
                         android:layout_height="0dip"
                         android:layout_weight="1"
+                        android:adjustViewBounds="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/amp7" />
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_launcher" />
 
                     <TextView
                         android:id="@+id/tv_icon_near_share"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="我要分享"
-                        android:visibility="gone" />
+                        android:text="我要分享" />
                 </LinearLayout>
 
                 <View
@@ -298,15 +299,17 @@
                         android:layout_width="fill_parent"
                         android:layout_height="0dip"
                         android:layout_weight="1"
-                        android:contentDescription="@string/app_name" />
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/app_name"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_launcher" />
 
                     <TextView
                         android:id="@+id/tv_icon_far_share"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="我要分享"
-                        android:visibility="gone" />
+                        android:text="我要分享" />
                 </LinearLayout>
             </LinearLayout>
 
