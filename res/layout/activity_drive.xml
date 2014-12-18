@@ -44,6 +44,10 @@
 	         android:textSize="@dimen/bt"
 	         android:background="@drawable/bg_green"
 	         android:text="驾驶排行"/>
+	    <View
+            android:layout_width="0.5dp"
+            android:layout_height="fill_parent"
+            android:background="@color/white" />
 	    <Button
 	         android:id="@+id/bt_drive_travel"
 	         android:layout_width="fill_parent"

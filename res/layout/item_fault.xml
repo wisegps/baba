@@ -197,25 +197,26 @@
             <LinearLayout 
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical"
+	            android:layout_marginBottom="5dp"
                 android:orientation="horizontal">                
 	            <TextView
 	                android:id="@+id/tv_oil"
 	                android:layout_width="fill_parent"
 	                android:layout_height="wrap_content"
-	                android:layout_marginBottom="5dp"
-	                android:gravity="center_horizontal"
 	                android:text="本月油耗"
 	                android:textColor="@color/color_navy"
+	                android:layout_marginLeft="20dp"
 	                android:textSize="@dimen/content" />
 	            <ImageView 
 	                android:id="@+id/iv_update_oil"
-	                android:layout_width="20dp"
-	                android:layout_height="20dp"	                
-	                android:src="@drawable/body_icon_help"/>
+	                android:layout_width="25dp"
+	                android:layout_height="15dp"
+	                android:paddingLeft="5dp"
+	                android:paddingRight="5dp"	                
+	                android:src="@drawable/correct_oil"/>
             </LinearLayout>            
             <LinearLayout
-                android:layout_below="@id/tv_oil"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"

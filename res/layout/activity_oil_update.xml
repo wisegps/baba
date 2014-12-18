@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -44,24 +45,13 @@
                 android:padding="@dimen/small"
                 android:text="对于大多数车型而言，系统会根据新车数据对油耗进行自动修正，但是如果您发现您的油耗还是不太准确，可以通过一下两种方式进行油耗修正。"
                 android:textSize="@dimen/content" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@color/gay_line" />
-
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/margins"
+	    		android:background="@color/gray_light"
                 android:text="1.车上有行车电脑，可以通过行程进行油耗修正"
                 android:textSize="@dimen/content" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@color/gay_line" />
-
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -82,24 +72,13 @@
                     android:background="@drawable/bg_adress"
                     android:text="开始修正" />
             </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@color/gay_line" />
-
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/margins"
+	    		android:background="@color/gray_light"
                 android:text="2.车上没有行车电脑，通过两次加油对油耗进行修正"
                 android:textSize="@dimen/content" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@color/gay_line" />
-
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -111,7 +90,7 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="第一次加油以后，请点击以下按钮:"
+                    android:text="第一次加满油以后，请点击以下按钮:"
                     android:textSize="@dimen/content" />
 
                 <Button
@@ -126,7 +105,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margins"
-                    android:text="第二次加油以后，请录入加油量，并点击以下按钮:"
+                    android:text="第二次加满油以后，请录入加油量，并点击以下按钮:"
                     android:textSize="@dimen/content" />
 
                 <EditText
