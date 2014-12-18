@@ -14,24 +14,22 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Blur;
 import pubclas.Constant;
 import pubclas.JsonData;
 import pubclas.NetThread;
+import pubclas.Uri2Path;
 
 import com.aliyun.android.oss.task.PutObjectTask;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
-
 import customView.PopView;
 import customView.WaitLinearLayout;
 import customView.PopView.OnItemClickListener;
 import customView.WaitLinearLayout.OnFinishListener;
 import data.CarData;
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -44,6 +42,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.content.CursorLoader;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -602,6 +601,7 @@ public class DevicesAddActivity extends Activity {
 		}
 		if (requestCode == REQUEST_NEAR && resultCode == Activity.RESULT_OK) {
 			if (data != null) {
+				System.out.println("getPath(data.getData() = " + getPath(data.getData()));
 				saveImageSD(getPath(data.getData()), car_icon_near,
 						REQUEST_NEAR);
 			}
@@ -614,7 +614,7 @@ public class DevicesAddActivity extends Activity {
 	};
 
 	/** 把uri 转换成 SD卡路径 **/
-	public String getPath(Uri uri) {
+	public String getPath1(Uri uri) {
 		String[] projection = { MediaStore.Images.Media.DATA };
 		Cursor cursor = managedQuery(uri, projection, null, null, null);
 		int column_index = cursor
@@ -622,7 +622,11 @@ public class DevicesAddActivity extends Activity {
 		cursor.moveToFirst();
 		return cursor.getString(column_index);
 	}
-
+	
+	public String getPath(Uri selectedImage) {
+		return Uri2Path.getPath(getApplicationContext(), selectedImage);
+	}
+	
 	private void saveImageSD(String path, ImageView showView, final int type) {
 		// 设置图像的名称和地址
 		final String small_pic = app.cust_id + System.currentTimeMillis()

@@ -136,6 +136,8 @@ public class CarAddActivity extends Activity {
 							DevicesAddActivity.class);
 					intent.putExtra("fastTrack", true);
 					intent.putExtra("car_id", car_id);
+					intent.putExtra("car_series_id",car_series_id);
+					intent.putExtra("car_series", car_series);
 					startActivity(intent);
 				} else {
 					carNewData.setObj_id(car_id);

@@ -181,8 +181,9 @@ public class FaultDetectionActivity extends Activity {
 			} else {
 				try {
 					String Device_id = app.carDatas.get(index).getDevice_id();
-					Intent intent2 = new Intent(FaultDetectionActivity.this,
-							DevicesAddActivity.class);
+					Intent intent2 = new Intent(FaultDetectionActivity.this,DevicesAddActivity.class);
+					intent2.putExtra("car_series_id",app.carDatas.get(index).getCar_series_id());
+					intent2.putExtra("car_series", app.carDatas.get(index).getCar_series());
 					Intent intent = new Intent(FaultDetectionActivity.this,
 							DyActivity.class);
 					intent.putExtra("device_id", Device_id);
@@ -980,6 +981,8 @@ public class FaultDetectionActivity extends Activity {
 				Intent intent = new Intent(FaultDetectionActivity.this,
 						DevicesAddActivity.class);
 				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
+				intent.putExtra("car_series_id",app.carDatas.get(index).getCar_series_id());
+				intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
 				startActivityForResult(intent, 2);
 				return;
 			}

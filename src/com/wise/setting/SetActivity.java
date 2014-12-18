@@ -182,8 +182,6 @@ public class SetActivity extends Activity implements TagAliasCallback {
 			case R.id.iv_eweima:
 				//TODO 打开二维码
 				openErWeiMa();
-				startActivityForResult(new Intent(SetActivity.this,
-						SelectCityActivity.class), 2);
 				break;
 			}
 		}

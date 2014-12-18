@@ -548,8 +548,9 @@ public class FaultActivity extends FragmentActivity {
 					if (Device_id == null || Device_id.equals("")) {
 						Intent intent = new Intent(FaultActivity.this,
 								DevicesAddActivity.class);
-						intent.putExtra("car_id", app.carDatas.get(index)
-								.getObj_id());
+						intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
+						intent.putExtra("car_series_id",app.carDatas.get(index).getCar_series_id());
+						intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
 						startActivityForResult(intent, 2);
 					} else {
 						Intent intent = new Intent(FaultActivity.this,
@@ -565,8 +566,9 @@ public class FaultActivity extends FragmentActivity {
 					if (Device_id == null || Device_id.equals("")) {
 						Intent intent = new Intent(FaultActivity.this,
 								DevicesAddActivity.class);
-						intent.putExtra("car_id", app.carDatas.get(index)
-								.getObj_id());
+						intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
+						intent.putExtra("car_series_id",app.carDatas.get(index).getCar_series_id());
+						intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
 						startActivityForResult(intent, 2);
 					} else {
 						Intent intent = new Intent(FaultActivity.this,
@@ -632,9 +634,10 @@ public class FaultActivity extends FragmentActivity {
 		if (app.carDatas != null && app.carDatas.size() != 0) {
 			String Device_id = app.carDatas.get(index).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
-				Intent intent = new Intent(FaultActivity.this,
-						DevicesAddActivity.class);
+				Intent intent = new Intent(FaultActivity.this,DevicesAddActivity.class);
 				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
+				intent.putExtra("car_series_id",app.carDatas.get(index).getCar_series_id());
+				intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
 				startActivityForResult(intent, 2);
 			} else {
 				Intent intent = new Intent(FaultActivity.this,
