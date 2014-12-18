@@ -9,11 +9,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+
 import pubclas.Blur;
 import pubclas.Constant;
 import pubclas.JsonData;
@@ -43,6 +44,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
+
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -124,7 +126,9 @@ public class DevicesAddActivity extends Activity {
 
 		// 近景远景图
 		car_icon_near = (ImageView) findViewById(R.id.car_icon_near);
+		car_icon_near.setOnClickListener(onClickListener);
 		car_icon_far = (ImageView) findViewById(R.id.car_icon_far);
+		car_icon_far.setOnClickListener(onClickListener);
 		tv_icon_near_share = (TextView) findViewById(R.id.tv_icon_near_share);
 		tv_icon_near_share.setOnClickListener(onClickListener);
 		tv_icon_far_share = (TextView) findViewById(R.id.tv_icon_far_share);
@@ -163,11 +167,9 @@ public class DevicesAddActivity extends Activity {
 
 	private void getDeviceDate() {
 		// 近景
-		String url_1 = Constant.BaseUrl + "base/car_series/" + "1799"
-		// car_series_id
+		String url_1 = Constant.BaseUrl + "base/car_series/" + car_series_id
 				+ "/near_pic" + "?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url_1, get_near_date).start();
-		Log.e("my_log", "url===>" + url_1);
 		// 远景
 		String url = Constant.BaseUrl + "base/car_series/" + car_series_id
 				+ "/far_pic" + "?auth_code=" + app.auth_code;
@@ -194,9 +196,42 @@ public class DevicesAddActivity extends Activity {
 				new NetThread.GetDataThread(handler, url, get_data).start();
 				break;
 			case R.id.tv_icon_near_share:// TODO 分享近景图
-				picPop(REQUEST_NEAR, R.id.tv_icon_near_share);
+				if (oss_url_big.equals("") && oss_url_small.equals("")) {
+					Toast.makeText(DevicesAddActivity.this, "请先选择图片",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				String naerUrl = Constant.BaseUrl + "base/car_series/"
+						+ car_series_id + "/near_pic?auth_code="
+						+ app.auth_code;
+				List<NameValuePair> params1 = new ArrayList<NameValuePair>();
+				params1.add(new BasicNameValuePair("big_pic_url", oss_url_big));
+				params1.add(new BasicNameValuePair("small_pic_url",
+						oss_url_small));
+				params1.add(new BasicNameValuePair("author", app.cust_name));
+				new NetThread.postDataThread(handler, naerUrl, params1,
+						REQUEST_NEAR).start();
 				break;
 			case R.id.tv_icon_far_share:// 分享远景图
+				if (oss_url_big.equals("") && oss_url_small.equals("")) {
+					Toast.makeText(DevicesAddActivity.this, "请先选择图片",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				String farUrl = Constant.BaseUrl + "base/car_series/"
+						+ car_series_id + "/far_pic?auth_code=" + app.auth_code;
+				List<NameValuePair> params2 = new ArrayList<NameValuePair>();
+				params2.add(new BasicNameValuePair("big_pic_url", oss_url_big));
+				params2.add(new BasicNameValuePair("small_pic_url",
+						oss_url_small));
+				params2.add(new BasicNameValuePair("author", app.cust_name));
+				new NetThread.postDataThread(handler, farUrl, params2,
+						REQUEST_FAR).start();
+				break;
+			case R.id.car_icon_near:
+				picPop(REQUEST_NEAR, R.id.tv_icon_near_share);
+				break;
+			case R.id.car_icon_far:
 				picPop(REQUEST_FAR, R.id.tv_icon_far_share);
 				break;
 			}
@@ -317,7 +352,7 @@ public class DevicesAddActivity extends Activity {
 					String old_serial = json.getString("serial");
 					et_serial.setText(old_serial);
 					et_sim.setText(sim_card);
-				} catch (JSONException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				break;
@@ -326,6 +361,14 @@ public class DevicesAddActivity extends Activity {
 				break;
 			case get_near_date:
 				jsonPicDate(msg.obj.toString(), get_near_date);
+				break;
+			case REQUEST_NEAR:
+				Toast.makeText(DevicesAddActivity.this, "分享成功",
+						Toast.LENGTH_SHORT).show();
+				break;
+			case REQUEST_FAR:
+				Toast.makeText(DevicesAddActivity.this, "分享成功",
+						Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
@@ -351,9 +394,9 @@ public class DevicesAddActivity extends Activity {
 
 	private void jsonPicDate(String result, int type) {
 		try {
-			
+
 			if (result.equals("") || result == null || result.equals("[]")) {
-			
+
 				return;
 			} else {
 				JSONObject jsonObject = new JSONArray(result).getJSONObject(0);
@@ -561,19 +604,30 @@ public class DevicesAddActivity extends Activity {
 		}
 	};
 
-	private void picPop(final int type, int i) {
+	boolean flag = false;
+
+	private void picPop(final int type, int id) {
 		List<String> items = new ArrayList<String>();
 		items.add("拍照");
 		items.add("从手机相册中选取");
 		final PopView popView = new PopView(this);
-		popView.initView(findViewById(i));
+		popView.initView(findViewById(id));
 		popView.setData(items);
 		popView.SetOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void OnItemClick(int index) {
 				switch (index) {
 				case 0:
+					flag = true;
+					File file = new File(Constant.VehiclePath);
+					if (!file.exists()) {
+						file.mkdirs();// 创建文件夹
+					}
 					Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+					intent1.putExtra(
+							MediaStore.EXTRA_OUTPUT,
+							Uri.fromFile(new File(Constant.VehiclePath
+									+ Constant.TemporaryImage)));
 					startActivityForResult(intent1, type);
 					popView.dismiss();
 					break;
@@ -601,40 +655,50 @@ public class DevicesAddActivity extends Activity {
 		}
 		if (requestCode == REQUEST_NEAR && resultCode == Activity.RESULT_OK) {
 			if (data != null) {
-				System.out.println("getPath(data.getData() = " + getPath(data.getData()));
-				saveImageSD(getPath(data.getData()), car_icon_near,
-						REQUEST_NEAR);
+				if (flag) {
+					saveImageSD(
+							(Constant.VehiclePath + Constant.TemporaryImage),
+							car_icon_near);
+					flag = false;
+				} else {
+					Uri uri = data.getData();
+					saveImageSD(Uri2Path.getPath(DevicesAddActivity.this, uri),
+							car_icon_near);
+				}
 			}
 		} else if (requestCode == REQUEST_FAR
 				&& resultCode == Activity.RESULT_OK) {
 			if (data != null) {
-				saveImageSD(getPath(data.getData()), car_icon_far, REQUEST_FAR);
+				if (flag) {
+					saveImageSD(
+							(Constant.VehiclePath + Constant.TemporaryImage),
+							car_icon_far);
+					flag = false;
+				} else {
+					Uri uri = data.getData();
+					saveImageSD(Uri2Path.getPath(DevicesAddActivity.this, uri),
+							car_icon_far);
+				}
 			}
 		}
 	};
 
-	/** 把uri 转换成 SD卡路径 **/
-	public String getPath1(Uri uri) {
-		String[] projection = { MediaStore.Images.Media.DATA };
-		Cursor cursor = managedQuery(uri, projection, null, null, null);
-		int column_index = cursor
-				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		cursor.moveToFirst();
-		return cursor.getString(column_index);
-	}
-	
-	public String getPath(Uri selectedImage) {
-		return Uri2Path.getPath(getApplicationContext(), selectedImage);
-	}
-	
-	private void saveImageSD(String path, ImageView showView, final int type) {
+	String oss_url_small = "";
+	String oss_url_big = "";
+
+	private void saveImageSD(String path, ImageView showView) {
+		if (path == null || path.equals("")) {
+			Toast.makeText(DevicesAddActivity.this, "请选择图片或者拍照上传",
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
 		// 设置图像的名称和地址
 		final String small_pic = app.cust_id + System.currentTimeMillis()
 				+ "small.png";
 		final String big_pic = app.cust_id + System.currentTimeMillis()
 				+ "big.png";
-		final String oss_url_small = Constant.oss_url + small_pic;
-		final String oss_url_big = Constant.oss_url + big_pic;
+		oss_url_small = Constant.oss_url + small_pic;
+		oss_url_big = Constant.oss_url + big_pic;
 		// 判断文件夹是否为空
 		File filePath = new File(Constant.VehiclePath);
 		if (!filePath.exists()) {
@@ -699,27 +763,6 @@ public class DevicesAddActivity extends Activity {
 						big_pic, "image/jpg", bigFile, Constant.oss_accessId,
 						Constant.oss_accessKey);
 				bigTask.getResult();
-
-				String url = "";
-				if (type == REQUEST_NEAR) {
-					car_icon_near.setVisibility(View.GONE);
-					url = Constant.BaseUrl + "base/car_series/" + car_series_id
-							+ "/near_pic?auth_code=" + app.auth_code;
-				} else {
-					car_icon_far.setVisibility(View.GONE);
-					url = Constant.BaseUrl + "base/car_series/" + car_series_id
-							+ "/far_pic?auth_code=" + app.auth_code;
-				}
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("big_pic_url", oss_url_big));
-				params.add(new BasicNameValuePair("small_pic_url",
-						oss_url_small));
-				params.add(new BasicNameValuePair("author", app.cust_name));
-				if (NetThread.postData(url, params) != null
-						|| !NetThread.postData(url, params).equals("")) {
-					Toast.makeText(DevicesAddActivity.this, "上传成功",
-							Toast.LENGTH_SHORT).show();
-				}
 			}
 		}).start();
 	}
