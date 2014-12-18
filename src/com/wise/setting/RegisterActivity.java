@@ -38,8 +38,8 @@ import android.widget.Toast;
  */
 public class RegisterActivity extends Activity {
 	private static final int exists = 1;
-	
-	TextView tv_title,tv_note;
+
+	TextView tv_title, tv_note;
 	EditText et_account;
 	boolean isPhone = true;
 	String account;
@@ -49,18 +49,21 @@ public class RegisterActivity extends Activity {
 	int mark = 0;
 	String platform = "";
 	boolean fastTrack = false;
-	
+	// 终端验证
+	boolean remove = false;
+	boolean device_update = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		ManageActivity.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_register);
-		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
+		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		tv_title = (TextView)findViewById(R.id.tv_title);
-		tv_note = (TextView)findViewById(R.id.tv_note);
-		TextView tv_note = (TextView)findViewById(R.id.tv_note);
+		tv_title = (TextView) findViewById(R.id.tv_title);
+		tv_note = (TextView) findViewById(R.id.tv_note);
+		TextView tv_note = (TextView) findViewById(R.id.tv_note);
 		Button bt_register = (Button) findViewById(R.id.bt_register);
 		bt_register.setOnClickListener(onClickListener);
 		et_account = (EditText) findViewById(R.id.et_account);
@@ -68,21 +71,33 @@ public class RegisterActivity extends Activity {
 		mark = intent.getIntExtra("mark", 0);
 		platform = intent.getStringExtra("platform");
 		fastTrack = intent.getBooleanExtra("fastTrack", false);
-		if(mark == 0 || mark == 2){
+
+		// 终端验证
+		remove = intent.getBooleanExtra("remove", false);
+		device_update = intent.getBooleanExtra("device_update", false);
+		if (mark == 0 || mark == 2) {
 			tv_title.setText("注册");
 			bt_register.setText("注册");
 			tv_note.setVisibility(View.VISIBLE);
-		}else if(mark == 1){
-			tv_title.setText("忘记密码");
-			bt_register.setText("忘记密码");
+		} else if (mark == 1) {
+			if (remove) {
+				tv_title.setText("解除绑定");
+				bt_register.setText("解除绑定");
+			} else if (device_update) {
+				tv_title.setText("修改终端");
+				bt_register.setText("修改终端");
+			} else {
+				tv_title.setText("忘记密码");
+				bt_register.setText("忘记密码");
+			}
 			tv_note.setVisibility(View.GONE);
-		}else if(mark == 3){
+		} else if (mark == 3) {
 			tv_title.setText("修改手机");
 			bt_register.setText("下一步");
 			tv_note.setVisibility(View.GONE);
 			et_account.setText(intent.getStringExtra("phone"));
 			et_account.setHint("请输入要修改的手机号码");
-		}else if(mark == 4){
+		} else if (mark == 4) {
 			tv_title.setText("修改邮箱");
 			bt_register.setText("下一步");
 			tv_note.setVisibility(View.GONE);
@@ -97,13 +112,13 @@ public class RegisterActivity extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.bt_register:
-				if(mark == 3){
+				if (mark == 3) {
 					RegisterPhone();
-				}else if(mark == 4){
+				} else if (mark == 4) {
 					RegisterEmail();
-				}else{
-					Register();	
-				}			
+				} else {
+					Register();
+				}
 				break;
 			case R.id.iv_back:
 				finish();
@@ -111,8 +126,8 @@ public class RegisterActivity extends Activity {
 			}
 		}
 	};
-	
-	Handler handler = new Handler(){
+
+	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
@@ -124,37 +139,41 @@ public class RegisterActivity extends Activity {
 			default:
 				break;
 			}
-		}		
+		}
 	};
-	
-	private void RegisterPhone(){
+
+	private void RegisterPhone() {
 		account = et_account.getText().toString().trim();
 		String url = Constant.BaseUrl + "exists?query_type=6&value=" + account;
 		if (account.equals("")) {
-			Toast.makeText(RegisterActivity.this, "请填写手机号码",Toast.LENGTH_SHORT).show();
+			Toast.makeText(RegisterActivity.this, "请填写手机号码", Toast.LENGTH_SHORT)
+					.show();
 		} else if (account.length() == 11 && isNumeric(account)) {
 			isPhone = true;
-			new Thread(new NetThread.GetDataThread(handler, url, exists)).start();
-		}else{
+			new Thread(new NetThread.GetDataThread(handler, url, exists))
+					.start();
+		} else {
 			Toast.makeText(RegisterActivity.this, "您手机号码格式不正确",
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-	private void RegisterEmail(){
+
+	private void RegisterEmail() {
 		account = et_account.getText().toString().trim();
 		String url = Constant.BaseUrl + "exists?query_type=6&value=" + account;
 		if (account.equals("")) {
-			Toast.makeText(RegisterActivity.this, "请填写邮箱",
-					Toast.LENGTH_SHORT).show();
-		} else if(isEmail(account)){
+			Toast.makeText(RegisterActivity.this, "请填写邮箱", Toast.LENGTH_SHORT)
+					.show();
+		} else if (isEmail(account)) {
 			isPhone = false;
-			new Thread(new NetThread.GetDataThread(handler, url, exists)).start();
-		}else{
+			new Thread(new NetThread.GetDataThread(handler, url, exists))
+					.start();
+		} else {
 			Toast.makeText(RegisterActivity.this, "您输入的邮箱格式不正确",
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-	
+
 	private void Register() {
 		account = et_account.getText().toString().trim();
 		String url = Constant.BaseUrl + "exists?query_type=6&value=" + account;
@@ -163,79 +182,103 @@ public class RegisterActivity extends Activity {
 					Toast.LENGTH_SHORT).show();
 		} else if (account.length() == 11 && isNumeric(account)) {
 			isPhone = true;
-			new Thread(new NetThread.GetDataThread(handler, url, exists)).start();
-		}else if(isEmail(account)){
+			new Thread(new NetThread.GetDataThread(handler, url, exists))
+					.start();
+		} else if (isEmail(account)) {
 			isPhone = false;
-			new Thread(new NetThread.GetDataThread(handler, url, exists)).start();
-		}else{
+			new Thread(new NetThread.GetDataThread(handler, url, exists))
+					.start();
+		} else {
 			Toast.makeText(RegisterActivity.this, "您输入的账号不正确",
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-	private void jsonExists(String result){
+
+	private void jsonExists(String result) {
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			boolean isExist = jsonObject.getBoolean("exist");
-			if(isExist){//true ,账号已存在
-				if(mark == 0){
-					Toast.makeText(RegisterActivity.this, "该账号已注册，请登录", Toast.LENGTH_SHORT).show();
-				}else if(mark == 1){//重置密码
-					AlertDialog.Builder dialog =new AlertDialog.Builder(RegisterActivity.this);
-					if(isPhone){
-						dialog.setTitle("确认");  
-						dialog.setMessage("我们将发送验证码短信到您的手机，请尽快查收\n" + account); 
-					}else{
-						dialog.setTitle("确认");  
-						dialog.setMessage("我们将发送验证码到您的邮箱，请尽快查收\n" + account); 
-					}
-					dialog.setPositiveButton("好", new DialogInterface.OnClickListener() {						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Intent intent = new Intent(RegisterActivity.this,CaptchaActivity.class);
-							intent.putExtra("account", account);
-							intent.putExtra("isPhone", isPhone);
-							intent.putExtra("mark", mark);	
-							startActivityForResult(intent, 2);
-						}
-					}).setNegativeButton("取消", null)
-					.show(); 
-				}else if(mark == 2){
-					Toast.makeText(RegisterActivity.this, "该账号已注册，不能重复注册", Toast.LENGTH_SHORT).show();
-				}else if(mark == 3){
-					Toast.makeText(RegisterActivity.this, "该手机号码已注册，请重新输入", Toast.LENGTH_SHORT).show();
-				}else if(mark == 4){
-					Toast.makeText(RegisterActivity.this, "该邮箱已注册，请重新输入", Toast.LENGTH_SHORT).show();
-				}
-			}else{//false,可以注册
-				if(mark == 0 || mark == 2){
-					AlertDialog.Builder dialog = new AlertDialog.Builder(RegisterActivity.this);    
-					if(isPhone){
-						dialog.setTitle("确认手机账号");  
-						dialog.setMessage("我们将发送验证码短信到您的手机，请尽快查收\n" + account);  
-					}else{
-						dialog.setTitle("确认邮箱账号");  
+			if (isExist) {// true ,账号已存在
+				if (mark == 0) {
+					Toast.makeText(RegisterActivity.this, "该账号已注册，请登录",
+							Toast.LENGTH_SHORT).show();
+				} else if (mark == 1) {// 重置密码
+					AlertDialog.Builder dialog = new AlertDialog.Builder(
+							RegisterActivity.this);
+					if (isPhone) {
+						dialog.setTitle("确认");
+						dialog.setMessage("我们将发送验证码短信到您的手机，请尽快查收\n" + account);
+					} else {
+						dialog.setTitle("确认");
 						dialog.setMessage("我们将发送验证码到您的邮箱，请尽快查收\n" + account);
 					}
-					dialog.setPositiveButton("好", new DialogInterface.OnClickListener() {						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Intent intent = new Intent(RegisterActivity.this,CaptchaActivity.class);
-							intent.putExtra("account", account);
-							intent.putExtra("isPhone", isPhone);
-							intent.putExtra("mark", mark);							
-							intent.putExtra("platform", platform);							
-							intent.putExtra("fastTrack", fastTrack);						
-							startActivityForResult(intent, 2);
-						}
-					}).setNegativeButton("取消", null)
-					.show(); 
-				}else if(mark == 1){//没有账号
-					Toast.makeText(RegisterActivity.this, "该账号不存在，请重新输入", Toast.LENGTH_SHORT).show();
-				}else if(mark == 3 ||mark == 4){
-					Intent intent = new Intent(RegisterActivity.this,CaptchaActivity.class);
+					dialog.setPositiveButton("好",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Intent intent = new Intent(
+											RegisterActivity.this,
+											CaptchaActivity.class);
+									if (remove) {
+										intent.putExtra("remove", remove);
+									}
+									if (device_update) {
+										intent.putExtra("device_update",
+												device_update);
+									}
+									intent.putExtra("account", account);
+									intent.putExtra("isPhone", isPhone);
+									intent.putExtra("mark", mark);
+									startActivityForResult(intent, 2);
+								}
+							}).setNegativeButton("取消", null).show();
+				} else if (mark == 2) {
+					Toast.makeText(RegisterActivity.this, "该账号已注册，不能重复注册",
+							Toast.LENGTH_SHORT).show();
+				} else if (mark == 3) {
+					Toast.makeText(RegisterActivity.this, "该手机号码已注册，请重新输入",
+							Toast.LENGTH_SHORT).show();
+				} else if (mark == 4) {
+					Toast.makeText(RegisterActivity.this, "该邮箱已注册，请重新输入",
+							Toast.LENGTH_SHORT).show();
+				}
+			} else {// false,可以注册
+				if (mark == 0 || mark == 2) {
+					AlertDialog.Builder dialog = new AlertDialog.Builder(
+							RegisterActivity.this);
+					if (isPhone) {
+						dialog.setTitle("确认手机账号");
+						dialog.setMessage("我们将发送验证码短信到您的手机，请尽快查收\n" + account);
+					} else {
+						dialog.setTitle("确认邮箱账号");
+						dialog.setMessage("我们将发送验证码到您的邮箱，请尽快查收\n" + account);
+					}
+					dialog.setPositiveButton("好",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Intent intent = new Intent(
+											RegisterActivity.this,
+											CaptchaActivity.class);
+									intent.putExtra("account", account);
+									intent.putExtra("isPhone", isPhone);
+									intent.putExtra("mark", mark);
+									intent.putExtra("platform", platform);
+									intent.putExtra("fastTrack", fastTrack);
+									startActivityForResult(intent, 2);
+								}
+							}).setNegativeButton("取消", null).show();
+				} else if (mark == 1) {// 没有账号
+					Toast.makeText(RegisterActivity.this, "该账号不存在，请重新输入",
+							Toast.LENGTH_SHORT).show();
+				} else if (mark == 3 || mark == 4) {
+					Intent intent = new Intent(RegisterActivity.this,
+							CaptchaActivity.class);
 					intent.putExtra("account", account);
 					intent.putExtra("isPhone", isPhone);
-					intent.putExtra("mark", mark);	
+					intent.putExtra("mark", mark);
 					startActivityForResult(intent, 1);
 				}
 			}
@@ -243,40 +286,51 @@ public class RegisterActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
+
 	public static boolean isNumeric(String str) {
 		Pattern pattern = Pattern.compile("[0-9]*");
 		return pattern.matcher(str).matches();
 	}
-	public static boolean isEmail(String str){
-		Pattern pattern = Pattern.compile("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
+
+	public static boolean isEmail(String str) {
+		Pattern pattern = Pattern
+				.compile("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
 		return pattern.matcher(str).matches();
 	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (resultCode) {
 		case 2:
-			setResult(2,data);
+			setResult(2, data);
 			finish();
 			break;
-
+		case 5:
+			setResult(6);
+			finish();
+		case 7:
+			setResult(8);
+			finish();
 		default:
 			break;
 		}
 	}
-	
-	private void setNote(){
+
+	private void setNote() {
 		SpannableString sp = new SpannableString("点击上面的注册按钮，即表示同意《叭叭软件许可及服务条款》");
 		sp.setSpan(new URLSpan("http://api.bibibaba.cn/help/fwtk"), 16, 27,
-		Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+				Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		tv_note.setText(sp);
 		tv_note.setMovementMethod(LinkMovementMethod.getInstance());
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		MobclickAgent.onResume(this);
 	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();

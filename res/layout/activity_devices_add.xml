@@ -108,8 +108,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@id/iv_serial"
-                        android:inputType="phone"
                         android:background="@null"
+                        android:inputType="phone"
                         android:textColor="@color/navy" />
                 </RelativeLayout>
             </LinearLayout>
@@ -145,7 +145,7 @@
                     android:background="@null"
                     android:inputType="phone"
                     android:maxLength="11"
-                    android:textColor="@color/navy"/>
+                    android:textColor="@color/navy" />
             </LinearLayout>
 
             <View
@@ -187,8 +187,7 @@
     <RelativeLayout
         android:id="@+id/rl_wait"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@id/ll_bottom"
+        android:layout_height="wrap_content"
         android:layout_below="@id/ll_top"
         android:layout_centerInParent="true"
         android:visibility="gone" >
@@ -215,5 +214,114 @@
                 android:textSize="@dimen/content" />
         </LinearLayout>
     </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/ll_bottom"
+        android:layout_below="@id/rl_wait" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/small"
+                android:text="一下是爱得沙发上大幅度咖啡馆还是贷款购房好看 " />
+
+            <TextView
+                android:id="@+id/car_name"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/amp1" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_marginTop="5dip"
+                android:layout_weight="1"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="0dip"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="近景图"
+                        android:textSize="@dimen/content" />
+
+                    <ImageView
+                        android:id="@+id/car_icon_near"
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dip"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/app_name"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_launcher" />
+
+                    <TextView
+                        android:id="@+id/tv_icon_near_share"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="我要分享" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dip"
+                    android:layout_height="fill_parent"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="0dip"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="远景图"
+                        android:textSize="@dimen/content" />
+
+                    <ImageView
+                        android:id="@+id/car_icon_far"
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dip"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/app_name"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_launcher" />
+
+                    <TextView
+                        android:id="@+id/tv_icon_far_share"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="我要分享" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/car_own_name"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margins"
+                android:gravity="center"
+                android:text="分享者:WICARE"
+                android:textSize="@dimen/content" />
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>
