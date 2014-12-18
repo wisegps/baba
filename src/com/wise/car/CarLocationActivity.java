@@ -764,7 +764,7 @@ public class CarLocationActivity extends Activity {
 	};
 
 	LatLng startTracking, endTracking;
-	int i = 0;
+	
 	/** 获取GPS信息 **/
 	private void jsonGps(String str) {
 		if (!isStop) {
@@ -776,9 +776,8 @@ public class CarLocationActivity extends Activity {
 		try {
 			JSONObject jsonObject = new JSONObject(str)
 					.getJSONObject("active_gps_data");
-			i++;
-			double lat = jsonObject.getDouble("lat") + i*0.01;
-			double lon = jsonObject.getDouble("lon") + i*0.01;
+			double lat = jsonObject.getDouble("lat");
+			double lon = jsonObject.getDouble("lon");
 			
 			carData.setLat(lat);
 			carData.setLon(lon);

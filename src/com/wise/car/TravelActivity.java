@@ -4,6 +4,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import model.CollectionData;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +17,9 @@ import pubclas.GetSystem;
 import pubclas.NetThread;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
@@ -31,9 +39,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -44,6 +54,8 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.R.string;
+import com.wise.setting.OilUpdateActivity;
 
 /**
  * 车辆行程列表
@@ -54,6 +66,12 @@ public class TravelActivity extends Activity {
 
 	private static final String TAG = "TravelActivity";
 	private static final int get_data = 1;
+	private static final int deleteTravel = 2;
+	private static final int renameTravel = 3;
+	private static final int actAvgFuel = 4;
+	private static final int collectAdress = 5;
+	private static final int getIsCollect = 6;
+	
 	TextView tv_travel_date, tv_distance, tv_fuel, tv_hk_fuel, tv_money;
 	ListView lv_activity_travel;
 	List<TravelData> travelDatas = new ArrayList<TravelData>();
@@ -62,6 +80,7 @@ public class TravelActivity extends Activity {
 	private GeoCoder mGeoCoder = null;
 	int index;
 	AppApplication app;
+	ProgressDialog dialog = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +110,7 @@ public class TravelActivity extends Activity {
 		}else{
 			Date = GetSystem.GetNowDay();
 		}
-		//Date = "2014-12-01";
+		Date = "2014-11-30";
 		tv_travel_date.setText(Date);
 		GetDataTrip();
 		travelAdapter = new TravelAdapter();
@@ -127,6 +146,21 @@ public class TravelActivity extends Activity {
 			case get_data:
 				jsonData(msg.obj.toString());
 				break;
+			case deleteTravel:
+				jsonDeleteTravel(msg.obj.toString());
+				break;
+			case renameTravel:
+				jsonRenameTravel(msg.obj.toString());
+				break;
+			case actAvgFuel:
+				jsonActAvgFuel(msg.obj.toString());
+				break;
+			case collectAdress:
+				jsonCollectAdress(msg.obj.toString());
+				break;
+			case getIsCollect:
+				jsonCollect(msg.obj.toString());
+				break;
 			}
 		}
 	};
@@ -157,6 +191,17 @@ public class TravelActivity extends Activity {
 
 				} else {
 					TravelData travelData = new TravelData();
+					travelData.setTrip_id(jsonObject2.getInt("trip_id"));
+					if(jsonObject2.opt("act_avg_fuel") == null){
+						travelData.setAct_avg_fuel(0);
+					}else{
+						travelData.setAct_avg_fuel(Float.valueOf(jsonObject2.getString("act_avg_fuel")));
+					}
+					if(jsonObject2.opt("trip_name") == null){
+						travelData.setTrip_name("");
+					}else{
+						travelData.setTrip_name(jsonObject2.getString("trip_name"));
+					}
 					travelData.setStartTime(GetSystem
 							.ChangeTimeZone(jsonObject2.getString("start_time")
 									.replace("T", " ").substring(0, 19)));
@@ -233,7 +278,189 @@ public class TravelActivity extends Activity {
 		}
 
 	}
-	//TODO private void deleteTravel()
+	/**删除的记录在列表中的位置**/
+	int deleteTravelPosition;
+	/**删除行程**/
+	private void deleteTravel(int trip_id,int position){
+		dialog = ProgressDialog.show(TravelActivity.this,"提示", "行程删除中");
+        dialog.setCancelable(true);
+        deleteTravelPosition = position;
+		String url = Constant.BaseUrl + "device/trip/" + trip_id + "?auth_code=" + app.auth_code;
+		new NetThread.DeleteThread(handler, url, deleteTravel).start();
+	}
+	/**解析删除行程**/
+	private void jsonDeleteTravel(String result){
+		if(dialog != null){
+			dialog.dismiss();
+		}
+		try {
+			JSONObject jsonObject = new JSONObject(result);
+			if(jsonObject.getInt("status_code") == 0){
+				if(deleteTravelPosition < travelDatas.size()){//防止数组越界
+					travelDatas.remove(deleteTravelPosition);
+				}
+				travelAdapter.notifyDataSetChanged();
+			}else{
+				Toast.makeText(TravelActivity.this, "行程删除失败", Toast.LENGTH_SHORT).show();
+			}
+		} catch (Exception e) {
+			Toast.makeText(TravelActivity.this, "行程删除失败", Toast.LENGTH_SHORT).show();
+		}
+	}
+	int renameTravelPosition;
+	String rename;
+	/**重命名**/
+	private void renameTravel(int position,String name){
+		try {
+			dialog = ProgressDialog.show(TravelActivity.this,"提示", "行程重命名中");
+	        dialog.setCancelable(true);
+	        renameTravelPosition = position;
+	        rename = name;
+			int trip_id = travelDatas.get(position).getTrip_id();
+			String url = Constant.BaseUrl + "device/trip/" + trip_id + "/name?auth_code=" + app.auth_code;
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("trip_name", URLEncoder.encode(name, "UTF-8")));
+			new NetThread.putDataThread(handler, url, params, renameTravel).start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	}
+	/**解析重命名**/
+	private void jsonRenameTravel(String result){
+		if(dialog != null){
+			dialog.dismiss();
+		}
+		try {
+			JSONObject jsonObject = new JSONObject(result);
+			if(jsonObject.getInt("status_code") == 0){
+				travelDatas.get(renameTravelPosition).setTrip_name(rename);
+				travelAdapter.notifyDataSetChanged();
+			}else{
+				Toast.makeText(TravelActivity.this, "行程重命名失败", Toast.LENGTH_SHORT).show();
+			}
+		} catch (Exception e) {
+			Toast.makeText(TravelActivity.this, "行程重命名失败", Toast.LENGTH_SHORT).show();
+		}
+	}
+	int actAvgFuelPosition;
+	float act_fuel;
+	/**录入实际油耗**/
+	private void actAvgFuel(int position ,float act_avg_fuel){
+		dialog = ProgressDialog.show(TravelActivity.this,"提示", "实际油耗提交中");
+        dialog.setCancelable(true);
+        actAvgFuelPosition = position;
+        act_fuel = act_avg_fuel;
+        int trip_id = travelDatas.get(position).getTrip_id();
+        String url = Constant.BaseUrl + "device/trip/" + trip_id + "?auth_code=" + app.auth_code;
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("act_avg_fuel", String.valueOf(act_avg_fuel)));
+		new NetThread.putDataThread(handler, url, params, actAvgFuel).start();
+	}
+	/**解析录入实际油耗**/
+	private void jsonActAvgFuel(String result){
+		if(dialog != null){
+			dialog.dismiss();
+		}
+		try {
+			JSONObject jsonObject = new JSONObject(result);
+			if(jsonObject.getInt("status_code") == 0){
+				travelDatas.get(actAvgFuelPosition).setAct_avg_fuel(act_fuel);
+				travelAdapter.notifyDataSetChanged();
+			}else{
+				Toast.makeText(TravelActivity.this, "实际油耗提交失败", Toast.LENGTH_SHORT).show();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(TravelActivity.this, "实际油耗提交失败", Toast.LENGTH_SHORT).show();
+		}
+	}
+	CollectionData collectionData;
+	boolean is_start;
+	/**收藏地址**/
+	private void collectAdress(final int position , final boolean isStart){
+		is_start = isStart;
+		AlertDialog.Builder dialog = new AlertDialog.Builder(TravelActivity.this);
+		LayoutInflater inflater = (LayoutInflater) TravelActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.builder_rename, null);
+		dialog.setView(layout);
+		final EditText et_rename = (EditText)layout.findViewById(R.id.et_rename);
+		et_rename.setHint("请输入收藏的名称");
+		dialog.setTitle("提示");
+		dialog.setNegativeButton("取消", null);
+		dialog.setPositiveButton("收藏", new DialogInterface.OnClickListener() {						
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String name = et_rename.getText().toString().trim();
+				if(name.equals("")){
+					Toast.makeText(TravelActivity.this, "收藏的名称不能为空", Toast.LENGTH_SHORT).show();
+				}else{
+					TravelData travelData = travelDatas.get(position);
+					String adress;
+					String lat;
+					String lon;
+					if(isStart){
+						adress = travelData.getStart_place();
+						lat = travelData.getStart_lat();
+						lon = travelData.getStart_lon();
+					}else{
+						adress = travelData.getEnd_place();
+						lat = travelData.getEnd_lat();
+						lon = travelData.getEnd_lon();
+					}
+					String url = Constant.BaseUrl + "favorite?auth_code=" + app.auth_code;
+					List<NameValuePair> params = new ArrayList<NameValuePair>();
+                    params.add(new BasicNameValuePair("cust_id", app.cust_id));
+                    params.add(new BasicNameValuePair("name", name));
+                    params.add(new BasicNameValuePair("address", adress));
+                    params.add(new BasicNameValuePair("tel", ""));
+                    params.add(new BasicNameValuePair("lon", lon));
+                    params.add(new BasicNameValuePair("lat", lat));
+                    new NetThread.postDataThread(handler, url, params, collectAdress).start();
+                    
+                    collectionData = new CollectionData();
+                    collectionData.setCust_id(app.cust_id);
+                    collectionData.setName(name);
+                    collectionData.setAddress(adress);
+                    collectionData.setTel("");
+                    collectionData.setLon(lon);
+                    collectionData.setLat(lat);
+				}
+			}
+		});
+		dialog.show();
+	}
+	/**解析收藏**/
+	private void jsonCollectAdress(String result){
+		System.out.println(result);
+		try {
+			JSONObject jsonObject = new JSONObject(result);
+			if(jsonObject.getString("status_code").equals("0")){
+		        collectionData.setFavorite_id(jsonObject.getString("favorite_id"));
+		        collectionData.save();
+			}else{
+				
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	/**判断是否收藏**/
+	private void judgeCollect(String result){
+		try {
+			System.out.println(result);
+			String url = Constant.BaseUrl + "favorite/is_collect?auth_code="
+					+ app.auth_code + "&names="
+					+ URLEncoder.encode(result, "UTF-8") + "&cust_id="
+					+ app.cust_id;
+			new Thread(new NetThread.GetDataThread(handler, url,
+					getIsCollect)).start();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}		
+	}
+	private void jsonCollect(String result){
+		System.out.println("返回："+result);
+	}
 
 	private class TravelAdapter extends BaseAdapter {
 		LayoutInflater mInflater = LayoutInflater.from(TravelActivity.this);
@@ -260,6 +487,8 @@ public class TravelActivity extends Activity {
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.item_travel, null);
 				holder = new ViewHolder();
+				holder.tv_trip_name = (TextView) convertView
+						.findViewById(R.id.tv_trip_name);
 				holder.tv_item_travel_startTime = (TextView) convertView
 						.findViewById(R.id.tv_item_travel_startTime);
 				holder.tv_item_travel_stopTime = (TextView) convertView
@@ -288,11 +517,32 @@ public class TravelActivity extends Activity {
 						.findViewById(R.id.iv_item_travel_delete);
 				holder.iv_item_travel_recordShow = (ImageView) convertView
 						.findViewById(R.id.iv_item_travel_recordShow);
+				holder.iv_item_travel_rename = (ImageView) convertView
+						.findViewById(R.id.iv_item_travel_rename);
+				holder.iv_nav_start = (ImageView) convertView
+						.findViewById(R.id.iv_nav_start);
+				holder.iv_nav_stop = (ImageView) convertView
+						.findViewById(R.id.iv_nav_stop);
+				holder.iv_collect_start = (ImageView) convertView
+						.findViewById(R.id.iv_collect_start);
+				holder.iv_collect_stop = (ImageView) convertView
+						.findViewById(R.id.iv_collect_stop);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 			final TravelData travelData = travelDatas.get(position);
+			if(travelData.getAct_avg_fuel() == 0){
+				holder.iv_item_travel_recordShow.setVisibility(View.GONE);
+			}else{
+				holder.iv_item_travel_recordShow.setVisibility(View.VISIBLE);
+			}
+			if(travelData.getTrip_name() == null || travelData.getTrip_name().equals("")){
+				holder.tv_trip_name.setVisibility(View.GONE);
+			}else{
+				holder.tv_trip_name.setVisibility(View.VISIBLE);
+				holder.tv_trip_name.setText(travelData.getTrip_name());
+			}
 			holder.tv_item_travel_startTime.setText(travelData.getStartTime()
 					.substring(10, 16));
 			holder.tv_item_travel_stopTime.setText(travelData.getStopTime()
@@ -353,7 +603,6 @@ public class TravelActivity extends Activity {
 					TravelActivity.this.startActivity(intent);
 				}
 			});
-			// TODO 录入实际油耗
 			holder.iv_item_travel_record
 					.setOnClickListener(new OnClickListener() {
 
@@ -374,11 +623,38 @@ public class TravelActivity extends Activity {
 										public void onClick(
 												DialogInterface dialog,
 												int which) {
-											// TODO 确定后传入数据 et_travel_record
+											String record = et_travel_record.getText().toString().trim();
+											if(record.equals("")){
+												Toast.makeText(TravelActivity.this,"实际油耗不能为空", Toast.LENGTH_SHORT).show();
+											}else{
+												actAvgFuel(position, Float.valueOf(record));
+											}
 										}
 									}).setNegativeButton("取消", null).show();
 						}
 					});
+			holder.iv_item_travel_rename.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+					AlertDialog.Builder dialog = new AlertDialog.Builder(TravelActivity.this);
+					LayoutInflater inflater = (LayoutInflater) TravelActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+					LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.builder_rename, null);
+					dialog.setView(layout);
+					final EditText et_rename = (EditText)layout.findViewById(R.id.et_rename);
+					dialog.setTitle("提示");
+					dialog.setNegativeButton("取消", null);
+					dialog.setPositiveButton("更改", new DialogInterface.OnClickListener() {						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							String name = et_rename.getText().toString().trim();
+							if(!name.equals("")){
+								renameTravel(position, name);
+							}
+						}
+					});
+					dialog.show();
+				}
+			});
 			// 删除行程
 			holder.iv_item_travel_delete
 					.setOnClickListener(new OnClickListener() {
@@ -395,37 +671,47 @@ public class TravelActivity extends Activity {
 												public void onClick(
 														DialogInterface dialog,
 														int which) {
-													//TODO 行程删除
-													
+													deleteTravel(travelData.getTrip_id(),position);
 												}
 											}).setNegativeButton("取消", null)
 									.show();
 						}
 					});
-			holder.iv_item_travel_recordShow
-					.setOnTouchListener(new OnTouchListener() {
-						@Override
-						public boolean onTouch(View v, MotionEvent event) {
-							View view = LayoutInflater
-									.from(TravelActivity.this).inflate(
-											R.layout.item_hot, null);
-							ImageView imageView = (ImageView) view
-									.findViewById(R.id.iv_item_record);
-							imageView.setVisibility(View.GONE);
-							TextView textView = (TextView) view
-									.findViewById(R.id.tv_item_hot);
-							textView.setText("100L");
-							PopupWindow window = new PopupWindow(view,
-									LayoutParams.WRAP_CONTENT,
-									LayoutParams.WRAP_CONTENT);
-							window.setBackgroundDrawable(new BitmapDrawable());
-							window.setFocusable(true);
-							window.setOutsideTouchable(true);
-							window.showAsDropDown(
-									holder.iv_item_travel_recordShow, 45, -10);
-							return false;
-						}
-					});
+			holder.iv_item_travel_recordShow.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+					String content = "实际录入百公里油耗:" + travelData.getAct_avg_fuel() + "L";
+					Toast.makeText(TravelActivity.this, content, Toast.LENGTH_SHORT).show();
+				}
+			});
+			holder.iv_nav_start.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+					LatLng pt1 = new LatLng(app.Lat, app.Lon);
+					LatLng pt2 = new LatLng(Double.valueOf(travelData.getStart_lat()), Double.valueOf(travelData.getStart_lon()));
+					GetSystem.FindCar(TravelActivity.this, pt1, pt2, "point", "point1");
+				}
+			});
+			holder.iv_nav_stop.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+					LatLng pt1 = new LatLng(app.Lat, app.Lon);
+					LatLng pt2 = new LatLng(Double.valueOf(travelData.getEnd_lat()), Double.valueOf(travelData.getEnd_lon()));
+					GetSystem.FindCar(TravelActivity.this, pt1, pt2, "point", "point1");
+				}
+			});
+			holder.iv_collect_start.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+					collectAdress(position, true);
+				}
+			});
+			holder.iv_collect_stop.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+					collectAdress(position, false);
+				}
+			});
 			return convertView;
 		}
 
@@ -434,14 +720,16 @@ public class TravelActivity extends Activity {
 					tv_item_travel_startPlace, tv_item_travel_stopPlace,
 					tv_item_travel_spacingDistance, tv_item_travel_averageOil,
 					tv_item_travel_oil, tv_item_travel_speed,
-					tv_item_travel_cost;
+					tv_item_travel_cost,tv_trip_name;
 			ImageView iv_item_travel_map, iv_item_travel_share,
 					iv_item_travel_record, iv_item_travel_delete,
-					iv_item_travel_recordShow;
+					iv_item_travel_recordShow,iv_item_travel_rename,iv_nav_start,iv_nav_stop,
+					iv_collect_start,iv_collect_stop;
 		}
 	}
 
 	private class TravelData {
+		int trip_id;
 		String startTime;
 		String stopTime;
 		String spacingTime;
@@ -456,6 +744,32 @@ public class TravelActivity extends Activity {
 		String averageOil;
 		String speed;
 		String cost;
+		String trip_name;
+		float act_avg_fuel;		
+		
+		public float getAct_avg_fuel() {
+			return act_avg_fuel;
+		}
+
+		public void setAct_avg_fuel(float act_avg_fuel) {
+			this.act_avg_fuel = act_avg_fuel;
+		}
+
+		public int getTrip_id() {
+			return trip_id;
+		}
+
+		public void setTrip_id(int trip_id) {
+			this.trip_id = trip_id;
+		}
+
+		public String getTrip_name() {
+			return trip_name;
+		}
+
+		public void setTrip_name(String trip_name) {
+			this.trip_name = trip_name;
+		}
 
 		public String getStartTime() {
 			return startTime;
@@ -569,7 +883,8 @@ public class TravelActivity extends Activity {
 			this.cost = cost;
 		}
 	}
-
+	/**判断地址有没有收藏**/
+	String adress = "";
 	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
 		@Override
 		public void onGetGeoCodeResult(GeoCodeResult arg0) {
@@ -589,6 +904,7 @@ public class TravelActivity extends Activity {
 						strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
 								strInfo.length());
 					}
+					adress = adress + strInfo +",";
 					if (isFrist) {// 起点位置取完，在取结束位置
 						travelDatas.get(i).setStart_place("起点：" + strInfo);
 						isFrist = false;
@@ -604,6 +920,7 @@ public class TravelActivity extends Activity {
 						travelDatas.get(i - 1).setEnd_place("终点：" + strInfo);
 						if (travelDatas.size() == i) {
 							System.out.println("递归完毕");
+							judgeCollect(adress);
 						} else {
 							isFrist = true;
 							double lat = Double.valueOf(travelDatas.get(i)

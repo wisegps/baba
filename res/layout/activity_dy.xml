@@ -32,19 +32,19 @@
     </RelativeLayout>
 
     <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="15dp"
+                android:padding="10dp"
                 android:text="蓄电池电压"
                 android:textColor="@color/common"
                 android:textSize="@dimen/title" />
@@ -57,7 +57,7 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp" >
+                android:padding="10dp" >
 
                 <TextView
                     android:id="@+id/tv_dpdy_range"
@@ -87,7 +87,7 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp" >
+                android:padding="10dp" >
 
                 <TextView
                     android:id="@+id/tv_lt_dpdy"
@@ -117,7 +117,7 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp" >
+                android:padding="10dp" >
 
                 <TextView
                     android:id="@+id/tv_if_lt_dpdy_err"
@@ -147,7 +147,7 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp" >
+                android:padding="10dp" >
 
                 <TextView
                     android:id="@+id/tv_dpdy"
@@ -177,7 +177,7 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp" >
+                android:padding="10dp" >
 
                 <TextView
                     android:id="@+id/tv_if_dpdy_err"
@@ -207,7 +207,7 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp" >
+                android:padding="10dp" >
 
                 <TextView
                     android:id="@+id/tv_real_dpdy"
@@ -225,6 +225,35 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="实时检测"
+                    android:textColor="@color/common"
+                    android:textSize="@dimen/content" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/line" />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp" >
+
+                <TextView
+                    android:id="@+id/tv_if_real_dpdy"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bg_white"
+                    android:gravity="right"
+                    android:textColor="@color/color_blue"
+                    android:textSize="@dimen/content" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="实时检测结果"
                     android:textColor="@color/common"
                     android:textSize="@dimen/content" />
             </RelativeLayout>
@@ -314,9 +343,8 @@
 
             <WebView
                 android:id="@+id/share_web"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
-
 </LinearLayout>

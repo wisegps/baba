@@ -18,7 +18,6 @@ import com.wise.baba.R;
 import com.wise.car.DevicesAddActivity;
 import com.wise.car.SearchMapActivity;
 import com.wise.notice.LetterActivity;
-
 import customView.FaultDeletionView;
 import customView.OnViewChangeListener;
 import data.CarData;
@@ -34,7 +33,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View.OnClickListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -187,6 +185,7 @@ public class FaultDetectionActivity extends Activity {
 							DevicesAddActivity.class);
 					Intent intent = new Intent(FaultDetectionActivity.this,
 							DyActivity.class);
+					intent.putExtra("device_id", Device_id);
 					JSONObject jsonObject = new JSONObject(result);
 					switch (v.getId()) {
 					case R.id.rl_guzhang:
@@ -211,6 +210,7 @@ public class FaultDetectionActivity extends Activity {
 									.getObj_id());
 							startActivityForResult(intent2, 2);
 						} else {
+							intent.putExtra("type", 1);
 							intent.putExtra("title", "电源系统");
 							intent.putExtra("name", "蓄电池电压");
 							intent.putExtra("range",
@@ -234,6 +234,7 @@ public class FaultDetectionActivity extends Activity {
 									.getObj_id());
 							startActivityForResult(intent2, 2);
 						} else {
+							intent.putExtra("type", 2);
 							intent.putExtra("title", "进气系统");
 							intent.putExtra("name", "节气门开度");
 							intent.putExtra("range",
@@ -257,6 +258,7 @@ public class FaultDetectionActivity extends Activity {
 									.getObj_id());
 							startActivityForResult(intent2, 2);
 						} else {
+							intent.putExtra("type", 3);
 							intent.putExtra("title", "怠速控制系统");
 							intent.putExtra("name", "怠速状态");
 							intent.putExtra("range",
@@ -280,6 +282,7 @@ public class FaultDetectionActivity extends Activity {
 									.getObj_id());
 							startActivityForResult(intent2, 2);
 						} else {
+							intent.putExtra("type", 4);
 							intent.putExtra("title", "冷却系统");
 							intent.putExtra("name", "水温状态");
 							intent.putExtra("range",
@@ -302,6 +305,7 @@ public class FaultDetectionActivity extends Activity {
 									.getObj_id());
 							startActivityForResult(intent2, 2);
 						} else {
+							intent.putExtra("type", 5);
 							intent.putExtra("title", "排放系统");
 							intent.putExtra("name", "三元催化器状态");
 							intent.putExtra("range",

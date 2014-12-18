@@ -4,7 +4,14 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical" >
-
+	<TextView 
+	    android:id="@+id/tv_trip_name"
+	    android:background="@color/gray_light"
+        android:padding="@dimen/margins"
+        android:visibility="gone"
+        android:textSize="@dimen/content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -17,22 +24,38 @@
             android:layout_marginLeft="@dimen/margins"
             android:layout_marginRight="@dimen/margins"
             android:layout_marginTop="@dimen/margins" >
-
-            <TextView
-                android:id="@+id/tv_item_travel_startPlace"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="桃源村"
-                android:textColor="@color/common"
-                android:textSize="@dimen/content" />
-
             <TextView
                 android:id="@+id/tv_item_travel_startTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:text="20:04"
+                android:textColor="@color/common"
+                android:textSize="@dimen/content" />
+            <ImageView 
+                android:id="@+id/iv_nav_start"
+                android:layout_toLeftOf="@+id/tv_item_travel_startTime"
+                android:layout_centerVertical="true"
+                android:padding="5dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/lbs"/>
+            <ImageView 
+                android:id="@+id/iv_collect_start"
+                android:layout_toLeftOf="@+id/iv_nav_start"
+                android:layout_centerVertical="true"
+                android:padding="5dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/body_icon_collect"/>
+            <TextView
+                android:id="@+id/tv_item_travel_startPlace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:text="桃源村"
                 android:textColor="@color/common"
                 android:textSize="@dimen/content" />
         </RelativeLayout>
@@ -43,22 +66,38 @@
             android:layout_marginBottom="@dimen/margins"
             android:layout_marginLeft="@dimen/margins"
             android:layout_marginRight="@dimen/margins" >
-
-            <TextView
-                android:id="@+id/tv_item_travel_stopPlace"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="世界之窗"
-                android:textColor="@color/common"
-                android:textSize="@dimen/content" />
-
             <TextView
                 android:id="@+id/tv_item_travel_stopTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:text="20:04"
+                android:textColor="@color/common"
+                android:textSize="@dimen/content" />
+			<ImageView 
+                android:id="@+id/iv_nav_stop"
+                android:layout_toLeftOf="@+id/tv_item_travel_stopTime"
+                android:layout_centerVertical="true"
+                android:padding="5dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/lbs"/>
+            <ImageView 
+                android:id="@+id/iv_collect_stop"
+                android:layout_toLeftOf="@+id/iv_nav_stop"
+                android:layout_centerVertical="true"
+                android:padding="5dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/body_icon_collect"/>
+            <TextView
+                android:id="@+id/tv_item_travel_stopPlace"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:text="世界之窗"
                 android:textColor="@color/common"
                 android:textSize="@dimen/content" />
         </RelativeLayout>
@@ -101,6 +140,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/app_name"
                 android:scaleType="fitCenter"
+                android:visibility="gone"
                 android:src="@drawable/share" />
 
             <TextView
@@ -161,12 +201,20 @@
             android:contentDescription="@string/app_name"
             android:padding="10dp"
             android:src="@drawable/lbs" />
+        <ImageView
+            android:id="@+id/iv_item_travel_rename"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_toLeftOf="@id/iv_item_travel_record"
+            android:contentDescription="@string/app_name"
+            android:padding="10dp"
+            android:src="@drawable/lbs" />
 
         <ImageView
             android:id="@+id/iv_item_travel_delete"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_toLeftOf="@id/iv_item_travel_record"
+            android:layout_toLeftOf="@id/iv_item_travel_rename"
             android:contentDescription="@string/app_name"
             android:padding="10dp"
             android:src="@drawable/delete" />
@@ -174,7 +222,7 @@
 
     <View
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/double_margins"
-        android:background="@color/gray" />
+        android:layout_height="@dimen/margins"
+        android:background="@color/gray"/>
 
 </LinearLayout>
