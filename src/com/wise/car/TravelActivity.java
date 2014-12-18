@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
+import u.aly.bu;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -281,10 +282,11 @@ public class TravelActivity extends Activity {
 	/**删除的记录在列表中的位置**/
 	int deleteTravelPosition;
 	/**删除行程**/
-	private void deleteTravel(int trip_id,int position){
+	private void deleteTravel(int position){
 		dialog = ProgressDialog.show(TravelActivity.this,"提示", "行程删除中");
         dialog.setCancelable(true);
         deleteTravelPosition = position;
+        int trip_id = travelDatas.get(position).getTrip_id();
 		String url = Constant.BaseUrl + "device/trip/" + trip_id + "?auth_code=" + app.auth_code;
 		new NetThread.DeleteThread(handler, url, deleteTravel).start();
 	}
@@ -375,10 +377,8 @@ public class TravelActivity extends Activity {
 		}
 	}
 	CollectionData collectionData;
-	boolean is_start;
 	/**收藏地址**/
-	private void collectAdress(final int position , final boolean isStart){
-		is_start = isStart;
+	private void collectAdress(final int position){
 		AlertDialog.Builder dialog = new AlertDialog.Builder(TravelActivity.this);
 		LayoutInflater inflater = (LayoutInflater) TravelActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.builder_rename, null);
@@ -397,16 +397,10 @@ public class TravelActivity extends Activity {
 					TravelData travelData = travelDatas.get(position);
 					String adress;
 					String lat;
-					String lon;
-					if(isStart){
-						adress = travelData.getStart_place();
-						lat = travelData.getStart_lat();
-						lon = travelData.getStart_lon();
-					}else{
-						adress = travelData.getEnd_place();
-						lat = travelData.getEnd_lat();
-						lon = travelData.getEnd_lon();
-					}
+					String lon;					
+					adress = travelData.getEnd_place();
+					lat = travelData.getEnd_lat();
+					lon = travelData.getEnd_lon();
 					String url = Constant.BaseUrl + "favorite?auth_code=" + app.auth_code;
 					List<NameValuePair> params = new ArrayList<NameValuePair>();
                     params.add(new BasicNameValuePair("cust_id", app.cust_id));
@@ -461,6 +455,70 @@ public class TravelActivity extends Activity {
 	private void jsonCollect(String result){
 		System.out.println("返回："+result);
 	}
+	
+	private void showMore(final int position){
+		AlertDialog.Builder builder = new Builder(TravelActivity.this);
+		builder.setTitle("更多");
+		builder.setItems(new String[]{"收藏","删除行程","重命名","实际油耗"}, new DialogInterface.OnClickListener() {			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+				case 0:
+					collectAdress(position);
+					break;
+				case 1:
+					deleteTravel(position);
+					break;
+				case 2:
+					AlertDialog.Builder dialog1 = new AlertDialog.Builder(TravelActivity.this);
+					LayoutInflater inflater = (LayoutInflater) TravelActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+					LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.builder_rename, null);
+					dialog1.setView(layout);
+					final EditText et_rename = (EditText)layout.findViewById(R.id.et_rename);
+					dialog1.setTitle("提示");
+					dialog1.setNegativeButton("取消", null);
+					dialog1.setPositiveButton("更改", new DialogInterface.OnClickListener() {						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							String name = et_rename.getText().toString().trim();
+							if(!name.equals("")){
+								renameTravel(position, name);
+							}
+						}
+					});
+					dialog1.show();
+					break;
+				case 3:
+					AlertDialog.Builder dialog2 = new AlertDialog.Builder(
+							TravelActivity.this);
+					View view = (LayoutInflater
+							.from(TravelActivity.this)).inflate(
+							R.layout.item_travel_record, null);
+					final EditText et_travel_record = (EditText) view
+							.findViewById(R.id.et_travel_record);
+					dialog2.setTitle("行程油耗录入");
+					dialog2.setView(view);
+					dialog2.setPositiveButton("确定",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(
+										DialogInterface dialog,
+										int which) {
+									String record = et_travel_record.getText().toString().trim();
+									if(record.equals("")){
+										Toast.makeText(TravelActivity.this,"实际油耗不能为空", Toast.LENGTH_SHORT).show();
+									}else{
+										actAvgFuel(position, Float.valueOf(record));
+									}
+								}
+							}).setNegativeButton("取消", null).show();
+					break;
+				}
+			}
+		});
+		builder.setNegativeButton("确定", null);
+		builder.show();
+	}
 
 	private class TravelAdapter extends BaseAdapter {
 		LayoutInflater mInflater = LayoutInflater.from(TravelActivity.this);
@@ -511,22 +569,14 @@ public class TravelActivity extends Activity {
 						.findViewById(R.id.iv_item_travel_map);
 				holder.iv_item_travel_share = (ImageView) convertView
 						.findViewById(R.id.iv_item_travel_share);
-				holder.iv_item_travel_record = (ImageView) convertView
-						.findViewById(R.id.iv_item_travel_record);
-				holder.iv_item_travel_delete = (ImageView) convertView
-						.findViewById(R.id.iv_item_travel_delete);
 				holder.iv_item_travel_recordShow = (ImageView) convertView
 						.findViewById(R.id.iv_item_travel_recordShow);
-				holder.iv_item_travel_rename = (ImageView) convertView
-						.findViewById(R.id.iv_item_travel_rename);
 				holder.iv_nav_start = (ImageView) convertView
 						.findViewById(R.id.iv_nav_start);
 				holder.iv_nav_stop = (ImageView) convertView
 						.findViewById(R.id.iv_nav_stop);
-				holder.iv_collect_start = (ImageView) convertView
-						.findViewById(R.id.iv_collect_start);
-				holder.iv_collect_stop = (ImageView) convertView
-						.findViewById(R.id.iv_collect_stop);
+				holder.iv_item_travel_more = (ImageView) convertView
+						.findViewById(R.id.iv_item_travel_more);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
@@ -603,80 +653,80 @@ public class TravelActivity extends Activity {
 					TravelActivity.this.startActivity(intent);
 				}
 			});
-			holder.iv_item_travel_record
-					.setOnClickListener(new OnClickListener() {
-
-						@Override
-						public void onClick(View v) {
-							AlertDialog.Builder dialog = new AlertDialog.Builder(
-									TravelActivity.this);
-							View view = (LayoutInflater
-									.from(TravelActivity.this)).inflate(
-									R.layout.item_travel_record, null);
-							final EditText et_travel_record = (EditText) view
-									.findViewById(R.id.et_travel_record);
-							dialog.setTitle("行程油耗录入");
-							dialog.setView(view);
-							dialog.setPositiveButton("确定",
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											String record = et_travel_record.getText().toString().trim();
-											if(record.equals("")){
-												Toast.makeText(TravelActivity.this,"实际油耗不能为空", Toast.LENGTH_SHORT).show();
-											}else{
-												actAvgFuel(position, Float.valueOf(record));
-											}
-										}
-									}).setNegativeButton("取消", null).show();
-						}
-					});
-			holder.iv_item_travel_rename.setOnClickListener(new OnClickListener() {				
-				@Override
-				public void onClick(View v) {
-					AlertDialog.Builder dialog = new AlertDialog.Builder(TravelActivity.this);
-					LayoutInflater inflater = (LayoutInflater) TravelActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-					LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.builder_rename, null);
-					dialog.setView(layout);
-					final EditText et_rename = (EditText)layout.findViewById(R.id.et_rename);
-					dialog.setTitle("提示");
-					dialog.setNegativeButton("取消", null);
-					dialog.setPositiveButton("更改", new DialogInterface.OnClickListener() {						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							String name = et_rename.getText().toString().trim();
-							if(!name.equals("")){
-								renameTravel(position, name);
-							}
-						}
-					});
-					dialog.show();
-				}
-			});
-			// 删除行程
-			holder.iv_item_travel_delete
-					.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							AlertDialog.Builder dialog = new AlertDialog.Builder(
-									TravelActivity.this);
-							dialog.setTitle("提示");
-							dialog.setMessage("你确定要删除本次行程数据吗？")
-									.setPositiveButton(
-											"确定",
-											new DialogInterface.OnClickListener() {
-												@Override
-												public void onClick(
-														DialogInterface dialog,
-														int which) {
-													deleteTravel(travelData.getTrip_id(),position);
-												}
-											}).setNegativeButton("取消", null)
-									.show();
-						}
-					});
+//			holder.iv_item_travel_record
+//					.setOnClickListener(new OnClickListener() {
+//
+//						@Override
+//						public void onClick(View v) {
+//							AlertDialog.Builder dialog = new AlertDialog.Builder(
+//									TravelActivity.this);
+//							View view = (LayoutInflater
+//									.from(TravelActivity.this)).inflate(
+//									R.layout.item_travel_record, null);
+//							final EditText et_travel_record = (EditText) view
+//									.findViewById(R.id.et_travel_record);
+//							dialog.setTitle("行程油耗录入");
+//							dialog.setView(view);
+//							dialog.setPositiveButton("确定",
+//									new DialogInterface.OnClickListener() {
+//										@Override
+//										public void onClick(
+//												DialogInterface dialog,
+//												int which) {
+//											String record = et_travel_record.getText().toString().trim();
+//											if(record.equals("")){
+//												Toast.makeText(TravelActivity.this,"实际油耗不能为空", Toast.LENGTH_SHORT).show();
+//											}else{
+//												actAvgFuel(position, Float.valueOf(record));
+//											}
+//										}
+//									}).setNegativeButton("取消", null).show();
+//						}
+//					});
+//			holder.iv_item_travel_rename.setOnClickListener(new OnClickListener() {				
+//				@Override
+//				public void onClick(View v) {
+//					AlertDialog.Builder dialog = new AlertDialog.Builder(TravelActivity.this);
+//					LayoutInflater inflater = (LayoutInflater) TravelActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//					LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.builder_rename, null);
+//					dialog.setView(layout);
+//					final EditText et_rename = (EditText)layout.findViewById(R.id.et_rename);
+//					dialog.setTitle("提示");
+//					dialog.setNegativeButton("取消", null);
+//					dialog.setPositiveButton("更改", new DialogInterface.OnClickListener() {						
+//						@Override
+//						public void onClick(DialogInterface dialog, int which) {
+//							String name = et_rename.getText().toString().trim();
+//							if(!name.equals("")){
+//								renameTravel(position, name);
+//							}
+//						}
+//					});
+//					dialog.show();
+//				}
+//			});
+//			// 删除行程
+//			holder.iv_item_travel_delete
+//					.setOnClickListener(new OnClickListener() {
+//						@Override
+//						public void onClick(View v) {
+//							AlertDialog.Builder dialog = new AlertDialog.Builder(
+//									TravelActivity.this);
+//							dialog.setTitle("提示");
+//							dialog.setMessage("你确定要删除本次行程数据吗？")
+//									.setPositiveButton(
+//											"确定",
+//											new DialogInterface.OnClickListener() {
+//												@Override
+//												public void onClick(
+//														DialogInterface dialog,
+//														int which) {
+//													deleteTravel(travelData.getTrip_id(),position);
+//												}
+//											}).setNegativeButton("取消", null)
+//									.show();
+//						}
+//					});
 			holder.iv_item_travel_recordShow.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {
@@ -700,16 +750,22 @@ public class TravelActivity extends Activity {
 					GetSystem.FindCar(TravelActivity.this, pt1, pt2, "point", "point1");
 				}
 			});
-			holder.iv_collect_start.setOnClickListener(new OnClickListener() {				
+//			holder.iv_collect_start.setOnClickListener(new OnClickListener() {				
+//				@Override
+//				public void onClick(View v) {
+//					collectAdress(position);
+//				}
+//			});
+//			holder.iv_collect_stop.setOnClickListener(new OnClickListener() {				
+//				@Override
+//				public void onClick(View v) {
+//					collectAdress(position);
+//				}
+//			});
+			holder.iv_item_travel_more.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {
-					collectAdress(position, true);
-				}
-			});
-			holder.iv_collect_stop.setOnClickListener(new OnClickListener() {				
-				@Override
-				public void onClick(View v) {
-					collectAdress(position, false);
+					showMore(position);
 				}
 			});
 			return convertView;
@@ -722,9 +778,7 @@ public class TravelActivity extends Activity {
 					tv_item_travel_oil, tv_item_travel_speed,
 					tv_item_travel_cost,tv_trip_name;
 			ImageView iv_item_travel_map, iv_item_travel_share,
-					iv_item_travel_record, iv_item_travel_delete,
-					iv_item_travel_recordShow,iv_item_travel_rename,iv_nav_start,iv_nav_stop,
-					iv_collect_start,iv_collect_stop;
+					iv_item_travel_recordShow,iv_nav_start,iv_nav_stop,iv_item_travel_more;
 		}
 	}
 
