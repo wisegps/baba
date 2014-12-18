@@ -80,6 +80,11 @@ public class JsonData {
 				}else{
 					
 				}
+				if(jsonObject.opt("fuel_price") != null){
+					carData.setFuel_price(jsonObject.getDouble("fuel_price"));
+				}else{
+					carData.setFuel_price(0);
+				}
 				JSONArray jsonArray2 = new JSONArray(jsonObject.getString("vio_citys"));
 				ArrayList<String> vio_citys = new ArrayList<String>();
 				ArrayList<String> vio_citys_code = new ArrayList<String>();

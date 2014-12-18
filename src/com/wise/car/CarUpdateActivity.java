@@ -1,6 +1,7 @@
 package com.wise.car;
 
 import java.io.Serializable;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -55,6 +56,7 @@ public class CarUpdateActivity extends Activity {
 	private final int year_check = 3;
 	private final int update = 4;
 	private final int get_traffic = 5;
+	private static final int getFuelPrice = 6;
 
 	LinearLayout ll_engine, ll_frame;
 	EditText et_nick_name, et_obj_name, et_engine_no, et_frame_no,
@@ -89,6 +91,7 @@ public class CarUpdateActivity extends Activity {
 		setData();
 		setTime();
 		getTraffic();
+		getFuelPrice();
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -155,6 +158,49 @@ public class CarUpdateActivity extends Activity {
 		}
 	};
 
+	Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case update:
+				jsonSave(msg.obj.toString());
+				break;
+			case get_traffic:
+				parseJson(msg.obj.toString());
+				break;
+			case getFuelPrice:
+				jsonFuelPrice(msg.obj.toString());
+				break;
+			}
+		}
+	};
+	/**获取油价**/
+	private void getFuelPrice(){
+		try {
+			String url = Constant.BaseUrl + "base/city/" + URLEncoder.encode(app.City, "UTF-8");
+			new NetThread.GetDataThread(handler, url, getFuelPrice).start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	String fuel90 = "0";
+	String fuel93 = "0";
+	String fuel97 = "0";
+	String fuel0 = "0";
+	/**解析油价**/
+	private void jsonFuelPrice(String result){
+		try {
+			JSONObject jsonObject = new JSONObject(result).getJSONObject("fuel_price");
+			fuel90 = jsonObject.getString("fuel90");
+			fuel93 = jsonObject.getString("fuel93");
+			fuel97 = jsonObject.getString("fuel97");
+			fuel0 = jsonObject.getString("fuel0");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void helpPopView() {
 		LayoutInflater inflater = LayoutInflater.from(CarUpdateActivity.this);
 		final View mView = inflater.inflate(R.layout.help_image, null);
@@ -176,21 +222,6 @@ public class CarUpdateActivity extends Activity {
 			}
 		});
 	}
-
-	Handler handler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			switch (msg.what) {
-			case update:
-				jsonSave(msg.obj.toString());
-				break;
-			case get_traffic:
-				parseJson(msg.obj.toString());
-				break;
-			}
-		}
-	};
 
 	private void ShowDate(int index) {
 		OpenDateDialog.ShowDate(CarUpdateActivity.this, index);
@@ -278,6 +309,7 @@ public class CarUpdateActivity extends Activity {
 		String maintain_tel = et_maintain_tel.getText().toString();
 		String buy_date = tv_buy_date.getText().toString();
 		String year_check = tv_year_check.getText().toString();
+		String fuel_price = et_oil_price.getText().toString().trim();
 
 		carNewData.setDevice_id(carData.getDevice_id());
 		carNewData.setObj_name(obj_name);
@@ -310,6 +342,7 @@ public class CarUpdateActivity extends Activity {
 		carNewData.setCar_brand_id(car_brand_id);
 		carNewData.setCar_series_id(car_series_id);
 		carNewData.setCar_type_id(car_type_id);
+		carNewData.setFuel_price(Double.valueOf(fuel_price));
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("obj_name", obj_name));
@@ -336,6 +369,7 @@ public class CarUpdateActivity extends Activity {
 		params.add(new BasicNameValuePair("car_brand_id", car_brand_id));
 		params.add(new BasicNameValuePair("car_series_id", car_series_id));
 		params.add(new BasicNameValuePair("car_type_id", car_type_id));
+		params.add(new BasicNameValuePair("fuel_price", fuel_price));
 
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
 				+ "?auth_code=" + app.auth_code;
@@ -395,7 +429,7 @@ public class CarUpdateActivity extends Activity {
 			et_engine_no.setText(carData.getEngine_no());
 			et_frame_no.setText(carData.getFrame_no());
 		}
-
+		et_oil_price.setText(""+carData.getFuel_price());
 		tv_insurance_company.setText(carData.getInsurance_company());
 		et_insurance_tel.setText(carData.getInsurance_tel());
 		tv_insurance_date.setText(carData.getInsurance_date());
@@ -520,6 +554,22 @@ public class CarUpdateActivity extends Activity {
 			setNote();
 		} else if (resultCode == 3) {// 汽油标号返回
 			tv_gas_no.setText(data.getStringExtra("result"));
+			//0#,90#,93#,97#
+			int position = data.getIntExtra("position", 0);
+			switch (position) {
+			case 0:
+				et_oil_price.setText(fuel0);
+				break;
+			case 1:
+				et_oil_price.setText(fuel90);
+				break;
+			case 2:
+				et_oil_price.setText(fuel93);
+				break;
+			case 3:
+				et_oil_price.setText(fuel97);
+				break;
+			}
 		} else if (resultCode == 4) {// 保险公司返回
 			tv_insurance_company.setText(data.getStringExtra("insurance_name"));
 			et_insurance_tel.setText(data.getStringExtra("insurance_phone"));
@@ -581,7 +631,6 @@ public class CarUpdateActivity extends Activity {
 							cityData.setEngineno(engineno);
 							cityData.setFrame(frame);
 							cityData.setFrameno(frameno);
-							// TODO 加油油价字段添加
 						}
 					}
 				}

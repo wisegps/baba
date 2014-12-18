@@ -46,6 +46,7 @@ public class PetrolGradeActivity extends Activity {
 				String chickItem = petrolGradeList.get(arg2);
 				Intent intent = new Intent();
 				intent.putExtra("result", chickItem);
+				intent.putExtra("position", arg2);
 				PetrolGradeActivity.this.setResult(3, intent);
 				PetrolGradeActivity.this.finish();
 			}

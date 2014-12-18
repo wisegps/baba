@@ -68,6 +68,15 @@ public class CarData {
 	private ArrayList<String> vio_citys;
 	private ArrayList<String> vio_citys_code;
 	private ArrayList<String> province;
+	private double fuel_price;
+	
+	public double getFuel_price() {
+		return fuel_price;
+	}
+
+	public void setFuel_price(double fuel_price) {
+		this.fuel_price = fuel_price;
+	}
 
 	public String getUni_status() {
 		return uni_status;

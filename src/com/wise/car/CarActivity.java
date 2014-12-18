@@ -3,6 +3,7 @@ package com.wise.car;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
@@ -17,13 +18,10 @@ import pubclas.NetThread;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-import com.wise.setting.LoginActivity;
 import com.wise.setting.RegisterActivity;
-
 import customView.SlidingView;
 import data.BrandData;
 import data.CarData;
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -33,7 +31,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,6 +85,7 @@ public class CarActivity extends Activity {
 		} else {
 			new GetImageThread().start();
 		}
+		
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
