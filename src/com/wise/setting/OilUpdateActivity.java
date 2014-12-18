@@ -18,6 +18,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
@@ -34,6 +35,7 @@ public class OilUpdateActivity extends Activity {
 	String device_id;
 	Button bt_oil_add_1, bt_oil_add_2;
 	ProgressDialog dialog = null;
+	ScrollView scrollView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class OilUpdateActivity extends Activity {
 		bt_oil_add_1.setOnClickListener(onClickListener);
 		bt_oil_add_2 = (Button) findViewById(R.id.bt_oil_add_2);
 		bt_oil_add_2.setOnClickListener(onClickListener);
-
+		scrollView = (ScrollView)findViewById(R.id.scrollView);
 		getData2Judge();
 	}
 
@@ -89,6 +91,7 @@ public class OilUpdateActivity extends Activity {
 			switch (msg.what) {
 			case Data2Judge:
 				jsonData2Judge(msg.obj.toString());
+				scrollView.scrollTo(0, 0);
 				break;
 			case SetFristData2Cloud:
 				jsonFristData2Cloud(msg.obj.toString());

@@ -7,32 +7,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import pubclas.Blur;
 import pubclas.Constant;
 import pubclas.JsonData;
 import pubclas.NetThread;
+import pubclas.Uri2Path;
 
 import com.aliyun.android.oss.task.PutObjectTask;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
-
 import customView.PopView;
 import customView.WaitLinearLayout;
 import customView.PopView.OnItemClickListener;
 import customView.WaitLinearLayout.OnFinishListener;
 import data.CarData;
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -45,7 +43,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.text.StaticLayout;
+import android.support.v4.content.CursorLoader;
+
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -327,7 +326,7 @@ public class DevicesAddActivity extends Activity {
 					String old_serial = json.getString("serial");
 					et_serial.setText(old_serial);
 					et_sim.setText(sim_card);
-				} catch (JSONException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				break;
@@ -625,12 +624,14 @@ public class DevicesAddActivity extends Activity {
 		}
 		if (requestCode == REQUEST_NEAR && resultCode == Activity.RESULT_OK) {
 			if (data != null) {
+
 				if (flag) {
 					nearPicPath = Constant.VehiclePath
 							+ Constant.TemporaryImage;
 				} else {
 					Uri uri = data.getData();
-					nearPicPath = getPath(uri);
+					nearPicPath = Uri2Path
+							.getPath(DevicesAddActivity.this, uri);
 				}
 			}
 		} else if (requestCode == REQUEST_FAR
@@ -640,22 +641,11 @@ public class DevicesAddActivity extends Activity {
 					farPicPath = Constant.VehiclePath + Constant.TemporaryImage;
 				} else {
 					Uri uri = data.getData();
-					farPicPath = getPath(uri);
+					farPicPath = Uri2Path.getPath(DevicesAddActivity.this, uri);
 				}
 			}
 		}
 	};
-
-	/** 把uri 转换成 SD卡路径 **/
-	public String getPath(Uri uri) {
-		String[] projection = { MediaStore.Images.Media.DATA };
-		Cursor cursor = managedQuery(uri, projection, null, null, null);
-		int column_index = cursor
-				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		cursor.moveToFirst();
-		Log.e("my_log", "333==>" + cursor.getString(column_index));
-		return cursor.getString(column_index);
-	}
 
 	private void saveImageSD(String path, ImageView showView, final int type) {
 		if (path == null || path.equals("")) {
@@ -757,7 +747,7 @@ public class DevicesAddActivity extends Activity {
 				}
 			}
 		}).start();
-	}
+	};
 
 	@Override
 	protected void onResume() {

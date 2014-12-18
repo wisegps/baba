@@ -41,14 +41,6 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/lbs"/>
-            <ImageView 
-                android:id="@+id/iv_collect_start"
-                android:layout_toLeftOf="@+id/iv_nav_start"
-                android:layout_centerVertical="true"
-                android:padding="5dp"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/body_icon_collect"/>
             <TextView
                 android:id="@+id/tv_item_travel_startPlace"
                 android:layout_width="wrap_content"
@@ -83,14 +75,6 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/lbs"/>
-            <ImageView 
-                android:id="@+id/iv_collect_stop"
-                android:layout_toLeftOf="@+id/iv_nav_stop"
-                android:layout_centerVertical="true"
-                android:padding="5dp"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/body_icon_collect"/>
             <TextView
                 android:id="@+id/tv_item_travel_stopPlace"
                 android:layout_width="wrap_content"
@@ -141,7 +125,7 @@
                 android:contentDescription="@string/app_name"
                 android:scaleType="fitCenter"
                 android:visibility="gone"
-                android:src="@drawable/share" />
+                android:src="@drawable/icon_guzhang_normal" />
 
             <TextView
                 android:id="@+id/tv_item_travel_oil"
@@ -174,12 +158,19 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
-
+		<ImageView
+            android:id="@+id/iv_item_travel_more"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/app_name"
+            android:padding="10dp"
+            android:src="@drawable/more" />
         <ImageView
             android:id="@+id/iv_item_travel_map"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/iv_item_travel_more"
             android:contentDescription="@string/app_name"
             android:padding="10dp"
             android:src="@drawable/lbs" />
@@ -192,32 +183,6 @@
             android:contentDescription="@string/app_name"
             android:padding="10dp"
             android:src="@drawable/share" />
-
-        <ImageView
-            android:id="@+id/iv_item_travel_record"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_toLeftOf="@id/iv_item_travel_share"
-            android:contentDescription="@string/app_name"
-            android:padding="10dp"
-            android:src="@drawable/lbs" />
-        <ImageView
-            android:id="@+id/iv_item_travel_rename"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_toLeftOf="@id/iv_item_travel_record"
-            android:contentDescription="@string/app_name"
-            android:padding="10dp"
-            android:src="@drawable/lbs" />
-
-        <ImageView
-            android:id="@+id/iv_item_travel_delete"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_toLeftOf="@id/iv_item_travel_rename"
-            android:contentDescription="@string/app_name"
-            android:padding="10dp"
-            android:src="@drawable/delete" />
     </RelativeLayout>
 
     <View
