@@ -58,7 +58,6 @@ public class HScrollLayout extends ViewGroup {
 				measureChild(v, widthMeasureSpec, heightMeasureSpec);
 				desireWidth += v.getMeasuredWidth();
 				desireHeight = Math.max(desireHeight, v.getMeasuredHeight());
-				System.out.println("desireHeight = " + desireHeight);
 			}
 		}
 		desireWidth += getPaddingLeft() + getPaddingRight();

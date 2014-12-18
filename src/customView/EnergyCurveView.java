@@ -150,7 +150,7 @@ public class EnergyCurveView extends View{
 		this.width = width;
 		padding = fontSize;
 		realWidth = (int) (width - fontSize * 3 - padding * 2);
-		realHeight = (float) (width * scale) - fontSize * 2;
+		realHeight = (float) (width * scale) - padding * 2;
 	}
 
 	
