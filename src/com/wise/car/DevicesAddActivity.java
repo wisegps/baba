@@ -469,12 +469,12 @@ public class DevicesAddActivity extends Activity {
 	}
 
 	private void jsonPicDate(String result, int type) {
+		System.out.println(result);
 		try {
 			if (result.equals("") || result == null || result.equals("[]")) {
 				return;
 			} else {
 				JSONObject jsonObject = new JSONArray(result).getJSONObject(0);
-				Log.e("my_log", "===333==>" + jsonObject.toString());
 				String name = jsonObject.getString("name");
 				if (type == get_near_date) {
 					if (jsonObject.opt("obd_near_pic") != null) {
@@ -483,9 +483,9 @@ public class DevicesAddActivity extends Activity {
 								.getJSONArray("obd_near_pic");
 						for (int i = 0; i < jsonArrayNear.length(); i++) {
 							JSONObject object = jsonArrayNear.getJSONObject(i);
-							Log.e("my_log", "===111==>" + object.toString());
 							String urlString = object
 									.getString("small_pic_url");
+							System.out.println("urlString = " + urlString);
 							String author = object.getString("author");
 							car_own_name.setText("分享者:" + author);
 							getPic(urlString);
