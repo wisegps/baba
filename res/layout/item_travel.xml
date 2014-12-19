@@ -100,61 +100,77 @@
             android:textColor="@color/common_inactive"
             android:textSize="@dimen/main" />
     </LinearLayout>
-
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+	<LinearLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
         android:background="@color/gray_light"
-        android:padding="@dimen/margins"
-        android:shrinkColumns="*"
-        android:stretchColumns="*" >
-
-        <TableRow>
-
-            <TextView
-                android:id="@+id/tv_item_travel_averageOil"
-                android:layout_marginBottom="@dimen/margins"
+        android:orientation="horizontal"
+        android:padding="@dimen/margins" >
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:orientation="vertical">            
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="百公里油耗：9.9l"
+	            android:layout_marginBottom="@dimen/margins"
+                android:orientation="horizontal">                
+
+	            <TextView
+	                android:id="@+id/tv_item_travel_averageOil"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:gravity="center_vertical"
+	                android:text="百公里油耗：9.9l"
+	                android:textColor="@color/common"
+	                android:textSize="@dimen/content" />
+
+	            <ImageView
+	                android:id="@+id/iv_item_travel_recordShow"
+	                android:layout_width="32dp"
+	                android:layout_height="12dp"
+	                android:paddingLeft="10dp"
+	                android:paddingRight="10dp"
+	                android:contentDescription="@string/app_name"
+	                android:visibility="visible"
+	                android:src="@drawable/icon_guzhang_normal" />
+            </LinearLayout>  
+            <TextView
+                android:id="@+id/tv_item_travel_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="平均速度:25.75KM/H"
                 android:textColor="@color/common"
                 android:textSize="@dimen/content" />
-
-            <ImageView
-                android:id="@+id/iv_item_travel_recordShow"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/app_name"
-                android:scaleType="fitCenter"
-                android:visibility="gone"
-                android:src="@drawable/icon_guzhang_normal" />
+        </LinearLayout>
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            
 
             <TextView
                 android:id="@+id/tv_item_travel_oil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margins"
                 android:gravity="center_vertical"
                 android:text="油耗：1.15L"
                 android:textColor="@color/common"
                 android:textSize="@dimen/content" />
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:id="@+id/tv_item_travel_speed"
-                android:layout_span="2"
-                android:gravity="center_vertical"
-                android:text="平均速度:25.75KM/H"
-                android:textColor="@color/common"
-                android:textSize="@dimen/content" />
-
             <TextView
                 android:id="@+id/tv_item_travel_cost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="花费：11.34元"
                 android:textColor="@color/common"
                 android:textSize="@dimen/content" />
-        </TableRow>
-    </TableLayout>
-
+        </LinearLayout>
+	</LinearLayout>
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >

@@ -185,7 +185,7 @@ public class DriveRankActivity extends Activity{
 				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(driveData.getLogo()) + ".png");
 				viewHolder.iv_icon.setImageBitmap(image);
 			}else{
-				viewHolder.iv_icon.setImageResource(R.drawable.icon_car);
+				viewHolder.iv_icon.setImageResource(R.drawable.icon_people_no);
 			}
 			viewHolder.iv_letter.setOnClickListener(new OnClickListener() {				
 				@Override
