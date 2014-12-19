@@ -171,11 +171,9 @@ public class DevicesAddActivity extends Activity {
 
 	private void getDeviceDate() {
 		// 近景
-		String url_1 = Constant.BaseUrl + "base/car_series/" + "1799"
-		// car_series_id
+		String url_1 = Constant.BaseUrl + "base/car_series/" + car_series_id
 				+ "/near_pic" + "?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url_1, get_near_date).start();
-		Log.e("my_log", "url===>" + url_1);
 		// 远景
 		String url = Constant.BaseUrl + "base/car_series/" + car_series_id
 				+ "/far_pic" + "?auth_code=" + app.auth_code;
@@ -283,8 +281,10 @@ public class DevicesAddActivity extends Activity {
 				tv_icon_far_share.setVisibility(View.VISIBLE);
 				break;
 			case R.id.car_name:
-				startActivityForResult(new Intent(DevicesAddActivity.this,
-						ModelsActivity.class), 2);
+				Intent in = new Intent(DevicesAddActivity.this,
+						ModelsActivity.class);
+				in.putExtra("isNeedType", false);
+				startActivityForResult(in, 2);
 				break;
 			}
 		}
@@ -422,10 +422,8 @@ public class DevicesAddActivity extends Activity {
 						Toast.LENGTH_SHORT).show();
 				break;
 			case getBitmap:
-				Log.e("my_log", "111 === ");
 				int type = msg.arg1;
 				if (type == REQUEST_NEAR) {
-					Log.e("my_log", "bitmap =" + bitmap);
 					car_icon_near.setImageBitmap(bitmap);
 					tv_icon_near_share.setVisibility(View.GONE);
 				} else if (type == REQUEST_FAR) {
@@ -453,12 +451,10 @@ public class DevicesAddActivity extends Activity {
 	private static final int getBitmap = 18;
 
 	private void getPic(String path, final int type) {
-		Log.e("my_log", "===3333==");
 		int lastSlashIndex = path.lastIndexOf("/");
 		final String imageName = path.substring(lastSlashIndex + 1);
 		final File imageFile = new File(getImagePath(path));
 		if (imageFile.exists()) {
-			Log.e("my_log", "===5555==");
 			bitmap = BitmapFactory.decodeFile(getImagePath(path));
 			if (type == REQUEST_NEAR) {
 				car_icon_near.setImageBitmap(bitmap);
@@ -470,7 +466,6 @@ public class DevicesAddActivity extends Activity {
 				@Override
 				public void run() {
 					try {
-						Log.e("my_log", "===6666==");
 						// 获取阿里云上的图片
 						GetObjectTask task = new GetObjectTask(
 								Constant.oss_path, imageName,
@@ -502,8 +497,6 @@ public class DevicesAddActivity extends Activity {
 			} else {
 				JSONObject jsonObject = (new JSONArray(result))
 						.getJSONObject(0);
-				System.out.println("jsonObject" + jsonObject);
-				String name = jsonObject.getString("name");
 				if (type == get_near_date) {
 					if (jsonObject.opt("obd_near_pic") != null) {
 						// 近景图
@@ -511,27 +504,14 @@ public class DevicesAddActivity extends Activity {
 								.getJSONArray("obd_near_pic");
 						for (int i = 0; i < jsonArrayNear.length(); i++) {
 							JSONObject object = jsonArrayNear.getJSONObject(i);
-							String urlString = object
-									.getString("small_pic_url");
-							Log.e("my_log", "urlString = " + urlString);
 							String author = object.getString("author");
 							car_own_name.setText("分享者:" + author);
-							getPic(urlString, REQUEST_NEAR);
-							// if (name.equals(car_name.getText().toString())) {
-							// String urlString = object
-							// .getString("small_pic_url");
-							// String author = object.getString("author");
-							// car_own_name.setText("分享者:" + author);
-							// if (urlString != null && !urlString.equals("")) {
-							// getPic(urlString);
-							// if (bitmap != null) {
-							// tv_icon_near_share
-							// .setVisibility(View.GONE);
-							// car_icon_near.setImageBitmap(bitmap);
-							// }
-							// }
-							// break;
-							// }
+							String urlString = object
+									.getString("small_pic_url");
+							if (urlString != null && !urlString.equals("")) {
+								getPic(urlString, REQUEST_NEAR);
+								break;
+							}
 						}
 					}
 				} else if (type == get_far_date) {
@@ -541,19 +521,12 @@ public class DevicesAddActivity extends Activity {
 								.getJSONArray("obd_far_pic");
 						for (int i = 0; i < jsonArrayFar.length(); i++) {
 							JSONObject object = jsonArrayFar.getJSONObject(i);
-							if (name.equals(car_name.getText().toString())) {
-								String urlString = object
-										.getString("small_pic_url");
-								String author = object.getString("author");
-								car_own_name.setText("分享者:" + author);
-								if (urlString != null && !urlString.equals("")) {
-									getPic(urlString, REQUEST_FAR);
-									if (bitmap != null) {
-										tv_icon_far_share
-												.setVisibility(View.GONE);
-										car_icon_far.setImageBitmap(bitmap);
-									}
-								}
+							String author = object.getString("author");
+							car_own_name.setText("分享者:" + author);
+							String urlString = object
+									.getString("small_pic_url");
+							if (urlString != null && !urlString.equals("")) {
+								getPic(urlString, REQUEST_FAR);
 								break;
 							}
 						}
