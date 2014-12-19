@@ -52,6 +52,10 @@
             android:text="信息"
             android:textColor="@color/white"
             android:textSize="@dimen/bt" />
+	    <View
+            android:layout_width="0.5dp"
+            android:layout_height="fill_parent"
+            android:background="@color/white" />
         <Button
             android:id="@+id/bt_friend"
             android:layout_width="fill_parent"

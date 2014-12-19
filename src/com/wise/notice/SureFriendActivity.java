@@ -53,7 +53,7 @@ public class SureFriendActivity extends Activity {
 	private boolean isILaunchResult = false;
 	/**别人发起的数据是否获取完毕**/
 	private boolean isYLaunchResult = false;
-	
+	/**确认添加好友需要刷新**/
 	boolean isChange = false;
 
 	@Override
@@ -90,13 +90,13 @@ public class SureFriendActivity extends Activity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case i_launch:
-				friendDatas.addAll(0, jsonILaunch(msg.obj.toString()));
+				friendDatas.addAll(0, jsonLaunch(msg.obj.toString()));
 				newFriendAdapter.notifyDataSetChanged();
 				isILaunchResult = true;
 				getFristImage();
 				break;
 			case y_launch:
-				friendDatas.addAll(jsonILaunch(msg.obj.toString()));
+				friendDatas.addAll(jsonLaunch(msg.obj.toString()));
 				newFriendAdapter.notifyDataSetChanged();
 				isYLaunchResult = true;
 				getFristImage();
@@ -134,56 +134,54 @@ public class SureFriendActivity extends Activity {
 				holder = new ViewHolder();
 				holder.iv_logo = (ImageView)arg1.findViewById(R.id.iv_logo);
 				holder.tv_name = (TextView)arg1.findViewById(R.id.tv_name);
-				holder.tv_i_add = (TextView)arg1.findViewById(R.id.tv_i_add);
-				holder.tv_y_add = (TextView)arg1.findViewById(R.id.tv_y_add);
+				holder.tv_status = (TextView)arg1.findViewById(R.id.tv_status);
 				arg1.setTag(holder);
 			}else{
 				holder = (ViewHolder) arg1.getTag();
 			}
 			final FriendData friendData = friendDatas.get(arg0);			
-			if(friendData.getUser_id() == cust_id){
+			if(friendData.getUser_id() == cust_id){//我发起添加的
 				holder.tv_name.setText(friendData.getFriend_name());
-				if(new File(Constant.userIconPath + friendData.getFriend_id() + ".png").exists()){
-					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + friendData.getFriend_id() + ".png");
+				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png").exists()){
+					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo())  + ".png");
 					holder.iv_logo.setImageBitmap(image);
 				}else{
 					holder.iv_logo.setImageResource(R.drawable.icon_people_no);
 				}
-				//我发起添加的
 				if(friendData.getStatus() == 0){
-					holder.tv_i_add.setVisibility(View.VISIBLE);
-					holder.tv_i_add.setText("等待对方添加");
-					holder.tv_y_add.setVisibility(View.GONE);
+					holder.tv_status.setText("等待对方添加");
+					holder.tv_status.setTextColor(getResources().getColor(R.color.gray));
+				}else if(friendData.getStatus() == 1){
+					holder.tv_status.setText("已添加");
+					holder.tv_status.setTextColor(getResources().getColor(R.color.gray));
 				}
-			}else{
+			}else{//别人添加我
 				holder.tv_name.setText(friendData.getCust_name());
-				if(new File(Constant.userIconPath + friendData.getUser_id() + ".png").exists()){
-					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + friendData.getUser_id() + ".png");
+				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png").exists()){
+					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png");
 					holder.iv_logo.setImageBitmap(image);
 				}else{
 					holder.iv_logo.setImageResource(R.drawable.icon_people_no);
 				}
-				//别人发起添加的
 				if(friendData.getStatus() == 0){
-					holder.tv_i_add.setVisibility(View.GONE);
-					holder.tv_y_add.setVisibility(View.VISIBLE);
-					holder.tv_y_add.setOnClickListener(new OnClickListener() {						
+					holder.tv_status.setText("接受");
+					holder.tv_status.setTextColor(getResources().getColor(R.color.color_navy));
+					holder.tv_status.setOnClickListener(new OnClickListener() {						
 						@Override
 						public void onClick(View v) {
 							sureAddFriend(friendData.getUser_id(),arg0);
 						}
 					});
 				}else if(friendData.getStatus() == 1){
-					holder.tv_i_add.setVisibility(View.VISIBLE);
-					holder.tv_i_add.setText("已添加");
-					holder.tv_y_add.setVisibility(View.GONE);
+					holder.tv_status.setText("已添加");
+					holder.tv_status.setTextColor(getResources().getColor(R.color.gray));
 				}
 			}
 			return arg1;
 		}	
 		private class ViewHolder{
 			ImageView iv_logo;
-			TextView tv_name,tv_i_add,tv_y_add;
+			TextView tv_name,tv_status;
 		} 
 	}
 	ProgressDialog myDialog = null;
@@ -224,7 +222,14 @@ public class SureFriendActivity extends Activity {
 				+ "/get_my_requests?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, i_launch).start();
 	}
-	private List<FriendData> jsonILaunch(String result){
+	/** 别人发起添加的好友 **/
+	private void getYLaunch() {
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "/get_friend_requests?auth_code=" + app.auth_code;
+		new NetThread.GetDataThread(handler, url, y_launch).start();
+	}
+	/**解析返回好友信息**/
+	private List<FriendData> jsonLaunch(String result){
 		List<FriendData> fDatas = new ArrayList<FriendData>();
 		try {
 			JSONArray jsonArray = new JSONArray(result);
@@ -245,33 +250,7 @@ public class SureFriendActivity extends Activity {
 		}
 		return fDatas;
 	}
-	/** 别人发起添加的好友 **/
-	private void getYLaunch() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id
-				+ "/get_friend_requests?auth_code=" + app.auth_code;
-		new NetThread.GetDataThread(handler, url, y_launch).start();
-	}
-	private List<FriendData> jsonYLaunch(String result){
-		List<FriendData> fDatas = new ArrayList<FriendData>();
-		try {
-			JSONArray jsonArray = new JSONArray(result);
-			for(int i = 0 ; i < jsonArray.length() ; i++){
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				FriendData friendData = new FriendData();
-				friendData.setFriend_id(jsonObject.getInt("user_id"));
-				friendData.setFriend_name(jsonObject.getString("cust_name"));
-				friendData.setLogo(jsonObject.getString("logo"));
-				friendData.setRequest_id(jsonObject.getInt("request_id"));
-				friendData.setUser_id(jsonObject.getInt("friend_id"));
-				friendData.setStatus(jsonObject.getInt("status"));
-				friendData.setCust_name(jsonObject.getString("cust_name"));
-				fDatas.add(friendData);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return fDatas;
-	}
+	
 	OnScrollListener onScrollListener = new OnScrollListener() {		
 		@Override
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -306,7 +285,7 @@ public class SureFriendActivity extends Activity {
 			FriendData friendData = friendDatas.get(i);
 			if(friendData.getLogo() != null && (!friendData.getLogo().equals(""))){
 				//判断图片是否存在
-				if(new File(Constant.userIconPath + friendData.getFriend_id() + ".png").exists()){
+				if(new File(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png").exists()){
 					
 				}else{
 					if(isThreadRun(i)){
@@ -329,7 +308,7 @@ public class SureFriendActivity extends Activity {
 			super.run();
 			Bitmap bitmap = GetSystem.getBitmapFromURL(friendDatas.get(position).getLogo());
 			if(bitmap != null){
-				GetSystem.saveImageSD(bitmap, Constant.userIconPath, friendDatas.get(position).getFriend_id() + ".png",100);
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(friendDatas.get(position).getLogo()) + ".png",100);
 			}
 			for (int i = 0; i < photoThreadId.size(); i++) {
 				if (photoThreadId.get(i) == position) {

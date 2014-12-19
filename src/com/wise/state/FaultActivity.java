@@ -155,7 +155,7 @@ public class FaultActivity extends FragmentActivity {
 			Intent intent = new Intent(FaultActivity.this, MoreActivity.class);
 			intent.putExtra("isSpecify", isSpecify);
 			intent.putExtras(getIntent().getExtras());
-			startActivity(intent);
+			startActivityForResult(intent, 5);
 		}
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -287,6 +287,7 @@ public class FaultActivity extends FragmentActivity {
 			@Override
 			public void run() {
 				while (isGetGps) {
+					gethot_news();
 					SystemClock.sleep(30000);
 					if (app.carDatas == null || app.carDatas.size() == 0) {
 
@@ -501,7 +502,7 @@ public class FaultActivity extends FragmentActivity {
 	 */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		startActivity(new Intent(FaultActivity.this, MoreActivity.class));
+		startActivityForResult(new Intent(FaultActivity.this, MoreActivity.class), 5);
 		return true;
 	}
 
@@ -513,7 +514,7 @@ public class FaultActivity extends FragmentActivity {
 				finish();
 				break;
 			case R.id.iv_menu:
-				startActivity(new Intent(FaultActivity.this, MoreActivity.class));
+				startActivityForResult(new Intent(FaultActivity.this, MoreActivity.class), 5);
 				break;
 			case R.id.iv_location_hot:
 				if (!Judge.isLogin(app)) {
@@ -956,7 +957,7 @@ public class FaultActivity extends FragmentActivity {
 		return resId;
 	}
 
-	/** 获取热点 **/
+	/** 获取热点信息 **/
 	private void gethot_news() {
 		try {
 			String url = Constant.BaseUrl + "base/hot_news?city=" + URLEncoder.encode(app.City, "UTF-8");
@@ -1173,7 +1174,6 @@ public class FaultActivity extends FragmentActivity {
 		super.onResume();
 		setNotiView();
 		getWeather();
-		gethot_news();
 		MobclickAgent.onResume(this);
 	}
 
@@ -1466,7 +1466,12 @@ public class FaultActivity extends FragmentActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == 3) {
+		/**
+		 * requestCode = 5,跳转到更多页面
+		 */
+		if(requestCode == 5 && resultCode == 1){
+			finish();
+		}else if (resultCode == 3) {
 			// 修改车辆信息
 			initDataView();
 			if (app.carDatas.size() == 0) {
@@ -1537,8 +1542,6 @@ public class FaultActivity extends FragmentActivity {
 		isGetAllData = false;
 	}
 
-	long waitTime = 2000;
-	long touchTime = 0;
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -1546,14 +1549,11 @@ public class FaultActivity extends FragmentActivity {
 			if (smv_content.getCurrentScreen() == 1) {
 				smv_content.snapToScreen(0);
 			} else {
-				long currentTime = System.currentTimeMillis();
-				if (touchTime == 0 || (currentTime - touchTime) >= waitTime) {
-					Toast.makeText(this, "再按一次退出客户端", Toast.LENGTH_SHORT)
-							.show();
-					touchTime = currentTime;
-				} else {
-					finish();
-				}
+				//TODO 在幕后
+				Intent intent = new Intent(); 
+				intent.setAction(Intent.ACTION_MAIN); 
+				intent.addCategory(Intent.CATEGORY_HOME);           
+				startActivity(intent);
 			}
 			return true;
 		}

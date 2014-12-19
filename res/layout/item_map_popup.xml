@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/popup"
+    android:background="@drawable/icon_ar_popup_normal"
     android:gravity="center_vertical"
     android:paddingLeft="@dimen/margins"
     android:paddingRight="@dimen/margins"
@@ -12,12 +12,15 @@
         android:id="@+id/tv_adress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/navy"
+        android:textColor="@color/white"
         android:layout_marginRight="@dimen/margins"/>
     <TextView 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/navy"
-        android:text="导航"
-        android:drawableRight="@drawable/body_icon_arrow2"/>
+        android:textColor="@color/white"
+        android:text="导航"/>
+    <ImageView 
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/btn_detection_right"/>
 </LinearLayout>

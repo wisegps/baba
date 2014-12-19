@@ -4,9 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
 import model.CollectionData;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -15,7 +13,6 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import u.aly.bu;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -23,29 +20,22 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -55,8 +45,6 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-import com.wise.baba.R.string;
-import com.wise.setting.OilUpdateActivity;
 
 /**
  * 车辆行程列表
@@ -73,6 +61,7 @@ public class TravelActivity extends Activity {
 	private static final int collectAdress = 5;
 	private static final int getIsCollect = 6;
 	
+	ImageView iv_activity_travel_data_next;
 	TextView tv_travel_date, tv_distance, tv_fuel, tv_hk_fuel, tv_money;
 	ListView lv_activity_travel;
 	List<TravelData> travelDatas = new ArrayList<TravelData>();
@@ -98,7 +87,7 @@ public class TravelActivity extends Activity {
 		tv_money = (TextView) findViewById(R.id.tv_money);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		ImageView iv_activity_travel_data_next = (ImageView) findViewById(R.id.iv_activity_travel_data_next);
+		iv_activity_travel_data_next = (ImageView) findViewById(R.id.iv_activity_travel_data_next);
 		iv_activity_travel_data_next.setOnClickListener(onClickListener);
 		ImageView iv_activity_travel_data_previous = (ImageView) findViewById(R.id.iv_activity_travel_data_previous);
 		iv_activity_travel_data_previous.setOnClickListener(onClickListener);
@@ -111,8 +100,8 @@ public class TravelActivity extends Activity {
 		}else{
 			Date = GetSystem.GetNowDay();
 		}
-		Date = "2014-11-30";
 		tv_travel_date.setText(Date);
+		judgeNowData(Date);
 		GetDataTrip();
 		travelAdapter = new TravelAdapter();
 		lv_activity_travel.setAdapter(travelAdapter);
@@ -130,11 +119,13 @@ public class TravelActivity extends Activity {
 				Date = GetSystem.GetNextData(Date, 1);
 				tv_travel_date.setText(Date);
 				GetDataTrip();
+				judgeNowData(Date);
 				break;
 			case R.id.iv_activity_travel_data_previous:// 上一日
 				Date = GetSystem.GetNextData(Date, -1);
 				tv_travel_date.setText(Date);
 				GetDataTrip();
+				iv_activity_travel_data_next.setVisibility(View.VISIBLE);
 				break;
 			}
 		}
@@ -165,6 +156,15 @@ public class TravelActivity extends Activity {
 			}
 		}
 	};
+	/**判断到日期是今天的话，不能下一日**/
+	private void judgeNowData(String Date){
+		boolean isMax = GetSystem.maxTime(
+				Date + " 00:00:00",
+				GetSystem.GetNowMonth().getDay() + " 00:00:00");
+		if(isMax){
+			iv_activity_travel_data_next.setVisibility(View.INVISIBLE);
+		}
+	}
 
 	/**
 	 * 解析数据
@@ -379,53 +379,65 @@ public class TravelActivity extends Activity {
 	CollectionData collectionData;
 	/**收藏地址**/
 	private void collectAdress(final int position){
-		AlertDialog.Builder dialog = new AlertDialog.Builder(TravelActivity.this);
-		LayoutInflater inflater = (LayoutInflater) TravelActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.builder_rename, null);
-		dialog.setView(layout);
-		final EditText et_rename = (EditText)layout.findViewById(R.id.et_rename);
-		et_rename.setHint("请输入收藏的名称");
-		dialog.setTitle("提示");
-		dialog.setNegativeButton("取消", null);
-		dialog.setPositiveButton("收藏", new DialogInterface.OnClickListener() {						
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				String name = et_rename.getText().toString().trim();
-				if(name.equals("")){
-					Toast.makeText(TravelActivity.this, "收藏的名称不能为空", Toast.LENGTH_SHORT).show();
-				}else{
-					TravelData travelData = travelDatas.get(position);
-					String adress;
-					String lat;
-					String lon;					
-					adress = travelData.getEnd_place();
-					lat = travelData.getEnd_lat();
-					lon = travelData.getEnd_lon();
-					String url = Constant.BaseUrl + "favorite?auth_code=" + app.auth_code;
-					List<NameValuePair> params = new ArrayList<NameValuePair>();
-                    params.add(new BasicNameValuePair("cust_id", app.cust_id));
-                    params.add(new BasicNameValuePair("name", name));
-                    params.add(new BasicNameValuePair("address", adress));
-                    params.add(new BasicNameValuePair("tel", ""));
-                    params.add(new BasicNameValuePair("lon", lon));
-                    params.add(new BasicNameValuePair("lat", lat));
-                    new NetThread.postDataThread(handler, url, params, collectAdress).start();
-                    
-                    collectionData = new CollectionData();
-                    collectionData.setCust_id(app.cust_id);
-                    collectionData.setName(name);
-                    collectionData.setAddress(adress);
-                    collectionData.setTel("");
-                    collectionData.setLon(lon);
-                    collectionData.setLat(lat);
+		//判断该行程是否设置trip_name
+		final TravelData travelData = travelDatas.get(position);
+		String trip_name = travelData.getTrip_name();
+		final String adress = travelData.getEnd_place();
+		final String lat = travelData.getEnd_lat();
+		final String lon = travelData.getEnd_lon();
+		if(trip_name == null || trip_name.equals("")){
+			AlertDialog.Builder dialog = new AlertDialog.Builder(TravelActivity.this);
+			LayoutInflater inflater = (LayoutInflater) TravelActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.builder_rename, null);
+			dialog.setView(layout);
+			final EditText et_rename = (EditText)layout.findViewById(R.id.et_rename);
+			et_rename.setHint("请输入收藏的名称");
+			dialog.setTitle("提示");
+			dialog.setNegativeButton("取消", null);
+			dialog.setPositiveButton("收藏", new DialogInterface.OnClickListener() {						
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					String name = et_rename.getText().toString().trim();
+					if(name.equals("")){
+						Toast.makeText(TravelActivity.this, "收藏的名称不能为空", Toast.LENGTH_SHORT).show();
+					}else{
+						sureCollectAdress(name, adress, lon, lat);
+						renameTravel(position, name);
+					}
 				}
-			}
-		});
-		dialog.show();
+			});
+			dialog.show();
+		}else{
+			sureCollectAdress(trip_name, adress, lon, lat);
+		}		
+	}
+	/**收藏地址**/
+	private void sureCollectAdress(String name , String adress ,String lon ,String lat){
+		dialog = ProgressDialog.show(TravelActivity.this,"提示", "地址收藏中");
+        dialog.setCancelable(true);
+		String url = Constant.BaseUrl + "favorite?auth_code=" + app.auth_code;
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("cust_id", app.cust_id));
+        params.add(new BasicNameValuePair("name", name));
+        params.add(new BasicNameValuePair("address", adress));
+        params.add(new BasicNameValuePair("tel", ""));
+        params.add(new BasicNameValuePair("lon", lon));
+        params.add(new BasicNameValuePair("lat", lat));
+        new NetThread.postDataThread(handler, url, params, collectAdress).start();
+        
+        collectionData = new CollectionData();
+        collectionData.setCust_id(app.cust_id);
+        collectionData.setName(name);
+        collectionData.setAddress(adress);
+        collectionData.setTel("");
+        collectionData.setLon(lon);
+        collectionData.setLat(lat);
 	}
 	/**解析收藏**/
 	private void jsonCollectAdress(String result){
-		System.out.println(result);
+		if(dialog != null){
+			dialog.dismiss();
+		}
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if(jsonObject.getString("status_code").equals("0")){
@@ -750,18 +762,6 @@ public class TravelActivity extends Activity {
 					GetSystem.FindCar(TravelActivity.this, pt1, pt2, "point", "point1");
 				}
 			});
-//			holder.iv_collect_start.setOnClickListener(new OnClickListener() {				
-//				@Override
-//				public void onClick(View v) {
-//					collectAdress(position);
-//				}
-//			});
-//			holder.iv_collect_stop.setOnClickListener(new OnClickListener() {				
-//				@Override
-//				public void onClick(View v) {
-//					collectAdress(position);
-//				}
-//			});
 			holder.iv_item_travel_more.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {

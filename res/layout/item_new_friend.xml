@@ -24,16 +24,7 @@
 	    android:textSize="@dimen/content"
 	    android:text="honesty"/>
 	<TextView 
-	    android:id="@+id/tv_i_add"
-	    android:layout_alignParentRight="true"
-	    android:layout_centerVertical="true"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:textColor="@color/gray"
-	    android:visibility="gone"
-	    android:text="等待对方添加"/>
-	<TextView 
-	    android:id="@+id/tv_y_add"
+	    android:id="@+id/tv_status"
 	    android:layout_alignParentRight="true"
 	    android:layout_centerVertical="true"
 	    android:layout_width="wrap_content"

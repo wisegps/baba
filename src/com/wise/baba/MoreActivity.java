@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,6 +36,8 @@ public class MoreActivity extends Activity{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		app = (AppApplication)getApplication();
 		setContentView(R.layout.activity_more);		
+		Button bt_finish_system = (Button)findViewById(R.id.bt_finish_system);
+		bt_finish_system.setOnClickListener(onClickListener);
 		TextView tv_set = (TextView)findViewById(R.id.tv_set);
 		tv_set.setOnClickListener(onClickListener);
 		TextView tv_sms = (TextView)findViewById(R.id.tv_sms);
@@ -80,6 +83,10 @@ public class MoreActivity extends Activity{
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.iv_back:
+				finish();
+				break;
+			case R.id.bt_finish_system:
+				setResult(1);
 				finish();
 				break;
 			case R.id.tv_sms:				
