@@ -150,6 +150,11 @@
 
             <View
                 android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/line" />
+
+            <View
+                android:layout_width="fill_parent"
                 android:layout_height="1dp"
                 android:background="@drawable/body_line" />
         </LinearLayout>
@@ -230,24 +235,52 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/small"
-                android:text="一下是爱得沙发上大幅度咖啡馆还是贷款购房好看 " />
+                android:text="以下是我们收集及车友分享的OBD接口实景图片，我为人人，人人为我，如果以下暂时无法显示您对应车型的图片，请立即拍照，分享您的宝贵经验 "
+                android:textColor="@color/navy" />
 
-            <TextView
-                android:id="@+id/car_name"
+            <View
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:drawableRight="@drawable/amp1" />
+                android:layout_height="0.5dp"
+                android:background="@color/line" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="车辆型号:"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/content" />
+
+                <TextView
+                    android:id="@+id/car_name"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/btn_right"
+                    android:padding="5dp"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/content" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/line" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="0dip"
-                android:layout_marginTop="5dip"
                 android:layout_weight="1"
                 android:orientation="horizontal" >
 
                 <LinearLayout
                     android:layout_width="0dip"
                     android:layout_height="fill_parent"
+                    android:layout_marginTop="5dip"
                     android:layout_weight="1"
                     android:orientation="vertical" >
 
@@ -256,12 +289,19 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="近景图"
+                        android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/line" />
 
                     <ImageView
                         android:id="@+id/car_icon_near"
                         android:layout_width="fill_parent"
                         android:layout_height="0dip"
+                        android:layout_marginTop="5dip"
                         android:layout_weight="1"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/app_name"
@@ -272,8 +312,11 @@
                         android:id="@+id/tv_icon_near_share"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dip"
                         android:gravity="center"
-                        android:text="我要分享" />
+                        android:text="我要分享"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
                 </LinearLayout>
 
                 <View
@@ -284,6 +327,7 @@
                 <LinearLayout
                     android:layout_width="0dip"
                     android:layout_height="fill_parent"
+                    android:layout_marginTop="5dip"
                     android:layout_weight="1"
                     android:orientation="vertical" >
 
@@ -292,12 +336,19 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="远景图"
+                        android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/line" />
 
                     <ImageView
                         android:id="@+id/car_icon_far"
                         android:layout_width="fill_parent"
                         android:layout_height="0dip"
+                        android:layout_marginTop="5dip"
                         android:layout_weight="1"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/app_name"
@@ -308,10 +359,18 @@
                         android:id="@+id/tv_icon_far_share"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dip"
                         android:gravity="center"
-                        android:text="我要分享" />
+                        android:text="我要分享"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
                 </LinearLayout>
             </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/line" />
 
             <TextView
                 android:id="@+id/car_own_name"
@@ -319,7 +378,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margins"
                 android:gravity="center"
-                android:text="分享者:WICARE"
+                android:text="分享者:"
+                android:textColor="@color/navy"
                 android:textSize="@dimen/content" />
         </LinearLayout>
     </ScrollView>
