@@ -21,6 +21,8 @@ import pubclas.JsonData;
 import pubclas.NetThread;
 import pubclas.Uri2Path;
 
+import com.aliyun.android.oss.model.OSSObject;
+import com.aliyun.android.oss.task.GetObjectTask;
 import com.aliyun.android.oss.task.PutObjectTask;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
@@ -31,6 +33,7 @@ import customView.WaitLinearLayout;
 import customView.PopView.OnItemClickListener;
 import customView.WaitLinearLayout.OnFinishListener;
 import data.CarData;
+import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -134,6 +137,7 @@ public class DevicesAddActivity extends Activity {
 		tv_icon_far_share = (TextView) findViewById(R.id.tv_icon_far_share);
 		tv_icon_far_share.setOnClickListener(onClickListener);
 		car_name = (TextView) findViewById(R.id.car_name);
+		car_name.setOnClickListener(onClickListener);
 		car_own_name = (TextView) findViewById(R.id.car_own_name);
 
 		Intent intent = getIntent();
@@ -167,9 +171,11 @@ public class DevicesAddActivity extends Activity {
 
 	private void getDeviceDate() {
 		// 近景
-		String url_1 = Constant.BaseUrl + "base/car_series/" + car_series_id
+		String url_1 = Constant.BaseUrl + "base/car_series/" + "1799"
+		// car_series_id
 				+ "/near_pic" + "?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url_1, get_near_date).start();
+		Log.e("my_log", "url===>" + url_1);
 		// 远景
 		String url = Constant.BaseUrl + "base/car_series/" + car_series_id
 				+ "/far_pic" + "?auth_code=" + app.auth_code;
@@ -196,34 +202,74 @@ public class DevicesAddActivity extends Activity {
 				new NetThread.GetDataThread(handler, url, get_data).start();
 				break;
 			case R.id.tv_icon_near_share:// TODO 分享近景图
-				if (oss_url_big.equals("") && oss_url_small.equals("")) {
+				if (small_pic.equals("") && big_pic.equals("")) {
 					Toast.makeText(DevicesAddActivity.this, "请先选择图片",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
+
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						// 上传大图图片到阿里云
+						PutObjectTask smallTask = new PutObjectTask(
+								Constant.oss_path, small_pic, "image/jpg",
+								Constant.VehiclePath + small_pic,
+								Constant.oss_accessId, Constant.oss_accessKey);
+						smallTask.getResult();
+
+						PutObjectTask bigTask = new PutObjectTask(
+								Constant.oss_path, big_pic, "image/jpg",
+								Constant.VehiclePath + big_pic,
+								Constant.oss_accessId, Constant.oss_accessKey);
+						bigTask.getResult();
+					}
+				}).start();
+
 				String naerUrl = Constant.BaseUrl + "base/car_series/"
 						+ car_series_id + "/near_pic?auth_code="
 						+ app.auth_code;
 				List<NameValuePair> params1 = new ArrayList<NameValuePair>();
-				params1.add(new BasicNameValuePair("big_pic_url", oss_url_big));
+				params1.add(new BasicNameValuePair("big_pic_url",
+						(Constant.oss_url + big_pic)));
 				params1.add(new BasicNameValuePair("small_pic_url",
-						oss_url_small));
+						(Constant.oss_url + small_pic)));
 				params1.add(new BasicNameValuePair("author", app.cust_name));
 				new NetThread.postDataThread(handler, naerUrl, params1,
 						REQUEST_NEAR).start();
 				break;
 			case R.id.tv_icon_far_share:// 分享远景图
-				if (oss_url_big.equals("") && oss_url_small.equals("")) {
+				if (big_pic.equals("") && small_pic.equals("")) {
 					Toast.makeText(DevicesAddActivity.this, "请先选择图片",
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
+
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						// 上传大图图片到阿里云
+						PutObjectTask smallTask = new PutObjectTask(
+								Constant.oss_path, small_pic, "image/jpg",
+								Constant.VehiclePath + small_pic,
+								Constant.oss_accessId, Constant.oss_accessKey);
+						smallTask.getResult();
+
+						PutObjectTask bigTask = new PutObjectTask(
+								Constant.oss_path, big_pic, "image/jpg",
+								Constant.VehiclePath + big_pic,
+								Constant.oss_accessId, Constant.oss_accessKey);
+						bigTask.getResult();
+					}
+				}).start();
+
 				String farUrl = Constant.BaseUrl + "base/car_series/"
 						+ car_series_id + "/far_pic?auth_code=" + app.auth_code;
 				List<NameValuePair> params2 = new ArrayList<NameValuePair>();
-				params2.add(new BasicNameValuePair("big_pic_url", oss_url_big));
+				params2.add(new BasicNameValuePair("big_pic_url",
+						(Constant.oss_url + big_pic)));
 				params2.add(new BasicNameValuePair("small_pic_url",
-						oss_url_small));
+						(Constant.oss_url + small_pic)));
 				params2.add(new BasicNameValuePair("author", app.cust_name));
 				new NetThread.postDataThread(handler, farUrl, params2,
 						REQUEST_FAR).start();
@@ -233,6 +279,10 @@ public class DevicesAddActivity extends Activity {
 				break;
 			case R.id.car_icon_far:
 				picPop(REQUEST_FAR, R.id.tv_icon_far_share);
+				break;
+			case R.id.car_name:
+				startActivityForResult(new Intent(DevicesAddActivity.this,
+						ModelsActivity.class), 2);
 				break;
 			}
 		}
@@ -363,43 +413,68 @@ public class DevicesAddActivity extends Activity {
 				jsonPicDate(msg.obj.toString(), get_near_date);
 				break;
 			case REQUEST_NEAR:
-				Toast.makeText(DevicesAddActivity.this, "分享成功",
+				Toast.makeText(DevicesAddActivity.this, "近景图分享成功",
 						Toast.LENGTH_SHORT).show();
 				break;
 			case REQUEST_FAR:
-				Toast.makeText(DevicesAddActivity.this, "分享成功",
+				Toast.makeText(DevicesAddActivity.this, "远景图分享成功",
 						Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
 	};
 
-	private Bitmap getPic(String path) {
-		try {
-			URL url = new URL(path);
-			HttpURLConnection conn;
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setConnectTimeout(5000);
-			conn.setRequestMethod("GET");
-			if (conn.getResponseCode() == 200) {
-				InputStream inputStream = conn.getInputStream();
-				Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-				return bitmap;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+	private String getImagePath(String imageUrl) {
+		int lastSlashIndex = imageUrl.lastIndexOf("/");
+		String imageName = imageUrl.substring(lastSlashIndex + 1);
+		String imageDir = Constant.VehiclePath;
+		File file = new File(imageDir);
+		if (!file.exists()) {
+			file.mkdirs();
 		}
-		return null;
+		String imagePath = imageDir + imageName;
+		return imagePath;
+	}
+
+	Bitmap bitmap = null;// 阿里云上的图片
+
+	private void getPic(String path) {
+		int lastSlashIndex = path.lastIndexOf("/");
+		final String imageName = path.substring(lastSlashIndex + 1);
+		final File imageFile = new File(getImagePath(path));
+		if (imageFile.exists()) {
+			bitmap = BitmapFactory.decodeFile(getImagePath(path));
+		} else {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						// 获取阿里云上的图片
+						GetObjectTask task = new GetObjectTask(
+								Constant.oss_path, imageName,
+								Constant.oss_accessId, Constant.oss_accessKey);
+						OSSObject obj = task.getResult();
+						bitmap = BitmapFactory.decodeByteArray(obj.getData(),
+								0, (obj.getData()).length);
+						FileOutputStream fileOutputStream = new FileOutputStream(
+								imageFile);
+						fileOutputStream.write(obj.getData());
+						fileOutputStream.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
 	}
 
 	private void jsonPicDate(String result, int type) {
 		try {
-
 			if (result.equals("") || result == null || result.equals("[]")) {
-
 				return;
 			} else {
 				JSONObject jsonObject = new JSONArray(result).getJSONObject(0);
+				Log.e("my_log", "===333==>" + jsonObject.toString());
 				String name = jsonObject.getString("name");
 				if (type == get_near_date) {
 					if (jsonObject.opt("obd_near_pic") != null) {
@@ -408,26 +483,29 @@ public class DevicesAddActivity extends Activity {
 								.getJSONArray("obd_near_pic");
 						for (int i = 0; i < jsonArrayNear.length(); i++) {
 							JSONObject object = jsonArrayNear.getJSONObject(i);
-							if (name.equals(car_name.getText().toString())) {
-								String urlString = object
-										.getString("small_pic_url");
-								String author = object.getString("author");
-								car_own_name.setText(author);
-								if (urlString != null && !urlString.equals("")
-										&& getPic(urlString) != null) {
-									tv_icon_near_share.setVisibility(View.GONE);
-									car_icon_near
-											.setImageBitmap(getPic(urlString));
-									car_icon_near
-											.setOnClickListener(new OnClickListener() {
-												@Override
-												public void onClick(View v) {
-
-												}
-											});
-								}
-								break;
-							}
+							Log.e("my_log", "===111==>" + object.toString());
+							String urlString = object
+									.getString("small_pic_url");
+							String author = object.getString("author");
+							car_own_name.setText("分享者:" + author);
+							getPic(urlString);
+							Log.e("my_log", "===222==>" + bitmap.toString());
+							car_icon_near.setImageBitmap(bitmap);
+							// if (name.equals(car_name.getText().toString())) {
+							// String urlString = object
+							// .getString("small_pic_url");
+							// String author = object.getString("author");
+							// car_own_name.setText("分享者:" + author);
+							// if (urlString != null && !urlString.equals("")) {
+							// getPic(urlString);
+							// if (bitmap != null) {
+							// tv_icon_near_share
+							// .setVisibility(View.GONE);
+							// car_icon_near.setImageBitmap(bitmap);
+							// }
+							// }
+							// break;
+							// }
 						}
 					}
 				} else if (type == get_far_date) {
@@ -441,19 +519,14 @@ public class DevicesAddActivity extends Activity {
 								String urlString = object
 										.getString("small_pic_url");
 								String author = object.getString("author");
-								car_own_name.setText(author);
-								if (urlString != null && !urlString.equals("")
-										&& getPic(urlString) != null) {
-									tv_icon_far_share.setVisibility(View.GONE);
-									car_icon_far
-											.setImageBitmap(getPic(urlString));
-									car_icon_far
-											.setOnClickListener(new OnClickListener() {
-												@Override
-												public void onClick(View v) {
-
-												}
-											});
+								car_own_name.setText("分享者:" + author);
+								if (urlString != null && !urlString.equals("")) {
+									getPic(urlString);
+									if (bitmap != null) {
+										tv_icon_far_share
+												.setVisibility(View.GONE);
+										car_icon_far.setImageBitmap(bitmap);
+									}
 								}
 								break;
 							}
@@ -648,49 +721,47 @@ public class DevicesAddActivity extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		System.out.println("requestCode = " + requestCode);
-		System.out.println("resultCode = " + resultCode);
-		System.out.println("flag = " + flag);
+		if (resultCode == 1) {
+			car_series = data.getStringExtra("series");
+			car_series_id = data.getStringExtra("seriesId");
+			car_name.setText(car_series);
+			getDeviceDate();
+		}
 		if (resultCode == 2) {
 			String result = data.getStringExtra("result");
 			et_serial.setText(result);
 			checkSerial();
 		}
-		if (requestCode == REQUEST_NEAR && resultCode == Activity.RESULT_OK) {			
-				if (flag) {
-					System.out.println("near 拍照");
-					saveImageSD(
-							(Constant.VehiclePath + Constant.TemporaryImage),
+		if (requestCode == REQUEST_NEAR && resultCode == Activity.RESULT_OK) {
+			if (flag) {
+				saveImageSD((Constant.VehiclePath + Constant.TemporaryImage),
+						car_icon_near);
+				flag = false;
+			} else {
+				if (data != null) {
+					Uri uri = data.getData();
+					saveImageSD(Uri2Path.getPath(DevicesAddActivity.this, uri),
 							car_icon_near);
-					flag = false;
-				} else {
-					if (data != null) {
-
-						Uri uri = data.getData();
-						saveImageSD(Uri2Path.getPath(DevicesAddActivity.this, uri),
-								car_icon_near);
-					}
 				}
+			}
 		} else if (requestCode == REQUEST_FAR
 				&& resultCode == Activity.RESULT_OK) {
-			
-				if (flag) {
-					saveImageSD(
-							(Constant.VehiclePath + Constant.TemporaryImage),
+			if (flag) {
+				saveImageSD((Constant.VehiclePath + Constant.TemporaryImage),
+						car_icon_far);
+				flag = false;
+			} else {
+				if (data != null) {
+					Uri uri = data.getData();
+					saveImageSD(Uri2Path.getPath(DevicesAddActivity.this, uri),
 							car_icon_far);
-					flag = false;
-				} else {
-					if (data != null) {
-						Uri uri = data.getData();
-						saveImageSD(Uri2Path.getPath(DevicesAddActivity.this, uri),
-								car_icon_far);
-					}
 				}
+			}
 		}
 	};
 
-	String oss_url_small = "";
-	String oss_url_big = "";
+	String small_pic = "";
+	String big_pic = "";
 
 	private void saveImageSD(String path, ImageView showView) {
 		if (path == null || path.equals("")) {
@@ -699,12 +770,9 @@ public class DevicesAddActivity extends Activity {
 			return;
 		}
 		// 设置图像的名称和地址
-		final String small_pic = app.cust_id + System.currentTimeMillis()
-				+ "small.png";
-		final String big_pic = app.cust_id + System.currentTimeMillis()
-				+ "big.png";
-		oss_url_small = Constant.oss_url + small_pic;
-		oss_url_big = Constant.oss_url + big_pic;
+		small_pic = app.cust_id + System.currentTimeMillis() + "small.png";
+		big_pic = app.cust_id + System.currentTimeMillis() + "big.png";
+
 		// 判断文件夹是否为空
 		File filePath = new File(Constant.VehiclePath);
 		if (!filePath.exists()) {
@@ -722,9 +790,9 @@ public class DevicesAddActivity extends Activity {
 		// 存大图像
 		bitmap = Blur.scaleImage(bitmap, newWidth);
 		FileOutputStream bigOutputStream = null;
-		final String bigFile = Constant.VehiclePath + big_pic;
 		try {
-			bigOutputStream = new FileOutputStream(bigFile);
+			bigOutputStream = new FileOutputStream(Constant.VehiclePath
+					+ big_pic);
 			bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bigOutputStream);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -740,9 +808,9 @@ public class DevicesAddActivity extends Activity {
 		// 存小图像
 		bitmap = Blur.scaleImage(bitmap, newWidth / 3);
 		FileOutputStream smallOutputStream = null;
-		final String smallFile = Constant.VehiclePath + small_pic;
 		try {
-			smallOutputStream = new FileOutputStream(smallFile);
+			smallOutputStream = new FileOutputStream(Constant.VehiclePath
+					+ small_pic);
 			bitmap.compress(Bitmap.CompressFormat.JPEG, 80, smallOutputStream);// 把数据写入文件
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -755,23 +823,7 @@ public class DevicesAddActivity extends Activity {
 			}
 		}
 		// 图片显示
-		System.out.println("bitmap = " + bitmap);
 		showView.setImageBitmap(bitmap);
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// 上传大图图片到阿里云
-				PutObjectTask smallTask = new PutObjectTask(Constant.oss_path,
-						small_pic, "image/jpg", smallFile,
-						Constant.oss_accessId, Constant.oss_accessKey);
-				smallTask.getResult();
-
-				PutObjectTask bigTask = new PutObjectTask(Constant.oss_path,
-						big_pic, "image/jpg", bigFile, Constant.oss_accessId,
-						Constant.oss_accessKey);
-				bigTask.getResult();
-			}
-		}).start();
 	}
 
 	@Override
