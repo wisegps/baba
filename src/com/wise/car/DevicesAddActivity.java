@@ -276,9 +276,11 @@ public class DevicesAddActivity extends Activity {
 				break;
 			case R.id.car_icon_near:
 				picPop(REQUEST_NEAR, R.id.tv_icon_near_share);
+				tv_icon_near_share.setVisibility(View.VISIBLE);
 				break;
 			case R.id.car_icon_far:
 				picPop(REQUEST_FAR, R.id.tv_icon_far_share);
+				tv_icon_far_share.setVisibility(View.VISIBLE);
 				break;
 			case R.id.car_name:
 				startActivityForResult(new Intent(DevicesAddActivity.this,
@@ -313,7 +315,6 @@ public class DevicesAddActivity extends Activity {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case check_serial:
-				Log.d(TAG, "返回=" + msg.obj.toString());
 				jsonSerial(msg.obj.toString());
 				break;
 			case add_serial:
@@ -420,6 +421,18 @@ public class DevicesAddActivity extends Activity {
 				Toast.makeText(DevicesAddActivity.this, "远景图分享成功",
 						Toast.LENGTH_SHORT).show();
 				break;
+			case getBitmap:
+				Log.e("my_log", "111 === ");
+				int type = msg.arg1;
+				if (type == REQUEST_NEAR) {
+					Log.e("my_log", "bitmap =" + bitmap);
+					car_icon_near.setImageBitmap(bitmap);
+					tv_icon_near_share.setVisibility(View.GONE);
+				} else if (type == REQUEST_FAR) {
+					car_icon_far.setImageBitmap(bitmap);
+					tv_icon_far_share.setVisibility(View.GONE);
+				}
+				break;
 			}
 		}
 	};
@@ -437,18 +450,27 @@ public class DevicesAddActivity extends Activity {
 	}
 
 	Bitmap bitmap = null;// 阿里云上的图片
+	private static final int getBitmap = 18;
 
-	private void getPic(String path) {
+	private void getPic(String path, final int type) {
+		Log.e("my_log", "===3333==");
 		int lastSlashIndex = path.lastIndexOf("/");
 		final String imageName = path.substring(lastSlashIndex + 1);
 		final File imageFile = new File(getImagePath(path));
 		if (imageFile.exists()) {
+			Log.e("my_log", "===5555==");
 			bitmap = BitmapFactory.decodeFile(getImagePath(path));
+			if (type == REQUEST_NEAR) {
+				car_icon_near.setImageBitmap(bitmap);
+			} else if (type == REQUEST_FAR) {
+				car_icon_far.setImageBitmap(bitmap);
+			}
 		} else {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
 					try {
+						Log.e("my_log", "===6666==");
 						// 获取阿里云上的图片
 						GetObjectTask task = new GetObjectTask(
 								Constant.oss_path, imageName,
@@ -456,6 +478,11 @@ public class DevicesAddActivity extends Activity {
 						OSSObject obj = task.getResult();
 						bitmap = BitmapFactory.decodeByteArray(obj.getData(),
 								0, (obj.getData()).length);
+						Log.e("my_log", "bitmap ==11== " + bitmap.toString());
+						Message msg = new Message();
+						msg.arg1 = type;
+						msg.what = getBitmap;
+						handler.sendMessage(msg);
 						FileOutputStream fileOutputStream = new FileOutputStream(
 								imageFile);
 						fileOutputStream.write(obj.getData());
@@ -469,12 +496,13 @@ public class DevicesAddActivity extends Activity {
 	}
 
 	private void jsonPicDate(String result, int type) {
-		System.out.println(result);
 		try {
 			if (result.equals("") || result == null || result.equals("[]")) {
 				return;
 			} else {
-				JSONObject jsonObject = new JSONArray(result).getJSONObject(0);
+				JSONObject jsonObject = (new JSONArray(result))
+						.getJSONObject(0);
+				System.out.println("jsonObject" + jsonObject);
 				String name = jsonObject.getString("name");
 				if (type == get_near_date) {
 					if (jsonObject.opt("obd_near_pic") != null) {
@@ -485,12 +513,10 @@ public class DevicesAddActivity extends Activity {
 							JSONObject object = jsonArrayNear.getJSONObject(i);
 							String urlString = object
 									.getString("small_pic_url");
-							System.out.println("urlString = " + urlString);
+							Log.e("my_log", "urlString = " + urlString);
 							String author = object.getString("author");
 							car_own_name.setText("分享者:" + author);
-							getPic(urlString);
-							Log.e("my_log", "===222==>" + bitmap.toString());
-							car_icon_near.setImageBitmap(bitmap);
+							getPic(urlString, REQUEST_NEAR);
 							// if (name.equals(car_name.getText().toString())) {
 							// String urlString = object
 							// .getString("small_pic_url");
@@ -521,7 +547,7 @@ public class DevicesAddActivity extends Activity {
 								String author = object.getString("author");
 								car_own_name.setText("分享者:" + author);
 								if (urlString != null && !urlString.equals("")) {
-									getPic(urlString);
+									getPic(urlString, REQUEST_FAR);
 									if (bitmap != null) {
 										tv_icon_far_share
 												.setVisibility(View.GONE);
