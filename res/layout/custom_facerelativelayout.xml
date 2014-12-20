@@ -20,7 +20,7 @@
                 android:layout_height="45dp"
                 android:layout_centerVertical="true"
                 android:padding="@dimen/margins"
-                android:src="@drawable/body_icon_expression" />
+                android:src="@drawable/smiley_face" />
 
             <ImageView
                 android:id="@+id/ivPopUp"

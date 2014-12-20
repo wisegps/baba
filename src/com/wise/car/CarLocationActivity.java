@@ -501,7 +501,7 @@ public class CarLocationActivity extends Activity {
 	private void showDialog(final LatLng startLocat, final LatLng carLocat) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				CarLocationActivity.this);
-		builder.setTitle("寻车").setMessage("是否进行路径导航？");
+		builder.setTitle("提示").setMessage("是否进行路径导航？");
 
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
