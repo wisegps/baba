@@ -609,9 +609,9 @@ public class TravelActivity extends Activity {
 					.substring(10, 16));
 			holder.tv_item_travel_stopTime.setText(travelData.getStopTime()
 					.substring(10, 16));
-			holder.tv_item_travel_startPlace.setText(travelData
+			holder.tv_item_travel_startPlace.setText("起点：" + travelData
 					.getStart_place());
-			holder.tv_item_travel_stopPlace.setText(travelData.getEnd_place());
+			holder.tv_item_travel_stopPlace.setText("终点：" + travelData.getEnd_place());
 			holder.tv_item_travel_spacingDistance.setText("共"
 					+ travelData.getSpacingDistance() + "公里\\"
 					+ travelData.getSpacingTime());
@@ -960,7 +960,7 @@ public class TravelActivity extends Activity {
 					}
 					adress = adress + strInfo +",";
 					if (isFrist) {// 起点位置取完，在取结束位置
-						travelDatas.get(i).setStart_place("起点：" + strInfo);
+						travelDatas.get(i).setStart_place(strInfo);
 						isFrist = false;
 						double lat = Double.valueOf(travelDatas.get(i)
 								.getEnd_lat());
@@ -971,7 +971,7 @@ public class TravelActivity extends Activity {
 								.location(latLng));
 						i++;
 					} else {
-						travelDatas.get(i - 1).setEnd_place("终点：" + strInfo);
+						travelDatas.get(i - 1).setEnd_place(strInfo);
 						if (travelDatas.size() == i) {
 							System.out.println("递归完毕");
 							judgeCollect(adress);

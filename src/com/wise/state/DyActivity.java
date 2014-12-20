@@ -63,10 +63,30 @@ public class DyActivity extends Activity {
 		type = intent.getIntExtra("type", 1);
 		String title = intent.getStringExtra("title");
 		String name = intent.getStringExtra("name");
+		TextView tv_dpdy_tiyle = (TextView)findViewById(R.id.tv_dpdy_tiyle);
+		tv_dpdy_tiyle.setText(title);
+		TextView tv_dpdy_unit = (TextView)findViewById(R.id.tv_dpdy_unit);
+		switch (type) {
+		case 1:
+			tv_dpdy_unit.setText("V");
+			break;
+		case 2:
+			tv_dpdy_unit.setText("%");
+			break;
+		case 3:
+			tv_dpdy_unit.setText("rpm");
+			break;
+		case 4:
+			tv_dpdy_unit.setText("°C");
+			break;
+		case 5:
+			tv_dpdy_unit.setText("°C");
+			break;
+		}
 		ecv_real_dpdy = (EnergyCurveView)findViewById(R.id.ecv_real_dpdy);
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		ecv_real_dpdy.setViewWidth(dm.widthPixels);
+		ecv_real_dpdy.setViewWidth(dm.widthPixels,false);
 		// 曲线图单位坐标
 		TextView tv_chart_uint = (TextView) findViewById(R.id.tv_chart_unit);
 		TextView tv_chart_title = (TextView) findViewById(R.id.tv_chart_title);

@@ -30,7 +30,7 @@ public class EnergyCurveView extends View{
 	int fontSize;
 	/**边距**/
 	int padding = 20;
-	
+	boolean isNeedX = true;
 	/**y轴最高刻度 距离 y轴绘制的间距**/
 	private static final float WEIGHT = 30;
 	/**距离x轴的边距**/
@@ -79,22 +79,24 @@ public class EnergyCurveView extends View{
 		//x轴
 		canvas.drawLine(SPACING+padding, realHeight, SPACING+padding + realWidth, realHeight, paint);
 		float xSpacing = (realWidth - fontSize - spacing_x)/6;
-        paint.setTextSize(fontSize);        
-    	if((stop - start) < 7){
-    		float xSpacing1 = (realWidth - fontSize - spacing_x)/(stop - start);
-    		for(int i = 0 ; i < (stop - start + 1) ; i++){
-    			//TODO 文字
-    			//i * spacingOfX + SPACING + spacing_x + padding
-        		float x = SPACING + spacing_x + i*xSpacing1+padding;
-    		    canvas.drawText("" + (start + i),x,realHeight + (int)(fontSize * 1.5),paint);
+        paint.setTextSize(fontSize); 
+        if(isNeedX){
+        	if((stop - start) < 7){
+        		float xSpacing1 = (realWidth - fontSize - spacing_x)/(stop - start);
+        		for(int i = 0 ; i < (stop - start + 1) ; i++){
+        			//TODO 文字
+        			//i * spacingOfX + SPACING + spacing_x + padding
+            		float x = SPACING + spacing_x + i*xSpacing1+padding;
+        		    canvas.drawText("" + (start + i),x,realHeight + (int)(fontSize * 1.5),paint);
+            	}
+        	}else{
+        		int value1 = (stop - start)/7 + 1;
+        		for(int i = 0 ; i < 7 ; i++){
+            		float x = padding+SPACING + spacing_x + i*xSpacing - fontSize/2;
+        		    canvas.drawText(""+ (start +(int)(value1 * i)),x,realHeight + (int)(fontSize * 1.5),paint);
+            	}
         	}
-    	}else{
-    		int value1 = (stop - start)/7 + 1;
-    		for(int i = 0 ; i < 7 ; i++){
-        		float x = padding+SPACING + spacing_x + i*xSpacing - fontSize/2;
-    		    canvas.drawText(""+ (start +(int)(value1 * i)),x,realHeight + (int)(fontSize * 1.5),paint);
-        	}
-    	}        
+        }    	        
 		/* 竖直线和文字 */
 		for (int i = 0; i <= 5; i++) {
 			paint.setStyle(Paint.Style.FILL);//设置填满  
@@ -146,7 +148,8 @@ public class EnergyCurveView extends View{
 
 	int width = 500;
 	/**传入手机的分辨率**/
-	public void setViewWidth(int width) {
+	public void setViewWidth(int width,boolean isNeedX) {
+		this.isNeedX = isNeedX;
 		this.width = width;
 		padding = fontSize;
 		realWidth = (int) (width - fontSize * 3 - padding * 2);

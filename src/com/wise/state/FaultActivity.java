@@ -318,7 +318,7 @@ public class FaultActivity extends FragmentActivity {
 			@Override
 			public void run() {
 				while (isGetAllData) {
-					SystemClock.sleep(30 * 60000);
+					SystemClock.sleep(5 * 60000);
 					getTotalData();
 				}
 			}

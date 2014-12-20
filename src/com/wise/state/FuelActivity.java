@@ -124,7 +124,7 @@ public class FuelActivity extends Activity {
 
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		fv.setViewSize(dm.widthPixels * 3 / 8);
-		ecv_fuel.setViewWidth(dm.widthPixels);
+		ecv_fuel.setViewWidth(dm.widthPixels,true);
 		index_car = getIntent().getIntExtra("index_car", 0);
 		// TODO 获取显示页面类型
 		type = getIntent().getIntExtra("type", 0);
