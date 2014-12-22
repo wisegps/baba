@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.io.StreamCorruptedException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -159,7 +160,7 @@ public class GetSystem {
 	}
 
 	/** 获取某一天在这个星期的起始和结束时间 **/
-	public static WeekData getWeek(String str) {
+	public static String[] getWeek(String str) {
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Calendar cal = Calendar.getInstance();
@@ -168,12 +169,26 @@ public class GetSystem {
 			if (dayofweek == 0)
 				dayofweek = 7;
 			cal.add(Calendar.DATE, -dayofweek + 1);
-
-			WeekData weekData = new WeekData();
-			weekData.setFristDay(sdf.format(cal.getTime()));
-			cal.add(Calendar.DATE, 6);
-			weekData.setLastDay(sdf.format(cal.getTime()));
-			return weekData;
+			String[] week = new String[7];
+			week[0] = sdf.format(cal.getTime());
+			cal.add(Calendar.DATE, 1);
+			week[1] = sdf.format(cal.getTime());
+			cal.add(Calendar.DATE, 1);
+			week[2] = sdf.format(cal.getTime());
+			cal.add(Calendar.DATE, 1);
+			week[3] = sdf.format(cal.getTime());
+			cal.add(Calendar.DATE, 1);
+			week[4] = sdf.format(cal.getTime());
+			cal.add(Calendar.DATE, 1);
+			week[5] = sdf.format(cal.getTime());
+			cal.add(Calendar.DATE, 1);
+			week[6] = sdf.format(cal.getTime());
+			
+			//WeekData weekData = new WeekData();
+			//weekData.setFristDay(sdf.format(cal.getTime()));
+			//cal.add(Calendar.DATE, 6);
+			//weekData.setLastDay(sdf.format(cal.getTime()));
+			return week;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -268,9 +268,9 @@ public class DyActivity extends Activity {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				int data = jsonObject.getInt("_id");
 				String avg_value = jsonObject.getString("avg_value");
-				Efuel.add(new EnergyItem(data, Float.valueOf(avg_value)));
+				Efuel.add(new EnergyItem(data, Float.valueOf(avg_value),""));
 			}
-			ecv_real_dpdy.initPoints(Efuel);
+			ecv_real_dpdy.initPoints(Efuel,2);
 			ecv_real_dpdy.RefreshView();
 		} catch (Exception e) {
 			e.printStackTrace();

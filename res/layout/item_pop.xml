@@ -5,11 +5,10 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
     <Button 
-        android:id="@+id/bt_item_pop"
-        
+        android:id="@+id/bt_item_pop"        
         android:layout_margin="@dimen/margins"
         android:padding="@dimen/margins"
-             
+        android:background="@drawable/bg_adress"             
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>
