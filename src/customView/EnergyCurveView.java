@@ -140,23 +140,22 @@ public class EnergyCurveView extends View {
 			paint.setPathEffect(effects);
 			canvas.drawPath(path, paint);
 		}
-		System.out.println("type = " + type);
 		if(type == 3){
-			PointF lastPoint;
+			PointF lastPoint = null;
 			/* 绘制曲线 覆盖 剪切后的锯齿 */
 			for (int i = 0; i < points.size() - 1; i++) {
 				paint.setStrokeWidth(3);
 				PointF startPoint = points.get(i);
-				System.out.println("startPoint.y = " + startPoint.y);
-				if(startPoint.y == 0){
-					System.out.println("跳过");
-				}else{
-					lastPoint = startPoint;
+				PointF endPoint = points.get(i + 1);				
+				if(endPoint.y == realHeight){
 					
-					PointF endPoint = points.get(i + 1);
-					if(endPoint.y == 0){
-						System.out.println("跳过");
+				}else{
+					if(startPoint.y == realHeight){
+						
 					}else{
+						lastPoint = startPoint;
+					}
+					if(lastPoint != null){
 						// 画阴影
 						paint.setColor(getResources().getColor(R.color.Green_curve_bg));
 						paint.setStyle(Paint.Style.FILL);// 设置填满
@@ -171,7 +170,7 @@ public class EnergyCurveView extends View {
 						paint.setColor(getResources().getColor(R.color.Green_curve_line));
 						canvas.drawLine(lastPoint.x, lastPoint.y, endPoint.x, endPoint.y,
 								paint);
-					}				
+					}
 				}			
 			}
 		}else{
@@ -222,6 +221,7 @@ public class EnergyCurveView extends View {
 	 *            周or月
 	 */
 	public void initPoints(ArrayList<EnergyItem> energys, int date,int type) {
+		
 		this.date = date;
 		this.type = type;
 		getSpacingOfXY(energys);
