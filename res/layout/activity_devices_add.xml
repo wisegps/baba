@@ -280,7 +280,6 @@
                 <LinearLayout
                     android:layout_width="0dip"
                     android:layout_height="fill_parent"
-                    android:layout_marginTop="5dip"
                     android:layout_weight="1"
                     android:orientation="vertical" >
 
@@ -288,6 +287,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
+                        android:padding="3dip"
                         android:text="近景图"
                         android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
@@ -301,22 +301,11 @@
                         android:id="@+id/car_icon_near"
                         android:layout_width="fill_parent"
                         android:layout_height="0dip"
-                        android:layout_marginTop="5dip"
                         android:layout_weight="1"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/app_name"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_launcher" />
-
-                    <TextView
-                        android:id="@+id/tv_icon_near_share"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dip"
-                        android:gravity="center"
-                        android:text="我要分享"
-                        android:textColor="@color/navy"
-                        android:textSize="@dimen/content" />
                 </LinearLayout>
 
                 <View
@@ -327,7 +316,6 @@
                 <LinearLayout
                     android:layout_width="0dip"
                     android:layout_height="fill_parent"
-                    android:layout_marginTop="5dip"
                     android:layout_weight="1"
                     android:orientation="vertical" >
 
@@ -335,6 +323,7 @@
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
+                        android:padding="3dip"
                         android:text="远景图"
                         android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
@@ -348,22 +337,11 @@
                         android:id="@+id/car_icon_far"
                         android:layout_width="fill_parent"
                         android:layout_height="0dip"
-                        android:layout_marginTop="5dip"
                         android:layout_weight="1"
                         android:adjustViewBounds="true"
                         android:contentDescription="@string/app_name"
                         android:scaleType="fitCenter"
                         android:src="@drawable/ic_launcher" />
-
-                    <TextView
-                        android:id="@+id/tv_icon_far_share"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dip"
-                        android:gravity="center"
-                        android:text="我要分享"
-                        android:textColor="@color/navy"
-                        android:textSize="@dimen/content" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -373,10 +351,21 @@
                 android:background="@color/line" />
 
             <TextView
+                android:id="@+id/tv_pic_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dip"
+                android:background="@drawable/bg_bt_blue"
+                android:padding="8dip"
+                android:text="\t我要分享\t  "
+                android:textSize="@dimen/content" />
+
+            <TextView
                 android:id="@+id/car_own_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margins"
+                android:layout_marginTop="3dip"
                 android:gravity="center"
                 android:text="分享者:"
                 android:textColor="@color/navy"
