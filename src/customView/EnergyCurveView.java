@@ -148,11 +148,11 @@ public class EnergyCurveView extends View {
 				PointF startPoint = points.get(i);
 				PointF endPoint = points.get(i + 1);				
 				if(endPoint.y == realHeight){
-					
+					if(startPoint.y != realHeight){
+						lastPoint = startPoint;
+					}
 				}else{
-					if(startPoint.y == realHeight){
-						
-					}else{
+					if(startPoint.y != realHeight){
 						lastPoint = startPoint;
 					}
 					if(lastPoint != null){

@@ -4,16 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import model.BaseData;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
-
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
@@ -37,8 +34,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
@@ -46,7 +41,6 @@ import com.wise.car.CarAddActivity;
 import com.wise.car.CarUpdateActivity;
 import com.wise.car.TrafficCitiyActivity;
 import com.wise.remind.DealAddressActivity;
-
 import customView.HScrollLayout;
 import customView.OnViewChangeListener;
 import customView.WaitLinearLayout;
@@ -135,12 +129,14 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 				break;
 			case R.id.tv_note:
 				//判断
-				int status = trafficViews.get(index_car).getStatus();
-				if(status == 1){//选择城市
+				int Type = trafficViews.get(index_car).getType();
+				if(Type == 1){//选择城市
 					List<CityData> chooseCityDatas = new ArrayList<CityData>();
 					Intent intent = new Intent(TrafficActivity.this, TrafficCitiyActivity.class);
 					intent.putExtra("cityDatas", (Serializable) chooseCityDatas);
 					startActivityForResult(intent, 1);
+				}else if(Type == 2){//TODO 完善车架号等
+					turnCarUpdate();
 				}
 				break;
 			case R.id.iv_update_car:
@@ -293,7 +289,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			trafficView.setTv_total_fine(tv_total_fine);
 			trafficView.setTv_total_score(tv_total_score);
 			trafficView.setTv_total(tv_total);
-			trafficView.setStatus(0);
+			trafficView.setType(0);
 			trafficViews.add(trafficView);
 
 			rl_Note.setVisibility(View.GONE);
@@ -323,7 +319,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			CarData carData = app.carDatas.get(index_car);
 			ArrayList<String> citys = carData.getVio_citys();
 			if(citys == null || citys.size() == 0){//提示添加违章城市
-				trafficView.setStatus(1);
+				trafficView.setType(1);
 				List<CityData> chooseCityDatas = new ArrayList<CityData>();
 				Intent intent = new Intent(TrafficActivity.this, TrafficCitiyActivity.class);
 				intent.putExtra("cityDatas", (Serializable) chooseCityDatas);
@@ -367,15 +363,20 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 									} else {
 										if (engineno == 1) {// 全部
 											if (carData.getEngine_no().length() == 0) {
-												Toast.makeText(TrafficActivity.this, "需要完整的发动机号",
-														Toast.LENGTH_SHORT).show();
+												trafficView.setType(2);
+												trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
+												trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
+												trafficViews.get(index_car).getTv_note().setText("需要完整的发动机号");
+												trafficViews.get(index_car).getLl_wait_show().setVisibility(View.GONE);
 												return;
 											}
 										} else {
 											if (carData.getEngine_no().length() < engineno) {
-												Toast.makeText(TrafficActivity.this,
-														"需要发动机号的后" + cityData.getEngineno() + "位",
-														Toast.LENGTH_SHORT).show();
+												trafficView.setType(2);
+												trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
+												trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
+												trafficViews.get(index_car).getTv_note().setText("需要发动机号的后" + engineno + "位");
+												trafficViews.get(index_car).getLl_wait_show().setVisibility(View.GONE);
 												return;
 											}
 										}
@@ -386,15 +387,20 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 									} else {
 										if (frameno == 1) {// 全部
 											if (carData.getFrame_no().length() == 0) {
-												Toast.makeText(TrafficActivity.this, "需要完整的车架号",
-														Toast.LENGTH_SHORT).show();
+												trafficView.setType(2);
+												trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
+												trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
+												trafficViews.get(index_car).getTv_note().setText("需要完整的车架号");
+												trafficViews.get(index_car).getLl_wait_show().setVisibility(View.GONE);
 												return;
 											}
 										} else {
 											if (carData.getFrame_no().length() < frameno) {
-												Toast.makeText(TrafficActivity.this,
-														"需要车架号的后" + cityData.getFrameno() + "位",
-														Toast.LENGTH_SHORT).show();
+												trafficView.setType(2);
+												trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
+												trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
+												trafficViews.get(index_car).getTv_note().setText("需要车架号的后" + frameno + "位");
+												trafficViews.get(index_car).getLl_wait_show().setVisibility(View.GONE);
 												return;
 											}
 										}
@@ -411,6 +417,8 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			getFristTraffic();
 		}
 	}
+	
+	
 
 	/**
 	 * 解析车辆违章信息
@@ -654,9 +662,16 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		private TextView tv_total;
 		private List<TrafficData> trafficDatas;
 		private TextView tv_note;
-		//状态，默认0 ， 没选择城市1，
 		private int status;
+		private int Type;
 				
+		public int getType() {
+			return Type;
+		}
+		/**状态，默认0 ， 没选择城市1，车架号不对是2**/
+		public void setType(int type) {
+			Type = type;
+		}
 		public int getStatus() {
 			return status;
 		}
@@ -830,6 +845,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		System.out.println("requestCode = " + requestCode + " , resultCode = " + resultCode);
 		//返回
 		if(requestCode == 1 && resultCode == 2){
 			//添加违章城市返回
@@ -857,7 +873,14 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 				}
 				carData.setVio_citys(vio_citys);
 				carData.setVio_citys_code(vio_citys_code);
-				carData.setProvince(provinces);
+				carData.setProvince(provinces);		
+
+				//保存
+				String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id() + "/vio_city?auth_code=" + app.auth_code;
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("vio_citys", jsonList(chooseCityDatas)));
+				new NetThread.putDataThread(handler, url, params, update_city).start();
+				
 				String engine_no = carData.getEngine_no();
 				String frame_no = carData.getFrame_no();
 
@@ -896,18 +919,104 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 						}
 					}
 				}
-				//保存
-				String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id() + "/vio_city?auth_code=" + app.auth_code;
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				params.add(new BasicNameValuePair("vio_citys", jsonList(chooseCityDatas)));
-				new NetThread.putDataThread(handler, url, params, update_city).start();
 				getFristTraffic();
 			}			
 		}else if(requestCode == 2 && resultCode == 3){
-			//添加车架号返回
+			//跳转到车辆信息界面，保存返回，直接读取数据
 			GetSystem.myLog(TAG, app.carDatas.get(index_car).toString());
 			getFristTraffic();
-		}else if (requestCode == 1 && resultCode == 3) {
+		}else if(requestCode == 2 && resultCode == 0){
+			//跳转到车辆信息界面，未保存数据返回，判断判断原有的车架号是否符合规则
+			TrafficView trafficView = trafficViews.get(index_car);
+			CarData carData = app.carDatas.get(index_car);
+			List<CityData> chooseCityDatas = new ArrayList<CityData>();
+			for (int i = 0; i < carData.getVio_citys().size(); i++) {
+				CityData cityData = new CityData();
+				cityData.setCityName(carData.getVio_citys().get(i));
+				cityData.setCityCode(carData.getVio_citys_code().get(i));
+				// 防止数组越界
+				if (i >= carData.getProvince().size()) {
+					cityData.setProvince("");
+				} else {// TODO 异常
+					cityData.setProvince(carData.getProvince().get(i));
+				}
+				chooseCityDatas.add(cityData);
+			}
+			if(jsonTraffic != null){
+				try {
+					Iterator it = jsonTraffic.keys();
+					while (it.hasNext()) {
+						String key = it.next().toString();
+						JSONObject jsonObject = jsonTraffic.getJSONObject(key);
+						JSONArray jsonArray = jsonObject.getJSONArray("citys"); // 城市
+						for (int i = 0; i < jsonArray.length(); i++) {
+							JSONObject jsonObject3 = jsonArray.getJSONObject(i);
+							String city_code = jsonObject3.getString("city_code"); //城市编码
+							int engine = jsonObject3.getInt("engine"); //是否需要发动机号
+							int engineno = jsonObject3.getInt("engineno");//发送机好的几位
+							int frame = jsonObject3.getInt("class");//是否需要车架号
+							int frameno = jsonObject3.getInt("classno");//需要车架号的几位
+							for (CityData cityData : chooseCityDatas) {
+								if (cityData.getCityCode().equals(city_code)) {
+									//判断需要的车架号，发动机号是否一致
+									// 发动机号
+									if (engine == 0) {
+										//不需要发发动机号
+									} else {
+										if (engineno == 1) {// 全部
+											if (carData.getEngine_no().length() == 0) {
+												trafficView.setType(2);
+												trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
+												trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
+												trafficViews.get(index_car).getTv_note().setText("需要完整的发动机号");
+												trafficViews.get(index_car).getLl_wait_show().setVisibility(View.GONE);
+												return;
+											}
+										} else {
+											if (carData.getEngine_no().length() < engineno) {
+												trafficView.setType(2);
+												trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
+												trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
+												trafficViews.get(index_car).getTv_note().setText("需要发动机号的后" + engineno + "位");
+												trafficViews.get(index_car).getLl_wait_show().setVisibility(View.GONE);
+												return;
+											}
+										}
+									}
+									// 车架号
+									if (frame == 0) {
+
+									} else {
+										if (frameno == 1) {// 全部
+											if (carData.getFrame_no().length() == 0) {
+												trafficView.setType(2);
+												trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
+												trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
+												trafficViews.get(index_car).getTv_note().setText("需要完整的车架号");
+												trafficViews.get(index_car).getLl_wait_show().setVisibility(View.GONE);
+												return;
+											}
+										} else {
+											if (carData.getFrame_no().length() < frameno) {
+												trafficView.setType(2);
+												trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
+												trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
+												trafficViews.get(index_car).getTv_note().setText("需要车架号的后" + frameno + "位");
+												trafficViews.get(index_car).getLl_wait_show().setVisibility(View.GONE);
+												return;
+											}
+										}
+									}
+									break;
+								}
+							}
+						}
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}	
+		} else if (requestCode == 1 && resultCode == 3) {
 			//评论违章返回
 			int index = data.getIntExtra("index", 0);
 			int size = data.getIntExtra("size", 0);
@@ -950,7 +1059,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		}
 		return "[]";
 	}
-	
+	/**跳转到更新车辆信息界面**/
 	private void turnCarUpdate(){
 		Intent intent = new Intent(TrafficActivity.this, CarUpdateActivity.class);
 		intent.putExtra("index", index_car);
@@ -958,6 +1067,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 	}
 	/**获取违章数据**/
 	private void getFristTraffic(){
+		trafficViews.get(index_car).getRl_Note().setVisibility(View.GONE);
 		trafficViews.get(index_car).getLl_wait_show().setVisibility(View.VISIBLE);
 		trafficViews.get(index_car).getLl_wait().startWheel(index_car);
 		try {

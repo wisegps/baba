@@ -101,7 +101,7 @@ public class TravelActivity extends Activity {
 		}else{
 			Date = GetSystem.GetNowDay();
 		}
-		Date = "2014-11-30";
+		//Date = "2014-11-30";
 		tv_travel_date.setText(Date);
 		judgeNowData(Date);
 		GetDataTrip();
@@ -323,7 +323,8 @@ public class TravelActivity extends Activity {
 			int trip_id = travelDatas.get(position).getTrip_id();
 			String url = Constant.BaseUrl + "device/trip/" + trip_id + "/name?auth_code=" + app.auth_code;
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("trip_name", URLEncoder.encode(name, "UTF-8")));
+			//params.add(new BasicNameValuePair("trip_name", URLEncoder.encode(name, "UTF-8")));
+			params.add(new BasicNameValuePair("trip_name", name));
 			new NetThread.putDataThread(handler, url, params, renameTravel).start();
 		} catch (Exception e) {
 			e.printStackTrace();
