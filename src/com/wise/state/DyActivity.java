@@ -63,14 +63,33 @@ public class DyActivity extends Activity {
 		type = intent.getIntExtra("type", 1);
 		String title = intent.getStringExtra("title");
 		String name = intent.getStringExtra("name");
+
+		ecv_real_dpdy = (EnergyCurveView) findViewById(R.id.ecv_real_dpdy);
+
+		TextView tv_dpdy_tiyle = (TextView) findViewById(R.id.tv_dpdy_title);
+		tv_dpdy_tiyle.setText(title);
+		TextView tv_dpdy_unit = (TextView) findViewById(R.id.tv_dpdy_unit);
+		switch (type) {
+		case 1:
+			tv_dpdy_unit.setText("V");
+			break;
+		case 2:
+			tv_dpdy_unit.setText("%");
+			break;
+		case 3:
+			tv_dpdy_unit.setText("rpm");
+			break;
+		case 4:
+			tv_dpdy_unit.setText("°C");
+			break;
+		case 5:
+			tv_dpdy_unit.setText("°C");
+			break;
+		}
 		ecv_real_dpdy = (EnergyCurveView) findViewById(R.id.ecv_real_dpdy);
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		ecv_real_dpdy.setViewWidth(dm.widthPixels);
-		// 曲线图单位坐标
-		TextView tv_dpdy_unit = (TextView) findViewById(R.id.tv_dpdy_unit);
-		TextView tv_dpdy_title = (TextView) findViewById(R.id.tv_dpdy_title);
-
+		ecv_real_dpdy.setViewWidth(dm.widthPixels, false);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		TextView tv_title = (TextView) findViewById(R.id.tv_title);
@@ -249,9 +268,9 @@ public class DyActivity extends Activity {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				int data = jsonObject.getInt("_id");
 				String avg_value = jsonObject.getString("avg_value");
-				Efuel.add(new EnergyItem(data, Float.valueOf(avg_value)));
+				Efuel.add(new EnergyItem(data, Float.valueOf(avg_value), ""));
 			}
-			ecv_real_dpdy.initPoints(Efuel);
+			ecv_real_dpdy.initPoints(Efuel, 2);
 			ecv_real_dpdy.RefreshView();
 		} catch (Exception e) {
 			e.printStackTrace();

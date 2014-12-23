@@ -67,12 +67,11 @@ import android.widget.Toast;
 
 public class SetActivity extends Activity implements TagAliasCallback {
 
-	private static final String abc = "adafsd";
 	private static final String TAG = "SetActivity";
 	private static final int get_customer = 2;
 	private static final int get_pic = 3;
 	
-	TextView tv_login,tv_city;
+	TextView tv_login,tv_city,tv_balance;
 	ImageView iv_logo,iv_sex,iv_service,iv_eweima;
 	Button bt_login_out;
 	RequestQueue mQueue;
@@ -99,6 +98,7 @@ public class SetActivity extends Activity implements TagAliasCallback {
         iv_eweima = (ImageView)findViewById(R.id.iv_eweima);
         iv_eweima.setOnClickListener(onClickListener);
 		tv_login = (TextView)findViewById(R.id.tv_login);
+		tv_balance = (TextView)findViewById(R.id.tv_balance);
 		tv_city = (TextView)findViewById(R.id.tv_city);
 		iv_logo = (ImageView)findViewById(R.id.iv_logo);
 		iv_sex = (ImageView)findViewById(R.id.iv_sex);
@@ -158,6 +158,7 @@ public class SetActivity extends Activity implements TagAliasCallback {
 	            iv_eweima.setVisibility(View.GONE);
 		        bt_login_out.setVisibility(View.GONE);
 		        tv_login.setText("登录/注册");
+		        tv_balance.setVisibility(View.GONE);
 		        iv_sex.setVisibility(View.GONE);
 		        iv_service.setVisibility(View.GONE);
 		        iv_logo.setImageResource(R.drawable.icon_add);
@@ -238,6 +239,12 @@ public class SetActivity extends Activity implements TagAliasCallback {
 				if (bimage != null) {
 					iv_logo.setImageBitmap(bimage);
 				}
+				String balance = "0";
+				if(jsonObject.opt("balance") != null){
+					balance = jsonObject.getString("balance");
+				}
+				tv_balance.setVisibility(View.VISIBLE);				
+				tv_balance.setText("账户余额：" + balance + "元");
 				iv_sex.setVisibility(View.VISIBLE);
 				String sex = jsonObject.getString("sex");
 				if (sex.equals("0")) {

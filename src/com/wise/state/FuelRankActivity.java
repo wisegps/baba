@@ -181,13 +181,13 @@ public class FuelRankActivity extends Activity{
 			final FuelData fuelData = fuelDatas.get(position);
 			viewHolder.tv_name.setText(fuelData.getCust_name());
 			viewHolder.tv_est.setText("里程" + fuelData.getMileage() + "km 油耗" +fuelData.getAvg_fuel() + "L/100km");
-			viewHolder.tv_avg.setText(fuelData.getCar_type() + " (" +fuelData.getAvg_fuel() + "L/100km)");
+			viewHolder.tv_avg.setText(fuelData.getCar_type() + " (" +fuelData.getEst_fuel() + "L/100km)");
 			//读取用户对应的图片
 			if(new File(Constant.userIconPath + GetSystem.getM5DEndo(fuelData.getLogo()) + ".png").exists()){
 				Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(fuelData.getLogo()) + ".png");
 				viewHolder.iv_icon.setImageBitmap(image);
 			}else{
-				viewHolder.iv_icon.setImageResource(R.drawable.icon_car);
+				viewHolder.iv_icon.setImageResource(R.drawable.icon_people_no);
 			}
 			viewHolder.iv_letter.setOnClickListener(new OnClickListener() {				
 				@Override

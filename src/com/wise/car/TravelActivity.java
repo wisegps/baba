@@ -45,6 +45,7 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.R.string;
 
 /**
  * 车辆行程列表
@@ -100,6 +101,7 @@ public class TravelActivity extends Activity {
 		}else{
 			Date = GetSystem.GetNowDay();
 		}
+		//Date = "2014-11-30";
 		tv_travel_date.setText(Date);
 		judgeNowData(Date);
 		GetDataTrip();
@@ -471,7 +473,7 @@ public class TravelActivity extends Activity {
 	private void showMore(final int position){
 		AlertDialog.Builder builder = new Builder(TravelActivity.this);
 		builder.setTitle("更多");
-		builder.setItems(new String[]{"收藏","删除行程","重命名","实际油耗"}, new DialogInterface.OnClickListener() {			
+		builder.setItems(new String[]{"收藏终点","删除行程","重命名","实际油耗"}, new DialogInterface.OnClickListener() {			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				switch (which) {
@@ -487,6 +489,12 @@ public class TravelActivity extends Activity {
 					LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.builder_rename, null);
 					dialog1.setView(layout);
 					final EditText et_rename = (EditText)layout.findViewById(R.id.et_rename);
+					String trip_name = travelDatas.get(position).getTrip_name();
+					if(trip_name == null || trip_name.equals("")){
+						
+					}else{
+						et_rename.setText(trip_name);
+					}
 					dialog1.setTitle("提示");
 					dialog1.setNegativeButton("取消", null);
 					dialog1.setPositiveButton("更改", new DialogInterface.OnClickListener() {						
@@ -508,6 +516,10 @@ public class TravelActivity extends Activity {
 							R.layout.item_travel_record, null);
 					final EditText et_travel_record = (EditText) view
 							.findViewById(R.id.et_travel_record);
+					float avg_fuel = travelDatas.get(position).getAct_avg_fuel();
+					if(avg_fuel != 0){
+						et_travel_record.setText(String.valueOf(avg_fuel));
+					}
 					dialog2.setTitle("行程油耗录入");
 					dialog2.setView(view);
 					dialog2.setPositiveButton("确定",
@@ -609,9 +621,9 @@ public class TravelActivity extends Activity {
 					.substring(10, 16));
 			holder.tv_item_travel_stopTime.setText(travelData.getStopTime()
 					.substring(10, 16));
-			holder.tv_item_travel_startPlace.setText(travelData
+			holder.tv_item_travel_startPlace.setText("起点：" + travelData
 					.getStart_place());
-			holder.tv_item_travel_stopPlace.setText(travelData.getEnd_place());
+			holder.tv_item_travel_stopPlace.setText("终点：" + travelData.getEnd_place());
 			holder.tv_item_travel_spacingDistance.setText("共"
 					+ travelData.getSpacingDistance() + "公里\\"
 					+ travelData.getSpacingTime());
@@ -960,7 +972,7 @@ public class TravelActivity extends Activity {
 					}
 					adress = adress + strInfo +",";
 					if (isFrist) {// 起点位置取完，在取结束位置
-						travelDatas.get(i).setStart_place("起点：" + strInfo);
+						travelDatas.get(i).setStart_place(strInfo);
 						isFrist = false;
 						double lat = Double.valueOf(travelDatas.get(i)
 								.getEnd_lat());
@@ -971,7 +983,7 @@ public class TravelActivity extends Activity {
 								.location(latLng));
 						i++;
 					} else {
-						travelDatas.get(i - 1).setEnd_place("终点：" + strInfo);
+						travelDatas.get(i - 1).setEnd_place(strInfo);
 						if (travelDatas.size() == i) {
 							System.out.println("递归完毕");
 							judgeCollect(adress);

@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.car.CarActivity;
 import com.wise.car.CarAddActivity;
 import com.wise.car.CarUpdateActivity;
 import com.wise.car.TrafficCitiyActivity;
@@ -76,6 +77,8 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_traffic);
 		app = (AppApplication)getApplication();
+		ImageView iv_update_car = (ImageView)findViewById(R.id.iv_update_car);
+		iv_update_car.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		ll_image = (LinearLayout) findViewById(R.id.ll_image);
@@ -126,6 +129,14 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 					Intent intent = new Intent(TrafficActivity.this, TrafficCitiyActivity.class);
 					intent.putExtra("cityDatas", (Serializable) chooseCityDatas);
 					startActivityForResult(intent, 1);
+				}
+				break;
+			case R.id.iv_update_car:
+				if(app.carDatas.size() > 0){
+					Intent intent = new Intent(TrafficActivity.this,
+							CarUpdateActivity.class);
+					intent.putExtra("index", index_car);
+					startActivity(intent);
 				}
 				break;
 			}

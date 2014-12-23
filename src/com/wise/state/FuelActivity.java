@@ -18,6 +18,7 @@ import customView.FanView.OnViewRotateListener;
 import data.CarData;
 import data.EnergyItem;
 import data.WeekData;
+import android.R.integer;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -68,6 +69,8 @@ public class FuelActivity extends Activity {
 	ArrayList<EnergyItem> Efuel = new ArrayList<EnergyItem>();
 	FanView fv;
 	AppApplication app;
+	/**星期数组**/
+	String[] weekData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,9 +127,9 @@ public class FuelActivity extends Activity {
 
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		fv.setViewSize(dm.widthPixels * 3 / 8);
-		ecv_fuel.setViewWidth(dm.widthPixels);
+		ecv_fuel.setViewWidth(dm.widthPixels,true);
 		index_car = getIntent().getIntExtra("index_car", 0);
-		// TODO 获取显示页面类型
+		//获取显示页面类型
 		type = getIntent().getIntExtra("type", 0);
 
 		if (type == FaultActivity.FUEL) {
@@ -185,7 +188,7 @@ public class FuelActivity extends Activity {
 				tv_month.setBackgroundResource(R.drawable.bg_border_right_press);
 				tv_month.setTextColor(getResources().getColor(R.color.white));
 				getData(Month + "-01", GetSystem.getMonthLastDay(Month));
-				// TODO 曲线图类型
+				//曲线图类型
 				if (type == FaultActivity.FUEL) {
 					tv_chart_title.setText("百公里驾驶油耗月曲线");
 				} else if (type == FaultActivity.DISTANCE) {
@@ -203,13 +206,13 @@ public class FuelActivity extends Activity {
 				ll_chart.setVisibility(View.VISIBLE);
 				index = 1;
 				Day = GetSystem.GetNowMonth().getDay();
-				WeekData weekData = GetSystem.getWeek(Day);
-				tv_date.setText(weekData.getFristDay() + " - "
-						+ weekData.getLastDay());
+				weekData = GetSystem.getWeek(Day);
+				tv_date.setText(weekData[0] + " - "
+						+ weekData[6]);
 				setBg();
 				tv_week.setBackgroundResource(R.drawable.bg_border_center_press);
 				tv_week.setTextColor(getResources().getColor(R.color.white));
-				getData(weekData.getFristDay(), weekData.getLastDay());
+				getData(weekData[0], weekData[6]);
 
 				if (type == FaultActivity.FUEL) {
 					tv_chart_title.setText("百公里驾驶油耗周曲线");
@@ -249,10 +252,10 @@ public class FuelActivity extends Activity {
 					iv_right.setVisibility(View.VISIBLE);
 				} else if (index == 1) {
 					Day = GetSystem.GetNextData(Day, -7);
-					WeekData weekData1 = GetSystem.getWeek(Day);
-					tv_date.setText(weekData1.getFristDay() + " - "
-							+ weekData1.getLastDay());
-					getData(weekData1.getFristDay(), weekData1.getLastDay());
+					weekData = GetSystem.getWeek(Day);
+					tv_date.setText(weekData[0] + " - "
+							+ weekData[6]);
+					getData(weekData[0], weekData[6]);
 					iv_right.setVisibility(View.VISIBLE);
 				}
 				break;
@@ -278,11 +281,11 @@ public class FuelActivity extends Activity {
 					}
 				} else if (index == 1) {
 					Day = GetSystem.GetNextData(Day, 7);
-					WeekData weekData2 = GetSystem.getWeek(Day);
-					tv_date.setText(weekData2.getFristDay() + " - "
-							+ weekData2.getLastDay());
-					getData(weekData2.getFristDay(), weekData2.getLastDay());
-					boolean isMax = GetSystem.maxTime(weekData2.getLastDay()
+					weekData = GetSystem.getWeek(Day);
+					tv_date.setText(weekData[0] + " - "
+							+ weekData[6]);
+					getData(weekData[0], weekData[6]);
+					boolean isMax = GetSystem.maxTime(weekData[6]
 							+ " 00:00:00", GetSystem.GetNowMonth().getDay()
 							+ " 00:00:00");
 					if (isMax) {
@@ -386,7 +389,7 @@ public class FuelActivity extends Activity {
 			}
 			tv_avg_fuel.setText(avg_fuel);
 
-			// TODO 根据类型分别显示相应的界面
+			//根据类型分别显示相应的界面
 			if (type == FaultActivity.FUEL) {
 				tv_title_1.setText("总油耗");
 				tv_title_3.setText("总花费");
@@ -434,8 +437,13 @@ public class FuelActivity extends Activity {
 					for (int i = 0; i < jsonArray.length(); i++) {
 						float avg_fuel1 = 0.0f;
 						if (type == FaultActivity.FUEL) {
-							avg_fuel1 = Float.valueOf(jsonArray
-									.getJSONObject(i).getString("avg_fuel"));
+							if(jsonArray.getJSONObject(i).opt("avg_fuel") == null){
+								avg_fuel1 = 0;
+							}else{
+								avg_fuel1 = Float.valueOf(jsonArray
+										.getJSONObject(i).getString("avg_fuel"));
+								
+							}
 						} else if (type == FaultActivity.DISTANCE) {
 							avg_fuel1 = Float.valueOf(jsonArray
 									.getJSONObject(i).getString(
@@ -447,15 +455,47 @@ public class FuelActivity extends Activity {
 						int rcv_day = Integer.valueOf(jsonArray
 								.getJSONObject(i).getString("rcv_day")
 								.substring(8, 10));
-						Efuel.add(new EnergyItem(rcv_day, avg_fuel1));
+						String weekDate = jsonArray
+								.getJSONObject(i).getString("rcv_day")
+								.substring(0, 10);
+						Efuel.add(new EnergyItem(rcv_day, avg_fuel1,weekDate));
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				ecv_fuel.initPoints(Efuel);
+				if(index == 1){
+					//周,把没返回的数据补齐
+//					for(int i = 0 ; i < Efuel.size() ; i++){
+//						//weekData的数据大于等于Efuel里的数据长度
+//						if(!Efuel.get(i).getWeekDate().equals(weekData[i])){
+//							int day = Integer.valueOf(weekData[i].substring(8,10));
+//							Efuel.add(i,new EnergyItem(day, 0, weekData[i]));
+//						}
+//					}
+					for(int i = 0 ; i < 7 ; i++){
+						int day = Integer.valueOf(weekData[i].substring(8,10));
+						if(Efuel.size() <= i){
+							Efuel.add(i,new EnergyItem(day, 0, weekData[i]));
+						}else if(!Efuel.get(i).getWeekDate().equals(weekData[i])){
+							Efuel.add(i,new EnergyItem(day, 0, weekData[i]));
+						}
+					}
+				}else{
+					//月
+					//TODO 把没有返回的日期数据加上
+					for(int i = 0 ; i < Efuel.size() ; i++){
+						if(Efuel.get(i).getDate() != (i+1)){
+							Efuel.add(i,new EnergyItem((i+1), 0,""));
+						}
+					}
+				}		
+				for(int i = 0 ; i < Efuel.size() ; i++){
+					System.out.println(Efuel.get(i).toString());
+				}
+				ecv_fuel.initPoints(Efuel,index);
 				ecv_fuel.RefreshView();
 			}
-			// TODO 画饼图
+			//画饼图
 			rangeDatas.clear();
 
 			JSONObject jsonObject2 = jsonObject.getJSONObject("pie");

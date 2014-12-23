@@ -8,5 +8,6 @@
     <ListView 
         android:id="@+id/lv_pop"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="wrap_content"
+        android:divider="@null" ></ListView>
 </LinearLayout>

@@ -44,7 +44,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/small"
-                android:text="对于大多数车型而言，系统会根据新车数据对油耗进行自动修正，但是如果您发现您的油耗还是不太准确，可以通过一下两种方式进行油耗修正。"
+                android:text="对于大多数车型而言，系统会根据新车数据对油耗进行自动修正，但是如果您发现您的油耗还是不太准确，可以通过以下两种方式进行油耗修正。"
                 android:textSize="@dimen/content" />
 
             <TextView

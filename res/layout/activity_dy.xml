@@ -315,7 +315,6 @@
                         android:layout_marginLeft="@dimen/double_margins"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="V"
                         android:textColor="@color/Green"
                         android:textSize="@dimen/content" />
 
@@ -326,7 +325,6 @@
                         android:layout_marginRight="@dimen/double_margins"
                         android:layout_weight="4"
                         android:gravity="center"
-                        android:text="电压曲线图"
                         android:textColor="@color/Green"
                         android:textSize="@dimen/content" />
                 </LinearLayout>

@@ -45,38 +45,55 @@
                     android:id="@+id/iv_logo"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:layout_marginRight="@dimen/margins"
                     android:layout_centerVertical="true"
                     android:contentDescription="@string/app_name"
                     app:border_width="1dp"
                     android:src="@drawable/icon_people_no"
                     app:border_color="@color/white" />
-	        <TextView
-	            android:id="@+id/tv_login"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_centerVertical="true"
-	            android:padding="@dimen/margins"
-	            android:layout_toRightOf="@id/iv_logo"
-	            android:text="登录/注册"
-	            android:textSize="@dimen/main"
-	            android:textColor="@color/navy" />
-	        <ImageView 
-	            android:id="@+id/iv_sex"
-	            android:layout_toRightOf="@id/tv_login"	
-	            android:layout_marginRight="@dimen/margins"            
-	            android:layout_centerVertical="true"
-	            android:layout_width="15dp"
-	            android:layout_height="15dp"
-	            android:visibility="gone"
-	            android:src="@drawable/icon_man"/>
-	        <ImageView 
-	            android:id="@+id/iv_service"
-	            android:layout_toRightOf="@id/iv_sex"	            
-	            android:layout_centerVertical="true"
-	            android:layout_width="15dp"
-	            android:layout_height="15dp"
-	            android:visibility="gone"
-	            android:src="@drawable/icon_xx_service"/>
+		    <LinearLayout 
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_centerVertical="true"
+			    android:layout_toRightOf="@id/iv_logo"
+		        android:orientation="vertical">
+		        <LinearLayout 
+		            android:layout_height="wrap_content"
+		            android:layout_width="fill_parent"
+		            android:gravity="center_vertical"
+		            android:orientation="horizontal">
+		            <TextView
+			            android:id="@+id/tv_login"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_marginRight="@dimen/margins"
+			            android:text="登录/注册"
+			            android:textSize="@dimen/main"
+			            android:textColor="@color/navy" />
+			        <ImageView 
+			            android:id="@+id/iv_sex"
+			            android:layout_marginRight="@dimen/margins"
+			            android:layout_width="15dp"
+			            android:layout_height="15dp"
+			            android:visibility="gone"
+			            android:src="@drawable/icon_man"/>
+			        <ImageView 
+			            android:id="@+id/iv_service"
+			            android:layout_width="15dp"
+			            android:layout_height="15dp"
+			            android:visibility="gone"
+			            android:src="@drawable/icon_xx_service"/>
+		        </LinearLayout>
+		        <TextView
+		            android:id="@+id/tv_balance"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+	            	android:layout_marginTop="@dimen/margins"
+	            	android:visibility="gone"
+		            android:text="账户余额：0元"
+		            android:textSize="@dimen/content"
+		            android:textColor="@color/navy" />
+		    </LinearLayout>	        
 	        <ImageView 
 	            android:id="@+id/iv_eweima"          
 	            android:layout_centerVertical="true"
