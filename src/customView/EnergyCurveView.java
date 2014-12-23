@@ -21,7 +21,9 @@ import android.view.View;
  */
 public class EnergyCurveView extends View {
 	/** 日，周，月 **/
-	int Type = 2;
+	int date = 2;
+	/**3是平均油耗，判断到y轴数字为0是跳过**/
+	int type = 1;
 	Context context;
 	/** x轴长 画布宽度(去掉边距) **/
 	private float realWidth = 300;
@@ -88,7 +90,7 @@ public class EnergyCurveView extends View {
 
 		paint.setTextSize(fontSize);
 		if (isNeedX) {
-			if (Type == 1) {// 周
+			if (date == 1) {// 周
 				float xSpacing = (realWidth - fontSize - spacing_x) / 6;
 				for (int i = 0; i < 7; i++) {
 					float x = SPACING + padding + spacing_x + i * xSpacing - fontSize / 2;
@@ -138,28 +140,61 @@ public class EnergyCurveView extends View {
 			paint.setPathEffect(effects);
 			canvas.drawPath(path, paint);
 		}
-
-		/* 绘制曲线 覆盖 剪切后的锯齿 */
-		for (int i = 0; i < points.size() - 1; i++) {
-			paint.setStrokeWidth(3);
-			PointF startPoint = points.get(i);
-
-			PointF endPoint = points.get(i + 1);
-			// 画阴影
-			paint.setColor(getResources().getColor(R.color.Green_curve_bg));
-			paint.setStyle(Paint.Style.FILL);// 设置填满
-			Path path = new Path();
-			path.moveTo(startPoint.x, realHeight);// 此点为多边形的起点
-			path.lineTo(startPoint.x, startPoint.y);
-			path.lineTo(endPoint.x, endPoint.y);
-			path.lineTo(endPoint.x, realHeight);
-			path.close(); // 使这些点构成封闭的多边形
-			canvas.drawPath(path, paint);
-			// 绘制曲线，并且覆盖剪切后的锯齿
-			paint.setColor(getResources().getColor(R.color.Green_curve_line));
-			canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y,
-					paint);
-		}
+		System.out.println("type = " + type);
+		if(type == 3){
+			PointF lastPoint;
+			/* 绘制曲线 覆盖 剪切后的锯齿 */
+			for (int i = 0; i < points.size() - 1; i++) {
+				paint.setStrokeWidth(3);
+				PointF startPoint = points.get(i);
+				System.out.println("startPoint.y = " + startPoint.y);
+				if(startPoint.y == 0){
+					System.out.println("跳过");
+				}else{
+					lastPoint = startPoint;
+					
+					PointF endPoint = points.get(i + 1);
+					if(endPoint.y == 0){
+						System.out.println("跳过");
+					}else{
+						// 画阴影
+						paint.setColor(getResources().getColor(R.color.Green_curve_bg));
+						paint.setStyle(Paint.Style.FILL);// 设置填满
+						Path path = new Path();
+						path.moveTo(lastPoint.x, realHeight);// 此点为多边形的起点
+						path.lineTo(lastPoint.x, lastPoint.y);
+						path.lineTo(endPoint.x, endPoint.y);
+						path.lineTo(endPoint.x, realHeight);
+						path.close(); // 使这些点构成封闭的多边形
+						canvas.drawPath(path, paint);
+						// 绘制曲线，并且覆盖剪切后的锯齿
+						paint.setColor(getResources().getColor(R.color.Green_curve_line));
+						canvas.drawLine(lastPoint.x, lastPoint.y, endPoint.x, endPoint.y,
+								paint);
+					}				
+				}			
+			}
+		}else{
+			for (int i = 0; i < points.size() - 1; i++) {
+				paint.setStrokeWidth(3);
+				PointF startPoint = points.get(i);
+				PointF endPoint = points.get(i + 1);
+				// 画阴影
+				paint.setColor(getResources().getColor(R.color.Green_curve_bg));
+				paint.setStyle(Paint.Style.FILL);// 设置填满
+				Path path = new Path();
+				path.moveTo(startPoint.x, realHeight);// 此点为多边形的起点
+				path.lineTo(startPoint.x, startPoint.y);
+				path.lineTo(endPoint.x, endPoint.y);
+				path.lineTo(endPoint.x, realHeight);
+				path.close(); // 使这些点构成封闭的多边形
+				canvas.drawPath(path, paint);
+				// 绘制曲线，并且覆盖剪切后的锯齿
+				paint.setColor(getResources().getColor(R.color.Green_curve_line));
+				canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y,
+						paint);			
+			}
+		}		
 	}
 
 	@Override
@@ -186,8 +221,9 @@ public class EnergyCurveView extends View {
 	 * @param Type
 	 *            周or月
 	 */
-	public void initPoints(ArrayList<EnergyItem> energys, int Type) {
-		this.Type = Type;
+	public void initPoints(ArrayList<EnergyItem> energys, int date,int type) {
+		this.date = date;
+		this.type = type;
 		getSpacingOfXY(energys);
 		points = new ArrayList<PointF>();
 		for (int i = 0; i < energys.size(); i++) {

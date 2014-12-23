@@ -101,7 +101,7 @@ public class TravelActivity extends Activity {
 		}else{
 			Date = GetSystem.GetNowDay();
 		}
-		//Date = "2014-11-30";
+		Date = "2014-11-30";
 		tv_travel_date.setText(Date);
 		judgeNowData(Date);
 		GetDataTrip();
@@ -607,7 +607,7 @@ public class TravelActivity extends Activity {
 			}
 			final TravelData travelData = travelDatas.get(position);
 			if(travelData.getAct_avg_fuel() == 0){
-				holder.iv_item_travel_recordShow.setVisibility(View.GONE);
+				holder.iv_item_travel_recordShow.setVisibility(View.INVISIBLE);
 			}else{
 				holder.iv_item_travel_recordShow.setVisibility(View.VISIBLE);
 			}
