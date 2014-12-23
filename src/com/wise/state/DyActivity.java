@@ -63,9 +63,12 @@ public class DyActivity extends Activity {
 		type = intent.getIntExtra("type", 1);
 		String title = intent.getStringExtra("title");
 		String name = intent.getStringExtra("name");
-		TextView tv_dpdy_tiyle = (TextView)findViewById(R.id.tv_dpdy_tiyle);
+
+		ecv_real_dpdy = (EnergyCurveView) findViewById(R.id.ecv_real_dpdy);
+
+		TextView tv_dpdy_tiyle = (TextView) findViewById(R.id.tv_dpdy_title);
 		tv_dpdy_tiyle.setText(title);
-		TextView tv_dpdy_unit = (TextView)findViewById(R.id.tv_dpdy_unit);
+		TextView tv_dpdy_unit = (TextView) findViewById(R.id.tv_dpdy_unit);
 		switch (type) {
 		case 1:
 			tv_dpdy_unit.setText("V");
@@ -83,14 +86,10 @@ public class DyActivity extends Activity {
 			tv_dpdy_unit.setText("°C");
 			break;
 		}
-		ecv_real_dpdy = (EnergyCurveView)findViewById(R.id.ecv_real_dpdy);
+		ecv_real_dpdy = (EnergyCurveView) findViewById(R.id.ecv_real_dpdy);
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
-		ecv_real_dpdy.setViewWidth(dm.widthPixels,false);
-		// 曲线图单位坐标
-		TextView tv_chart_uint = (TextView) findViewById(R.id.tv_chart_unit);
-		TextView tv_chart_title = (TextView) findViewById(R.id.tv_chart_title);
-
+		ecv_real_dpdy.setViewWidth(dm.widthPixels, false);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		TextView tv_title = (TextView) findViewById(R.id.tv_title);
@@ -260,15 +259,16 @@ public class DyActivity extends Activity {
 				+ type;
 		new NetThread.GetDataThread(handler, url, getChartData).start();
 	}
-	/**解析近一个月的数据**/
-	private void jsonCharData(String result){
+
+	/** 解析近一个月的数据 **/
+	private void jsonCharData(String result) {
 		try {
 			JSONArray jsonArray = new JSONArray(result);
-			for(int i = 0 ; i < jsonArray.length() ; i++){
+			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				int data = jsonObject.getInt("_id");
 				String avg_value = jsonObject.getString("avg_value");
-				Efuel.add(new EnergyItem(data, Float.valueOf(avg_value),""));
+				Efuel.add(new EnergyItem(data, Float.valueOf(avg_value), ""));
 			}
 			ecv_real_dpdy.initPoints(Efuel,2,0);
 			ecv_real_dpdy.RefreshView();
