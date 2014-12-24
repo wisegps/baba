@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_bg" >
+    android:background="@color/white" >
 
     <LinearLayout
         android:id="@+id/ll_top"
@@ -222,10 +222,10 @@
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_above="@id/ll_bottom"
         android:layout_below="@id/rl_wait"
-        android:textColor="@color/white" >
+        android:background="@color/white" >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -236,174 +236,179 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/gray_light"
-                android:padding="@dimen/small"
+                android:padding="@dimen/margins"
                 android:text="以下是我们收集及车友分享的OBD接口实景图片，我为人人，人人为我，如果以下暂时无法显示您对应车型的图片，请立即拍照，分享您的宝贵经验 "
                 android:textColor="@color/navy" />
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/line" />
-
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:text="车辆型号:"
-                    android:textColor="@color/navy"
-                    android:textSize="@dimen/content" />
-
-                <TextView
-                    android:id="@+id/car_name"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/btn_right"
-                    android:padding="5dp"
-                    android:textColor="@color/navy"
-                    android:textSize="@dimen/content" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/line" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="0dip"
-                android:layout_weight="1"
-                android:orientation="horizontal" >
-
-                <LinearLayout
-                    android:layout_width="0dip"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/gray_light"
-                        android:gravity="center"
-                        android:padding="3dip"
-                        android:text="近景图"
-                        android:textColor="@color/navy"
-                        android:textSize="@dimen/content" />
-
-                    <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/line" />
-
-                    <FrameLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dip"
-                        android:layout_weight="1" >
-
-                        <TextView
-                            android:id="@+id/tv_near"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:gravity="center"
-                            android:padding="@dimen/margins"
-                            android:text="无车辆图片显示，请分享您的图片经验"
-                            android:textColor="@color/navy" />
-
-                        <ImageView
-                            android:id="@+id/car_icon_near"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:adjustViewBounds="true"
-                            android:contentDescription="@string/app_name"
-                            android:padding="@dimen/margins"
-                            android:scaleType="fitCenter"
-                            android:visibility="gone" />
-                    </FrameLayout>
-                </LinearLayout>
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical" >
 
                 <View
-                    android:layout_width="1dip"
-                    android:layout_height="fill_parent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
                     android:background="@color/line" />
 
                 <LinearLayout
-                    android:layout_width="0dip"
+                    android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical" >
+                    android:padding="@dimen/margins"
+                    android:orientation="horizontal" >
 
                     <TextView
-                        android:layout_width="fill_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/gray_light"
-                        android:gravity="center"
-                        android:padding="3dip"
-                        android:text="远景图"
+                        android:text="车辆型号:"
                         android:textColor="@color/navy"
                         android:textSize="@dimen/content" />
 
-                    <View
+                    <TextView
+                        android:id="@+id/car_name"
                         android:layout_width="fill_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/line" />
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/btn_right"
+                        android:textColor="@color/navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
 
-                    <FrameLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dip"
-                        android:layout_weight="1" >
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dip"
+                    android:layout_weight="1"
+                    android:orientation="horizontal" >
+
+                    <LinearLayout
+                        android:layout_width="0dip"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical" >
 
                         <TextView
-                            android:id="@+id/tv_far"
                             android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
+                            android:layout_height="wrap_content"
                             android:gravity="center"
                             android:padding="@dimen/margins"
-                            android:text="无车辆图片显示，请分享您的图片经验"
-                            android:textColor="@color/navy" />
+                            android:text="近景图"
+                            android:textColor="@color/navy"
+                            android:textSize="@dimen/content" />
 
-                        <ImageView
-                            android:id="@+id/car_icon_far"
+                        <View
                             android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:adjustViewBounds="true"
-                            android:contentDescription="@string/app_name"
+                            android:layout_height="0.5dp"
+                            android:background="@color/line" />
+
+                        <FrameLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dip"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/tv_near"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:gravity="center"
+                                android:padding="@dimen/margins"
+                                android:text="无车辆图片显示，请分享您的图片经验"
+                                android:textColor="@color/navy" />
+
+                            <ImageView
+                                android:id="@+id/car_icon_near"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:adjustViewBounds="true"
+                                android:contentDescription="@string/app_name"
+                                android:padding="@dimen/margins"
+                                android:scaleType="fitCenter"
+                                android:visibility="gone" />
+                        </FrameLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dip"
+                        android:layout_height="fill_parent"
+                        android:background="@color/line" />
+
+                    <LinearLayout
+                        android:layout_width="0dip"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
                             android:padding="@dimen/margins"
-                            android:scaleType="fitCenter"
-                            android:visibility="gone" />
-                    </FrameLayout>
+                            android:text="远景图"
+                            android:textColor="@color/navy"
+                            android:textSize="@dimen/content" />
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="0.5dp"
+                            android:background="@color/line" />
+
+                        <FrameLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="0dip"
+                            android:layout_weight="1" >
+
+                            <TextView
+                                android:id="@+id/tv_far"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:gravity="center"
+                                android:padding="@dimen/margins"
+                                android:text="无车辆图片显示，请分享您的图片经验"
+                                android:textColor="@color/navy" />
+
+                            <ImageView
+                                android:id="@+id/car_icon_far"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:adjustViewBounds="true"
+                                android:contentDescription="@string/app_name"
+                                android:padding="@dimen/margins"
+                                android:scaleType="fitCenter"
+                                android:visibility="gone" />
+                        </FrameLayout>
+                    </LinearLayout>
                 </LinearLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <TextView
+                    android:id="@+id/tv_pic_share"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="@dimen/margins"
+                    android:background="@drawable/bg_green"
+                    android:padding="@dimen/margins"
+                    android:textColor="@color/white"
+                    android:text="我要分享"
+                    android:textSize="@dimen/content" />
+
+                <TextView
+                    android:id="@+id/car_own_name"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margins"
+                    android:gravity="center"
+                    android:text="分享者:"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/content" />
             </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/line" />
-
-            <TextView
-                android:id="@+id/tv_pic_share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dip"
-                android:background="@drawable/bg_bt_blue"
-                android:padding="8dip"
-                android:text="\t我要分享\t  "
-                android:textSize="@dimen/content" />
-
-            <TextView
-                android:id="@+id/car_own_name"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dip"
-                android:gravity="center"
-                android:text="分享者:"
-                android:textColor="@color/navy"
-                android:textSize="@dimen/content" />
         </LinearLayout>
     </ScrollView>
 
