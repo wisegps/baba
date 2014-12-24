@@ -56,8 +56,9 @@ public class PictureChoose extends Activity {
 		car_series_id = getIntent().getStringExtra("car_series_id");
 
 		pic_near = (ImageView) findViewById(R.id.pic_near);
+		pic_near.setOnClickListener(onClickListener);
 		pic_far = (ImageView) findViewById(R.id.pic_far);
-
+		pic_far.setOnClickListener(onClickListener);
 		pic_near_add = (ImageView) findViewById(R.id.pic_near_add);
 		pic_near_add.setOnClickListener(onClickListener);
 		pic_far_add = (ImageView) findViewById(R.id.pic_far_add);
@@ -80,6 +81,14 @@ public class PictureChoose extends Activity {
 				picPop(PIC_NEAR, R.id.pic_near);
 				break;
 			case R.id.pic_far_add:
+				isFar = true;
+				picPop(PIC_FAR, R.id.pic_far);
+				break;
+			case R.id.pic_near:
+				isNear = true;
+				picPop(PIC_NEAR, R.id.pic_near);
+				break;
+			case R.id.pic_far:
 				isFar = true;
 				picPop(PIC_FAR, R.id.pic_far);
 				break;
@@ -320,6 +329,6 @@ public class PictureChoose extends Activity {
 		}
 		// 图片显示
 		showView.setVisibility(View.VISIBLE);
-		showView.setImageBitmap(bitmap);
+		showView.setImageBitmap(Blur.getSquareBitmap(bitmap));
 	}
 }

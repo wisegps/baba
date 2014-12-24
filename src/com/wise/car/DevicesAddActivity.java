@@ -21,6 +21,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
+import com.wise.show.ImageDetailsActivity;
 
 import customView.PopView;
 import customView.WaitLinearLayout;
@@ -220,10 +221,13 @@ public class DevicesAddActivity extends Activity {
 		}
 	};
 
+	List<String> picNear = new ArrayList<String>();
+	List<String> picFar = new ArrayList<String>();
+
 	/**
 	 * OBD实景图片选择
 	 */
-	private void pictureChoose(int type) {
+	private void pictureChoose(final int type) {
 		View view = (LayoutInflater.from(DevicesAddActivity.this)).inflate(
 				R.layout.pop_pic_choose, null);
 		Gallery mGallery = (Gallery) view.findViewById(R.id.m_gallery);
@@ -238,8 +242,24 @@ public class DevicesAddActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				Toast.makeText(DevicesAddActivity.this, arg2 + "张图片被点击",
-						Toast.LENGTH_SHORT).show();
+				Intent intent = new Intent(DevicesAddActivity.this,
+						ImageDetailsActivity.class);
+				String image_path = "";
+				if (type == get_near_date) {
+					image_path = picNear.get(arg2);
+				} else if (type == get_far_date) {
+					image_path = picFar.get(arg2);
+				}
+				intent.putExtra("image_path", image_path);
+				startActivity(intent);
+
+				if (type == get_near_date) {
+					car_icon_near.setImageBitmap(Blur
+							.getSquareBitmap(nearBitmaps.get(arg2)));
+				} else if (type == get_far_date) {
+					car_icon_far.setImageBitmap(Blur.getSquareBitmap(farBitmaps
+							.get(arg2)));
+				}
 			}
 		});
 		PopupWindow popupWindow = new PopupWindow(view,
@@ -462,6 +482,11 @@ public class DevicesAddActivity extends Activity {
 	private void getPic(List<String> listPath, final int type) {
 		for (int i = 0; i < listPath.size(); i++) {
 			String path = listPath.get(i);
+			if (type == REQUEST_NEAR) {
+				picNear.add(getImagePath(path));
+			} else if (type == REQUEST_FAR) {
+				picFar.add(getImagePath(path));
+			}
 			int lastSlashIndex = path.lastIndexOf("/");
 			final String imageName = path.substring(lastSlashIndex + 1);
 			final File imageFile = new File(getImagePath(path));
