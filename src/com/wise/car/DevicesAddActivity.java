@@ -1,9 +1,7 @@
 package com.wise.car;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,40 +14,47 @@ import pubclas.Blur;
 import pubclas.Constant;
 import pubclas.JsonData;
 import pubclas.NetThread;
-import pubclas.Uri2Path;
 
 import com.aliyun.android.oss.model.OSSObject;
 import com.aliyun.android.oss.task.GetObjectTask;
-import com.aliyun.android.oss.task.PutObjectTask;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
+
 import customView.PopView;
 import customView.WaitLinearLayout;
-import customView.PopView.OnItemClickListener;
 import customView.WaitLinearLayout.OnFinishListener;
 import data.CarData;
+import android.R.mipmap;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 
-import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,7 +90,7 @@ public class DevicesAddActivity extends Activity {
 
 	// 近景远景图
 	ImageView car_icon_near, car_icon_far;
-	TextView tv_pic_share;
+	TextView tv_pic_share, tv_near, tv_far;
 	TextView car_name, car_own_name;
 
 	int car_id;
@@ -125,6 +130,8 @@ public class DevicesAddActivity extends Activity {
 		car_icon_near.setOnClickListener(onClickListener);
 		car_icon_far = (ImageView) findViewById(R.id.car_icon_far);
 		car_icon_far.setOnClickListener(onClickListener);
+		tv_near = (TextView) findViewById(R.id.tv_near);
+		tv_far = (TextView) findViewById(R.id.tv_far);
 
 		tv_pic_share = (TextView) findViewById(R.id.tv_pic_share);
 		tv_pic_share.setOnClickListener(onClickListener);
@@ -197,11 +204,11 @@ public class DevicesAddActivity extends Activity {
 				intent.putExtra("car_series_id", car_series_id);
 				startActivityForResult(intent, 20);
 				break;
-			case R.id.car_icon_near:
-
+			case R.id.car_icon_near:// 图片点击弹出选择框
+				pictureChoose(get_near_date);
 				break;
 			case R.id.car_icon_far:
-
+				pictureChoose(get_far_date);
 				break;
 			case R.id.car_name:
 				Intent in = new Intent(DevicesAddActivity.this,
@@ -213,9 +220,85 @@ public class DevicesAddActivity extends Activity {
 		}
 	};
 
+	/**
+	 * OBD实景图片选择
+	 */
+	private void pictureChoose(int type) {
+		View view = (LayoutInflater.from(DevicesAddActivity.this)).inflate(
+				R.layout.pop_pic_choose, null);
+		Gallery mGallery = (Gallery) view.findViewById(R.id.m_gallery);
+		ChoosePicAdapter adapter = null;
+		if (type == get_near_date) {
+			adapter = new ChoosePicAdapter(nearBitmaps);
+		} else if (type == get_far_date) {
+			adapter = new ChoosePicAdapter(farBitmaps);
+		}
+		mGallery.setAdapter(adapter);
+		mGallery.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				Toast.makeText(DevicesAddActivity.this, arg2 + "张图片被点击",
+						Toast.LENGTH_SHORT).show();
+			}
+		});
+		PopupWindow popupWindow = new PopupWindow(view,
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		popupWindow.setBackgroundDrawable(new BitmapDrawable());
+		popupWindow.setFocusable(true);
+		popupWindow.setOutsideTouchable(true);
+		popupWindow.showAsDropDown(et_sim);
+	}
+
+	class ChoosePicAdapter extends BaseAdapter {
+		LayoutInflater mInflater = LayoutInflater.from(DevicesAddActivity.this);
+		private List<Bitmap> list = null;
+
+		public ChoosePicAdapter(List<Bitmap> listBitmaps) {
+			list = listBitmaps;
+		}
+
+		@Override
+		public int getCount() {
+			return list == null ? 0 : list.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return list.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			Holder mHolder;
+			if (convertView == null) {
+				mHolder = new Holder();
+				convertView = mInflater.inflate(R.layout.item_pic_choose, null);
+				mHolder.image_pic_choose = (ImageView) convertView
+						.findViewById(R.id.image_pic_choose);
+				convertView.setTag(mHolder);
+			} else {
+				mHolder = (Holder) convertView.getTag();
+			}
+			Bitmap showBitmap = Blur.getSquareBitmap(list.get(position));
+			mHolder.image_pic_choose.setImageBitmap(showBitmap);
+			return convertView;
+		}
+
+		class Holder {
+			ImageView image_pic_choose;
+		}
+	}
+
 	OnFinishListener onFinishListener = new OnFinishListener() {
 		@Override
 		public void OnFinish(int index) {
+
 			SaveDataOver();
 			if (fastTrack) {
 				String url = Constant.BaseUrl + "customer/" + app.cust_id
@@ -347,9 +430,15 @@ public class DevicesAddActivity extends Activity {
 			case getBitmap:
 				int type = msg.arg1;
 				if (type == REQUEST_NEAR) {
-					car_icon_near.setImageBitmap(bitmap);
+					tv_near.setVisibility(View.GONE);
+					car_icon_near.setVisibility(View.VISIBLE);
+					car_icon_near.setImageBitmap(Blur
+							.getSquareBitmap(nearBitmaps.get(0)));
 				} else if (type == REQUEST_FAR) {
-					car_icon_far.setImageBitmap(bitmap);
+					tv_far.setVisibility(View.GONE);
+					car_icon_far.setVisibility(View.VISIBLE);
+					car_icon_far.setImageBitmap(Blur.getSquareBitmap(farBitmaps
+							.get(0)));
 				}
 				break;
 			}
@@ -368,47 +457,69 @@ public class DevicesAddActivity extends Activity {
 		return imagePath;
 	}
 
-	Bitmap bitmap = null;// 阿里云上的图片
 	private static final int getBitmap = 18;
 
-	private void getPic(String path, final int type) {
-		int lastSlashIndex = path.lastIndexOf("/");
-		final String imageName = path.substring(lastSlashIndex + 1);
-		final File imageFile = new File(getImagePath(path));
-		if (imageFile.exists()) {
-			bitmap = BitmapFactory.decodeFile(getImagePath(path));
-			if (type == REQUEST_NEAR) {
-				car_icon_near.setImageBitmap(bitmap);
-			} else if (type == REQUEST_FAR) {
-				car_icon_far.setImageBitmap(bitmap);
-			}
-		} else {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						// 获取阿里云上的图片
-						GetObjectTask task = new GetObjectTask(
-								Constant.oss_path, imageName,
-								Constant.oss_accessId, Constant.oss_accessKey);
-						OSSObject obj = task.getResult();
-						bitmap = BitmapFactory.decodeByteArray(obj.getData(),
-								0, (obj.getData()).length);
-						Message msg = new Message();
-						msg.arg1 = type;
-						msg.what = getBitmap;
-						handler.sendMessage(msg);
-						FileOutputStream fileOutputStream = new FileOutputStream(
-								imageFile);
-						fileOutputStream.write(obj.getData());
-						fileOutputStream.close();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+	private void getPic(List<String> listPath, final int type) {
+		for (int i = 0; i < listPath.size(); i++) {
+			String path = listPath.get(i);
+			int lastSlashIndex = path.lastIndexOf("/");
+			final String imageName = path.substring(lastSlashIndex + 1);
+			final File imageFile = new File(getImagePath(path));
+			if (imageFile.exists()) {
+				Bitmap bitmap = BitmapFactory.decodeFile(getImagePath(path));
+				if (type == REQUEST_NEAR) {
+					nearBitmaps.add(bitmap);
+					tv_near.setVisibility(View.GONE);
+					car_icon_near.setVisibility(View.VISIBLE);
+					car_icon_near.setImageBitmap(Blur
+							.getSquareBitmap(nearBitmaps.get(0)));
+				} else if (type == REQUEST_FAR) {
+					farBitmaps.add(bitmap);
+					tv_far.setVisibility(View.GONE);
+					car_icon_far.setVisibility(View.VISIBLE);
+					car_icon_far.setImageBitmap(Blur.getSquareBitmap(farBitmaps
+							.get(0)));
 				}
-			});
+			} else {
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							// 获取阿里云上的图片
+							GetObjectTask task = new GetObjectTask(
+									Constant.oss_path, imageName,
+									Constant.oss_accessId,
+									Constant.oss_accessKey);
+							OSSObject obj = task.getResult();
+							Bitmap bitmap = BitmapFactory.decodeByteArray(
+									obj.getData(), 0, (obj.getData()).length);
+							if (type == REQUEST_NEAR) {
+								nearBitmaps.add(bitmap);
+							} else if (type == REQUEST_FAR) {
+								farBitmaps.add(bitmap);
+							}
+							Message msg = new Message();
+							msg.arg1 = type;
+							msg.what = getBitmap;
+							handler.sendMessage(msg);
+							FileOutputStream fileOutputStream = new FileOutputStream(
+									imageFile);
+							fileOutputStream.write(obj.getData());
+							fileOutputStream.close();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
+			}
 		}
 	}
+
+	List<Bitmap> nearBitmaps = new ArrayList<Bitmap>();
+	List<Bitmap> farBitmaps = new ArrayList<Bitmap>();
+
+	List<String> nearPath = new ArrayList<String>();
+	List<String> farPath = new ArrayList<String>();
 
 	private void jsonPicDate(String result, int type) {
 		try {
@@ -424,14 +535,19 @@ public class DevicesAddActivity extends Activity {
 								.getJSONArray("obd_near_pic");
 						for (int i = 0; i < jsonArrayNear.length(); i++) {
 							JSONObject object = jsonArrayNear.getJSONObject(i);
-							String author = object.getString("author");
-							car_own_name.setText("分享者:" + author);
-							String urlString = object
-									.getString("small_pic_url");
-							if (urlString != null && !urlString.equals("")) {
-								getPic(urlString, REQUEST_NEAR);
-								break;
+							boolean is_auth = object.getBoolean("is_auth");
+							if (is_auth) {
+								String author = object.getString("author");
+								car_own_name.setText("分享者:" + author);
+								String urlString = object
+										.getString("small_pic_url");
+								if (urlString != null && !urlString.equals("")) {
+									nearPath.add(urlString);
+								}
 							}
+						}
+						if (nearPath != null && nearPath.size() != 0) {
+							getPic(nearPath, REQUEST_NEAR);
 						}
 					}
 				} else if (type == get_far_date) {
@@ -441,14 +557,19 @@ public class DevicesAddActivity extends Activity {
 								.getJSONArray("obd_far_pic");
 						for (int i = 0; i < jsonArrayFar.length(); i++) {
 							JSONObject object = jsonArrayFar.getJSONObject(i);
-							String author = object.getString("author");
-							car_own_name.setText("分享者:" + author);
-							String urlString = object
-									.getString("small_pic_url");
-							if (urlString != null && !urlString.equals("")) {
-								getPic(urlString, REQUEST_FAR);
-								break;
+							boolean is_auth = object.getBoolean("is_auth");
+							if (is_auth) {
+								String author = object.getString("author");
+								car_own_name.setText("分享者:" + author);
+								String urlString = object
+										.getString("small_pic_url");
+								if (urlString != null && !urlString.equals("")) {
+									farPath.add(urlString);
+								}
 							}
+						}
+						if (farPath != null && farPath.size() != 0) {
+							getPic(farPath, REQUEST_FAR);
 						}
 					}
 				}
@@ -617,6 +738,8 @@ public class DevicesAddActivity extends Activity {
 					Bitmap picBitmap = Blur.getSquareBitmap(BitmapFactory
 							.decodeFile(Constant.VehiclePath + near_small));
 					// 显示图像
+					tv_near.setVisibility(View.GONE);
+					car_icon_near.setVisibility(View.VISIBLE);
 					car_icon_near.setImageBitmap(picBitmap);
 					car_own_name.setText("分享者:" + app.cust_name);
 				}
@@ -625,6 +748,8 @@ public class DevicesAddActivity extends Activity {
 				if (far_small != null && !far_small.equals("")) {
 					Bitmap picBitmap = Blur.getSquareBitmap(BitmapFactory
 							.decodeFile(Constant.VehiclePath + far_small));
+					tv_far.setVisibility(View.GONE);
+					car_icon_far.setVisibility(View.VISIBLE);
 					car_icon_far.setImageBitmap(picBitmap);
 					car_own_name.setText("分享者:" + app.cust_name);
 				}
@@ -637,6 +762,10 @@ public class DevicesAddActivity extends Activity {
 							.decodeFile(Constant.VehiclePath + near_small));
 					Bitmap picBitmap2 = Blur.getSquareBitmap(BitmapFactory
 							.decodeFile(Constant.VehiclePath + far_small));
+					tv_near.setVisibility(View.GONE);
+					tv_far.setVisibility(View.GONE);
+					car_icon_near.setVisibility(View.VISIBLE);
+					car_icon_far.setVisibility(View.VISIBLE);
 					car_icon_near.setImageBitmap(picBitmap1);
 					car_icon_far.setImageBitmap(picBitmap2);
 					car_own_name.setText("分享者:" + app.cust_name);

@@ -38,7 +38,7 @@ import customView.PopView.OnItemClickListener;
 
 public class PictureChoose extends Activity {
 	AppApplication app;
-	ImageView pic_near, pic_far;
+	ImageView pic_near, pic_far, pic_near_add, pic_far_add;
 	int type = 0;
 	String car_series_id = "";
 	public static final int PIC_NEAR = 1;
@@ -56,12 +56,14 @@ public class PictureChoose extends Activity {
 		car_series_id = getIntent().getStringExtra("car_series_id");
 
 		pic_near = (ImageView) findViewById(R.id.pic_near);
-		pic_near.setOnClickListener(onClickListener);
 		pic_far = (ImageView) findViewById(R.id.pic_far);
-		pic_far.setOnClickListener(onClickListener);
+
+		pic_near_add = (ImageView) findViewById(R.id.pic_near_add);
+		pic_near_add.setOnClickListener(onClickListener);
+		pic_far_add = (ImageView) findViewById(R.id.pic_far_add);
+		pic_far_add.setOnClickListener(onClickListener);
 		findViewById(R.id.iv_back).setOnClickListener(onClickListener);
 		findViewById(R.id.iv_add).setOnClickListener(onClickListener);
-
 	}
 
 	boolean isNear = false;
@@ -73,11 +75,11 @@ public class PictureChoose extends Activity {
 			case R.id.iv_back:
 				finish();
 				break;
-			case R.id.pic_near:
+			case R.id.pic_near_add:
 				isNear = true;
 				picPop(PIC_NEAR, R.id.pic_near);
 				break;
-			case R.id.pic_far:
+			case R.id.pic_far_add:
 				isFar = true;
 				picPop(PIC_FAR, R.id.pic_far);
 				break;
@@ -259,10 +261,12 @@ public class PictureChoose extends Activity {
 			// 记录近景图片地址
 			near_small = small_pic;
 			near_big = big_pic;
+			pic_near_add.setVisibility(View.GONE);
 		} else if (type == PIC_FAR) {
 			// 记录远景图片地址
 			far_small = small_pic;
 			far_big = big_pic;
+			pic_far_add.setVisibility(View.GONE);
 		}
 
 		// 判断文件夹是否为空
@@ -315,6 +319,7 @@ public class PictureChoose extends Activity {
 			}
 		}
 		// 图片显示
+		showView.setVisibility(View.VISIBLE);
 		showView.setImageBitmap(bitmap);
 	}
 }
