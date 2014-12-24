@@ -365,6 +365,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(myBroadCastReceiver);
+		if(imageFriend != null){
+			imageFriend.recycle();
+			imageFriend = null;
+		}
+		if(imageMe != null){
+			imageMe.recycle();
+			imageMe = null;
+		}
 	}
 
 	@Override
@@ -564,6 +572,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 
 	/** 获取头像 **/
 	private void getLogo() {
+		//获取好友头像
 		if (imageFriend == null) {
 			if (logo == null || logo.equals("")) {
 
@@ -582,34 +591,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						}, 0, 0, Config.RGB_565, null));
 			}
 		}
-		// 获取自己信息
-		final String meLogo = "";
-		SharedPreferences preferences = getSharedPreferences(
-				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-		String customer = preferences.getString(Constant.sp_customer
-				+ app.cust_id, "");
+		//获取自己信息
 		try {
-			if (imageFriend == null) {
-				if (logo == null || logo.equals("")) {
-
-				} else {
-					// 获取用户头像
-					mQueue.add(new ImageRequest(logo,
-							new Response.Listener<Bitmap>() {
-								@Override
-								public void onResponse(Bitmap response) {
-									GetSystem.saveImageSD(
-											response,
-											Constant.userIconPath,
-											GetSystem.getM5DEndo(logo) + ".png",
-											100);
-									imageFriend = response;
-									letterAdapter.notifyDataSetChanged();
-								}
-							}, 0, 0, Config.RGB_565, null));
-				}
-			}
-
+			SharedPreferences preferences = getSharedPreferences(
+					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+			String customer = preferences.getString(Constant.sp_customer
+					+ app.cust_id, "");
+			JSONObject jsonObject = new JSONObject(customer);	
+			final String meLogo = jsonObject.getString("logo");
 			// 读取自己对应的图片
 			if (new File(Constant.userIconPath + GetSystem.getM5DEndo(meLogo)
 					+ ".png").exists()) {
