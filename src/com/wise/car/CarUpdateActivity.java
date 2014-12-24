@@ -595,7 +595,6 @@ public class CarUpdateActivity extends Activity {
 
 	/** 获取各个市违章信息 **/
 	private void getTraffic() {
-
 		List<BaseData> bDatas = DataSupport.findAll(BaseData.class);
 		List<BaseData> baseDatas = DataSupport.where("Title = ?", "Violation")
 				.find(BaseData.class);

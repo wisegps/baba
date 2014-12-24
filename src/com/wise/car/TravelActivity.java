@@ -323,7 +323,8 @@ public class TravelActivity extends Activity {
 			int trip_id = travelDatas.get(position).getTrip_id();
 			String url = Constant.BaseUrl + "device/trip/" + trip_id + "/name?auth_code=" + app.auth_code;
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("trip_name", URLEncoder.encode(name, "UTF-8")));
+			//params.add(new BasicNameValuePair("trip_name", URLEncoder.encode(name, "UTF-8")));
+			params.add(new BasicNameValuePair("trip_name", name));
 			new NetThread.putDataThread(handler, url, params, renameTravel).start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -607,7 +608,7 @@ public class TravelActivity extends Activity {
 			}
 			final TravelData travelData = travelDatas.get(position);
 			if(travelData.getAct_avg_fuel() == 0){
-				holder.iv_item_travel_recordShow.setVisibility(View.GONE);
+				holder.iv_item_travel_recordShow.setVisibility(View.INVISIBLE);
 			}else{
 				holder.iv_item_travel_recordShow.setVisibility(View.VISIBLE);
 			}

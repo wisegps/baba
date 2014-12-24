@@ -17,15 +17,12 @@ import customView.FanView;
 import customView.FanView.OnViewRotateListener;
 import data.CarData;
 import data.EnergyItem;
-import data.WeekData;
-import android.R.integer;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -492,7 +489,7 @@ public class FuelActivity extends Activity {
 				for(int i = 0 ; i < Efuel.size() ; i++){
 					System.out.println(Efuel.get(i).toString());
 				}
-				ecv_fuel.initPoints(Efuel,index);
+				ecv_fuel.initPoints(Efuel,index,type);
 				ecv_fuel.RefreshView();
 			}
 			//画饼图

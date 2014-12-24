@@ -270,7 +270,7 @@ public class DyActivity extends Activity {
 				String avg_value = jsonObject.getString("avg_value");
 				Efuel.add(new EnergyItem(data, Float.valueOf(avg_value), ""));
 			}
-			ecv_real_dpdy.initPoints(Efuel, 2);
+			ecv_real_dpdy.initPoints(Efuel,2,0);
 			ecv_real_dpdy.RefreshView();
 		} catch (Exception e) {
 			e.printStackTrace();

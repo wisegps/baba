@@ -134,7 +134,7 @@
 	                android:paddingLeft="10dp"
 	                android:paddingRight="10dp"
 	                android:contentDescription="@string/app_name"
-	                android:visibility="visible"
+	                android:visibility="invisible"
 	                android:src="@drawable/icon_guzhang_normal" />
             </LinearLayout>  
             <TextView
