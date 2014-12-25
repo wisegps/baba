@@ -249,6 +249,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.show.OBDPictureShow"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.show.ShowCarAcitivity"
             android:screenOrientation="portrait" >
         </activity>
