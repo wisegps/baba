@@ -103,6 +103,7 @@
 	            android:padding="@dimen/margins"
 	            android:visibility="gone"
 	            android:layout_alignParentRight="true"
+	            android:background="@drawable/bg_common"
 	            android:src="@drawable/ewm"/>
 	    </RelativeLayout>
 	    <RelativeLayout 

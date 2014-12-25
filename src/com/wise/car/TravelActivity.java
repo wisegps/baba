@@ -104,7 +104,7 @@ public class TravelActivity extends Activity {
 		}else{
 			Date = GetSystem.GetNowDay();
 		}
-		Date = "2014-11-30";
+		//Date = "2014-11-30";
 		tv_travel_date.setText(Date);
 		judgeNowData(Date);
 		GetDataTrip();

@@ -32,6 +32,7 @@ import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.UiSettings;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
+import com.baidu.mapapi.overlayutil.WalkingRouteOverlay;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
@@ -39,6 +40,7 @@ import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.wise.baba.AppApplication;
@@ -497,23 +499,51 @@ public class CarLocationActivity extends Activity {
 		iv_plain.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
 		iv_3d.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
 	}
-
+	/**弹出路径规划or导航确认框**/
 	private void showDialog(final LatLng startLocat, final LatLng carLocat) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				CarLocationActivity.this);
-		builder.setTitle("提示").setMessage("是否进行路径导航？");
+		builder.setTitle("提示").setMessage("是否进行路径规划或导航？");
 
-		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("导航", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				GetSystem.FindCar(CarLocationActivity.this, startLocat,
 						carLocat, "", "");
 			}
 		});
+		builder.setNeutralButton("路径规划", new DialogInterface.OnClickListener() {			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				showDrivingOrWalking(startLocat,carLocat);
+			}
+		});
 		builder.setNegativeButton("取消", null);
 		builder.create().show();
 	}
-
+	//driving,walking
+	private void showDrivingOrWalking(final LatLng startLatLng, final LatLng stopLatLng){
+		final PlanNode stNode = PlanNode.withLocation(startLatLng);
+		final PlanNode edNode = PlanNode.withLocation(stopLatLng);
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				CarLocationActivity.this);
+		builder.setTitle("提示").setMessage("请确认路径规划方式！");
+		builder.setPositiveButton("驾车规划", new DialogInterface.OnClickListener() {			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Toast.makeText(CarLocationActivity.this, "驾车规划中...", Toast.LENGTH_LONG).show();
+				mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(edNode));
+			}
+		});
+		builder.setNegativeButton("步行规划", new DialogInterface.OnClickListener() {			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				Toast.makeText(CarLocationActivity.this, "步行规划中...", Toast.LENGTH_LONG).show();
+				mSearch.walkingSearch(new WalkingRoutePlanOption().from(stNode).to(edNode));
+			}
+		});
+		builder.create().show();
+	}
 	/**
 	 * 根据类型跳转搜索
 	 * 
@@ -1048,18 +1078,36 @@ public class CarLocationActivity extends Activity {
 		if (startLatLng == null || stopLatLng == null) {
 			return;
 		}
-		System.out.println("轨迹");
-		PlanNode stNode = PlanNode.withLocation(startLatLng);
-		PlanNode edNode = PlanNode.withLocation(stopLatLng);
-		mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(
-				edNode));
-		showDialog(startLatLng, stopLatLng);
+		showDialog(startLatLng, stopLatLng);//driving,walking
 	}
 
 	DrivingRouteOverlay drOverlay;
+	WalkingRouteOverlay wkOverlay;
 	OnGetRoutePlanResultListener onGetRoutePlanResultListener = new OnGetRoutePlanResultListener() {
 		@Override
-		public void onGetWalkingRouteResult(WalkingRouteResult arg0) {
+		public void onGetWalkingRouteResult(WalkingRouteResult result) {
+			if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+				Toast.makeText(CarLocationActivity.this, "抱歉，未找到结果",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
+			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
+				try {
+					if (wkOverlay != null) {
+						wkOverlay.removeFromMap();
+					}
+					wkOverlay = new WalkingRouteOverlay(mBaiduMap);
+					mBaiduMap.setOnMarkerClickListener(wkOverlay);
+					wkOverlay.setData(result.getRouteLines().get(0));
+					wkOverlay.addToMap();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				Toast.makeText(CarLocationActivity.this, "抱歉，未找到结果",
+						Toast.LENGTH_SHORT).show();
+				return;
+			}
 		}
 
 		@Override

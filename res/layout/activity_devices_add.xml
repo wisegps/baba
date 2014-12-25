@@ -101,7 +101,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/margins"
                         android:layout_marginRight="@dimen/margins"
-                        android:background="@drawable/bg_ewm"
+                        android:background="@drawable/bg_common"
                         android:src="@drawable/ewm" />
 
                     <EditText

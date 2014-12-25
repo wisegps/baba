@@ -1062,8 +1062,7 @@ public class FaultActivity extends FragmentActivity {
 			carView.setTv_current_distance(tv_current_distance);
 			carViews.add(carView);
 
-			tv_name.setText(app.carDatas.get(i).getCar_series() + "("
-					+ app.carDatas.get(i).getNick_name() + ")");
+			tv_name.setText(app.carDatas.get(i).getNick_name());
 			String Device_id = app.carDatas.get(i).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
 				carView.getmTasksView().setProgress(100);

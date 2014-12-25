@@ -216,7 +216,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_alignParentRight="true"
-                                        android:textColor="@color/blue_light"
+                                        android:textColor="@color/content_gray"
                                         android:textSize="@dimen/content" />
                                 </RelativeLayout>
 

@@ -16,6 +16,7 @@ import pubclas.Constant;
 import pubclas.FaceConversionUtil;
 import pubclas.GetSystem;
 import pubclas.NetThread;
+import pubclas.Uri2Path;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import com.aliyun.android.oss.model.OSSObject;
@@ -1483,8 +1484,8 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			// 图库返回
 			if (data != null) {
 				// 获取图片路径
-				Uri uri = data.getData();
-				saveImageSD(getPath(uri), 1, 0.0, 0.0, "");
+				Uri uri = data.getData();				
+				saveImageSD(Uri2Path.getPath(LetterActivity.this, uri), 1, 0.0, 0.0, "");
 			}
 			return;
 		} else if (requestCode == 3 && resultCode == 3) {
@@ -1611,16 +1612,6 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				handler.sendMessage(message);
 			}
 		}).start();
-	}
-
-	/** 把uri 转换成 SD卡路径 **/
-	public String getPath(Uri uri) {
-		String[] projection = { MediaStore.Images.Media.DATA };
-		Cursor cursor = managedQuery(uri, projection, null, null, null);
-		int column_index = cursor
-				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		cursor.moveToFirst();
-		return cursor.getString(column_index);
 	}
 
 	private String getImagePath(String imageUrl) {

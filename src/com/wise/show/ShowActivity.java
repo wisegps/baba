@@ -11,6 +11,7 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
+import pubclas.Uri2Path;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +38,7 @@ import android.widget.Toast;
 
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.notice.LetterActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.show.MyScrollView.OnFlowClickListener;
 import com.wise.show.RefreshableView.RefreshListener;
@@ -585,7 +587,7 @@ public class ShowActivity extends Activity {
 				Uri uri = data.getData();
 				Intent intent = new Intent(ShowActivity.this,
 						ShowCarAcitivity.class);
-				intent.putExtra("image", getPath(uri));
+				intent.putExtra("image", Uri2Path.getPath(ShowActivity.this, uri));
 				intent.putExtra("photo_type", photo_type);
 				startActivity(intent);
 			}
@@ -630,16 +632,6 @@ public class ShowActivity extends Activity {
 			car_brand_id = Integer.valueOf(data.getStringExtra("brankId"));
 			getFristImages();
 		}
-	}
-
-	/** 把uri 转换成 SD卡路径 **/
-	public String getPath(Uri uri) {
-		String[] projection = { MediaStore.Images.Media.DATA };
-		Cursor cursor = managedQuery(uri, projection, null, null, null);
-		int column_index = cursor
-				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		cursor.moveToFirst();
-		return cursor.getString(column_index);
 	}
 
 	/** 类型返回 **/
