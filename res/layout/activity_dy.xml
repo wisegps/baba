@@ -164,7 +164,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="本次检测"
+                    android:text="最后行程检测值"
                     android:textColor="@color/common"
                     android:textSize="@dimen/content" />
             </RelativeLayout>
@@ -194,7 +194,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="本次检测结果"
+                    android:text="最后行程检测值结果"
                     android:textColor="@color/common"
                     android:textSize="@dimen/content" />
             </RelativeLayout>
@@ -224,7 +224,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="实时检测"
+                    android:text="实时检测值"
                     android:textColor="@color/common"
                     android:textSize="@dimen/content" />
             </RelativeLayout>
@@ -254,7 +254,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="实时检测结果"
+                    android:text="实时检测值结果"
                     android:textColor="@color/common"
                     android:textSize="@dimen/content" />
             </RelativeLayout>
@@ -333,12 +333,11 @@
                     android:id="@+id/ecv_real_dpdy"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content" />
+	            <View
+	                android:layout_width="fill_parent"
+	                android:layout_height="0.5dp"
+	                android:background="@color/line" />
             </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/line" />
 
             <WebView
                 android:id="@+id/share_web"

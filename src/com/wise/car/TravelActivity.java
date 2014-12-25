@@ -20,6 +20,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -46,6 +47,8 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.R.string;
+
+import data.AdressData;
 
 /**
  * 车辆行程列表
@@ -101,7 +104,7 @@ public class TravelActivity extends Activity {
 		}else{
 			Date = GetSystem.GetNowDay();
 		}
-		//Date = "2014-11-30";
+		Date = "2014-11-30";
 		tv_travel_date.setText(Date);
 		judgeNowData(Date);
 		GetDataTrip();
@@ -153,7 +156,7 @@ public class TravelActivity extends Activity {
 				jsonCollectAdress(msg.obj.toString());
 				break;
 			case getIsCollect:
-				jsonCollect(msg.obj.toString());
+				jsonCollect(msg.obj.toString(),msg.arg1);
 				break;
 			}
 		}
@@ -186,7 +189,7 @@ public class TravelActivity extends Activity {
 			tv_hk_fuel.setText(hk_fuel);
 			String fee = "花费：" + jsonObject.getString("total_fee") + "元";
 			tv_money.setText(fee);
-
+			String adressName = "";
 			JSONArray jsonArray = jsonObject.getJSONArray("data");
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject2 = jsonArray.getJSONObject(i);
@@ -194,6 +197,7 @@ public class TravelActivity extends Activity {
 
 				} else {
 					TravelData travelData = new TravelData();
+					travelData.setCollect(false);
 					travelData.setTrip_id(jsonObject2.getInt("trip_id"));
 					if(jsonObject2.opt("act_avg_fuel") == null){
 						travelData.setAct_avg_fuel(0);
@@ -203,7 +207,9 @@ public class TravelActivity extends Activity {
 					if(jsonObject2.opt("trip_name") == null){
 						travelData.setTrip_name("");
 					}else{
-						travelData.setTrip_name(jsonObject2.getString("trip_name"));
+						String trip_name = jsonObject2.getString("trip_name");
+						travelData.setTrip_name(trip_name);
+						adressName += trip_name + ",";
 					}
 					travelData.setStartTime(GetSystem
 							.ChangeTimeZone(jsonObject2.getString("start_time")
@@ -235,6 +241,7 @@ public class TravelActivity extends Activity {
 					travelDatas.add(travelData);
 				}
 			}
+			judgeCollect(adressName,1);
 			travelAdapter.notifyDataSetChanged();
 			if (travelDatas.size() > 0) {
 				i = 0;
@@ -314,10 +321,12 @@ public class TravelActivity extends Activity {
 	int renameTravelPosition;
 	String rename;
 	/**重命名**/
-	private void renameTravel(int position,String name){
+	private void renameTravel(int position,String name,boolean isProgressDialog){
 		try {
-			dialog = ProgressDialog.show(TravelActivity.this,"提示", "行程重命名中");
-	        dialog.setCancelable(true);
+			if(isProgressDialog){
+				dialog = ProgressDialog.show(TravelActivity.this,"提示", "行程重命名中");
+		        dialog.setCancelable(true);
+			}
 	        renameTravelPosition = position;
 	        rename = name;
 			int trip_id = travelDatas.get(position).getTrip_id();
@@ -380,14 +389,19 @@ public class TravelActivity extends Activity {
 		}
 	}
 	CollectionData collectionData;
+	int collectPosition;
+	String collectName = "";
+	String collectAdres = "";
+	String collectLon = "";
+	String collectLat = "";
 	/**收藏地址**/
 	private void collectAdress(final int position){
 		//判断该行程是否设置trip_name
 		final TravelData travelData = travelDatas.get(position);
 		String trip_name = travelData.getTrip_name();
-		final String adress = travelData.getEnd_place();
-		final String lat = travelData.getEnd_lat();
-		final String lon = travelData.getEnd_lon();
+		collectAdres = travelData.getEnd_place();
+		collectLat = travelData.getEnd_lat();
+		collectLon = travelData.getEnd_lon();
 		if(trip_name == null || trip_name.equals("")){
 			AlertDialog.Builder dialog = new AlertDialog.Builder(TravelActivity.this);
 			LayoutInflater inflater = (LayoutInflater) TravelActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -404,14 +418,17 @@ public class TravelActivity extends Activity {
 					if(name.equals("")){
 						Toast.makeText(TravelActivity.this, "收藏的名称不能为空", Toast.LENGTH_SHORT).show();
 					}else{
-						sureCollectAdress(name, adress, lon, lat);
-						renameTravel(position, name);
+						collectPosition = position;
+						collectName = name;
+						//TODO 判断收藏的名称是否重复
+						judgeCollect(name, 0);
 					}
 				}
 			});
 			dialog.show();
 		}else{
-			sureCollectAdress(trip_name, adress, lon, lat);
+			sureCollectAdress(trip_name, collectAdres, collectLon, collectLat);
+			collectCommonAdress(collectAdres, Double.valueOf(collectLat), Double.valueOf(collectLon));
 		}		
 	}
 	/**收藏地址**/
@@ -450,11 +467,14 @@ public class TravelActivity extends Activity {
 				
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			//handle exception
 		}
 	}
-	/**判断是否收藏**/
-	private void judgeCollect(String result){
+	/**判断是否收藏
+	 * type = 0;判断新的收藏的名称是否重复
+	 * type = 1;判断所有的行程结果，确定是否收藏
+	 * **/
+	private void judgeCollect(String result,int type){
 		try {
 			System.out.println(result);
 			String url = Constant.BaseUrl + "favorite/is_collect?auth_code="
@@ -462,24 +482,128 @@ public class TravelActivity extends Activity {
 					+ URLEncoder.encode(result, "UTF-8") + "&cust_id="
 					+ app.cust_id;
 			new Thread(new NetThread.GetDataThread(handler, url,
-					getIsCollect)).start();
+					getIsCollect,type)).start();
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}		
 	}
-	private void jsonCollect(String result){
-		System.out.println("返回："+result);
+	private void jsonCollect(String result,int type){			
+		try {
+			JSONArray jsonArray = new JSONArray(result);
+			if(type == 1){//判断所有行程的是否收藏	
+				for(int i = 0 ; i < jsonArray.length() ; i++){
+					String name = jsonArray.getJSONObject(i).getString("name");
+					for(TravelData travelData : travelDatas){
+						if(travelData.getTrip_name().equals(name)){
+							travelData.setCollect(true);
+							break;
+						}
+					}
+				}
+			}else{//判断新的收藏名称是否重复
+				if(jsonArray.length() == 0){//未重复,开始收藏					
+					sureCollectAdress(collectName, collectAdres, collectLon, collectLat);
+					renameTravel(collectPosition, collectName,false);
+					collectCommonAdress(collectAdres, Double.valueOf(collectLat), Double.valueOf(collectLon));
+				}else{
+					Toast.makeText(TravelActivity.this, "收藏的名称重复", Toast.LENGTH_SHORT).show();
+				}
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	List<AdressData> adressDatas = new ArrayList<AdressData>();
+	/**收藏的同时，添加到常用地址**/
+	private void collectCommonAdress(String name,double latitude, double longitude){
+		getJsonData();
+		SharedPreferences preferences2 = getSharedPreferences(
+				"address_add", Activity.MODE_PRIVATE);
+		SharedPreferences.Editor editor2 = preferences2.edit();
+		JSONObject object = new JSONObject();
+		JSONArray addJsonArray = new JSONArray();
+		for (AdressData adress : adressDatas) {
+			if (adress.getName().equals(name)) {
+				return;
+			}
+		}
+		try {
+			for (AdressData adress : adressDatas) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("addressName", adress.getName());
+				jsonObject.put("addressLat", adress.getLat());
+				jsonObject.put("addressLon", adress.getLon());
+				addJsonArray.put(jsonObject);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		AdressData adressData = new AdressData();
+		adressData.setName(name);
+		adressData.setLat(latitude);
+		adressData.setLon(longitude);
+		adressDatas.add(adressData);
+		try {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("addressName", name);
+			jsonObject.put("addressLat", latitude);
+			jsonObject.put("addressLon", longitude);
+			addJsonArray.put(jsonObject);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		try {
+			object.put("addJsonArray", addJsonArray);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		editor2.putString("addJsonArray", object.toString());
+		editor2.commit();
+	}
+	
+	private void getJsonData() {
+		SharedPreferences preferences = getSharedPreferences("address_add",
+				Activity.MODE_PRIVATE);
+		String addJsonArray = preferences.getString("addJsonArray", "");
+		if (addJsonArray == null || addJsonArray.equals("")) {
+			return;
+		}
+		try {
+			JSONObject jsonObject = new JSONObject(addJsonArray);
+			JSONArray jsonArray = jsonObject.getJSONArray("addJsonArray");
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject object = jsonArray.getJSONObject(i);
+				String addressName = object.getString("addressName");
+				double addressLat = object.getDouble("addressLat");
+				double addressLon = object.getDouble("addressLon");
+				AdressData adressData = new AdressData();
+				adressData.setName(addressName);
+				adressData.setLat(addressLat);
+				adressData.setLon(addressLon);
+				adressDatas.add(adressData);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void showMore(final int position){
+		final boolean isCollect = travelDatas.get(position).isCollect;
+		String collect = "收藏终点";
+		if(isCollect){
+			collect = "已收藏";
+		}
 		AlertDialog.Builder builder = new Builder(TravelActivity.this);
 		builder.setTitle("更多");
-		builder.setItems(new String[]{"收藏终点","删除行程","重命名","实际油耗"}, new DialogInterface.OnClickListener() {			
+		builder.setItems(new String[]{collect,"删除行程","重命名","实际油耗"}, new DialogInterface.OnClickListener() {			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				switch (which) {
 				case 0:
-					collectAdress(position);
+					if(!isCollect){
+						collectAdress(position);
+					}
 					break;
 				case 1:
 					deleteTravel(position);
@@ -503,7 +627,7 @@ public class TravelActivity extends Activity {
 						public void onClick(DialogInterface dialog, int which) {
 							String name = et_rename.getText().toString().trim();
 							if(!name.equals("")){
-								renameTravel(position, name);
+								renameTravel(position, name,true);
 							}
 						}
 					});
@@ -812,8 +936,17 @@ public class TravelActivity extends Activity {
 		String speed;
 		String cost;
 		String trip_name;
-		float act_avg_fuel;		
+		float act_avg_fuel;	
+		boolean isCollect;		
 		
+		public boolean isCollect() {
+			return isCollect;
+		}
+
+		public void setCollect(boolean isCollect) {
+			this.isCollect = isCollect;
+		}
+
 		public float getAct_avg_fuel() {
 			return act_avg_fuel;
 		}
@@ -950,8 +1083,7 @@ public class TravelActivity extends Activity {
 			this.cost = cost;
 		}
 	}
-	/**判断地址有没有收藏**/
-	String adress = "";
+	
 	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
 		@Override
 		public void onGetGeoCodeResult(GeoCodeResult arg0) {
@@ -961,7 +1093,6 @@ public class TravelActivity extends Activity {
 		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
 			try {
 				if (mGeoCoder != null) {
-					Log.d(TAG, "arg0.getAddress() = " + arg0.getAddress());
 					String strInfo = "";
 					if (arg0 == null
 							|| arg0.error != SearchResult.ERRORNO.NO_ERROR) {
@@ -971,7 +1102,6 @@ public class TravelActivity extends Activity {
 						strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
 								strInfo.length());
 					}
-					adress = adress + strInfo +",";
 					if (isFrist) {// 起点位置取完，在取结束位置
 						travelDatas.get(i).setStart_place(strInfo);
 						isFrist = false;
@@ -986,8 +1116,7 @@ public class TravelActivity extends Activity {
 					} else {
 						travelDatas.get(i - 1).setEnd_place(strInfo);
 						if (travelDatas.size() == i) {
-							System.out.println("递归完毕");
-							judgeCollect(adress);
+							
 						} else {
 							isFrist = true;
 							double lat = Double.valueOf(travelDatas.get(i)
