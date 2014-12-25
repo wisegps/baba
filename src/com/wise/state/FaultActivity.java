@@ -39,6 +39,7 @@ import com.wise.car.CarAddActivity;
 import com.wise.car.CarLocationActivity;
 import com.wise.car.CarUpdateActivity;
 import com.wise.car.DevicesAddActivity;
+import com.wise.notice.NoticeActivity;
 import com.wise.notice.NoticeFragment;
 import com.wise.notice.NoticeFragment.BtnListener;
 import com.wise.notice.SmsActivity;
@@ -1276,9 +1277,9 @@ public class FaultActivity extends FragmentActivity {
 							CarActivity.class));
 					break;
 				case 4:
-					// 通知
+					//消息
 					startActivity(new Intent(FaultActivity.this,
-							SmsActivity.class));
+							NoticeActivity.class));
 					break;
 				case 5:
 					// 问答

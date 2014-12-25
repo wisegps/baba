@@ -259,6 +259,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				if(jsonObject.opt("friend_type") != null){
 					NoticeData noticeData = new NoticeData();
+					noticeData.setUnread_count(jsonObject.getInt("unread_count"));
 					noticeData.setType(jsonObject.getInt("type"));
 					noticeData.setFriend_id(jsonObject.getString("friend_id"));
 					int friend_type = jsonObject.getInt("friend_type");
@@ -411,6 +412,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				holder.tv_type = (TextView) convertView.findViewById(R.id.tv_type);
 				holder.tv_content = (TextView) convertView.findViewById(R.id.tv_content);
 				holder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
+				holder.tv_noti_number = (TextView) convertView.findViewById(R.id.tv_noti_number);
 				holder.iv_image = (CircleImageView) convertView.findViewById(R.id.iv_image);
 				holder.ll_fm_notice = (LinearLayout) convertView.findViewById(R.id.ll_fm_notice);
 				convertView.setTag(holder);
@@ -418,6 +420,12 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 				holder = (ViewHolder) convertView.getTag();
 			}
 			NoticeData noticeData = noticeDatas.get(position);
+			if(noticeData.getUnread_count() == 0){
+				holder.tv_noti_number.setVisibility(View.GONE);
+			}else{
+				holder.tv_noti_number.setVisibility(View.VISIBLE);
+				holder.tv_noti_number.setText(""+noticeData.getUnread_count());
+			}
 			holder.tv_content.setText(getFaceImage(noticeData.getContent()));
 			holder.tv_type.setText(noticeData.getFriend_name());
 			holder.ll_fm_notice.setOnClickListener(new OnClickListener() {				
@@ -462,6 +470,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			TextView tv_type;
 			TextView tv_content;
 			TextView tv_time;
+			TextView tv_noti_number;
 			CircleImageView iv_image;
 			LinearLayout ll_fm_notice;
 		}
@@ -479,7 +488,14 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		String send_time;
 		String friend_name;
 		String logo;
+		int unread_count;		
 		
+		public int getUnread_count() {
+			return unread_count;
+		}
+		public void setUnread_count(int unread_count) {
+			this.unread_count = unread_count;
+		}
 		public int getType() {
 			return type;
 		}
