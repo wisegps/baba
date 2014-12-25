@@ -16,7 +16,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="@dimen/content"
-            android:padding="5dp"
+            android:padding="@dimen/margins"
             android:textColor="@color/gray"
             android:enabled="false"
             android:text="全部更新"/>
@@ -31,7 +31,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="@dimen/content"
-            android:padding="5dp"
+            android:padding="@dimen/margins"
             android:textColor="@color/black1"
             android:text="全部下载"/>
         <View 
@@ -45,7 +45,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="@dimen/content"
-            android:padding="5dp"
+            android:padding="@dimen/margins"
             android:textColor="@color/black1"
             android:text="全部暂停"/>
     </LinearLayout>

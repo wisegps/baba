@@ -28,6 +28,7 @@ import android.view.Window;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -43,6 +44,7 @@ public class DyActivity extends Activity {
 	WebView shareView;
 	TextView tv_dpdy_range, tv_lt_dpdy, tv_if_lt_dpdy_err, tv_dpdy,
 			tv_if_dpdy_err, tv_real_dpdy, tv_if_real_dpdy;
+	LinearLayout ll_real_dpdy;
 	EnergyCurveView ecv_real_dpdy;
 	// 曲线图数据集合
 	ArrayList<EnergyItem> Efuel = new ArrayList<EnergyItem>();
@@ -50,6 +52,10 @@ public class DyActivity extends Activity {
 	String device_id;
 	/** 实时刷新数据 **/
 	boolean isRefresh = true;
+	/**
+	 * 1=电源，2=进气，节气门，3=怠速，4=冷却，水温，5=排放，三元
+	 * 节气门开度和三元催化器值如果为0，则显示‘0.00’改为‘未检测数据’, ‘状态异常或者良好’改为‘未检测数据’
+	 */
 	int type;
 
 	@Override
@@ -63,7 +69,7 @@ public class DyActivity extends Activity {
 		type = intent.getIntExtra("type", 1);
 		String title = intent.getStringExtra("title");
 		String name = intent.getStringExtra("name");
-
+		ll_real_dpdy = (LinearLayout)findViewById(R.id.ll_real_dpdy);
 		ecv_real_dpdy = (EnergyCurveView) findViewById(R.id.ecv_real_dpdy);
 
 		TextView tv_dpdy_tiyle = (TextView) findViewById(R.id.tv_dpdy_title);
@@ -164,7 +170,9 @@ public class DyActivity extends Activity {
 		new NetThread.GetDataThread(handler, url, getData).start();
 	}
 
-	/** 解析数据 **/
+	/** 解析数据 
+	 * type = 2，5节气门开度和三元催化器值如果为0，则显示‘0.00’改为‘未检测数据’, ‘状态异常或者良好’改为‘未检测数据’
+	 **/
 	private void jsonData(String result) {
 		try {
 			JSONObject jsonObject = new JSONObject(result);
@@ -173,47 +181,68 @@ public class DyActivity extends Activity {
 			tv_dpdy_range.setText(range);
 			// 长期检测值
 			double long_term_value = jsonObject.getDouble("long_term_value");
-			tv_lt_dpdy.setText(String.format("%.2f",
-					Double.valueOf(long_term_value)));
-			// 长期检测结果
-			boolean if_lt_err = jsonObject.getBoolean("if_lt_err");
-			if (if_lt_err) {
-				tv_if_lt_dpdy_err.setText("状态异常");
+			if((type == 2 || type == 5) & long_term_value == 0){
+				tv_lt_dpdy.setText("未检测数据");
+				tv_if_lt_dpdy_err.setText("未检测数据");
 				tv_if_lt_dpdy_err.setTextColor(getResources().getColor(
 						R.color.yellow));
-			} else {
-				tv_if_lt_dpdy_err.setText("状态良好");
-				tv_if_lt_dpdy_err.setTextColor(getResources().getColor(
-						R.color.blue));
-			}
+			}else{
+				tv_lt_dpdy.setText(String.format("%.2f",
+						Double.valueOf(long_term_value)));
+				// 长期检测结果
+				boolean if_lt_err = jsonObject.getBoolean("if_lt_err");
+				if (if_lt_err) {
+					tv_if_lt_dpdy_err.setText("状态异常");
+					tv_if_lt_dpdy_err.setTextColor(getResources().getColor(
+							R.color.yellow));
+				} else {
+					tv_if_lt_dpdy_err.setText("状态良好");
+					tv_if_lt_dpdy_err.setTextColor(getResources().getColor(
+							R.color.blue));
+				}
+			}			
 			// 本次检测
 			double last_trip_value = jsonObject.getDouble("last_trip_value");
-			tv_dpdy.setText(String.format("%.2f", last_trip_value));
-			// 本次检测结果
-			boolean if_err = jsonObject.getBoolean("if_err");
-			if (if_err) {
-				tv_if_dpdy_err.setText("状态异常");
+			if((type == 2 || type == 5) & last_trip_value == 0){
+				tv_dpdy.setText("未检测数据");
+				tv_if_dpdy_err.setText("未检测数据");
 				tv_if_dpdy_err.setTextColor(getResources().getColor(
 						R.color.yellow));
-			} else {
-				tv_if_dpdy_err.setText("状态良好");
-				tv_if_dpdy_err.setTextColor(getResources().getColor(
-						R.color.blue));
-			}
+			}else{
+				tv_dpdy.setText(String.format("%.2f", last_trip_value));
+				// 本次检测结果
+				boolean if_err = jsonObject.getBoolean("if_err");
+				if (if_err) {
+					tv_if_dpdy_err.setText("状态异常");
+					tv_if_dpdy_err.setTextColor(getResources().getColor(
+							R.color.yellow));
+				} else {
+					tv_if_dpdy_err.setText("状态良好");
+					tv_if_dpdy_err.setTextColor(getResources().getColor(
+							R.color.blue));
+				}
+			}			
 			// 实时检测
 			double real_value = jsonObject.getDouble("real_value");
-			tv_real_dpdy.setText(String.format("%.2f", real_value));
-			// 实时检测结果
-			boolean if_rl_err = jsonObject.getBoolean("if_rl_err");
-			if (if_rl_err) {
-				tv_if_real_dpdy.setText("状态异常");
+			if((type == 2 || type == 5) & last_trip_value == 0){
+				tv_real_dpdy.setText("未检测数据");
+				tv_if_real_dpdy.setText("未检测数据");
 				tv_if_real_dpdy.setTextColor(getResources().getColor(
 						R.color.yellow));
-			} else {
-				tv_if_real_dpdy.setText("状态良好");
-				tv_if_real_dpdy.setTextColor(getResources().getColor(
-						R.color.blue));
-			}
+			}else{
+				tv_real_dpdy.setText(String.format("%.2f", real_value));
+				// 实时检测结果
+				boolean if_rl_err = jsonObject.getBoolean("if_rl_err");
+				if (if_rl_err) {
+					tv_if_real_dpdy.setText("状态异常");
+					tv_if_real_dpdy.setTextColor(getResources().getColor(
+							R.color.yellow));
+				} else {
+					tv_if_real_dpdy.setText("状态良好");
+					tv_if_real_dpdy.setTextColor(getResources().getColor(
+							R.color.blue));
+				}
+			}			
 			String url = jsonObject.getString("url");
 			shareView.loadUrl(url);
 		} catch (Exception e) {
@@ -235,18 +264,25 @@ public class DyActivity extends Activity {
 			JSONObject jsonObject = new JSONObject(result);
 			double real_value = jsonObject.getDouble("real_value");
 			boolean if_rl_err = jsonObject.getBoolean("if_rl_err");
-			// 实时检测
-			tv_real_dpdy.setText(String.format("%.2f", real_value));
-			// 实时检测结果
-			if (if_rl_err) {
-				tv_if_real_dpdy.setText("状态异常");
+			if((type == 2 || type == 5) & real_value == 0){
+				tv_real_dpdy.setText("未检测数据");
+				tv_if_real_dpdy.setText("未检测数据");
 				tv_if_real_dpdy.setTextColor(getResources().getColor(
 						R.color.yellow));
-			} else {
-				tv_if_real_dpdy.setText("状态良好");
-				tv_if_real_dpdy.setTextColor(getResources().getColor(
-						R.color.blue));
-			}
+			}else{
+				// 实时检测
+				tv_real_dpdy.setText(String.format("%.2f", real_value));
+				// 实时检测结果
+				if (if_rl_err) {
+					tv_if_real_dpdy.setText("状态异常");
+					tv_if_real_dpdy.setTextColor(getResources().getColor(
+							R.color.yellow));
+				} else {
+					tv_if_real_dpdy.setText("状态良好");
+					tv_if_real_dpdy.setTextColor(getResources().getColor(
+							R.color.blue));
+				}
+			}			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -260,18 +296,25 @@ public class DyActivity extends Activity {
 		new NetThread.GetDataThread(handler, url, getChartData).start();
 	}
 
-	/** 解析近一个月的数据 **/
+	/** 解析近一个月的数据 
+	 * 如果曲线返回数据为空，则不显示曲线部分
+	 **/
 	private void jsonCharData(String result) {
 		try {
 			JSONArray jsonArray = new JSONArray(result);
-			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				int data = jsonObject.getInt("_id");
-				String avg_value = jsonObject.getString("avg_value");
-				Efuel.add(new EnergyItem(data, Float.valueOf(avg_value), ""));
+			if(jsonArray.length() == 0){
+				ll_real_dpdy.setVisibility(View.GONE);
+			}else{
+				ll_real_dpdy.setVisibility(View.VISIBLE);
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject jsonObject = jsonArray.getJSONObject(i);
+					int data = jsonObject.getInt("_id");
+					String avg_value = jsonObject.getString("avg_value");
+					Efuel.add(new EnergyItem(data, Float.valueOf(avg_value), ""));
+				}
+				ecv_real_dpdy.initPoints(Efuel,2,0);
+				ecv_real_dpdy.RefreshView();
 			}
-			ecv_real_dpdy.initPoints(Efuel,2,0);
-			ecv_real_dpdy.RefreshView();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

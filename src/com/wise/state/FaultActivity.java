@@ -39,6 +39,7 @@ import com.wise.car.CarAddActivity;
 import com.wise.car.CarLocationActivity;
 import com.wise.car.CarUpdateActivity;
 import com.wise.car.DevicesAddActivity;
+import com.wise.notice.NoticeActivity;
 import com.wise.notice.NoticeFragment;
 import com.wise.notice.NoticeFragment.BtnListener;
 import com.wise.notice.SmsActivity;
@@ -139,6 +140,7 @@ public class FaultActivity extends FragmentActivity {
 	AppApplication app;
 	LinearLayout ll_image;
 	int image_position = 0;
+	String noticeUrl = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -219,9 +221,8 @@ public class FaultActivity extends FragmentActivity {
 		if (Judge.isLogin(app)) {// 已登录
 			GetSystem.myLog(TAG, "已登录,app.carDatas = " + app.carDatas.size());
 			initDataView();
-			String url = Constant.BaseUrl + "customer/" + app.cust_id
+			noticeUrl = Constant.BaseUrl + "customer/" + app.cust_id
 					+ "/tips?auth_code=" + app.auth_code;
-			getMessage(url);
 			getCounter();
 
 			if (app.carDatas.size() == 0) {// 如果没有车则显示
@@ -256,8 +257,7 @@ public class FaultActivity extends FragmentActivity {
 			app.cust_id = "0";
 			app.auth_code = "127a154df2d7850c4232542b4faa2c3d";
 			setLoginView();
-			String url = Constant.BaseUrl + "customer/0/tips";
-			getMessage(url);
+			noticeUrl = Constant.BaseUrl + "customer/0/tips";
 			Intent intent = new Intent(FaultActivity.this, LoginActivity.class);
 			startActivity(intent);
 		}
@@ -287,6 +287,7 @@ public class FaultActivity extends FragmentActivity {
 			@Override
 			public void run() {
 				while (isGetGps) {
+					getMessage(noticeUrl);
 					gethot_news();
 					SystemClock.sleep(30000);
 					if (app.carDatas == null || app.carDatas.size() == 0) {
@@ -1276,9 +1277,9 @@ public class FaultActivity extends FragmentActivity {
 							CarActivity.class));
 					break;
 				case 4:
-					// 通知
+					//消息
 					startActivity(new Intent(FaultActivity.this,
-							SmsActivity.class));
+							NoticeActivity.class));
 					break;
 				case 5:
 					// 问答
@@ -1569,9 +1570,9 @@ public class FaultActivity extends FragmentActivity {
 				GetSystem.myLog(TAG, "A_RefreshHomeCar");
 				initDataView();
 				getTotalData();
-				String url = Constant.BaseUrl + "customer/" + app.cust_id
+				noticeUrl = Constant.BaseUrl + "customer/" + app.cust_id
 						+ "/tips?auth_code=" + app.auth_code;
-				getMessage(url);
+				getMessage(noticeUrl);
 				getCounter();
 				noticeFragment.ResetNotice();
 
@@ -1607,8 +1608,8 @@ public class FaultActivity extends FragmentActivity {
 
 			} else if (action.equals(Constant.A_LoginOut)) {
 				setLoginView();
-				String url = Constant.BaseUrl + "customer/0/tips";
-				getMessage(url);
+				noticeUrl = Constant.BaseUrl + "customer/0/tips";
+				getMessage(noticeUrl);
 				noticeFragment.ClearNotice();
 			} else if (action.equals(Constant.A_City)) {
 				try {
