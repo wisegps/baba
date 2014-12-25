@@ -254,8 +254,8 @@
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:padding="@dimen/margins"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal"
+                    android:padding="@dimen/margins" >
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -315,7 +315,7 @@
                                 android:layout_height="fill_parent"
                                 android:gravity="center"
                                 android:padding="@dimen/margins"
-                                android:text="无车辆图片显示，请分享您的图片经验"
+                                android:text="请点击拍照，立即分享您的宝贵经验，如一经采用，我们将会给予5元现金券奖励。"
                                 android:textColor="@color/navy" />
 
                             <ImageView
@@ -366,7 +366,7 @@
                                 android:layout_height="fill_parent"
                                 android:gravity="center"
                                 android:padding="@dimen/margins"
-                                android:text="无车辆图片显示，请分享您的图片经验"
+                                android:text="请点击拍照，立即分享您的宝贵经验，如一经采用，我们将会给予5元现金券奖励。"
                                 android:textColor="@color/navy" />
 
                             <ImageView
@@ -389,24 +389,15 @@
 
                 <TextView
                     android:id="@+id/tv_pic_share"
-                    android:layout_width="fill_parent"
+                    android:layout_width="160dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/margins"
-                    android:background="@drawable/bg_green"
+                    android:background="@drawable/bg_bt_green"
+                    android:gravity="center"
                     android:padding="@dimen/margins"
+                    android:text="我要分享 "
                     android:textColor="@color/white"
-                    android:text="我要分享"
-                    android:textSize="@dimen/content" />
-
-                <TextView
-                    android:id="@+id/car_own_name"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margins"
-                    android:gravity="center"
-                    android:text="分享者:"
-                    android:textColor="@color/navy"
                     android:textSize="@dimen/content" />
             </LinearLayout>
         </LinearLayout>

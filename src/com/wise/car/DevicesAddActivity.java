@@ -23,11 +23,9 @@ import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
 import com.wise.show.ImageDetailsActivity;
 
-import customView.PopView;
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
 import data.CarData;
-import android.R.mipmap;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -39,8 +37,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,7 +88,7 @@ public class DevicesAddActivity extends Activity {
 	// 近景远景图
 	ImageView car_icon_near, car_icon_far;
 	TextView tv_pic_share, tv_near, tv_far;
-	TextView car_name, car_own_name;
+	TextView car_name;
 
 	int car_id;
 	/** true绑定终端，false修改终端 **/
@@ -138,7 +134,6 @@ public class DevicesAddActivity extends Activity {
 		tv_pic_share.setOnClickListener(onClickListener);
 		car_name = (TextView) findViewById(R.id.car_name);
 		car_name.setOnClickListener(onClickListener);
-		car_own_name = (TextView) findViewById(R.id.car_own_name);
 
 		Intent intent = getIntent();
 		car_id = intent.getIntExtra("car_id", 0);
@@ -221,7 +216,7 @@ public class DevicesAddActivity extends Activity {
 		}
 	};
 
-	List<String> picNear = new ArrayList<String>();
+	List<String> picNear = new ArrayList<String>();// TODO 大图地址集合
 	List<String> picFar = new ArrayList<String>();
 
 	/**
@@ -562,8 +557,6 @@ public class DevicesAddActivity extends Activity {
 							JSONObject object = jsonArrayNear.getJSONObject(i);
 							boolean is_auth = object.getBoolean("is_auth");
 							if (is_auth) {
-								String author = object.getString("author");
-								car_own_name.setText("分享者:" + author);
 								String urlString = object
 										.getString("small_pic_url");
 								if (urlString != null && !urlString.equals("")) {
@@ -584,8 +577,6 @@ public class DevicesAddActivity extends Activity {
 							JSONObject object = jsonArrayFar.getJSONObject(i);
 							boolean is_auth = object.getBoolean("is_auth");
 							if (is_auth) {
-								String author = object.getString("author");
-								car_own_name.setText("分享者:" + author);
 								String urlString = object
 										.getString("small_pic_url");
 								if (urlString != null && !urlString.equals("")) {
@@ -766,7 +757,6 @@ public class DevicesAddActivity extends Activity {
 					tv_near.setVisibility(View.GONE);
 					car_icon_near.setVisibility(View.VISIBLE);
 					car_icon_near.setImageBitmap(picBitmap);
-					car_own_name.setText("分享者:" + app.cust_name);
 				}
 			} else if (type == PictureChoose.PIC_FAR) {
 				String far_small = data.getStringExtra("far_small");
@@ -776,7 +766,6 @@ public class DevicesAddActivity extends Activity {
 					tv_far.setVisibility(View.GONE);
 					car_icon_far.setVisibility(View.VISIBLE);
 					car_icon_far.setImageBitmap(picBitmap);
-					car_own_name.setText("分享者:" + app.cust_name);
 				}
 			} else if (type == PictureChoose.PIC_ALL) {
 				String near_small = data.getStringExtra("near_small");
@@ -793,7 +782,6 @@ public class DevicesAddActivity extends Activity {
 					car_icon_far.setVisibility(View.VISIBLE);
 					car_icon_near.setImageBitmap(picBitmap1);
 					car_icon_far.setImageBitmap(picBitmap2);
-					car_own_name.setText("分享者:" + app.cust_name);
 				}
 			}
 		}
