@@ -21,14 +21,12 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
 
 public class OBDPictureShow extends Activity {
 	private List<String> picSmall = null;
 	private List<String> picBig = null;
-	int index = -1;
 	GridAdapter adapter;
 
 	@Override
@@ -61,8 +59,7 @@ public class OBDPictureShow extends Activity {
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				index = arg2;
-				adapter.notifyDataSetChanged();
+
 			}
 
 			@Override
@@ -119,24 +116,18 @@ public class OBDPictureShow extends Activity {
 				convertView = mInflater.inflate(R.layout.item_pic_choose, null);
 				mHolder.picShow = (ImageView) convertView
 						.findViewById(R.id.image_pic_choose);
-				mHolder.picCheck = (CheckBox) findViewById(R.id.pic_check);
+
 				convertView.setTag(mHolder);
 			} else {
 				mHolder = (Holder) convertView.getTag();
 			}
 			Bitmap bitmap = BitmapFactory.decodeFile(list.get(position));
 			mHolder.picShow.setImageBitmap(Blur.getSquareBitmap(bitmap));
-			if (index == position) {
-				mHolder.picCheck.setChecked(true);
-			} else {
-				mHolder.picCheck.setChecked(false);
-			}
 			return convertView;
 		}
 
 		class Holder {
 			ImageView picShow;
-			CheckBox picCheck;
 		}
 	}
 }
