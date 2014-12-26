@@ -22,6 +22,7 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
 import com.wise.show.ImageDetailsActivity;
+import com.wise.show.OBDPictureShow;
 
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
@@ -216,99 +217,118 @@ public class DevicesAddActivity extends Activity {
 		}
 	};
 
-	List<String> picNear = new ArrayList<String>();// TODO 大图地址集合
-	List<String> picFar = new ArrayList<String>();
+	// 图片显示集合地址
+	List<String> picNearSmall = new ArrayList<String>();
+	List<String> picNearBig = new ArrayList<String>();
+	List<String> picFarSmall = new ArrayList<String>();
+	List<String> picFarBig = new ArrayList<String>();
 
 	/**
 	 * OBD实景图片选择
 	 */
-	private void pictureChoose(final int type) {
-		View view = (LayoutInflater.from(DevicesAddActivity.this)).inflate(
-				R.layout.pop_pic_choose, null);
-		Gallery mGallery = (Gallery) view.findViewById(R.id.m_gallery);
-		ChoosePicAdapter adapter = null;
-		if (type == get_near_date) {
-			adapter = new ChoosePicAdapter(nearBitmaps);
-		} else if (type == get_far_date) {
-			adapter = new ChoosePicAdapter(farBitmaps);
+	private void pictureChoose(int type) {
+		if ((picNearSmall == null || picNearSmall.size() == 0)
+				&& (picFarSmall == null || picFarSmall.size() == 0)) {
+			return;
 		}
-		mGallery.setAdapter(adapter);
-		mGallery.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				Intent intent = new Intent(DevicesAddActivity.this,
-						ImageDetailsActivity.class);
-				String image_path = "";
-				if (type == get_near_date) {
-					image_path = picNear.get(arg2);
-				} else if (type == get_far_date) {
-					image_path = picFar.get(arg2);
-				}
-				intent.putExtra("image_path", image_path);
-				startActivity(intent);
-
-				if (type == get_near_date) {
-					car_icon_near.setImageBitmap(Blur
-							.getSquareBitmap(nearBitmaps.get(arg2)));
-				} else if (type == get_far_date) {
-					car_icon_far.setImageBitmap(Blur.getSquareBitmap(farBitmaps
-							.get(arg2)));
-				}
-			}
-		});
-		PopupWindow popupWindow = new PopupWindow(view,
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		popupWindow.setBackgroundDrawable(new BitmapDrawable());
-		popupWindow.setFocusable(true);
-		popupWindow.setOutsideTouchable(true);
-		popupWindow.showAsDropDown(et_sim);
+		Intent intent = new Intent(DevicesAddActivity.this,
+				ImagePageActivity.class);
+		if (type == get_near_date && picNearSmall != null
+				&& picNearSmall.size() != 0) {
+			intent.putStringArrayListExtra("pathList",
+					(ArrayList<String>) picNearBig);
+		} else if (type == get_far_date && picFarSmall != null
+				&& picFarSmall.size() != 0) {
+			intent.putStringArrayListExtra("pathList",
+					(ArrayList<String>) picFarBig);
+		}
+		startActivity(intent);
+		// View view = (LayoutInflater.from(DevicesAddActivity.this)).inflate(
+		// R.layout.pop_pic_choose, null);
+		// Gallery mGallery = (Gallery) view.findViewById(R.id.m_gallery);
+		// ChoosePicAdapter adapter = null;
+		// if (type == get_near_date) {
+		// adapter = new ChoosePicAdapter(nearBitmaps);
+		// } else if (type == get_far_date) {
+		// adapter = new ChoosePicAdapter(farBitmaps);
+		// }
+		// mGallery.setAdapter(adapter);
+		// mGallery.setOnItemClickListener(new OnItemClickListener() {
+		// @Override
+		// public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+		// long arg3) {
+		// Intent intent = new Intent(DevicesAddActivity.this,
+		// ImageDetailsActivity.class);
+		// String image_path = "";
+		// if (type == get_near_date) {
+		// image_path = picNear.get(arg2);
+		// } else if (type == get_far_date) {
+		// image_path = picFar.get(arg2);
+		// }
+		// intent.putExtra("image_path", image_path);
+		// startActivity(intent);
+		//
+		// if (type == get_near_date) {
+		// car_icon_near.setImageBitmap(Blur
+		// .getSquareBitmap(nearBitmaps.get(arg2)));
+		// } else if (type == get_far_date) {
+		// car_icon_far.setImageBitmap(Blur.getSquareBitmap(farBitmaps
+		// .get(arg2)));
+		// }
+		// }
+		// });
+		// PopupWindow popupWindow = new PopupWindow(view,
+		// LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		// popupWindow.setBackgroundDrawable(new BitmapDrawable());
+		// popupWindow.setFocusable(true);
+		// popupWindow.setOutsideTouchable(true);
+		// popupWindow.showAsDropDown(et_sim);
 	}
 
-	class ChoosePicAdapter extends BaseAdapter {
-		LayoutInflater mInflater = LayoutInflater.from(DevicesAddActivity.this);
-		private List<Bitmap> list = null;
-
-		public ChoosePicAdapter(List<Bitmap> listBitmaps) {
-			list = listBitmaps;
-		}
-
-		@Override
-		public int getCount() {
-			return list == null ? 0 : list.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return list.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			Holder mHolder;
-			if (convertView == null) {
-				mHolder = new Holder();
-				convertView = mInflater.inflate(R.layout.item_pic_choose, null);
-				mHolder.image_pic_choose = (ImageView) convertView
-						.findViewById(R.id.image_pic_choose);
-				convertView.setTag(mHolder);
-			} else {
-				mHolder = (Holder) convertView.getTag();
-			}
-			Bitmap showBitmap = Blur.getSquareBitmap(list.get(position));
-			mHolder.image_pic_choose.setImageBitmap(showBitmap);
-			return convertView;
-		}
-
-		class Holder {
-			ImageView image_pic_choose;
-		}
-	}
+	// class ChoosePicAdapter extends BaseAdapter {
+	// LayoutInflater mInflater = LayoutInflater.from(DevicesAddActivity.this);
+	// private List<Bitmap> list = null;
+	//
+	// public ChoosePicAdapter(List<Bitmap> listBitmaps) {
+	// list = listBitmaps;
+	// }
+	//
+	// @Override
+	// public int getCount() {
+	// return list == null ? 0 : list.size();
+	// }
+	//
+	// @Override
+	// public Object getItem(int position) {
+	// return list.get(position);
+	// }
+	//
+	// @Override
+	// public long getItemId(int position) {
+	// return position;
+	// }
+	//
+	// @Override
+	// public View getView(int position, View convertView, ViewGroup parent) {
+	// Holder mHolder;
+	// if (convertView == null) {
+	// mHolder = new Holder();
+	// convertView = mInflater.inflate(R.layout.item_pic_choose, null);
+	// mHolder.image_pic_choose = (ImageView) convertView
+	// .findViewById(R.id.image_pic_choose);
+	// convertView.setTag(mHolder);
+	// } else {
+	// mHolder = (Holder) convertView.getTag();
+	// }
+	// Bitmap showBitmap = Blur.getSquareBitmap(list.get(position));
+	// mHolder.image_pic_choose.setImageBitmap(showBitmap);
+	// return convertView;
+	// }
+	//
+	// class Holder {
+	// ImageView image_pic_choose;
+	// }
+	// }
 
 	OnFinishListener onFinishListener = new OnFinishListener() {
 		@Override
@@ -474,31 +494,43 @@ public class DevicesAddActivity extends Activity {
 
 	private static final int getBitmap = 18;
 
-	private void getPic(List<String> listPath, final int type) {
+	private void getPic(List<String> listPath, final int type,
+			final boolean flag) {
 		for (int i = 0; i < listPath.size(); i++) {
 			String path = listPath.get(i);
 			if (type == REQUEST_NEAR) {
-				picNear.add(getImagePath(path));
+				if (flag) {
+					picNearSmall.add(getImagePath(path));
+				} else {
+					picNearBig.add(getImagePath(path));
+				}
 			} else if (type == REQUEST_FAR) {
-				picFar.add(getImagePath(path));
+				if (flag) {
+					picFarSmall.add(getImagePath(path));
+				} else {
+					picFarBig.add(getImagePath(path));
+				}
 			}
 			int lastSlashIndex = path.lastIndexOf("/");
 			final String imageName = path.substring(lastSlashIndex + 1);
 			final File imageFile = new File(getImagePath(path));
 			if (imageFile.exists()) {
-				Bitmap bitmap = BitmapFactory.decodeFile(getImagePath(path));
-				if (type == REQUEST_NEAR) {
-					nearBitmaps.add(bitmap);
-					tv_near.setVisibility(View.GONE);
-					car_icon_near.setVisibility(View.VISIBLE);
-					car_icon_near.setImageBitmap(Blur
-							.getSquareBitmap(nearBitmaps.get(0)));
-				} else if (type == REQUEST_FAR) {
-					farBitmaps.add(bitmap);
-					tv_far.setVisibility(View.GONE);
-					car_icon_far.setVisibility(View.VISIBLE);
-					car_icon_far.setImageBitmap(Blur.getSquareBitmap(farBitmaps
-							.get(0)));
+				if (flag) {
+					Bitmap bitmap = BitmapFactory
+							.decodeFile(getImagePath(path));
+					if (type == REQUEST_NEAR) {
+						nearBitmaps.add(bitmap);
+						tv_near.setVisibility(View.GONE);
+						car_icon_near.setVisibility(View.VISIBLE);
+						car_icon_near.setImageBitmap(Blur
+								.getSquareBitmap(nearBitmaps.get(0)));
+					} else if (type == REQUEST_FAR) {
+						farBitmaps.add(bitmap);
+						tv_far.setVisibility(View.GONE);
+						car_icon_far.setVisibility(View.VISIBLE);
+						car_icon_far.setImageBitmap(Blur
+								.getSquareBitmap(farBitmaps.get(0)));
+					}
 				}
 			} else {
 				new Thread(new Runnable() {
@@ -511,17 +543,20 @@ public class DevicesAddActivity extends Activity {
 									Constant.oss_accessId,
 									Constant.oss_accessKey);
 							OSSObject obj = task.getResult();
-							Bitmap bitmap = BitmapFactory.decodeByteArray(
-									obj.getData(), 0, (obj.getData()).length);
-							if (type == REQUEST_NEAR) {
-								nearBitmaps.add(bitmap);
-							} else if (type == REQUEST_FAR) {
-								farBitmaps.add(bitmap);
+							if (flag) {
+								Bitmap bitmap = BitmapFactory.decodeByteArray(
+										obj.getData(), 0,
+										(obj.getData()).length);
+								if (type == REQUEST_NEAR) {
+									nearBitmaps.add(bitmap);
+								} else if (type == REQUEST_FAR) {
+									farBitmaps.add(bitmap);
+								}
+								Message msg = new Message();
+								msg.arg1 = type;
+								msg.what = getBitmap;
+								handler.sendMessage(msg);
 							}
-							Message msg = new Message();
-							msg.arg1 = type;
-							msg.what = getBitmap;
-							handler.sendMessage(msg);
 							FileOutputStream fileOutputStream = new FileOutputStream(
 									imageFile);
 							fileOutputStream.write(obj.getData());
@@ -538,8 +573,11 @@ public class DevicesAddActivity extends Activity {
 	List<Bitmap> nearBitmaps = new ArrayList<Bitmap>();
 	List<Bitmap> farBitmaps = new ArrayList<Bitmap>();
 
-	List<String> nearPath = new ArrayList<String>();
-	List<String> farPath = new ArrayList<String>();
+	// 阿里云图片地址
+	List<String> nearSmallPath = new ArrayList<String>();
+	List<String> nearBigPath = new ArrayList<String>();
+	List<String> farSmallPath = new ArrayList<String>();
+	List<String> farBigPath = new ArrayList<String>();
 
 	private void jsonPicDate(String result, int type) {
 		try {
@@ -559,13 +597,22 @@ public class DevicesAddActivity extends Activity {
 							if (is_auth) {
 								String urlString = object
 										.getString("small_pic_url");
+								String urlStringBig = object
+										.getString("big_pic_url");
 								if (urlString != null && !urlString.equals("")) {
-									nearPath.add(urlString);
+									nearSmallPath.add(urlString);
+								}
+								if (urlStringBig != null
+										&& !urlStringBig.equals("")) {
+									nearBigPath.add(urlStringBig);
 								}
 							}
 						}
-						if (nearPath != null && nearPath.size() != 0) {
-							getPic(nearPath, REQUEST_NEAR);
+						if (nearSmallPath != null && nearSmallPath.size() != 0) {
+							getPic(nearSmallPath, REQUEST_NEAR, true);
+						}
+						if (nearBigPath != null && nearBigPath.size() != 0) {
+							getPic(nearBigPath, REQUEST_NEAR, false);
 						}
 					}
 				} else if (type == get_far_date) {
@@ -579,13 +626,22 @@ public class DevicesAddActivity extends Activity {
 							if (is_auth) {
 								String urlString = object
 										.getString("small_pic_url");
+								String urlStringBig = object
+										.getString("big_pic_url");
 								if (urlString != null && !urlString.equals("")) {
-									farPath.add(urlString);
+									farSmallPath.add(urlString);
+								}
+								if (urlStringBig != null
+										&& !urlStringBig.equals("")) {
+									farBigPath.add(urlStringBig);
 								}
 							}
 						}
-						if (farPath != null && farPath.size() != 0) {
-							getPic(farPath, REQUEST_FAR);
+						if (farSmallPath != null && farSmallPath.size() != 0) {
+							getPic(farSmallPath, REQUEST_FAR, true);
+						}
+						if (farBigPath != null && farBigPath.size() != 0) {
+							getPic(farBigPath, REQUEST_FAR, false);
 						}
 					}
 				}
@@ -739,6 +795,10 @@ public class DevicesAddActivity extends Activity {
 			car_series = data.getStringExtra("series");
 			car_series_id = data.getStringExtra("seriesId");
 			car_name.setText(car_series);
+			picNearSmall.clear();
+			picNearBig.clear();
+			picFarSmall.clear();
+			picFarBig.clear();
 			getDeviceDate();
 		}
 		if (resultCode == 2) {

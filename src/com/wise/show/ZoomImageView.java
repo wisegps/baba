@@ -160,7 +160,6 @@ public class ZoomImageView extends View {
 			height = getHeight();
 		}
 	}
-		
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -173,7 +172,6 @@ public class ZoomImageView extends View {
 			break;
 		case MotionEvent.ACTION_MOVE:
 			if (event.getPointerCount() == 1) {
-				//Log.d(TAG, "父控件停止感应");
 				getParent().requestDisallowInterceptTouchEvent(true);
 				// 只有单指按在屏幕上移动时，为拖动状态
 				float xMove = event.getX();
@@ -190,8 +188,8 @@ public class ZoomImageView extends View {
 					getParent().requestDisallowInterceptTouchEvent(false);
 					movedDistanceX = 0;
 				} else if (width - (totalTranslateX + movedDistanceX) > currentBitmapWidth) {
-					movedDistanceX = 0;
 					getParent().requestDisallowInterceptTouchEvent(false);
+					movedDistanceX = 0;
 				}
 				if (totalTranslateY + movedDistanceY > 0) {
 					movedDistanceY = 0;
@@ -406,3 +404,4 @@ public class ZoomImageView extends View {
 	}
 
 }
+
