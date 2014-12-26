@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/margins"
             android:background="@color/gray_light"
-            android:text="以下是我们收集及车友分享的OBD接口实景图片，我为人人，人人为我，如果以下暂时无法显示您对应车型的图片，请立即拍照，分享您的宝贵经验 "
+            android:text="请点击拍照，立即分享您的宝贵经验，而且一经采用，我们将会给予5元现金券奖励。 "
             android:textColor="@color/navy" />
 
         <View

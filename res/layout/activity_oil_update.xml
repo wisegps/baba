@@ -138,7 +138,6 @@
                     android:layout_marginTop="@dimen/margins"
                     android:background="@drawable/bg_green"
                     android:textColor="@color/white"
-                    android:visibility="gone"
                     android:text="重置油耗" />
             </LinearLayout>
         </LinearLayout>

@@ -391,12 +391,11 @@
 
                 <TextView
                     android:id="@+id/tv_pic_share"
-                    android:layout_width="160dp"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/margins"
                     android:background="@drawable/bg_bt_green"
                     android:gravity="center"
+                    android:layout_margin="@dimen/margins"
                     android:padding="@dimen/margins"
                     android:text="我要分享 "
                     android:textColor="@color/white"
