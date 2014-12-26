@@ -799,6 +799,10 @@ public class DevicesAddActivity extends Activity {
 			car_series = data.getStringExtra("series");
 			car_series_id = data.getStringExtra("seriesId");
 			car_name.setText(car_series);
+			picNearSmall.clear();
+			picNearBig.clear();
+			picFarSmall.clear();
+			picFarBig.clear();
 			getDeviceDate();
 		}
 		if (resultCode == 2) {
