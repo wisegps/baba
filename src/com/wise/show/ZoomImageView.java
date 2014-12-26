@@ -2,14 +2,21 @@ package com.wise.show;
 
 import java.util.List;
 
+import com.wise.baba.R;
+import com.wise.baba.R.color;
+
+import android.R.integer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.FloatMath;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -39,6 +46,11 @@ public class ZoomImageView extends View {
 	 * 图片拖动状态常量
 	 */
 	public static final int STATUS_MOVE = 4;
+
+	/**
+	 * 滑动状态常量
+	 */
+	private static final int STATUS_CHANGE = 5;
 
 	/**
 	 * 用于对图片进行移动和缩放变换的矩阵
@@ -208,7 +220,8 @@ public class ZoomImageView extends View {
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (event.getPointerCount() == 1) {
+			if (event.getPointerCount() == 1
+					&& (System.currentTimeMillis() - time) > 500) {
 				// 只有单指按在屏幕上移动时，为拖动状态
 				float xMove = event.getX();
 				float yMove = event.getY();
@@ -268,6 +281,7 @@ public class ZoomImageView extends View {
 			break;
 		case MotionEvent.ACTION_DOWN:
 			startF.set(event.getX(), event.getY());
+			time = System.currentTimeMillis();
 			break;
 		case MotionEvent.ACTION_UP:
 			// 滑动显示图片
@@ -276,15 +290,16 @@ public class ZoomImageView extends View {
 				float x = endF.x - startF.x;
 				float y = endF.y - startF.y;
 				float move = FloatMath.sqrt(x * x + y * y);
-				if (move > 20) {
-					if (x > 0) {
+				if (event.getPointerCount() == 1 && move > 20
+						&& (System.currentTimeMillis() - time) < 500) {
+					if (x < 0) {
 						index++;
-						if (index > pathList.size()) {
-							index = pathList.size();
+						if (index > (pathList.size() - 1)) {
+							index = pathList.size() - 1;
 						}
 						sourceBitmap = BitmapFactory.decodeFile(pathList
 								.get(index));
-					} else if (x < 0) {
+					} else if (x > 0) {
 						index--;
 						if (index < 0) {
 							index = 0;
@@ -292,6 +307,7 @@ public class ZoomImageView extends View {
 						sourceBitmap = BitmapFactory.decodeFile(pathList
 								.get(index));
 					}
+					currentStatus = STATUS_CHANGE;
 					invalidate();
 				}
 			}
@@ -304,6 +320,8 @@ public class ZoomImageView extends View {
 		}
 		return true;
 	}
+
+	long time = 0;
 
 	/**
 	 * 根据currentStatus的值来决定对图片进行什么样的绘制操作。
@@ -321,6 +339,9 @@ public class ZoomImageView extends View {
 			break;
 		case STATUS_INIT:
 			initBitmap(canvas);
+		case STATUS_CHANGE:
+			initBitmap(canvas);
+			break;
 		default:
 			canvas.drawBitmap(sourceBitmap, matrix, null);
 			break;
@@ -438,6 +459,19 @@ public class ZoomImageView extends View {
 				currentBitmapHeight = bitmapHeight;
 			}
 			canvas.drawBitmap(sourceBitmap, matrix, null);
+			if (pathList != null && pathList.size() != 0) {
+				String textString = index + "/" + pathList.size();
+				Log.e("my_log", "textString  :" + textString);
+				Paint paint = new Paint();
+				paint.setStyle(Paint.Style.STROKE);
+				paint.setAntiAlias(true);
+				paint.setColor(color.white);
+				paint.setStrokeWidth(3);
+				Path path = new Path();
+				path.moveTo(50, height - 80);
+				path.lineTo(width, height - 80);
+				canvas.drawTextOnPath(textString, path, 0, 0, paint);
+			}
 		}
 	}
 
