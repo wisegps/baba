@@ -1,7 +1,5 @@
 package com.wise.show;
 
-import java.util.List;
-
 import com.wise.baba.R;
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -20,10 +18,6 @@ public class ImageDetailsActivity extends Activity {
 		zoomImageView = (ZoomImageView) findViewById(R.id.zoom_image_view);
 		String imagePath = getIntent().getStringExtra("image_path");
 		Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-		int index = getIntent().getIntExtra("index", -1);
-		List<String> pathList = getIntent().getStringArrayListExtra("pathList");
 		zoomImageView.setImageBitmap(bitmap);
-		zoomImageView.setIndex(index);
-		zoomImageView.setPathList(pathList);
 	}
 }

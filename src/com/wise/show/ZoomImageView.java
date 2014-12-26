@@ -1,23 +1,13 @@
 package com.wise.show;
 
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.PointF;
 import android.util.AttributeSet;
-import android.util.FloatMath;
 import android.view.MotionEvent;
 import android.view.View;
 
-/**
- * 自定义的ImageView控制，可对图片进行多点触控缩放和拖动
- * 
- * @author guolin
- */
 public class ZoomImageView extends View {
 
 	/**
@@ -136,23 +126,6 @@ public class ZoomImageView extends View {
 	private double lastFingerDis;
 
 	/**
-	 * 记录滑动开始点
-	 */
-	private PointF startF = new PointF();
-
-	/**
-	 * 记录滑动结束点
-	 */
-	private PointF endF = new PointF();
-
-	/**
-	 * 大图显示路径集合
-	 */
-	private List<String> pathList = null;
-
-	private int index = -1;
-
-	/**
 	 * ZoomImageView构造函数，将当前操作状态设为STATUS_INIT。
 	 * 
 	 * @param context
@@ -160,6 +133,10 @@ public class ZoomImageView extends View {
 	 */
 	public ZoomImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		currentStatus = STATUS_INIT;
+	}
+	public ZoomImageView(Context context) {
+		super(context);
 		currentStatus = STATUS_INIT;
 	}
 
@@ -174,22 +151,8 @@ public class ZoomImageView extends View {
 		invalidate();
 	}
 
-	/**
-	 * 将展示的图片路径集合
-	 * 
-	 * @param list
-	 */
-	public void setPathList(List<String> list) {
-		pathList = list;
-	}
-
-	public void setIndex(int i) {
-		index = i;
-	}
-
 	@Override
-	protected void onLayout(boolean changed, int left, int top, int right,
-			int bottom) {
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 		super.onLayout(changed, left, top, right, bottom);
 		if (changed) {
 			// 分别获取到ZoomImageView的宽度和高度
@@ -197,6 +160,7 @@ public class ZoomImageView extends View {
 			height = getHeight();
 		}
 	}
+		
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -209,6 +173,8 @@ public class ZoomImageView extends View {
 			break;
 		case MotionEvent.ACTION_MOVE:
 			if (event.getPointerCount() == 1) {
+				//Log.d(TAG, "父控件停止感应");
+				getParent().requestDisallowInterceptTouchEvent(true);
 				// 只有单指按在屏幕上移动时，为拖动状态
 				float xMove = event.getX();
 				float yMove = event.getY();
@@ -221,9 +187,11 @@ public class ZoomImageView extends View {
 				movedDistanceY = yMove - lastYMove;
 				// 进行边界检查，不允许将图片拖出边界
 				if (totalTranslateX + movedDistanceX > 0) {
+					getParent().requestDisallowInterceptTouchEvent(false);
 					movedDistanceX = 0;
 				} else if (width - (totalTranslateX + movedDistanceX) > currentBitmapWidth) {
 					movedDistanceX = 0;
+					getParent().requestDisallowInterceptTouchEvent(false);
 				}
 				if (totalTranslateY + movedDistanceY > 0) {
 					movedDistanceY = 0;
@@ -266,35 +234,7 @@ public class ZoomImageView extends View {
 				lastYMove = -1;
 			}
 			break;
-		case MotionEvent.ACTION_DOWN:
-			startF.set(event.getX(), event.getY());
-			break;
 		case MotionEvent.ACTION_UP:
-			// 滑动显示图片
-			if (pathList != null && pathList.size() > 0) {
-				endF.set(event.getX(), event.getY());
-				float x = endF.x - startF.x;
-				float y = endF.y - startF.y;
-				float move = FloatMath.sqrt(x * x + y * y);
-				if (move > 20) {
-					if (x > 0) {
-						index++;
-						if (index > pathList.size()) {
-							index = pathList.size();
-						}
-						sourceBitmap = BitmapFactory.decodeFile(pathList
-								.get(index));
-					} else if (x < 0) {
-						index--;
-						if (index < 0) {
-							index = 0;
-						}
-						sourceBitmap = BitmapFactory.decodeFile(pathList
-								.get(index));
-					}
-					invalidate();
-				}
-			}
 			// 手指离开屏幕时将临时值还原
 			lastXMove = -1;
 			lastYMove = -1;
@@ -344,8 +284,7 @@ public class ZoomImageView extends View {
 		if (currentBitmapWidth < width) {
 			translateX = (width - scaledWidth) / 2f;
 		} else {
-			translateX = totalTranslateX * scaledRatio + centerPointX
-					* (1 - scaledRatio);
+			translateX = totalTranslateX * scaledRatio + centerPointX * (1 - scaledRatio);
 			// 进行边界检查，保证图片缩放后在水平方向上不会偏移出屏幕
 			if (translateX > 0) {
 				translateX = 0;
@@ -357,8 +296,7 @@ public class ZoomImageView extends View {
 		if (currentBitmapHeight < height) {
 			translateY = (height - scaledHeight) / 2f;
 		} else {
-			translateY = totalTranslateY * scaledRatio + centerPointY
-					* (1 - scaledRatio);
+			translateY = totalTranslateY * scaledRatio + centerPointY * (1 - scaledRatio);
 			// 进行边界检查，保证图片缩放后在垂直方向上不会偏移出屏幕
 			if (translateY > 0) {
 				translateY = 0;
