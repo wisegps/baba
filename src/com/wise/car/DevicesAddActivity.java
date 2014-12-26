@@ -217,12 +217,6 @@ public class DevicesAddActivity extends Activity {
 		}
 	};
 
-	// 图片显示集合地址
-	List<String> picNearSmall = new ArrayList<String>();
-	List<String> picNearBig = new ArrayList<String>();
-	List<String> picFarSmall = new ArrayList<String>();
-	List<String> picFarBig = new ArrayList<String>();
-
 	/**
 	 * OBD实景图片选择
 	 */
@@ -574,6 +568,12 @@ public class DevicesAddActivity extends Activity {
 		}
 	}
 
+	// 本地图片显示集合地址
+	List<String> picNearSmall = new ArrayList<String>();
+	List<String> picNearBig = new ArrayList<String>();
+	List<String> picFarSmall = new ArrayList<String>();
+	List<String> picFarBig = new ArrayList<String>();
+
 	List<Bitmap> nearBitmaps = new ArrayList<Bitmap>();
 	List<Bitmap> farBitmaps = new ArrayList<Bitmap>();
 
@@ -799,10 +799,21 @@ public class DevicesAddActivity extends Activity {
 			car_series = data.getStringExtra("series");
 			car_series_id = data.getStringExtra("seriesId");
 			car_name.setText(car_series);
+			// 阿里云地址
+			nearBigPath.clear();
+			nearSmallPath.clear();
+			farSmallPath.clear();
+			farBigPath.clear();
+
+			nearBitmaps.clear();
+			farBitmaps.clear();
+
+			// 本地地址
 			picNearSmall.clear();
 			picNearBig.clear();
 			picFarSmall.clear();
 			picFarBig.clear();
+
 			getDeviceDate();
 		}
 		if (resultCode == 2) {
