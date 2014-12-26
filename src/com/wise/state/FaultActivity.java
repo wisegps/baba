@@ -1549,11 +1549,16 @@ public class FaultActivity extends FragmentActivity {
 			if (smv_content.getCurrentScreen() == 1) {
 				smv_content.snapToScreen(0);
 			} else {
-				//TODO 在幕后
-				Intent intent = new Intent(); 
-				intent.setAction(Intent.ACTION_MAIN); 
-				intent.addCategory(Intent.CATEGORY_HOME);           
-				startActivity(intent);
+				GetSystem.myLog(TAG, "app.cust_id = " + app.cust_id);
+				if(app.cust_id == null || app.cust_id.equals("")){
+					finish();
+				}else{
+					//TODO 在幕后
+					Intent intent = new Intent(); 
+					intent.setAction(Intent.ACTION_MAIN); 
+					intent.addCategory(Intent.CATEGORY_HOME);           
+					startActivity(intent);
+				}
 			}
 			return true;
 		}

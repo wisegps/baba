@@ -531,14 +531,14 @@ public class CarLocationActivity extends Activity {
 		builder.setPositiveButton("驾车规划", new DialogInterface.OnClickListener() {			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Toast.makeText(CarLocationActivity.this, "驾车规划中...", Toast.LENGTH_LONG).show();
+				Toast.makeText(CarLocationActivity.this, "驾车规划中...", Toast.LENGTH_SHORT).show();
 				mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(edNode));
 			}
 		});
 		builder.setNegativeButton("步行规划", new DialogInterface.OnClickListener() {			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Toast.makeText(CarLocationActivity.this, "步行规划中...", Toast.LENGTH_LONG).show();
+				Toast.makeText(CarLocationActivity.this, "步行规划中...", Toast.LENGTH_SHORT).show();
 				mSearch.walkingSearch(new WalkingRoutePlanOption().from(stNode).to(edNode));
 			}
 		});
@@ -735,7 +735,7 @@ public class CarLocationActivity extends Activity {
 
 	LatLng circle;
 	Marker carMarker = null;
-
+	boolean isFristCarLocation = true;
 	// 当前车辆位子
 	private void getCarLocation() {
 		if (!isHotLocation) {
@@ -752,13 +752,22 @@ public class CarLocationActivity extends Activity {
 		// 构建MarkerOption，用于在地图上添加Marker
 		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
 				.position(circle).icon(bitmap);
-		// 在地图上添加Marker，并显示
+		//TODO  在地图上添加Marker，并显示
 		carMarker = (Marker) (mBaiduMap.addOverlay(option));
-		
-		MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
-		MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
-				.newMapStatus(mapStatus);
-		mBaiduMap.setMapStatus(mapStatusUpdate);
+		if(isFristCarLocation){//第一次移动车的位置到地图中间
+			isFristCarLocation = false;
+			MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
+			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
+					.newMapStatus(mapStatus);
+			mBaiduMap.setMapStatus(mapStatusUpdate);
+		}else{
+			if(isTracking){
+				MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
+				MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
+						.newMapStatus(mapStatus);
+				mBaiduMap.setMapStatus(mapStatusUpdate);
+			}
+		}
 
 	}
 
@@ -1028,7 +1037,7 @@ public class CarLocationActivity extends Activity {
 	private class MyLocationListenner implements BDLocationListener {
 		@Override
 		public void onReceiveLocation(BDLocation location) {
-			// map view 销毁后不在处理新接收的位置
+			//TODO  map view 销毁后不在处理新接收的位置
 			if (location == null || mMapView == null)
 				return;
 			latitude = location.getLatitude();
@@ -1093,6 +1102,9 @@ public class CarLocationActivity extends Activity {
 			}
 			if (result.error == SearchResult.ERRORNO.NO_ERROR) {
 				try {
+					if (drOverlay != null) {
+						drOverlay.removeFromMap();
+					}
 					if (wkOverlay != null) {
 						wkOverlay.removeFromMap();
 					}
@@ -1125,6 +1137,9 @@ public class CarLocationActivity extends Activity {
 				try {
 					if (drOverlay != null) {
 						drOverlay.removeFromMap();
+					}
+					if (wkOverlay != null) {
+						wkOverlay.removeFromMap();
 					}
 					drOverlay = new DrivingRouteOverlay(mBaiduMap);
 					mBaiduMap.setOnMarkerClickListener(drOverlay);
