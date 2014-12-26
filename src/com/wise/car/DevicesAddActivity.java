@@ -226,18 +226,14 @@ public class DevicesAddActivity extends Activity {
 			return;
 		}
 		Intent intent = new Intent(DevicesAddActivity.this,
-				OBDPictureShow.class);
+				ImagePageActivity.class);
 		if (type == get_near_date && picNearSmall != null
 				&& picNearSmall.size() != 0) {
-			intent.putStringArrayListExtra("picSmall",
-					(ArrayList<String>) picNearSmall);
-			intent.putStringArrayListExtra("picBig",
+			intent.putStringArrayListExtra("pathList",
 					(ArrayList<String>) picNearBig);
 		} else if (type == get_far_date && picFarSmall != null
 				&& picFarSmall.size() != 0) {
-			intent.putStringArrayListExtra("picSmall",
-					(ArrayList<String>) picFarSmall);
-			intent.putStringArrayListExtra("picBig",
+			intent.putStringArrayListExtra("pathList",
 					(ArrayList<String>) picFarBig);
 		}
 		startActivity(intent);

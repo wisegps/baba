@@ -15,6 +15,7 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMap.OnMapLoadedCallback;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatusUpdate;
@@ -76,6 +77,7 @@ public class TravelMapActivity extends Activity {
 		iv_activity_travel_share.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_travel_map);
 		mBaiduMap = mMapView.getMap();
+		mBaiduMap.setOnMapLoadedCallback(callback);
 		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
 
 		TextView tv_travel_startPlace = (TextView) findViewById(R.id.tv_travel_startPlace);
@@ -92,8 +94,8 @@ public class TravelMapActivity extends Activity {
 		iv_back.setOnClickListener(onClickListener);
 		intent = getIntent();
 		device = intent.getStringExtra("device");
-		tv_travel_startPlace.setText(intent.getStringExtra("Start_place"));
-		tv_travel_stopPlace.setText(intent.getStringExtra("End_place"));
+		tv_travel_startPlace.setText("起点："+intent.getStringExtra("Start_place"));
+		tv_travel_stopPlace.setText("终点："+intent.getStringExtra("End_place"));
 		tv_travel_startTime.setText(intent.getStringExtra("StartTime")
 				.substring(10, 16));
 		tv_travel_stopTime.setText(intent.getStringExtra("StopTime").substring(
@@ -123,7 +125,6 @@ public class TravelMapActivity extends Activity {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -191,7 +192,7 @@ public class TravelMapActivity extends Activity {
 			}
 		}
 	};
-
+	LatLngBounds bounds;
 	private void jsonData(String result) {
 		if (result == null || result.equals("") || mMapView == null) {
 			return;
@@ -212,7 +213,7 @@ public class TravelMapActivity extends Activity {
 				points.add(ll);
 				builder.include(ll);
 			}
-			LatLngBounds bounds = builder.build();
+			bounds = builder.build();
 			MapStatusUpdate u1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
 			mBaiduMap.animateMapStatus(u1);
 
@@ -247,6 +248,16 @@ public class TravelMapActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
+	OnMapLoadedCallback callback = new OnMapLoadedCallback() {
+		
+		@Override
+		public void onMapLoaded() {
+			if(bounds != null ){
+				MapStatusUpdate u1 = MapStatusUpdateFactory.newLatLngBounds(bounds);
+				mBaiduMap.animateMapStatus(u1);
+			}
+		}
+	};
 
 	@Override
 	protected void onDestroy() {

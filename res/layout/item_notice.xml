@@ -24,6 +24,7 @@
 	        android:id="@+id/tv_noti_number"
 	        android:layout_width="20dp"
 	        android:layout_height="20dp"
+	        android:layout_marginTop="5dp"
 	        android:layout_alignRight="@id/iv_image"
 	        android:layout_alignTop="@id/iv_image"
 	        android:background="@drawable/big_red_dot"

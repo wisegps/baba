@@ -60,7 +60,6 @@
             android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -263,6 +262,10 @@
         </activity>
         <activity
             android:name="com.wise.car.CarActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.car.ImagePageActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -572,7 +575,7 @@
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="DhT4kz88wR3r5yCl6tQCpaNW" />
+            android:value="0QNTY4tnP9Tv6ghXpGa6XXOm" />
     </application>
 
 </manifest>

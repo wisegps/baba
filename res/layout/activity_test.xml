@@ -2,61 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <LinearLayout
-        android:id="@+id/ll_top" 
-        android:layout_width="fill_parent"
-        android:layout_height="80dp"
-        android:background="#000000">
-        <TextView 
-            android:singleLine="true"
-            android:lines="3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-    <com.wise.show.RefreshableView
-        android:layout_below="@id/ll_top"
-        android:id="@+id/refresh_root"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" >
-        <ScrollView
-            android:id="@+id/scroll_view_root"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-            <LinearLayout
-                android:id="@+id/linear_root"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical" >
-                
-			    <TextView 
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:textSize="@dimen/main"
-			        android:textColor="@color/navy"
-			        android:text="sdsaf"/>
-                <TextView 
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="123123"
-                    android:padding="20dp"/>
-                <TextView 
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="123123"
-                    android:padding="20dp"/>
-                <TextView 
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="123123"
-                    android:padding="20dp"/>
-                <TextView 
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="123123"
-                    android:padding="20dp"/>
-            </LinearLayout>
-        </ScrollView>
-    </com.wise.show.RefreshableView>
+    <ImageView 
+        android:id="@+id/iv_image"
+        android:layout_width="300dp"
+        android:layout_height="600dp"
+        android:src="@drawable/timg"/>
+    <TextView
+	        android:id="@+id/tv_noti_number"
+	        android:layout_width="20dp"
+	        android:layout_height="20dp"
+	        android:layout_alignRight="@id/iv_image"
+	        android:layout_alignTop="@id/iv_image"
+	        android:background="@drawable/big_red_dot"
+	        android:visibility="visible"
+	        android:gravity="center"
+	        android:text="1"
+	        android:textColor="@color/white"
+	        android:textSize="@dimen/content" />
 </RelativeLayout>

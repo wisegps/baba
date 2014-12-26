@@ -131,6 +131,15 @@
                     android:background="@drawable/bg_green"
                     android:textColor="@color/white"
                     android:text="第二次加满油" />
+                <Button
+                    android:id="@+id/bt_reset"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margins"
+                    android:background="@drawable/bg_green"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    android:text="重置油耗" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
