@@ -21,8 +21,6 @@ import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
-import com.wise.show.ImageDetailsActivity;
-import com.wise.show.OBDPictureShow;
 
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
@@ -33,26 +31,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -216,12 +205,6 @@ public class DevicesAddActivity extends Activity {
 			}
 		}
 	};
-
-	// 图片显示集合地址
-	List<String> picNearSmall = new ArrayList<String>();
-	List<String> picNearBig = new ArrayList<String>();
-	List<String> picFarSmall = new ArrayList<String>();
-	List<String> picFarBig = new ArrayList<String>();
 
 	/**
 	 * OBD实景图片选择
@@ -570,6 +553,12 @@ public class DevicesAddActivity extends Activity {
 		}
 	}
 
+	// 本地图片显示集合地址
+	List<String> picNearSmall = new ArrayList<String>();
+	List<String> picNearBig = new ArrayList<String>();
+	List<String> picFarSmall = new ArrayList<String>();
+	List<String> picFarBig = new ArrayList<String>();
+
 	List<Bitmap> nearBitmaps = new ArrayList<Bitmap>();
 	List<Bitmap> farBitmaps = new ArrayList<Bitmap>();
 
@@ -795,10 +784,25 @@ public class DevicesAddActivity extends Activity {
 			car_series = data.getStringExtra("series");
 			car_series_id = data.getStringExtra("seriesId");
 			car_name.setText(car_series);
+			tv_near.setVisibility(View.VISIBLE);
+			tv_far.setVisibility(View.VISIBLE);
+			car_icon_near.setVisibility(View.GONE);
+			car_icon_far.setVisibility(View.GONE);
+			// 阿里云地址
+			nearBigPath.clear();
+			nearSmallPath.clear();
+			farSmallPath.clear();
+			farBigPath.clear();
+
+			nearBitmaps.clear();
+			farBitmaps.clear();
+
+			// 本地地址
 			picNearSmall.clear();
 			picNearBig.clear();
 			picFarSmall.clear();
 			picFarBig.clear();
+
 			getDeviceDate();
 		}
 		if (resultCode == 2) {
