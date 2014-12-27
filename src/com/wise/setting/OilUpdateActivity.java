@@ -29,6 +29,7 @@ public class OilUpdateActivity extends Activity {
 	private static final int Data2Judge = 1;
 	private static final int SetFristData2Cloud = 2;
 	private static final int SetSecondData2Cloud = 3;
+	private static final int reset = 4;
 	EditText et_oil_record;
 	AppApplication app;
 	int index;
@@ -48,6 +49,8 @@ public class OilUpdateActivity extends Activity {
 		et_oil_record = (EditText) findViewById(R.id.et_oil_record);
 		findViewById(R.id.iv_back).setOnClickListener(onClickListener);
 		findViewById(R.id.bt_oil_update).setOnClickListener(onClickListener);
+		Button bt_reset = (Button)findViewById(R.id.bt_reset);
+		bt_reset.setOnClickListener(onClickListener);
 		bt_oil_add_1 = (Button) findViewById(R.id.bt_oil_add_1);
 		bt_oil_add_1.setOnClickListener(onClickListener);
 		bt_oil_add_2 = (Button) findViewById(R.id.bt_oil_add_2);
@@ -81,6 +84,9 @@ public class OilUpdateActivity extends Activity {
 					setSecondData2Cloud(2, Float.valueOf(oil));
 				}
 				break;
+			case R.id.bt_reset:
+				resetOil();
+				break;
 			}
 		}
 	};
@@ -99,9 +105,41 @@ public class OilUpdateActivity extends Activity {
 			case SetSecondData2Cloud:
 				jsonSecondData2Cloud(msg.obj.toString());
 				break;
+			case reset:
+				jsonResetOil(msg.obj.toString());
+				break;
 			}
 		}
 	};
+	/**重置油耗**/
+	private void resetOil(){
+		dialog = ProgressDialog.show(OilUpdateActivity.this, "提示", "重置油耗中");
+		dialog.setCancelable(true);
+		String url = Constant.BaseUrl + "device/" + device_id + "/refuel/reset?auth_code=" + app.auth_code;
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		new NetThread.postDataThread(handler, url, params, reset).start();
+	}
+	private void jsonResetOil(String result){
+		if (dialog != null) {
+			dialog.dismiss();
+		}
+		try {
+			JSONObject jsonObject = new JSONObject(result);
+			if (jsonObject.getInt("status_code") == 0) {
+				Toast.makeText(OilUpdateActivity.this, "重置油耗成功",
+						Toast.LENGTH_SHORT).show();
+				bt_oil_add_1.setEnabled(true);
+				bt_oil_add_2.setEnabled(false);
+			} else {
+				Toast.makeText(OilUpdateActivity.this, "重置油耗失败",
+						Toast.LENGTH_SHORT).show();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(OilUpdateActivity.this, "重置油耗失败",
+					Toast.LENGTH_SHORT).show();
+		}
+	}
 
 	/** 获取服务器上数据判断 **/
 	private void getData2Judge() {
