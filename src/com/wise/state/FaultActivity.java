@@ -822,12 +822,10 @@ public class FaultActivity extends FragmentActivity {
 						.getJSONObject("active_gps_data");
 				double lat = jsonObject.getDouble("lat");
 				double lon = jsonObject.getDouble("lon");
-				int direct = jsonObject.getInt("direct");
 				String uni_status = jsonObject.getString("uni_status");
 				String rcv_time = jsonObject.getString("rcv_time");
 				LatLng latLng = new LatLng(lat, lon);
 				app.carDatas.get(index).setUni_status(uni_status);
-				app.carDatas.get(index).setDirect(direct);
 				app.carDatas.get(index).setLat(lat);
 				app.carDatas.get(index).setLon(lon);
 				app.carDatas.get(index).setRcv_time(

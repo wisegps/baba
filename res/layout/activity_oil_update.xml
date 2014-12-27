@@ -138,7 +138,7 @@
                     android:layout_marginTop="@dimen/margins"
                     android:background="@drawable/bg_green"
                     android:textColor="@color/white"
-                    android:text="重置油耗" />
+                    android:text="重置加油修正" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
