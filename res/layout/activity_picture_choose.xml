@@ -179,8 +179,7 @@
                             android:layout_marginTop="@dimen/margins"
                             android:gravity="center"
                             android:text="立即分享"
-                            android:textColor="@color/blue"
-                            android:textSize="@dimen/main" />
+                            android:textColor="@color/blue"/>
                     </LinearLayout>
 
                     <ImageView

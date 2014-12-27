@@ -752,7 +752,7 @@ public class CarLocationActivity extends Activity {
 		// 构建MarkerOption，用于在地图上添加Marker
 		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
 				.position(circle).icon(bitmap);
-		//TODO  在地图上添加Marker，并显示
+		//在地图上添加Marker，并显示
 		carMarker = (Marker) (mBaiduMap.addOverlay(option));
 		if(isFristCarLocation){//第一次移动车的位置到地图中间
 			isFristCarLocation = false;
@@ -802,31 +802,27 @@ public class CarLocationActivity extends Activity {
 		}
 	};
 
-	LatLng startTracking, endTracking;
-	
 	/** 获取GPS信息 **/
 	private void jsonGps(String str) {
 		if (!isStop) {
 			return;
 		}
 
-		startTracking = new LatLng(carData.getLat(), carData.getLon());
+		LatLng startTracking = new LatLng(carData.getLat(), carData.getLon());
 
 		try {
 			JSONObject jsonObject = new JSONObject(str)
 					.getJSONObject("active_gps_data");
 			double lat = jsonObject.getDouble("lat");
 			double lon = jsonObject.getDouble("lon");
-			
-			carData.setLat(lat);
-			carData.setLon(lon);
-			carData.setDirect(jsonObject.getInt("direct"));
 
 			if (isTracking) {
-				endTracking = new LatLng(lat, lon);
+				LatLng endTracking = new LatLng(lat, lon);
 				trackingCar(startTracking, endTracking);
 			}
 			getCarLocation();
+			carData.setLat(lat);
+			carData.setLon(lon);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -1037,7 +1033,7 @@ public class CarLocationActivity extends Activity {
 	private class MyLocationListenner implements BDLocationListener {
 		@Override
 		public void onReceiveLocation(BDLocation location) {
-			//TODO  map view 销毁后不在处理新接收的位置
+			//map view 销毁后不在处理新接收的位置
 			if (location == null || mMapView == null)
 				return;
 			latitude = location.getLatitude();
