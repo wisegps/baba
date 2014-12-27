@@ -190,7 +190,7 @@ public class DevicesAddActivity extends Activity {
 				intent.putExtra("car_series_id", car_series_id);
 				startActivityForResult(intent, 20);
 				break;
-			case R.id.car_icon_near:// 图片点击弹出选择框
+			case R.id.car_icon_near:
 				pictureChoose(get_near_date);
 				break;
 			case R.id.car_icon_far:
