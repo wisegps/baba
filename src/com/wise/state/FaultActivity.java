@@ -276,7 +276,7 @@ public class FaultActivity extends FragmentActivity {
 					public void onAuthResult(int status, String msg) {
 					}
 				});
-		new Thread(new Runnable() {			
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				FaceConversionUtil.getInstace().getFileText(getApplication());
@@ -503,7 +503,8 @@ public class FaultActivity extends FragmentActivity {
 	 */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		startActivityForResult(new Intent(FaultActivity.this, MoreActivity.class), 5);
+		startActivityForResult(new Intent(FaultActivity.this,
+				MoreActivity.class), 5);
 		return true;
 	}
 
@@ -515,7 +516,8 @@ public class FaultActivity extends FragmentActivity {
 				finish();
 				break;
 			case R.id.iv_menu:
-				startActivityForResult(new Intent(FaultActivity.this, MoreActivity.class), 5);
+				startActivityForResult(new Intent(FaultActivity.this,
+						MoreActivity.class), 5);
 				break;
 			case R.id.iv_location_hot:
 				if (!Judge.isLogin(app)) {
@@ -550,9 +552,12 @@ public class FaultActivity extends FragmentActivity {
 					if (Device_id == null || Device_id.equals("")) {
 						Intent intent = new Intent(FaultActivity.this,
 								DevicesAddActivity.class);
-						intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
-						intent.putExtra("car_series_id",app.carDatas.get(index).getCar_series_id());
-						intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
+						intent.putExtra("car_id", app.carDatas.get(index)
+								.getObj_id());
+						intent.putExtra("car_series_id", app.carDatas
+								.get(index).getCar_series_id());
+						intent.putExtra("car_series", app.carDatas.get(index)
+								.getCar_series());
 						startActivityForResult(intent, 2);
 					} else {
 						Intent intent = new Intent(FaultActivity.this,
@@ -568,9 +573,12 @@ public class FaultActivity extends FragmentActivity {
 					if (Device_id == null || Device_id.equals("")) {
 						Intent intent = new Intent(FaultActivity.this,
 								DevicesAddActivity.class);
-						intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
-						intent.putExtra("car_series_id",app.carDatas.get(index).getCar_series_id());
-						intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
+						intent.putExtra("car_id", app.carDatas.get(index)
+								.getObj_id());
+						intent.putExtra("car_series_id", app.carDatas
+								.get(index).getCar_series_id());
+						intent.putExtra("car_series", app.carDatas.get(index)
+								.getCar_series());
 						startActivityForResult(intent, 2);
 					} else {
 						Intent intent = new Intent(FaultActivity.this,
@@ -607,20 +615,23 @@ public class FaultActivity extends FragmentActivity {
 				startActivity(intent);
 				break;
 			case R.id.tv_hot_content:
-				Intent intent_hot = new Intent(FaultActivity.this, BrowserActivity.class);
+				Intent intent_hot = new Intent(FaultActivity.this,
+						BrowserActivity.class);
 				intent_hot.putExtra("url", hot_url);
 				intent_hot.putExtra("title", hot_title);
 				startActivity(intent_hot);
 				break;
 			case R.id.iv_update_oil:
 				String device_id = app.carDatas.get(index).getDevice_id();
-				if(device_id == null || device_id.equals("")){
-					Toast.makeText(FaultActivity.this, "您的车没有绑定终端，不能进行油耗修正", Toast.LENGTH_SHORT).show();
-				}else{
-					Intent intent_oil = new Intent(FaultActivity.this, OilUpdateActivity.class);
+				if (device_id == null || device_id.equals("")) {
+					Toast.makeText(FaultActivity.this, "您的车没有绑定终端，不能进行油耗修正",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					Intent intent_oil = new Intent(FaultActivity.this,
+							OilUpdateActivity.class);
 					intent_oil.putExtra("index", index);
 					startActivity(intent_oil);
-				}				
+				}
 				break;
 			}
 		}
@@ -636,10 +647,13 @@ public class FaultActivity extends FragmentActivity {
 		if (app.carDatas != null && app.carDatas.size() != 0) {
 			String Device_id = app.carDatas.get(index).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
-				Intent intent = new Intent(FaultActivity.this,DevicesAddActivity.class);
+				Intent intent = new Intent(FaultActivity.this,
+						DevicesAddActivity.class);
 				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
-				intent.putExtra("car_series_id",app.carDatas.get(index).getCar_series_id());
-				intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
+				intent.putExtra("car_series_id", app.carDatas.get(index)
+						.getCar_series_id());
+				intent.putExtra("car_series", app.carDatas.get(index)
+						.getCar_series());
 				startActivityForResult(intent, 2);
 			} else {
 				Intent intent = new Intent(FaultActivity.this,
@@ -822,12 +836,10 @@ public class FaultActivity extends FragmentActivity {
 						.getJSONObject("active_gps_data");
 				double lat = jsonObject.getDouble("lat");
 				double lon = jsonObject.getDouble("lon");
-				int direct = jsonObject.getInt("direct");
 				String uni_status = jsonObject.getString("uni_status");
 				String rcv_time = jsonObject.getString("rcv_time");
 				LatLng latLng = new LatLng(lat, lon);
 				app.carDatas.get(index).setUni_status(uni_status);
-				app.carDatas.get(index).setDirect(direct);
 				app.carDatas.get(index).setLat(lat);
 				app.carDatas.get(index).setLon(lon);
 				app.carDatas.get(index).setRcv_time(
@@ -858,15 +870,19 @@ public class FaultActivity extends FragmentActivity {
 					|| jsonObject.toString().equals("")) {
 				return;
 			}
-			if(index < carViews.size()){
+			if (index < carViews.size()) {
 				CarView carView = carViews.get(index);
-				carView.getTv_fee().setText(
-						String.format("%.1f", jsonObject.getDouble("total_fee")));// 花费
+				carView.getTv_fee()
+						.setText(
+								String.format("%.1f",
+										jsonObject.getDouble("total_fee")));// 花费
 				carView.getTv_fuel().setText(
-						String.format("%.1f", jsonObject.getDouble("total_fuel")));// 油耗
+						String.format("%.1f",
+								jsonObject.getDouble("total_fuel")));// 油耗
 				// 剩余里程显示
 				if ((jsonObject.getString("left_distance")).equals("null")) {
-					carView.getTv_distance().setText(String.format("%.0f", 0.0));
+					carView.getTv_distance()
+							.setText(String.format("%.0f", 0.0));
 				} else if (jsonObject.getDouble("left_distance") == 0) {
 					carView.getTv_distance().setText(
 							String.format("%.1f",
@@ -878,8 +894,7 @@ public class FaultActivity extends FragmentActivity {
 								String.format("%.1f",
 										jsonObject.getDouble("left_distance")));// 里程
 					} catch (Exception e) {
-						carView.getTv_distance().setText(
-								String.format("0"));// 里程
+						carView.getTv_distance().setText(String.format("0"));// 里程
 					}
 				}
 			}
@@ -961,14 +976,17 @@ public class FaultActivity extends FragmentActivity {
 	/** 获取热点信息 **/
 	private void gethot_news() {
 		try {
-			String url = Constant.BaseUrl + "base/hot_news?city=" + URLEncoder.encode(app.City, "UTF-8");
+			String url = Constant.BaseUrl + "base/hot_news?city="
+					+ URLEncoder.encode(app.City, "UTF-8");
 			new NetThread.GetDataThread(handler, url, gethot_news).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 	String hot_url;
 	String hot_title;
+
 	/** 解析乐一下 **/
 	private void jsonhot_news(String str) {
 		try {
@@ -1007,7 +1025,8 @@ public class FaultActivity extends FragmentActivity {
 			View v = LayoutInflater.from(this).inflate(R.layout.item_fault,
 					null);
 			hs_car.addView(v);
-			ImageView iv_update_oil = (ImageView)v.findViewById(R.id.iv_update_oil);
+			ImageView iv_update_oil = (ImageView) v
+					.findViewById(R.id.iv_update_oil);
 			iv_update_oil.setOnClickListener(onClickListener);
 			RelativeLayout rl_left_complete = (RelativeLayout) v
 					.findViewById(R.id.rl_left_complete);
@@ -1276,7 +1295,7 @@ public class FaultActivity extends FragmentActivity {
 							CarActivity.class));
 					break;
 				case 4:
-					//消息
+					// 消息
 					startActivity(new Intent(FaultActivity.this,
 							NoticeActivity.class));
 					break;
@@ -1321,7 +1340,9 @@ public class FaultActivity extends FragmentActivity {
 			this.obj_id = obj_id;
 		}
 	}
+
 	boolean isCycle = true;
+
 	// 定时调整滚动消息
 	class CycleNstvThread extends Thread {
 		@Override
@@ -1469,9 +1490,9 @@ public class FaultActivity extends FragmentActivity {
 		/**
 		 * requestCode = 5,跳转到更多页面
 		 */
-		if(requestCode == 5 && resultCode == 1){
+		if (requestCode == 5 && resultCode == 1) {
 			finish();
-		}else if (resultCode == 3) {
+		} else if (resultCode == 3) {
 			// 修改车辆信息
 			initDataView();
 			if (app.carDatas.size() == 0) {
@@ -1542,7 +1563,6 @@ public class FaultActivity extends FragmentActivity {
 		isGetAllData = false;
 	}
 
-
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -1550,13 +1570,13 @@ public class FaultActivity extends FragmentActivity {
 				smv_content.snapToScreen(0);
 			} else {
 				GetSystem.myLog(TAG, "app.cust_id = " + app.cust_id);
-				if(app.cust_id == null || app.cust_id.equals("")){
+				if (app.cust_id == null || app.cust_id.equals("")) {
 					finish();
-				}else{
-					//TODO 在幕后
-					Intent intent = new Intent(); 
-					intent.setAction(Intent.ACTION_MAIN); 
-					intent.addCategory(Intent.CATEGORY_HOME);           
+				} else {
+					// TODO 在幕后
+					Intent intent = new Intent();
+					intent.setAction(Intent.ACTION_MAIN);
+					intent.addCategory(Intent.CATEGORY_HOME);
 					startActivity(intent);
 				}
 			}
