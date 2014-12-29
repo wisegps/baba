@@ -163,7 +163,8 @@ public class MapChooseActivity extends Activity {
 		// 关闭定位图层
 		mBaiduMap.setMyLocationEnabled(false);
 		mGeoCoder.destroy();
-		mMapView.onDestroy();
+		//mMapView.onDestroy();
+		mMapView = null;
 	}
 
 	@Override

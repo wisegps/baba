@@ -287,31 +287,33 @@ public class FaultActivity extends FragmentActivity {
 			@Override
 			public void run() {
 				while (isGetGps) {
-					getMessage(noticeUrl);
-					gethot_news();
-					SystemClock.sleep(30000);
-					if (app.carDatas == null || app.carDatas.size() == 0) {
+					if(isResume){
+						getMessage(noticeUrl);
+						gethot_news();
+						if (app.carDatas == null || app.carDatas.size() == 0) {
 
-					} else {
-						// 防止删除车辆后数组越界
-						if (index < app.carDatas.size()) {
-							CarData carData = app.carDatas.get(index);
-							String device_id = carData.getDevice_id();
-							if (device_id == null || device_id.equals("")) {
-
-							} else {
-								// 获取gps信息
-								String gpsUrl = Constant.BaseUrl + "device/"
-										+ device_id + "?auth_code="
-										+ app.auth_code
-										+ "&update_time=2014-01-01%2019:06:43";
-								new NetThread.GetDataThread(handler, gpsUrl,
-										get_gps, index).start();
-							}
 						} else {
-							Log.d(TAG, "刷新位置数组越界");
+							// 防止删除车辆后数组越界
+							if (index < app.carDatas.size()) {
+								CarData carData = app.carDatas.get(index);
+								String device_id = carData.getDevice_id();
+								if (device_id == null || device_id.equals("")) {
+
+								} else {
+									// 获取gps信息
+									String gpsUrl = Constant.BaseUrl + "device/"
+											+ device_id + "?auth_code="
+											+ app.auth_code
+											+ "&update_time=2014-01-01%2019:06:43";
+									new NetThread.GetDataThread(handler, gpsUrl,
+											get_gps, index).start();
+								}
+							} else {
+								Log.d(TAG, "刷新位置数组越界");
+							}
 						}
-					}
+					}					
+					SystemClock.sleep(30000);
 				}
 			}
 		}).start();
@@ -1189,10 +1191,12 @@ public class FaultActivity extends FragmentActivity {
 
 	boolean isGetGps = true;
 	boolean isGetAllData = true;
+	boolean isResume = true;
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		isResume = true;
 		setNotiView();
 		getWeather();
 		MobclickAgent.onResume(this);
@@ -1201,6 +1205,7 @@ public class FaultActivity extends FragmentActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		isResume = false;
 		MobclickAgent.onPause(this);
 	}
 
@@ -1662,8 +1667,10 @@ public class FaultActivity extends FragmentActivity {
 	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
 		@Override
 		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
+			System.out.println("onGetReverseGeoCodeResult");
 			if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
 				// 没有检索到结果
+				System.out.println("onGetReverseGeoCodeResult = " + result.error);
 			} else {
 				try {
 					GetSystem.myLog(TAG, "获取位置信息");

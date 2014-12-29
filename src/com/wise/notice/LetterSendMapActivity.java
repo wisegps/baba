@@ -421,7 +421,7 @@ public class LetterSendMapActivity extends Activity {
 		mPoiSearch.destroy();
 		// 关闭定位图层
 		mBaiduMap.setMyLocationEnabled(false);
-		mMapView.onDestroy();
+		//mMapView.onDestroy();
 		mMapView = null;
 	}
 }

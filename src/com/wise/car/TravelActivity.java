@@ -104,7 +104,6 @@ public class TravelActivity extends Activity {
 		}else{
 			Date = GetSystem.GetNowDay();
 		}
-		//Date = "2014-11-30";
 		tv_travel_date.setText(Date);
 		judgeNowData(Date);
 		GetDataTrip();
@@ -251,6 +250,7 @@ public class TravelActivity extends Activity {
 				LatLng latLng = new LatLng(lat, lon);
 				System.out.println("获取位置");
 				if (mGeoCoder != null) {
+					System.out.println("reverseGeoCode");
 					mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
 							.location(latLng));
 				}
@@ -1019,12 +1019,13 @@ public class TravelActivity extends Activity {
 
 		@Override
 		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
+			System.out.println("onGetReverseGeoCodeResult");
 			try {
-				if (mGeoCoder != null) {
+				if (!isDestory) {
 					String strInfo = "";
 					if (arg0 == null
 							|| arg0.error != SearchResult.ERRORNO.NO_ERROR) {
-
+						System.out.println("onGetReverseGeoCodeResult = " + arg0.error);
 					} else {
 						strInfo = arg0.getAddress();
 						strInfo = strInfo.substring((strInfo.indexOf("市") + 1),
@@ -1063,12 +1064,12 @@ public class TravelActivity extends Activity {
 			}
 		}
 	};
-
+	boolean isDestory = false;
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		isDestory = true;
 		mGeoCoder.destroy();
-		mGeoCoder = null;
 	}
 
 	@Override

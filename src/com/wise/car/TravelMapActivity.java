@@ -263,7 +263,7 @@ public class TravelMapActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		if (mMapView != null) {
-			mMapView.onDestroy();
+			//mMapView.onDestroy();
 			mMapView = null;
 		}
 	}

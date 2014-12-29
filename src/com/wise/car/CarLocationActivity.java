@@ -24,8 +24,6 @@ import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.MyLocationConfiguration;
-import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.Stroke;
@@ -45,7 +43,6 @@ import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-
 import data.CarData;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -140,7 +137,7 @@ public class CarLocationActivity extends Activity {
 		// 开启定位图层
 		mBaiduMap.setMyLocationEnabled(true);
 		// 定位初始化
-		mLocClient = new LocationClient(this);
+		mLocClient = new LocationClient(getApplicationContext());
 		mLocClient.registerLocationListener(myListener);
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
@@ -532,14 +529,14 @@ public class CarLocationActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				Toast.makeText(CarLocationActivity.this, "驾车规划中...", Toast.LENGTH_SHORT).show();
-				mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(edNode));
+				//mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(edNode));
 			}
 		});
 		builder.setNegativeButton("步行规划", new DialogInterface.OnClickListener() {			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				Toast.makeText(CarLocationActivity.this, "步行规划中...", Toast.LENGTH_SHORT).show();
-				mSearch.walkingSearch(new WalkingRoutePlanOption().from(stNode).to(edNode));
+				//mSearch.walkingSearch(new WalkingRoutePlanOption().from(stNode).to(edNode));
 			}
 		});
 		builder.create().show();
@@ -1122,8 +1119,7 @@ public class CarLocationActivity extends Activity {
 		}
 
 		@Override
-		public void onGetTransitRouteResult(TransitRouteResult result) {
-		}
+		public void onGetTransitRouteResult(TransitRouteResult result) {}
 
 		@Override
 		public void onGetDrivingRouteResult(DrivingRouteResult result) {
@@ -1162,7 +1158,7 @@ public class CarLocationActivity extends Activity {
 		mLocClient.stop();
 		// 关闭定位图层
 		mBaiduMap.setMyLocationEnabled(false);
-		mMapView.onDestroy();
+		//mMapView.onDestroy();
 		mMapView = null;
 		isStop = false;
 		isTracking = false;

@@ -194,7 +194,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="最后行程检测值结果"
+                    android:text="最后行程检测结果"
                     android:textColor="@color/common"
                     android:textSize="@dimen/content" />
             </RelativeLayout>
@@ -254,7 +254,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="实时检测值结果"
+                    android:text="实时检测结果"
                     android:textColor="@color/common"
                     android:textSize="@dimen/content" />
             </RelativeLayout>

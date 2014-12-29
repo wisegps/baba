@@ -158,7 +158,7 @@ public class MapFriendLocationActivity extends Activity {
 		mLocClient.stop();
 		// 关闭定位图层
 		mBaiduMap.setMyLocationEnabled(false);
-		mMapView.onDestroy();
+		//mMapView.onDestroy();
 		mMapView = null;
 	}
 }
