@@ -189,6 +189,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			trafficView.getLl_wait().setVisibility(View.GONE);
 			if (trafficView.getTrafficDatas().size() == 0) {
 				trafficViews.get(index).getRl_Note().setVisibility(View.VISIBLE);
+				trafficViews.get(index).getTv_note().setText("没有违章记录");
 				trafficViews.get(index).getLl_info().setVisibility(View.GONE);
 			} else {
 				trafficViews.get(index).getRl_Note().setVisibility(View.GONE);
@@ -964,7 +965,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 										//不需要发发动机号
 									} else {
 										if (engineno == 1) {// 全部
-											if (carData.getEngine_no().length() == 0) {
+											if (carData.getEngine_no() == null || carData.getEngine_no().length() == 0) {
 												trafficView.setType(2);
 												trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
 												trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
@@ -973,7 +974,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 												return;
 											}
 										} else {
-											if (carData.getEngine_no().length() < engineno) {
+											if (carData.getEngine_no() == null || carData.getEngine_no().length() < engineno) {
 												trafficView.setType(2);
 												trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
 												trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
@@ -988,7 +989,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 
 									} else {
 										if (frameno == 1) {// 全部
-											if (carData.getFrame_no().length() == 0) {
+											if (carData.getFrame_no() == null || carData.getFrame_no().length() == 0) {
 												trafficView.setType(2);
 												trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
 												trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);
@@ -997,7 +998,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 												return;
 											}
 										} else {
-											if (carData.getFrame_no().length() < frameno) {
+											if (carData.getFrame_no() == null || carData.getFrame_no().length() < frameno) {
 												trafficView.setType(2);
 												trafficViews.get(index_car).getRl_Note().setVisibility(View.VISIBLE);
 												trafficViews.get(index_car).getLl_info().setVisibility(View.GONE);

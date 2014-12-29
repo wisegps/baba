@@ -221,6 +221,7 @@ public class PhotoActivity extends Activity {
 				jsonComments(msg.obj.toString());
 				break;
 			case getPersionImage:
+				removeThreadMark(msg.arg1);
 				photoAdapter.notifyDataSetChanged();
 				break;
 			case praise:// 点赞
@@ -350,6 +351,18 @@ public class PhotoActivity extends Activity {
 		}
 		return false;
 	}
+	/**
+	 * 删除列表里正在下载的线程标识
+	 * @param position
+	 */
+	private void removeThreadMark(int position){
+		for (int i = 0; i < photoThreadId.size(); i++) {
+			if (photoThreadId.get(i) == position) {
+				photoThreadId.remove(i);
+				break;
+			}
+		}
+	}
 
 	class ImageThread extends Thread {
 		int position;
@@ -367,14 +380,9 @@ public class PhotoActivity extends Activity {
 				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(photoDatas
 						.get(position).getIcon()) + ".png", 100);
 			}
-			for (int i = 0; i < photoThreadId.size(); i++) {
-				if (photoThreadId.get(i) == position) {
-					photoThreadId.remove(i);
-					break;
-				}
-			}
 			Message message = new Message();
 			message.what = getPersionImage;
+			message.arg1 = position;
 			handler.sendMessage(message);
 		}
 	}

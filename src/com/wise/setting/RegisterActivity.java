@@ -75,6 +75,7 @@ public class RegisterActivity extends Activity {
 		// 终端验证
 		remove = intent.getBooleanExtra("remove", false);
 		device_update = intent.getBooleanExtra("device_update", false);
+		String account = intent.getStringExtra("account");
 		if (mark == 0 || mark == 2) {
 			tv_title.setText("注册");
 			bt_register.setText("注册");
@@ -82,10 +83,14 @@ public class RegisterActivity extends Activity {
 		} else if (mark == 1) {
 			if (remove) {
 				tv_title.setText("解除绑定");
-				bt_register.setText("解除绑定");
+				bt_register.setText("验证身份");
+				et_account.setText(account);
+				et_account.setEnabled(false);
 			} else if (device_update) {
 				tv_title.setText("修改终端");
-				bt_register.setText("修改终端");
+				bt_register.setText("验证身份");
+				et_account.setText(account);
+				et_account.setEnabled(false);
 			} else {
 				tv_title.setText("忘记密码");
 				bt_register.setText("忘记密码");

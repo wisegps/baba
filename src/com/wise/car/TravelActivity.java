@@ -428,7 +428,7 @@ public class TravelActivity extends Activity {
 			dialog.show();
 		}else{
 			sureCollectAdress(trip_name, collectAdres, collectLon, collectLat);
-			collectCommonAdress(collectAdres, Double.valueOf(collectLat), Double.valueOf(collectLon));
+			collectCommonAdress(collectName,collectAdres, Double.valueOf(collectLat), Double.valueOf(collectLon));
 		}		
 	}
 	/**收藏地址**/
@@ -504,7 +504,7 @@ public class TravelActivity extends Activity {
 				if(jsonArray.length() == 0){//未重复,开始收藏					
 					sureCollectAdress(collectName, collectAdres, collectLon, collectLat);
 					renameTravel(collectPosition, collectName,false);
-					collectCommonAdress(collectAdres, Double.valueOf(collectLat), Double.valueOf(collectLon));
+					collectCommonAdress(collectName,collectAdres, Double.valueOf(collectLat), Double.valueOf(collectLon));
 				}else{
 					Toast.makeText(TravelActivity.this, "收藏的名称重复", Toast.LENGTH_SHORT).show();
 				}
@@ -516,7 +516,7 @@ public class TravelActivity extends Activity {
 	}
 	List<AdressData> adressDatas = new ArrayList<AdressData>();
 	/**收藏的同时，添加到常用地址**/
-	private void collectCommonAdress(String name,double latitude, double longitude){
+	private void collectCommonAdress(String nameMark, String name,double latitude, double longitude){
 		getJsonData();
 		SharedPreferences preferences2 = getSharedPreferences(
 				"address_add", Activity.MODE_PRIVATE);
@@ -531,6 +531,7 @@ public class TravelActivity extends Activity {
 		try {
 			for (AdressData adress : adressDatas) {
 				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("nameMark", nameMark);
 				jsonObject.put("addressName", adress.getName());
 				jsonObject.put("addressLat", adress.getLat());
 				jsonObject.put("addressLon", adress.getLon());
@@ -546,6 +547,7 @@ public class TravelActivity extends Activity {
 		adressDatas.add(adressData);
 		try {
 			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("nameMark", nameMark);
 			jsonObject.put("addressName", name);
 			jsonObject.put("addressLat", latitude);
 			jsonObject.put("addressLon", longitude);
@@ -802,80 +804,6 @@ public class TravelActivity extends Activity {
 					TravelActivity.this.startActivity(intent);
 				}
 			});
-//			holder.iv_item_travel_record
-//					.setOnClickListener(new OnClickListener() {
-//
-//						@Override
-//						public void onClick(View v) {
-//							AlertDialog.Builder dialog = new AlertDialog.Builder(
-//									TravelActivity.this);
-//							View view = (LayoutInflater
-//									.from(TravelActivity.this)).inflate(
-//									R.layout.item_travel_record, null);
-//							final EditText et_travel_record = (EditText) view
-//									.findViewById(R.id.et_travel_record);
-//							dialog.setTitle("行程油耗录入");
-//							dialog.setView(view);
-//							dialog.setPositiveButton("确定",
-//									new DialogInterface.OnClickListener() {
-//										@Override
-//										public void onClick(
-//												DialogInterface dialog,
-//												int which) {
-//											String record = et_travel_record.getText().toString().trim();
-//											if(record.equals("")){
-//												Toast.makeText(TravelActivity.this,"实际油耗不能为空", Toast.LENGTH_SHORT).show();
-//											}else{
-//												actAvgFuel(position, Float.valueOf(record));
-//											}
-//										}
-//									}).setNegativeButton("取消", null).show();
-//						}
-//					});
-//			holder.iv_item_travel_rename.setOnClickListener(new OnClickListener() {				
-//				@Override
-//				public void onClick(View v) {
-//					AlertDialog.Builder dialog = new AlertDialog.Builder(TravelActivity.this);
-//					LayoutInflater inflater = (LayoutInflater) TravelActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//					LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.builder_rename, null);
-//					dialog.setView(layout);
-//					final EditText et_rename = (EditText)layout.findViewById(R.id.et_rename);
-//					dialog.setTitle("提示");
-//					dialog.setNegativeButton("取消", null);
-//					dialog.setPositiveButton("更改", new DialogInterface.OnClickListener() {						
-//						@Override
-//						public void onClick(DialogInterface dialog, int which) {
-//							String name = et_rename.getText().toString().trim();
-//							if(!name.equals("")){
-//								renameTravel(position, name);
-//							}
-//						}
-//					});
-//					dialog.show();
-//				}
-//			});
-//			// 删除行程
-//			holder.iv_item_travel_delete
-//					.setOnClickListener(new OnClickListener() {
-//						@Override
-//						public void onClick(View v) {
-//							AlertDialog.Builder dialog = new AlertDialog.Builder(
-//									TravelActivity.this);
-//							dialog.setTitle("提示");
-//							dialog.setMessage("你确定要删除本次行程数据吗？")
-//									.setPositiveButton(
-//											"确定",
-//											new DialogInterface.OnClickListener() {
-//												@Override
-//												public void onClick(
-//														DialogInterface dialog,
-//														int which) {
-//													deleteTravel(travelData.getTrip_id(),position);
-//												}
-//											}).setNegativeButton("取消", null)
-//									.show();
-//						}
-//					});
 			holder.iv_item_travel_recordShow.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {

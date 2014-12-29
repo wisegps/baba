@@ -442,6 +442,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				letterAdapter.notifyDataSetChanged();
 				break;
 			case getPersionImage:
+				removeThreadMark(msg.arg1);
 				letterAdapter.notifyDataSetChanged();
 				break;
 			case getOssSound:
@@ -1687,6 +1688,18 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		}
 		return false;
 	}
+	/**
+	 * 删除列表里正在下载的线程标识
+	 * @param position
+	 */
+	private void removeThreadMark(int position){
+		for (int i = 0; i < photoThreadId.size(); i++) {
+			if (photoThreadId.get(i) == position) {
+				photoThreadId.remove(i);
+				break;
+			}
+		}
+	}
 
 	class ImageThread extends Thread {
 		int position;
@@ -1716,14 +1729,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			for (int i = 0; i < photoThreadId.size(); i++) {
-				if (photoThreadId.get(i) == position) {
-					photoThreadId.remove(i);
-					break;
-				}
-			}
 			Message message = new Message();
 			message.what = getPersionImage;
+			message.arg1 = position;
 			handler.sendMessage(message);
 		}
 	}

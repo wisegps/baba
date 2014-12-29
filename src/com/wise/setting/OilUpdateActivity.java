@@ -113,7 +113,7 @@ public class OilUpdateActivity extends Activity {
 	};
 	/**重置油耗**/
 	private void resetOil(){
-		dialog = ProgressDialog.show(OilUpdateActivity.this, "提示", "重置油耗中");
+		dialog = ProgressDialog.show(OilUpdateActivity.this, "提示", "重置加油修正中");
 		dialog.setCancelable(true);
 		String url = Constant.BaseUrl + "device/" + device_id + "/refuel/reset?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -126,17 +126,17 @@ public class OilUpdateActivity extends Activity {
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if (jsonObject.getInt("status_code") == 0) {
-				Toast.makeText(OilUpdateActivity.this, "重置油耗成功",
+				Toast.makeText(OilUpdateActivity.this, "重置加油修正成功，请重新开始进行加油修正。",
 						Toast.LENGTH_SHORT).show();
 				bt_oil_add_1.setEnabled(true);
 				bt_oil_add_2.setEnabled(false);
 			} else {
-				Toast.makeText(OilUpdateActivity.this, "重置油耗失败",
+				Toast.makeText(OilUpdateActivity.this, "重置加油修正失败",
 						Toast.LENGTH_SHORT).show();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Toast.makeText(OilUpdateActivity.this, "重置油耗失败",
+			Toast.makeText(OilUpdateActivity.this, "重置加油修正失败",
 					Toast.LENGTH_SHORT).show();
 		}
 	}

@@ -15,6 +15,7 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.R;
+import com.wise.setting.SetActivity;
 
 import data.AdressData;
 
@@ -239,7 +240,7 @@ public class AddressActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == ChooseAddressActivity.ADDRESSCODE) {
-			String name = data.getExtras().getString("name");
+			String adress = data.getExtras().getString("name");
 			double latitude = data.getExtras().getDouble("latitude");
 			double longitude = data.getExtras().getDouble("longitude");
 			boolean myLocat = data.getExtras().getBoolean("myLoct");
@@ -248,13 +249,13 @@ public class AddressActivity extends Activity {
 					Activity.MODE_PRIVATE);
 			SharedPreferences.Editor editor = preferences.edit();
 			if (requestCode == HOME) {
-				if (name != null && !name.equals("")) {
-					tv_home.setText("家\n" + name);
+				if (adress != null && !adress.equals("")) {
+					tv_home.setText("家\n" + adress);
 					ad_delete.setVisibility(View.VISIBLE);
 					ad_navigation.setVisibility(View.VISIBLE);
 					editor.putString("homeLat", String.valueOf(latitude));
 					editor.putString("homeLon", String.valueOf(longitude));
-					editor.putString("name", name);
+					editor.putString("name", adress);
 				} else if (myLocat) {
 					tv_home.setText("家");
 					Toast.makeText(AddressActivity.this, "家地址定位失败",
@@ -265,13 +266,13 @@ public class AddressActivity extends Activity {
 							Toast.LENGTH_SHORT).show();
 				}
 			} else if (requestCode == COMPANY) {
-				if (name != null && !name.equals("")) {
-					tv_company.setText("公司\n" + name);
+				if (adress != null && !adress.equals("")) {
+					tv_company.setText("公司\n" + adress);
 					ad_delete_1.setVisibility(View.VISIBLE);
 					ad_navigation_1.setVisibility(View.VISIBLE);
 					editor.putString("companyLat", String.valueOf(latitude));
 					editor.putString("companyLon", String.valueOf(longitude));
-					editor.putString("company", name);
+					editor.putString("company", adress);
 				} else if (myLocat) {
 					tv_company.setText("公司");
 					Toast.makeText(AddressActivity.this, "公司地址定位失败",
@@ -282,15 +283,15 @@ public class AddressActivity extends Activity {
 							Toast.LENGTH_SHORT).show();
 				}
 			} else if (requestCode == ADD) {
-				if (name != null && !name.equals("")) {
+				if (adress != null && !adress.equals("")) {
 					SharedPreferences preferences2 = getSharedPreferences(
 							"address_add", Activity.MODE_PRIVATE);
 					SharedPreferences.Editor editor2 = preferences2.edit();
 					JSONObject object = new JSONObject();
 					JSONArray addJsonArray = new JSONArray();
 					boolean flag = true;
-					for (AdressData adress : adressDatas) {
-						if (adress.getName().equals(name)) {
+					for (AdressData adres : adressDatas) {
+						if (adres.getAdress().equals(adress)) {
 							Toast.makeText(AddressActivity.this, "地址已存在",
 									Toast.LENGTH_SHORT).show();
 							flag = false;
@@ -298,11 +299,12 @@ public class AddressActivity extends Activity {
 						}
 					}
 					try {
-						for (AdressData adress : adressDatas) {
+						for (AdressData adres : adressDatas) {
 							JSONObject jsonObject = new JSONObject();
-							jsonObject.put("addressName", adress.getName());
-							jsonObject.put("addressLat", adress.getLat());
-							jsonObject.put("addressLon", adress.getLon());
+							jsonObject.put("nameMark", adres.getName());
+							jsonObject.put("addressName", adres.getAdress());
+							jsonObject.put("addressLat", adres.getLat());
+							jsonObject.put("addressLon", adres.getLon());
 							addJsonArray.put(jsonObject);
 						}
 					} catch (JSONException e) {
@@ -310,13 +312,15 @@ public class AddressActivity extends Activity {
 					}
 					if (flag) {
 						AdressData adressData = new AdressData();
-						adressData.setName(name);
+						adressData.setName("");
+						adressData.setAdress(adress);
 						adressData.setLat(latitude);
 						adressData.setLon(longitude);
 						adressDatas.add(adressData);
 						try {
 							JSONObject jsonObject = new JSONObject();
-							jsonObject.put("addressName", name);
+							jsonObject.put("nameMark", "");
+							jsonObject.put("addressName", adress);
 							jsonObject.put("addressLat", latitude);
 							jsonObject.put("addressLon", longitude);
 							addJsonArray.put(jsonObject);
@@ -342,10 +346,10 @@ public class AddressActivity extends Activity {
 							Toast.LENGTH_SHORT).show();
 				}
 			} else if (requestCode == UPDATE) {
-				if (name != null && !name.equals("")) {
+				if (adress != null && !adress.equals("")) {
 					boolean flag = true;
-					for (AdressData adress : adressDatas) {
-						if (adress.getName().equals(name)) {
+					for (AdressData adres : adressDatas) {
+						if (adres.getAdress().equals(adress)) {
 							Toast.makeText(AddressActivity.this, "常用地址已存在",
 									Toast.LENGTH_SHORT).show();
 							flag = false;
@@ -354,7 +358,8 @@ public class AddressActivity extends Activity {
 					}
 					if (flag) {
 						AdressData adressData = new AdressData();
-						adressData.setName(name);
+						adressData.setName("");
+						adressData.setAdress(adress);
 						adressData.setLat(latitude);
 						adressData.setLon(longitude);
 						adressDatas.set(index, adressData);
@@ -364,11 +369,12 @@ public class AddressActivity extends Activity {
 						JSONObject object = new JSONObject();
 						JSONArray addJsonArray = new JSONArray();
 						try {
-							for (AdressData adress : adressDatas) {
+							for (AdressData adres : adressDatas) {
 								JSONObject jsonObject = new JSONObject();
-								jsonObject.put("addressName", adress.getName());
-								jsonObject.put("addressLat", adress.getLat());
-								jsonObject.put("addressLon", adress.getLon());
+								jsonObject.put("nameMark", "");
+								jsonObject.put("addressName", adres.getAdress());
+								jsonObject.put("addressLat", adres.getLat());
+								jsonObject.put("addressLon", adres.getLon());
 								addJsonArray.put(jsonObject);
 							}
 							object.put("addJsonArray", addJsonArray);
@@ -403,11 +409,18 @@ public class AddressActivity extends Activity {
 			JSONArray jsonArray = jsonObject.getJSONArray("addJsonArray");
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject object = jsonArray.getJSONObject(i);
+				String nameMark = "";
+				if(object.opt("nameMark") == null){
+					nameMark = "";
+				}else{
+					nameMark = object.getString("nameMark");
+				}
 				String addressName = object.getString("addressName");
 				double addressLat = object.getDouble("addressLat");
 				double addressLon = object.getDouble("addressLon");
 				AdressData adressData = new AdressData();
-				adressData.setName(addressName);
+				adressData.setName(nameMark);
+				adressData.setAdress(addressName);
 				adressData.setLat(addressLat);
 				adressData.setLon(addressLon);
 				adressDatas.add(adressData);
@@ -469,7 +482,12 @@ public class AddressActivity extends Activity {
 			} else {
 				mHolder = (Holder) convertView.getTag();
 			}
-			mHolder.addressName.setText(adressDatas.get(position).getName());
+			AdressData adressData = adressDatas.get(position);
+			if(adressData.getName() == null || adressData.getName().equals("")){
+				mHolder.addressName.setText(adressData.getAdress());
+			}else{
+				mHolder.addressName.setText(adressData.getName() + "\n" +adressData.getAdress());
+			}
 
 			mHolder.addressDelete.setOnClickListener(new OnClickListener() {
 				@Override
@@ -504,10 +522,9 @@ public class AddressActivity extends Activity {
 												try {
 													for (AdressData adressData : adressDatas) {
 														JSONObject jsonObject = new JSONObject();
-														jsonObject
-																.put("addressName",
-																		adressData
-																				.getName());
+														jsonObject.put("nameMark", adressData.getName());
+														jsonObject.put("addressName",
+																		adressData.getAdress());
 														jsonObject
 																.put("addressLat",
 																		adressData

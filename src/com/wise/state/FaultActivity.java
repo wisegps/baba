@@ -746,8 +746,10 @@ public class FaultActivity extends FragmentActivity {
 			case get_ad:
 				setImageView(msg.obj.toString());
 				getImage();
-				changeImage(0);
-				tv_content.setText(adDatas.get(0).getContent());
+				if(adDatas.size() > 0){
+					changeImage(0);
+					tv_content.setText(adDatas.get(0).getContent());
+				}
 				break;
 			}
 		}

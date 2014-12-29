@@ -693,12 +693,7 @@ public class DevicesAddActivity extends Activity {
 			} else {
 				JSONObject jsonObject = new JSONObject(result);
 				int custID = jsonObject.getInt("cust_id");
-				String status = jsonObject.getString("status");
-				if (custID > 0) {
-					Toast.makeText(DevicesAddActivity.this,
-							"该终端已被其他用户绑定，无法再次绑定", Toast.LENGTH_LONG).show();
-					SaveDataOver();
-				} else if (custID == 0 || custID < 0) {
+				if(custID == Integer.valueOf(app.cust_id) || custID == 0){
 					String sim = et_sim.getText().toString().trim();
 					device_id = jsonObject.getString("device_id");
 					String url = Constant.BaseUrl + "device/" + device_id
@@ -707,8 +702,9 @@ public class DevicesAddActivity extends Activity {
 					params.add(new BasicNameValuePair("sim", sim));
 					new Thread(new NetThread.putDataThread(handler, url,
 							params, update_sim)).start();
-				} else if (status.equals("2")) {
-					et_serial.setError("序列号已经使用");
+				}else{
+					Toast.makeText(DevicesAddActivity.this,
+							"该终端已被其他用户绑定，无法再次绑定", Toast.LENGTH_LONG).show();
 					SaveDataOver();
 				}
 			}

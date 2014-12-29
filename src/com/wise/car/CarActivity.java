@@ -24,8 +24,10 @@ import data.BrandData;
 import data.CarData;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -64,6 +66,7 @@ public class CarActivity extends Activity {
 
 	boolean isRefresh = false;
 	AppApplication app;
+	String sp_account;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +88,9 @@ public class CarActivity extends Activity {
 		} else {
 			new GetImageThread().start();
 		}
-		
+		SharedPreferences preferences = getSharedPreferences(
+				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		sp_account = preferences.getString(Constant.sp_account, "");
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -326,6 +331,7 @@ public class CarActivity extends Activity {
 								RegisterActivity.class);
 						intent.putExtra("mark", 1);
 						intent.putExtra("device_update", true);
+						intent.putExtra("account", sp_account);
 						startActivityForResult(intent, 7);
 					}
 				});
@@ -342,6 +348,7 @@ public class CarActivity extends Activity {
 								RegisterActivity.class);
 						intent.putExtra("mark", 1);
 						intent.putExtra("remove", true);
+						intent.putExtra("account", sp_account);
 						startActivityForResult(intent, REMOVE);
 					}
 				});

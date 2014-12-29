@@ -52,10 +52,11 @@ import android.widget.TextView;
 public class NoticeFragment extends Fragment implements IXListViewListener{
 
 	private final static int getNotice = 1;
-	private final static int getFriendImage = 2;
+	/**获取通知图片**/
+	private final static int getNoticeImage = 2;
 	private final static int refreshNotice = 3;
 	private final static int get_all_friend = 4;
-	private final static int get_friend_logo = 5;
+	private final static int getFriendImage = 5;
 	
 	NoticeAdapter noticeAdapter;
 	BtnListener btnListener;
@@ -190,18 +191,20 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			case getNotice:
 				jsonData(msg.obj.toString());
 				noticeAdapter.notifyDataSetChanged();
-				getPersionImage();
+				getNoticeImage();
 				break;
 			case refreshNotice:
 				refresh = msg.obj.toString();
 				lv_notice.runFast(0);
-				getPersionImage();
+				getNoticeImage();
 				break;
 
-			case getFriendImage:
+			case getNoticeImage:
+				removeNoticeThreadMark(msg.arg1);
 				noticeAdapter.notifyDataSetChanged();
 				break;
-			case get_friend_logo:
+			case getFriendImage:
+				removeFriendThreadMark(msg.arg1);
 				friendAdapter.notifyDataSetChanged();
 				break;
 			case get_all_friend:
@@ -285,7 +288,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 					noticeDatas.add(noticeData);
 				}				
 			}
-			getPersionImage();
+			getNoticeImage();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -568,7 +571,7 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 					getFriendLogo();
 					break;
 				case R.id.lv_notice:
-					getPersionImage();
+					getNoticeImage();
 					break;
 				}
 			}
@@ -580,11 +583,14 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 		}
 	};
 	
+	public SpannableString getFaceImage(String faceContent) {
+		return FaceConversionUtil.getInstace().getExpressionString(
+				getActivity(), faceContent);
+	}
+
+	/**获取好友列表图片**/
 	private void getFriendLogo(){
 		int start = lv_friend.getFirstVisiblePosition();
-		if(start == 0){
-			start = 1;
-		}
 		int stop = lv_friend.getLastVisiblePosition();
 		for(int i = start ; i < stop ; i++){
 			if(i >= app.friendDatas.size()){
@@ -599,21 +605,15 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 					if(isFriendThreadRun(i)){
 						//如果图片正在读取则跳过
 					}else{
-						FriendId.add(i);
-						new FriendThread(i).start();
+						friendThreadId.add(i);
+						new FriendImageThread(i).start();
 					}
 				}
 			}					
 		}
 	}
-	
-	public SpannableString getFaceImage(String faceContent) {
-		return FaceConversionUtil.getInstace().getExpressionString(
-				getActivity(), faceContent);
-	}
-	
-	/**获取显示区域的图片**/
-	private void getPersionImage(){
+	/**获取显示区域通知的图片**/
+	private void getNoticeImage(){
 		int start = lv_notice.getFirstVisiblePosition();
 		int stop = lv_notice.getLastVisiblePosition();		
 		for(int i = start ; i < stop ; i++){
@@ -630,11 +630,11 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 						if(new File(Constant.userIconPath + GetSystem.getM5DEndo(noticeData.getLogo()) + ".png").exists()){
 							
 						}else{
-							if(isThreadRun(i)){
+							if(isNoticeThreadRun(i)){
 								//如果图片正在读取则跳过
 							}else{
-								photoThreadId.add(i);
-								new ImageThread(i).start();
+								noticeThreadId.add(i);
+								new NoticeImageThread(i).start();
 							}
 						}
 					}					
@@ -642,31 +642,54 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			}		
 	}
 	
-	List<Integer> FriendId = new ArrayList<Integer>();
+	List<Integer> friendThreadId = new ArrayList<Integer>();
 	/**判断图片是否开启了线程正在读图**/
 	private boolean isFriendThreadRun(int positon){
-		for(int i = 0 ; i < FriendId.size() ; i++){
-			if(positon == FriendId.get(i)){
+		for(int i = 0 ; i < friendThreadId.size() ; i++){
+			if(positon == friendThreadId.get(i)){
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	List<Integer> photoThreadId = new ArrayList<Integer>();
+	List<Integer> noticeThreadId = new ArrayList<Integer>();
 	/**判断图片是否开启了线程正在读图**/
-	private boolean isThreadRun(int positon){
-		for(int i = 0 ; i < photoThreadId.size() ; i++){
-			if(positon == photoThreadId.get(i)){
+	private boolean isNoticeThreadRun(int positon){
+		for(int i = 0 ; i < noticeThreadId.size() ; i++){
+			if(positon == noticeThreadId.get(i)){
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	class FriendThread extends Thread{
+	/**
+	 * 删除好友列表里正在下载的线程标识
+	 * @param position
+	 */
+	private void removeFriendThreadMark(int position){
+		for (int i = 0; i < friendThreadId.size(); i++) {
+			if (friendThreadId.get(i) == position) {
+				friendThreadId.remove(i);
+				break;
+			}
+		}
+	}
+	/**
+	 * 删除通知列表里正在下载的线程标识
+	 * @param position
+	 */
+	private void removeNoticeThreadMark(int position){
+		for (int i = 0; i < noticeThreadId.size(); i++) {
+			if (noticeThreadId.get(i) == position) {
+				noticeThreadId.remove(i);
+				break;
+			}
+		}
+	}
+	class FriendImageThread extends Thread{
 		int position;
-		public FriendThread(int position){
+		public FriendImageThread(int position){
 			this.position = position;
 		}
 		@Override
@@ -676,21 +699,22 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 			if(bitmap != null){
 				GetSystem.saveImageSD(bitmap, Constant.userIconPath, app.friendDatas.get(position).getFriend_id() + ".png",100);
 			}
-			for (int i = 0; i < FriendId.size(); i++) {
-				if (FriendId.get(i) == position) {
-					FriendId.remove(i);
+			for (int i = 0; i < friendThreadId.size(); i++) {
+				if (friendThreadId.get(i) == position) {
+					friendThreadId.remove(i);
 					break;
 				}
 			}
 			Message message = new Message();
-			message.what = get_friend_logo;
+			message.what = getFriendImage;
+			message.arg1 = position;
 			handler.sendMessage(message);
 		}
 	}
 	
-	class ImageThread extends Thread{
+	class NoticeImageThread extends Thread{
 		int position;
-		public ImageThread(int position){
+		public NoticeImageThread(int position){
 			this.position = position;
 		}
 		@Override
@@ -706,14 +730,9 @@ public class NoticeFragment extends Fragment implements IXListViewListener{
 						GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(logo) + ".png",100);
 					}
 				}
-				for (int i = 0; i < photoThreadId.size(); i++) {
-					if (photoThreadId.get(i) == position) {
-						photoThreadId.remove(i);
-						break;
-					}
-				}
 				Message message = new Message();
-				message.what = getFriendImage;
+				message.what = getNoticeImage;
+				message.arg1 = position;
 				handler.sendMessage(message);
 			} catch (Exception e) {
 				e.printStackTrace();

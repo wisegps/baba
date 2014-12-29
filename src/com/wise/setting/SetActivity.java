@@ -283,7 +283,7 @@ public class SetActivity extends Activity implements TagAliasCallback {
 							}));
 				}
 			}
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
