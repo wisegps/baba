@@ -105,6 +105,7 @@ public class SureFriendActivity extends Activity {
 				jsonAddFriend(msg.obj.toString(),msg.arg1);
 				break;
 			case getImage:
+				removeThreadMark(msg.arg1);
 				newFriendAdapter.notifyDataSetChanged();
 				break;
 			}
@@ -310,18 +311,24 @@ public class SureFriendActivity extends Activity {
 			if(bitmap != null){
 				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(friendDatas.get(position).getLogo()) + ".png",100);
 			}
-			for (int i = 0; i < photoThreadId.size(); i++) {
-				if (photoThreadId.get(i) == position) {
-					photoThreadId.remove(i);
-					break;
-				}
-			}
 			Message message = new Message();
 			message.what = getImage;
+			message.arg1 = position;
 			handler.sendMessage(message);
 		}
 	}
-	
+	/**
+	 * 删除列表里正在下载的线程标识
+	 * @param position
+	 */
+	private void removeThreadMark(int position){
+		for (int i = 0; i < photoThreadId.size(); i++) {
+			if (photoThreadId.get(i) == position) {
+				photoThreadId.remove(i);
+				break;
+			}
+		}
+	}
 	List<Integer> photoThreadId = new ArrayList<Integer>();
 	/**判断图片是否开启了线程正在读图**/
 	private boolean isThreadRun(int positon){

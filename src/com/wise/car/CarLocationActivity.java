@@ -738,37 +738,40 @@ public class CarLocationActivity extends Activity {
 	boolean isFristCarLocation = true;
 	// 当前车辆位子
 	private void getCarLocation() {
-		if (!isHotLocation) {
-			return;
-		}
-		circle = new LatLng(carData.getLat(), carData.getLon());
-		if (carMarker != null) {
-			carMarker.remove();
-		}
+		try {
+			if (!isHotLocation) {
+				return;
+			}
+			circle = new LatLng(carData.getLat(), carData.getLon());
+			if (carMarker != null) {
+				carMarker.remove();
+			}
 
-		// 构建Marker图标
-		BitmapDescriptor bitmap = BitmapDescriptorFactory
-				.fromResource(R.drawable.body_icon_location2);
-		// 构建MarkerOption，用于在地图上添加Marker
-		OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
-				.position(circle).icon(bitmap);
-		//在地图上添加Marker，并显示
-		carMarker = (Marker) (mBaiduMap.addOverlay(option));
-		if(isFristCarLocation){//第一次移动车的位置到地图中间
-			isFristCarLocation = false;
-			MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
-			MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
-					.newMapStatus(mapStatus);
-			mBaiduMap.setMapStatus(mapStatusUpdate);
-		}else{
-			if(isTracking){
+			// 构建Marker图标
+			BitmapDescriptor bitmap = BitmapDescriptorFactory
+					.fromResource(R.drawable.body_icon_location2);
+			// 构建MarkerOption，用于在地图上添加Marker
+			OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
+					.position(circle).icon(bitmap);
+			//在地图上添加Marker，并显示
+			carMarker = (Marker) (mBaiduMap.addOverlay(option));
+			if(isFristCarLocation){//第一次移动车的位置到地图中间
+				isFristCarLocation = false;
 				MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
 				MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 						.newMapStatus(mapStatus);
 				mBaiduMap.setMapStatus(mapStatusUpdate);
+			}else{
+				if(isTracking){
+					MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
+					MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
+							.newMapStatus(mapStatus);
+					mBaiduMap.setMapStatus(mapStatusUpdate);
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
 	}
 
 	Handler handler = new Handler() {

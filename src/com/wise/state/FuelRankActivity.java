@@ -101,6 +101,7 @@ public class FuelRankActivity extends Activity{
 				getPersionImage();
 				break;
 			case getPersionImage:
+				removeThreadMark(msg.arg1);
 				fuelAdapter.notifyDataSetChanged();
 				break;
 			}
@@ -321,6 +322,18 @@ public class FuelRankActivity extends Activity{
 		}
 		return false;
 	}
+	/**
+	 * 删除列表里正在下载的线程标识
+	 * @param position
+	 */
+	private void removeThreadMark(int position){
+		for (int i = 0; i < photoThreadId.size(); i++) {
+			if (photoThreadId.get(i) == position) {
+				photoThreadId.remove(i);
+				break;
+			}
+		}
+	}
 	class ImageThread extends Thread{
 		int position;
 		public ImageThread(int position){
@@ -333,14 +346,9 @@ public class FuelRankActivity extends Activity{
 			if(bitmap != null){
 				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(fuelDatas.get(position).getLogo()) + ".png",100);
 			}
-			for (int i = 0; i < photoThreadId.size(); i++) {
-				if (photoThreadId.get(i) == position) {
-					photoThreadId.remove(i);
-					break;
-				}
-			}
 			Message message = new Message();
 			message.what = getPersionImage;
+			message.arg1 = position;
 			handler.sendMessage(message);
 		}
 	}
