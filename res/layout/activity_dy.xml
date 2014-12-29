@@ -204,96 +204,72 @@
                 android:layout_height="0.5dp"
                 android:background="@color/line" />
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/dpdy_all"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp" >
+                android:orientation="vertical" >
 
-                <TextView
-                    android:id="@+id/tv_real_dpdy"
+                <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/bg_white"
-                    android:gravity="right"
-                    android:textColor="@color/color_blue"
-                    android:textSize="@dimen/content" />
+                    android:padding="10dp" >
 
-                <TextView
+                    <TextView
+                        android:id="@+id/tv_real_dpdy"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/bg_white"
+                        android:gravity="right"
+                        android:textColor="@color/color_blue"
+                        android:textSize="@dimen/content" />
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="实时检测值"
+                        android:textColor="@color/common"
+                        android:textSize="@dimen/content" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+
+                <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="实时检测值"
-                    android:textColor="@color/common"
-                    android:textSize="@dimen/content" />
-            </RelativeLayout>
+                    android:padding="10dp" >
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/line" />
+                    <TextView
+                        android:id="@+id/tv_if_real_dpdy"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/bg_white"
+                        android:gravity="right"
+                        android:textColor="@color/color_blue"
+                        android:textSize="@dimen/content" />
 
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp" >
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="实时检测值结果"
+                        android:textColor="@color/common"
+                        android:textSize="@dimen/content" />
+                </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/tv_if_real_dpdy"
+                <View
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/bg_white"
-                    android:gravity="right"
-                    android:textColor="@color/color_blue"
-                    android:textSize="@dimen/content" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="实时检测值结果"
-                    android:textColor="@color/common"
-                    android:textSize="@dimen/content" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/line" />
-
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="15dp"
-                android:visibility="gone" >
-
-                <TextView
-                    android:id="@+id/tv_real_dpdy_err"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/bg_white"
-                    android:gravity="right"
-                    android:textColor="@color/color_blue"
-                    android:textSize="@dimen/content" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="实时检测结果"
-                    android:textColor="@color/common"
-                    android:textSize="@dimen/content" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/line" />
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_real_dpdy"
@@ -333,10 +309,11 @@
                     android:id="@+id/ecv_real_dpdy"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content" />
-	            <View
-	                android:layout_width="fill_parent"
-	                android:layout_height="0.5dp"
-	                android:background="@color/line" />
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/line" />
             </LinearLayout>
 
             <WebView

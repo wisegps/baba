@@ -33,6 +33,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View.OnClickListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -181,12 +182,16 @@ public class FaultDetectionActivity extends Activity {
 			} else {
 				try {
 					String Device_id = app.carDatas.get(index).getDevice_id();
-					Intent intent2 = new Intent(FaultDetectionActivity.this,DevicesAddActivity.class);
-					intent2.putExtra("car_series_id",app.carDatas.get(index).getCar_series_id());
-					intent2.putExtra("car_series", app.carDatas.get(index).getCar_series());
+					Intent intent2 = new Intent(FaultDetectionActivity.this,
+							DevicesAddActivity.class);
+					intent2.putExtra("car_series_id", app.carDatas.get(index)
+							.getCar_series_id());
+					intent2.putExtra("car_series", app.carDatas.get(index)
+							.getCar_series());
 					Intent intent = new Intent(FaultDetectionActivity.this,
 							DyActivity.class);
 					intent.putExtra("device_id", Device_id);
+					intent.putExtra("state", state);
 					JSONObject jsonObject = new JSONObject(result);
 					switch (v.getId()) {
 					case R.id.rl_guzhang:
@@ -949,29 +954,47 @@ public class FaultDetectionActivity extends Activity {
 				FaultDetectionActivity.this);
 		dialog.setTitle("提示");
 		dialog.setMessage("请先启动车辆，等待1到3分钟后，再进行车辆体检!");
-		dialog.setPositiveButton("体检", new DialogInterface.OnClickListener() {
+		dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				initapp();
-				String url;
-				try {
-					url = Constant.BaseUrl
-							+ "device/"
-							+ Device_id
-							+ "/health_exam?auth_code="
-							+ app.auth_code
-							+ "&brand="
-							+ URLEncoder.encode(app.carDatas.get(index)
-									.getCar_brand(), "UTF-8");
+				if (state) {
+					initapp();
+					String url;
+					try {
+						url = Constant.BaseUrl
+								+ "device/"
+								+ Device_id
+								+ "/health_exam?auth_code="
+								+ app.auth_code
+								+ "&brand="
+								+ URLEncoder.encode(app.carDatas.get(index)
+										.getCar_brand(), "UTF-8");
 
-					new NetThread.GetDataThread(handler, url, getData, index)
-							.start();
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
+						new NetThread.GetDataThread(handler, url, getData,
+								index).start();
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}
+				} else {
+					AlertDialog.Builder dialog_1 = new AlertDialog.Builder(
+							FaultDetectionActivity.this);
+					dialog_1.setTitle("提示");
+					dialog_1.setMessage("车辆仍处于熄火状态，您可以点击查看历史平均数据。");
+					dialog_1.setPositiveButton("确定",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+
+								}
+							}).setNegativeButton("取消", null).show();
 				}
 			}
 		}).setNegativeButton("取消", null).show();
 	}
+
+	// TODO 判断车辆是否为启动状态
+	boolean state = false;
 
 	/** 获取健康数据 **/
 	private void getData(int index) {
@@ -981,8 +1004,10 @@ public class FaultDetectionActivity extends Activity {
 				Intent intent = new Intent(FaultDetectionActivity.this,
 						DevicesAddActivity.class);
 				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
-				intent.putExtra("car_series_id",app.carDatas.get(index).getCar_series_id());
-				intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
+				intent.putExtra("car_series_id", app.carDatas.get(index)
+						.getCar_series_id());
+				intent.putExtra("car_series", app.carDatas.get(index)
+						.getCar_series());
 				startActivityForResult(intent, 2);
 				return;
 			}
@@ -992,8 +1017,6 @@ public class FaultDetectionActivity extends Activity {
 				getMedical(Device_id, index);
 				return;
 			}
-			// TODO 判断车辆是否为启动状态
-			boolean state = false;
 			JSONArray jsonArray = new JSONArray(uni_status);
 			if (jsonArray.toString() == null || jsonArray.toString().equals("")) {
 
