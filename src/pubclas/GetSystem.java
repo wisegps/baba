@@ -18,7 +18,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-import sharesdk.OnekeyShare;
+
+import cn.sharesdk.onekeyshare.OnekeyShare;
+
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
@@ -688,6 +690,7 @@ public class GetSystem {
 			String imagePath, float Lat, float Lon, String title,
 			String titleUrl) {
 		final OnekeyShare oks = new OnekeyShare();
+		oks.disableSSOWhenAuthorize(); 
 		oks.setNotification(R.drawable.ic_launcher, "app_name");
 		oks.setAddress("");
 		oks.setTitle(title);
