@@ -1033,7 +1033,6 @@ public class FaultDetectionActivity extends Activity {
 					}
 				}
 			}
-			app.carDatas.get(index).setState(true);
 			if ((GetSystem.spacingNowTime(rcv_time) / 60) > 10) {
 				app.carDatas.get(index).setOnline(true);
 				getMedical(Device_id, index);
