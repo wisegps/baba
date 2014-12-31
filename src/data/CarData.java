@@ -65,7 +65,26 @@ public class CarData {
 	private ArrayList<String> vio_citys_code;
 	private ArrayList<String> province;
 	private double fuel_price;
-	
+
+	private boolean state;// 是否启动状态
+	private boolean isOnline;// 是否在线状态
+
+	public boolean isState() {
+		return state;
+	}
+
+	public void setState(boolean state) {
+		this.state = state;
+	}
+
+	public boolean isOnline() {
+		return isOnline;
+	}
+
+	public void setOnline(boolean isOnline) {
+		this.isOnline = isOnline;
+	}
+
 	public double getFuel_price() {
 		return fuel_price;
 	}
@@ -396,6 +415,7 @@ public class CarData {
 	public void setGeofence(String geofence) {
 		this.geofence = geofence;
 	}
+
 	@Override
 	public String toString() {
 		return "CarData [obj_id=" + obj_id + ", car_brand=" + car_brand

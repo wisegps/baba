@@ -191,7 +191,7 @@ public class FaultDetectionActivity extends Activity {
 					Intent intent = new Intent(FaultDetectionActivity.this,
 							DyActivity.class);
 					intent.putExtra("device_id", Device_id);
-					intent.putExtra("state", state);
+					intent.putExtra("state", app.carDatas.get(index).isState());
 					JSONObject jsonObject = new JSONObject(result);
 					switch (v.getId()) {
 					case R.id.rl_guzhang:
@@ -949,52 +949,56 @@ public class FaultDetectionActivity extends Activity {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		// 弹出提示框
-		AlertDialog.Builder dialog = new AlertDialog.Builder(
-				FaultDetectionActivity.this);
-		dialog.setTitle("提示");
-		dialog.setMessage("请先启动车辆，等待1到3分钟后，再进行车辆体检!");
-		dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				if (state) {
-					initapp();
-					String url;
-					try {
-						url = Constant.BaseUrl
-								+ "device/"
-								+ Device_id
-								+ "/health_exam?auth_code="
-								+ app.auth_code
-								+ "&brand="
-								+ URLEncoder.encode(app.carDatas.get(index)
-										.getCar_brand(), "UTF-8");
+		if (app.carDatas.get(index).isOnline()) {
+			AlertDialog.Builder dialog_1 = new AlertDialog.Builder(
+					FaultDetectionActivity.this);
+			dialog_1.setTitle("提示");
+			dialog_1.setMessage("终端未开启，您可以点击查看历史平均数据。");
+			dialog_1.setPositiveButton("确定",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
 
-						new NetThread.GetDataThread(handler, url, getData,
-								index).start();
-					} catch (UnsupportedEncodingException e) {
-						e.printStackTrace();
-					}
-				} else {
-					AlertDialog.Builder dialog_1 = new AlertDialog.Builder(
-							FaultDetectionActivity.this);
-					dialog_1.setTitle("提示");
-					dialog_1.setMessage("车辆仍处于熄火状态，您可以点击查看历史平均数据。");
-					dialog_1.setPositiveButton("确定",
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-
-								}
-							}).setNegativeButton("取消", null).show();
+						}
+					}).show();
+		} else {
+			if (app.carDatas.get(index).isState()) {
+				initapp();
+				String url;
+				try {
+					url = Constant.BaseUrl
+							+ "device/"
+							+ Device_id
+							+ "/health_exam?auth_code="
+							+ app.auth_code
+							+ "&brand="
+							+ URLEncoder.encode(app.carDatas.get(index)
+									.getCar_brand(), "UTF-8");
+					new NetThread.GetDataThread(handler, url, getData, index)
+							.start();
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
 				}
+			} else {
+				// 弹出提示框
+				AlertDialog.Builder dialog = new AlertDialog.Builder(
+						FaultDetectionActivity.this);
+				dialog.setTitle("提示");
+				dialog.setMessage("请先启动车辆，等待1到3分钟后，再进行车辆体检!");
+				dialog.setPositiveButton("确定",
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+							}
+						}).show();
 			}
-		}).setNegativeButton("取消", null).show();
+
+		}
 	}
 
 	// TODO 判断车辆是否为启动状态
-	boolean state = false;
+	// boolean state = false;
 
 	/** 获取健康数据 **/
 	private void getData(int index) {
@@ -1014,6 +1018,7 @@ public class FaultDetectionActivity extends Activity {
 			String uni_status = app.carDatas.get(index).getUni_status();
 			String rcv_time = app.carDatas.get(index).getRcv_time();
 			if (uni_status == null || rcv_time == null) {
+				app.carDatas.get(index).setOnline(true);
 				getMedical(Device_id, index);
 				return;
 			}
@@ -1023,12 +1028,16 @@ public class FaultDetectionActivity extends Activity {
 			} else {
 				for (int i = 0; i < jsonArray.length(); i++) {
 					if (jsonArray.getInt(i) == 8196) {
-						state = true;
+						app.carDatas.get(index).setState(true);
 						break;
 					}
 				}
 			}
-			if (!state || (GetSystem.spacingNowTime(rcv_time) / 60) > 10) {
+			app.carDatas.get(index).setState(true);
+			if ((GetSystem.spacingNowTime(rcv_time) / 60) > 10) {
+				app.carDatas.get(index).setOnline(true);
+				getMedical(Device_id, index);
+			} else if (!app.carDatas.get(index).isState()) {
 				getMedical(Device_id, index);
 			} else {
 				if (isCheck) {
