@@ -953,7 +953,7 @@ public class FaultDetectionActivity extends Activity {
 			AlertDialog.Builder dialog_1 = new AlertDialog.Builder(
 					FaultDetectionActivity.this);
 			dialog_1.setTitle("提示");
-			dialog_1.setMessage("终端未开启，您可以点击查看历史平均数据。");
+			dialog_1.setMessage("终端未启动，您可以点击查看历史平均数据。");
 			dialog_1.setPositiveButton("确定",
 					new DialogInterface.OnClickListener() {
 						@Override
@@ -984,7 +984,7 @@ public class FaultDetectionActivity extends Activity {
 				AlertDialog.Builder dialog = new AlertDialog.Builder(
 						FaultDetectionActivity.this);
 				dialog.setTitle("提示");
-				dialog.setMessage("请先启动车辆，等待1到3分钟后，再进行车辆体检!");
+				dialog.setMessage("车辆处于熄火状态，请先启动车辆，等待1到3分钟后，再进行车辆体检!");
 				dialog.setPositiveButton("确定",
 						new DialogInterface.OnClickListener() {
 							@Override
