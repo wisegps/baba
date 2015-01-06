@@ -1,8 +1,6 @@
 package com.wise.notice;
 
-import pubclas.Constant;
-
-import com.wise.baba.R;
+import pubclas.Info;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +9,8 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.wise.baba.R;
 
 /**
  * @author honesty
@@ -23,31 +23,32 @@ public class FriendAddActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_add_friend);
-		et_name = (EditText)findViewById(R.id.et_name);
-		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
+		et_name = (EditText) findViewById(R.id.et_name);
+		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		ImageView iv_search = (ImageView)findViewById(R.id.iv_search);
+		ImageView iv_search = (ImageView) findViewById(R.id.iv_search);
 		iv_search.setOnClickListener(onClickListener);
-		//et_name.setImeOptions(EditorInfo.IME_ACTION_SEND);
-//		et_name.setOnEditorActionListener(new OnEditorActionListener() {
-//			@Override
-//			public boolean onEditorAction(TextView v, int actionId,
-//					KeyEvent event) {
-//				if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-//					((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-//							.hideSoftInputFromWindow(FriendAddActivity.this
-//									.getCurrentFocus().getWindowToken(),
-//									InputMethodManager.HIDE_NOT_ALWAYS);
-//					Intent intent = new Intent(FriendAddActivity.this,
-//							FriendInfoActivity.class);
-//					intent.putExtra("name", et_name.getText().toString().trim());
-//					startActivity(intent);
-//				}
-//				return false;
-//			}
-//		});
+		// et_name.setImeOptions(EditorInfo.IME_ACTION_SEND);
+		// et_name.setOnEditorActionListener(new OnEditorActionListener() {
+		// @Override
+		// public boolean onEditorAction(TextView v, int actionId,
+		// KeyEvent event) {
+		// if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+		// ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+		// .hideSoftInputFromWindow(FriendAddActivity.this
+		// .getCurrentFocus().getWindowToken(),
+		// InputMethodManager.HIDE_NOT_ALWAYS);
+		// Intent intent = new Intent(FriendAddActivity.this,
+		// FriendInfoActivity.class);
+		// intent.putExtra("name", et_name.getText().toString().trim());
+		// startActivity(intent);
+		// }
+		// return false;
+		// }
+		// });
 	}
-	OnClickListener onClickListener = new OnClickListener() {		
+
+	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
@@ -55,19 +56,22 @@ public class FriendAddActivity extends Activity {
 				finish();
 				break;
 			case R.id.iv_search:
-				Intent intent = new Intent(FriendAddActivity.this,FriendInfoActivity.class);
-				intent.putExtra(Constant.TYPE_FRIEND, Constant.TYPE_FRIEND_INFO_NAME);
+				Intent intent = new Intent(FriendAddActivity.this,
+						FriendInfoActivity.class);
+				intent.putExtra(Info.FriendStatusKey,
+						Info.FriendStatus.FriendAddFromName);
 				intent.putExtra("name", et_name.getText().toString().trim());
 				startActivityForResult(intent, 1);
 				break;
 			}
 		}
 	};
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(requestCode == 1 && resultCode == 2){
-			//TODO 添加好友返回
+		if (requestCode == 1 && resultCode == 2) {
+			// TODO 添加好友返回
 			finish();
 		}
 	}

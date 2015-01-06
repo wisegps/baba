@@ -1023,7 +1023,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						public void onClick(View v) {
 							Intent intent = new Intent(
 									LetterActivity.this,
-									MapFriendLocationActivity.class);
+									LetterMapActivity.class);
 							intent.putExtra("adress",
 									letterData.getAdress());
 							intent.putExtra("latitude",
@@ -1048,7 +1048,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 									public void onClick(View v) {
 										Intent intent = new Intent(
 												LetterActivity.this,
-												MapFriendLocationActivity.class);
+												LetterMapActivity.class);
 										intent.putExtra("adress",
 												letterData.getAdress());
 										intent.putExtra("latitude",
@@ -1224,7 +1224,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						public void onClick(View v) {
 							Intent intent = new Intent(
 									LetterActivity.this,
-									MapFriendLocationActivity.class);
+									LetterMapActivity.class);
 							intent.putExtra("adress",
 									letterData.getAdress());
 							intent.putExtra("latitude",
@@ -1248,7 +1248,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 									public void onClick(View v) {
 										Intent intent = new Intent(
 												LetterActivity.this,
-												MapFriendLocationActivity.class);
+												LetterMapActivity.class);
 										intent.putExtra("adress",
 												letterData.getAdress());
 										intent.putExtra("latitude",

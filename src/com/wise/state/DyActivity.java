@@ -7,16 +7,6 @@ import org.json.JSONObject;
 
 import pubclas.Constant;
 import pubclas.NetThread;
-
-import cn.jpush.android.util.s;
-
-import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
-import com.wise.baba.R;
-
-import customView.EnergyCurveView;
-
-import data.EnergyItem;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,13 +14,19 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
+import com.wise.baba.R;
+
+import customView.EnergyCurveView;
+import data.EnergyItem;
 
 /**
  * 电源电压
@@ -80,24 +76,28 @@ public class DyActivity extends Activity {
 		} else {
 			dpdy_all.setVisibility(View.GONE);
 		}
-		TextView tv_dpdy_tiyle = (TextView) findViewById(R.id.tv_dpdy_title);
-		tv_dpdy_tiyle.setText(title);
+		TextView tv_dpdy_title = (TextView) findViewById(R.id.tv_dpdy_title);
 		TextView tv_dpdy_unit = (TextView) findViewById(R.id.tv_dpdy_unit);
 		switch (type) {
 		case 1:
 			tv_dpdy_unit.setText("V");
+			tv_dpdy_title.setText("最近30天每日均值曲线");
 			break;
 		case 2:
 			tv_dpdy_unit.setText("%");
+			tv_dpdy_title.setText("最近30天每日均值曲线");
 			break;
 		case 3:
 			tv_dpdy_unit.setText("rpm");
+			tv_dpdy_title.setText("最后行程怠速曲线");
 			break;
 		case 4:
 			tv_dpdy_unit.setText("°C");
+			tv_dpdy_title.setText("最近30天每日均值曲线");
 			break;
 		case 5:
 			tv_dpdy_unit.setText("°C");
+			tv_dpdy_title.setText("最近30天每日均值曲线");
 			break;
 		}
 		ecv_real_dpdy = (EnergyCurveView) findViewById(R.id.ecv_real_dpdy);

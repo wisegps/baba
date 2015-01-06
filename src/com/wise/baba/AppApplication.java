@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.litepal.LitePalApplication;
+
+import pubclas.GetSystem;
+
 import com.baidu.mapapi.SDKInitializer;
 
 import data.CarData;
 import data.FriendData;
-import pubclas.GetSystem;
 
 /**
  * 初始化地图
@@ -21,6 +23,8 @@ public class AppApplication extends LitePalApplication {
 	public boolean isTest = false;
 	/** auth_code **/
 	public String auth_code;
+	/**用户类别**/
+    public int cust_type = 0;
 	/** cust_id **/
 	public String cust_id;
 	/** 用户名称 **/
