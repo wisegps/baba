@@ -15,6 +15,7 @@ import pubclas.Blur;
 import pubclas.Constant;
 import pubclas.FaceConversionUtil;
 import pubclas.GetSystem;
+import pubclas.MyLruCache;
 import pubclas.NetThread;
 import pubclas.Uri2Path;
 import xlist.XListView;
@@ -916,27 +917,46 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				String imageUrl = letterData.getUrl();
 				int lastSlashIndex = imageUrl.lastIndexOf("/");
 				final String imageName = imageUrl.substring(lastSlashIndex + 1);
-				if (new File(getImagePath(imageUrl)).exists()) {
-					Bitmap image = BitmapFactory
-							.decodeFile(Constant.VehiclePath + imageName);
-					image = Blur.scaleImage(image, 100);
+				Bitmap bitmap = MyLruCache.getInstance().getLruBitmap(imageName);
+				if(bitmap != null){
 					viewFriendImage.iv_friend_pic.setImageBitmap(Blur
-							.toRoundCorner(image, 5));
+							.toRoundCorner(bitmap, 5));
 					viewFriendImage.iv_friend_pic
-							.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									Intent intent = new Intent(
-											LetterActivity.this,
-											ImageDetailsActivity.class);
-									intent.putExtra("image_path",
-											Constant.VehiclePath + imageName);
-									startActivity(intent);
-								}
-							});
-				} else {
-					viewFriendImage.iv_friend_pic.setImageBitmap(null);
-				}
+					.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(
+									LetterActivity.this,
+									ImageDetailsActivity.class);
+							intent.putExtra("image_path",
+									Constant.VehiclePath + imageName);
+							startActivity(intent);
+						}
+					});
+				}else{
+					if (new File(getImagePath(imageUrl)).exists()) {
+						Bitmap image = BitmapFactory
+								.decodeFile(Constant.VehiclePath + imageName);
+						image = Blur.scaleImage(image, 100);
+						MyLruCache.getInstance().putLruBitmap(imageName, image);
+						viewFriendImage.iv_friend_pic.setImageBitmap(Blur
+								.toRoundCorner(image, 5));
+						viewFriendImage.iv_friend_pic
+								.setOnClickListener(new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										Intent intent = new Intent(
+												LetterActivity.this,
+												ImageDetailsActivity.class);
+										intent.putExtra("image_path",
+												Constant.VehiclePath + imageName);
+										startActivity(intent);
+									}
+								});
+					} else {
+						viewFriendImage.iv_friend_pic.setImageBitmap(null);
+					}
+				}				
 				break;
 			case FriendSound:
 				if (isTimeShow) {
@@ -993,32 +1013,55 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				int lastSlashIndex3 = imageUrl3.lastIndexOf("/");
 				final String imageName3 = imageUrl3
 						.substring(lastSlashIndex3 + 1);
-				if (new File(getImagePath(imageUrl3)).exists()) {
-					Bitmap image = BitmapFactory
-							.decodeFile(Constant.VehiclePath + imageName3);
-					image = Blur.scaleWidthImage(image, mapWidth);
+				Bitmap bitmapFriend = MyLruCache.getInstance().getLruBitmap(imageName3);
+				if(bitmapFriend != null){
 					viewFriendMap.iv_friend_map.setImageBitmap(Blur
-							.toRoundCorner(image, 5));
-					// TODO 地址大小
+							.toRoundCorner(bitmapFriend, 5));
 					viewFriendMap.iv_friend_map
-							.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									Intent intent = new Intent(
-											LetterActivity.this,
-											MapFriendLocationActivity.class);
-									intent.putExtra("adress",
-											letterData.getAdress());
-									intent.putExtra("latitude",
-											letterData.getLat());
-									intent.putExtra("longitude",
-											letterData.getLon());
-									startActivity(intent);
-								}
-							});
-				} else {
-					viewFriendMap.iv_friend_map.setImageBitmap(null);
-				}
+					.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(
+									LetterActivity.this,
+									LetterMapActivity.class);
+							intent.putExtra("adress",
+									letterData.getAdress());
+							intent.putExtra("latitude",
+									letterData.getLat());
+							intent.putExtra("longitude",
+									letterData.getLon());
+							startActivity(intent);
+						}
+					});
+				}else{
+					if (new File(getImagePath(imageUrl3)).exists()) {
+						Bitmap image = BitmapFactory
+								.decodeFile(Constant.VehiclePath + imageName3);
+						image = Blur.scaleWidthImage(image, mapWidth);
+						MyLruCache.getInstance().putLruBitmap(imageName3, image);
+						viewFriendMap.iv_friend_map.setImageBitmap(Blur
+								.toRoundCorner(image, 5));
+						// TODO 地址大小
+						viewFriendMap.iv_friend_map
+								.setOnClickListener(new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										Intent intent = new Intent(
+												LetterActivity.this,
+												LetterMapActivity.class);
+										intent.putExtra("adress",
+												letterData.getAdress());
+										intent.putExtra("latitude",
+												letterData.getLat());
+										intent.putExtra("longitude",
+												letterData.getLon());
+										startActivity(intent);
+									}
+								});
+					} else {
+						viewFriendMap.iv_friend_map.setImageBitmap(null);
+					}
+				}				
 				break;
 			case MeText:
 				if (isTimeShow) {
@@ -1058,41 +1101,60 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				int lastSlashIndex1 = imageUrl1.lastIndexOf("/");
 				final String imageName1 = imageUrl1
 						.substring(lastSlashIndex1 + 1);
-				if (new File(getImagePath(imageUrl1)).exists()) {
-					Bitmap image = BitmapFactory
-							.decodeFile(Constant.VehiclePath + imageName1);
-					image = Blur.scaleImage(image, 100);
+				Bitmap bitmapImageMe = MyLruCache.getInstance().getLruBitmap(imageName1);
+				if(bitmapImageMe != null){
 					viewMeImage.iv_me_pic.setImageBitmap(Blur.toRoundCorner(
-							image, 5));
+							bitmapImageMe, 5));
 					viewMeImage.iv_me_pic
-							.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									Intent intent = new Intent(
-											LetterActivity.this,
-											ImageDetailsActivity.class);
-									intent.putExtra("image_path",
-											Constant.VehiclePath + imageName1);
-									startActivity(intent);
-								}
-							});
-					if (letterData.isSendIn) {
-						float Scale = Blur.calculateScale(image.getHeight(),
-								image.getWidth(), 100);
-						viewMeImage.tv_send_in.setVisibility(View.VISIBLE);
-						viewMeImage.tv_send_in
-								.setLayoutParams(new RelativeLayout.LayoutParams(
-										(int) (image.getWidth() * Scale),
-										(int) (image.getHeight() * Scale)));
-						viewMeImage.tv_send_in.startTim();
-					} else {
-						viewMeImage.tv_send_in.setVisibility(View.GONE);
-						viewMeImage.tv_send_in.setStop(true);
-					}
+					.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(
+									LetterActivity.this,
+									ImageDetailsActivity.class);
+							intent.putExtra("image_path",
+									Constant.VehiclePath + imageName1);
+							startActivity(intent);
+						}
+					});
+				}else{
+					if (new File(getImagePath(imageUrl1)).exists()) {
+						Bitmap image = BitmapFactory
+								.decodeFile(Constant.VehiclePath + imageName1);
+						image = Blur.scaleImage(image, 100);
+						MyLruCache.getInstance().putLruBitmap(imageName1, image);
+						viewMeImage.iv_me_pic.setImageBitmap(Blur.toRoundCorner(
+								image, 5));
+						viewMeImage.iv_me_pic
+								.setOnClickListener(new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										Intent intent = new Intent(
+												LetterActivity.this,
+												ImageDetailsActivity.class);
+										intent.putExtra("image_path",
+												Constant.VehiclePath + imageName1);
+										startActivity(intent);
+									}
+								});
+						if (letterData.isSendIn) {
+							float Scale = Blur.calculateScale(image.getHeight(),
+									image.getWidth(), 100);
+							viewMeImage.tv_send_in.setVisibility(View.VISIBLE);
+							viewMeImage.tv_send_in
+									.setLayoutParams(new RelativeLayout.LayoutParams(
+											(int) (image.getWidth() * Scale),
+											(int) (image.getHeight() * Scale)));
+							viewMeImage.tv_send_in.startTim();
+						} else {
+							viewMeImage.tv_send_in.setVisibility(View.GONE);
+							viewMeImage.tv_send_in.setStop(true);
+						}
 
-				} else {
-					viewMeImage.iv_me_pic.setImageBitmap(null);
-				}
+					} else {
+						viewMeImage.iv_me_pic.setImageBitmap(null);
+					}
+				}				
 				break;
 			case MeSound:
 				if (isTimeShow) {
@@ -1153,32 +1215,53 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				int lastSlashIndex2 = imageUrl2.lastIndexOf("/");
 				final String imageName2 = imageUrl2
 						.substring(lastSlashIndex2 + 1);
-				if (new File(getImagePath(imageUrl2)).exists()) {
-					Bitmap image = BitmapFactory
-							.decodeFile(Constant.VehiclePath + imageName2);
-					image = Blur.scaleWidthImage(image, mapWidth);
-
-					viewMeMap.iv_me_map.setImageBitmap(Blur.toRoundCorner(
-							image, 5));
+				Bitmap bitmapMe = MyLruCache.getInstance().getLruBitmap(imageName2);
+				if(bitmapMe != null){//显示图片
+					viewMeMap.iv_me_map.setImageBitmap(Blur.toRoundCorner(bitmapMe, 5));
 					viewMeMap.iv_me_map
-							.setOnClickListener(new OnClickListener() {
-								@Override
-								public void onClick(View v) {
-									Intent intent = new Intent(
-											LetterActivity.this,
-											MapFriendLocationActivity.class);
-									intent.putExtra("adress",
-											letterData.getAdress());
-									intent.putExtra("latitude",
-											letterData.getLat());
-									intent.putExtra("longitude",
-											letterData.getLon());
-									startActivity(intent);
-								}
-							});
-				} else {
-					viewMeMap.iv_me_map.setImageBitmap(null);
-				}
+					.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(
+									LetterActivity.this,
+									LetterMapActivity.class);
+							intent.putExtra("adress",
+									letterData.getAdress());
+							intent.putExtra("latitude",
+									letterData.getLat());
+							intent.putExtra("longitude",
+									letterData.getLon());
+							startActivity(intent);
+						}
+					});
+				}else{
+					if (new File(getImagePath(imageUrl2)).exists()) {
+						Bitmap image = BitmapFactory
+								.decodeFile(Constant.VehiclePath + imageName2);
+						image = Blur.scaleWidthImage(image, mapWidth);
+						MyLruCache.getInstance().putLruBitmap(imageName2, image);
+						viewMeMap.iv_me_map.setImageBitmap(Blur.toRoundCorner(
+								image, 5));
+						viewMeMap.iv_me_map
+								.setOnClickListener(new OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										Intent intent = new Intent(
+												LetterActivity.this,
+												LetterMapActivity.class);
+										intent.putExtra("adress",
+												letterData.getAdress());
+										intent.putExtra("latitude",
+												letterData.getLat());
+										intent.putExtra("longitude",
+												letterData.getLon());
+										startActivity(intent);
+									}
+								});
+					} else {
+						viewMeMap.iv_me_map.setImageBitmap(null);
+					}
+				}				
 				break;
 			}
 			return convertView;

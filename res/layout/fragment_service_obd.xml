@@ -1,0 +1,28 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical" >
+    <RelativeLayout 
+    	android:id="@+id/ll_main"
+	    android:layout_width="fill_parent"
+	    android:layout_height="@dimen/title_hight"
+        android:background="@color/title_back">
+	    <TextView
+	         android:layout_width="fill_parent"
+	         android:layout_height="wrap_content"
+	         android:layout_centerInParent="true"
+	         android:text="车况"
+	         android:gravity="center"
+	         android:textSize="@dimen/title"
+	         android:textColor="@color/white" />
+	</RelativeLayout>
+    <ListView 
+        android:id="@+id/lv_obd"
+        android:layout_margin="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:dividerHeight="@dimen/margins"></ListView>
+</LinearLayout>

@@ -3,55 +3,17 @@ package com.wise.state;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import pubclas.Constant;
 import pubclas.FaceConversionUtil;
 import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.Volley;
-import com.baidu.lbsapi.auth.LBSAuthManagerListener;
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.search.core.SearchResult;
-import com.baidu.mapapi.search.geocode.GeoCodeResult;
-import com.baidu.mapapi.search.geocode.GeoCoder;
-import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
-import com.baidu.navisdk.BaiduNaviManager;
-import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
-import com.umeng.analytics.MobclickAgent;
-import com.umeng.update.UmengUpdateAgent;
-import com.wise.baba.AppApplication;
-import com.wise.baba.BrowserActivity;
-import com.wise.baba.MoreActivity;
-import com.wise.baba.R;
-import com.wise.baba.SelectCityActivity;
-import com.wise.car.CarActivity;
-import com.wise.car.CarAddActivity;
-import com.wise.car.CarLocationActivity;
-import com.wise.car.CarUpdateActivity;
-import com.wise.car.DevicesAddActivity;
-import com.wise.notice.NoticeActivity;
-import com.wise.notice.NoticeFragment;
-import com.wise.notice.NoticeFragment.BtnListener;
-import com.wise.notice.SmsActivity;
-import com.wise.setting.LoginActivity;
-import com.wise.setting.OilUpdateActivity;
-import com.wise.show.ShowActivity;
-import customView.AlwaysMarqueeTextView;
-import customView.HScrollLayout;
-import customView.NoticeScrollTextView;
-import customView.OnViewChangeListener;
-import customView.ParentSlide;
-import data.CarData;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -76,14 +38,55 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.Volley;
+import com.baidu.lbsapi.auth.LBSAuthManagerListener;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
+import com.baidu.navisdk.BaiduNaviManager;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
+import com.wise.baba.AppApplication;
+import com.wise.baba.BrowserActivity;
+import com.wise.baba.MoreActivity;
+import com.wise.baba.R;
+import com.wise.baba.SelectCityActivity;
+import com.wise.car.CarActivity;
+import com.wise.car.CarAddActivity;
+import com.wise.car.CarLocationActivity;
+import com.wise.car.CarUpdateActivity;
+import com.wise.car.DevicesAddActivity;
+import com.wise.notice.NoticeActivity;
+import com.wise.notice.NoticeFragment;
+import com.wise.notice.NoticeFragment.BtnListener;
+import com.wise.setting.LoginActivity;
+import com.wise.setting.OilUpdateActivity;
+import com.wise.show.ShowActivity;
+
+import customView.AlwaysMarqueeTextView;
+import customView.HScrollLayout;
+import customView.NoticeScrollTextView;
+import customView.OnViewChangeListener;
+import customView.ParentSlide;
+import data.CarData;
 
 /**
  * 车况信息
@@ -287,7 +290,7 @@ public class FaultActivity extends FragmentActivity {
 			@Override
 			public void run() {
 				while (isGetGps) {
-					if(isResume){
+					if (isResume) {
 						getMessage(noticeUrl);
 						gethot_news();
 						if (app.carDatas == null || app.carDatas.size() == 0) {
@@ -301,18 +304,20 @@ public class FaultActivity extends FragmentActivity {
 
 								} else {
 									// 获取gps信息
-									String gpsUrl = Constant.BaseUrl + "device/"
-											+ device_id + "?auth_code="
+									String gpsUrl = Constant.BaseUrl
+											+ "device/"
+											+ device_id
+											+ "?auth_code="
 											+ app.auth_code
 											+ "&update_time=2014-01-01%2019:06:43";
-									new NetThread.GetDataThread(handler, gpsUrl,
-											get_gps, index).start();
+									new NetThread.GetDataThread(handler,
+											gpsUrl, get_gps, index).start();
 								}
 							} else {
 								Log.d(TAG, "刷新位置数组越界");
 							}
 						}
-					}					
+					}
 					SystemClock.sleep(30000);
 				}
 			}
@@ -328,13 +333,16 @@ public class FaultActivity extends FragmentActivity {
 		}).start();
 	}
 
-	private NaviEngineInitListener mNaviEngineInitListener = new NaviEngineInitListener() {
+	private final NaviEngineInitListener mNaviEngineInitListener = new NaviEngineInitListener() {
+		@Override
 		public void engineInitSuccess() {
 		}
 
+		@Override
 		public void engineInitStart() {
 		}
 
+		@Override
 		public void engineInitFail() {
 		}
 	};
@@ -621,6 +629,7 @@ public class FaultActivity extends FragmentActivity {
 						BrowserActivity.class);
 				intent_hot.putExtra("url", hot_url);
 				intent_hot.putExtra("title", hot_title);
+				intent_hot.putExtra("hot_content", hot_content);
 				startActivity(intent_hot);
 				break;
 			case R.id.iv_update_oil:
@@ -748,7 +757,7 @@ public class FaultActivity extends FragmentActivity {
 			case get_ad:
 				setImageView(msg.obj.toString());
 				getImage();
-				if(adDatas.size() > 0){
+				if (adDatas.size() > 0) {
 					changeImage(0);
 					tv_content.setText(adDatas.get(0).getContent());
 				}
@@ -990,12 +999,14 @@ public class FaultActivity extends FragmentActivity {
 
 	String hot_url;
 	String hot_title;
+	String hot_content;
 
 	/** 解析乐一下 **/
 	private void jsonhot_news(String str) {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-			tv_hot_content.setText(jsonObject.getString("content"));
+			hot_content = jsonObject.getString("content");
+			tv_hot_content.setText(hot_content);
 			hot_title = jsonObject.getString("title");
 			tv_host_title.setText(hot_title);
 			hot_url = jsonObject.getString("url");
@@ -1670,7 +1681,8 @@ public class FaultActivity extends FragmentActivity {
 			System.out.println("onGetReverseGeoCodeResult");
 			if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
 				// 没有检索到结果
-				System.out.println("onGetReverseGeoCodeResult = " + result.error);
+				System.out.println("onGetReverseGeoCodeResult = "
+						+ result.error);
 			} else {
 				try {
 					GetSystem.myLog(TAG, "获取位置信息");

@@ -1,7 +1,8 @@
 package pubclas;
 
-import com.wise.baba.R;
 import android.os.Environment;
+
+import com.wise.baba.R;
 
 /**
  * 常量
@@ -9,19 +10,11 @@ import android.os.Environment;
  * @author honesty
  */
 public class Constant {
-	/**跳转好友信息界面的几种方式**/
-	public static String TYPE_FRIEND = "TYPE_FRIEND";
-	/**跳转好友信息界面,已添加好友**/
-	public static int TYPE_FRIEND_INFO = 1;
-	/**扫一扫跳转好友信息界面，未添加好友**/
-	public static int TYPE_FRIEND_INFO_CAMERA = 2;
-	/**搜索名称跳转好友信息界面，未添加好友**/
-	public static int TYPE_FRIEND_INFO_NAME = 3;
-	
 	public static boolean isLog = true;
-	/**在阿里云上url**/
+	/** 在阿里云上url **/
 	public static String oss_url = "http://img.bibibaba.cn/";
-	// public static String oss_url = "http://baba-img.oss-cn-hangzhou.aliyuncs.com/photo/";
+	// public static String oss_url =
+	// "http://baba-img.oss-cn-hangzhou.aliyuncs.com/photo/";
 	/** 图片oss路径 **/
 	public static String oss_path = "baba-img/photo";
 	/** accessId **/
@@ -30,12 +23,13 @@ public class Constant {
 	public static String oss_accessKey = "iAxAHoAuG1ZYwjIRLfyYKK2oF9WcCe";
 
 	/** url,42.121.109.221:8002 **/
-	//public static String BaseUrl = "http://183.12.66.164:8002/";
+	// public static String BaseUrl = "http://183.12.66.164:8002/";
 	public static String BaseUrl = "http://api.bibibaba.cn/";
 	/** 图片地址 **/
 	public static String ImageUrl = "http://img.wisegps.cn/logo/";
 	/** 图片路径存储地址 **/
-	public static String BasePath = Environment.getExternalStorageDirectory().getPath() + "/baba/";
+	public static String BasePath = Environment.getExternalStorageDirectory()
+			.getPath() + "/baba/";
 	/** 车品牌logo **/
 	public static String VehicleLogoPath = BasePath + "vehicleLogo/";
 	/** 存放用户头像 **/
@@ -83,7 +77,7 @@ public class Constant {
 	public static final String sp_province = "sp_province";
 	/** 存放体检 **/
 	public static final String sp_health_score = "sp_health_score";
-	/**存放驾驶信息**/
+	/** 存放驾驶信息 **/
 	public static final String sp_drive_score = "sp_drive_score";
 	/** 存放个人信息 **/
 	public static final String sp_customer = "sp_customer";
@@ -117,27 +111,27 @@ public class Constant {
 	/**
 	 * 基础表
 	 */
-	//public static String TB_Base = "TB_Base";
+	// public static String TB_Base = "TB_Base";
 	/**
 	 * 我的爱车
 	 */
-	//public static String TB_Vehicle = "TB_Vehicle";
+	// public static String TB_Vehicle = "TB_Vehicle";
 	/**
 	 * 我的终端
 	 */
-	//public static String TB_Devices = "TB_Devices";
+	// public static String TB_Devices = "TB_Devices";
 	/**
 	 * 我的收藏
 	 */
-	//public static String TB_Collection = "TB_Collection";
+	// public static String TB_Collection = "TB_Collection";
 	/**
 	 * 我的消息
 	 */
-	//public static String TB_Sms = "TB_Sms";
+	// public static String TB_Sms = "TB_Sms";
 	/**
 	 * 违章城市表
 	 */
-	//public static String TB_IllegalCity = "TB_IllegalCity";
+	// public static String TB_IllegalCity = "TB_IllegalCity";
 	/**
 	 * 定位成功发送广播，选择城市用到
 	 */
@@ -158,6 +152,8 @@ public class Constant {
 	public static String A_RefreshHomeCar = "com.wise.baba.refresh_home_car";
 	/** 注销广播 **/
 	public static String A_LoginOut = "com.wise.baba.login_out";
+	/** 改变用户类别 **/
+	public static String A_ChangeCustomerType = "com.wise.baba.change_customer_type";
 	/** 收到私信通知 **/
 	public static String A_ReceiverLetter = "com.wise.baba.letter";
 	/**

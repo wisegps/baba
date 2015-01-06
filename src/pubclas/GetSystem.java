@@ -7,8 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
-import java.io.StreamCorruptedException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -19,21 +17,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import cn.sharesdk.onekeyshare.OnekeyShare;
-
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
-import com.baidu.mapapi.navi.BaiduMapNavigation;
-import com.baidu.mapapi.navi.NaviPara;
-import com.baidu.navisdk.BNaviPoint;
-import com.baidu.navisdk.BaiduNaviManager;
-import com.baidu.navisdk.BaiduNaviManager.OnStartNavigationListener;
-import com.baidu.navisdk.comapi.routeplan.RoutePlanParams.NE_RoutePlan_Mode;
-import com.baidu.navisdk.util.common.CoordinateTransformUtil;
-import com.wise.baba.BNavigatorActivity;
-import com.wise.baba.R;
-import data.TimeData;
-import data.WeekData;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -49,6 +32,17 @@ import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import cn.sharesdk.onekeyshare.OnekeyShare;
+
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.navisdk.BNaviPoint;
+import com.baidu.navisdk.BaiduNaviManager;
+import com.baidu.navisdk.BaiduNaviManager.OnStartNavigationListener;
+import com.baidu.navisdk.comapi.routeplan.RoutePlanParams.NE_RoutePlan_Mode;
+import com.wise.baba.BNavigatorActivity;
+import com.wise.baba.R;
+
+import data.TimeData;
 
 public class GetSystem {
 	private static final String TAG = "GetSystem";
@@ -185,11 +179,11 @@ public class GetSystem {
 			week[5] = sdf.format(cal.getTime());
 			cal.add(Calendar.DATE, 1);
 			week[6] = sdf.format(cal.getTime());
-			
-			//WeekData weekData = new WeekData();
-			//weekData.setFristDay(sdf.format(cal.getTime()));
-			//cal.add(Calendar.DATE, 6);
-			//weekData.setLastDay(sdf.format(cal.getTime()));
+
+			// WeekData weekData = new WeekData();
+			// weekData.setFristDay(sdf.format(cal.getTime()));
+			// cal.add(Calendar.DATE, 6);
+			// weekData.setLastDay(sdf.format(cal.getTime()));
 			return week;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -467,20 +461,19 @@ public class GetSystem {
 	 */
 	public static void FindCar(final Activity mActivity, LatLng pt1,
 			final LatLng pt2, String str1, String str2) {
-		if(pt1 == null || pt2 == null){
+		if (pt1 == null || pt2 == null) {
 			Toast.makeText(mActivity, "坐标错误,无法开启导航", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		BNaviPoint startPoint = new BNaviPoint(pt1.longitude, pt1.latitude, "", BNaviPoint.CoordinateType.BD09_MC);
-		BNaviPoint endPoint = new BNaviPoint(pt2.longitude, pt2.latitude, "", BNaviPoint.CoordinateType.BD09_MC);
-		BaiduNaviManager.getInstance().launchNavigator(
-				mActivity, 
-				startPoint, 
-				endPoint, 
-				NE_RoutePlan_Mode.ROUTE_PLAN_MOD_MIN_TIME, 
-				true, 
-				BaiduNaviManager.STRATEGY_FORCE_ONLINE_PRIORITY, new OnStartNavigationListener() {
-					
+		BNaviPoint startPoint = new BNaviPoint(pt1.longitude, pt1.latitude, "",
+				BNaviPoint.CoordinateType.BD09_MC);
+		BNaviPoint endPoint = new BNaviPoint(pt2.longitude, pt2.latitude, "",
+				BNaviPoint.CoordinateType.BD09_MC);
+		BaiduNaviManager.getInstance().launchNavigator(mActivity, startPoint,
+				endPoint, NE_RoutePlan_Mode.ROUTE_PLAN_MOD_MIN_TIME, true,
+				BaiduNaviManager.STRATEGY_FORCE_ONLINE_PRIORITY,
+				new OnStartNavigationListener() {
+
 					@Override
 					public void onJumpToNavigator(Bundle arg0) {
 						Intent intent = new Intent(mActivity,
@@ -494,7 +487,7 @@ public class GetSystem {
 					@Override
 					public void onJumpToDownloader() {
 						// TODO Auto-generated method stub
-						
+
 					}
 				});
 	}
@@ -549,7 +542,7 @@ public class GetSystem {
 	public static String getStringFromURL(String url) {
 		try {
 			URL myURL = new URL(url);
-			URLConnection httpsConn = (URLConnection) myURL.openConnection();
+			URLConnection httpsConn = myURL.openConnection();
 			httpsConn.setConnectTimeout(20 * 1000);
 			httpsConn.setReadTimeout(20 * 1000);
 			InputStreamReader insr = new InputStreamReader(
@@ -690,15 +683,15 @@ public class GetSystem {
 			String imagePath, float Lat, float Lon, String title,
 			String titleUrl) {
 		final OnekeyShare oks = new OnekeyShare();
-		oks.disableSSOWhenAuthorize(); 
+		oks.disableSSOWhenAuthorize();
 		oks.setNotification(R.drawable.ic_launcher, "app_name");
 		oks.setAddress("");
 		oks.setTitle(title);
-		oks.setTitleUrl("http://www.bibibaba.cn/");
+		oks.setTitleUrl(titleUrl);
 		oks.setText(Content + " (来自@叭叭,点击下载http://dl.bibibaba.cn/ )");
 		oks.setImagePath(imagePath);
 		// oks.setImageUrl("http://img.appgo.cn/imgs/sharesdk/content/2013/07/25/1374723172663.jpg");
-		oks.setUrl("http://www.sharesdk.cn");
+		oks.setUrl(titleUrl);
 		oks.setFilePath(imagePath);
 		System.out.println("titleUrl = " + titleUrl);
 		System.out.println("title = " + title);
@@ -743,7 +736,7 @@ public class GetSystem {
 	}
 
 	public static String getM5DEndo(String s) {
-		if(s == null){
+		if (s == null) {
 			return "";
 		}
 		MessageDigest md5 = null;
@@ -761,7 +754,7 @@ public class GetSystem {
 		byte[] md5Bytes = md5.digest(byteArray);
 		StringBuffer hexValue = new StringBuffer();
 		for (int i = 0; i < md5Bytes.length; i++) {
-			int val = ((int) md5Bytes[i]) & 0xff;
+			int val = (md5Bytes[i]) & 0xff;
 			if (val < 16) {
 				hexValue.append("0");
 			}
@@ -816,19 +809,21 @@ public class GetSystem {
 		}
 		return false;
 	}
+
 	/**
 	 * 判断当前网络是否wifi
+	 * 
 	 * @param mContext
 	 * @return
 	 */
-	public static boolean isWifi(Context mContext) {  
-	    ConnectivityManager connectivityManager = (ConnectivityManager) mContext  
-	            .getSystemService(Context.CONNECTIVITY_SERVICE);  
-	    NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();  
-	    if (activeNetInfo != null  
-	            && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {  
-	        return true;  
-	    }  
-	    return false;  
+	public static boolean isWifi(Context mContext) {
+		ConnectivityManager connectivityManager = (ConnectivityManager) mContext
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
+		if (activeNetInfo != null
+				&& activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+			return true;
+		}
+		return false;
 	}
 }

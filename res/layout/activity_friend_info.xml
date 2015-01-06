@@ -122,10 +122,19 @@
 	        android:id="@+id/bt_send_message"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_marginTop="@dimen/margins"
-	        android:layout_marginLeft="@dimen/double_margins"
-	        android:layout_marginRight="@dimen/double_margins"
-	        android:visibility="gone"
+	        android:layout_margin="@dimen/margins"
+	        android:textColor="@color/white"
+	        android:background="@drawable/bt_green"
+	        android:visibility="visible"
 	        android:text="发送消息"/>
+	    <Button 
+	        android:id="@+id/bt_find_location"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_margin="@dimen/margins"
+	        android:textColor="@color/white"
+	        android:background="@drawable/bt_green"
+	        android:visibility="visible"
+	        android:text="查看位置"/>
     </LinearLayout>
 </RelativeLayout>

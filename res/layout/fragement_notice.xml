@@ -15,7 +15,6 @@
 	        android:layout_marginRight="@dimen/margins"
 	        android:layout_alignParentRight="true"
 	        android:padding="@dimen/margins"
-	        android:visibility="gone"
 	        android:layout_centerVertical="true"
 	        android:src="@drawable/icon_add"/>
         <TextView
@@ -42,7 +41,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:visibility="gone"
         android:orientation="horizontal">
         <Button
             android:id="@+id/bt_info"
@@ -83,6 +81,7 @@
     <xlist.XListView
         android:id="@+id/lv_notice"
         android:layout_below="@id/rl_top"
+        android:layout_above="@id/ll_bottom"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:divider="@null"
@@ -91,6 +90,7 @@
     <xlist.XListView
         android:id="@+id/lv_friend"
         android:layout_below="@id/rl_top"
+        android:layout_above="@id/ll_bottom"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:visibility="gone"

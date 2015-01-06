@@ -2,12 +2,36 @@ package com.wise.notice;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
+
 import pubclas.Constant;
 import pubclas.GetSystem;
+import pubclas.Info;
+import pubclas.Info.FriendStatus;
 import pubclas.NetThread;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -15,26 +39,8 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+
 import data.FriendData;
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Bitmap.Config;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * 个人信息界面
@@ -47,7 +53,7 @@ public class FriendInfoActivity extends Activity {
 	private static final int add_friend = 2;
 	private static final int delete_friend = 3;
 
-	Button bt_add_friend, bt_send_message;
+	Button bt_add_friend, bt_send_message, bt_find_location;
 	ImageView iv_logo, iv_sex, iv_service, iv_menu;
 	TextView tv_name, tv_area;
 
@@ -56,7 +62,11 @@ public class FriendInfoActivity extends Activity {
 	int FriendId = 0;
 	String FriendName;
 	/** 判断当前页面的状态 **/
-	int TYPE_FRIEND;
+	FriendStatus friendStatus;
+
+	enum abc {
+		a, b
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,17 +88,20 @@ public class FriendInfoActivity extends Activity {
 		bt_add_friend.setOnClickListener(onClickListener);
 		bt_send_message = (Button) findViewById(R.id.bt_send_message);
 		bt_send_message.setOnClickListener(onClickListener);
+		bt_find_location = (Button) findViewById(R.id.bt_find_location);
+		bt_find_location.setOnClickListener(onClickListener);
 		Intent intent = getIntent();
-		TYPE_FRIEND = intent.getIntExtra(Constant.TYPE_FRIEND,
-				Constant.TYPE_FRIEND_INFO);
+		friendStatus = (FriendStatus) intent
+				.getSerializableExtra(Info.FriendStatusKey);
 		String Friendid = intent.getStringExtra("FriendId");
 		String name = intent.getStringExtra("name");
-		if (TYPE_FRIEND == Constant.TYPE_FRIEND_INFO) {
+
+		if (friendStatus == FriendStatus.FriendInfo) {
 			FriendId = Integer.valueOf(Friendid);
 			getFriendInfoId();
-		} else if (TYPE_FRIEND == Constant.TYPE_FRIEND_INFO_NAME) {
+		} else if (friendStatus == FriendStatus.FriendAddFromName) {
 			getFriendInfoName(name);
-		} else if (TYPE_FRIEND == Constant.TYPE_FRIEND_INFO_CAMERA) {
+		} else if (friendStatus == FriendStatus.FriendAddFromId) {
 			FriendId = Integer.valueOf(Friendid);
 			getFriendInfoId();
 			judgeIsAddFriend();
@@ -111,6 +124,13 @@ public class FriendInfoActivity extends Activity {
 				intent.putExtra("cust_id", "" + FriendId);
 				intent.putExtra("cust_name", FriendName);
 				startActivity(intent);
+				break;
+			case R.id.bt_find_location:
+				// TODO 查看好友位置信息
+				Intent intentLocation = new Intent(FriendInfoActivity.this,
+						FriendLocationActivity.class);
+				intentLocation.putExtra("FriendId", FriendId);
+				startActivity(intentLocation);
 				break;
 			case R.id.iv_menu:
 				showMenu();
@@ -152,21 +172,24 @@ public class FriendInfoActivity extends Activity {
 				+ FriendId + "?auth_code=" + app.auth_code;
 		new NetThread.DeleteThread(handler, url, delete_friend).start();
 	}
-	private void jsonDeleteFriend(String result){
+
+	private void jsonDeleteFriend(String result) {
 		try {
 			JSONObject jsonObject = new JSONObject(result);
-			int status_code = jsonObject.getInt("status_code");	
-			if(status_code == 0){
+			int status_code = jsonObject.getInt("status_code");
+			if (status_code == 0) {
 				Intent intent = new Intent();
 				intent.putExtra("FriendId", FriendId);
 				setResult(2, intent);
 				finish();
-			}else{
-				Toast.makeText(FriendInfoActivity.this, "删除好友失败", Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(FriendInfoActivity.this, "删除好友失败",
+						Toast.LENGTH_SHORT).show();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Toast.makeText(FriendInfoActivity.this, "删除好友失败", Toast.LENGTH_SHORT).show();
+			Toast.makeText(FriendInfoActivity.this, "删除好友失败",
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -258,10 +281,8 @@ public class FriendInfoActivity extends Activity {
 			// 如果是服务商显示标志
 			if (cust_type == 2) {
 				iv_service.setVisibility(View.VISIBLE);
-				iv_menu.setVisibility(View.VISIBLE);
 			} else {
 				iv_service.setVisibility(View.GONE);
-				iv_menu.setVisibility(View.GONE);
 			}
 			String logo = jsonObject.getString("logo");
 			if (logo == null || logo.equals("")) {

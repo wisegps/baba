@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    <TextView
+        android:id="@+id/tv_car_name"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:padding="10dp"
+        android:textColor="@color/navy" >
+    </TextView>
+    <View 
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gay_line"/>
+    <TextView
+        android:id="@+id/tv_obd_data"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:padding="10dp"
+        android:textColor="@color/navy" >
+    </TextView>
+    <View 
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gay_line"/>
+    <TextView
+        android:id="@+id/tv_obd_fault"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:padding="10dp"
+        android:textColor="@color/navy" >
+    </TextView>
+    <View 
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gay_line"/>
+</LinearLayout>

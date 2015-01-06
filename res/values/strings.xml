@@ -6,6 +6,7 @@
     <string name="hello_world">Hello world!</string>
 	<string name="cancle">取消</string>
 	<string name="comments">评论</string>
+    <string name="image_position">Image position</string>
     <!-- 车务提醒 -->
     <string name="car_remind">车务提醒</string>
     <string name="update_date">修改时间</string>

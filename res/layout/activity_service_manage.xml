@@ -1,0 +1,20 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_main"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/white" >
+    <LinearLayout 
+        android:id="@+id/ll_bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    </LinearLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_manage"
+        android:layout_above="@id/ll_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>
