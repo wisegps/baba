@@ -3,18 +3,15 @@ package com.wise.state;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
-import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
-import com.wise.baba.R;
-import customView.WaitLinearLayout;
-import customView.WaitLinearLayout.OnFinishListener;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,30 +19,34 @@ import android.os.Message;
 import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup.MarginLayoutParams;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
+import com.wise.baba.R;
+
+import customView.WaitLinearLayout;
+import customView.WaitLinearLayout.OnFinishListener;
+
 /** 油耗明细列表 **/
-public class FuelDetailsActivity extends Activity implements IXListViewListener{
+public class FuelDetailsActivity extends Activity implements IXListViewListener {
 
 	private static final int getData = 1;
 	private static final int Load = 2;
 	private static final int refresh_data = 3;
-	
+
 	List<FuelData> fuelDatas = new ArrayList<FuelData>();
 	FuelAdapter fuelAdapter;
 	WaitLinearLayout ll_wait;
 	XListView lv_fuel;
 	TextView tv_title_fee;
 	int index_car = 0;
-	
+
 	String NowYear = "";
 	AppApplication app;
 
@@ -54,8 +55,8 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fuel_details);
-		app = (AppApplication)getApplication();
-		ll_wait = (WaitLinearLayout)findViewById(R.id.ll_wait);
+		app = (AppApplication) getApplication();
+		ll_wait = (WaitLinearLayout) findViewById(R.id.ll_wait);
 		ll_wait.setOnFinishListener(onFinishListener);
 		TextView tv_name = (TextView) findViewById(R.id.tv_name);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
@@ -73,7 +74,6 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 		tv_name.setText(app.carDatas.get(index_car).getNick_name());
 		NowYear = GetNowYear();
 		getData();
-		setupListView();
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -89,22 +89,19 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 			}
 		}
 	};
-	OnFinishListener onFinishListener = new OnFinishListener() {		
+	OnFinishListener onFinishListener = new OnFinishListener() {
 		@Override
 		public void OnFinish(int index) {
-			if(index == 0){
+			if (index == 0) {
 				fuelAdapter.notifyDataSetChanged();
 				ll_wait.setVisibility(View.GONE);
 				lv_fuel.setVisibility(View.VISIBLE);
-			}else if(index == 2){
-				jsonData(load,false);
-//				tv_title_fee.setText(fuelDatas.get(index + 1).getRcv_day()
-//						.substring(0, 7)
-//						+ "花费: " + fuelDatas.get(index + 1).getTotal_fee());
+			} else if (index == 2) {
+				jsonData(load, false);
 				fuelAdapter.notifyDataSetChanged();
 				onLoad();
-			}else if(index == 3){
-				jsonData(refresh,true);
+			} else if (index == 3) {
+				jsonData(refresh, true);
 				fuelAdapter.notifyDataSetChanged();
 				onLoad();
 			}
@@ -118,14 +115,11 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 			switch (msg.what) {
 			case getData:
 				ll_wait.runFast(0);
-				jsonData(msg.obj.toString(),true);
-//				tv_title_fee.setText(fuelDatas.get(index + 1).getRcv_day()
-//						.substring(0, 7)
-//						+ "花费: " + fuelDatas.get(index + 1).getTotal_fee());
+				jsonData(msg.obj.toString(), true);
 				break;
 			case Load:
 				lv_fuel.runBottomFast(2);
-            	load = msg.obj.toString();
+				load = msg.obj.toString();
 				break;
 			case refresh_data:
 				lv_fuel.runFast(3);
@@ -133,15 +127,14 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 				break;
 			}
 		}
-	};	
+	};
 
 	private void getData() {
 		try {
 			String url = Constant.BaseUrl + "device/"
 					+ app.carDatas.get(index_car).getDevice_id()
 					+ "/fee_detail?auth_code=" + app.auth_code + "&city="
-					+ URLEncoder.encode(app.City, "UTF-8")
-					+ "&gas_no=#93(#92)";
+					+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no=#93(#92)";
 			new NetThread.GetDataThread(handler, url, getData).start();
 			ll_wait.startWheel();
 		} catch (Exception e) {
@@ -153,9 +146,9 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 	double money = 0;
 	FuelData fuelData2 = null;
 
-	private void jsonData(String str,boolean isRefresh) {
+	private void jsonData(String str, boolean isRefresh) {
 		try {
-			if(isRefresh){
+			if (isRefresh) {
 				month = "";
 				money = 0;
 				fuelDatas.clear();
@@ -163,8 +156,9 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 			JSONArray jsonArray = new JSONArray(str);
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				String Time = GetSystem.ChangeTimeZone(jsonObject.getString("rcv_day").substring(0, 19)
-								.replace("T", " ")).substring(0, 10);				
+				String Time = GetSystem.ChangeTimeZone(
+						jsonObject.getString("rcv_day").substring(0, 19)
+								.replace("T", " ")).substring(0, 10);
 				if (!month.equals(Time.substring(0, 7))) {
 					fuelData2 = new FuelData();
 					fuelData2.setType(0);
@@ -175,23 +169,26 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 				}
 				FuelData fuelData = new FuelData();
 				try {
-					fuelData.setAvg_fuel(String.format("%.2f",jsonObject.getDouble("avg_fuel")));
+					fuelData.setAvg_fuel(String.format("%.2f",
+							jsonObject.getDouble("avg_fuel")));
 				} catch (Exception e) {
 					fuelData.setAvg_fuel("0");
 				}
 				fuelData.setRcv_day(Time);
-				fuelData.setTotal_distance(jsonObject.getString("total_distance"));
-				fuelData.setTotal_fee(String.format("%.1f",jsonObject.getDouble("total_fee")));
+				fuelData.setTotal_distance(jsonObject
+						.getString("total_distance"));
+				fuelData.setTotal_fee(String.format("%.1f",
+						jsonObject.getDouble("total_fee")));
 				fuelData.setType(1);
-				if(jsonObject.opt("day_trip_id") == null){
+				if (jsonObject.opt("day_trip_id") == null) {
 					fuelData.setDay_trip_id("0");
-				}else{
+				} else {
 					fuelData.setDay_trip_id(jsonObject.getString("day_trip_id"));
 				}
 				fuelDatas.add(fuelData);
 				money += jsonObject.getDouble("total_fee");
 				if (fuelData2 != null) {
-					fuelData2.setTotal_fee(String.format("%.1f",money));
+					fuelData2.setTotal_fee(String.format("%.1f", money));
 				}
 			}
 		} catch (Exception e) {
@@ -200,54 +197,6 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 	}
 
 	int index = 0;
-
-	private void setupListView() {
-		lv_fuel.setOnScrollListener(new OnScrollListener() {
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-			}
-
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-				if (firstVisibleItem != 0) {
-					String letter = fuelDatas.get(firstVisibleItem - 1)
-							.getRcv_day().substring(0, 7);
-					String NextLetter = fuelDatas.get(firstVisibleItem)
-							.getRcv_day().substring(0, 7);
-					tv_title_fee.setText(fuelDatas.get(index).getRcv_day()
-							.substring(0, 7)
-							+ "花费: " + fuelDatas.get(index).getTotal_fee());
-					if (!letter.equals(NextLetter)) {
-						index = firstVisibleItem;
-						// 产生碰撞挤压效果
-						View childView = view.getChildAt(0);
-						if (childView != null) {
-							int titleHeight = tv_title_fee.getHeight();
-							int bottom = childView.getBottom();
-							MarginLayoutParams params = (MarginLayoutParams) tv_title_fee
-									.getLayoutParams();
-							if (bottom < titleHeight) {
-								float pushedDistance = bottom - titleHeight;
-								params.topMargin = (int) pushedDistance;
-								tv_title_fee.setLayoutParams(params);
-							} else {
-								if (params.topMargin != 0) {
-									params.topMargin = 0;
-									tv_title_fee.setLayoutParams(params);
-								}
-							}
-						}
-					} else {
-						MarginLayoutParams params = (MarginLayoutParams) tv_title_fee
-								.getLayoutParams();
-						params.topMargin = 0;
-						tv_title_fee.setLayoutParams(params);
-					}
-				}
-			}
-		});
-	}
 
 	class FuelAdapter extends BaseAdapter {
 		private static final int VALUE_TITLE = 0;
@@ -280,16 +229,22 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 					convertView = mInflater.inflate(R.layout.item_fuel_title,
 							null);
 					Title = new ViewTitle();
-					Title.tv_title_month = (TextView) convertView.findViewById(R.id.tv_title_month);
-					Title.tv_title_fee = (TextView) convertView.findViewById(R.id.tv_title_fee);
+					Title.tv_title_month = (TextView) convertView
+							.findViewById(R.id.tv_title_month);
+					Title.tv_title_fee = (TextView) convertView
+							.findViewById(R.id.tv_title_fee);
 					convertView.setTag(Title);
 				} else {
 					convertView = mInflater.inflate(R.layout.item_fuel, null);
 					holder = new ViewHolder();
-					holder.tv_day = (TextView) convertView.findViewById(R.id.tv_day);
-					holder.tv_fuel = (TextView) convertView.findViewById(R.id.tv_fuel);
-					holder.total_distance = (TextView) convertView.findViewById(R.id.total_distance);
-					holder.tv_total_fee = (TextView) convertView.findViewById(R.id.tv_total_fee);
+					holder.tv_day = (TextView) convertView
+							.findViewById(R.id.tv_day);
+					holder.tv_fuel = (TextView) convertView
+							.findViewById(R.id.tv_fuel);
+					holder.total_distance = (TextView) convertView
+							.findViewById(R.id.total_distance);
+					holder.tv_total_fee = (TextView) convertView
+							.findViewById(R.id.tv_total_fee);
 					convertView.setTag(holder);
 				}
 			} else {
@@ -302,17 +257,20 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 
 			FuelData fuelData = fuelDatas.get(position);
 			String day = fuelData.getRcv_day();
-			if (Type == VALUE_TITLE) {				
-				if(isNowYear(day)){
-					Title.tv_title_month.setText(ChineseMonth(Integer.valueOf(day.substring(5, 7))) + "花费: ");
+			if (Type == VALUE_TITLE) {
+				if (isNowYear(day)) {
+					Title.tv_title_month.setText(ChineseMonth(Integer
+							.valueOf(day.substring(5, 7))) + "花费: ");
 					Title.tv_title_fee.setText(fuelData.getTotal_fee());
-				}else{
-					//不是则显示年月
+				} else {
+					// 不是则显示年月
 					Title.tv_title_month.setText(day.substring(0, 7) + "花费: ");
 					Title.tv_title_fee.setText(fuelData.getTotal_fee());
 				}
-			} else {				
-				holder.tv_day.setText(day.substring(day.length() - 2,day.length())+ "日");
+			} else {
+				holder.tv_day.setText(day.substring(day.length() - 2,
+						day.length())
+						+ "日");
 				holder.tv_fuel.setText(fuelData.getAvg_fuel());
 				holder.total_distance.setText(fuelData.getTotal_distance());
 				holder.tv_total_fee.setText(fuelData.getTotal_fee());
@@ -336,7 +294,7 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 		}
 
 		private class ViewTitle {
-			TextView tv_title_fee,tv_title_month;
+			TextView tv_title_fee, tv_title_month;
 		}
 	}
 
@@ -351,49 +309,63 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 		public int getType() {
 			return Type;
 		}
+
 		public void setType(int type) {
 			Type = type;
 		}
+
 		public String getTotal_distance() {
 			return total_distance;
 		}
+
 		public void setTotal_distance(String total_distance) {
 			this.total_distance = total_distance;
 		}
+
 		public String getAvg_fuel() {
 			return avg_fuel;
 		}
+
 		public void setAvg_fuel(String avg_fuel) {
 			this.avg_fuel = avg_fuel;
 		}
-		/**2014-07-10**/
+
+		/** 2014-07-10 **/
 		public String getRcv_day() {
 			return rcv_day;
 		}
+
 		public void setRcv_day(String rcv_day) {
 			this.rcv_day = rcv_day;
 		}
+
 		public String getTotal_fee() {
 			return total_fee;
 		}
+
 		public void setTotal_fee(String total_fee) {
 			this.total_fee = total_fee;
-		}		
+		}
+
 		public String getDay_trip_id() {
 			return day_trip_id;
 		}
+
 		public void setDay_trip_id(String day_trip_id) {
 			this.day_trip_id = day_trip_id;
 		}
+
 		@Override
 		public String toString() {
 			return "FuelData [Type=" + Type + ", total_distance="
 					+ total_distance + ", avg_fuel=" + avg_fuel + ", rcv_day="
 					+ rcv_day + ", total_fee=" + total_fee + ", day_trip_id="
 					+ day_trip_id + "]";
-		}		
+		}
 	}
+
 	String refresh = "";
+
 	@Override
 	public void onRefresh() {
 		try {
@@ -401,14 +373,14 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 			String url = Constant.BaseUrl + "device/"
 					+ app.carDatas.get(index_car).getDevice_id()
 					+ "/fee_detail?auth_code=" + app.auth_code + "&city="
-					+ URLEncoder.encode(app.City, "UTF-8")
-					+ "&gas_no=#93(#92)";
+					+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no=#93(#92)";
 			new NetThread.GetDataThread(handler, url, refresh_data).start();
 			lv_fuel.startHeaderWheel();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 	@Override
 	public void onLoadMore() {
 		try {
@@ -416,7 +388,8 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 			String url = Constant.BaseUrl + "device/"
 					+ app.carDatas.get(index_car).getDevice_id()
 					+ "/fee_detail?auth_code=" + app.auth_code + "&city="
-					+ URLEncoder.encode(app.City, "UTF-8") + "&min_id=" + fuelDatas.get(fuelDatas.size() - 1).getDay_trip_id()
+					+ URLEncoder.encode(app.City, "UTF-8") + "&min_id="
+					+ fuelDatas.get(fuelDatas.size() - 1).getDay_trip_id()
 					+ "&gas_no=#93(#92)";
 			new NetThread.GetDataThread(handler, url, Load).start();
 			lv_fuel.startBottomWheel();
@@ -424,28 +397,32 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 			e.printStackTrace();
 		}
 	}
+
 	private void onLoad() {
 		lv_fuel.refreshHeaderView();
 		lv_fuel.refreshBottomView();
 		lv_fuel.stopRefresh();
 		lv_fuel.stopLoadMore();
 		lv_fuel.setRefreshTime(GetSystem.GetNowTime());
-    }
-	/**判断日期是否是当前年**/
-	private boolean isNowYear(String date){
-		if(date.indexOf(NowYear) >= 0){
+	}
+
+	/** 判断日期是否是当前年 **/
+	private boolean isNowYear(String date) {
+		if (date.indexOf(NowYear) >= 0) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
-	/**获取当前年份**/
+
+	/** 获取当前年份 **/
 	private String GetNowYear() {
 		Time time = new Time();
 		time.setToNow();
 		return String.valueOf(time.year);
 	}
-	private String ChineseMonth(int month){
+
+	private String ChineseMonth(int month) {
 		String Cmonth = "";
 		switch (month) {
 		case 1:
@@ -487,11 +464,13 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener{
 		}
 		return Cmonth;
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 		MobclickAgent.onResume(this);
 	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();
