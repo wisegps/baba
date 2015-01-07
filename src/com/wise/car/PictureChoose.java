@@ -67,8 +67,6 @@ public class PictureChoose extends Activity {
 		findViewById(R.id.iv_add).setOnClickListener(onClickListener);
 	}
 
-	boolean isNear = false;
-	boolean isFar = false;
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -77,19 +75,15 @@ public class PictureChoose extends Activity {
 				finish();
 				break;
 			case R.id.pic_near_add:
-				isNear = true;
 				picPop(PIC_NEAR, R.id.pic_near);
 				break;
 			case R.id.pic_far_add:
-				isFar = true;
 				picPop(PIC_FAR, R.id.pic_far);
 				break;
 			case R.id.pic_near:
-				isNear = true;
 				picPop(PIC_NEAR, R.id.pic_near);
 				break;
 			case R.id.pic_far:
-				isFar = true;
 				picPop(PIC_FAR, R.id.pic_far);
 				break;
 			case R.id.iv_add:
@@ -99,14 +93,15 @@ public class PictureChoose extends Activity {
 
 				String farUrl = Constant.BaseUrl + "base/car_series/"
 						+ car_series_id + "/far_pic?auth_code=" + app.auth_code;
-				if (isNear && isFar) {
+				if (near_small != null && !near_small.equals("")
+						&& far_small != null && !far_small.equals("")) {
 					type = PIC_ALL;
 					upLoadPic(naerUrl, near_small, near_big);
 					upLoadPic(farUrl, far_small, far_big);
-				} else if (isNear) {
+				} else if (near_small != null && !near_small.equals("")) {
 					type = PIC_NEAR;
 					upLoadPic(naerUrl, near_small, near_big);
-				} else if (isFar) {
+				} else if (far_small != null && !far_small.equals("")) {
 					type = PIC_FAR;
 					upLoadPic(farUrl, far_small, far_big);
 				}
@@ -159,12 +154,13 @@ public class PictureChoose extends Activity {
 						.show();
 				Intent data = new Intent();
 				data.putExtra("type", type);
-				if (isNear && isFar) {
+				if (near_small != null && !near_small.equals("")
+						&& far_small != null && !far_small.equals("")) {
 					data.putExtra("near_small", near_small);
 					data.putExtra("far_small", far_small);
-				} else if (isNear) {
+				} else if (near_small != null && !near_small.equals("")) {
 					data.putExtra("near_small", near_small);
-				} else if (isFar) {
+				} else if (far_small != null && !far_small.equals("")) {
 					data.putExtra("far_small", far_small);
 				}
 				setResult(Pictrue, data);

@@ -49,8 +49,8 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margins"
             android:background="@color/gray_light"
+            android:padding="@dimen/margins"
             android:text="请点击拍照，立即分享您的宝贵经验，而且一经采用，我们将会给予5元现金券奖励。 "
             android:textColor="@color/navy" />
 
@@ -112,7 +112,7 @@
                             android:layout_marginTop="@dimen/margins"
                             android:gravity="center"
                             android:text="立即分享"
-                            android:textColor="@color/blue"/>
+                            android:textColor="@color/blue" />
                     </LinearLayout>
 
                     <ImageView
@@ -179,7 +179,7 @@
                             android:layout_marginTop="@dimen/margins"
                             android:gravity="center"
                             android:text="立即分享"
-                            android:textColor="@color/blue"/>
+                            android:textColor="@color/blue" />
                     </LinearLayout>
 
                     <ImageView
