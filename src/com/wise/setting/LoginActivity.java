@@ -375,7 +375,6 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 						}).show();
 			} else {
 				Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-				// TODO 登录成功
 				app.cust_id = jsonObject.getString("cust_id");
 				app.auth_code = jsonObject.getString("auth_code");
 				JPushInterface.resumePush(getApplicationContext());
