@@ -2,8 +2,6 @@ package data;
 
 import java.util.ArrayList;
 
-import com.wise.baba.R.string;
-
 /**
  * 车辆信息(车牌，车标)
  * 
@@ -17,16 +15,21 @@ public class CarData {
 	/** 车型 **/
 	private String car_series;
 	private String car_series_id;
+	/** 车款 **/
 	private String car_type;
 	private String car_type_id;
+
 	private String engine_no;// 发送机
 	private String frame_no;// 车架号
 	private String regNo;// 登记证
 	private String gas_no;
+	/** 保险电话 **/
 	private String insurance_tel;
 	private String maintain_tel;
+	/** 昵称 **/
 	private String nick_name;
 	private String insurance_no;
+	/** 限行 **/
 	private String limit;
 	/**
 	 * 保险公司
@@ -48,22 +51,28 @@ public class CarData {
 	private String maintain_last_mileage;
 	private String maintain_next_mileage;
 	private String buy_date;
-
+	/** 车牌 **/
 	public String obj_name;
 	private String maintain_last_date;
+	/** 车logo **/
 	private String logoPath;
+	/** 车对应的device id **/
 	private String device_id;
+	/** 序列号 **/
 	private String serial;
 	private int Type; // 布局控制
 	private String Adress; // 车辆位置
 	private String gps_time; // 定位时间
 	private String rcv_time;// 最后上传数据时间
 	private String uni_status;// 车辆启动状态
+	/** 位置 **/
 	private double Lat;
 	private double Lon;
+	/** 违章城市 **/
 	private ArrayList<String> vio_citys;
 	private ArrayList<String> vio_citys_code;
 	private ArrayList<String> province;
+	/** 油价 **/
 	private double fuel_price;
 
 	private boolean state;// 是否启动状态
@@ -418,27 +427,14 @@ public class CarData {
 
 	@Override
 	public String toString() {
-		return "CarData [obj_id=" + obj_id + ", car_brand=" + car_brand
-				+ ", car_brand_id=" + car_brand_id + ", car_series="
-				+ car_series + ", car_series_id=" + car_series_id
-				+ ", car_type=" + car_type + ", car_type_id=" + car_type_id
-				+ ", engine_no=" + engine_no + ", frame_no=" + frame_no
-				+ ", regNo=" + regNo + ", gas_no=" + gas_no
-				+ ", insurance_tel=" + insurance_tel + ", maintain_tel="
-				+ maintain_tel + ", nick_name=" + nick_name + ", insurance_no="
-				+ insurance_no + ", limit=" + limit + ", insurance_company="
-				+ insurance_company + ", insurance_date=" + insurance_date
-				+ ", geofence=" + geofence + ", annual_inspect_date="
-				+ annual_inspect_date + ", maintain_company="
-				+ maintain_company + ", maintain_last_mileage="
-				+ maintain_last_mileage + ", maintain_next_mileage="
-				+ maintain_next_mileage + ", buy_date=" + buy_date
-				+ ", obj_name=" + obj_name + ", maintain_last_date="
-				+ maintain_last_date + ", logoPath=" + logoPath
-				+ ", device_id=" + device_id + ", serial=" + serial + ", Type="
-				+ Type + ", Adress=" + Adress + ", gps_time=" + gps_time
-				+ ", Lat=" + Lat + ", Lon=" + Lon + ", vio_citys=" + vio_citys
-				+ ", vio_citys_code=" + vio_citys_code + ", province="
-				+ province + "]";
+		return "CarData [obj_id=" + obj_id + ", car_brand=" + car_brand + ", car_brand_id=" + car_brand_id + ", car_series=" + car_series + ", car_series_id="
+				+ car_series_id + ", car_type=" + car_type + ", car_type_id=" + car_type_id + ", engine_no=" + engine_no + ", frame_no=" + frame_no
+				+ ", regNo=" + regNo + ", gas_no=" + gas_no + ", insurance_tel=" + insurance_tel + ", maintain_tel=" + maintain_tel + ", nick_name="
+				+ nick_name + ", insurance_no=" + insurance_no + ", limit=" + limit + ", insurance_company=" + insurance_company + ", insurance_date="
+				+ insurance_date + ", geofence=" + geofence + ", annual_inspect_date=" + annual_inspect_date + ", maintain_company=" + maintain_company
+				+ ", maintain_last_mileage=" + maintain_last_mileage + ", maintain_next_mileage=" + maintain_next_mileage + ", buy_date=" + buy_date
+				+ ", obj_name=" + obj_name + ", maintain_last_date=" + maintain_last_date + ", logoPath=" + logoPath + ", device_id=" + device_id + ", serial="
+				+ serial + ", Type=" + Type + ", Adress=" + Adress + ", gps_time=" + gps_time + ", Lat=" + Lat + ", Lon=" + Lon + ", vio_citys=" + vio_citys
+				+ ", vio_citys_code=" + vio_citys_code + ", province=" + province + "]";
 	}
 }
