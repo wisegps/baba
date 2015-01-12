@@ -145,6 +145,9 @@ public class FaultActivity extends FragmentActivity {
 	int image_position = 0;
 	String noticeUrl = "";
 
+	LinearLayout ll_pages;
+	List<Integer> pages = new ArrayList<Integer>();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -169,24 +172,27 @@ public class FaultActivity extends FragmentActivity {
 				TypedValue.COMPLEX_UNIT_DIP, 280, getResources()
 						.getDisplayMetrics());
 		completed = (width - twoCompleted) / 3;
+		// TODO 首页信息卡片添加
+		pages.add(R.layout.page_item_weather);
+		pages.add(R.layout.page_item_haapy);
+
+		ll_pages = (LinearLayout) findViewById(R.id.ll_pages);
+		View view = LayoutInflater.from(FaultActivity.this).inflate(
+				pages.get(0), null);
+		View view_1 = LayoutInflater.from(FaultActivity.this).inflate(
+				pages.get(1), null);
+		ll_pages.addView(view);
+		ll_pages.addView(view_1);
+
 		Button bt_show = (Button) findViewById(R.id.bt_show);
 		bt_show.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		tv_city = (TextView) findViewById(R.id.tv_city);
-		tv_city.setOnClickListener(onClickListener);
-		tv_weather_time = (TextView) findViewById(R.id.tv_weather_time);
-		tv_weather = (TextView) findViewById(R.id.tv_weather);
-		tv_advice = (TextView) findViewById(R.id.tv_advice);
-		tv_hot_content = (TextView) findViewById(R.id.tv_hot_content);
-		tv_hot_content.setOnClickListener(onClickListener);
-		tv_host_title = (TextView) findViewById(R.id.tv_host_title);
-		iv_weather = (ImageView) findViewById(R.id.iv_weather);
 		iv_noti = (ImageView) findViewById(R.id.iv_noti);
+
 		ImageView iv_menu = (ImageView) findViewById(R.id.iv_menu);
 		iv_menu.setOnClickListener(onClickListener);
 		findViewById(R.id.iv_location_hot).setOnClickListener(onClickListener);
-		findViewById(R.id.iv_hot_set).setOnClickListener(onClickListener);
 
 		smv_content = (ParentSlide) findViewById(R.id.smv_content);
 		nstv_message = (NoticeScrollTextView) findViewById(R.id.nstv_message);
@@ -686,7 +692,7 @@ public class FaultActivity extends FragmentActivity {
 				jsonData(msg.obj.toString(), msg.arg1);
 				break;
 			case getWeather:
-				jsonWeather(msg.obj.toString());
+				// jsonWeather(msg.obj.toString());
 				break;
 			case gethot_news:
 				jsonhot_news(msg.obj.toString());
@@ -941,7 +947,7 @@ public class FaultActivity extends FragmentActivity {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		app.City = preferences.getString(Constant.sp_city, "");
-		tv_city.setText("[ " + app.City + " ]");
+		// tv_city.setText("[ " + app.City + " ]");
 		app.Province = preferences.getString(Constant.sp_province, "");
 		try {
 			String url = Constant.BaseUrl + "base/weather2?city="
@@ -1006,9 +1012,9 @@ public class FaultActivity extends FragmentActivity {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			hot_content = jsonObject.getString("content");
-			tv_hot_content.setText(hot_content);
+			// tv_hot_content.setText(hot_content);
 			hot_title = jsonObject.getString("title");
-			tv_host_title.setText(hot_title);
+			// tv_host_title.setText(hot_title);
 			hot_url = jsonObject.getString("url");
 		} catch (JSONException e) {
 			e.printStackTrace();

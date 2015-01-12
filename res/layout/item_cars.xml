@@ -3,16 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
+
     <customView.SlidingView
         android:id="@+id/sv"
         android:layout_width="fill_parent"
         android:layout_height="80dp" >
+
         <RelativeLayout
             android:id="@+id/rl_car"
             android:layout_width="fill_parent"
-            android:layout_height="80dp"            
+            android:layout_height="80dp"
             android:background="@drawable/bg_white"
             android:paddingLeft="@dimen/margins" >
+
             <Button
                 android:id="@+id/bt_bind"
                 android:layout_width="wrap_content"
@@ -24,6 +27,7 @@
                 android:text="绑定智能配件"
                 android:textColor="@color/white"
                 android:textSize="@dimen/main" />
+
             <ImageView
                 android:id="@+id/iv_icon"
                 android:layout_width="@dimen/image_width"
@@ -32,12 +36,14 @@
                 android:layout_marginRight="10dp"
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/icon_car" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/iv_icon"
                 android:orientation="vertical" >
+
                 <TextView
                     android:id="@+id/tv_serial"
                     android:layout_width="wrap_content"
@@ -45,6 +51,7 @@
                     android:text="沙河西路加油站"
                     android:textColor="@color/navy"
                     android:textSize="@dimen/main" />
+
                 <TextView
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
@@ -56,9 +63,11 @@
                     android:textSize="@dimen/content" />
             </LinearLayout>
         </RelativeLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="80dp" >
+
             <TextView
                 android:id="@+id/tv_remove"
                 android:layout_width="wrap_content"
@@ -71,6 +80,7 @@
                 android:text="解除\n绑定"
                 android:textColor="@color/white" >
             </TextView>
+
             <TextView
                 android:id="@+id/tv_update"
                 android:layout_width="wrap_content"
@@ -83,6 +93,7 @@
                 android:text="修改\n终端"
                 android:textColor="@color/white" >
             </TextView>
+
             <TextView
                 android:id="@+id/tv_del"
                 android:layout_width="wrap_content"
@@ -96,4 +107,5 @@
             </TextView>
         </LinearLayout>
     </customView.SlidingView>
+
 </LinearLayout>
