@@ -80,7 +80,7 @@ public class ServiceProviderActivity extends Activity implements IXListViewListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.fragement_notice);
+		setContentView(R.layout.fragement_service);
 		app = (AppApplication)getApplication();
 		iv_add = (ImageView) findViewById(R.id.iv_add);
 		iv_add.setOnClickListener(onClickListener);

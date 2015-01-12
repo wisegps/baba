@@ -1,0 +1,35 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/tv_add_friend" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#CC50B7DE"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/main"
+        android:text="添加朋友"/>
+    <View 
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/white"/>
+    <TextView
+        android:id="@+id/tv_camera" 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#CC50B7DE"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/main"
+        android:text="扫一扫"/>
+</LinearLayout>

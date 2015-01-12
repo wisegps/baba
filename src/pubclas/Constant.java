@@ -154,4 +154,5 @@ public class Constant {
 	public static int[] items_note_type_image = { R.drawable.icon_cw_niansheng, R.drawable.icon_cw_nianjian, R.drawable.icon_cw_baoyang,
 			R.drawable.icon_cw_xuxian, R.drawable.icon_xx_notice, R.drawable.icon_xx_notice };
 	public static String[] items_note_mode = { "不重复", "按月重复", "按周重复", "按日重复", "末月按周重复，其他按月重复" };
+	public static String[] cards = { "weather", "hotNews" };
 }
