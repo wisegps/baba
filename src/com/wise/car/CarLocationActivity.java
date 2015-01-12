@@ -2,48 +2,15 @@ package com.wise.car;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BitmapDescriptor;
-import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.Circle;
-import com.baidu.mapapi.map.CircleOptions;
-import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.Marker;
-import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.OverlayOptions;
-import com.baidu.mapapi.map.PolylineOptions;
-import com.baidu.mapapi.map.Stroke;
-import com.baidu.mapapi.map.UiSettings;
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
-import com.baidu.mapapi.overlayutil.WalkingRouteOverlay;
-import com.baidu.mapapi.search.core.SearchResult;
-import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
-import com.baidu.mapapi.search.route.DrivingRouteResult;
-import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
-import com.baidu.mapapi.search.route.PlanNode;
-import com.baidu.mapapi.search.route.RoutePlanSearch;
-import com.baidu.mapapi.search.route.TransitRouteResult;
-import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
-import com.baidu.mapapi.search.route.WalkingRouteResult;
-import com.baidu.mapapi.utils.DistanceUtil;
-import com.wise.baba.AppApplication;
-import com.wise.baba.R;
-import data.CarData;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -68,9 +35,44 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.SeekBar.OnSeekBarChangeListener;
+
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.Circle;
+import com.baidu.mapapi.map.CircleOptions;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.PolylineOptions;
+import com.baidu.mapapi.map.Stroke;
+import com.baidu.mapapi.map.UiSettings;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
+import com.baidu.mapapi.overlayutil.WalkingRouteOverlay;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.route.DrivingRouteResult;
+import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
+import com.baidu.mapapi.search.route.PlanNode;
+import com.baidu.mapapi.search.route.RoutePlanSearch;
+import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRouteResult;
+import com.baidu.mapapi.utils.DistanceUtil;
+import com.wise.baba.AppApplication;
+import com.wise.baba.R;
+
+import data.CarData;
 
 public class CarLocationActivity extends Activity {
 	MapView mMapView = null;
@@ -96,7 +98,7 @@ public class CarLocationActivity extends Activity {
 	TextView searchAddress;
 	ImageView iv_traffic, iv_tracking;
 
-	/**跟踪**/
+	/** 跟踪 **/
 	boolean isTracking = false;
 	/** 地图类型 **/
 	int MapType = 1;
@@ -190,7 +192,8 @@ public class CarLocationActivity extends Activity {
 			}).start();
 		}
 	}
-	/**页面destory时改为false**/
+
+	/** 页面destory时改为false **/
 	boolean isStop = true;
 	private static final int SEARCH_CODE = 8;
 
@@ -496,7 +499,8 @@ public class CarLocationActivity extends Activity {
 		iv_plain.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
 		iv_3d.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
 	}
-	/**弹出路径规划or导航确认框**/
+
+	/** 弹出路径规划or导航确认框 **/
 	private void showDialog(final LatLng startLocat, final LatLng carLocat) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				CarLocationActivity.this);
@@ -509,38 +513,47 @@ public class CarLocationActivity extends Activity {
 						carLocat, "", "");
 			}
 		});
-		builder.setNeutralButton("路径规划", new DialogInterface.OnClickListener() {			
+		builder.setNeutralButton("路径规划", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				showDrivingOrWalking(startLocat,carLocat);
+				showDrivingOrWalking(startLocat, carLocat);
 			}
 		});
 		builder.setNegativeButton("取消", null);
 		builder.create().show();
 	}
-	//driving,walking
-	private void showDrivingOrWalking(final LatLng startLatLng, final LatLng stopLatLng){
+
+	// driving,walking
+	private void showDrivingOrWalking(final LatLng startLatLng,
+			final LatLng stopLatLng) {
 		final PlanNode stNode = PlanNode.withLocation(startLatLng);
 		final PlanNode edNode = PlanNode.withLocation(stopLatLng);
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				CarLocationActivity.this);
 		builder.setTitle("提示").setMessage("请确认路径规划方式！");
-		builder.setPositiveButton("驾车规划", new DialogInterface.OnClickListener() {			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				Toast.makeText(CarLocationActivity.this, "驾车规划中...", Toast.LENGTH_SHORT).show();
-				//mSearch.drivingSearch(new DrivingRoutePlanOption().from(stNode).to(edNode));
-			}
-		});
-		builder.setNegativeButton("步行规划", new DialogInterface.OnClickListener() {			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				Toast.makeText(CarLocationActivity.this, "步行规划中...", Toast.LENGTH_SHORT).show();
-				//mSearch.walkingSearch(new WalkingRoutePlanOption().from(stNode).to(edNode));
-			}
-		});
+		builder.setPositiveButton("驾车规划",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Toast.makeText(CarLocationActivity.this, "驾车规划中...",
+								Toast.LENGTH_SHORT).show();
+						// mSearch.drivingSearch(new
+						// DrivingRoutePlanOption().from(stNode).to(edNode));
+					}
+				});
+		builder.setNegativeButton("步行规划",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Toast.makeText(CarLocationActivity.this, "步行规划中...",
+								Toast.LENGTH_SHORT).show();
+						// mSearch.walkingSearch(new
+						// WalkingRoutePlanOption().from(stNode).to(edNode));
+					}
+				});
 		builder.create().show();
 	}
+
 	/**
 	 * 根据类型跳转搜索
 	 * 
@@ -618,7 +631,7 @@ public class CarLocationActivity extends Activity {
 					bt_alarm_in.setChecked(true);
 					bt_alarm_out.setChecked(true);
 				}
-				fence_distance.setProgress((int) (distance / 1000) - 1);
+				fence_distance.setProgress(distance / 1000 - 1);
 				fence_distance_date.setText(distance / 1000 + "km");
 				// setText(distance);
 				getRange();
@@ -733,6 +746,7 @@ public class CarLocationActivity extends Activity {
 	LatLng circle;
 	Marker carMarker = null;
 	boolean isFristCarLocation = true;
+
 	// 当前车辆位子
 	private void getCarLocation() {
 		try {
@@ -750,17 +764,19 @@ public class CarLocationActivity extends Activity {
 			// 构建MarkerOption，用于在地图上添加Marker
 			OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
 					.position(circle).icon(bitmap);
-			//在地图上添加Marker，并显示
+			// 在地图上添加Marker，并显示
 			carMarker = (Marker) (mBaiduMap.addOverlay(option));
-			if(isFristCarLocation){//第一次移动车的位置到地图中间
+			if (isFristCarLocation) {// 第一次移动车的位置到地图中间
 				isFristCarLocation = false;
-				MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
+				MapStatus mapStatus = new MapStatus.Builder().target(circle)
+						.build();
 				MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 						.newMapStatus(mapStatus);
 				mBaiduMap.setMapStatus(mapStatusUpdate);
-			}else{
-				if(isTracking){
-					MapStatus mapStatus = new MapStatus.Builder().target(circle).build();
+			} else {
+				if (isTracking) {
+					MapStatus mapStatus = new MapStatus.Builder()
+							.target(circle).build();
 					MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 							.newMapStatus(mapStatus);
 					mBaiduMap.setMapStatus(mapStatusUpdate);
@@ -991,7 +1007,7 @@ public class CarLocationActivity extends Activity {
 		});
 	}
 
-	private String COMMAND_VIBRATEALERT = "16391";
+	private final String COMMAND_VIBRATEALERT = "16391";
 	int vibrate = 0;
 
 	/** 设置震动 **/
@@ -1033,15 +1049,15 @@ public class CarLocationActivity extends Activity {
 	private class MyLocationListenner implements BDLocationListener {
 		@Override
 		public void onReceiveLocation(BDLocation location) {
-			//map view 销毁后不在处理新接收的位置
+			// map view 销毁后不在处理新接收的位置
 			if (location == null || mMapView == null)
 				return;
 			latitude = location.getLatitude();
 			longitude = location.getLongitude();
 			app.Lat = latitude;
 			app.Lon = longitude;
-			
-			drawPhoneLocation(latitude, longitude);			
+
+			drawPhoneLocation(latitude, longitude);
 			if (isFirstLoc) {
 				isFirstLoc = false;
 				ll = new LatLng(location.getLatitude(), location.getLongitude());
@@ -1052,7 +1068,8 @@ public class CarLocationActivity extends Activity {
 							.newLatLng(carLocat);
 					mBaiduMap.animateMapStatus(u);
 				} else {
-					MapStatus mapStatus = new MapStatus.Builder().target(new LatLng(latitude, longitude)).build();
+					MapStatus mapStatus = new MapStatus.Builder().target(
+							new LatLng(latitude, longitude)).build();
 					MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 							.newMapStatus(mapStatus);
 					mBaiduMap.setMapStatus(mapStatusUpdate);
@@ -1060,11 +1077,13 @@ public class CarLocationActivity extends Activity {
 			}
 		}
 	}
+
 	Marker phoneMark;
-	/**在地图上标记当前位置**/
-	private void drawPhoneLocation(double latitude , double longitude){
-		//如果有当前位置，则先删除
-		if(phoneMark != null){
+
+	/** 在地图上标记当前位置 **/
+	private void drawPhoneLocation(double latitude, double longitude) {
+		// 如果有当前位置，则先删除
+		if (phoneMark != null) {
 			phoneMark.remove();
 		}
 		LatLng latLng = new LatLng(latitude, longitude);
@@ -1083,7 +1102,7 @@ public class CarLocationActivity extends Activity {
 		if (startLatLng == null || stopLatLng == null) {
 			return;
 		}
-		showDialog(startLatLng, stopLatLng);//driving,walking
+		showDialog(startLatLng, stopLatLng);// driving,walking
 	}
 
 	DrivingRouteOverlay drOverlay;
@@ -1119,7 +1138,8 @@ public class CarLocationActivity extends Activity {
 		}
 
 		@Override
-		public void onGetTransitRouteResult(TransitRouteResult result) {}
+		public void onGetTransitRouteResult(TransitRouteResult result) {
+		}
 
 		@Override
 		public void onGetDrivingRouteResult(DrivingRouteResult result) {
@@ -1158,7 +1178,7 @@ public class CarLocationActivity extends Activity {
 		mLocClient.stop();
 		// 关闭定位图层
 		mBaiduMap.setMyLocationEnabled(false);
-		//mMapView.onDestroy();
+		// mMapView.onDestroy();
 		mMapView = null;
 		isStop = false;
 		isTracking = false;

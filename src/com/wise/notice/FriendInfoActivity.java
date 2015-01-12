@@ -99,9 +99,16 @@ public class FriendInfoActivity extends Activity {
 		if (friendStatus == FriendStatus.FriendInfo) {
 			FriendId = Integer.valueOf(Friendid);
 			getFriendInfoId();
+			bt_find_location.setVisibility(View.VISIBLE);
+			iv_menu.setVisibility(View.VISIBLE);
 		} else if (friendStatus == FriendStatus.FriendAddFromName) {
+			iv_menu.setVisibility(View.GONE);
+			bt_find_location.setVisibility(View.GONE);
 			getFriendInfoName(name);
+			
 		} else if (friendStatus == FriendStatus.FriendAddFromId) {
+			iv_menu.setVisibility(View.GONE);
+			bt_find_location.setVisibility(View.GONE);
 			FriendId = Integer.valueOf(Friendid);
 			getFriendInfoId();
 			judgeIsAddFriend();

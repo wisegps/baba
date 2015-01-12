@@ -18,6 +18,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMap.OnMarkerClickListener;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.InfoWindow;
@@ -25,6 +26,7 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
@@ -38,7 +40,7 @@ import data.CarData;
  * 
  * @author honesty
  **/
-public class FriendLocationActivity extends Activity {
+public class FriendLocationActivity extends Activity implements OnMarkerClickListener {
 	private static final int getAllCarData = 1;
 	private static final int getGpsData = 2;
 
@@ -60,6 +62,7 @@ public class FriendLocationActivity extends Activity {
 		mMapView = (MapView) findViewById(R.id.mv_friend);
 		mBaiduMap = mMapView.getMap();
 		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
+		mBaiduMap.setOnMarkerClickListener(this);
 		friendId = getIntent().getIntExtra("FriendId", 0);
 		getAllCarData();
 	}
@@ -134,23 +137,25 @@ public class FriendLocationActivity extends Activity {
 	private void showCarInMap() {
 		System.out.println("showCarInMap");
 		for (CarData carData : carDatas) {
+			
+			System.out.println("cardata");
 			if (carData.getLat() != 0 || carData.getLon() != 0) {
 				LatLng latLng = new LatLng(carData.getLat(), carData.getLon());
 				// 构建Marker图标
 				BitmapDescriptor bitmap = BitmapDescriptorFactory
 						.fromResource(R.drawable.body_icon_location2);
 				// 构建MarkerOption，用于在地图上添加Marker
-				OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
+				OverlayOptions option = new MarkerOptions().title(carData.getNick_name()).anchor(0.5f, 1.0f)
 						.position(latLng).icon(bitmap);
 				mBaiduMap.addOverlay(option);
 				// 弹出框
-				View view = LayoutInflater.from(getApplicationContext())
-						.inflate(R.layout.item_map_popup, null);
-				TextView tv_adress = (TextView) view
-						.findViewById(R.id.tv_adress);
-				tv_adress.setText(carData.getNick_name());
-				InfoWindow mInfoWindow = new InfoWindow(view, latLng, -45);
-				mBaiduMap.showInfoWindow(mInfoWindow);
+//				View view = LayoutInflater.from(getApplicationContext())
+//						.inflate(R.layout.item_map_popup, null);
+//				TextView tv_adress = (TextView) view
+//						.findViewById(R.id.tv_adress);
+//				tv_adress.setText(carData.getNick_name());
+//				InfoWindow mInfoWindow = new InfoWindow(view, latLng, -45);
+//				mBaiduMap.showInfoWindow(mInfoWindow);
 				System.out.println("showInfoWindow");
 				if (isFrist) {// 第一次移动车的位置到地图中间
 					isFrist = false;
@@ -162,5 +167,18 @@ public class FriendLocationActivity extends Activity {
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean onMarkerClick(Marker marker) {
+		
+		View view = LayoutInflater.from(getApplicationContext())
+				.inflate(R.layout.item_map_popup, null);
+		TextView tv_adress = (TextView) view
+				.findViewById(R.id.tv_adress);
+		tv_adress.setText(marker.getTitle());
+		InfoWindow mInfoWindow = new InfoWindow(view, marker.getPosition(), -45);
+		mBaiduMap.showInfoWindow(mInfoWindow);
+		return true;
 	}
 }

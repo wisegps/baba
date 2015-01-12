@@ -6,11 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import pubclas.Blur;
 import pubclas.Constant;
 import pubclas.FaceConversionUtil;
@@ -20,19 +22,6 @@ import pubclas.NetThread;
 import pubclas.Uri2Path;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
-import com.aliyun.android.oss.model.OSSObject;
-import com.aliyun.android.oss.task.GetObjectTask;
-import com.aliyun.android.oss.task.PutObjectTask;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.Volley;
-import com.wise.baba.AppApplication;
-import com.wise.baba.R;
-import com.wise.show.ImageDetailsActivity;
-import customView.CircleImageView;
-import customView.TimTextView;
-import customView.WaitLinearLayout.OnFinishListener;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -42,10 +31,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
@@ -65,15 +53,16 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -82,7 +71,21 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AbsListView.OnScrollListener;
+
+import com.aliyun.android.oss.model.OSSObject;
+import com.aliyun.android.oss.task.GetObjectTask;
+import com.aliyun.android.oss.task.PutObjectTask;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.Volley;
+import com.wise.baba.AppApplication;
+import com.wise.baba.R;
+import com.wise.show.ImageDetailsActivity;
+
+import customView.CircleImageView;
+import customView.TimTextView;
+import customView.WaitLinearLayout.OnFinishListener;
 
 /**
  * 私信 1：布局优化，解决图片上传阴影问题 2：语音优化，语言的时间越长显示越长 3：图片加上发送中状态 4：发送失败提示，可以从发。
@@ -134,7 +137,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	String cust_name;
 	String logo;
 	MyBroadCastReceiver myBroadCastReceiver;
-	private MediaPlayer mMediaPlayer = new MediaPlayer();
+	private final MediaPlayer mMediaPlayer = new MediaPlayer();
 	// 复制内容
 	String letterCopy;
 	boolean btn_vocie = false;
@@ -239,6 +242,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		getFriendInfo();
 		btn_rcd.setOnTouchListener(new OnTouchListener() {
 
+			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// 按下语音录制按钮时返回false执行父类OnTouch
 				return false;
@@ -367,11 +371,11 @@ public class LetterActivity extends Activity implements IXListViewListener {
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(myBroadCastReceiver);
-		if(imageFriend != null){
+		if (imageFriend != null) {
 			imageFriend.recycle();
 			imageFriend = null;
 		}
-		if(imageMe != null){
+		if (imageMe != null) {
 			imageMe.recycle();
 			imageMe = null;
 		}
@@ -575,32 +579,32 @@ public class LetterActivity extends Activity implements IXListViewListener {
 
 	/** 获取头像 **/
 	private void getLogo() {
-		//获取好友头像
-		if (imageFriend == null) {
-			if (logo == null || logo.equals("")) {
-
-			} else {
-				// 获取用户头像
-				mQueue.add(new ImageRequest(logo,
-						new Response.Listener<Bitmap>() {
-							@Override
-							public void onResponse(Bitmap response) {
-								GetSystem.saveImageSD(response,
-										Constant.userIconPath, friend_id
-												+ ".png", 100);
-								imageFriend = response;
-								letterAdapter.notifyDataSetChanged();
-							}
-						}, 0, 0, Config.RGB_565, null));
-			}
-		}
-		//获取自己信息
 		try {
+			// 获取好友头像
+			if (imageFriend == null) {
+				if (logo == null || logo.equals("")) {
+
+				} else {
+					// 获取用户头像
+					mQueue.add(new ImageRequest(logo,
+							new Response.Listener<Bitmap>() {
+								@Override
+								public void onResponse(Bitmap response) {
+									GetSystem.saveImageSD(response,
+											Constant.userIconPath, friend_id
+													+ ".png", 100);
+									imageFriend = response;
+									letterAdapter.notifyDataSetChanged();
+								}
+							}, 0, 0, Config.RGB_565, null));
+				}
+			}
+			// 获取自己信息
 			SharedPreferences preferences = getSharedPreferences(
 					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 			String customer = preferences.getString(Constant.sp_customer
 					+ app.cust_id, "");
-			JSONObject jsonObject = new JSONObject(customer);	
+			JSONObject jsonObject = new JSONObject(customer);
 			final String meLogo = jsonObject.getString("logo");
 			// 读取自己对应的图片
 			if (new File(Constant.userIconPath + GetSystem.getM5DEndo(meLogo)
@@ -917,23 +921,24 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				String imageUrl = letterData.getUrl();
 				int lastSlashIndex = imageUrl.lastIndexOf("/");
 				final String imageName = imageUrl.substring(lastSlashIndex + 1);
-				Bitmap bitmap = MyLruCache.getInstance().getLruBitmap(imageName);
-				if(bitmap != null){
+				Bitmap bitmap = MyLruCache.getInstance()
+						.getLruBitmap(imageName);
+				if (bitmap != null) {
 					viewFriendImage.iv_friend_pic.setImageBitmap(Blur
 							.toRoundCorner(bitmap, 5));
 					viewFriendImage.iv_friend_pic
-					.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							Intent intent = new Intent(
-									LetterActivity.this,
-									ImageDetailsActivity.class);
-							intent.putExtra("image_path",
-									Constant.VehiclePath + imageName);
-							startActivity(intent);
-						}
-					});
-				}else{
+							.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									Intent intent = new Intent(
+											LetterActivity.this,
+											ImageDetailsActivity.class);
+									intent.putExtra("image_path",
+											Constant.VehiclePath + imageName);
+									startActivity(intent);
+								}
+							});
+				} else {
 					if (new File(getImagePath(imageUrl)).exists()) {
 						Bitmap image = BitmapFactory
 								.decodeFile(Constant.VehiclePath + imageName);
@@ -949,14 +954,15 @@ public class LetterActivity extends Activity implements IXListViewListener {
 												LetterActivity.this,
 												ImageDetailsActivity.class);
 										intent.putExtra("image_path",
-												Constant.VehiclePath + imageName);
+												Constant.VehiclePath
+														+ imageName);
 										startActivity(intent);
 									}
 								});
 					} else {
 						viewFriendImage.iv_friend_pic.setImageBitmap(null);
 					}
-				}				
+				}
 				break;
 			case FriendSound:
 				if (isTimeShow) {
@@ -1013,32 +1019,34 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				int lastSlashIndex3 = imageUrl3.lastIndexOf("/");
 				final String imageName3 = imageUrl3
 						.substring(lastSlashIndex3 + 1);
-				Bitmap bitmapFriend = MyLruCache.getInstance().getLruBitmap(imageName3);
-				if(bitmapFriend != null){
+				Bitmap bitmapFriend = MyLruCache.getInstance().getLruBitmap(
+						imageName3);
+				if (bitmapFriend != null) {
 					viewFriendMap.iv_friend_map.setImageBitmap(Blur
 							.toRoundCorner(bitmapFriend, 5));
 					viewFriendMap.iv_friend_map
-					.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							Intent intent = new Intent(
-									LetterActivity.this,
-									LetterMapActivity.class);
-							intent.putExtra("adress",
-									letterData.getAdress());
-							intent.putExtra("latitude",
-									letterData.getLat());
-							intent.putExtra("longitude",
-									letterData.getLon());
-							startActivity(intent);
-						}
-					});
-				}else{
+							.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									Intent intent = new Intent(
+											LetterActivity.this,
+											LetterMapActivity.class);
+									intent.putExtra("adress",
+											letterData.getAdress());
+									intent.putExtra("latitude",
+											letterData.getLat());
+									intent.putExtra("longitude",
+											letterData.getLon());
+									startActivity(intent);
+								}
+							});
+				} else {
 					if (new File(getImagePath(imageUrl3)).exists()) {
 						Bitmap image = BitmapFactory
 								.decodeFile(Constant.VehiclePath + imageName3);
 						image = Blur.scaleWidthImage(image, mapWidth);
-						MyLruCache.getInstance().putLruBitmap(imageName3, image);
+						MyLruCache.getInstance()
+								.putLruBitmap(imageName3, image);
 						viewFriendMap.iv_friend_map.setImageBitmap(Blur
 								.toRoundCorner(image, 5));
 						// TODO 地址大小
@@ -1061,7 +1069,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					} else {
 						viewFriendMap.iv_friend_map.setImageBitmap(null);
 					}
-				}				
+				}
 				break;
 			case MeText:
 				if (isTimeShow) {
@@ -1101,30 +1109,32 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				int lastSlashIndex1 = imageUrl1.lastIndexOf("/");
 				final String imageName1 = imageUrl1
 						.substring(lastSlashIndex1 + 1);
-				Bitmap bitmapImageMe = MyLruCache.getInstance().getLruBitmap(imageName1);
-				if(bitmapImageMe != null){
+				Bitmap bitmapImageMe = MyLruCache.getInstance().getLruBitmap(
+						imageName1);
+				if (bitmapImageMe != null) {
 					viewMeImage.iv_me_pic.setImageBitmap(Blur.toRoundCorner(
 							bitmapImageMe, 5));
 					viewMeImage.iv_me_pic
-					.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							Intent intent = new Intent(
-									LetterActivity.this,
-									ImageDetailsActivity.class);
-							intent.putExtra("image_path",
-									Constant.VehiclePath + imageName1);
-							startActivity(intent);
-						}
-					});
-				}else{
+							.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									Intent intent = new Intent(
+											LetterActivity.this,
+											ImageDetailsActivity.class);
+									intent.putExtra("image_path",
+											Constant.VehiclePath + imageName1);
+									startActivity(intent);
+								}
+							});
+				} else {
 					if (new File(getImagePath(imageUrl1)).exists()) {
 						Bitmap image = BitmapFactory
 								.decodeFile(Constant.VehiclePath + imageName1);
 						image = Blur.scaleImage(image, 100);
-						MyLruCache.getInstance().putLruBitmap(imageName1, image);
-						viewMeImage.iv_me_pic.setImageBitmap(Blur.toRoundCorner(
-								image, 5));
+						MyLruCache.getInstance()
+								.putLruBitmap(imageName1, image);
+						viewMeImage.iv_me_pic.setImageBitmap(Blur
+								.toRoundCorner(image, 5));
 						viewMeImage.iv_me_pic
 								.setOnClickListener(new OnClickListener() {
 									@Override
@@ -1133,13 +1143,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 												LetterActivity.this,
 												ImageDetailsActivity.class);
 										intent.putExtra("image_path",
-												Constant.VehiclePath + imageName1);
+												Constant.VehiclePath
+														+ imageName1);
 										startActivity(intent);
 									}
 								});
 						if (letterData.isSendIn) {
-							float Scale = Blur.calculateScale(image.getHeight(),
-									image.getWidth(), 100);
+							float Scale = Blur.calculateScale(
+									image.getHeight(), image.getWidth(), 100);
 							viewMeImage.tv_send_in.setVisibility(View.VISIBLE);
 							viewMeImage.tv_send_in
 									.setLayoutParams(new RelativeLayout.LayoutParams(
@@ -1154,7 +1165,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					} else {
 						viewMeImage.iv_me_pic.setImageBitmap(null);
 					}
-				}				
+				}
 				break;
 			case MeSound:
 				if (isTimeShow) {
@@ -1215,31 +1226,34 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				int lastSlashIndex2 = imageUrl2.lastIndexOf("/");
 				final String imageName2 = imageUrl2
 						.substring(lastSlashIndex2 + 1);
-				Bitmap bitmapMe = MyLruCache.getInstance().getLruBitmap(imageName2);
-				if(bitmapMe != null){//显示图片
-					viewMeMap.iv_me_map.setImageBitmap(Blur.toRoundCorner(bitmapMe, 5));
+				Bitmap bitmapMe = MyLruCache.getInstance().getLruBitmap(
+						imageName2);
+				if (bitmapMe != null) {// 显示图片
+					viewMeMap.iv_me_map.setImageBitmap(Blur.toRoundCorner(
+							bitmapMe, 5));
 					viewMeMap.iv_me_map
-					.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							Intent intent = new Intent(
-									LetterActivity.this,
-									LetterMapActivity.class);
-							intent.putExtra("adress",
-									letterData.getAdress());
-							intent.putExtra("latitude",
-									letterData.getLat());
-							intent.putExtra("longitude",
-									letterData.getLon());
-							startActivity(intent);
-						}
-					});
-				}else{
+							.setOnClickListener(new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									Intent intent = new Intent(
+											LetterActivity.this,
+											LetterMapActivity.class);
+									intent.putExtra("adress",
+											letterData.getAdress());
+									intent.putExtra("latitude",
+											letterData.getLat());
+									intent.putExtra("longitude",
+											letterData.getLon());
+									startActivity(intent);
+								}
+							});
+				} else {
 					if (new File(getImagePath(imageUrl2)).exists()) {
 						Bitmap image = BitmapFactory
 								.decodeFile(Constant.VehiclePath + imageName2);
 						image = Blur.scaleWidthImage(image, mapWidth);
-						MyLruCache.getInstance().putLruBitmap(imageName2, image);
+						MyLruCache.getInstance()
+								.putLruBitmap(imageName2, image);
 						viewMeMap.iv_me_map.setImageBitmap(Blur.toRoundCorner(
 								image, 5));
 						viewMeMap.iv_me_map
@@ -1261,7 +1275,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					} else {
 						viewMeMap.iv_me_map.setImageBitmap(null);
 					}
-				}				
+				}
 				break;
 			}
 			return convertView;
@@ -1568,8 +1582,9 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			// 图库返回
 			if (data != null) {
 				// 获取图片路径
-				Uri uri = data.getData();				
-				saveImageSD(Uri2Path.getPath(LetterActivity.this, uri), 1, 0.0, 0.0, "");
+				Uri uri = data.getData();
+				saveImageSD(Uri2Path.getPath(LetterActivity.this, uri), 1, 0.0,
+						0.0, "");
 			}
 			return;
 		} else if (requestCode == 3 && resultCode == 3) {
@@ -1771,11 +1786,13 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		}
 		return false;
 	}
+
 	/**
 	 * 删除列表里正在下载的线程标识
+	 * 
 	 * @param position
 	 */
-	private void removeThreadMark(int position){
+	private void removeThreadMark(int position) {
 		for (int i = 0; i < photoThreadId.size(); i++) {
 			if (photoThreadId.get(i) == position) {
 				photoThreadId.remove(i);
@@ -1849,6 +1866,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					voice_rcd_hint_rcding.setVisibility(View.GONE);
 					voice_rcd_hint_tooshort.setVisibility(View.GONE);
 					handler.postDelayed(new Runnable() {
+						@Override
 						public void run() {
 							if (!isShosrt) {
 								voice_rcd_hint_loading.setVisibility(View.GONE);
@@ -1896,6 +1914,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 						voice_rcd_hint_rcding.setVisibility(View.GONE);
 						voice_rcd_hint_tooshort.setVisibility(View.VISIBLE);
 						handler.postDelayed(new Runnable() {
+							@Override
 							public void run() {
 								voice_rcd_hint_tooshort
 										.setVisibility(View.GONE);
@@ -1939,12 +1958,14 @@ public class LetterActivity extends Activity implements IXListViewListener {
 
 	private static final int POLL_INTERVAL = 300;
 
-	private Runnable mSleepTask = new Runnable() {
+	private final Runnable mSleepTask = new Runnable() {
+		@Override
 		public void run() {
 			stop();
 		}
 	};
-	private Runnable mPollTask = new Runnable() {
+	private final Runnable mPollTask = new Runnable() {
+		@Override
 		public void run() {
 			double amp = mSensor.getAmplitude();
 			updateDisplay(amp);
@@ -2017,6 +2038,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			mMediaPlayer.prepare();
 			mMediaPlayer.start();
 			mMediaPlayer.setOnCompletionListener(new OnCompletionListener() {
+				@Override
 				public void onCompletion(MediaPlayer mp) {
 					AnimationDrawable animationDrawable = (AnimationDrawable) ivNowPlay
 							.getDrawable();
