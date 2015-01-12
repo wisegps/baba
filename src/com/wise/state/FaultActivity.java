@@ -120,8 +120,7 @@ public class FaultActivity extends FragmentActivity {
 	private static final int get_ad = 13;
 
 	ImageView iv_weather, iv_noti;
-	TextView tv_city, tv_weather_time, tv_weather, tv_advice, tv_hot_content,
-			tv_host_title, tv_content;
+	TextView tv_city, tv_weather_time, tv_weather, tv_advice, tv_hot_content, tv_host_title, tv_content;
 	RelativeLayout rl_ad;
 	int index = 0;
 	private FragmentManager fragmentManager;
@@ -165,9 +164,7 @@ public class FaultActivity extends FragmentActivity {
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		int width = dm.widthPixels;
-		int twoCompleted = (int) TypedValue.applyDimension(
-				TypedValue.COMPLEX_UNIT_DIP, 280, getResources()
-						.getDisplayMetrics());
+		int twoCompleted = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 280, getResources().getDisplayMetrics());
 		completed = (width - twoCompleted) / 3;
 		Button bt_show = (Button) findViewById(R.id.bt_show);
 		bt_show.setOnClickListener(onClickListener);
@@ -224,8 +221,7 @@ public class FaultActivity extends FragmentActivity {
 		if (Judge.isLogin(app)) {// 已登录
 			GetSystem.myLog(TAG, "已登录,app.carDatas = " + app.carDatas.size());
 			initDataView();
-			noticeUrl = Constant.BaseUrl + "customer/" + app.cust_id
-					+ "/tips?auth_code=" + app.auth_code;
+			noticeUrl = Constant.BaseUrl + "customer/" + app.cust_id + "/tips?auth_code=" + app.auth_code;
 			getCounter();
 
 			if (app.carDatas.size() == 0) {// 如果没有车则显示
@@ -234,8 +230,7 @@ public class FaultActivity extends FragmentActivity {
 				tv_content = (TextView) findViewById(R.id.tv_content);
 				ll_image = (LinearLayout) findViewById(R.id.ll_image);
 				hs_photo = (HScrollLayout) findViewById(R.id.hs_photo);
-				hs_photo.setLayoutParams(new RelativeLayout.LayoutParams(
-						RelativeLayout.LayoutParams.MATCH_PARENT, getAdHeight()));
+				hs_photo.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, getAdHeight()));
 				getAD();
 				hs_photo.setOnViewChangeListener(new OnViewChangeListener() {
 					@Override
@@ -268,17 +263,17 @@ public class FaultActivity extends FragmentActivity {
 		intentFilter = new IntentFilter();
 		intentFilter.addAction(Constant.A_RefreshHomeCar);
 		intentFilter.addAction(Constant.A_LoginOut);
+		intentFilter.addAction(Constant.A_ChangeCustomerType);
 		registerReceiver(myBroadCastReceiver, intentFilter);
 		new GetLocation(FaultActivity.this);
 		new CycleNstvThread().start();
 
 		UmengUpdateAgent.update(this);
-		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(),
-				mNaviEngineInitListener, new LBSAuthManagerListener() {
-					@Override
-					public void onAuthResult(int status, String msg) {
-					}
-				});
+		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(), mNaviEngineInitListener, new LBSAuthManagerListener() {
+			@Override
+			public void onAuthResult(int status, String msg) {
+			}
+		});
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -304,14 +299,9 @@ public class FaultActivity extends FragmentActivity {
 
 								} else {
 									// 获取gps信息
-									String gpsUrl = Constant.BaseUrl
-											+ "device/"
-											+ device_id
-											+ "?auth_code="
-											+ app.auth_code
+									String gpsUrl = Constant.BaseUrl + "device/" + device_id + "?auth_code=" + app.auth_code
 											+ "&update_time=2014-01-01%2019:06:43";
-									new NetThread.GetDataThread(handler,
-											gpsUrl, get_gps, index).start();
+									new NetThread.GetDataThread(handler, gpsUrl, get_gps, index).start();
 								}
 							} else {
 								Log.d(TAG, "刷新位置数组越界");
@@ -356,11 +346,9 @@ public class FaultActivity extends FragmentActivity {
 		try {
 			JSONArray jsonArray = new JSONArray(result);
 			for (int i = 0; i < jsonArray.length(); i++) {
-				View view_image = LayoutInflater.from(this).inflate(
-						R.layout.item_nocar_image, null);
+				View view_image = LayoutInflater.from(this).inflate(R.layout.item_nocar_image, null);
 				hs_photo.addView(view_image);
-				ImageView iv_pic = (ImageView) view_image
-						.findViewById(R.id.iv_pic);
+				ImageView iv_pic = (ImageView) view_image.findViewById(R.id.iv_pic);
 				iv_pic.setOnClickListener(onClickListener);
 				ADView aView = new ADView();
 				aView.setImageView(iv_pic);
@@ -374,8 +362,7 @@ public class FaultActivity extends FragmentActivity {
 
 				ImageView imageView = new ImageView(this);
 				imageView.setImageResource(R.drawable.round_press);
-				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-						15, 15);
+				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(15, 15);
 				lp.setMargins(5, 0, 5, 0);
 				imageView.setLayoutParams(lp);
 				ll_image.addView(imageView);
@@ -400,26 +387,22 @@ public class FaultActivity extends FragmentActivity {
 
 	private void getImage() {
 		for (final AData aData : adDatas) {
-			mQueue.add(new ImageRequest(aData.getImage(),
-					new Response.Listener<Bitmap>() {
-						@Override
-						public void onResponse(Bitmap response) {
-							for (int i = 0; i < adDatas.size(); i++) {
-								if (adDatas.get(i).getImage()
-										.equals(aData.getImage())) {
-									setImageWidthHeight(adViews.get(i)
-											.getImageView(), response);
-									adViews.get(i).getImageView()
-											.setImageBitmap(response);
-								}
-							}
+			mQueue.add(new ImageRequest(aData.getImage(), new Response.Listener<Bitmap>() {
+				@Override
+				public void onResponse(Bitmap response) {
+					for (int i = 0; i < adDatas.size(); i++) {
+						if (adDatas.get(i).getImage().equals(aData.getImage())) {
+							setImageWidthHeight(adViews.get(i).getImageView(), response);
+							adViews.get(i).getImageView().setImageBitmap(response);
 						}
-					}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
-						@Override
-						public void onErrorResponse(VolleyError error) {
-							error.printStackTrace();
-						}
-					}));
+					}
+				}
+			}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
+				@Override
+				public void onErrorResponse(VolleyError error) {
+					error.printStackTrace();
+				}
+			}));
 		}
 	}
 
@@ -432,8 +415,7 @@ public class FaultActivity extends FragmentActivity {
 		double ratio = bitmap.getWidth() / (widthPixels * 1.0);
 		int scaledHeight = (int) (bitmap.getHeight() / ratio);
 
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-				widthPixels, scaledHeight);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(widthPixels, scaledHeight);
 		iv_pic.setLayoutParams(params);
 	}
 
@@ -495,14 +477,12 @@ public class FaultActivity extends FragmentActivity {
 
 		@Override
 		public String toString() {
-			return "AData [image=" + image + ", content=" + content + ", url="
-					+ url + "]";
+			return "AData [image=" + image + ", content=" + content + ", url=" + url + "]";
 		}
 	}
 
 	private String getSdcardDir() {
-		if (Environment.getExternalStorageState().equalsIgnoreCase(
-				Environment.MEDIA_MOUNTED)) {
+		if (Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
 			return Environment.getExternalStorageDirectory().toString();
 		}
 		return null;
@@ -513,8 +493,7 @@ public class FaultActivity extends FragmentActivity {
 	 */
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		startActivityForResult(new Intent(FaultActivity.this,
-				MoreActivity.class), 5);
+		startActivityForResult(new Intent(FaultActivity.this, MoreActivity.class), 5);
 		return true;
 	}
 
@@ -526,13 +505,11 @@ public class FaultActivity extends FragmentActivity {
 				finish();
 				break;
 			case R.id.iv_menu:
-				startActivityForResult(new Intent(FaultActivity.this,
-						MoreActivity.class), 5);
+				startActivityForResult(new Intent(FaultActivity.this, MoreActivity.class), 5);
 				break;
 			case R.id.iv_location_hot:
 				if (!Judge.isLogin(app)) {
-					startActivity(new Intent(FaultActivity.this,
-							LoginActivity.class));
+					startActivity(new Intent(FaultActivity.this, LoginActivity.class));
 				} else {
 					if (app.carDatas == null || app.carDatas.size() == 0) {
 						goCarMap(false);
@@ -540,7 +517,7 @@ public class FaultActivity extends FragmentActivity {
 					}
 					CarData carData = app.carDatas.get(index);
 					String device_id = carData.getDevice_id();
-					if (device_id == null || device_id.equals("")) {
+					if (device_id == null || device_id.equals("") || device_id.equals("0")) {
 						goCarMap(false);
 					} else {
 						goCarMap(true);
@@ -555,23 +532,17 @@ public class FaultActivity extends FragmentActivity {
 				startActivity(new Intent(FaultActivity.this, ShowActivity.class));
 				break;
 			case R.id.tasks_view:
-				GetSystem.myLog(TAG, "tasks_view : app.carDatas.size() = "
-						+ app.carDatas.size());
+				GetSystem.myLog(TAG, "tasks_view : app.carDatas.size() = " + app.carDatas.size());
 				if (app.carDatas != null && app.carDatas.size() != 0) {
 					String Device_id = app.carDatas.get(index).getDevice_id();
 					if (Device_id == null || Device_id.equals("")) {
-						Intent intent = new Intent(FaultActivity.this,
-								DevicesAddActivity.class);
-						intent.putExtra("car_id", app.carDatas.get(index)
-								.getObj_id());
-						intent.putExtra("car_series_id", app.carDatas
-								.get(index).getCar_series_id());
-						intent.putExtra("car_series", app.carDatas.get(index)
-								.getCar_series());
+						Intent intent = new Intent(FaultActivity.this, DevicesAddActivity.class);
+						intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
+						intent.putExtra("car_series_id", app.carDatas.get(index).getCar_series_id());
+						intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
 						startActivityForResult(intent, 2);
 					} else {
-						Intent intent = new Intent(FaultActivity.this,
-								FaultDetectionActivity.class);
+						Intent intent = new Intent(FaultActivity.this, FaultDetectionActivity.class);
 						intent.putExtra("index", index);
 						startActivityForResult(intent, 1);
 					}
@@ -581,18 +552,13 @@ public class FaultActivity extends FragmentActivity {
 				if (app.carDatas != null && app.carDatas.size() != 0) {
 					String Device_id = app.carDatas.get(index).getDevice_id();
 					if (Device_id == null || Device_id.equals("")) {
-						Intent intent = new Intent(FaultActivity.this,
-								DevicesAddActivity.class);
-						intent.putExtra("car_id", app.carDatas.get(index)
-								.getObj_id());
-						intent.putExtra("car_series_id", app.carDatas
-								.get(index).getCar_series_id());
-						intent.putExtra("car_series", app.carDatas.get(index)
-								.getCar_series());
+						Intent intent = new Intent(FaultActivity.this, DevicesAddActivity.class);
+						intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
+						intent.putExtra("car_series_id", app.carDatas.get(index).getCar_series_id());
+						intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
 						startActivityForResult(intent, 2);
 					} else {
-						Intent intent = new Intent(FaultActivity.this,
-								DriveActivity.class);
+						Intent intent = new Intent(FaultActivity.this, DriveActivity.class);
 						intent.putExtra("index_car", index);
 						startActivityForResult(intent, 2);
 					}
@@ -613,20 +579,17 @@ public class FaultActivity extends FragmentActivity {
 				nstvClick();
 				break;
 			case R.id.tv_city:
-				startActivityForResult(new Intent(FaultActivity.this,
-						SelectCityActivity.class), 0);
+				startActivityForResult(new Intent(FaultActivity.this, SelectCityActivity.class), 0);
 				break;
 			case R.id.ll_adress:
 				goCarMap(true);
 				break;
 			case R.id.iv_pic:
-				Intent intent = new Intent(Intent.ACTION_VIEW,
-						Uri.parse(adDatas.get(image_position).getUrl()));
+				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(adDatas.get(image_position).getUrl()));
 				startActivity(intent);
 				break;
 			case R.id.tv_hot_content:
-				Intent intent_hot = new Intent(FaultActivity.this,
-						BrowserActivity.class);
+				Intent intent_hot = new Intent(FaultActivity.this, BrowserActivity.class);
 				intent_hot.putExtra("url", hot_url);
 				intent_hot.putExtra("title", hot_title);
 				intent_hot.putExtra("hot_content", hot_content);
@@ -635,11 +598,9 @@ public class FaultActivity extends FragmentActivity {
 			case R.id.iv_update_oil:
 				String device_id = app.carDatas.get(index).getDevice_id();
 				if (device_id == null || device_id.equals("")) {
-					Toast.makeText(FaultActivity.this, "您的车没有绑定终端，不能进行油耗修正",
-							Toast.LENGTH_SHORT).show();
+					Toast.makeText(FaultActivity.this, "您的车没有绑定终端，不能进行油耗修正", Toast.LENGTH_SHORT).show();
 				} else {
-					Intent intent_oil = new Intent(FaultActivity.this,
-							OilUpdateActivity.class);
+					Intent intent_oil = new Intent(FaultActivity.this, OilUpdateActivity.class);
 					intent_oil.putExtra("index", index);
 					startActivity(intent_oil);
 				}
@@ -658,17 +619,13 @@ public class FaultActivity extends FragmentActivity {
 		if (app.carDatas != null && app.carDatas.size() != 0) {
 			String Device_id = app.carDatas.get(index).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
-				Intent intent = new Intent(FaultActivity.this,
-						DevicesAddActivity.class);
+				Intent intent = new Intent(FaultActivity.this, DevicesAddActivity.class);
 				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
-				intent.putExtra("car_series_id", app.carDatas.get(index)
-						.getCar_series_id());
-				intent.putExtra("car_series", app.carDatas.get(index)
-						.getCar_series());
+				intent.putExtra("car_series_id", app.carDatas.get(index).getCar_series_id());
+				intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
 				startActivityForResult(intent, 2);
 			} else {
-				Intent intent = new Intent(FaultActivity.this,
-						FuelActivity.class);
+				Intent intent = new Intent(FaultActivity.this, FuelActivity.class);
 				intent.putExtra("index_car", index);
 				// 传递跳转类型常量进行跳转
 				intent.putExtra("type", type);
@@ -712,21 +669,15 @@ public class FaultActivity extends FragmentActivity {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					// 健康指数
 					int health_score = jsonObject.getInt("health_score");
-					carViews.get(msg.arg1).getmTasksView()
-							.setProgress(health_score);
-					carViews.get(msg.arg1).getTv_score()
-							.setText(String.valueOf(health_score));
+					carViews.get(msg.arg1).getmTasksView().setProgress(health_score);
+					carViews.get(msg.arg1).getTv_score().setText(String.valueOf(health_score));
 					carViews.get(msg.arg1).getTv_title().setText("健康指数");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				SharedPreferences preferences = getSharedPreferences(
-						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+				SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 				Editor editor = preferences.edit();
-				editor.putString(
-						Constant.sp_health_score
-								+ app.carDatas.get(msg.arg1).getObj_id(),
-						msg.obj.toString());
+				editor.putString(Constant.sp_health_score + app.carDatas.get(msg.arg1).getObj_id(), msg.obj.toString());
 				editor.commit();
 				break;
 			case get_device:
@@ -734,18 +685,12 @@ public class FaultActivity extends FragmentActivity {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					int drive_score = jsonObject.getInt("drive_score");
 					if (drive_score != 0) {
-						carViews.get(msg.arg1).getTcv_drive()
-								.setProgress(drive_score);
-						carViews.get(msg.arg1).getTv_drive()
-								.setText(String.valueOf(drive_score));
+						carViews.get(msg.arg1).getTcv_drive().setProgress(drive_score);
+						carViews.get(msg.arg1).getTv_drive().setText(String.valueOf(drive_score));
 						// 存在本地
-						SharedPreferences preferences1 = getSharedPreferences(
-								Constant.sharedPreferencesName,
-								Context.MODE_PRIVATE);
+						SharedPreferences preferences1 = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 						Editor editor1 = preferences1.edit();
-						editor1.putString(Constant.sp_drive_score
-								+ app.carDatas.get(msg.arg1).getObj_id(),
-								msg.obj.toString());
+						editor1.putString(Constant.sp_drive_score + app.carDatas.get(msg.arg1).getObj_id(), msg.obj.toString());
 						editor1.commit();
 					}
 
@@ -780,60 +725,35 @@ public class FaultActivity extends FragmentActivity {
 
 				} else {
 					String Gas_no = "";
-					if (carData.getGas_no() == null
-							|| carData.getGas_no().equals("")) {
+					if (carData.getGas_no() == null || carData.getGas_no().equals("")) {
 						Gas_no = "93#(92#)";
 					} else {
 						Gas_no = carData.getGas_no();
 					}
 					// 获取当前月的数据
-					String url = Constant.BaseUrl + "device/" + device_id
-							+ "/total?auth_code=" + app.auth_code
-							+ "&start_day=" + startMonth + "&end_day="
-							+ endMonth + "&city="
-							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
-							+ Gas_no;
-					new NetThread.GetDataThread(handler, url, getData, index)
-							.start();
+					String url = Constant.BaseUrl + "device/" + device_id + "/total?auth_code=" + app.auth_code + "&start_day=" + startMonth + "&end_day="
+							+ endMonth + "&city=" + URLEncoder.encode(app.City, "UTF-8") + "&gas_no=" + Gas_no;
+					new NetThread.GetDataThread(handler, url, getData, index).start();
 					// 获取gps信息
-					String gpsUrl = Constant.BaseUrl + "device/" + device_id
-							+ "?auth_code=" + app.auth_code
-							+ "&update_time=2014-01-01%2019:06:43";
-					new NetThread.GetDataThread(handler, gpsUrl, get_gps, index)
-							.start();
+					String gpsUrl = Constant.BaseUrl + "device/" + device_id + "?auth_code=" + app.auth_code + "&update_time=2014-01-01%2019:06:43";
+					new NetThread.GetDataThread(handler, gpsUrl, get_gps, index).start();
 
 					// 从服务器获取体检信息
-					String url1 = Constant.BaseUrl
-							+ "device/"
-							+ device_id
-							+ "/health_exam?auth_code="
-							+ app.auth_code
-							+ "&brand="
-							+ URLEncoder
-									.encode(carData.getCar_brand(), "UTF-8");
-					new NetThread.GetDataThread(handler, url1, get_health,
-							index).start();
+					String url1 = Constant.BaseUrl + "device/" + device_id + "/health_exam?auth_code=" + app.auth_code + "&brand="
+							+ URLEncoder.encode(carData.getCar_brand(), "UTF-8");
+					new NetThread.GetDataThread(handler, url1, get_health, index).start();
 					// 获取驾驶信息
-					String url2 = Constant.BaseUrl + "device/" + device_id
-							+ "/day_drive?auth_code=" + app.auth_code + "&day="
-							+ GetSystem.GetNowMonth().getDay() + "&city="
-							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
-							+ Gas_no;
-					new NetThread.GetDataThread(handler, url2, get_device,
-							index).start();
+					String url2 = Constant.BaseUrl + "device/" + device_id + "/day_drive?auth_code=" + app.auth_code + "&day="
+							+ GetSystem.GetNowMonth().getDay() + "&city=" + URLEncoder.encode(app.City, "UTF-8") + "&gas_no=" + Gas_no;
+					new NetThread.GetDataThread(handler, url2, get_device, index).start();
 				}
 				// 获取限行信息
-				if (app.City == null || carData.getObj_name() == null
-						|| app.City.equals("")
-						|| carData.getObj_name().equals("")) {
+				if (app.City == null || carData.getObj_name() == null || app.City.equals("") || carData.getObj_name().equals("")) {
 
 				} else {
-					String url = Constant.BaseUrl + "base/ban?city="
-							+ URLEncoder.encode(app.City, "UTF-8")
-							+ "&obj_name="
+					String url = Constant.BaseUrl + "base/ban?city=" + URLEncoder.encode(app.City, "UTF-8") + "&obj_name="
 							+ URLEncoder.encode(carData.getObj_name(), "UTF-8");
-					new NetThread.GetDataThread(handler, url, Get_carLimit,
-							index).start();
+					new NetThread.GetDataThread(handler, url, Get_carLimit, index).start();
 				}
 			}
 		} catch (Exception e) {
@@ -845,8 +765,7 @@ public class FaultActivity extends FragmentActivity {
 	private void jsonGps(String str, int index) {
 		try {
 			if (index < app.carDatas.size()) {
-				JSONObject jsonObject = new JSONObject(str)
-						.getJSONObject("active_gps_data");
+				JSONObject jsonObject = new JSONObject(str).getJSONObject("active_gps_data");
 				double lat = jsonObject.getDouble("lat");
 				double lon = jsonObject.getDouble("lon");
 				String uni_status = jsonObject.getString("uni_status");
@@ -855,15 +774,11 @@ public class FaultActivity extends FragmentActivity {
 				app.carDatas.get(index).setUni_status(uni_status);
 				app.carDatas.get(index).setLat(lat);
 				app.carDatas.get(index).setLon(lon);
-				app.carDatas.get(index).setRcv_time(
-						GetSystem.ChangeTimeZone(rcv_time.substring(0, 19)
-								.replace("T", " ")));
+				app.carDatas.get(index).setRcv_time(GetSystem.ChangeTimeZone(rcv_time.substring(0, 19).replace("T", " ")));
 				GetSystem.myLog(TAG, "lat = " + lat + " , Lon = " + lon);
-				mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
-						.location(latLng));
+				mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
 
-				JSONObject jObject = new JSONObject(str)
-						.getJSONObject("params");
+				JSONObject jObject = new JSONObject(str).getJSONObject("params");
 				int sensitivity = 0;
 				if (jObject.opt("sensitivity") != null) {
 					sensitivity = jObject.getInt("sensitivity");
@@ -879,33 +794,22 @@ public class FaultActivity extends FragmentActivity {
 	private void jsonData(String str, int index) {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-			if (jsonObject.toString() == null
-					|| jsonObject.toString().equals("")) {
+			if (jsonObject.toString() == null || jsonObject.toString().equals("")) {
 				return;
 			}
 			if (index < carViews.size()) {
 				CarView carView = carViews.get(index);
-				carView.getTv_fee()
-						.setText(
-								String.format("%.1f",
-										jsonObject.getDouble("total_fee")));// 花费
-				carView.getTv_fuel().setText(
-						String.format("%.1f",
-								jsonObject.getDouble("total_fuel")));// 油耗
+				carView.getTv_fee().setText(String.format("%.1f", jsonObject.getDouble("total_fee")));// 花费
+				carView.getTv_fuel().setText(String.format("%.1f", jsonObject.getDouble("total_fuel")));// 油耗
 				// 剩余里程显示
 				if ((jsonObject.getString("left_distance")).equals("null")) {
-					carView.getTv_distance()
-							.setText(String.format("%.0f", 0.0));
+					carView.getTv_distance().setText(String.format("%.0f", 0.0));
 				} else if (jsonObject.getDouble("left_distance") == 0) {
-					carView.getTv_distance().setText(
-							String.format("%.1f",
-									jsonObject.getDouble("total_distance")));// 里程
+					carView.getTv_distance().setText(String.format("%.1f", jsonObject.getDouble("total_distance")));// 里程
 				} else {
 					carView.getTv_current_distance().setText("剩余里程");
 					try {
-						carView.getTv_distance().setText(
-								String.format("%.1f",
-										jsonObject.getDouble("left_distance")));// 里程
+						carView.getTv_distance().setText(String.format("%.1f", jsonObject.getDouble("left_distance")));// 里程
 					} catch (Exception e) {
 						carView.getTv_distance().setText(String.format("0"));// 里程
 					}
@@ -938,14 +842,12 @@ public class FaultActivity extends FragmentActivity {
 	 * 获取天气 onResume里获取，应为在设置页面改了城市后需要刷新
 	 **/
 	private void getWeather() {
-		SharedPreferences preferences = getSharedPreferences(
-				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		app.City = preferences.getString(Constant.sp_city, "");
 		tv_city.setText("[ " + app.City + " ]");
 		app.Province = preferences.getString(Constant.sp_province, "");
 		try {
-			String url = Constant.BaseUrl + "base/weather2?city="
-					+ URLEncoder.encode(app.City, "UTF-8");
+			String url = Constant.BaseUrl + "base/weather2?city=" + URLEncoder.encode(app.City, "UTF-8");
 			new NetThread.GetDataThread(handler, url, getWeather).start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -957,22 +859,17 @@ public class FaultActivity extends FragmentActivity {
 			JSONObject jsonObject = new JSONObject(str);
 			String time = jsonObject.getJSONObject("sk").getString("time");
 			tv_weather_time.setText(GetSystem.getTime(time));
-			String temperature = jsonObject.getJSONObject("today").getString(
-					"temperature");
-			String weather = jsonObject.getJSONObject("today").getString(
-					"weather");
+			String temperature = jsonObject.getJSONObject("today").getString("temperature");
+			String weather = jsonObject.getJSONObject("today").getString("weather");
 			String quality = jsonObject.getString("quality");
-			tv_weather.setText(temperature + "  " + weather + "   空气质量"
-					+ quality);
+			tv_weather.setText(temperature + "  " + weather + "   空气质量" + quality);
 			String tips = jsonObject.getString("tips");
 			if (tips.equals("")) {
-				tv_advice.setText(jsonObject.getJSONObject("today").getString(
-						"dressing_advice"));
+				tv_advice.setText(jsonObject.getJSONObject("today").getString("dressing_advice"));
 			} else {
 				tv_advice.setText(tips);
 			}
-			int fa = jsonObject.getJSONObject("today")
-					.getJSONObject("weather_id").getInt("fa");
+			int fa = jsonObject.getJSONObject("today").getJSONObject("weather_id").getInt("fa");
 			iv_weather.setImageResource(getResource("x" + fa));
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -981,16 +878,14 @@ public class FaultActivity extends FragmentActivity {
 
 	/** 返回天气对应的r资源名称 **/
 	public int getResource(String imageName) {
-		int resId = getResources().getIdentifier(imageName, "drawable",
-				"com.wise.baba");
+		int resId = getResources().getIdentifier(imageName, "drawable", "com.wise.baba");
 		return resId;
 	}
 
 	/** 获取热点信息 **/
 	private void gethot_news() {
 		try {
-			String url = Constant.BaseUrl + "base/hot_news?city="
-					+ URLEncoder.encode(app.City, "UTF-8");
+			String url = Constant.BaseUrl + "base/hot_news?city=" + URLEncoder.encode(app.City, "UTF-8");
 			new NetThread.GetDataThread(handler, url, gethot_news).start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1017,8 +912,7 @@ public class FaultActivity extends FragmentActivity {
 
 	// 跳转到地图界面
 	private void goCarMap(boolean b) {
-		Intent intent = new Intent(FaultActivity.this,
-				CarLocationActivity.class);
+		Intent intent = new Intent(FaultActivity.this, CarLocationActivity.class);
 		intent.putExtra("index", index);
 		intent.putExtra("isHotLocation", b);
 		startActivity(intent);
@@ -1032,37 +926,28 @@ public class FaultActivity extends FragmentActivity {
 		} else {
 			index = 0;
 		}
-		SharedPreferences preferences = getSharedPreferences(
-				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		hs_car.removeAllViews();
 		carViews.clear();
 		for (int i = 0; i < app.carDatas.size(); i++) {
-			View v = LayoutInflater.from(this).inflate(R.layout.item_fault,
-					null);
+			View v = LayoutInflater.from(this).inflate(R.layout.item_fault, null);
 			hs_car.addView(v);
-			ImageView iv_update_oil = (ImageView) v
-					.findViewById(R.id.iv_update_oil);
+			ImageView iv_update_oil = (ImageView) v.findViewById(R.id.iv_update_oil);
 			iv_update_oil.setOnClickListener(onClickListener);
-			RelativeLayout rl_left_complete = (RelativeLayout) v
-					.findViewById(R.id.rl_left_complete);
-			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.WRAP_CONTENT,
-					LinearLayout.LayoutParams.WRAP_CONTENT);
+			RelativeLayout rl_left_complete = (RelativeLayout) v.findViewById(R.id.rl_left_complete);
+			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 			lp.setMargins(0, 0, completed, 0);
 			rl_left_complete.setLayoutParams(lp);
 
-			LinearLayout ll_adress = (LinearLayout) v
-					.findViewById(R.id.ll_adress);
+			LinearLayout ll_adress = (LinearLayout) v.findViewById(R.id.ll_adress);
 			ll_adress.setOnClickListener(onClickListener);
 			TextView tv_score = (TextView) v.findViewById(R.id.tv_score);
 			TextView tv_title = (TextView) v.findViewById(R.id.tv_title);
-			TasksCompletedView mTasksView = (TasksCompletedView) v
-					.findViewById(R.id.tasks_view);
+			TasksCompletedView mTasksView = (TasksCompletedView) v.findViewById(R.id.tasks_view);
 
 			mTasksView.setOnClickListener(onClickListener);
 			// 当前里程数
-			TextView tv_current_distance = (TextView) v
-					.findViewById(R.id.tv_current_distance);
+			TextView tv_current_distance = (TextView) v.findViewById(R.id.tv_current_distance);
 
 			TextView tv_distance = (TextView) v.findViewById(R.id.tv_distance);
 			TextView tv_fee = (TextView) v.findViewById(R.id.tv_fee);
@@ -1071,13 +956,11 @@ public class FaultActivity extends FragmentActivity {
 			TextView tv_xx = (TextView) v.findViewById(R.id.tv_xx);
 			TextView tv_adress = (TextView) v.findViewById(R.id.tv_adress);
 
-			v.findViewById(R.id.Liner_distance).setOnClickListener(
-					onClickListener);
+			v.findViewById(R.id.Liner_distance).setOnClickListener(onClickListener);
 			v.findViewById(R.id.Liner_fuel).setOnClickListener(onClickListener);
 			v.findViewById(R.id.Liner_fee).setOnClickListener(onClickListener);
 
-			TasksCompletedView tcv_drive = (TasksCompletedView) v
-					.findViewById(R.id.tcv_drive);
+			TasksCompletedView tcv_drive = (TasksCompletedView) v.findViewById(R.id.tcv_drive);
 			tcv_drive.setOnClickListener(onClickListener);
 			TextView tv_drive = (TextView) v.findViewById(R.id.tv_drive);
 
@@ -1106,8 +989,7 @@ public class FaultActivity extends FragmentActivity {
 				tcv_drive.setProgress(100);
 				tv_drive.setText("0");
 			} else {
-				String result = preferences.getString(Constant.sp_health_score
-						+ app.carDatas.get(i).getObj_id(), "");
+				String result = preferences.getString(Constant.sp_health_score + app.carDatas.get(i).getObj_id(), "");
 				if (result.equals("")) {// 未体检过
 					carView.getmTasksView().setProgress(100);
 					tv_score.setText("0");
@@ -1125,8 +1007,7 @@ public class FaultActivity extends FragmentActivity {
 					}
 				}
 				/** 驾驶信息 **/
-				String drive = preferences.getString(Constant.sp_drive_score
-						+ app.carDatas.get(i).getObj_id(), "");
+				String drive = preferences.getString(Constant.sp_drive_score + app.carDatas.get(i).getObj_id(), "");
 				if (drive.equals("")) {
 					tcv_drive.setProgress(100);
 					tv_drive.setText("0");
@@ -1151,26 +1032,21 @@ public class FaultActivity extends FragmentActivity {
 		hs_car.removeAllViews();
 		View v = LayoutInflater.from(this).inflate(R.layout.item_fault, null);
 		hs_car.addView(v);
-		RelativeLayout rl_left_complete = (RelativeLayout) v
-				.findViewById(R.id.rl_left_complete);
-		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT);
+		RelativeLayout rl_left_complete = (RelativeLayout) v.findViewById(R.id.rl_left_complete);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		lp.setMargins(0, 0, completed, 0);
 		rl_left_complete.setLayoutParams(lp);
 
 		TextView tv_score = (TextView) v.findViewById(R.id.tv_score);
 		TextView tv_title = (TextView) v.findViewById(R.id.tv_title);
-		TasksCompletedView mTasksView = (TasksCompletedView) v
-				.findViewById(R.id.tasks_view);
+		TasksCompletedView mTasksView = (TasksCompletedView) v.findViewById(R.id.tasks_view);
 		mTasksView.setProgress(100);
 		tv_score.setText("0");
 		tv_title.setText("未体检过");
 		mTasksView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(FaultActivity.this,
-						LoginActivity.class));
+				startActivity(new Intent(FaultActivity.this, LoginActivity.class));
 			}
 		});
 		TextView tv_name = (TextView) v.findViewById(R.id.tv_name);
@@ -1179,8 +1055,7 @@ public class FaultActivity extends FragmentActivity {
 
 	/** 获取消息数据 **/
 	private void getCounter() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id
-				+ "/counter?auth_code=" + app.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/counter?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, get_counter).start();
 	}
 
@@ -1252,10 +1127,8 @@ public class FaultActivity extends FragmentActivity {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				String content = jsonObject.getString("content");
-				View v = LayoutInflater.from(this).inflate(R.layout.item_nstv,
-						null);
-				AlwaysMarqueeTextView tv_message = (AlwaysMarqueeTextView) v
-						.findViewById(R.id.tv_message);
+				View v = LayoutInflater.from(this).inflate(R.layout.item_nstv, null);
+				AlwaysMarqueeTextView tv_message = (AlwaysMarqueeTextView) v.findViewById(R.id.tv_message);
 				tv_message.setText(content);
 				tv_message.setOnClickListener(onClickListener);
 				nstv_message.addView(v);
@@ -1284,38 +1157,31 @@ public class FaultActivity extends FragmentActivity {
 				switch (type) {
 				case 0:
 					// 注册用户
-					startActivity(new Intent(FaultActivity.this,
-							LoginActivity.class));
+					startActivity(new Intent(FaultActivity.this, LoginActivity.class));
 					break;
 				case 1:
 					// 注册车辆
-					startActivity(new Intent(FaultActivity.this,
-							CarAddActivity.class));
+					startActivity(new Intent(FaultActivity.this, CarAddActivity.class));
 					break;
 				case 2:
 					// 修改车辆
-					int index = getIndexFromId(nsDatas.get(index_message)
-							.getObj_id());
+					int index = getIndexFromId(nsDatas.get(index_message).getObj_id());
 					if (index == -1) {
 						// 没有在列表找到对应的车
-						startActivity(new Intent(FaultActivity.this,
-								CarActivity.class));
+						startActivity(new Intent(FaultActivity.this, CarActivity.class));
 					} else {
-						Intent intent = new Intent(FaultActivity.this,
-								CarUpdateActivity.class);
+						Intent intent = new Intent(FaultActivity.this, CarUpdateActivity.class);
 						intent.putExtra("index", index);
 						startActivityForResult(intent, 2);
 					}
 					break;
 				case 3:
 					// 绑定终端
-					startActivity(new Intent(FaultActivity.this,
-							CarActivity.class));
+					startActivity(new Intent(FaultActivity.this, CarActivity.class));
 					break;
 				case 4:
 					// 消息
-					startActivity(new Intent(FaultActivity.this,
-							NoticeActivity.class));
+					startActivity(new Intent(FaultActivity.this, NoticeActivity.class));
 					break;
 				case 5:
 					// 问答
@@ -1552,10 +1418,8 @@ public class FaultActivity extends FragmentActivity {
 			// requestCode = 2, resultCode = 0
 			// 驾驶习惯返回
 			/** 驾驶信息 **/
-			SharedPreferences preferences = getSharedPreferences(
-					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-			String drive = preferences.getString(Constant.sp_drive_score
-					+ app.carDatas.get(index).getObj_id(), "");
+			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+			String drive = preferences.getString(Constant.sp_drive_score + app.carDatas.get(index).getObj_id(), "");
 			if (drive.equals("")) {
 
 			} else {
@@ -1563,8 +1427,7 @@ public class FaultActivity extends FragmentActivity {
 					JSONObject jsonObject = new JSONObject(drive);
 					int drive_score = jsonObject.getInt("drive_score");
 					carViews.get(index).getTcv_drive().setProgress(drive_score);
-					carViews.get(index).getTv_drive()
-							.setText(String.valueOf(drive_score));
+					carViews.get(index).getTv_drive().setText(String.valueOf(drive_score));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1612,8 +1475,7 @@ public class FaultActivity extends FragmentActivity {
 				GetSystem.myLog(TAG, "A_RefreshHomeCar");
 				initDataView();
 				getTotalData();
-				noticeUrl = Constant.BaseUrl + "customer/" + app.cust_id
-						+ "/tips?auth_code=" + app.auth_code;
+				noticeUrl = Constant.BaseUrl + "customer/" + app.cust_id + "/tips?auth_code=" + app.auth_code;
 				getMessage(noticeUrl);
 				getCounter();
 				noticeFragment.ResetNotice();
@@ -1657,13 +1519,9 @@ public class FaultActivity extends FragmentActivity {
 				try {
 					app.City = intent.getStringExtra("City");
 					app.Province = intent.getStringExtra("Province");
-					String url = Constant.BaseUrl + "base/weather2?city="
-							+ URLEncoder.encode(app.City, "UTF-8");
-					new NetThread.GetDataThread(handler, url, getWeather)
-							.start();
-					SharedPreferences preferences = getSharedPreferences(
-							Constant.sharedPreferencesName,
-							Context.MODE_PRIVATE);
+					String url = Constant.BaseUrl + "base/weather2?city=" + URLEncoder.encode(app.City, "UTF-8");
+					new NetThread.GetDataThread(handler, url, getWeather).start();
+					SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 					Editor editor = preferences.edit();
 					editor.putString(Constant.sp_city, app.City);
 					editor.putString(Constant.sp_province, app.Province);
@@ -1671,6 +1529,9 @@ public class FaultActivity extends FragmentActivity {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			} else if (action.equals(Constant.A_ChangeCustomerType)) {
+				// 类型改变，关闭界面
+				finish();
 			}
 		}
 	}
@@ -1681,8 +1542,7 @@ public class FaultActivity extends FragmentActivity {
 			System.out.println("onGetReverseGeoCodeResult");
 			if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
 				// 没有检索到结果
-				System.out.println("onGetReverseGeoCodeResult = "
-						+ result.error);
+				System.out.println("onGetReverseGeoCodeResult = " + result.error);
 			} else {
 				try {
 					GetSystem.myLog(TAG, "获取位置信息");
@@ -1696,20 +1556,16 @@ public class FaultActivity extends FragmentActivity {
 					String showTime = "";
 					if (gpsData.equals(nowData)) {
 						showTime = rcv_time.substring(11, 16);
-					} else if (gpsData.equals(GetSystem
-							.GetNextData(nowData, -1))) {
+					} else if (gpsData.equals(GetSystem.GetNextData(nowData, -1))) {
 						showTime = "昨天" + rcv_time.substring(11, 16);
-					} else if (gpsData.equals(GetSystem
-							.GetNextData(nowData, -2))) {
+					} else if (gpsData.equals(GetSystem.GetNextData(nowData, -2))) {
 						showTime = "前天" + rcv_time.substring(11, 16);
 					} else {
 						showTime = rcv_time.substring(5, 16);
 					}
 					// 显示时间
-					carViews.get(index).getLl_adress()
-							.setVisibility(View.VISIBLE);
-					carViews.get(index).getTv_adress()
-							.setText(adress + "  " + showTime);
+					carViews.get(index).getLl_adress().setVisibility(View.VISIBLE);
+					carViews.get(index).getTv_adress().setText(adress + "  " + showTime);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

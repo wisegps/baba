@@ -2,9 +2,11 @@ package com.wise.setting;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
+
 import pubclas.Constant;
 import pubclas.NetThread;
 import android.app.Activity;
@@ -20,10 +22,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.Toast;
+
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.TravelActivity;
 
+/** 油耗修正 **/
 public class OilUpdateActivity extends Activity {
 
 	private static final int Data2Judge = 1;
@@ -49,13 +53,13 @@ public class OilUpdateActivity extends Activity {
 		et_oil_record = (EditText) findViewById(R.id.et_oil_record);
 		findViewById(R.id.iv_back).setOnClickListener(onClickListener);
 		findViewById(R.id.bt_oil_update).setOnClickListener(onClickListener);
-		Button bt_reset = (Button)findViewById(R.id.bt_reset);
+		Button bt_reset = (Button) findViewById(R.id.bt_reset);
 		bt_reset.setOnClickListener(onClickListener);
 		bt_oil_add_1 = (Button) findViewById(R.id.bt_oil_add_1);
 		bt_oil_add_1.setOnClickListener(onClickListener);
 		bt_oil_add_2 = (Button) findViewById(R.id.bt_oil_add_2);
 		bt_oil_add_2.setOnClickListener(onClickListener);
-		scrollView = (ScrollView)findViewById(R.id.scrollView);
+		scrollView = (ScrollView) findViewById(R.id.scrollView);
 		getData2Judge();
 	}
 
@@ -67,8 +71,7 @@ public class OilUpdateActivity extends Activity {
 				finish();
 				break;
 			case R.id.bt_oil_update:// 车上有车行电脑，直接开始修正
-				Intent intent = new Intent(OilUpdateActivity.this,
-						TravelActivity.class);
+				Intent intent = new Intent(OilUpdateActivity.this, TravelActivity.class);
 				intent.putExtra("index", index);
 				startActivity(intent);
 				break;
@@ -78,8 +81,7 @@ public class OilUpdateActivity extends Activity {
 			case R.id.bt_oil_add_2:// 第二次加油，并录入
 				String oil = et_oil_record.getText().toString().trim();
 				if (oil.equals("")) {
-					Toast.makeText(OilUpdateActivity.this, "加油量不能为空",
-							Toast.LENGTH_SHORT).show();
+					Toast.makeText(OilUpdateActivity.this, "加油量不能为空", Toast.LENGTH_SHORT).show();
 				} else {
 					setSecondData2Cloud(2, Float.valueOf(oil));
 				}
@@ -111,33 +113,32 @@ public class OilUpdateActivity extends Activity {
 			}
 		}
 	};
-	/**重置油耗**/
-	private void resetOil(){
+
+	/** 重置油耗 **/
+	private void resetOil() {
 		dialog = ProgressDialog.show(OilUpdateActivity.this, "提示", "重置加油修正中");
 		dialog.setCancelable(true);
 		String url = Constant.BaseUrl + "device/" + device_id + "/refuel/reset?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		new NetThread.postDataThread(handler, url, params, reset).start();
 	}
-	private void jsonResetOil(String result){
+
+	private void jsonResetOil(String result) {
 		if (dialog != null) {
 			dialog.dismiss();
 		}
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if (jsonObject.getInt("status_code") == 0) {
-				Toast.makeText(OilUpdateActivity.this, "重置加油修正成功，请重新开始进行加油修正。",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(OilUpdateActivity.this, "重置加油修正成功，请重新开始进行加油修正。", Toast.LENGTH_SHORT).show();
 				bt_oil_add_1.setEnabled(true);
 				bt_oil_add_2.setEnabled(false);
 			} else {
-				Toast.makeText(OilUpdateActivity.this, "重置加油修正失败",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(OilUpdateActivity.this, "重置加油修正失败", Toast.LENGTH_SHORT).show();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Toast.makeText(OilUpdateActivity.this, "重置加油修正失败",
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(OilUpdateActivity.this, "重置加油修正失败", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -145,8 +146,7 @@ public class OilUpdateActivity extends Activity {
 	private void getData2Judge() {
 		dialog = ProgressDialog.show(OilUpdateActivity.this, "提示", "获取数据中");
 		dialog.setCancelable(true);
-		String url = Constant.BaseUrl + "device/" + device_id + "/?auth_code="
-				+ app.auth_code;
+		String url = Constant.BaseUrl + "device/" + device_id + "/?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, Data2Judge).start();
 	}
 
@@ -180,13 +180,11 @@ public class OilUpdateActivity extends Activity {
 	private void setFristData2Cloud(int number, float quantity) {
 		dialog = ProgressDialog.show(OilUpdateActivity.this, "提示", "获取数据中");
 		dialog.setCancelable(true);
-		String url = Constant.BaseUrl + "device/" + device_id
-				+ "/refuel?auth_code=" + app.auth_code;
+		String url = Constant.BaseUrl + "device/" + device_id + "/refuel?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("number", String.valueOf(number)));
 		params.add(new BasicNameValuePair("quantity", String.valueOf(quantity)));
-		new NetThread.postDataThread(handler, url, params, SetFristData2Cloud)
-				.start();
+		new NetThread.postDataThread(handler, url, params, SetFristData2Cloud).start();
 	}
 
 	/** 解析设置油耗结果 **/
@@ -197,18 +195,15 @@ public class OilUpdateActivity extends Activity {
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if (jsonObject.getInt("status_code") == 0) {
-				Toast.makeText(OilUpdateActivity.this, "完成第一次加油成功",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(OilUpdateActivity.this, "完成第一次加油成功", Toast.LENGTH_SHORT).show();
 				bt_oil_add_1.setEnabled(false);
 				bt_oil_add_2.setEnabled(true);
 			} else {
-				Toast.makeText(OilUpdateActivity.this, "完成第一次加油失败",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(OilUpdateActivity.this, "完成第一次加油失败", Toast.LENGTH_SHORT).show();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Toast.makeText(OilUpdateActivity.this, "完成第一次加油失败",
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(OilUpdateActivity.this, "完成第一次加油失败", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -216,13 +211,11 @@ public class OilUpdateActivity extends Activity {
 	private void setSecondData2Cloud(int number, float quantity) {
 		dialog = ProgressDialog.show(OilUpdateActivity.this, "提示", "获取数据中");
 		dialog.setCancelable(true);
-		String url = Constant.BaseUrl + "device/" + device_id
-				+ "/refuel?auth_code=" + app.auth_code;
+		String url = Constant.BaseUrl + "device/" + device_id + "/refuel?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("number", String.valueOf(number)));
 		params.add(new BasicNameValuePair("quantity", String.valueOf(quantity)));
-		new NetThread.postDataThread(handler, url, params, SetSecondData2Cloud)
-				.start();
+		new NetThread.postDataThread(handler, url, params, SetSecondData2Cloud).start();
 	}
 
 	/** 解析设置油耗结果 **/
@@ -233,18 +226,15 @@ public class OilUpdateActivity extends Activity {
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if (jsonObject.getInt("status_code") == 0) {
-				Toast.makeText(OilUpdateActivity.this, "完成第二次加油成功",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(OilUpdateActivity.this, "完成第二次加油成功", Toast.LENGTH_SHORT).show();
 				bt_oil_add_1.setEnabled(true);
 				bt_oil_add_2.setEnabled(false);
 			} else {
-				Toast.makeText(OilUpdateActivity.this, "完成第二次加油失败",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(OilUpdateActivity.this, "完成第二次加油失败", Toast.LENGTH_SHORT).show();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Toast.makeText(OilUpdateActivity.this, "完成第二次加油失败",
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(OilUpdateActivity.this, "完成第二次加油失败", Toast.LENGTH_SHORT).show();
 		}
 	}
 }
