@@ -28,8 +28,7 @@ public class Constant {
 	/** 图片地址 **/
 	public static String ImageUrl = "http://img.wisegps.cn/logo/";
 	/** 图片路径存储地址 **/
-	public static String BasePath = Environment.getExternalStorageDirectory()
-			.getPath() + "/baba/";
+	public static String BasePath = Environment.getExternalStorageDirectory().getPath() + "/baba/";
 	/** 车品牌logo **/
 	public static String VehicleLogoPath = BasePath + "vehicleLogo/";
 	/** 存放用户头像 **/
@@ -109,30 +108,6 @@ public class Constant {
 	 */
 	public static final String platform = "platform";
 	/**
-	 * 基础表
-	 */
-	// public static String TB_Base = "TB_Base";
-	/**
-	 * 我的爱车
-	 */
-	// public static String TB_Vehicle = "TB_Vehicle";
-	/**
-	 * 我的终端
-	 */
-	// public static String TB_Devices = "TB_Devices";
-	/**
-	 * 我的收藏
-	 */
-	// public static String TB_Collection = "TB_Collection";
-	/**
-	 * 我的消息
-	 */
-	// public static String TB_Sms = "TB_Sms";
-	/**
-	 * 违章城市表
-	 */
-	// public static String TB_IllegalCity = "TB_IllegalCity";
-	/**
 	 * 定位成功发送广播，选择城市用到
 	 */
 	public static String A_City = "com.wise.wawc.city";
@@ -164,24 +139,7 @@ public class Constant {
 	 * 添加终端
 	 */
 	public static String A_UpdateDevice = "com.wise.wawc.update_device";
-	/**
-	 * 收货人
-	 */
-	public static String Consignee = "Consignee";
-	/**
-	 * 收获地址
-	 */
-	public static String Adress = "Adress";
-	/**
-	 * 收货人手机
-	 */
-	public static String Phone = "Phone";
 
-	public static int start1 = 0; // 开始页
-	public static int pageSize1 = 10; // 每页数量
-	public static int totalPage1 = 0; // 数据总量
-	public static int currentPage1 = 0; // 当前页
-	public static String UserIconUrl = null;
 	/**
 	 * 水平滑动选择logo的宽度
 	 */
@@ -192,12 +150,9 @@ public class Constant {
 
 	public static String Maintain = "maintain"; // 数据库4s店表 标题（由maintain/城市/品牌构成）
 
-	public static String[] items_note_type = { "驾照换证", "车辆年检", "车辆保养", "车辆续保",
-			"车辆理赔", "通用提醒" };
-	public static int[] items_note_type_image = { R.drawable.icon_cw_niansheng,
-			R.drawable.icon_cw_nianjian, R.drawable.icon_cw_baoyang,
-			R.drawable.icon_cw_xuxian, R.drawable.icon_xx_notice,
-			R.drawable.icon_xx_notice };
-	public static String[] items_note_mode = { "不重复", "按月重复", "按周重复", "按日重复",
-			"末月按周重复，其他按月重复" };
+	public static String[] items_note_type = { "驾照换证", "车辆年检", "车辆保养", "车辆续保", "车辆理赔", "通用提醒" };
+	public static int[] items_note_type_image = { R.drawable.icon_cw_niansheng, R.drawable.icon_cw_nianjian, R.drawable.icon_cw_baoyang,
+			R.drawable.icon_cw_xuxian, R.drawable.icon_xx_notice, R.drawable.icon_xx_notice };
+	public static String[] items_note_mode = { "不重复", "按月重复", "按周重复", "按日重复", "末月按周重复，其他按月重复" };
+	public static String[] cards = { "weather", "hotNews" };
 }

@@ -112,6 +112,7 @@
                     android:scrollbars="none" >
 
                     <LinearLayout
+                        android:id="@+id/ll_cards"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical" >

@@ -172,6 +172,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.state.MainActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.state.ServiceManageActivity"
             android:screenOrientation="portrait" >
         </activity>
@@ -185,6 +189,10 @@
         </activity>
         <activity
             android:name="com.wise.state.FaultActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.state.FaultsActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity

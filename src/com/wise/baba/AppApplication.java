@@ -23,8 +23,8 @@ public class AppApplication extends LitePalApplication {
 	public boolean isTest = false;
 	/** auth_code **/
 	public String auth_code;
-	/**用户类别**/
-    public int cust_type = 0;
+	/** 用户类别 **/
+	public int cust_type = 0;
 	/** cust_id **/
 	public String cust_id;
 	/** 用户名称 **/
@@ -52,8 +52,8 @@ public class AppApplication extends LitePalApplication {
 	public double Lon = 0;
 	/** 车辆信息 **/
 	public List<CarData> carDatas = new ArrayList<CarData>();
-    /**好友信息**/
-    public List<FriendData> friendDatas = new ArrayList<FriendData>();
+	/** 好友信息 **/
+	public List<FriendData> friendDatas = new ArrayList<FriendData>();
 
 	@Override
 	public void onCreate() {

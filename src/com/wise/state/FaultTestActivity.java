@@ -19,8 +19,6 @@ import com.wise.car.CarActivity;
 import com.wise.car.CarAddActivity;
 import com.wise.car.CarUpdateActivity;
 import com.wise.car.DevicesAddActivity;
-import com.wise.notice.NoticeFragment;
-import com.wise.notice.NoticeFragment.BtnListener;
 import com.wise.setting.LoginActivity;
 import customView.AlwaysMarqueeTextView;
 import customView.HScrollLayout;
@@ -28,6 +26,8 @@ import customView.NoticeScrollTextView;
 import customView.OnViewChangeListener;
 import customView.ParentSlide;
 import data.CarData;
+import fragment.FragmentNotice;
+import fragment.FragmentNotice.BtnListener;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -127,7 +127,7 @@ public class FaultTestActivity extends FragmentActivity {
 		hs_car = (HScrollLayout) findViewById(R.id.hs_car);
 		fragmentManager = getSupportFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		NoticeFragment noticeFragment = new NoticeFragment();
+		FragmentNotice noticeFragment = new FragmentNotice();
 		transaction.add(R.id.ll_notice, noticeFragment);
 		transaction.commit();
 		noticeFragment.SetBtnListener(new BtnListener() {

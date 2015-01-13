@@ -19,9 +19,9 @@ public class CarData {
 	private String car_type;
 	private String car_type_id;
 
-	private String engine_no;// 发送机
-	private String frame_no;// 车架号
-	private String regNo;// 登记证
+	private String engine_no = "";// 发送机
+	private String frame_no = "";// 车架号
+	private String regNo = "";// 登记证
 	private String gas_no;
 	/** 保险电话 **/
 	private String insurance_tel;
