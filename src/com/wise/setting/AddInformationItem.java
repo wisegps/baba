@@ -3,6 +3,8 @@ package com.wise.setting;
 import java.util.ArrayList;
 import java.util.List;
 
+import xlist.TouchInterceptor;
+
 import com.wise.baba.R;
 
 import android.app.Activity;
@@ -24,7 +26,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class AddInformationItem extends Activity {
-	ListView infoListView;
 	List<InformationItem> list = new ArrayList<InformationItem>();
 	int[] picture = { R.drawable.icon_dianyuan_normal,
 			R.drawable.icon_jinqi_normal };
@@ -32,32 +33,19 @@ public class AddInformationItem extends Activity {
 	String[] content = { "今天天气概况", "最新新闻更新和内容" };
 	InforAdapter adapter;
 
+	TouchInterceptor listview;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_info);
 
-		infoListView = (ListView) findViewById(R.id.info_add);
-		LayoutInflater mLayoutInflater = LayoutInflater.from(this);
-		View foot_view = mLayoutInflater.inflate(R.layout.foot_view, null);
-		TextView tv_end = (TextView) foot_view.findViewById(R.id.tv_end);
-		tv_end.setText("添加卡片");
-		infoListView.addFooterView(foot_view);
+		listview = (TouchInterceptor) findViewById(R.id.info_add);
 		adapter = new InforAdapter();
-		infoListView.setAdapter(adapter);
+		listview.setAdapter(adapter);
 
-		infoListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				if (arg2 == list.size()) {
-					// 添加卡片跳转到添加页面
-					startActivity(new Intent(AddInformationItem.this,
-							ChooseInfoCard.class));
-				}
-			}
-		});
+		listview.setDropListener(mDropListener);
 		findViewById(R.id.tv_info_add).setOnClickListener(
 				new OnClickListener() {
 					@Override
@@ -75,6 +63,23 @@ public class AddInformationItem extends Activity {
 			}
 		});
 	}
+
+	private TouchInterceptor.RemoveListener mRemoveListener = new TouchInterceptor.RemoveListener() {
+		public void remove(int which) {
+		}
+	};
+	// 交换listview的数据
+	private TouchInterceptor.DropListener mDropListener = new TouchInterceptor.DropListener() {
+		public void drop(int from, int to) {
+			// String item = list.get(from);
+			// list.remove(from);
+			// arrayText.remove(item);//.remove(from);
+			InformationItem item = list.get(from);
+			list.set(from, list.get(to));
+			list.set(to, item);
+			adapter.notifyDataSetChanged();
+		}
+	};
 
 	@Override
 	protected void onResume() {

@@ -6,8 +6,9 @@
     android:orientation="vertical" >
 
     <LinearLayout
+        android:id="@+id/ll_item_add"
         android:layout_width="fill_parent"
-        android:layout_height="60dip"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dip" >
 
@@ -41,7 +42,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="乐一下的内容部分"
-                android:textColor="#55333333"
+                android:textColor="@color/content_gray"
                 android:textSize="13sp" />
         </LinearLayout>
 
