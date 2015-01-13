@@ -245,7 +245,7 @@ public class FragmentFriend extends Fragment {
 	}
 
 	/** 获取好友数据 **/
-	private void getFriendData() {
+	public void getFriendData() {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/get_friends?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, get_all_friend).start();
 	}

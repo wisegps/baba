@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margins" >
+
+        <LinearLayout
+            android:id="@+id/iv_hot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="@dimen/margins"
+                android:layout_marginRight="@dimen/double_margins"
+                android:src="@drawable/hot" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/corners"
+                android:text="本地热点"
+                android:textColor="@color/blue_light"
+                android:textSize="@dimen/content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_hot"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tv_host_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:singleLine="true"
+                android:text="长安铃木启悦23日上市"
+                android:textColor="@color/back"
+                android:textSize="@dimen/content" />
+
+            <TextView
+                android:id="@+id/tv_hot_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:lines="3"
+                android:text="【网上车市深圳站讯】长安铃木启悦将于12月23日正式上市，其价格公布时间预计在上午10:00-11:00区间。此前长安铃木官方已经公布了该车的预售价区间为8.79-12.19万元。"
+                android:textColor="@color/content_gray"
+                android:textSize="@dimen/content" />
+
+            <ImageView
+                android:id="@+id/iv_hot_set"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:src="@drawable/set_hot"
+                android:visibility="gone" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

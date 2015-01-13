@@ -170,6 +170,14 @@
                             android:layout_height="35dp"
                             android:visibility="gone" >
                         </customView.NoticeScrollTextView>
+
+                        <LinearLayout
+                            android:id="@+id/ll_pages"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical" >
+                        </LinearLayout>
                     </LinearLayout>
                 </ScrollView>
             </LinearLayout>

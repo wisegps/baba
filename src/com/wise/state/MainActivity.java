@@ -25,6 +25,8 @@ import fragment.FragmentHome;
 import fragment.FragmentNotice;
 
 /**
+ * 主界面
+ * 
  * @author honesty
  **/
 public class MainActivity extends FragmentActivity {
@@ -52,6 +54,8 @@ public class MainActivity extends FragmentActivity {
 		bt_info.setOnClickListener(onClickListener);
 		Button bt_friend = (Button) findViewById(R.id.bt_friend);
 		bt_friend.setOnClickListener(onClickListener);
+		Button bt_set = (Button) findViewById(R.id.bt_set);
+		bt_set.setOnClickListener(onClickListener);
 
 		myBroadCastReceiver = new MyBroadCastReceiver();
 		IntentFilter intentFilter = new IntentFilter();
@@ -117,6 +121,9 @@ public class MainActivity extends FragmentActivity {
 			}
 
 				break;
+			case R.id.bt_set:
+				startActivityForResult(new Intent(MainActivity.this, MoreActivity.class), 5);
+				break;
 			}
 		}
 	};
@@ -141,7 +148,7 @@ public class MainActivity extends FragmentActivity {
 				GetSystem.myLog(TAG, "A_RefreshHomeCar");
 				fragmentHome.resetAllView();
 				fragmentNotice.ResetNotice();
-
+				fragmentFriend.getFriendData();
 			} else if (action.equals(Constant.A_LoginOut)) {
 				fragmentHome.setLoginOutView();
 				fragmentNotice.ClearNotice();
@@ -173,24 +180,23 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		/** 更多页面点击退出系统 **/
+		if (requestCode == 5 && resultCode == 1) {
+			finish();
+		}
+	}
+
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// if (keyCode == KeyEvent.KEYCODE_BACK) {
-		// if (smv_content.getCurrentScreen() == 1) {
-		// smv_content.snapToScreen(0);
-		// } else {
-		// GetSystem.myLog(TAG, "app.cust_id = " + app.cust_id);
-		// if (app.cust_id == null || app.cust_id.equals("")) {
-		// finish();
-		// } else {
-		// // TODO 在幕后
-		// Intent intent = new Intent();
-		// intent.setAction(Intent.ACTION_MAIN);
-		// intent.addCategory(Intent.CATEGORY_HOME);
-		// startActivity(intent);
-		// }
-		// }
-		// return true;
-		// }
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent();
+			intent.setAction(Intent.ACTION_MAIN);
+			intent.addCategory(Intent.CATEGORY_HOME);
+			startActivity(intent);
+			return true;
+		}
 		return super.onKeyDown(keyCode, event);
 	}
 

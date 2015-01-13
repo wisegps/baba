@@ -1272,12 +1272,7 @@ public class FragmentHome extends Fragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		/**
-		 * requestCode = 5,跳转到更多页面
-		 */
-		if (requestCode == 5 && resultCode == 1) {
-			// finish();
-		} else if (resultCode == 3) {
+		if (resultCode == 3) {
 			// 修改车辆信息
 			initDataView();
 			if (app.carDatas.size() == 0) {
