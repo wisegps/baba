@@ -135,6 +135,14 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.setting.AddInformationItem"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.setting.ChooseInfoCard"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.setting.AccountActivity"
             android:screenOrientation="portrait" >
         </activity>
@@ -164,6 +172,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.state.MainActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.state.ServiceManageActivity"
             android:screenOrientation="portrait" >
         </activity>
@@ -177,6 +189,10 @@
         </activity>
         <activity
             android:name="com.wise.state.FaultActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.state.FaultsActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -215,8 +231,17 @@
             android:name="com.wise.notice.FriendAddActivity"
             android:screenOrientation="portrait" >
         </activity>
+        
+        <activity
+            android:name="com.wise.notice.FriendListActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <activity
             android:name="com.wise.notice.FriendInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.notice.FriendDetailActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -450,52 +475,60 @@
 
         <activity
             android:name="cn.sharesdk.framework.ShareSDKUIShell"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|adjustResize" >
-            <!-- 
+
+            <!--
             	AuthorizeAdapter表示一个继承自cn.sharesdk.framework.authorize.AuthorizeAdapter
             	的类，这个类可以监听到页面的生命周期，也可以获取授权页面的各种UI控件。 
             	开发者可以通过继承AuthorizeAdapter，重写其方法，并获取各种UI来自定义这个页面的行为。
             -->
-            <meta-data android:name="AuthorizeAdapter" android:value="cn.sharesdk.demo.MyAdapter" />
-            
-            <!-- 
+            <meta-data
+                android:name="AuthorizeAdapter"
+                android:value="cn.sharesdk.demo.MyAdapter" />
+
+            <!--
             	QZoneWebShareAdapter表示一个继承自cn.sharesdk.tencent.qzone.QZoneWebShareAdapter
             	的类，这个类可以监听到页面的生命周期，也可以获QQ空间网页分享权页面的各种UI控件。 
             	开发者可以通过继承QZoneWebShareAdapter，重写其方法，并获取各种UI来自定义这个页面的行为。
             -->
-            <meta-data android:name="QZoneWebShareAdapter" android:value="cn.sharesdk.demo.MyQZoneWebShareAdapter" />
+            <meta-data
+                android:name="QZoneWebShareAdapter"
+                android:value="cn.sharesdk.demo.MyQZoneWebShareAdapter" />
             <!--
             	Dropbox的SSO功能需要在此处添加一个对ACTION_VIEW事件的过滤器，其中的scheme是
             	“db-”前缀再开发者应用的加上appKey。如果此过滤器不设置，则不能完成SSO功能授权
             -->
             <intent-filter>
                 <data android:scheme="db-7janx53ilz11gbs" />
-        		<action android:name="android.intent.action.VIEW" />
-        		<category android:name="android.intent.category.BROWSABLE"/>
-        		<category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            
-			<!--
+
+            <!--
             	如果集成QQ分享，或者使用QQ客户端来进行QQ空间的分享，须要在此处添加一个对ACTION_VIEW
             	事件的过滤器，其中的scheme是“tencent”前缀再开发者应用的加上appId。如果此过滤器不设置，
             	则分享结束以后不能得到正确的回调
             -->
             <intent-filter>
                 <data android:scheme="tencent100371282" />
+
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
-            
         </activity>
         <!-- 微信分享回调 -->
         <activity
             android:name=".wxapi.WXEntryActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <service android:name=".LocationService" >
         </service>
@@ -613,7 +646,7 @@
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="0QNTY4tnP9Tv6ghXpGa6XXOm" />
+            android:value="DhT4kz88wR3r5yCl6tQCpaNW" />
     </application>
 
 </manifest>

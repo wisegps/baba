@@ -9,20 +9,38 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/title_hight"
         android:background="@color/title_back" >
+        <ImageView 
+            android:id="@+id/iv_add"
+	        android:layout_width="@dimen/title_hight"
+	        android:layout_height="@dimen/title_hight"
+	        android:layout_marginRight="@dimen/margins"
+	        android:layout_alignParentRight="true"
+	        android:padding="@dimen/margins"
+	        android:layout_centerVertical="true"
+	        android:src="@drawable/icon_add"/>
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="信息"
+            android:text="好友"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
+        <ImageView
+            android:id="@+id/iv_fm_back"
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margins"
+            android:visibility="gone"
+            android:padding="@dimen/margins"
+            android:src="@drawable/nav_back" />
     </RelativeLayout>
     <xlist.XListView
-        android:id="@+id/lv_notice"
+        android:id="@+id/lv_friend"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:divider="@null"
         android:footerDividersEnabled="true"
-        android:cacheColorHint="#00000000"></xlist.XListView>  
+        android:cacheColorHint="#00000000"></xlist.XListView> 
 </LinearLayout>

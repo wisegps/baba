@@ -1,4 +1,4 @@
-package com.wise.state;
+package fragment;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -14,10 +14,8 @@ import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
@@ -28,18 +26,16 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,7 +48,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
-import com.baidu.lbsapi.auth.LBSAuthManagerListener;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -60,15 +55,11 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
-import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
-import com.baidu.navisdk.BaiduNaviManager;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 import com.wise.baba.AppApplication;
-import com.wise.baba.BrowserActivity;
 import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
-import com.wise.baba.SelectCityActivity;
 import com.wise.car.CarActivity;
 import com.wise.car.CarAddActivity;
 import com.wise.car.CarLocationActivity;
@@ -78,15 +69,16 @@ import com.wise.notice.NoticeActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.setting.OilUpdateActivity;
 import com.wise.show.ShowActivity;
+import com.wise.state.DriveActivity;
+import com.wise.state.FaultDetectionActivity;
+import com.wise.state.FuelActivity;
+import com.wise.state.TasksCompletedView;
 
 import customView.AlwaysMarqueeTextView;
 import customView.HScrollLayout;
 import customView.NoticeScrollTextView;
 import customView.OnViewChangeListener;
-import customView.ParentSlide;
 import data.CarData;
-import fragment.FragmentNotice;
-import fragment.FragmentNotice.BtnListener;
 
 /**
  * 车况信息
@@ -94,14 +86,10 @@ import fragment.FragmentNotice.BtnListener;
  * @author honesty
  * 
  */
-public class FaultActivity extends FragmentActivity {
+public class FragmentHome extends Fragment {
 	private static final String TAG = "FaultActivity";
 	/** 获取油耗信息 **/
 	private static final int getData = 1;
-	/** 获取天气信息 **/
-	private static final int getWeather = 2;
-	/** 本地资讯 **/
-	private static final int gethot_news = 4;
 	/** 获取滚动消息 **/
 	private static final int getMessage = 5;
 	/** 定时滚动消息 **/
@@ -119,16 +107,13 @@ public class FaultActivity extends FragmentActivity {
 	/** 获取广告 **/
 	private static final int get_ad = 13;
 
-	ImageView iv_weather, iv_noti;
-	TextView tv_city, tv_weather_time, tv_weather, tv_advice, tv_hot_content, tv_host_title, tv_content;
+	ImageView iv_noti;
+	TextView tv_content;
 	RelativeLayout rl_ad;
 	int index = 0;
 	private FragmentManager fragmentManager;
-	ParentSlide smv_content;
 	NoticeScrollTextView nstv_message;
 	HScrollLayout hs_car, hs_photo;
-	MyBroadCastReceiver myBroadCastReceiver;
-	IntentFilter intentFilter;
 
 	/** 滚动消息数据 **/
 	List<NsData> nsDatas = new ArrayList<NsData>();
@@ -136,7 +121,6 @@ public class FaultActivity extends FragmentActivity {
 	String startMonth;
 	/** 获取油耗数据结束时间 **/
 	String endMonth;
-	FragmentNotice noticeFragment;
 	private GeoCoder mGeoCoder = null;
 	int completed;
 	AppApplication app;
@@ -144,67 +128,37 @@ public class FaultActivity extends FragmentActivity {
 	int image_position = 0;
 	String noticeUrl = "";
 
-	LinearLayout ll_pages;
-	List<Integer> pages = new ArrayList<Integer>();
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.fragment_home, container, false);
+	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_fault);
-		mQueue = Volley.newRequestQueue(this);
-		app = (AppApplication) getApplication();
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		mQueue = Volley.newRequestQueue(getActivity());
+		app = (AppApplication) getActivity().getApplication();
 		GetSystem.myLog(TAG, "onCreate");
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
-		boolean isSpecify = getIntent().getBooleanExtra("isSpecify", false);
-		if (isSpecify) {
-			Intent intent = new Intent(FaultActivity.this, MoreActivity.class);
-			intent.putExtra("isSpecify", isSpecify);
-			intent.putExtras(getIntent().getExtras());
-			startActivityForResult(intent, 5);
-		}
 		DisplayMetrics dm = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
 		int width = dm.widthPixels;
 		int twoCompleted = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 280, getResources().getDisplayMetrics());
 		completed = (width - twoCompleted) / 3;
-		// TODO 首页信息卡片添加
-		pages.add(R.layout.page_item_weather);
-		pages.add(R.layout.page_item_haapy);
-
-		ll_pages = (LinearLayout) findViewById(R.id.ll_pages);
-		View view = LayoutInflater.from(FaultActivity.this).inflate(
-				pages.get(0), null);
-		View view_1 = LayoutInflater.from(FaultActivity.this).inflate(
-				pages.get(1), null);
-		ll_pages.addView(view);
-		ll_pages.addView(view_1);
-
-		Button bt_show = (Button) findViewById(R.id.bt_show);
+		Button bt_show = (Button) getActivity().findViewById(R.id.bt_show);
 		bt_show.setOnClickListener(onClickListener);
-		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
+		ImageView iv_back = (ImageView) getActivity().findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
-		iv_noti = (ImageView) findViewById(R.id.iv_noti);
-
-		ImageView iv_menu = (ImageView) findViewById(R.id.iv_menu);
+		iv_noti = (ImageView) getActivity().findViewById(R.id.iv_noti);
+		ImageView iv_menu = (ImageView) getActivity().findViewById(R.id.iv_menu);
 		iv_menu.setOnClickListener(onClickListener);
-		findViewById(R.id.iv_location_hot).setOnClickListener(onClickListener);
+		getActivity().findViewById(R.id.iv_location_hot).setOnClickListener(onClickListener);
 
-		smv_content = (ParentSlide) findViewById(R.id.smv_content);
-		nstv_message = (NoticeScrollTextView) findViewById(R.id.nstv_message);
-		hs_car = (HScrollLayout) findViewById(R.id.hs_car);
-		fragmentManager = getSupportFragmentManager();
-		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		noticeFragment = new FragmentNotice();
-		transaction.add(R.id.ll_notice, noticeFragment);
-		transaction.commit();
-		noticeFragment.SetBtnListener(new BtnListener() {
-			@Override
-			public void Back() {
-				smv_content.snapToScreen(0);
-			}
-		});
+		nstv_message = (NoticeScrollTextView) getActivity().findViewById(R.id.nstv_message);
+		hs_car = (HScrollLayout) getActivity().findViewById(R.id.hs_car);
+		fragmentManager = getActivity().getSupportFragmentManager();
+
 		hs_car.setOnViewChangeListener(new OnViewChangeListener() {
 			@Override
 			public void OnViewChange(int view) {
@@ -231,11 +185,11 @@ public class FaultActivity extends FragmentActivity {
 			getCounter();
 
 			if (app.carDatas.size() == 0) {// 如果没有车则显示
-				rl_ad = (RelativeLayout) findViewById(R.id.rl_ad);
+				rl_ad = (RelativeLayout) getActivity().findViewById(R.id.rl_ad);
 				rl_ad.setVisibility(View.VISIBLE);
-				tv_content = (TextView) findViewById(R.id.tv_content);
-				ll_image = (LinearLayout) findViewById(R.id.ll_image);
-				hs_photo = (HScrollLayout) findViewById(R.id.hs_photo);
+				tv_content = (TextView) getActivity().findViewById(R.id.tv_content);
+				ll_image = (LinearLayout) getActivity().findViewById(R.id.ll_image);
+				hs_photo = (HScrollLayout) getActivity().findViewById(R.id.hs_photo);
 				hs_photo.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, getAdHeight()));
 				getAD();
 				hs_photo.setOnViewChangeListener(new OnViewChangeListener() {
@@ -262,38 +216,28 @@ public class FaultActivity extends FragmentActivity {
 			app.auth_code = "127a154df2d7850c4232542b4faa2c3d";
 			setLoginView();
 			noticeUrl = Constant.BaseUrl + "customer/0/tips";
-			Intent intent = new Intent(FaultActivity.this, LoginActivity.class);
+			Intent intent = new Intent(getActivity(), LoginActivity.class);
 			startActivity(intent);
 		}
-		myBroadCastReceiver = new MyBroadCastReceiver();
-		intentFilter = new IntentFilter();
-		intentFilter.addAction(Constant.A_RefreshHomeCar);
-		intentFilter.addAction(Constant.A_LoginOut);
-		intentFilter.addAction(Constant.A_ChangeCustomerType);
-		registerReceiver(myBroadCastReceiver, intentFilter);
-		new GetLocation(FaultActivity.this);
+		new GetLocation(getActivity());
 		new CycleNstvThread().start();
 
-		UmengUpdateAgent.update(this);
-		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(), mNaviEngineInitListener, new LBSAuthManagerListener() {
-			@Override
-			public void onAuthResult(int status, String msg) {
-			}
-		});
+		UmengUpdateAgent.update(getActivity());
+
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				FaceConversionUtil.getInstace().getFileText(getApplication());
+				FaceConversionUtil.getInstace().getFileText(getActivity().getApplication());
 			}
 		}).start();
-		// TODO 30秒定位，显示当前位子
+		// 30秒定位，显示当前位子
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				while (isGetGps) {
 					if (isResume) {
 						getMessage(noticeUrl);
-						gethot_news();
+						// gethot_news();
 						if (app.carDatas == null || app.carDatas.size() == 0) {
 
 						} else {
@@ -327,21 +271,8 @@ public class FaultActivity extends FragmentActivity {
 				}
 			}
 		}).start();
+		getCards();
 	}
-
-	private final NaviEngineInitListener mNaviEngineInitListener = new NaviEngineInitListener() {
-		@Override
-		public void engineInitSuccess() {
-		}
-
-		@Override
-		public void engineInitStart() {
-		}
-
-		@Override
-		public void engineInitFail() {
-		}
-	};
 
 	private void getAD() {
 		String url = Constant.BaseUrl + "base/AD";
@@ -352,7 +283,7 @@ public class FaultActivity extends FragmentActivity {
 		try {
 			JSONArray jsonArray = new JSONArray(result);
 			for (int i = 0; i < jsonArray.length(); i++) {
-				View view_image = LayoutInflater.from(this).inflate(R.layout.item_nocar_image, null);
+				View view_image = LayoutInflater.from(getActivity()).inflate(R.layout.item_nocar_image, null);
 				hs_photo.addView(view_image);
 				ImageView iv_pic = (ImageView) view_image.findViewById(R.id.iv_pic);
 				iv_pic.setOnClickListener(onClickListener);
@@ -366,7 +297,7 @@ public class FaultActivity extends FragmentActivity {
 				aData.setUrl(jsonObject.getString("url"));
 				adDatas.add(aData);
 
-				ImageView imageView = new ImageView(this);
+				ImageView imageView = new ImageView(getActivity());
 				imageView.setImageResource(R.drawable.round_press);
 				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(15, 15);
 				lp.setMargins(5, 0, 5, 0);
@@ -387,6 +318,23 @@ public class FaultActivity extends FragmentActivity {
 				imageView.setImageResource(R.drawable.round_press);
 			}
 		}
+	}
+
+	/** 显示卡片布局 **/
+	private void getCards() {
+		String cards = "weather,hotNews";
+		String[] sCards = cards.split(",");
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		for (int i = 0; i < sCards.length; i++) {
+			if (sCards[i].equals("weather")) {
+				FragmentWeather fragmentWeather = new FragmentWeather();
+				transaction.add(R.id.ll_cards, fragmentWeather);
+			} else if (sCards[i].equals("hotNews")) {
+				FragmentHotNews fragmentHotNews = new FragmentHotNews();
+				transaction.add(R.id.ll_cards, fragmentHotNews);
+			}
+		}
+		transaction.commit();
 	}
 
 	RequestQueue mQueue;
@@ -415,7 +363,7 @@ public class FaultActivity extends FragmentActivity {
 	/** 计算设置图片的宽高 **/
 	private void setImageWidthHeight(ImageView iv_pic, Bitmap bitmap) {
 		DisplayMetrics metrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		int widthPixels = metrics.widthPixels;
 
 		double ratio = bitmap.getWidth() / (widthPixels * 1.0);
@@ -431,7 +379,7 @@ public class FaultActivity extends FragmentActivity {
 		int imageWidth = 690;
 		int imageHeight = 512;
 		DisplayMetrics metrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		int widthPixels = metrics.widthPixels;
 		double ratio = imageWidth / (widthPixels * 1.0);
 		return (int) (imageHeight / ratio);
@@ -494,28 +442,16 @@ public class FaultActivity extends FragmentActivity {
 		return null;
 	}
 
-	/**
-	 * 当菜单即将要显示时触发（每次都触发） 菜单键显示
-	 */
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		startActivityForResult(new Intent(FaultActivity.this, MoreActivity.class), 5);
-		return true;
-	}
-
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.iv_back:
-				finish();
-				break;
 			case R.id.iv_menu:
-				startActivityForResult(new Intent(FaultActivity.this, MoreActivity.class), 5);
+				startActivityForResult(new Intent(getActivity(), MoreActivity.class), 5);
 				break;
 			case R.id.iv_location_hot:
 				if (!Judge.isLogin(app)) {
-					startActivity(new Intent(FaultActivity.this, LoginActivity.class));
+					startActivity(new Intent(getActivity(), LoginActivity.class));
 				} else {
 					if (app.carDatas == null || app.carDatas.size() == 0) {
 						goCarMap(false);
@@ -531,24 +467,21 @@ public class FaultActivity extends FragmentActivity {
 
 				}
 				break;
-			case R.id.iv_hot_set:
-
-				break;
 			case R.id.bt_show:
-				startActivity(new Intent(FaultActivity.this, ShowActivity.class));
+				startActivity(new Intent(getActivity(), ShowActivity.class));
 				break;
 			case R.id.tasks_view:
 				GetSystem.myLog(TAG, "tasks_view : app.carDatas.size() = " + app.carDatas.size());
 				if (app.carDatas != null && app.carDatas.size() != 0) {
 					String Device_id = app.carDatas.get(index).getDevice_id();
 					if (Device_id == null || Device_id.equals("")) {
-						Intent intent = new Intent(FaultActivity.this, DevicesAddActivity.class);
+						Intent intent = new Intent(getActivity(), DevicesAddActivity.class);
 						intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
 						intent.putExtra("car_series_id", app.carDatas.get(index).getCar_series_id());
 						intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
 						startActivityForResult(intent, 2);
 					} else {
-						Intent intent = new Intent(FaultActivity.this, FaultDetectionActivity.class);
+						Intent intent = new Intent(getActivity(), FaultDetectionActivity.class);
 						intent.putExtra("index", index);
 						startActivityForResult(intent, 1);
 					}
@@ -558,13 +491,13 @@ public class FaultActivity extends FragmentActivity {
 				if (app.carDatas != null && app.carDatas.size() != 0) {
 					String Device_id = app.carDatas.get(index).getDevice_id();
 					if (Device_id == null || Device_id.equals("")) {
-						Intent intent = new Intent(FaultActivity.this, DevicesAddActivity.class);
+						Intent intent = new Intent(getActivity(), DevicesAddActivity.class);
 						intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
 						intent.putExtra("car_series_id", app.carDatas.get(index).getCar_series_id());
 						intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
 						startActivityForResult(intent, 2);
 					} else {
-						Intent intent = new Intent(FaultActivity.this, DriveActivity.class);
+						Intent intent = new Intent(getActivity(), DriveActivity.class);
 						intent.putExtra("index_car", index);
 						startActivityForResult(intent, 2);
 					}
@@ -572,20 +505,17 @@ public class FaultActivity extends FragmentActivity {
 				break;
 			// 油耗，花费，里程分别显示
 			case R.id.Liner_distance:
-				getDataOne(FaultActivity.DISTANCE);
+				getDataOne(FragmentHome.DISTANCE);
 				break;
 			case R.id.Liner_fuel:
-				getDataOne(FaultActivity.FUEL);
+				getDataOne(FragmentHome.FUEL);
 				break;
 			case R.id.Liner_fee:
-				getDataOne(FaultActivity.FEE);
+				getDataOne(FragmentHome.FEE);
 				break;
 
 			case R.id.tv_message:
 				nstvClick();
-				break;
-			case R.id.tv_city:
-				startActivityForResult(new Intent(FaultActivity.this, SelectCityActivity.class), 0);
 				break;
 			case R.id.ll_adress:
 				goCarMap(true);
@@ -594,19 +524,12 @@ public class FaultActivity extends FragmentActivity {
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(adDatas.get(image_position).getUrl()));
 				startActivity(intent);
 				break;
-			case R.id.tv_hot_content:
-				Intent intent_hot = new Intent(FaultActivity.this, BrowserActivity.class);
-				intent_hot.putExtra("url", hot_url);
-				intent_hot.putExtra("title", hot_title);
-				intent_hot.putExtra("hot_content", hot_content);
-				startActivity(intent_hot);
-				break;
 			case R.id.iv_update_oil:
 				String device_id = app.carDatas.get(index).getDevice_id();
 				if (device_id == null || device_id.equals("")) {
-					Toast.makeText(FaultActivity.this, "您的车没有绑定终端，不能进行油耗修正", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getActivity(), "您的车没有绑定终端，不能进行油耗修正", Toast.LENGTH_SHORT).show();
 				} else {
-					Intent intent_oil = new Intent(FaultActivity.this, OilUpdateActivity.class);
+					Intent intent_oil = new Intent(getActivity(), OilUpdateActivity.class);
 					intent_oil.putExtra("index", index);
 					startActivity(intent_oil);
 				}
@@ -625,13 +548,13 @@ public class FaultActivity extends FragmentActivity {
 		if (app.carDatas != null && app.carDatas.size() != 0) {
 			String Device_id = app.carDatas.get(index).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
-				Intent intent = new Intent(FaultActivity.this, DevicesAddActivity.class);
+				Intent intent = new Intent(getActivity(), DevicesAddActivity.class);
 				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
 				intent.putExtra("car_series_id", app.carDatas.get(index).getCar_series_id());
 				intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
 				startActivityForResult(intent, 2);
 			} else {
-				Intent intent = new Intent(FaultActivity.this, FuelActivity.class);
+				Intent intent = new Intent(getActivity(), FuelActivity.class);
 				intent.putExtra("index_car", index);
 				// 传递跳转类型常量进行跳转
 				intent.putExtra("type", type);
@@ -647,12 +570,6 @@ public class FaultActivity extends FragmentActivity {
 			switch (msg.what) {
 			case getData:
 				jsonData(msg.obj.toString(), msg.arg1);
-				break;
-			case getWeather:
-				// jsonWeather(msg.obj.toString());
-				break;
-			case gethot_news:
-				jsonhot_news(msg.obj.toString());
 				break;
 			case getMessage:
 				setMessageView(msg.obj.toString());
@@ -681,7 +598,7 @@ public class FaultActivity extends FragmentActivity {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+				SharedPreferences preferences = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 				Editor editor = preferences.edit();
 				editor.putString(Constant.sp_health_score + app.carDatas.get(msg.arg1).getObj_id(), msg.obj.toString());
 				editor.commit();
@@ -694,7 +611,7 @@ public class FaultActivity extends FragmentActivity {
 						carViews.get(msg.arg1).getTcv_drive().setProgress(drive_score);
 						carViews.get(msg.arg1).getTv_drive().setText(String.valueOf(drive_score));
 						// 存在本地
-						SharedPreferences preferences1 = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+						SharedPreferences preferences1 = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 						Editor editor1 = preferences1.edit();
 						editor1.putString(Constant.sp_drive_score + app.carDatas.get(msg.arg1).getObj_id(), msg.obj.toString());
 						editor1.commit();
@@ -844,84 +761,63 @@ public class FaultActivity extends FragmentActivity {
 		}
 	}
 
-	/**
-	 * 获取天气 onResume里获取，应为在设置页面改了城市后需要刷新
-	 **/
-	private void getWeather() {
-		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-		app.City = preferences.getString(Constant.sp_city, "");
-		// tv_city.setText("[ " + app.City + " ]");
-		app.Province = preferences.getString(Constant.sp_province, "");
-		try {
-			String url = Constant.BaseUrl + "base/weather2?city=" + URLEncoder.encode(app.City, "UTF-8");
-			new NetThread.GetDataThread(handler, url, getWeather).start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void jsonWeather(String str) {
-		try {
-			JSONObject jsonObject = new JSONObject(str);
-			String time = jsonObject.getJSONObject("sk").getString("time");
-			tv_weather_time.setText(GetSystem.getTime(time));
-			String temperature = jsonObject.getJSONObject("today").getString("temperature");
-			String weather = jsonObject.getJSONObject("today").getString("weather");
-			String quality = jsonObject.getString("quality");
-			tv_weather.setText(temperature + "  " + weather + "   空气质量" + quality);
-			String tips = jsonObject.getString("tips");
-			if (tips.equals("")) {
-				tv_advice.setText(jsonObject.getJSONObject("today").getString("dressing_advice"));
-			} else {
-				tv_advice.setText(tips);
-			}
-			int fa = jsonObject.getJSONObject("today").getJSONObject("weather_id").getInt("fa");
-			iv_weather.setImageResource(getResource("x" + fa));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/** 返回天气对应的r资源名称 **/
-	public int getResource(String imageName) {
-		int resId = getResources().getIdentifier(imageName, "drawable", "com.wise.baba");
-		return resId;
-	}
-
-	/** 获取热点信息 **/
-	private void gethot_news() {
-		try {
-			String url = Constant.BaseUrl + "base/hot_news?city=" + URLEncoder.encode(app.City, "UTF-8");
-			new NetThread.GetDataThread(handler, url, gethot_news).start();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	String hot_url;
-	String hot_title;
-	String hot_content;
-
-	/** 解析乐一下 **/
-	private void jsonhot_news(String str) {
-		try {
-			JSONObject jsonObject = new JSONObject(str);
-			hot_content = jsonObject.getString("content");
-			// tv_hot_content.setText(hot_content);
-			hot_title = jsonObject.getString("title");
-			// tv_host_title.setText(hot_title);
-			hot_url = jsonObject.getString("url");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
 	// 跳转到地图界面
 	private void goCarMap(boolean b) {
-		Intent intent = new Intent(FaultActivity.this, CarLocationActivity.class);
+		Intent intent = new Intent(getActivity(), CarLocationActivity.class);
 		intent.putExtra("index", index);
 		intent.putExtra("isHotLocation", b);
 		startActivity(intent);
+	}
+
+	/** 刷新所有布局 **/
+	public void resetAllView() {
+		initDataView();
+		getTotalData();
+		noticeUrl = Constant.BaseUrl + "customer/" + app.cust_id + "/tips?auth_code=" + app.auth_code;
+		getMessage(noticeUrl);
+		getCounter();
+
+		if (app.carDatas.size() == 0) {
+			rl_ad = (RelativeLayout) getActivity().findViewById(R.id.rl_ad);
+			rl_ad.setVisibility(View.VISIBLE);
+			tv_content = (TextView) getActivity().findViewById(R.id.tv_content);
+			tv_content.setOnClickListener(onClickListener);
+			ll_image = (LinearLayout) getActivity().findViewById(R.id.ll_image);
+			hs_photo = (HScrollLayout) getActivity().findViewById(R.id.hs_photo);
+			getAD();
+			hs_photo.setOnViewChangeListener(new OnViewChangeListener() {
+				@Override
+				public void OnViewChange(int view) {
+					image_position = view;
+					tv_content.setText(adDatas.get(view).getContent());
+					changeImage(view);
+				}
+
+				@Override
+				public void OnLastView() {
+				}
+
+				@Override
+				public void OnFinish(int index) {
+				}
+			});
+		} else {
+			if (rl_ad != null) {
+				rl_ad.setVisibility(View.GONE);
+			}
+		}
+	}
+
+	/** 退出登录后刷新首页 **/
+	public void setLoginOutView() {
+		setLoginView();
+		noticeUrl = Constant.BaseUrl + "customer/0/tips";
+		getMessage(noticeUrl);
+	}
+
+	/** 广播改变城市 **/
+	public void changeCity() {
+
 	}
 
 	/** 滑动车辆布局 **/
@@ -932,11 +828,11 @@ public class FaultActivity extends FragmentActivity {
 		} else {
 			index = 0;
 		}
-		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		SharedPreferences preferences = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		hs_car.removeAllViews();
 		carViews.clear();
 		for (int i = 0; i < app.carDatas.size(); i++) {
-			View v = LayoutInflater.from(this).inflate(R.layout.item_fault, null);
+			View v = LayoutInflater.from(getActivity()).inflate(R.layout.item_fault, null);
 			hs_car.addView(v);
 			ImageView iv_update_oil = (ImageView) v.findViewById(R.id.iv_update_oil);
 			iv_update_oil.setOnClickListener(onClickListener);
@@ -1036,7 +932,7 @@ public class FaultActivity extends FragmentActivity {
 	/** 未登录显示 **/
 	private void setLoginView() {
 		hs_car.removeAllViews();
-		View v = LayoutInflater.from(this).inflate(R.layout.item_fault, null);
+		View v = LayoutInflater.from(getActivity()).inflate(R.layout.item_fault, null);
 		hs_car.addView(v);
 		RelativeLayout rl_left_complete = (RelativeLayout) v.findViewById(R.id.rl_left_complete);
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1052,7 +948,7 @@ public class FaultActivity extends FragmentActivity {
 		mTasksView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(FaultActivity.this, LoginActivity.class));
+				startActivity(new Intent(getActivity(), LoginActivity.class));
 			}
 		});
 		TextView tv_name = (TextView) v.findViewById(R.id.tv_name);
@@ -1086,19 +982,18 @@ public class FaultActivity extends FragmentActivity {
 	boolean isResume = true;
 
 	@Override
-	protected void onResume() {
+	public void onResume() {
 		super.onResume();
 		isResume = true;
 		setNotiView();
-		getWeather();
-		MobclickAgent.onResume(this);
+		MobclickAgent.onResume(getActivity());
 	}
 
 	@Override
-	protected void onPause() {
+	public void onPause() {
 		super.onPause();
 		isResume = false;
-		MobclickAgent.onPause(this);
+		MobclickAgent.onPause(getActivity());
 	}
 
 	/** 设置提醒 **/
@@ -1133,7 +1028,7 @@ public class FaultActivity extends FragmentActivity {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				String content = jsonObject.getString("content");
-				View v = LayoutInflater.from(this).inflate(R.layout.item_nstv, null);
+				View v = LayoutInflater.from(getActivity()).inflate(R.layout.item_nstv, null);
 				AlwaysMarqueeTextView tv_message = (AlwaysMarqueeTextView) v.findViewById(R.id.tv_message);
 				tv_message.setText(content);
 				tv_message.setOnClickListener(onClickListener);
@@ -1163,31 +1058,31 @@ public class FaultActivity extends FragmentActivity {
 				switch (type) {
 				case 0:
 					// 注册用户
-					startActivity(new Intent(FaultActivity.this, LoginActivity.class));
+					startActivity(new Intent(getActivity(), LoginActivity.class));
 					break;
 				case 1:
 					// 注册车辆
-					startActivity(new Intent(FaultActivity.this, CarAddActivity.class));
+					startActivity(new Intent(getActivity(), CarAddActivity.class));
 					break;
 				case 2:
 					// 修改车辆
 					int index = getIndexFromId(nsDatas.get(index_message).getObj_id());
 					if (index == -1) {
 						// 没有在列表找到对应的车
-						startActivity(new Intent(FaultActivity.this, CarActivity.class));
+						startActivity(new Intent(getActivity(), CarActivity.class));
 					} else {
-						Intent intent = new Intent(FaultActivity.this, CarUpdateActivity.class);
+						Intent intent = new Intent(getActivity(), CarUpdateActivity.class);
 						intent.putExtra("index", index);
 						startActivityForResult(intent, 2);
 					}
 					break;
 				case 3:
 					// 绑定终端
-					startActivity(new Intent(FaultActivity.this, CarActivity.class));
+					startActivity(new Intent(getActivity(), CarActivity.class));
 					break;
 				case 4:
 					// 消息
-					startActivity(new Intent(FaultActivity.this, NoticeActivity.class));
+					startActivity(new Intent(getActivity(), NoticeActivity.class));
 					break;
 				case 5:
 					// 问答
@@ -1375,23 +1270,18 @@ public class FaultActivity extends FragmentActivity {
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		/**
-		 * requestCode = 5,跳转到更多页面
-		 */
-		if (requestCode == 5 && resultCode == 1) {
-			finish();
-		} else if (resultCode == 3) {
+		if (resultCode == 3) {
 			// 修改车辆信息
 			initDataView();
 			if (app.carDatas.size() == 0) {
-				rl_ad = (RelativeLayout) findViewById(R.id.rl_ad);
+				rl_ad = (RelativeLayout) getActivity().findViewById(R.id.rl_ad);
 				rl_ad.setVisibility(View.VISIBLE);
-				tv_content = (TextView) findViewById(R.id.tv_content);
+				tv_content = (TextView) getActivity().findViewById(R.id.tv_content);
 				tv_content.setOnClickListener(onClickListener);
-				ll_image = (LinearLayout) findViewById(R.id.ll_image);
-				hs_photo = (HScrollLayout) findViewById(R.id.hs_photo);
+				ll_image = (LinearLayout) getActivity().findViewById(R.id.ll_image);
+				hs_photo = (HScrollLayout) getActivity().findViewById(R.id.hs_photo);
 				getAD();
 				hs_photo.setOnViewChangeListener(new OnViewChangeListener() {
 					@Override
@@ -1424,7 +1314,7 @@ public class FaultActivity extends FragmentActivity {
 			// requestCode = 2, resultCode = 0
 			// 驾驶习惯返回
 			/** 驾驶信息 **/
-			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+			SharedPreferences preferences = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 			String drive = preferences.getString(Constant.sp_drive_score + app.carDatas.get(index).getObj_id(), "");
 			if (drive.equals("")) {
 
@@ -1442,104 +1332,11 @@ public class FaultActivity extends FragmentActivity {
 	}
 
 	@Override
-	protected void onDestroy() {
+	public void onDestroy() {
 		super.onDestroy();
-		unregisterReceiver(myBroadCastReceiver);
 		isCycle = false;
 		isGetGps = false;
 		isGetAllData = false;
-	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (smv_content.getCurrentScreen() == 1) {
-				smv_content.snapToScreen(0);
-			} else {
-				GetSystem.myLog(TAG, "app.cust_id = " + app.cust_id);
-				if (app.cust_id == null || app.cust_id.equals("")) {
-					finish();
-				} else {
-					// TODO 在幕后
-					Intent intent = new Intent();
-					intent.setAction(Intent.ACTION_MAIN);
-					intent.addCategory(Intent.CATEGORY_HOME);
-					startActivity(intent);
-				}
-			}
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
-
-	class MyBroadCastReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String action = intent.getAction();
-			GetSystem.myLog(TAG, action);
-			if (action.equals(Constant.A_RefreshHomeCar)) {
-				GetSystem.myLog(TAG, "A_RefreshHomeCar");
-				initDataView();
-				getTotalData();
-				noticeUrl = Constant.BaseUrl + "customer/" + app.cust_id + "/tips?auth_code=" + app.auth_code;
-				getMessage(noticeUrl);
-				getCounter();
-				noticeFragment.ResetNotice();
-
-				if (app.carDatas.size() == 0) {
-					rl_ad = (RelativeLayout) findViewById(R.id.rl_ad);
-					rl_ad.setVisibility(View.VISIBLE);
-					tv_content = (TextView) findViewById(R.id.tv_content);
-					tv_content.setOnClickListener(onClickListener);
-					ll_image = (LinearLayout) findViewById(R.id.ll_image);
-					hs_photo = (HScrollLayout) findViewById(R.id.hs_photo);
-					getAD();
-					hs_photo.setOnViewChangeListener(new OnViewChangeListener() {
-						@Override
-						public void OnViewChange(int view) {
-							image_position = view;
-							tv_content.setText(adDatas.get(view).getContent());
-							changeImage(view);
-						}
-
-						@Override
-						public void OnLastView() {
-						}
-
-						@Override
-						public void OnFinish(int index) {
-						}
-					});
-				} else {
-					if (rl_ad != null) {
-						rl_ad.setVisibility(View.GONE);
-					}
-				}
-
-			} else if (action.equals(Constant.A_LoginOut)) {
-				setLoginView();
-				noticeUrl = Constant.BaseUrl + "customer/0/tips";
-				getMessage(noticeUrl);
-				noticeFragment.ClearNotice();
-			} else if (action.equals(Constant.A_City)) {
-				try {
-					app.City = intent.getStringExtra("City");
-					app.Province = intent.getStringExtra("Province");
-					String url = Constant.BaseUrl + "base/weather2?city=" + URLEncoder.encode(app.City, "UTF-8");
-					new NetThread.GetDataThread(handler, url, getWeather).start();
-					SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-					Editor editor = preferences.edit();
-					editor.putString(Constant.sp_city, app.City);
-					editor.putString(Constant.sp_province, app.Province);
-					editor.commit();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else if (action.equals(Constant.A_ChangeCustomerType)) {
-				// 类型改变，关闭界面
-				finish();
-			}
-		}
 	}
 
 	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {

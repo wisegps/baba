@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_white"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dip"
+        android:orientation="horizontal"
+        android:padding="8dip" >
+
+        <ImageView
+            android:id="@+id/info_icon"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="5dip"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/amp2" />
+
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="4"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tv_info_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="乐一下"
+                android:textColor="@color/back"
+                android:textSize="@dimen/content" />
+
+            <TextView
+                android:id="@+id/tv_info_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="乐一下的内容部分"
+                android:textColor="#55333333"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/item_add"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@drawable/bg_bt_green"
+            android:text="添加"
+            android:textSize="@dimen/content" />
+    </LinearLayout>
+
+</LinearLayout>
