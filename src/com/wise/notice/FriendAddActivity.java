@@ -97,11 +97,12 @@ public class FriendAddActivity extends Activity implements Callback {
 	public void parseJsonString(String strJson) {
 		Gson gson = new Gson();
 		if (strJson.startsWith("[]")) {
+			et_name.setText("");
 			toast("搜索结果为空！");
 			return;
 		} else if (strJson.startsWith("{")) {// 只有一条数据
 			FriendSearch friend = gson.fromJson(strJson, FriendSearch.class);
-			toast("一条数据" + friend.getCust_name());
+			//toast("一条数据" + friend.getCust_name());
 			Intent intent = new Intent(this,
 					FriendDetailActivity.class);
 			intent.putExtra(Info.FriendStatusKey,
