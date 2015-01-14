@@ -266,7 +266,9 @@ public class FriendInfoActivity extends Activity {
 	/** 解析好友信息 **/
 	private void jsonFriendInfo(String result) {
 		try {
+			System.out.println("解析好友信息列表"+result);
 			JSONObject jsonObject = new JSONObject(result);
+			
 			FriendId = jsonObject.getInt("cust_id");
 			judgeIsAddFriend();
 			FriendName = jsonObject.getString("cust_name");

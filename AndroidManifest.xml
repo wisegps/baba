@@ -219,8 +219,17 @@
             android:name="com.wise.notice.FriendAddActivity"
             android:screenOrientation="portrait" >
         </activity>
+        
+        <activity
+            android:name="com.wise.notice.FriendListActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <activity
             android:name="com.wise.notice.FriendInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.notice.FriendDetailActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
