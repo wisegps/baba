@@ -48,7 +48,7 @@ import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.notice.NoticeActivity;
 import com.wise.remind.RemindListActivity;
-import com.wise.state.FaultActivity;
+import com.wise.state.MainActivity;
 import com.wise.state.ServiceProviderActivity;
 import com.wise.violation.TrafficActivity;
 
@@ -270,7 +270,7 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 					if (cust_type == Info.ServiceProvider) {
 						startActivity(new Intent(LoginActivity.this, ServiceProviderActivity.class));
 					} else {
-						startActivity(new Intent(LoginActivity.this, FaultActivity.class));
+						startActivity(new Intent(LoginActivity.this, MainActivity.class));
 					}
 				}
 				app.cust_type = cust_type;
@@ -294,7 +294,7 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 		app.carDatas.clear();
 		app.carDatas.addAll(JsonData.jsonCarInfo(str));
 		// 发广播
-		Intent intent = new Intent(Constant.A_RefreshHomeCar);
+		Intent intent = new Intent(Constant.A_Login);
 		sendBroadcast(intent);
 		// 判断进入那个页面
 		getActivityState(LoginActivity.this.getIntent());

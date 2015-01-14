@@ -177,7 +177,7 @@ public class FragmentFriend extends Fragment {
 			FriendData friendData = app.friendDatas.get(i);
 			if (friendData.getLogo() != null && (!friendData.getLogo().equals(""))) {
 				// 判断图片是否存在
-				if (new File(Constant.userIconPath + friendData.getFriend_id() + ".png").exists()) {
+				if (new File(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png").exists()) {
 
 				} else {
 					if (isFriendThreadRun(i)) {
@@ -229,7 +229,7 @@ public class FragmentFriend extends Fragment {
 			super.run();
 			Bitmap bitmap = GetSystem.getBitmapFromURL(app.friendDatas.get(position).getLogo());
 			if (bitmap != null) {
-				GetSystem.saveImageSD(bitmap, Constant.userIconPath, app.friendDatas.get(position).getFriend_id() + ".png", 100);
+				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(app.friendDatas.get(position).getLogo()) + ".png", 100);
 			}
 			for (int i = 0; i < friendThreadId.size(); i++) {
 				if (friendThreadId.get(i) == position) {
@@ -312,8 +312,8 @@ public class FragmentFriend extends Fragment {
 				// 第一项是新的朋友
 				holder.iv_image.setImageResource(R.drawable.icon_people_no);
 			} else {
-				if (new File(Constant.userIconPath + friendData.getFriend_id() + ".png").exists()) {
-					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + friendData.getFriend_id() + ".png");
+				if (new File(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png").exists()) {
+					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png");
 					holder.iv_image.setImageBitmap(image);
 				} else {
 					holder.iv_image.setImageResource(R.drawable.icon_people_no);

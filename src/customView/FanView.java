@@ -3,8 +3,6 @@ package customView;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.wise.state.FaultActivity;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -19,15 +17,17 @@ import android.view.View;
 
 public class FanView extends View {
 
+	// 跳转类型
+	public static final int DISTANCE = 1;// 里程
+	public static final int FEE = 2;// 费用
+	public static final int FUEL = 3;// 油耗
+
 	private int Width = 250; // 总大小
-	private int RingWidth = 20; // 圆环大小
+	private final int RingWidth = 20; // 圆环大小
 	private int CenterWidth = 100; // 圆心大小
 
-	int[] Colors = { Color.argb(255, 81, 206, 181),
-			Color.argb(255, 248, 220, 92), Color.argb(255, 235, 130, 99),
-			Color.argb(255, 139, 207, 233), Color.argb(255, 58, 137, 184),
-			Color.argb(255, 248, 220, 92), Color.argb(255, 235, 130, 99),
-			Color.argb(255, 139, 207, 233) };
+	int[] Colors = { Color.argb(255, 81, 206, 181), Color.argb(255, 248, 220, 92), Color.argb(255, 235, 130, 99), Color.argb(255, 139, 207, 233),
+			Color.argb(255, 58, 137, 184), Color.argb(255, 248, 220, 92), Color.argb(255, 235, 130, 99), Color.argb(255, 139, 207, 233) };
 	/** 每次旋转的度数 **/
 	int AveRotate = 3;
 
@@ -63,8 +63,7 @@ public class FanView extends View {
 	 * @param position
 	 *            指定那个位置
 	 */
-	public void setDatas(List<com.wise.state.FuelActivity.RangeData> Datas,
-			int position, int type) {
+	public void setDatas(List<com.wise.state.FuelActivity.RangeData> Datas, int position, int type) {
 		rangeDatas.clear();
 		RecordAngle = -90;
 		currentRotateRanges = 0;
@@ -74,9 +73,9 @@ public class FanView extends View {
 		for (int i = 0; i < Datas.size(); i++) {
 			RangeData rangeData = new RangeData();
 			String text = "";
-			if (type == FaultActivity.FUEL) {
+			if (type == FUEL) {
 				text = subData(Datas.get(i).getAvg_fuel());
-			} else if (type == FaultActivity.DISTANCE) {
+			} else if (type == DISTANCE) {
 				text = Datas.get(i).getDistance();
 			} else {
 				text = Datas.get(i).getFee();
@@ -100,8 +99,7 @@ public class FanView extends View {
 		if (Datas.size() > 0) {
 			this.OnTouchIndex = position;
 			RangeData rangeData = rangeDatas.get(OnTouchIndex);
-			int centerRanges = (rangeData.getAnges() / 2 + rangeData
-					.getStartRanges()) % 360;
+			int centerRanges = (rangeData.getAnges() / 2 + rangeData.getStartRanges()) % 360;
 			if (centerRanges > 180) {
 				rotateRanges = 180 - centerRanges;
 			} else {
@@ -166,8 +164,7 @@ public class FanView extends View {
 
 		@Override
 		public String toString() {
-			return "RangeData [startRanges=" + startRanges + ", anges=" + anges
-					+ "]";
+			return "RangeData [startRanges=" + startRanges + ", anges=" + anges + "]";
 		}
 	}
 
@@ -192,8 +189,7 @@ public class FanView extends View {
 		p.setAntiAlias(true);
 		canvas.drawCircle(Width, Width, Width, p); // 画圆
 
-		RectF oval = new RectF(RingWidth, RingWidth, Width * 2 - RingWidth,
-				Width * 2 - RingWidth);
+		RectF oval = new RectF(RingWidth, RingWidth, Width * 2 - RingWidth, Width * 2 - RingWidth);
 		p.setColor(Color.BLUE);
 
 		if (RecordAngle < -90) {
@@ -208,8 +204,7 @@ public class FanView extends View {
 			RangeData rangeData = rangeDatas.get(i);
 			if (B >= 0) {
 				if ((rangeData.getAnges() + rangeData.getStartRanges()) >= 360) {
-					int endRanges = (rangeData.getAnges() + rangeData
-							.getStartRanges()) - 360;
+					int endRanges = (rangeData.getAnges() + rangeData.getStartRanges()) - 360;
 					if (B < endRanges || B >= rangeData.getStartRanges()) {
 						p.setColor(Color.GRAY);
 						OnTouchIndex = i;
@@ -217,9 +212,7 @@ public class FanView extends View {
 							onViewRotateListener.viewRotate(OnTouchIndex);
 						}
 					}
-				} else if (B >= rangeData.getStartRanges()
-						&& B < (rangeData.getAnges() + rangeData
-								.getStartRanges())) {
+				} else if (B >= rangeData.getStartRanges() && B < (rangeData.getAnges() + rangeData.getStartRanges())) {
 					p.setColor(Color.GRAY);
 					OnTouchIndex = i;
 					if (onViewRotateListener != null) {
@@ -230,10 +223,8 @@ public class FanView extends View {
 			canvas.drawArc(oval, startAngle, rangeData.getAnges(), true, p);
 			// TODO 写字
 			int nowCenterRanges = (rangeData.getAnges() / 2 + startAngle + 90) % 360;
-			double nowX = Width + Width
-					* Math.sin(nowCenterRanges * Math.PI / 180) * 0.6;
-			double nowY = Width - Width
-					* Math.cos(nowCenterRanges * Math.PI / 180) * 0.6;
+			double nowX = Width + Width * Math.sin(nowCenterRanges * Math.PI / 180) * 0.6;
+			double nowY = Width - Width * Math.cos(nowCenterRanges * Math.PI / 180) * 0.6;
 			p.setColor(Color.WHITE);
 			p.setTextSize(30);
 			String str = rangeData.getText();
@@ -261,8 +252,7 @@ public class FanView extends View {
 			// 判断是否点在圆上 x*x + y*y>=r*r
 			float w = event.getX() - Width;
 			float h = event.getY() - Width;
-			if ((w * w + h * h) > Width * Width
-					|| (w * w + h * h) < CenterWidth * CenterWidth) {
+			if ((w * w + h * h) > Width * Width || (w * w + h * h) < CenterWidth * CenterWidth) {
 				// 点在圆外
 			} else {
 				// 点在圆内
@@ -270,8 +260,7 @@ public class FanView extends View {
 				int a = Width;
 				double b = Math.sqrt(w * w + event.getY() * event.getY());
 				double c = Math.sqrt(w * w + h * h);
-				java.text.DecimalFormat df = new java.text.DecimalFormat(
-						"#0.00");
+				java.text.DecimalFormat df = new java.text.DecimalFormat("#0.00");
 				// 计算弧度表示的角
 				B = Math.acos((a * a + c * c - b * b) / (2.0 * a * c));
 				// 用角度表示的角
@@ -291,8 +280,7 @@ public class FanView extends View {
 			postInvalidate();
 			if (OnTouchIndex != -1) {
 				RangeData rangeData = rangeDatas.get(OnTouchIndex);
-				int centerRanges = (rangeData.getAnges() / 2 + rangeData
-						.getStartRanges()) % 360;
+				int centerRanges = (rangeData.getAnges() / 2 + rangeData.getStartRanges()) % 360;
 				if (centerRanges > 180) {
 					rotateRanges = 180 - centerRanges;
 				} else {
@@ -310,8 +298,7 @@ public class FanView extends View {
 			postInvalidate();
 			if (OnTouchIndex != -1) {
 				RangeData rangeData = rangeDatas.get(OnTouchIndex);
-				int centerRanges = (rangeData.getAnges() / 2 + rangeData
-						.getStartRanges()) % 360;
+				int centerRanges = (rangeData.getAnges() / 2 + rangeData.getStartRanges()) % 360;
 				if (centerRanges > 180) {
 					rotateRanges = 180 - centerRanges;
 				} else {
@@ -404,8 +391,7 @@ public class FanView extends View {
 
 	OnViewRotateListener onViewRotateListener;
 
-	public void setOnViewRotateListener(
-			OnViewRotateListener onViewRotateListener) {
+	public void setOnViewRotateListener(OnViewRotateListener onViewRotateListener) {
 		this.onViewRotateListener = onViewRotateListener;
 	}
 

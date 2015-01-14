@@ -188,18 +188,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.wise.state.FaultActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.wise.state.FaultsActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.wise.state.FaultTestActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name="com.wise.state.FuelActivity"
             android:screenOrientation="portrait" >
         </activity>

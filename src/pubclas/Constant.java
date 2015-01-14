@@ -112,10 +112,6 @@ public class Constant {
 	 */
 	public static String A_City = "com.wise.wawc.city";
 	/**
-	 * 登录广播，首页获取车辆用到
-	 */
-	public static String A_Login = "com.wise.wawc.login";
-	/**
 	 * 提交订单广播
 	 */
 	public static String A_Order = "com.wise.wawc.order";
@@ -125,7 +121,10 @@ public class Constant {
 	public static String A_UpdateCar = "com.wise.wawc.update_car";
 	/** 更新首页信息 **/
 	public static String A_RefreshHomeCar = "com.wise.baba.refresh_home_car";
-	/** 注销广播 **/
+
+	/** 登录广播，首页获取车辆用到 */
+	public static String A_Login = "com.wise.baba.login";
+	/** 注销账号广播 **/
 	public static String A_LoginOut = "com.wise.baba.login_out";
 	/** 改变用户类别 **/
 	public static String A_ChangeCustomerType = "com.wise.baba.change_customer_type";

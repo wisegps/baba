@@ -1,6 +1,7 @@
 package com.wise.state;
 
 import pubclas.Constant;
+import pubclas.FaceConversionUtil;
 import pubclas.GetSystem;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -17,11 +18,13 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 
+import com.umeng.update.UmengUpdateAgent;
 import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 
 import fragment.FragmentFriend;
 import fragment.FragmentHome;
+import fragment.FragmentHome.OnExitListener;
 import fragment.FragmentNotice;
 
 /**
@@ -47,6 +50,12 @@ public class MainActivity extends FragmentActivity {
 		fragmentHome = new FragmentHome();
 		transaction.add(R.id.ll_content, fragmentHome);
 		transaction.commit();
+		fragmentHome.setOnExitListener(new OnExitListener() {
+			@Override
+			public void exit() {
+				finish();
+			}
+		});
 
 		Button bt_home = (Button) findViewById(R.id.bt_home);
 		bt_home.setOnClickListener(onClickListener);
@@ -60,6 +69,7 @@ public class MainActivity extends FragmentActivity {
 		myBroadCastReceiver = new MyBroadCastReceiver();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(Constant.A_RefreshHomeCar);
+		intentFilter.addAction(Constant.A_Login);
 		intentFilter.addAction(Constant.A_LoginOut);
 		intentFilter.addAction(Constant.A_ChangeCustomerType);
 		registerReceiver(myBroadCastReceiver, intentFilter);
@@ -72,6 +82,15 @@ public class MainActivity extends FragmentActivity {
 			intent.putExtras(getIntent().getExtras());
 			startActivityForResult(intent, 5);
 		}
+
+		UmengUpdateAgent.update(MainActivity.this);
+		/** 开启线程初始化表情 **/
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				FaceConversionUtil.getInstace().getFileText(getApplication());
+			}
+		}).start();
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -144,14 +163,29 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
+			GetSystem.myLog(TAG, action);
 			if (action.equals(Constant.A_RefreshHomeCar)) {
 				GetSystem.myLog(TAG, "A_RefreshHomeCar");
-				fragmentHome.resetAllView();
-				fragmentNotice.ResetNotice();
-				fragmentFriend.getFriendData();
-			} else if (action.equals(Constant.A_LoginOut)) {
-				fragmentHome.setLoginOutView();
-				fragmentNotice.ClearNotice();
+				if (fragmentHome != null) {
+					fragmentHome.resetAllView();
+				}
+			} else if (action.equals(Constant.A_Login)) {// 登录
+				if (fragmentHome != null) {
+					fragmentHome.resetAllView();//
+				}
+				if (fragmentNotice != null) {
+					fragmentNotice.ResetNotice();// 重置消息
+				}
+				if (fragmentFriend != null) {
+					fragmentFriend.getFriendData();// 获取好友
+				}
+			} else if (action.equals(Constant.A_LoginOut)) {// 注销账号
+				if (fragmentHome != null) {
+					fragmentHome.setLoginOutView();// 通知首页账号注销
+				}
+				if (fragmentNotice != null) {
+					fragmentNotice.ClearNotice(); // 清除通知信息
+				}
 			} else if (action.equals(Constant.A_City)) {
 				// try {
 				// app.City = intent.getStringExtra("City");
