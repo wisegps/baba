@@ -1,5 +1,6 @@
 package com.wise.notice;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,10 +118,12 @@ public class FriendDetailActivity extends Activity implements OnClickListener,Ca
 		} else {
 			imgService.setVisibility(View.GONE);
 		}
-
 		
 		//设置头像图片
-		if (logo.startsWith("http://")) {
+		if (new File(Constant.userIconPath + id + ".png").exists()) {
+			Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + id + ".png");
+			imgLogo.setImageBitmap(image);
+		}else if (logo.startsWith("http://")) {
 			Listener<Bitmap> listener = new Response.Listener<Bitmap>() {
 				@Override
 				public void onResponse(Bitmap response) {
