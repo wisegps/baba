@@ -45,6 +45,17 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(arg0);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
+
+		Button bt_home = (Button) findViewById(R.id.bt_home);
+		bt_home.setOnClickListener(onClickListener);
+		Button bt_info = (Button) findViewById(R.id.bt_info);
+		bt_info.setOnClickListener(onClickListener);
+		Button bt_friend = (Button) findViewById(R.id.bt_friend);
+		bt_friend.setOnClickListener(onClickListener);
+		Button bt_set = (Button) findViewById(R.id.bt_set);
+		bt_set.setOnClickListener(onClickListener);
+
+		System.out.println("onCreate");
 		fragmentManager = getSupportFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		fragmentHome = new FragmentHome();
@@ -56,15 +67,6 @@ public class MainActivity extends FragmentActivity {
 				finish();
 			}
 		});
-
-		Button bt_home = (Button) findViewById(R.id.bt_home);
-		bt_home.setOnClickListener(onClickListener);
-		Button bt_info = (Button) findViewById(R.id.bt_info);
-		bt_info.setOnClickListener(onClickListener);
-		Button bt_friend = (Button) findViewById(R.id.bt_friend);
-		bt_friend.setOnClickListener(onClickListener);
-		Button bt_set = (Button) findViewById(R.id.bt_set);
-		bt_set.setOnClickListener(onClickListener);
 
 		myBroadCastReceiver = new MyBroadCastReceiver();
 		IntentFilter intentFilter = new IntentFilter();

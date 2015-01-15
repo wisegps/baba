@@ -54,6 +54,7 @@ import android.widget.Toast;
 import com.wise.car.ClearEditText;
 import com.wise.car.SideBar;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;
+import com.wise.state.MainActivity;
 
 import data.CharacterParser;
 
