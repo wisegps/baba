@@ -65,10 +65,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".BNavigatorActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
             android:theme="@android:style/Theme.NoTitleBar" >
@@ -185,18 +181,6 @@
         </activity>
         <activity
             android:name="com.wise.state.DyActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.wise.state.FaultActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.wise.state.FaultsActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.wise.state.FaultTestActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity

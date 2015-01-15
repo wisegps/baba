@@ -54,7 +54,7 @@ import android.widget.Toast;
 import com.wise.car.ClearEditText;
 import com.wise.car.SideBar;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;
-import com.wise.state.FaultActivity;
+import com.wise.state.MainActivity;
 
 import data.CharacterParser;
 
@@ -174,35 +174,26 @@ public class SelectCityActivity extends Activity {
 	};
 
 	private void GetCity() {
-		List<BaseData> hotBaseDatas = DataSupport.where("Title = ?", "hotCity")
-				.find(BaseData.class);
-		if (hotBaseDatas.size() == 0
-				|| hotBaseDatas.get(0).getContent() == null
-				|| hotBaseDatas.get(0).getContent().equals("")) {
+		List<BaseData> hotBaseDatas = DataSupport.where("Title = ?", "hotCity").find(BaseData.class);
+		if (hotBaseDatas.size() == 0 || hotBaseDatas.get(0).getContent() == null || hotBaseDatas.get(0).getContent().equals("")) {
 			if (progressDialog == null) {
-				progressDialog = ProgressDialog.show(SelectCityActivity.this,
-						getString(R.string.dialog_title), "城市信息获取中");
+				progressDialog = ProgressDialog.show(SelectCityActivity.this, getString(R.string.dialog_title), "城市信息获取中");
 				progressDialog.setCancelable(true);
 			}
 			String url_hot = Constant.BaseUrl + "base/city?is_hot=1";
-			new NetThread.GetDataThread(handler, url_hot, Get_host_city)
-					.start();
+			new NetThread.GetDataThread(handler, url_hot, Get_host_city).start();
 		} else {
 			String Hot_Citys = hotBaseDatas.get(0).getContent();
 			hotDatas = GetCityList(Hot_Citys);
 		}
-		List<BaseData> baseDatas = DataSupport.where("Title = ?", "City").find(
-				BaseData.class);
-		if (baseDatas.size() == 0 || baseDatas.get(0).getContent() == null
-				|| baseDatas.get(0).getContent().equals("")) {
+		List<BaseData> baseDatas = DataSupport.where("Title = ?", "City").find(BaseData.class);
+		if (baseDatas.size() == 0 || baseDatas.get(0).getContent() == null || baseDatas.get(0).getContent().equals("")) {
 			if (progressDialog == null) {
-				progressDialog = ProgressDialog.show(SelectCityActivity.this,
-						getString(R.string.dialog_title), "城市信息获取中");
+				progressDialog = ProgressDialog.show(SelectCityActivity.this, getString(R.string.dialog_title), "城市信息获取中");
 				progressDialog.setCancelable(true);
 			}
 			String url = Constant.BaseUrl + "base/city?is_hot=0";
-			new Thread(new NetThread.GetDataThread(handler, url, Get_city))
-					.start();
+			new Thread(new NetThread.GetDataThread(handler, url, Get_city)).start();
 		} else {
 			String Citys = baseDatas.get(0).getContent();
 			cityDatas = GetCityList(Citys);
@@ -215,15 +206,13 @@ public class SelectCityActivity extends Activity {
 
 	TextWatcher textWatcher = new TextWatcher() {
 		@Override
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
 			// 文本框里的内容改变触发
 			filterData(s.toString());
 		}
 
 		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 		}
 
 		@Override
@@ -243,9 +232,7 @@ public class SelectCityActivity extends Activity {
 			ll_activity_select_city.setVisibility(View.GONE);
 			for (CityData cityData : cityDatas) {
 				String name = cityData.getCity();
-				if (name.indexOf(filterStr.toString()) != -1
-						|| characterParser.getSelling(name).startsWith(
-								filterStr.toString())) {
+				if (name.indexOf(filterStr.toString()) != -1 || characterParser.getSelling(name).startsWith(filterStr.toString())) {
 					filterCityDatas.add(cityData);
 				}
 			}
@@ -255,8 +242,7 @@ public class SelectCityActivity extends Activity {
 
 	OnItemClickListener lvOnItemClickListener = new OnItemClickListener() {
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			CityData cityData = filterCityDatas.get(arg2);
 			if (cityData.getCity_code() != null) {
 				Log.e(TAG, cityData.getCity_spell());
@@ -266,8 +252,7 @@ public class SelectCityActivity extends Activity {
 	};
 	OnItemClickListener gvOnItemClickListener = new OnItemClickListener() {
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			CityData HotCityData = hotDatas.get(arg2);
 			Log.d(TAG, HotCityData.toString());
 			SaveCityInfo(HotCityData);
@@ -320,8 +305,7 @@ public class SelectCityActivity extends Activity {
 		}
 		app.City = cityData.getCity();
 		app.Province = cityData.getProvince();
-		SharedPreferences preferences = getSharedPreferences(
-				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		Editor editor = preferences.edit();
 		editor.putString(Constant.sp_city, cityData.getCity());
 		editor.putString(Constant.LocationCityCode, cityData.getCity_code());
@@ -329,16 +313,14 @@ public class SelectCityActivity extends Activity {
 		editor.putString(Constant.LocationCityFuel, cityData.getFuel_price());
 		editor.putString(Constant.FourShopParmeter, cityData.getCity_spell());
 		editor.commit();
-		Toast.makeText(SelectCityActivity.this, "您选择了城市：" + cityData.getCity(),
-				Toast.LENGTH_LONG).show();
+		Toast.makeText(SelectCityActivity.this, "您选择了城市：" + cityData.getCity(), Toast.LENGTH_LONG).show();
 		// 释放内存
 		cityDatas.clear();
 		filterCityDatas.clear();
 		hotDatas.clear();
 		System.gc();
 		if (isWelcome) {
-			startActivity(new Intent(SelectCityActivity.this,
-					FaultActivity.class));
+			startActivity(new Intent(SelectCityActivity.this, MainActivity.class));
 		} else {
 			setResult(2);
 		}
@@ -352,16 +334,13 @@ public class SelectCityActivity extends Activity {
 			}
 
 			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				if (cityDatas.size() == 0) {
 					return;
 				}
 				if (firstVisibleItem != 0) {
-					String letter = cityDatas.get(firstVisibleItem)
-							.getFirst_letter();
-					String NextLetter = cityDatas.get(firstVisibleItem + 1)
-							.getFirst_letter();
+					String letter = cityDatas.get(firstVisibleItem).getFirst_letter();
+					String NextLetter = cityDatas.get(firstVisibleItem + 1).getFirst_letter();
 					// Log.d(TAG, "Item = " + firstVisibleItem + "letter = " +
 					// letter + ",NextLetter = " + NextLetter);
 					tv_select_city_title.setText(letter);
@@ -369,11 +348,9 @@ public class SelectCityActivity extends Activity {
 						// 产生碰撞挤压效果
 						View childView = view.getChildAt(0);
 						if (childView != null) {
-							int titleHeight = ll_activity_select_city
-									.getHeight();
+							int titleHeight = ll_activity_select_city.getHeight();
 							int bottom = childView.getBottom();
-							MarginLayoutParams params = (MarginLayoutParams) ll_activity_select_city
-									.getLayoutParams();
+							MarginLayoutParams params = (MarginLayoutParams) ll_activity_select_city.getLayoutParams();
 							// Log.d(TAG, "bottom = " + bottom +
 							// ",titleHeight = " + titleHeight);
 							if (bottom < titleHeight) {
@@ -383,15 +360,13 @@ public class SelectCityActivity extends Activity {
 							} else {
 								if (params.topMargin != 0) {
 									params.topMargin = 0;
-									ll_activity_select_city
-											.setLayoutParams(params);
+									ll_activity_select_city.setLayoutParams(params);
 								}
 							}
 						}
 					} else {
 						// Log.d(TAG, "相等");
-						MarginLayoutParams params = (MarginLayoutParams) ll_activity_select_city
-								.getLayoutParams();
+						MarginLayoutParams params = (MarginLayoutParams) ll_activity_select_city.getLayoutParams();
 						params.topMargin = 0;
 						ll_activity_select_city.setLayoutParams(params);
 					}
@@ -423,8 +398,7 @@ public class SelectCityActivity extends Activity {
 				cityData.setCity(jsonObject.getString("city"));
 				cityData.setProvince(jsonObject.getString("province"));
 				cityData.setCity_spell(jsonObject.getString("spell"));
-				cityData.setFirst_letter(GetFristLetter(jsonObject
-						.getString("city")));
+				cityData.setFirst_letter(GetFristLetter(jsonObject.getString("city")));
 				if (jsonObject.opt("fuel_price") == null) {
 					cityData.setFuel_price("");
 				} else {
@@ -486,11 +460,9 @@ public class SelectCityActivity extends Activity {
 	private class PinyinComparator implements Comparator<CityData> {
 		@Override
 		public int compare(CityData o1, CityData o2) {
-			if (o1.getFirst_letter().equals("@")
-					|| o2.getFirst_letter().equals("#")) {
+			if (o1.getFirst_letter().equals("@") || o2.getFirst_letter().equals("#")) {
 				return -1;
-			} else if (o1.getFirst_letter().equals("#")
-					|| o2.getFirst_letter().equals("@")) {
+			} else if (o1.getFirst_letter().equals("#") || o2.getFirst_letter().equals("@")) {
 				return 1;
 			} else {
 				return o1.getFirst_letter().compareTo(o2.getFirst_letter());
@@ -534,14 +506,9 @@ public class SelectCityActivity extends Activity {
 				case VALUE_HOT:
 					hotholder = new ViewHot();
 					convertView = mInflater.inflate(R.layout.hot_city, null);
-					hotholder.gv = (GridView) convertView
-							.findViewById(R.id.gv_hot_city);
-					int px = (int) TypedValue.applyDimension(
-							TypedValue.COMPLEX_UNIT_DIP, 40, getResources()
-									.getDisplayMetrics());
-					LayoutParams params = new LayoutParams(
-							LayoutParams.FILL_PARENT, (hotDatas.size() / 4)
-									* px);
+					hotholder.gv = (GridView) convertView.findViewById(R.id.gv_hot_city);
+					int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
+					LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, (hotDatas.size() / 4) * px);
 					hotholder.gv.setLayoutParams(params);
 					hotholder.gv.setAdapter(new hotAdapter());
 					hotholder.gv.setOnItemClickListener(gvOnItemClickListener);
@@ -549,25 +516,17 @@ public class SelectCityActivity extends Activity {
 					break;
 				case VALUE_CITY:
 					cityHolder = new ViewCity();
-					convertView = mInflater.inflate(R.layout.item_select_city,
-							null);
-					cityHolder.tv_item_select_city = (TextView) convertView
-							.findViewById(R.id.tv_item_select_city);
-					cityHolder.tv_item_select_city_title = (TextView) convertView
-							.findViewById(R.id.tv_item_select_city_title);
+					convertView = mInflater.inflate(R.layout.item_select_city, null);
+					cityHolder.tv_item_select_city = (TextView) convertView.findViewById(R.id.tv_item_select_city);
+					cityHolder.tv_item_select_city_title = (TextView) convertView.findViewById(R.id.tv_item_select_city_title);
 					if (citys.get(position).getCity_code() == null) {
-						cityHolder.tv_item_select_city_title
-								.setVisibility(View.VISIBLE);
-						cityHolder.tv_item_select_city_title.setText(citys.get(
-								position).getFirst_letter());
+						cityHolder.tv_item_select_city_title.setVisibility(View.VISIBLE);
+						cityHolder.tv_item_select_city_title.setText(citys.get(position).getFirst_letter());
 						cityHolder.tv_item_select_city.setVisibility(View.GONE);
 					} else {
-						cityHolder.tv_item_select_city
-								.setVisibility(View.VISIBLE);
-						cityHolder.tv_item_select_city.setText(citys.get(
-								position).getCity());
-						cityHolder.tv_item_select_city_title
-								.setVisibility(View.GONE);
+						cityHolder.tv_item_select_city.setVisibility(View.VISIBLE);
+						cityHolder.tv_item_select_city.setText(citys.get(position).getCity());
+						cityHolder.tv_item_select_city_title.setVisibility(View.GONE);
 					}
 					convertView.setTag(cityHolder);
 					break;
@@ -583,18 +542,13 @@ public class SelectCityActivity extends Activity {
 				case VALUE_CITY:
 					cityHolder = (ViewCity) convertView.getTag();
 					if (citys.get(position).getCity_code() == null) {
-						cityHolder.tv_item_select_city_title
-								.setVisibility(View.VISIBLE);
-						cityHolder.tv_item_select_city_title.setText(citys.get(
-								position).getFirst_letter());
+						cityHolder.tv_item_select_city_title.setVisibility(View.VISIBLE);
+						cityHolder.tv_item_select_city_title.setText(citys.get(position).getFirst_letter());
 						cityHolder.tv_item_select_city.setVisibility(View.GONE);
 					} else {
-						cityHolder.tv_item_select_city
-								.setVisibility(View.VISIBLE);
-						cityHolder.tv_item_select_city.setText(citys.get(
-								position).getCity());
-						cityHolder.tv_item_select_city_title
-								.setVisibility(View.GONE);
+						cityHolder.tv_item_select_city.setVisibility(View.VISIBLE);
+						cityHolder.tv_item_select_city.setText(citys.get(position).getCity());
+						cityHolder.tv_item_select_city_title.setVisibility(View.GONE);
 					}
 					break;
 				default:
@@ -692,9 +646,7 @@ public class SelectCityActivity extends Activity {
 
 		@Override
 		public String toString() {
-			return "CityData [Type=" + Type + ", City_code=" + City_code
-					+ ", city=" + city + ", Province=" + Province
-					+ ", First_letter=" + First_letter + "]";
+			return "CityData [Type=" + Type + ", City_code=" + City_code + ", city=" + city + ", Province=" + Province + ", First_letter=" + First_letter + "]";
 		}
 	}
 
@@ -722,8 +674,7 @@ public class SelectCityActivity extends Activity {
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.item_hot_city, null);
 				holder = new ViewHolder();
-				holder.tv_item_hot = (TextView) convertView
-						.findViewById(R.id.tv_item_hot);
+				holder.tv_item_hot = (TextView) convertView.findViewById(R.id.tv_item_hot);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();

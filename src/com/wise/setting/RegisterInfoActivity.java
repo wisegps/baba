@@ -4,25 +4,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
-import cn.jpush.android.api.JPushInterface;
-import cn.jpush.android.api.TagAliasCallback;
-import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.ShareSDK;
-import cn.sharesdk.sina.weibo.SinaWeibo;
-import cn.sharesdk.tencent.qzone.QZone;
-import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
-import com.wise.baba.ManageActivity;
-import com.wise.baba.R;
-import com.wise.car.CarAddActivity;
-import com.wise.car.ModelsActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -33,18 +23,31 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.format.Time;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.sina.weibo.SinaWeibo;
+import cn.sharesdk.tencent.qzone.QZone;
+
+import com.umeng.analytics.MobclickAgent;
+import com.wise.baba.AppApplication;
+import com.wise.baba.ManageActivity;
+import com.wise.baba.R;
+import com.wise.car.CarAddActivity;
+import com.wise.car.ModelsActivity;
 
 /**
  * 注册信息界面
@@ -52,14 +55,14 @@ import android.widget.Toast;
  * @author Administrator
  * 
  */
-public class RegisterInfoActivity extends Activity implements TagAliasCallback{
+public class RegisterInfoActivity extends Activity implements TagAliasCallback {
 
 	private static String TAG = "RegisterInfoActivity";
 	private static final int save = 1;
 	private static final int get_customer = 2;
 	private static final int exist = 3;
 
-	private String[] items = { "销售", "售后", "保险", "理赔", "代办", "维修", "保养" };
+	private final String[] items = { "销售", "售后", "保险", "理赔", "代办", "维修", "保养" };
 	LinearLayout ll_models, ll_type;
 	Spinner s_type, s_birth;
 	EditText et_cust_name;
@@ -84,7 +87,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		ManageActivity.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_register_info);
-		app = (AppApplication)getApplication();
+		app = (AppApplication) getApplication();
 		et_cust_name = (EditText) findViewById(R.id.et_cust_name);
 		tv_model = (TextView) findViewById(R.id.tv_model);
 		tv_model.setOnClickListener(onClickListener);
@@ -100,9 +103,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 		ll_type = (LinearLayout) findViewById(R.id.ll_type);
 		s_type = (Spinner) findViewById(R.id.s_type);
 		s_birth = (Spinner) findViewById(R.id.s_birth);
-		ArrayAdapter<String> type = new ArrayAdapter<String>(
-				RegisterInfoActivity.this,
-				android.R.layout.simple_spinner_item, items);
+		ArrayAdapter<String> type = new ArrayAdapter<String>(RegisterInfoActivity.this, android.R.layout.simple_spinner_item, items);
 		type.setDropDownViewResource(R.layout.drop_down_item);
 		s_type.setAdapter(type);
 		getYear();
@@ -117,12 +118,10 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 
 		} else {
 			if (platform.equals("qq")) {
-				Platform platformQQ = ShareSDK.getPlatform(
-						RegisterInfoActivity.this, QZone.NAME);
+				Platform platformQQ = ShareSDK.getPlatform(RegisterInfoActivity.this, QZone.NAME);
 				et_cust_name.setText(platformQQ.getDb().getUserName());
 			} else {
-				Platform platformSina = ShareSDK.getPlatform(
-						RegisterInfoActivity.this, SinaWeibo.NAME);
+				Platform platformSina = ShareSDK.getPlatform(RegisterInfoActivity.this, SinaWeibo.NAME);
 				et_cust_name.setText(platformSina.getDb().getUserName());
 			}
 		}
@@ -139,8 +138,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 				finish();
 				break;
 			case R.id.tv_model:
-				Intent intent = new Intent(RegisterInfoActivity.this,
-						ModelsActivity.class);
+				Intent intent = new Intent(RegisterInfoActivity.this, ModelsActivity.class);
 				intent.putExtra("isNeedType", false);
 				startActivityForResult(intent, 2);
 				break;
@@ -208,9 +206,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 		for (int i = 0; i < 100; i++) {
 			years.add(year - i);
 		}
-		ArrayAdapter<Integer> arrayAdapter = new ArrayAdapter<Integer>(
-				RegisterInfoActivity.this,
-				android.R.layout.simple_spinner_item, years);
+		ArrayAdapter<Integer> arrayAdapter = new ArrayAdapter<Integer>(RegisterInfoActivity.this, android.R.layout.simple_spinner_item, years);
 		arrayAdapter.setDropDownViewResource(R.layout.drop_down_item);
 		s_birth.setAdapter(arrayAdapter);
 	}
@@ -227,12 +223,10 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 	private void Save() {
 		cust_name = et_cust_name.getText().toString().trim();
 		if (cust_name.equals("")) {
-			Toast.makeText(RegisterInfoActivity.this, "昵称不能为空",
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(RegisterInfoActivity.this, "昵称不能为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		String url = Constant.BaseUrl + "exists?query_type=5&value="
-				+ cust_name;
+		String url = Constant.BaseUrl + "exists?query_type=5&value=" + cust_name;
 		new NetThread.GetDataThread(handler, url, exist).start();
 	}
 
@@ -240,8 +234,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 		try {
 			JSONObject json = new JSONObject(str);
 			if (!json.getBoolean("exist")) {
-				String url = Constant.BaseUrl
-						+ "customer/register?auth_code=127a154df2d7850c4232542b4faa2c3d";
+				String url = Constant.BaseUrl + "customer/register?auth_code=127a154df2d7850c4232542b4faa2c3d";
 				List<NameValuePair> params = new ArrayList<NameValuePair>();
 				if (isPhone) {
 					params.add(new BasicNameValuePair("mobile", account));
@@ -250,8 +243,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 					params.add(new BasicNameValuePair("mobile", ""));
 					params.add(new BasicNameValuePair("email", account));
 				}
-				params.add(new BasicNameValuePair("password", GetSystem
-						.getM5DEndo(pwd)));
+				params.add(new BasicNameValuePair("password", GetSystem.getM5DEndo(pwd)));
 				params.add(new BasicNameValuePair("cust_type", cust_type));
 				params.add(new BasicNameValuePair("sex", sex));
 				params.add(new BasicNameValuePair("birth", GetBirth()));
@@ -259,8 +251,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 				params.add(new BasicNameValuePair("city", app.City));
 				params.add(new BasicNameValuePair("car_brand", carBrank));
 				params.add(new BasicNameValuePair("car_series", carSeries));
-				params.add(new BasicNameValuePair("service_type", String
-						.valueOf(s_type.getSelectedItemPosition())));
+				params.add(new BasicNameValuePair("service_type", String.valueOf(s_type.getSelectedItemPosition())));
 				params.add(new BasicNameValuePair("cust_name", cust_name));
 				if (platform == null || platform.equals("")) {
 					params.add(new BasicNameValuePair("qq_login_id", ""));
@@ -268,29 +259,21 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 					params.add(new BasicNameValuePair("logo", ""));
 				} else {
 					if (platform.equals("qq")) {
-						Platform platformQQ = ShareSDK.getPlatform(
-								RegisterInfoActivity.this, QZone.NAME);
-						params.add(new BasicNameValuePair("qq_login_id",
-								platformQQ.getDb().getUserId()));
+						Platform platformQQ = ShareSDK.getPlatform(RegisterInfoActivity.this, QZone.NAME);
+						params.add(new BasicNameValuePair("qq_login_id", platformQQ.getDb().getUserId()));
 						params.add(new BasicNameValuePair("sina_login_id", ""));
-						params.add(new BasicNameValuePair("logo", platformQQ
-								.getDb().getUserIcon()));
+						params.add(new BasicNameValuePair("logo", platformQQ.getDb().getUserIcon()));
 					} else {
-						Platform platformSina = ShareSDK.getPlatform(
-								RegisterInfoActivity.this, SinaWeibo.NAME);
+						Platform platformSina = ShareSDK.getPlatform(RegisterInfoActivity.this, SinaWeibo.NAME);
 						params.add(new BasicNameValuePair("qq_login_id", ""));
-						params.add(new BasicNameValuePair("sina_login_id",
-								platformSina.getDb().getUserId()));
-						params.add(new BasicNameValuePair("logo", platformSina
-								.getDb().getUserIcon()));
+						params.add(new BasicNameValuePair("sina_login_id", platformSina.getDb().getUserId()));
+						params.add(new BasicNameValuePair("logo", platformSina.getDb().getUserIcon()));
 					}
 				}
 				params.add(new BasicNameValuePair("remark", ""));
-				new NetThread.postDataThread(handler, url, params, save)
-						.start();
+				new NetThread.postDataThread(handler, url, params, save).start();
 			} else {
-				Toast.makeText(RegisterInfoActivity.this, "昵称已存在",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(RegisterInfoActivity.this, "昵称已存在", Toast.LENGTH_SHORT).show();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -307,30 +290,26 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 				app.cust_id = jsonObject.getString("cust_id");
 				app.auth_code = "127a154df2d7850c4232542b4faa2c3d";
 				// 存储账号密码
-				SharedPreferences preferences = getSharedPreferences(
-						Constant.sharedPreferencesName,
-						Context.MODE_PRIVATE);
+				SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 				Editor editor = preferences.edit();
 				editor.putString(Constant.sp_account, account);
 				editor.putString(Constant.sp_pwd, GetSystem.getM5DEndo(pwd));
 				editor.commit();
-				String url = Constant.BaseUrl + "customer/"
-						+ app.cust_id + "?auth_code="
-						+ app.auth_code;
+				String url = Constant.BaseUrl + "customer/" + app.cust_id + "?auth_code=" + app.auth_code;
 				new NetThread.GetDataThread(handler, url, get_customer).start();
 				if (fastTrack) {
 					// 设置
-					Intent intent = new Intent(RegisterInfoActivity.this,CarAddActivity.class);
+					Intent intent = new Intent(RegisterInfoActivity.this, CarAddActivity.class);
 					intent.putExtra("fastTrack", true);
 					startActivity(intent);
 					ManageActivity.getActivityInstance().exit();
 				}
 				JPushInterface.resumePush(getApplicationContext());
 				setJpush();
-				Intent intent = new Intent(Constant.A_RefreshHomeCar);
+				Intent intent = new Intent(Constant.A_Login);
 				sendBroadcast(intent);
-			}else{
-				Toast.makeText(RegisterInfoActivity.this, "注册失败，请重试",Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(RegisterInfoActivity.this, "注册失败，请重试", Toast.LENGTH_SHORT).show();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -362,8 +341,7 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 	}
 
 	private void jsonCustomer(String str) {
-		SharedPreferences preferences = getSharedPreferences(
-				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		Editor editor = preferences.edit();
 		editor.putString(Constant.sp_customer + app.cust_id, str);
 		editor.commit();
@@ -372,14 +350,14 @@ public class RegisterInfoActivity extends Activity implements TagAliasCallback{
 
 	@Override
 	public void gotResult(int arg0, String arg1, Set<String> arg2) {
-		
+
 	}
+
 	private void setJpush() {
 		GetSystem.myLog(TAG, "设置推送");
 		Set<String> tagSet = new LinkedHashSet<String>();
 		tagSet.add(app.cust_id);
 		// 调用JPush API设置Tag
-		JPushInterface.setAliasAndTags(getApplicationContext(), null, tagSet,
-				this);
+		JPushInterface.setAliasAndTags(getApplicationContext(), null, tagSet, this);
 	}
 }
