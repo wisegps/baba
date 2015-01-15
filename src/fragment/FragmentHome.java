@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import pubclas.Constant;
 import pubclas.GetSystem;
+import pubclas.Info;
 import pubclas.Judge;
 import pubclas.NetThread;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
@@ -42,6 +44,7 @@ public class FragmentHome extends Fragment {
 	private static final int get_counter = 8;
 
 	ImageView iv_noti;
+	LinearLayout ll_cards;
 	private FragmentManager fragmentManager;
 
 	AppApplication app;
@@ -57,7 +60,7 @@ public class FragmentHome extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
-		GetSystem.myLog(TAG, "onCreate");
+		ll_cards = (LinearLayout) getActivity().findViewById(R.id.ll_cards);
 		Button bt_show = (Button) getActivity().findViewById(R.id.bt_show);
 		bt_show.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView) getActivity().findViewById(R.id.iv_back);
@@ -92,10 +95,16 @@ public class FragmentHome extends Fragment {
 	private void getCards() {
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		// 默认显示的布局
-		fragmentCarInfo = new FragmentCarInfo();
-		transaction.add(R.id.ll_cards, fragmentCarInfo);
-		fragmentScrollMessage = new FragmentScrollMessage();
-		transaction.add(R.id.ll_cards, fragmentScrollMessage);
+		if (app.cust_type == Info.ServiceProvider) {// 服务商
+
+		} else {
+			// 车辆卡片
+			fragmentCarInfo = new FragmentCarInfo();
+			transaction.add(R.id.ll_cards, fragmentCarInfo);
+			// 滚动消息卡片
+			fragmentScrollMessage = new FragmentScrollMessage();
+			transaction.add(R.id.ll_cards, fragmentScrollMessage);
+		}
 		// 可选布局
 		String cards = "weather,hotNews";
 		String[] sCards = cards.split(",");
@@ -166,8 +175,19 @@ public class FragmentHome extends Fragment {
 		startActivity(intent);
 	}
 
+	boolean isChange = false;
+
+	public void chageCustomerType1() {
+		isChange = true;
+	}
+
 	/** 刷新所有布局 **/
 	public void resetAllView() {
+		isChange = true;
+	}
+
+	/** 刷新车辆卡片 **/
+	public void refreshCarInfo() {
 		fragmentCarInfo.initDataView();
 		// 通知滚动消息刷新数据
 		fragmentScrollMessage.getScrollMessage();
@@ -179,14 +199,13 @@ public class FragmentHome extends Fragment {
 		// 清除有消息的红点提醒
 		clearCounter();
 		// 通知车辆信息卡片退出登录
-		fragmentCarInfo.setLoginView();
+		if (fragmentCarInfo != null) {
+			fragmentCarInfo.setLoginView();
+		}
 		// 通知滚动消息刷新数据
-		fragmentScrollMessage.getScrollMessage();
-	}
-
-	/** 广播改变城市 **/
-	public void changeCity() {
-
+		if (fragmentScrollMessage != null) {
+			fragmentScrollMessage.getScrollMessage();
+		}
 	}
 
 	/** 清除消息红点提醒 **/
@@ -222,6 +241,14 @@ public class FragmentHome extends Fragment {
 		super.onResume();
 		setNotiView();
 		MobclickAgent.onResume(getActivity());
+		System.out.println("isChange = " + isChange + " , app.cust_type = " + app.cust_type);
+		if (isChange) {
+			isChange = false;
+			// 删除所有view
+			ll_cards.removeAllViews();
+			// 加载对应的view
+			getCards();
+		}
 	}
 
 	@Override

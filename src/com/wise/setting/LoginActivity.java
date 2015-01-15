@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import pubclas.Constant;
 import pubclas.GetSystem;
-import pubclas.Info;
 import pubclas.JsonData;
 import pubclas.NetThread;
 import android.app.Activity;
@@ -48,8 +47,6 @@ import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.notice.NoticeActivity;
 import com.wise.remind.RemindListActivity;
-import com.wise.state.MainActivity;
-import com.wise.state.ServiceProviderActivity;
 import com.wise.violation.TrafficActivity;
 
 /**
@@ -260,22 +257,7 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 			JSONObject jsonObject = new JSONObject(str);
 			if (jsonObject.opt("status_code") == null) {
 				int cust_type = jsonObject.getInt("cust_type");
-				if (cust_type == app.cust_type) {
-					// 用户类型不变
-				} else {
-					// 用户类型变化，需要关闭主界面，重新打开新的主界面
-					// 发送广播关闭界面，在跳转到对应的主界面
-					Intent intent = new Intent(Constant.A_ChangeCustomerType);
-					sendBroadcast(intent);
-					if (cust_type == Info.ServiceProvider) {
-						startActivity(new Intent(LoginActivity.this, ServiceProviderActivity.class));
-					} else {
-						startActivity(new Intent(LoginActivity.this, MainActivity.class));
-					}
-				}
 				app.cust_type = cust_type;
-				setResult(1);
-				finish();
 				getCarData();
 			}
 		} catch (Exception e) {
@@ -298,6 +280,9 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 		sendBroadcast(intent);
 		// 判断进入那个页面
 		getActivityState(LoginActivity.this.getIntent());
+
+		setResult(1);
+		finish();
 	}
 
 	// 页面跳转方法，根据登录前传过来的跳转类型进行相应界面的跳转

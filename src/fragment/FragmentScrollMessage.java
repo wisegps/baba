@@ -228,7 +228,6 @@ public class FragmentScrollMessage extends Fragment {
 		if (index_message >= nsDatas.size()) {
 			index_message = 0;
 		}
-		System.out.println("index_message = " + index_message);
 		nstv_message.snapToScreen(index_message);
 	}
 

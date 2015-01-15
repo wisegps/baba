@@ -129,7 +129,7 @@ public class FragmentCarInfo extends Fragment {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (isGetGps) {
+				while (!isDestroy) {
 					if (isResume) {
 						if (app.carDatas == null || app.carDatas.size() == 0) {
 
@@ -236,7 +236,9 @@ public class FragmentCarInfo extends Fragment {
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
+			if (isDestroy) {// 关闭后直接跳出
+				return;
+			}
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case getData:
@@ -703,7 +705,7 @@ public class FragmentCarInfo extends Fragment {
 		}
 	}
 
-	boolean isGetGps = true;
+	boolean isDestroy = false;
 	boolean isGetAllData = true;
 	boolean isResume = true;
 
@@ -722,7 +724,7 @@ public class FragmentCarInfo extends Fragment {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		isGetGps = false;
+		isDestroy = true;
 		isGetAllData = false;
 	}
 

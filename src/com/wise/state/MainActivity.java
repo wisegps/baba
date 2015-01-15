@@ -167,9 +167,8 @@ public class MainActivity extends FragmentActivity {
 			String action = intent.getAction();
 			GetSystem.myLog(TAG, action);
 			if (action.equals(Constant.A_RefreshHomeCar)) {
-				GetSystem.myLog(TAG, "A_RefreshHomeCar");
 				if (fragmentHome != null) {
-					fragmentHome.resetAllView();
+					fragmentHome.refreshCarInfo();
 				}
 			} else if (action.equals(Constant.A_Login)) {// 登录
 				if (fragmentHome != null) {
@@ -203,8 +202,10 @@ public class MainActivity extends FragmentActivity {
 				// e.printStackTrace();
 				// }
 			} else if (action.equals(Constant.A_ChangeCustomerType)) {
-				// 类型改变，关闭界面
-				finish();
+				// 类型改变
+				if (fragmentHome != null) {
+					// fragmentHome.resetAllView();
+				}
 			}
 		}
 	}
