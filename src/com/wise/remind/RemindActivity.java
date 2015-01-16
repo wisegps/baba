@@ -3,6 +3,8 @@ package com.wise.remind;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 
 import org.json.JSONObject;
 import pubclas.Constant;
@@ -13,6 +15,7 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.CarActivity;
 
+import data.CarData;
 import data.RemindData;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -47,7 +50,7 @@ public class RemindActivity extends Activity {
 	RelativeLayout rl_Note, rl_body;
 	LinearLayout ll_content;
 	AppApplication app;
-
+	List<CarData> carDatas ;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,6 +73,7 @@ public class RemindActivity extends Activity {
 
 		Intent intent = getIntent();
 		boolean isNeedGetData = intent.getBooleanExtra("isNeedGetData", true);
+		carDatas = (List<CarData>) intent.getSerializableExtra("carDatas");
 		if (isNeedGetData) {
 			// 从服务器读取数据
 			int reminder_id = intent.getIntExtra("reminder_id", 0);
@@ -110,9 +114,9 @@ public class RemindActivity extends Activity {
 
 	/** 得到车辆对应的位置 **/
 	private String getCarName(int Obj_id) {
-		for (int i = 0; i < app.carDatas.size(); i++) {
-			if (app.carDatas.get(i).getObj_id() == Obj_id) {
-				return app.carDatas.get(i).getNick_name();
+		for (int i = 0; i < carDatas.size(); i++) {
+			if (carDatas.get(i).getObj_id() == Obj_id) {
+				return carDatas.get(i).getNick_name();
 			}
 		}
 		return "";
@@ -135,6 +139,7 @@ public class RemindActivity extends Activity {
 				Intent intent = new Intent(RemindActivity.this,
 						CarRemindUpdateActivity.class);
 				intent.putExtra("remindData", remindData);
+				intent.putExtra("carDatas", (Serializable)carDatas);
 				startActivityForResult(intent, 2);
 				break;
 			case R.id.bt_delete:

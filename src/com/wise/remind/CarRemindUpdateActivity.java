@@ -53,6 +53,7 @@ public class CarRemindUpdateActivity extends Activity {
 	EditText et_mileage, et_content;
 	RemindData remindData;
 	AppApplication app;
+	List<CarData> carDatas ;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +106,7 @@ public class CarRemindUpdateActivity extends Activity {
 				android.R.layout.simple_spinner_item, Constant.items_note_mode);
 		mode.setDropDownViewResource(R.layout.drop_down_item);
 		s_mode.setAdapter(mode);
-
+		carDatas = (List<CarData>) getIntent().getSerializableExtra("carDatas");
 		remindData = (RemindData) getIntent()
 				.getSerializableExtra("remindData");
 		GetSystem.myLog(TAG, remindData.toString());
@@ -125,8 +126,8 @@ public class CarRemindUpdateActivity extends Activity {
 
 	/** 得到车辆对应的位置 **/
 	private int getSelectedItemPosition(int Obj_id) {
-		for (int i = 0; i < app.carDatas.size(); i++) {
-			if (app.carDatas.get(i).getObj_id() == Obj_id) {
+		for (int i = 0; i < carDatas.size(); i++) {
+			if (carDatas.get(i).getObj_id() == Obj_id) {
 				return i;
 			}
 		}
@@ -282,7 +283,7 @@ public class CarRemindUpdateActivity extends Activity {
 			params.add(new BasicNameValuePair("obj_id", "0"));
 		} else {
 			params.add(new BasicNameValuePair("obj_id", String
-					.valueOf(app.carDatas.get(s_car.getSelectedItemPosition())
+					.valueOf(carDatas.get(s_car.getSelectedItemPosition())
 							.getObj_id())));
 		}
 		params.add(new BasicNameValuePair("mileage", mileage.equals("") ? "0"
@@ -307,7 +308,7 @@ public class CarRemindUpdateActivity extends Activity {
 
 	private List<String> getCars() {
 		List<String> strs = new ArrayList<String>();
-		for (CarData carData : app.carDatas) {
+		for (CarData carData : carDatas) {
 			strs.add(carData.getNick_name());
 		}
 		return strs;
