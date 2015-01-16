@@ -1,5 +1,6 @@
 package com.wise.remind;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
@@ -46,6 +47,8 @@ public class RemindListActivity extends Activity {
     List<RemindData> remindDatas = new ArrayList<RemindData>();
     RemindAdapter remindAdapter;
     AppApplication app;
+    String cust_id;
+    List<CarData> carDatas ;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,8 @@ public class RemindListActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_car_remind);
         app = (AppApplication)getApplication();
+        cust_id = getIntent().getStringExtra("cust_id");
+        carDatas = (List<CarData>) getIntent().getSerializableExtra("carDatas");
         rl_Note = (RelativeLayout)findViewById(R.id.rl_Note);
         ll_frist = (LinearLayout)findViewById(R.id.ll_frist);
         ll_frist.setOnClickListener(onClickListener);
@@ -71,7 +76,7 @@ public class RemindListActivity extends Activity {
         lv_remind.setOnItemClickListener(onItemClickListener);
     }
     private void getData(){
-    	String url = Constant.BaseUrl + "customer/" + app.cust_id + "/reminder?auth_code=" + app.auth_code;
+    	String url = Constant.BaseUrl + "customer/" + cust_id + "/reminder?auth_code=" + app.auth_code;
     	new Thread(new NetThread.GetDataThread(handler, url, get_remind)).start();
     }
 
@@ -118,13 +123,15 @@ public class RemindListActivity extends Activity {
                 break;
             case R.id.iv_add:
             	Intent intent1 = new Intent(RemindListActivity.this, RemindAddActivity.class);
-            	intent1.putExtra("cust_id", app.cust_id);
+            	intent1.putExtra("cust_id", cust_id);
+            	intent1.putExtra("carDatas", (Serializable)carDatas);
             	startActivityForResult(intent1,2);
             	break;
             case R.id.ll_frist:
             	Intent intent = new Intent(RemindListActivity.this, RemindActivity.class);
     			intent.putExtra("isNeedGetData", false);
     			intent.putExtra("remindData", remindDatas.get(0));
+    			intent.putExtra("carDatas", (Serializable)carDatas);
     			startActivityForResult(intent, 2);
             	break;
             }
@@ -137,6 +144,7 @@ public class RemindListActivity extends Activity {
 			Intent intent = new Intent(RemindListActivity.this, RemindActivity.class);
 			intent.putExtra("isNeedGetData", false);
 			intent.putExtra("remindData", remindDatas.get(arg2));
+			intent.putExtra("carDatas", (Serializable)carDatas);
 			startActivityForResult(intent, 2);
 		}
 	};
@@ -186,7 +194,7 @@ public class RemindListActivity extends Activity {
     }
     
     private String getObj_name(int Obj_id){
-    	for(CarData carData : app.carDatas){
+    	for(CarData carData : carDatas){
     		if(carData.getObj_id() == Obj_id){
     			return carData.getNick_name();
     		}
@@ -280,9 +288,9 @@ public class RemindListActivity extends Activity {
     }
     /**得到车辆对应的位置**/
 	private String getCarName(int Obj_id){
-		for(int i = 0 ; i < app.carDatas.size() ; i++){
-			if(app.carDatas.get(i).getObj_id() == Obj_id){
-				return app.carDatas.get(i).getNick_name();
+		for(int i = 0 ; i < carDatas.size() ; i++){
+			if(carDatas.get(i).getObj_id() == Obj_id){
+				return carDatas.get(i).getNick_name();
 			}
 		}
 		return "";

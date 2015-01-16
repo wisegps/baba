@@ -1,5 +1,6 @@
 package data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -7,7 +8,7 @@ import java.util.ArrayList;
  * 
  * @author keven.cheng
  */
-public class CarData {
+public class CarData implements Serializable{
 	private int obj_id;
 	/** 品牌 **/
 	private String car_brand;

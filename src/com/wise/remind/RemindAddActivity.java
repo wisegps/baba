@@ -57,7 +57,8 @@ public class RemindAddActivity extends Activity {
 	EditText et_mileage, et_content;
 	LinearLayout ll_car, ll_mileage, ll_content;
 	AppApplication app;
-	String persion_id;
+	String cust_id;
+	List<CarData> carDatas ;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,8 @@ public class RemindAddActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_remind_add);
 		app = (AppApplication) getApplication();
-		persion_id = getIntent().getStringExtra("cust_id");
+		cust_id = getIntent().getStringExtra("cust_id");
+        carDatas = (List<CarData>) getIntent().getSerializableExtra("carDatas");
 		ll_car = (LinearLayout) findViewById(R.id.ll_car);
 		ll_mileage = (LinearLayout) findViewById(R.id.ll_mileage);
 		ll_content = (LinearLayout) findViewById(R.id.ll_content);
@@ -195,7 +197,7 @@ public class RemindAddActivity extends Activity {
 				ll_car.setVisibility(View.VISIBLE);
 				ll_mileage.setVisibility(View.VISIBLE);
 				ll_content.setVisibility(View.GONE);
-				if (app.carDatas.size() == 0 || app.carDatas == null) {
+				if (carDatas.size() == 0 || carDatas == null) {
 					Toast.makeText(RemindAddActivity.this, "您还没有添加爱车",
 							Toast.LENGTH_SHORT).show();
 				}
@@ -203,7 +205,7 @@ public class RemindAddActivity extends Activity {
 				ll_car.setVisibility(View.VISIBLE);
 				ll_mileage.setVisibility(View.GONE);
 				ll_content.setVisibility(View.GONE);
-				if (app.carDatas.size() == 0 || app.carDatas == null) {
+				if (carDatas.size() == 0 || carDatas == null) {
 					AlertDialog.Builder dialog = new AlertDialog.Builder(
 							RemindAddActivity.this);
 					dialog.setTitle("提示");
@@ -234,9 +236,9 @@ public class RemindAddActivity extends Activity {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		if (s_type.getSelectedItemPosition() != 0
 				&& s_type.getSelectedItemPosition() != 5) {
-			if (app.carDatas.size() != 0 && app.carDatas != null) {
+			if (carDatas.size() != 0 && carDatas != null) {
 				params.add(new BasicNameValuePair("obj_id", String
-						.valueOf(app.carDatas.get(
+						.valueOf(carDatas.get(
 								s_car.getSelectedItemPosition()).getObj_id())));
 			} else {
 				AlertDialog.Builder dialog = new AlertDialog.Builder(
@@ -263,7 +265,7 @@ public class RemindAddActivity extends Activity {
 		}
 		String mileage = et_mileage.getText().toString().trim();
 		String url = Constant.BaseUrl + "reminder?auth_code=" + app.auth_code;
-		params.add(new BasicNameValuePair("cust_id", persion_id));
+		params.add(new BasicNameValuePair("cust_id", cust_id));
 		params.add(new BasicNameValuePair("remind_type", String.valueOf(s_type
 				.getSelectedItemPosition())));
 		params.add(new BasicNameValuePair("mileage", mileage.equals("") ? "0"
@@ -287,7 +289,7 @@ public class RemindAddActivity extends Activity {
 
 	private List<String> getCars() {
 		List<String> strs = new ArrayList<String>();
-		for (CarData carData : app.carDatas) {
+		for (CarData carData : carDatas) {
 			strs.add(carData.getNick_name());
 		}
 		return strs;

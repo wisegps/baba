@@ -1,5 +1,6 @@
 package com.wise.state;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +32,12 @@ import android.widget.LinearLayout.LayoutParams;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.TravelActivity;
+import com.wise.remind.RemindListActivity;
 
 import data.CarData;
 
 /**
+ * 服务商管理界面
  * @author honesty
  **/
 public class ManageActivity extends Activity {
@@ -43,7 +46,7 @@ public class ManageActivity extends Activity {
 	ExpandableListView elv_cars;
 
 	/** 好友id **/
-	private int friendId;
+	private String friendId;
 	AppApplication app;
 	/** 好友下的车辆信息 **/
 	List<CarData> carDatas = new ArrayList<CarData>();
@@ -55,13 +58,11 @@ public class ManageActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_manage);
 		app = (AppApplication) getApplication();
-		friendId = getIntent().getIntExtra("FriendId", 0);
+		friendId = ""+getIntent().getIntExtra("FriendId", 0);
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		elv_cars = (ExpandableListView) findViewById(R.id.elv_cars);
 		elv_cars.setGroupIndicator(null);
-		// elv_cars.setOnGroupClickListener(onGroupClickListener);
-		// elv_cars.setOnChildClickListener(onChildClickListener);
 		elv_cars.setOnGroupExpandListener(onGroupExpandListener);
 		getAllCarData();
 	}
@@ -224,6 +225,7 @@ public class ManageActivity extends Activity {
 			
 			List<String> strDetails = details.get(groupIndex);
 			String detail = strDetails.get(position);
+			//行程
 			if(detail.equals("行程")){
 				Intent intent = new Intent(ManageActivity.this, TravelActivity.class);
 				intent.putExtra("device_id", carData.getDevice_id());
@@ -235,7 +237,12 @@ public class ManageActivity extends Activity {
 				startActivity(intent);
 				return;
 			}
-			if(detail.equals("")){
+			//车务提醒
+			if(detail.equals("车务")){
+				Intent intent = new Intent(ManageActivity.this, RemindListActivity.class);
+				intent.putExtra("cust_id", friendId);
+				intent.putExtra("carDatas", (Serializable)carDatas);
+				startActivity(intent);
 				return;
 			}
 			if(detail.equals("")){

@@ -2,12 +2,14 @@ package com.wise.state;
 
 import pubclas.Constant;
 import pubclas.FaceConversionUtil;
+import pubclas.GetLocation;
 import pubclas.GetSystem;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,6 +20,9 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 
+import com.baidu.lbsapi.auth.LBSAuthManagerListener;
+import com.baidu.navisdk.BaiduNaviManager;
+import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
 import com.umeng.update.UmengUpdateAgent;
 import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
@@ -84,7 +89,8 @@ public class MainActivity extends FragmentActivity {
 			intent.putExtras(getIntent().getExtras());
 			startActivityForResult(intent, 5);
 		}
-
+		/**定位**/
+		new GetLocation(this);
 		UmengUpdateAgent.update(MainActivity.this);
 		/** 开启线程初始化表情 **/
 		new Thread(new Runnable() {
@@ -93,8 +99,33 @@ public class MainActivity extends FragmentActivity {
 				FaceConversionUtil.getInstace().getFileText(getApplication());
 			}
 		}).start();
+		// 初始化导航，必须
+		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(), mNaviEngineInitListener, new LBSAuthManagerListener() {
+			@Override
+			public void onAuthResult(int status, String msg) {
+				//s
+			}
+		});
 	}
 
+	private String getSdcardDir() {
+		if (Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
+			return Environment.getExternalStorageDirectory().toString();
+		}
+		return null;
+	}
+
+	private NaviEngineInitListener mNaviEngineInitListener = new NaviEngineInitListener() {
+		public void engineInitSuccess() {
+
+		}
+
+		public void engineInitStart() {
+		}
+
+		public void engineInitFail() {
+		}
+	};
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {

@@ -10,6 +10,7 @@ import pubclas.GetSystem;
 import pubclas.JsonData;
 import pubclas.NetThread;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -38,6 +39,8 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.car.CarLocationActivity;
+import com.wise.car.TravelActivity;
 
 import data.CarData;
 
@@ -153,7 +156,10 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 				BitmapDescriptor bitmap = BitmapDescriptorFactory
 						.fromResource(R.drawable.body_icon_location2);
 				// 构建MarkerOption，用于在地图上添加Marker
-				OverlayOptions option = new MarkerOptions().title(carData.getNick_name()).anchor(0.5f, 1.0f)
+				Bundle bundle = new Bundle();
+				bundle.putString("device_id", carData.getDevice_id());
+				bundle.putString("Gas_no", carData.getDevice_id());
+				OverlayOptions option = new MarkerOptions().extraInfo(bundle).title(carData.getNick_name()).anchor(0.5f, 1.0f)
 						.position(latLng).icon(bitmap);
 				mBaiduMap.addOverlay(option);
 				if (isFrist) {// 第一次移动车的位置到地图中间
@@ -181,15 +187,15 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 		TextView tv_travel = (TextView) view
 				.findViewById(R.id.tv_travel);
 		
+		Bundle bundle = marker.getExtraInfo();
+		final String device_id = bundle.getString("device_id");
+		final String Gas_no = bundle.getString("Gas_no");
 		carLatlng = marker.getPosition();
 		InfoWindow mInfoWindow = new InfoWindow(view, marker.getPosition(), -45);
 		tv_navi.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
 				mBaiduMap.hideInfoWindow();
-//				System.out.println("app.Lat"+app.Lat+" "+app.Lon);
-//				LatLng dirLocation = new LatLng(app.Lat,app.Lon);
-//				GetSystem.FindCar(FriendLocationActivity.this,carLatlng ,dirLocation, "", "");
 				openLocation();
 			}
 		});
@@ -197,7 +203,11 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 		tv_travel.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				
+				mBaiduMap.hideInfoWindow();
+				Intent i = new Intent(FriendLocationActivity.this, TravelActivity.class);
+				i.putExtra("device_id", device_id);
+				i.putExtra("Gas_no", Gas_no);
+				startActivity(i);
 			}
 		});
 		tv_adress.setText(marker.getTitle());
