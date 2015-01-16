@@ -2,7 +2,6 @@ package com.wise.setting;
 
 import java.util.Hashtable;
 import java.util.Set;
-import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
