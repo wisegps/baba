@@ -103,6 +103,7 @@ public class MainActivity extends FragmentActivity {
 		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(), mNaviEngineInitListener, new LBSAuthManagerListener() {
 			@Override
 			public void onAuthResult(int status, String msg) {
+				//s
 			}
 		});
 	}
