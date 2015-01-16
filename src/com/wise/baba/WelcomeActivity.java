@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import pubclas.Constant;
 import pubclas.GetSystem;
-import pubclas.Info;
 import pubclas.JsonData;
 import pubclas.NetThread;
 import android.app.Activity;
@@ -29,7 +28,6 @@ import cn.sharesdk.framework.ShareSDK;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
 import com.wise.state.MainActivity;
-import com.wise.state.ServiceProviderActivity;
 
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
@@ -287,12 +285,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 					GetSystem.myLog(TAG, "runFast isLoging");
 					app.carDatas.clear();
 					app.carDatas.addAll(JsonData.jsonCarInfo(strData));
-					Intent intent;
-					if (app.cust_type == Info.ServiceProvider) {
-						intent = new Intent(WelcomeActivity.this, ServiceProviderActivity.class);
-					} else {
-						intent = new Intent(WelcomeActivity.this, MainActivity.class);
-					}
+					Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
 					if (isSpecify) {
 						intent.putExtra("isSpecify", isSpecify);
 						intent.putExtras(bundle);

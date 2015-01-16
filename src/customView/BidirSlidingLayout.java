@@ -12,7 +12,7 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 /**
- * 双向滑动菜单框架
+ * 滑动显示删除
  * 
  * @author guolin
  */
@@ -129,8 +129,6 @@ public class BidirSlidingLayout extends RelativeLayout implements OnTouchListene
 		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		screenWidth = wm.getDefaultDisplay().getWidth();
 		touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-		System.out.println("screenWidth = " + screenWidth);
-		System.out.println("touchSlop = " + touchSlop);
 	}
 
 	/**

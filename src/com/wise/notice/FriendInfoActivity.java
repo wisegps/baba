@@ -53,7 +53,7 @@ public class FriendInfoActivity extends Activity {
 	private static final int add_friend = 2;
 	private static final int delete_friend = 3;
 
-	Button bt_add_friend, bt_send_message, bt_find_location;
+	Button bt_add_friend, bt_send_message, bt_find_location, bt_management;
 	ImageView iv_logo, iv_sex, iv_service, iv_menu;
 	TextView tv_name, tv_area;
 
@@ -90,9 +90,10 @@ public class FriendInfoActivity extends Activity {
 		bt_send_message.setOnClickListener(onClickListener);
 		bt_find_location = (Button) findViewById(R.id.bt_find_location);
 		bt_find_location.setOnClickListener(onClickListener);
+		bt_management = (Button) findViewById(R.id.bt_management);
+		bt_management.setOnClickListener(onClickListener);
 		Intent intent = getIntent();
-		friendStatus = (FriendStatus) intent
-				.getSerializableExtra(Info.FriendStatusKey);
+		friendStatus = (FriendStatus) intent.getSerializableExtra(Info.FriendStatusKey);
 		String Friendid = intent.getStringExtra("FriendId");
 		String name = intent.getStringExtra("name");
 
@@ -105,7 +106,7 @@ public class FriendInfoActivity extends Activity {
 			iv_menu.setVisibility(View.GONE);
 			bt_find_location.setVisibility(View.GONE);
 			getFriendInfoName(name);
-			
+
 		} else if (friendStatus == FriendStatus.FriendAddFromId) {
 			iv_menu.setVisibility(View.GONE);
 			bt_find_location.setVisibility(View.GONE);
@@ -126,16 +127,14 @@ public class FriendInfoActivity extends Activity {
 				addFriend();
 				break;
 			case R.id.bt_send_message:
-				Intent intent = new Intent(FriendInfoActivity.this,
-						LetterActivity.class);
+				Intent intent = new Intent(FriendInfoActivity.this, LetterActivity.class);
 				intent.putExtra("cust_id", "" + FriendId);
 				intent.putExtra("cust_name", FriendName);
 				startActivity(intent);
 				break;
 			case R.id.bt_find_location:
 				// TODO 查看好友位置信息
-				Intent intentLocation = new Intent(FriendInfoActivity.this,
-						FriendLocationActivity.class);
+				Intent intentLocation = new Intent(FriendInfoActivity.this, FriendLocationActivity.class);
 				intentLocation.putExtra("FriendId", FriendId);
 				startActivity(intentLocation);
 				break;
@@ -143,14 +142,16 @@ public class FriendInfoActivity extends Activity {
 				showMenu();
 				break;
 			case R.id.tv_compet:
-				startActivity(new Intent(FriendInfoActivity.this,
-						SetCompetActivity.class));
+				startActivity(new Intent(FriendInfoActivity.this, SetCompetActivity.class));
 				mPopupWindow.dismiss();
 				break;
 			case R.id.tv_delete:
 				// TODO 删除好友
 				deleteFriend();
 				mPopupWindow.dismiss();
+				break;
+			case R.id.bt_management:
+
 				break;
 			}
 		}
@@ -175,8 +176,7 @@ public class FriendInfoActivity extends Activity {
 
 	/** 删除好友 **/
 	private void deleteFriend() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/friend/"
-				+ FriendId + "?auth_code=" + app.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/friend/" + FriendId + "?auth_code=" + app.auth_code;
 		new NetThread.DeleteThread(handler, url, delete_friend).start();
 	}
 
@@ -190,13 +190,11 @@ public class FriendInfoActivity extends Activity {
 				setResult(2, intent);
 				finish();
 			} else {
-				Toast.makeText(FriendInfoActivity.this, "删除好友失败",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(FriendInfoActivity.this, "删除好友失败", Toast.LENGTH_SHORT).show();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Toast.makeText(FriendInfoActivity.this, "删除好友失败",
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(FriendInfoActivity.this, "删除好友失败", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -222,8 +220,7 @@ public class FriendInfoActivity extends Activity {
 	}
 
 	private void addFriend() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id
-				+ "/send_friend_request?auth_code=" + app.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/send_friend_request?auth_code=" + app.auth_code;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("friend_id", String.valueOf(FriendId)));
 		params.add(new BasicNameValuePair("cust_name", app.cust_name));
@@ -236,13 +233,11 @@ public class FriendInfoActivity extends Activity {
 		try {
 			JSONObject jsonObject = new JSONObject(result);
 			if (jsonObject.getInt("status_code") == 0) {
-				Toast.makeText(FriendInfoActivity.this, "添加成功，等待对方确认!",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(FriendInfoActivity.this, "添加成功，等待对方确认!", Toast.LENGTH_SHORT).show();
 				setResult(2);
 				finish();
 			} else {
-				Toast.makeText(FriendInfoActivity.this, "添加好友失败，请重试",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(FriendInfoActivity.this, "添加好友失败，请重试", Toast.LENGTH_SHORT).show();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -251,30 +246,28 @@ public class FriendInfoActivity extends Activity {
 
 	/** 通过名称获取好友信息 **/
 	private void getFriendInfoName(String name) {
-		String url = Constant.BaseUrl + "customer/search?auth_code="
-				+ app.auth_code + "&account=" + name;
+		String url = Constant.BaseUrl + "customer/search?auth_code=" + app.auth_code + "&account=" + name;
 		new NetThread.GetDataThread(handler, url, get_customer).start();
 	}
 
 	/** 通过id获取要添加的好友信息 **/
 	private void getFriendInfoId() {
-		String url = Constant.BaseUrl + "customer/" + FriendId + "?auth_code="
-				+ app.auth_code;
+		String url = Constant.BaseUrl + "customer/" + FriendId + "?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, get_customer).start();
 	}
 
 	/** 解析好友信息 **/
 	private void jsonFriendInfo(String result) {
 		try {
+			System.out.println("解析好友信息列表" + result);
 			JSONObject jsonObject = new JSONObject(result);
+
 			FriendId = jsonObject.getInt("cust_id");
 			judgeIsAddFriend();
 			FriendName = jsonObject.getString("cust_name");
 			tv_name.setText(FriendName);
-			tv_area.setText(jsonObject.getString("province") + "    "
-					+ jsonObject.getString("city"));
-			Bitmap bimage = BitmapFactory.decodeFile(Constant.userIconPath
-					+ FriendId + ".png");
+			tv_area.setText(jsonObject.getString("province") + "    " + jsonObject.getString("city"));
+			Bitmap bimage = BitmapFactory.decodeFile(Constant.userIconPath + FriendId + ".png");
 			if (bimage != null) {
 				iv_logo.setImageBitmap(bimage);
 			}
@@ -295,21 +288,18 @@ public class FriendInfoActivity extends Activity {
 			if (logo == null || logo.equals("")) {
 
 			} else {
-				mQueue.add(new ImageRequest(logo,
-						new Response.Listener<Bitmap>() {
-							@Override
-							public void onResponse(Bitmap response) {
-								GetSystem.saveImageSD(response,
-										Constant.userIconPath, FriendId
-												+ ".png", 100);
-								iv_logo.setImageBitmap(response);
-							}
-						}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
-							@Override
-							public void onErrorResponse(VolleyError error) {
-								error.printStackTrace();
-							}
-						}));
+				mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {
+					@Override
+					public void onResponse(Bitmap response) {
+						GetSystem.saveImageSD(response, Constant.userIconPath, FriendId + ".png", 100);
+						iv_logo.setImageBitmap(response);
+					}
+				}, 0, 0, Config.RGB_565, new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						error.printStackTrace();
+					}
+				}));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -319,23 +309,17 @@ public class FriendInfoActivity extends Activity {
 	PopupWindow mPopupWindow;
 
 	private void showMenu() {
-		LayoutInflater mLayoutInflater = LayoutInflater
-				.from(FriendInfoActivity.this);
-		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_friend_info,
-				null);
-		TextView tv_compet = (TextView) popunwindwow
-				.findViewById(R.id.tv_compet);
+		LayoutInflater mLayoutInflater = LayoutInflater.from(FriendInfoActivity.this);
+		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_friend_info, null);
+		TextView tv_compet = (TextView) popunwindwow.findViewById(R.id.tv_compet);
 		tv_compet.setOnClickListener(onClickListener);
-		TextView tv_delete = (TextView) popunwindwow
-				.findViewById(R.id.tv_delete);
+		TextView tv_delete = (TextView) popunwindwow.findViewById(R.id.tv_delete);
 		tv_delete.setOnClickListener(onClickListener);
-		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT);
+		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
 		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
 		mPopupWindow.setFocusable(true);
 		mPopupWindow.setOutsideTouchable(true);
-		mPopupWindow.showAsDropDown(
-				FriendInfoActivity.this.findViewById(R.id.iv_menu), 0, 0);
+		mPopupWindow.showAsDropDown(FriendInfoActivity.this.findViewById(R.id.iv_menu), 0, 0);
 	}
 }

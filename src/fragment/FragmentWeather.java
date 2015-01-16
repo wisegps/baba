@@ -1,6 +1,8 @@
 package fragment;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +16,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +28,9 @@ import android.widget.TextView;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.SelectCityActivity;
+
+import customView.PopView;
+import customView.PopView.OnItemClickListener;
 
 /**
  * @author honesty
@@ -51,6 +57,8 @@ public class FragmentWeather extends Fragment {
 		tv_weather = (TextView) getActivity().findViewById(R.id.tv_weather);
 		tv_advice = (TextView) getActivity().findViewById(R.id.tv_advice);
 		iv_weather = (ImageView) getActivity().findViewById(R.id.iv_weather);
+		ImageView iv_weather_menu = (ImageView) getActivity().findViewById(R.id.iv_weather_menu);
+		iv_weather_menu.setOnClickListener(onClickListener);
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -60,6 +68,9 @@ public class FragmentWeather extends Fragment {
 			case R.id.tv_city:
 				/** 跳转到修改城市，天气信息在resume里刷新了 **/
 				startActivity(new Intent(getActivity(), SelectCityActivity.class));
+				break;
+			case R.id.iv_weather_menu:
+				picPop();
 				break;
 			}
 		}
@@ -124,5 +135,37 @@ public class FragmentWeather extends Fragment {
 	public void onResume() {
 		super.onResume();
 		getWeather();
+	}
+
+	private void picPop() {
+		List<String> items = new ArrayList<String>();
+		items.add("拍照");
+		items.add("从手机相册中选取");
+		final PopView popView = new PopView(getActivity());
+		popView.initView(iv_weather);
+		popView.setData(items);
+		popView.SetOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void OnItemClick(int index) {
+				switch (index) {
+				case 0:
+					Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+					startActivityForResult(intent1, 1);
+					popView.dismiss();
+					break;
+
+				case 1:
+					Intent intent = new Intent();
+					/* 开启Pictures画面Type设定为image */
+					intent.setType("image/*");
+					/* 使用Intent.ACTION_GET_CONTENT这个Action */
+					intent.setAction(Intent.ACTION_GET_CONTENT);
+					/* 取得相片后返回本画面 */
+					startActivityForResult(intent, 9);
+					popView.dismiss();
+					break;
+				}
+			}
+		});
 	}
 }
