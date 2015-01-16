@@ -220,12 +220,7 @@ public class CarLocationActivity extends Activity {
 			case R.id.bt_location_travel:// 行程
 				if (isHotLocation) {
 					Intent i = new Intent(CarLocationActivity.this, TravelActivity.class);
-					i.putExtra("device_id", carData.getDevice_id());
-					String Gas_no = "93#(92#)";
-					if(carData.getGas_no() != null){
-						Gas_no = carData.getGas_no();
-					}
-					i.putExtra("Gas_no", Gas_no);
+					i.putExtra("index", index);
 					startActivity(i);
 				} else {
 					showHotDialog();

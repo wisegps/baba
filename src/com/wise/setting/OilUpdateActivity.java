@@ -72,12 +72,7 @@ public class OilUpdateActivity extends Activity {
 				break;
 			case R.id.bt_oil_update:// 车上有车行电脑，直接开始修正
 				Intent intent = new Intent(OilUpdateActivity.this, TravelActivity.class);
-				intent.putExtra("device_id", device_id);
-				String Gas_no = "93#(92#)";;
-				if(app.carDatas.get(index).getGas_no() != null){
-					Gas_no = app.carDatas.get(index).getGas_no();
-				}
-				intent.putExtra("Gas_no", Gas_no);
+				intent.putExtra("index", index);
 				startActivity(intent);
 				break;
 			case R.id.bt_oil_add_1:// 无车行电脑，第一次加油
