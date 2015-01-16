@@ -508,7 +508,7 @@ public class SelectCityActivity extends Activity {
 					convertView = mInflater.inflate(R.layout.hot_city, null);
 					hotholder.gv = (GridView) convertView.findViewById(R.id.gv_hot_city);
 					int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
-					LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT, (hotDatas.size() / 4) * px);
+					LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, (hotDatas.size() / 4) * px);
 					hotholder.gv.setLayoutParams(params);
 					hotholder.gv.setAdapter(new hotAdapter());
 					hotholder.gv.setOnItemClickListener(gvOnItemClickListener);

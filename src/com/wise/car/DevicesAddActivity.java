@@ -35,6 +35,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -77,7 +81,7 @@ public class DevicesAddActivity extends Activity {
 
 	// 近景远景图
 	ImageView car_icon_near, car_icon_far;
-	TextView tv_pic_share, tv_near, tv_far;
+	TextView tv_pic_share, tv_near, tv_far,tv_prompt;
 	TextView car_name;
 
 	int car_id;
@@ -111,6 +115,12 @@ public class DevicesAddActivity extends Activity {
 		iv_back.setOnClickListener(onClickListener);
 		iv_add = (ImageView) findViewById(R.id.iv_add);
 		iv_add.setOnClickListener(onClickListener);
+		tv_prompt = (TextView)findViewById(R.id.tv_prompt);
+		SpannableString sp = new SpannableString("请扫描终端的二维码或者输入对应的序列号进行绑定(常用OBD安装位置)");
+		sp.setSpan(new URLSpan("http://api.bibibaba.cn/help/obd"), 24, 33,
+				Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		tv_prompt.setText(sp);
+		tv_prompt.setMovementMethod(LinkMovementMethod.getInstance());
 
 		// 近景远景图
 		car_icon_near = (ImageView) findViewById(R.id.car_icon_near);

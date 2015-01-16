@@ -61,7 +61,7 @@ public class TravelMapActivity extends Activity {
 	BaiduMap mBaiduMap;
 	List<Overlay> overlays;
 	ProgressDialog Dialog = null; // progress
-	String device = "";
+	String device_id = "";
 	Intent intent;
 	LinearLayout ll_content;
 	AppApplication app;
@@ -93,7 +93,7 @@ public class TravelMapActivity extends Activity {
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		intent = getIntent();
-		device = intent.getStringExtra("device");
+		device_id = intent.getStringExtra("device_id");
 		tv_travel_startPlace.setText("起点："+intent.getStringExtra("Start_place"));
 		tv_travel_stopPlace.setText("终点："+intent.getStringExtra("End_place"));
 		tv_travel_startTime.setText(intent.getStringExtra("StartTime")
@@ -117,7 +117,7 @@ public class TravelMapActivity extends Activity {
 		MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(carLocat);
 		mBaiduMap.animateMapStatus(u);
 		try {
-			String url = Constant.BaseUrl + "device/" + device
+			String url = Constant.BaseUrl + "device/" + device_id
 					+ "/gps_data?auth_code=" + app.auth_code + "&start_time="
 					+ URLEncoder.encode(StartTime, "UTF-8") + "&end_time="
 					+ URLEncoder.encode(StopTime, "UTF-8");

@@ -39,6 +39,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.state.ManageActivity;
 
 import data.FriendData;
 
@@ -151,7 +152,9 @@ public class FriendInfoActivity extends Activity {
 				mPopupWindow.dismiss();
 				break;
 			case R.id.bt_management:
-
+				Intent manageLocation = new Intent(FriendInfoActivity.this, ManageActivity.class);
+				manageLocation.putExtra("FriendId", FriendId);
+				startActivity(manageLocation);
 				break;
 			}
 		}

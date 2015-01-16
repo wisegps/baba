@@ -74,7 +74,8 @@ public class TravelActivity extends Activity {
 	TravelAdapter travelAdapter;
 	String Date;
 	private GeoCoder mGeoCoder = null;
-	int index;
+	String device_id = "0";
+	String Gas_no = "93#(92#)";
 	AppApplication app;
 	ProgressDialog dialog = null;
 
@@ -99,7 +100,8 @@ public class TravelActivity extends Activity {
 		iv_activity_travel_data_previous.setOnClickListener(onClickListener);
 		lv_activity_travel = (ListView) findViewById(R.id.lv_activity_travel);
 
-		index = getIntent().getIntExtra("index", 0);
+		device_id = getIntent().getStringExtra("device_id");
+		Gas_no = getIntent().getStringExtra("Gas_no");
 		String iDate = getIntent().getStringExtra("Date");
 		if (iDate != null) {
 			Date = iDate;
@@ -255,23 +257,12 @@ public class TravelActivity extends Activity {
 	 * 从服务器上获取数据
 	 */
 	private void GetDataTrip() {
-		// 没有车辆数据
-		if (app.carDatas == null || app.carDatas.size() == 0) {
-			return;
-		}
-		// 防止数组越界
-		if (index >= app.carDatas.size()) {
+		if(device_id == null || device_id .equals("0")){
 			return;
 		}
 		String url;
-		String Gas_no;
-		if (app.carDatas.get(index).getGas_no() == null || app.carDatas.get(index).getGas_no().equals("")) {
-			Gas_no = "93#(92#)";
-		} else {
-			Gas_no = app.carDatas.get(index).getGas_no();
-		}
 		try {
-			url = Constant.BaseUrl + "device/" + app.carDatas.get(index).getDevice_id() + "/trip?auth_code=" + app.auth_code + "&day=" + Date + "&city="
+			url = Constant.BaseUrl + "device/" + device_id + "/trip?auth_code=" + app.auth_code + "&day=" + Date + "&city="
 					+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no=" + Gas_no;
 			new Thread(new NetThread.GetDataThread(handler, url, get_data)).start();
 		} catch (UnsupportedEncodingException e) {
@@ -521,22 +512,23 @@ public class TravelActivity extends Activity {
 	List<AdressData> adressDatas = new ArrayList<AdressData>();
 
 	/** 收藏的同时，添加到常用地址 **/
-	private void collectCommonAdress(String nameMark, String name, double latitude, double longitude) {
+	private void collectCommonAdress(String nameMark, String addressName, double latitude, double longitude) {
 		getJsonData();
 		SharedPreferences preferences2 = getSharedPreferences("address_add", Activity.MODE_PRIVATE);
 		SharedPreferences.Editor editor2 = preferences2.edit();
 		JSONObject object = new JSONObject();
 		JSONArray addJsonArray = new JSONArray();
 		for (AdressData adress : adressDatas) {
-			if (adress.getName().equals(name)) {
+			if (adress.getName().equals(nameMark) && adress.getAdress().equals(addressName)) {
+				//如果名称和地址都相同则，不添加到常用地址
 				return;
 			}
 		}
 		try {
 			for (AdressData adress : adressDatas) {
 				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("nameMark", nameMark);
-				jsonObject.put("addressName", adress.getName());
+				jsonObject.put("nameMark", adress.getName());
+				jsonObject.put("addressName", adress.getAdress());
 				jsonObject.put("addressLat", adress.getLat());
 				jsonObject.put("addressLon", adress.getLon());
 				addJsonArray.put(jsonObject);
@@ -545,14 +537,15 @@ public class TravelActivity extends Activity {
 			e.printStackTrace();
 		}
 		AdressData adressData = new AdressData();
-		adressData.setName(name);
+		adressData.setName(nameMark);
+		adressData.setAdress(addressName);
 		adressData.setLat(latitude);
 		adressData.setLon(longitude);
 		adressDatas.add(adressData);
 		try {
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("nameMark", nameMark);
-			jsonObject.put("addressName", name);
+			jsonObject.put("addressName", addressName);
 			jsonObject.put("addressLat", latitude);
 			jsonObject.put("addressLon", longitude);
 			addJsonArray.put(jsonObject);
@@ -567,7 +560,7 @@ public class TravelActivity extends Activity {
 		editor2.putString("addJsonArray", object.toString());
 		editor2.commit();
 	}
-
+	/**获取本地常用地址**/
 	private void getJsonData() {
 		SharedPreferences preferences = getSharedPreferences("address_add", Activity.MODE_PRIVATE);
 		String addJsonArray = preferences.getString("addJsonArray", "");
@@ -578,12 +571,17 @@ public class TravelActivity extends Activity {
 			JSONObject jsonObject = new JSONObject(addJsonArray);
 			JSONArray jsonArray = jsonObject.getJSONArray("addJsonArray");
 			for (int i = 0; i < jsonArray.length(); i++) {
+				AdressData adressData = new AdressData();
 				JSONObject object = jsonArray.getJSONObject(i);
+				if(object.opt("nameMark") == null){
+					adressData.setName("");
+				}else{
+					adressData.setName(object.getString("nameMark"));
+				}
 				String addressName = object.getString("addressName");
 				double addressLat = object.getDouble("addressLat");
 				double addressLon = object.getDouble("addressLon");
-				AdressData adressData = new AdressData();
-				adressData.setName(addressName);
+				adressData.setAdress(addressName);
 				adressData.setLat(addressLat);
 				adressData.setLon(addressLon);
 				adressDatas.add(adressData);
@@ -764,8 +762,7 @@ public class TravelActivity extends Activity {
 					intent.putExtra("Oil", travelData.getOil());
 					intent.putExtra("Speed", travelData.getSpeed());
 					intent.putExtra("Cost", travelData.getCost());
-					intent.putExtra("index", index);
-					intent.putExtra("device", app.carDatas.get(index).getDevice_id());
+					intent.putExtra("device_id", device_id);
 					intent.putExtra("Lat", travelData.getStart_lat());
 					intent.putExtra("Lon", travelData.getStart_lon());
 					TravelActivity.this.startActivity(intent);

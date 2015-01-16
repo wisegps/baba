@@ -88,8 +88,7 @@ public class CarActivity extends Activity {
 		} else {
 			new GetImageThread().start();
 		}
-		SharedPreferences preferences = getSharedPreferences(
-				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		sp_account = preferences.getString(Constant.sp_account, "");
 	}
 
@@ -122,26 +121,17 @@ public class CarActivity extends Activity {
 				break;
 			case remove_cust:
 				CarData carData = app.carDatas.get(index);
-				String url = Constant.BaseUrl + "vehicle/"
-						+ carData.getObj_id() + "/device?auth_code="
-						+ app.auth_code;
+				String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id() + "/device?auth_code=" + app.auth_code;
 				final List<NameValuePair> params = new ArrayList<NameValuePair>();
 				params.add(new BasicNameValuePair("device_id", "0"));
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						CarActivity.this);
-				builder.setTitle("提示")
-						.setMessage("是否在解除绑定的同时清除终端的所有数据？")
-						.setPositiveButton("是",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										params.add(new BasicNameValuePair(
-												"deal_data", "1"));
-									}
-								}).setNegativeButton("否", null).show();
-				new Thread(new NetThread.putDataThread(handler, url, params,
-						remove_device, index)).start();
+				AlertDialog.Builder builder = new AlertDialog.Builder(CarActivity.this);
+				builder.setTitle("提示").setMessage("是否在解除绑定的同时清除终端的所有数据？").setPositiveButton("是", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						params.add(new BasicNameValuePair("deal_data", "1"));
+					}
+				}).setNegativeButton("否", null).show();
+				new Thread(new NetThread.putDataThread(handler, url, params, remove_device, index)).start();
 				break;
 			case remove_device:
 				jsonRemove(msg.obj.toString(), msg.arg1);
@@ -157,9 +147,8 @@ public class CarActivity extends Activity {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			if (jsonObject.getString("status_code").equals("0")) {
-				// TODO 刷新
-				Toast.makeText(CarActivity.this, "解除绑定成功", Toast.LENGTH_SHORT)
-						.show();
+				// 刷新
+				Toast.makeText(CarActivity.this, "解除绑定成功", Toast.LENGTH_SHORT).show();
 				app.carDatas.get(index).setDevice_id("");
 				carAdapter.notifyDataSetChanged();
 			}
@@ -172,8 +161,7 @@ public class CarActivity extends Activity {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			if (jsonObject.getString("status_code").equals("0")) {
-				Toast.makeText(CarActivity.this, "删除成功", Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(CarActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
 				app.carDatas.remove(index);
 				carAdapter.notifyDataSetChanged();
 				isRefresh = true;
@@ -185,11 +173,9 @@ public class CarActivity extends Activity {
 
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			if (arg2 == app.carDatas.size()) {
-				startActivityForResult(new Intent(CarActivity.this,
-						CarAddActivity.class), 2);
+				startActivityForResult(new Intent(CarActivity.this, CarAddActivity.class), 2);
 			} else {
 
 			}
@@ -197,16 +183,29 @@ public class CarActivity extends Activity {
 	};
 
 	private void getData() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id
-				+ "/vehicle?auth_code=" + app.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/vehicle?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, get_data).start();
 	}
-
+	/**删除车辆确认**/
+	private void deleteCar(final int position) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(CarActivity.this);
+		builder.setTitle("提示");
+		builder.setMessage("确定删除该车辆？");
+		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String url = Constant.BaseUrl + "vehicle/" + app.carDatas.get(position).getObj_id() + "?auth_code=" + app.auth_code;
+				new Thread(new NetThread.DeleteThread(handler, url, delete_car)).start();
+			}
+		}).setNegativeButton("否", null);
+		builder.setNegativeButton("取消", null);
+		builder.show();
+	}
+	/**删除车辆，或添加修改终端后，用这个标记删除内存里的数据，不用从网络上获取**/
 	int index;
 
 	class CarAdapter extends BaseAdapter {
-		private LayoutInflater layoutInflater = LayoutInflater
-				.from(CarActivity.this);
+		private LayoutInflater layoutInflater = LayoutInflater.from(CarActivity.this);
 
 		@Override
 		public int getCount() {
@@ -224,39 +223,27 @@ public class CarActivity extends Activity {
 		}
 
 		@Override
-		public View getView(final int position, View convertView,
-				ViewGroup parent) {
+		public View getView(final int position, View convertView, ViewGroup parent) {
 			ViewHolder holder = null;
 			if (convertView == null) {
 				convertView = layoutInflater.inflate(R.layout.item_cars, null);
 				holder = new ViewHolder();
-				holder.iv_icon = (ImageView) convertView
-						.findViewById(R.id.iv_icon);
-				holder.tv_name = (TextView) convertView
-						.findViewById(R.id.tv_name);
-				holder.tv_serial = (TextView) convertView
-						.findViewById(R.id.tv_serial);
-				holder.tv_update = (TextView) convertView
-						.findViewById(R.id.tv_update);
-				holder.tv_remove = (TextView) convertView
-						.findViewById(R.id.tv_remove);
-				holder.tv_del = (TextView) convertView
-						.findViewById(R.id.tv_del);
-				holder.bt_bind = (Button) convertView
-						.findViewById(R.id.bt_bind);
+				holder.iv_icon = (ImageView) convertView.findViewById(R.id.iv_icon);
+				holder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+				holder.tv_serial = (TextView) convertView.findViewById(R.id.tv_serial);
+				holder.tv_update = (TextView) convertView.findViewById(R.id.tv_update);
+				holder.tv_remove = (TextView) convertView.findViewById(R.id.tv_remove);
+				holder.tv_del = (TextView) convertView.findViewById(R.id.tv_del);
+				holder.bt_bind = (Button) convertView.findViewById(R.id.bt_bind);
 				holder.sv = (SlidingView) convertView.findViewById(R.id.sv);
-				holder.rl_car = (RelativeLayout) convertView
-						.findViewById(R.id.rl_car);
+				holder.rl_car = (RelativeLayout) convertView.findViewById(R.id.rl_car);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 			final CarData carData = app.carDatas.get(position);
-			if (new File(Constant.VehicleLogoPath + carData.getCar_brand_id()
-					+ ".png").exists()) {
-				Bitmap image = BitmapFactory
-						.decodeFile(Constant.VehicleLogoPath
-								+ carData.getCar_brand_id() + ".png");
+			if (new File(Constant.VehicleLogoPath + carData.getCar_brand_id() + ".png").exists()) {
+				Bitmap image = BitmapFactory.decodeFile(Constant.VehicleLogoPath + carData.getCar_brand_id() + ".png");
 				holder.iv_icon.setImageBitmap(image);
 			} else {
 				holder.iv_icon.setImageResource(R.drawable.icon_car_moren);
@@ -266,8 +253,7 @@ public class CarActivity extends Activity {
 			holder.rl_car.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(CarActivity.this,
-							CarUpdateActivity.class);
+					Intent intent = new Intent(CarActivity.this, CarUpdateActivity.class);
 					intent.putExtra("index", position);
 					startActivityForResult(intent, 2);
 				}
@@ -276,22 +262,16 @@ public class CarActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					if (app.isTest) {
-						Toast.makeText(CarActivity.this, "演示账号不支持该功能",
-								Toast.LENGTH_SHORT).show();
+						Toast.makeText(CarActivity.this, "演示账号不支持该功能", Toast.LENGTH_SHORT).show();
 						return;
 					}
+					// 删除车辆
 					index = position;
-					String url = Constant.BaseUrl + "vehicle/"
-							+ carData.getObj_id() + "?auth_code="
-							+ app.auth_code;
-					new Thread(new NetThread.DeleteThread(handler, url,
-							delete_car)).start();
+					deleteCar(position);
 				}
 			});
 			holder.sv.ScorllRestFast();
-			if (carData.getDevice_id() == null
-					|| carData.getDevice_id().equals("")
-					|| carData.getDevice_id().equals("0")) {
+			if (carData.getDevice_id() == null || carData.getDevice_id().equals("") || carData.getDevice_id().equals("0")) {
 				holder.tv_update.setVisibility(View.GONE);
 				holder.tv_remove.setVisibility(View.GONE);
 				holder.bt_bind.setVisibility(View.VISIBLE);
@@ -299,15 +279,12 @@ public class CarActivity extends Activity {
 					@Override
 					public void onClick(View v) {
 						if (app.isTest) {
-							Toast.makeText(CarActivity.this, "演示账号不支持该功能",
-									Toast.LENGTH_SHORT).show();
+							Toast.makeText(CarActivity.this, "演示账号不支持该功能", Toast.LENGTH_SHORT).show();
 							return;
 						}
-						Intent intent = new Intent(CarActivity.this,
-								DevicesAddActivity.class);
+						Intent intent = new Intent(CarActivity.this, DevicesAddActivity.class);
 						intent.putExtra("car_id", carData.getObj_id());
-						intent.putExtra("car_series_id",
-								carData.getCar_series_id());
+						intent.putExtra("car_series_id", carData.getCar_series_id());
 						intent.putExtra("car_series", carData.getCar_series());
 						intent.putExtra("isBind", true);
 						startActivityForResult(intent, 2);
@@ -322,13 +299,11 @@ public class CarActivity extends Activity {
 					@Override
 					public void onClick(View v) {
 						if (app.isTest) {
-							Toast.makeText(CarActivity.this, "演示账号不支持该功能",
-									Toast.LENGTH_SHORT).show();
+							Toast.makeText(CarActivity.this, "演示账号不支持该功能", Toast.LENGTH_SHORT).show();
 							return;
 						}
 						index = position;
-						Intent intent = new Intent(CarActivity.this,
-								RegisterActivity.class);
+						Intent intent = new Intent(CarActivity.this, RegisterActivity.class);
 						intent.putExtra("mark", 1);
 						intent.putExtra("device_update", true);
 						intent.putExtra("account", sp_account);
@@ -339,13 +314,11 @@ public class CarActivity extends Activity {
 					@Override
 					public void onClick(View v) {
 						if (app.isTest) {
-							Toast.makeText(CarActivity.this, "演示账号不支持该功能",
-									Toast.LENGTH_SHORT).show();
+							Toast.makeText(CarActivity.this, "演示账号不支持该功能", Toast.LENGTH_SHORT).show();
 							return;
 						}
 						index = position;
-						Intent intent = new Intent(CarActivity.this,
-								RegisterActivity.class);
+						Intent intent = new Intent(CarActivity.this, RegisterActivity.class);
 						intent.putExtra("mark", 1);
 						intent.putExtra("remove", true);
 						intent.putExtra("account", sp_account);
@@ -373,23 +346,19 @@ public class CarActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == REMOVE && resultCode == 6) {// 删除终端
 			CarData carData = app.carDatas.get(index);
-			String url_sim = Constant.BaseUrl + "device/"
-					+ carData.getDevice_id() + "/customer?auth_code="
-					+ app.auth_code;
+			String url_sim = Constant.BaseUrl + "device/" + carData.getDevice_id() + "/customer?auth_code=" + app.auth_code;
 			List<NameValuePair> paramSim = new ArrayList<NameValuePair>();
 			paramSim.add(new BasicNameValuePair("cust_id", "0"));
-			new NetThread.putDataThread(handler, url_sim, paramSim, remove_cust)
-					.start();
+			new NetThread.putDataThread(handler, url_sim, paramSim, remove_cust).start();
 		}
 		if (requestCode == 7 && resultCode == 8) {// 修改终端
 			CarData carData = app.carDatas.get(index);
-			Intent intent = new Intent(CarActivity.this,
-					DevicesAddActivity.class);
+			Intent intent = new Intent(CarActivity.this, DevicesAddActivity.class);
 			intent.putExtra("car_id", carData.getObj_id());
 			intent.putExtra("isBind", false);
 			intent.putExtra("car_series_id", carData.getCar_series_id());
 			intent.putExtra("car_series", carData.getCar_series());
-			// TODO 传以前终端的值
+			// 传以前终端的值
 			intent.putExtra("old_device_id", carData.getDevice_id());
 			startActivityForResult(intent, 2);
 		}
@@ -439,8 +408,7 @@ public class CarActivity extends Activity {
 		public void run() {
 			super.run();
 			// 得到车辆信息
-			String result = NetThread.getData(Constant.BaseUrl
-					+ "base/car_brand");
+			String result = NetThread.getData(Constant.BaseUrl + "base/car_brand");
 			List<BrandData> brandDatas = new ArrayList<BrandData>();
 			if (!result.equals("")) {
 				try {
@@ -451,8 +419,7 @@ public class CarActivity extends Activity {
 						brandData.setBrand(jsonObject.getString("name"));
 						brandData.setId(jsonObject.getString("id"));
 						if (jsonObject.opt("url_icon") != null) {
-							brandData.setLogoUrl(jsonObject
-									.getString("url_icon"));
+							brandData.setLogoUrl(jsonObject.getString("url_icon"));
 						} else {
 							brandData.setLogoUrl("");
 						}
@@ -463,22 +430,17 @@ public class CarActivity extends Activity {
 				}
 			}
 			for (CarData carData : app.carDatas) {
-				if (new File(Constant.VehicleLogoPath
-						+ carData.getCar_brand_id() + ".png").exists()) {
+				if (new File(Constant.VehicleLogoPath + carData.getCar_brand_id() + ".png").exists()) {
 
 				} else {
 					// 获取图片
 					for (BrandData brandData : brandDatas) {
 						if (brandData.getId().equals(carData.getCar_brand_id())) {
 							// 从网上获取图片
-							Bitmap bitmap = GetSystem
-									.getBitmapFromURL(Constant.ImageUrl
-											+ brandData.getLogoUrl());
+							Bitmap bitmap = GetSystem.getBitmapFromURL(Constant.ImageUrl + brandData.getLogoUrl());
 							if (bitmap != null) {
-								String imagePath = Constant.VehicleLogoPath
-										+ carData.getCar_brand_id() + ".png";
-								File filePath = new File(
-										Constant.VehicleLogoPath);
+								String imagePath = Constant.VehicleLogoPath + carData.getCar_brand_id() + ".png";
+								File filePath = new File(Constant.VehicleLogoPath);
 								if (!filePath.exists()) {
 									filePath.mkdirs();
 								}

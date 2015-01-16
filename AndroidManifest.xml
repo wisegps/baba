@@ -176,6 +176,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.state.ManageActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.state.FaultDetailActivity"
             android:screenOrientation="portrait" >
         </activity>

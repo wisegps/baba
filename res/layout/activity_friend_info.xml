@@ -143,7 +143,6 @@
 	        android:layout_margin="@dimen/margins"
 	        android:textColor="@color/white"
 	        android:background="@drawable/bt_green"
-	        android:visibility="gone"
 	        android:text="车辆管理"/>
     </LinearLayout>
 </RelativeLayout>

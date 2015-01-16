@@ -135,7 +135,11 @@ public class FragmentHome extends Fragment {
 						goCarMap(false);
 						return;
 					}
-					CarData carData = app.carDatas.get(fragmentCarInfo.getIndex());
+					int index = 0;
+					if(fragmentCarInfo != null){
+						fragmentCarInfo.getIndex();
+					}
+					CarData carData = app.carDatas.get(index);
 					String device_id = carData.getDevice_id();
 					if (device_id == null || device_id.equals("") || device_id.equals("0")) {
 						goCarMap(false);
@@ -169,18 +173,17 @@ public class FragmentHome extends Fragment {
 
 	// 跳转到地图界面
 	private void goCarMap(boolean b) {
+		int index = 0;
+		if(fragmentCarInfo != null){
+			fragmentCarInfo.getIndex();
+		}
 		Intent intent = new Intent(getActivity(), CarLocationActivity.class);
-		intent.putExtra("index", fragmentCarInfo.getIndex());
+		intent.putExtra("index", index);
 		intent.putExtra("isHotLocation", b);
 		startActivity(intent);
 	}
 
 	boolean isChange = false;
-
-	public void chageCustomerType1() {
-		isChange = true;
-	}
-
 	/** 刷新所有布局 **/
 	public void resetAllView() {
 		isChange = true;
