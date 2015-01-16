@@ -32,6 +32,7 @@ import com.wise.baba.R;
 
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
+import data.CarData;
 
 /** 油耗明细列表 **/
 public class FuelDetailsActivity extends Activity implements IXListViewListener {
@@ -45,7 +46,7 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener 
 	WaitLinearLayout ll_wait;
 	XListView lv_fuel;
 	TextView tv_title_fee;
-	int index_car = 0;
+	CarData carData;
 
 	String NowYear = "";
 	AppApplication app;
@@ -70,8 +71,8 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener 
 		lv_fuel.setXListViewListener(this);
 		fuelAdapter = new FuelAdapter();
 		lv_fuel.setAdapter(fuelAdapter);
-		index_car = getIntent().getIntExtra("index_car", 0);
-		tv_name.setText(app.carDatas.get(index_car).getNick_name());
+		carData = (CarData)getIntent().getSerializableExtra("carData");
+		tv_name.setText(carData.getNick_name());
 		NowYear = GetNowYear();
 		getData();
 	}
@@ -132,7 +133,7 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener 
 	private void getData() {
 		try {
 			String url = Constant.BaseUrl + "device/"
-					+ app.carDatas.get(index_car).getDevice_id()
+					+ carData.getDevice_id()
 					+ "/fee_detail?auth_code=" + app.auth_code + "&city="
 					+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no=#93(#92)";
 			new NetThread.GetDataThread(handler, url, getData).start();
@@ -371,7 +372,7 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener 
 		try {
 			refresh = "";
 			String url = Constant.BaseUrl + "device/"
-					+ app.carDatas.get(index_car).getDevice_id()
+					+ carData.getDevice_id()
 					+ "/fee_detail?auth_code=" + app.auth_code + "&city="
 					+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no=#93(#92)";
 			new NetThread.GetDataThread(handler, url, refresh_data).start();
@@ -386,7 +387,7 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener 
 		try {
 			load = "";
 			String url = Constant.BaseUrl + "device/"
-					+ app.carDatas.get(index_car).getDevice_id()
+					+ carData.getDevice_id()
 					+ "/fee_detail?auth_code=" + app.auth_code + "&city="
 					+ URLEncoder.encode(app.City, "UTF-8") + "&min_id="
 					+ fuelDatas.get(fuelDatas.size() - 1).getDay_trip_id()

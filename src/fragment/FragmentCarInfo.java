@@ -1,5 +1,6 @@
 package fragment;
 
+import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -183,6 +184,7 @@ public class FragmentCarInfo extends Fragment {
 						startActivityForResult(intent, 2);
 					} else {
 						Intent intent = new Intent(getActivity(), FaultDetectionActivity.class);
+						intent.putExtra("carDatas", (Serializable)app.carDatas);
 						intent.putExtra("index", index);
 						startActivityForResult(intent, 1);
 					}
@@ -199,7 +201,7 @@ public class FragmentCarInfo extends Fragment {
 						startActivityForResult(intent, 2);
 					} else {
 						Intent intent = new Intent(getActivity(), DriveActivity.class);
-						intent.putExtra("index_car", index);
+						intent.putExtra("carData", app.carDatas.get(index));
 						startActivityForResult(intent, 2);
 					}
 				}

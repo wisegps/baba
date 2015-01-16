@@ -35,8 +35,10 @@ import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
 import com.baidu.navisdk.BaiduNaviManager;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.car.CarUpdateActivity;
 import com.wise.car.TravelActivity;
 import com.wise.remind.RemindListActivity;
+import com.wise.violation.TrafficActivity;
 
 import data.CarData;
 
@@ -222,7 +224,7 @@ public class ManageActivity extends Activity {
 	}
 	
 	int groupIndex = 0;
-	
+	public static final int FEE = 2;// 费用
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -232,6 +234,12 @@ public class ManageActivity extends Activity {
 			
 			List<String> strDetails = details.get(groupIndex);
 			String detail = strDetails.get(position);
+			//信息
+			if(detail.equals("信息")){
+				Intent intent = new Intent(ManageActivity.this, CarUpdateActivity.class);
+				startActivity(intent);
+				return;
+			}
 			//行程
 			if(detail.equals("行程")){
 				Intent intent = new Intent(ManageActivity.this, TravelActivity.class);
@@ -252,7 +260,30 @@ public class ManageActivity extends Activity {
 				startActivity(intent);
 				return;
 			}
-			if(detail.equals("")){
+			if(detail.equals("违章")){
+				Intent intent = new Intent(ManageActivity.this, TrafficActivity.class);
+				startActivity(intent);
+				return;
+			}
+			if(detail.equals("驾驶")){
+				Intent intent = new Intent(ManageActivity.this, DriveActivity.class);
+				intent.putExtra("isNearData", true);
+				intent.putExtra("carData", carData);
+				startActivity(intent);
+				return;
+			}
+			if(detail.equals("油耗")){
+				Intent intent = new Intent(ManageActivity.this, DriveActivity.class);
+				intent.putExtra("carData", carData);
+				intent.putExtra("type", FEE);
+				startActivity(intent);
+				return;
+			}
+			if(detail.equals("车况")){
+				Intent intent = new Intent(ManageActivity.this, FaultDetectionActivity.class);
+				intent.putExtra("carDatas", (Serializable)carDatas);
+				intent.putExtra("index", groupIndex);
+				startActivity(intent);
 				return;
 			}
 		}
