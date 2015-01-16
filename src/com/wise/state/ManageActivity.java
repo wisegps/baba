@@ -9,6 +9,7 @@ import pubclas.NetThread;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.TypedValue;
@@ -28,6 +29,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 
+import com.baidu.lbsapi.auth.LBSAuthManagerListener;
+import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
+import com.baidu.navisdk.BaiduNaviManager;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.TravelActivity;
@@ -64,6 +68,7 @@ public class ManageActivity extends Activity {
 		// elv_cars.setOnChildClickListener(onChildClickListener);
 		elv_cars.setOnGroupExpandListener(onGroupExpandListener);
 		getAllCarData();
+		
 	}
 	OnClickListener onClickListener = new OnClickListener() {		
 		@Override
@@ -87,7 +92,9 @@ public class ManageActivity extends Activity {
 				jsonAllCarData(msg.obj.toString());
 				ManageAdapter manageAdapter = new ManageAdapter();
 				elv_cars.setAdapter(manageAdapter);
-				elv_cars.expandGroup(0);//默认展开第一个
+				if(carDatas.size() > 0){
+					elv_cars.expandGroup(0);//默认展开第一个
+				}
 				break;
 			}
 		}

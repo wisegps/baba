@@ -104,7 +104,12 @@ public class DriveActivity extends Activity{
 				break;
 			case R.id.bt_drive_travel:
 				Intent intent = new Intent(DriveActivity.this, TravelActivity.class);
-				intent.putExtra("index", index_car);
+				intent.putExtra("device_id", Device_id);
+				String Gas_no = "93#(92#)";;
+				if(app.carDatas.get(index_car).getGas_no() != null){
+					Gas_no = app.carDatas.get(index_car).getGas_no();
+				}
+				intent.putExtra("Gas_no", Gas_no);
 				intent.putExtra("Date", Date);
 				startActivity(intent);
 				break;
