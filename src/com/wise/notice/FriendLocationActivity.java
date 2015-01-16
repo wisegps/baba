@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import pubclas.Constant;
+import pubclas.GetSystem;
 import pubclas.JsonData;
 import pubclas.NetThread;
 import android.app.Activity;
@@ -14,9 +15,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMarkerClickListener;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -50,6 +56,8 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 	AppApplication app;
 	/** 好友id **/
 	private int friendId;
+	private  LatLng carLatlng;//点击marker 获取 该车辆位置
+	private LocationClient locatinClient;
 	/** 好友下的车辆信息 **/
 	List<CarData> carDatas = new ArrayList<CarData>();
 
@@ -148,15 +156,6 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 				OverlayOptions option = new MarkerOptions().title(carData.getNick_name()).anchor(0.5f, 1.0f)
 						.position(latLng).icon(bitmap);
 				mBaiduMap.addOverlay(option);
-				// 弹出框
-//				View view = LayoutInflater.from(getApplicationContext())
-//						.inflate(R.layout.item_map_popup, null);
-//				TextView tv_adress = (TextView) view
-//						.findViewById(R.id.tv_adress);
-//				tv_adress.setText(carData.getNick_name());
-//				InfoWindow mInfoWindow = new InfoWindow(view, latLng, -45);
-//				mBaiduMap.showInfoWindow(mInfoWindow);
-				System.out.println("showInfoWindow");
 				if (isFrist) {// 第一次移动车的位置到地图中间
 					isFrist = false;
 					MapStatus mapStatus = new MapStatus.Builder()
@@ -176,9 +175,58 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 				.inflate(R.layout.item_map_popup, null);
 		TextView tv_adress = (TextView) view
 				.findViewById(R.id.tv_adress);
-		tv_adress.setText(marker.getTitle());
+		
+		TextView tv_navi = (TextView) view
+				.findViewById(R.id.tv_navi);
+		TextView tv_travel = (TextView) view
+				.findViewById(R.id.tv_travel);
+		
+		carLatlng = marker.getPosition();
 		InfoWindow mInfoWindow = new InfoWindow(view, marker.getPosition(), -45);
+		tv_navi.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				mBaiduMap.hideInfoWindow();
+//				System.out.println("app.Lat"+app.Lat+" "+app.Lon);
+//				LatLng dirLocation = new LatLng(app.Lat,app.Lon);
+//				GetSystem.FindCar(FriendLocationActivity.this,carLatlng ,dirLocation, "", "");
+				openLocation();
+			}
+		});
+		
+		tv_travel.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				
+			}
+		});
+		tv_adress.setText(marker.getTitle());
+		
 		mBaiduMap.showInfoWindow(mInfoWindow);
 		return true;
 	}
+	
+	/**
+	 * 开启定位服务
+	 */
+	public void openLocation(){
+		locatinClient = new LocationClient(this);
+		LocationClientOption option = new LocationClientOption();
+		option.setOpenGps(true);
+		option.setCoorType("BD09_MC");// 返回的定位结果是百度经纬度,默认值gcj02
+		option.setScanSpan(100);// 设置发起定位请求的间隔时间为ms
+		locatinClient.setLocOption(option);
+		locatinClient.registerLocationListener(new LocationListener());
+		locatinClient.start();
+		
+	}
+	class LocationListener implements BDLocationListener{
+		@Override
+		public void onReceiveLocation(BDLocation bdLocation) {
+			LatLng dirLocation = new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
+			locatinClient.stop();
+			GetSystem.FindCar(FriendLocationActivity.this,carLatlng ,dirLocation, "", "");
+		}
+	}
+	
 }
