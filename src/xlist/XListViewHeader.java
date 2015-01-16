@@ -18,6 +18,7 @@ public class XListViewHeader extends LinearLayout {
     private TextView mHintTextView;
     private int mState = STATE_NORMAL;
 
+    //dasdfsdf
     private Animation mRotateUpAnim;
     private Animation mRotateDownAnim;
     

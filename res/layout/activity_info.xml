@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gray_bg"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -42,14 +43,16 @@
             android:textSize="@dimen/main" />
     </RelativeLayout>
 
-    <ListView
+    <xlist.TouchInterceptor
         android:id="@+id/info_add"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:cacheColorHint="#00000000"
-        android:divider="#88333333"
+        android:divider="@color/gay_line"
         android:dividerHeight="1dip"
+        android:drawSelectorOnTop="false"
+        android:fastScrollEnabled="true"
         android:listSelector="#00000000" >
-    </ListView>
+    </xlist.TouchInterceptor>
 
 </LinearLayout>
