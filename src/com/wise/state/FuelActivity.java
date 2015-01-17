@@ -62,7 +62,7 @@ public class FuelActivity extends Activity {
 	/** 日，周，月 **/
 	int index = 2;
 	/** 第几个车 **/
-	int index_car = 0;
+	//int index_car = 0;
 	/** 跳转类型 **/
 	int type = 0;
 	String Month;
@@ -76,6 +76,8 @@ public class FuelActivity extends Activity {
 	public static final int DISTANCE = 1;// 里程
 	public static final int FEE = 2;// 费用
 	public static final int FUEL = 3;// 油耗
+	
+	CarData carData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +135,7 @@ public class FuelActivity extends Activity {
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		fv.setViewSize(dm.widthPixels * 3 / 8);
 		ecv_fuel.setViewWidth(dm.widthPixels, true);
-		index_car = getIntent().getIntExtra("index_car", 0);
+		carData = (CarData)getIntent().getSerializableExtra("carData");
 		// 获取显示页面类型
 		type = getIntent().getIntExtra("type", 0);
 
@@ -149,7 +151,7 @@ public class FuelActivity extends Activity {
 			tv_chart_title.setText("无消耗");
 		}
 
-		tv_name.setText(app.carDatas.get(index_car).getNick_name());
+		tv_name.setText(carData.getNick_name());
 		initData();
 		fv.setOnViewRotateListener(new OnViewRotateListener() {
 			@Override
@@ -291,7 +293,7 @@ public class FuelActivity extends Activity {
 				break;
 			case R.id.tasks_view:// index_car
 				Intent intent = new Intent(FuelActivity.this, FuelDetailsActivity.class);
-				intent.putExtra("index_car", index_car);
+				intent.putExtra("carData", carData);
 				startActivity(intent);
 				break;
 			}
@@ -315,7 +317,6 @@ public class FuelActivity extends Activity {
 	/** 获取一段时间数据 **/
 	private void getData(String fristDate, String lastDate) {
 		try {
-			CarData carData = app.carDatas.get(index_car);
 			String Gas_no = "";
 			if (carData.getGas_no() == null || carData.getGas_no().equals("")) {
 				Gas_no = "93#(92#)";
@@ -333,7 +334,6 @@ public class FuelActivity extends Activity {
 	/** 获取某一天数据 **/
 	private void getDayData(String Date) {
 		try {
-			CarData carData = app.carDatas.get(index_car);
 			String Gas_no = "";
 			if (carData.getGas_no() == null || carData.getGas_no().equals("")) {
 				Gas_no = "93#(92#)";

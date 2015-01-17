@@ -19,6 +19,7 @@ import pubclas.NetThread;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.state.ManageActivity;
 import com.wise.violation.ShortProvincesActivity;
 import data.CarData;
 import data.CityData;
@@ -65,6 +66,8 @@ public class CarUpdateActivity extends Activity {
 	TextView tv_models, tv_gas_no, tv_city, tv_insurance_company,
 			tv_insurance_date, tv_maintain_company, tv_buy_date, tv_year_check;
 	int index = 0;
+	/**true服务商跳转，false用户自己跳转**/
+	boolean isService = false;
 	CarData carData;
 	CarData carNewData = new CarData();
 
@@ -85,7 +88,12 @@ public class CarUpdateActivity extends Activity {
 		setContentView(R.layout.activity_car_update);
 		app = (AppApplication) getApplication();
 		index = getIntent().getIntExtra("index", 0);
-		carData = app.carDatas.get(index);
+		isService = getIntent().getBooleanExtra("isService", false);
+		if(isService){
+			carData = ManageActivity.carDatas.get(index);
+		}else{
+			carData = app.carDatas.get(index);
+		}
 		carNewData = carData;
 		init();
 		setData();
@@ -231,7 +239,11 @@ public class CarUpdateActivity extends Activity {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			if (jsonObject.getInt("status_code") == 0) {
-				app.carDatas.set(index, carNewData);
+				if(isService){
+					ManageActivity.carDatas.set(index, carNewData);
+				}else{
+					app.carDatas.set(index, carNewData);
+				}
 				setResult(3);
 				finish();
 			} else {

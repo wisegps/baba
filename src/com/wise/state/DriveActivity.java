@@ -38,7 +38,7 @@ public class DriveActivity extends Activity{
 	String Device_id = "";
 	/**把最近的数据存储**/
 	boolean isNearData = false;
-	int index_car;
+	CarData carData;
 	AppApplication app;
 	
 	@Override
@@ -69,9 +69,10 @@ public class DriveActivity extends Activity{
 		tv_drive = (TextView)findViewById(R.id.tv_drive);
 		
 		TextView tv_name = (TextView)findViewById(R.id.tv_name);
-		index_car = getIntent().getIntExtra("index_car", 0);
-		tv_name.setText(app.carDatas.get(index_car).getNick_name());
-		Device_id = app.carDatas.get(index_car).getDevice_id();
+		isNearData = getIntent().getBooleanExtra("isNearData", false);
+		carData = (CarData)getIntent().getSerializableExtra("carData");
+		tv_name.setText(carData.getNick_name());
+		Device_id = carData.getDevice_id();
 		Date = GetSystem.GetNowMonth().getDay();
 		tv_date.setText(Date);
 		getDriveData();
@@ -104,7 +105,12 @@ public class DriveActivity extends Activity{
 				break;
 			case R.id.bt_drive_travel:
 				Intent intent = new Intent(DriveActivity.this, TravelActivity.class);
-				intent.putExtra("index", index_car);
+				intent.putExtra("device_id", Device_id);
+				String Gas_no = "93#(92#)";;
+				if(carData.getGas_no() != null){
+					Gas_no = carData.getGas_no();
+				}
+				intent.putExtra("Gas_no", Gas_no);
 				intent.putExtra("Date", Date);
 				startActivity(intent);
 				break;
@@ -128,7 +134,6 @@ public class DriveActivity extends Activity{
 	/**获取驾驶习惯**/
 	private void getDriveData(){
 		try {
-			CarData carData = app.carDatas.get(index_car);
 			String Gas_no = "";
 			if (carData.getGas_no() == null
 					|| carData.getGas_no().equals("")) {
@@ -190,7 +195,7 @@ public class DriveActivity extends Activity{
 				isNearData = true;
 				SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		        Editor editor = preferences.edit();
-		        editor.putString(Constant.sp_drive_score + app.carDatas.get(index_car).getObj_id(), Data);
+		        editor.putString(Constant.sp_drive_score + carData.getObj_id(), Data);
 		        editor.commit();
 			}			
 		}				

@@ -31,8 +31,10 @@ import android.widget.LinearLayout.LayoutParams;
 
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.car.CarUpdateActivity;
 import com.wise.car.TravelActivity;
 import com.wise.remind.RemindListActivity;
+import com.wise.violation.TrafficActivity;
 
 import data.CarData;
 
@@ -49,8 +51,9 @@ public class ManageActivity extends Activity {
 	private String friendId;
 	AppApplication app;
 	/** 好友下的车辆信息 **/
-	List<CarData> carDatas = new ArrayList<CarData>();
+	public static List<CarData> carDatas = new ArrayList<CarData>();
 	List<List<String>> details = new ArrayList<List<String>>();
+	ManageAdapter manageAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +89,7 @@ public class ManageActivity extends Activity {
 
 			case getAllCarData:
 				jsonAllCarData(msg.obj.toString());
-				ManageAdapter manageAdapter = new ManageAdapter();
+				manageAdapter = new ManageAdapter();
 				elv_cars.setAdapter(manageAdapter);
 				elv_cars.expandGroup(0);//默认展开第一个
 				break;
@@ -148,7 +151,7 @@ public class ManageActivity extends Activity {
 
 		@Override
 		public int getChildrenCount(int groupPosition) {
-			return 1;
+			return (carDatas.size() == 0)?0:1;
 		}
 
 		@Override
@@ -215,7 +218,7 @@ public class ManageActivity extends Activity {
 	}
 	
 	int groupIndex = 0;
-	
+	public static final int FEE = 2;// 费用
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -225,6 +228,14 @@ public class ManageActivity extends Activity {
 			
 			List<String> strDetails = details.get(groupIndex);
 			String detail = strDetails.get(position);
+			//信息
+			if(detail.equals("信息")){
+				Intent intent = new Intent(ManageActivity.this, CarUpdateActivity.class);
+				intent.putExtra("isService", true);
+				intent.putExtra("index", groupIndex);
+				startActivityForResult(intent, 2);
+				return;
+			}
 			//行程
 			if(detail.equals("行程")){
 				Intent intent = new Intent(ManageActivity.this, TravelActivity.class);
@@ -237,6 +248,30 @@ public class ManageActivity extends Activity {
 				startActivity(intent);
 				return;
 			}
+			//车况
+			if(detail.equals("车况")){
+				Intent intent = new Intent(ManageActivity.this, FaultDetectionActivity.class);
+				intent.putExtra("carDatas", (Serializable)carDatas);
+				intent.putExtra("index", groupIndex);
+				startActivity(intent);
+				return;
+			}
+			//油耗
+			if(detail.equals("油耗")){
+				Intent intent = new Intent(ManageActivity.this, DriveActivity.class);
+				intent.putExtra("carData", carData);
+				intent.putExtra("type", FEE);
+				startActivity(intent);
+				return;
+			}
+			//驾驶
+			if(detail.equals("驾驶")){
+				Intent intent = new Intent(ManageActivity.this, DriveActivity.class);
+				intent.putExtra("isNearData", true);
+				intent.putExtra("carData", carData);
+				startActivity(intent);
+				return;
+			}
 			//车务提醒
 			if(detail.equals("车务")){
 				Intent intent = new Intent(ManageActivity.this, RemindListActivity.class);
@@ -245,11 +280,27 @@ public class ManageActivity extends Activity {
 				startActivity(intent);
 				return;
 			}
-			if(detail.equals("")){
+			//违章
+			if(detail.equals("违章")){
+				Intent intent = new Intent(ManageActivity.this, TrafficActivity.class);
+				intent.putExtra("isService", true);
+				intent.putExtra("index", groupIndex);
+				startActivity(intent);
 				return;
 			}
 		}
 	};
+	private void ind(){
+		
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == 2 && resultCode == 3){
+			//修改车辆信息返回
+			manageAdapter.notifyDataSetChanged();
+		}
+	}
 
 	public class CompetAdapter extends BaseAdapter {
 		LayoutInflater mInflater = LayoutInflater.from(ManageActivity.this);

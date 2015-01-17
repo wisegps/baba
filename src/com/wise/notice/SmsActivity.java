@@ -133,7 +133,9 @@ public class SmsActivity extends Activity implements IXListViewListener{
 	                //holder.tv_new_Regnum.setText("车辆报警");
 	                //startActivity(new Intent(SmsActivity.this, CarRemindActivity.class));
 	            }else if (Type.equals("4")){
-	                startActivity(new Intent(SmsActivity.this, TrafficActivity.class));
+	            	Intent intent = new Intent(SmsActivity.this, TrafficActivity.class);
+	            	intent.putExtra("isService", false);
+	                startActivity(intent);
 	            }
 			}
 		}

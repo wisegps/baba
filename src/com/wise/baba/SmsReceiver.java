@@ -139,7 +139,8 @@ public class SmsReceiver extends BroadcastReceiver{
 			}else if(msg_type == 4){//违章界面
 				Intent intent = new Intent(context, TrafficActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-		        context.startActivity(intent);
+				intent.putExtra("isService", false);
+				context.startActivity(intent);
 			}else if(msg_type == 0){//私信界面
 				Intent intent = new Intent(context, LetterActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

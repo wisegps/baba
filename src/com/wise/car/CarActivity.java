@@ -254,6 +254,7 @@ public class CarActivity extends Activity {
 				public void onClick(View v) {
 					Intent intent = new Intent(CarActivity.this, CarUpdateActivity.class);
 					intent.putExtra("index", position);
+					intent.putExtra("isService", false);
 					startActivityForResult(intent, 2);
 				}
 			});
