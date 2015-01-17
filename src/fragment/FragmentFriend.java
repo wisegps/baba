@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import pubclas.Constant;
 import pubclas.GetSystem;
+import pubclas.HttpFriend;
 import pubclas.Info;
 import pubclas.NetThread;
 import xlist.XListView;
@@ -33,16 +34,19 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.BarcodeActivity;
 import com.wise.notice.FriendAddActivity;
+import com.wise.notice.FriendDetailActivity;
 import com.wise.notice.FriendInfoActivity;
 import com.wise.notice.SureFriendActivity;
 
 import customView.CircleImageView;
 import data.FriendData;
+import data.FriendSearch;
 
 /**
  * @author honesty
@@ -51,6 +55,7 @@ public class FragmentFriend extends Fragment {
 
 	private final static int get_all_friend = 4;
 	private final static int getFriendImage = 5;
+	private final static int searchById = 6;
 
 	ImageView iv_add;
 	XListView lv_friend;
@@ -108,6 +113,18 @@ public class FragmentFriend extends Fragment {
 				break;
 			case get_all_friend:
 				jsonFriendData(msg.obj.toString());
+				break;
+			case searchById:
+				System.out.println("searchById");
+				List<FriendSearch> friends = (List<FriendSearch>) msg.obj;
+				if(friends==null || friends.size()<1){
+					Toast.makeText(FragmentFriend.this.getActivity(), "暂无记录", Toast.LENGTH_SHORT).show();
+					break;
+				}
+				Intent intent = new Intent(getActivity(), FriendDetailActivity.class);
+				intent.putExtra(Info.FriendStatusKey, Info.FriendStatus.FriendAddFromId);
+				intent.putExtra("friend", friends.get(0));
+				startActivityForResult(intent, 2);
 				break;
 			}
 		}
@@ -334,10 +351,8 @@ public class FragmentFriend extends Fragment {
 		if (requestCode == 1 && resultCode == 2) {
 			String FriendId = data.getStringExtra("result");
 			// 二维码扫描后跳转到用户信息界面
-			Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
-			intent.putExtra(Info.FriendStatusKey, Info.FriendStatus.FriendAddFromId);
-			intent.putExtra("FriendId", FriendId);
-			startActivityForResult(intent, 2);
+			HttpFriend http = new HttpFriend(this.getActivity(),handler);
+			http.searchById(FriendId);
 			return;
 		} else if (requestCode == 2 && resultCode == 2) {
 			// TODO 添加朋友返回

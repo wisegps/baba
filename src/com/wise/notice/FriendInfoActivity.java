@@ -51,10 +51,10 @@ import data.FriendData;
 public class FriendInfoActivity extends Activity {
 
 	private static final int get_customer = 1;
-	private static final int add_friend = 2;
+	//private static final int add_friend = 2;
 	private static final int delete_friend = 3;
 
-	Button bt_add_friend, bt_send_message, bt_find_location, bt_management;
+	Button  bt_send_message,bt_add_friend, bt_find_location, bt_management;
 	ImageView iv_logo, iv_sex, iv_service, iv_menu;
 	TextView tv_name, tv_area;
 
@@ -103,10 +103,10 @@ public class FriendInfoActivity extends Activity {
 			getFriendInfoId();
 			bt_find_location.setVisibility(View.VISIBLE);
 			iv_menu.setVisibility(View.VISIBLE);
-		} else if (friendStatus == FriendStatus.FriendAddFromName) {
-			iv_menu.setVisibility(View.GONE);
-			bt_find_location.setVisibility(View.GONE);
-			getFriendInfoName(name);
+//		} else if (friendStatus == FriendStatus.FriendAddFromName) {
+//			iv_menu.setVisibility(View.GONE);
+//			bt_find_location.setVisibility(View.GONE);
+//			getFriendInfoName(name);
 
 		} else if (friendStatus == FriendStatus.FriendAddFromId) {
 			iv_menu.setVisibility(View.GONE);
@@ -124,9 +124,9 @@ public class FriendInfoActivity extends Activity {
 			case R.id.iv_back:
 				finish();
 				break;
-			case R.id.bt_add_friend:
-				addFriend();
-				break;
+//			case R.id.bt_add_friend:
+//				addFriend();
+//				break;
 			case R.id.bt_send_message:
 				Intent intent = new Intent(FriendInfoActivity.this, LetterActivity.class);
 				intent.putExtra("cust_id", "" + FriendId);
@@ -167,9 +167,9 @@ public class FriendInfoActivity extends Activity {
 			case get_customer:
 				jsonFriendInfo(msg.obj.toString());
 				break;
-			case add_friend:
-				jsonAddFriend(msg.obj.toString());
-				break;
+//			case add_friend:
+//				jsonAddFriend(msg.obj.toString());
+//				break;
 			case delete_friend:
 				jsonDeleteFriend(msg.obj.toString());
 				break;
@@ -222,36 +222,36 @@ public class FriendInfoActivity extends Activity {
 		bt_send_message.setVisibility(View.GONE);
 	}
 
-	private void addFriend() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/send_friend_request?auth_code=" + app.auth_code;
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("friend_id", String.valueOf(FriendId)));
-		params.add(new BasicNameValuePair("cust_name", app.cust_name));
-		new NetThread.postDataThread(handler, url, params, add_friend).start();
-	}
+//	private void addFriend() {
+//		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/send_friend_request?auth_code=" + app.auth_code;
+//		List<NameValuePair> params = new ArrayList<NameValuePair>();
+//		params.add(new BasicNameValuePair("friend_id", String.valueOf(FriendId)));
+//		params.add(new BasicNameValuePair("cust_name", app.cust_name));
+//		new NetThread.postDataThread(handler, url, params, add_friend).start();
+//	}
 
-	private void jsonAddFriend(String result) {
-		// TODO 添加好友
-		System.out.println(result);
-		try {
-			JSONObject jsonObject = new JSONObject(result);
-			if (jsonObject.getInt("status_code") == 0) {
-				Toast.makeText(FriendInfoActivity.this, "添加成功，等待对方确认!", Toast.LENGTH_SHORT).show();
-				setResult(2);
-				finish();
-			} else {
-				Toast.makeText(FriendInfoActivity.this, "添加好友失败，请重试", Toast.LENGTH_SHORT).show();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	private void jsonAddFriend(String result) {
+//		// TODO 添加好友
+//		System.out.println(result);
+//		try {
+//			JSONObject jsonObject = new JSONObject(result);
+//			if (jsonObject.getInt("status_code") == 0) {
+//				Toast.makeText(FriendInfoActivity.this, "添加成功，等待对方确认!", Toast.LENGTH_SHORT).show();
+//				setResult(2);
+//				finish();
+//			} else {
+//				Toast.makeText(FriendInfoActivity.this, "添加好友失败，请重试", Toast.LENGTH_SHORT).show();
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	/** 通过名称获取好友信息 **/
-	private void getFriendInfoName(String name) {
-		String url = Constant.BaseUrl + "customer/search?auth_code=" + app.auth_code + "&account=" + name;
-		new NetThread.GetDataThread(handler, url, get_customer).start();
-	}
+//	private void getFriendInfoName(String name) {
+//		String url = Constant.BaseUrl + "customer/search?auth_code=" + app.auth_code + "&account=" + name;
+//		new NetThread.GetDataThread(handler, url, get_customer).start();
+//	}
 
 	/** 通过id获取要添加的好友信息 **/
 	private void getFriendInfoId() {

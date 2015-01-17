@@ -59,7 +59,7 @@ public class FriendDetailActivity extends Activity implements OnClickListener,Ca
 	private RequestQueue mQueue;
 	private ImageView imgBack, imgMenu, imgLogo, imgSex, imgService;
 	private TextView textService, textName, textArea;
-	private Button btnAddFriend, btnLocation, btnSendMsg;
+	private Button btnAddFriend,btnManagement, btnLocation, btnSendMsg;
 	private AppApplication app;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -88,13 +88,14 @@ public class FriendDetailActivity extends Activity implements OnClickListener,Ca
 		btnAddFriend = (Button) findViewById(R.id.bt_add_friend);
 		btnLocation = (Button) findViewById(R.id.bt_find_location);
 		btnSendMsg = (Button) findViewById(R.id.bt_send_message);
+		btnManagement = (Button) findViewById(R.id.bt_management);
 
 		// 设置一些无关控件不可见
 		imgMenu.setVisibility(View.GONE);
 		btnLocation.setVisibility(View.GONE);
 		btnSendMsg.setVisibility(View.GONE);
 		btnAddFriend.setVisibility(View.VISIBLE);
-
+		btnManagement.setVisibility(View.GONE);
 		// 设置从上个页面传过来的值
 		String sex = friend.getSex();
 		String name = friend.getCust_name();
