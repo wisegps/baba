@@ -121,7 +121,9 @@ public class MoreActivity extends Activity{
 			case R.id.tv_traffic:
 				if(Judge.isLogin(app)){
 					app.vio_count = 0;
-					startActivity(new Intent(MoreActivity.this, TrafficActivity.class));
+					Intent intent = new Intent(MoreActivity.this, TrafficActivity.class);
+					intent.putExtra("isService", false);
+					startActivity(intent);
 				}else{
 					Intent intent = new Intent(MoreActivity.this, LoginActivity.class);
 					intent.putExtra("ActivityState", TRAFFIC);

@@ -45,6 +45,7 @@ import com.wise.car.CarAddActivity;
 import com.wise.car.CarUpdateActivity;
 import com.wise.car.TrafficCitiyActivity;
 import com.wise.remind.DealAddressActivity;
+import com.wise.state.ManageActivity;
 
 import customView.HScrollLayout;
 import customView.OnViewChangeListener;
@@ -77,6 +78,9 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 	int index_car = 0;
 	/** 存放对应的数据 **/
 	List<TrafficView> trafficViews;
+	/**true服务商跳转，false用户自己跳转**/
+	boolean isService = false;
+	List<CarData> carDatas;
 	AppApplication app;
 	/** 所有违章数据 **/
 	JSONObject jsonTraffic;
@@ -110,8 +114,14 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			public void OnFinish(int index) {
 			}
 		});
+		isService = getIntent().getBooleanExtra("isService", false);
+		if(isService){
+			carDatas = ManageActivity.carDatas;
+		}else{
+			carDatas = app.carDatas;
+		}
 		getTraffic();
-		if (app.carDatas != null && app.carDatas.size() > 0) {
+		if (carDatas != null && carDatas.size() > 0) {
 			showCarTraffic();
 		} else {
 			AlertDialog.Builder dialog = new AlertDialog.Builder(TrafficActivity.this);
@@ -149,9 +159,10 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 				}
 				break;
 			case R.id.iv_update_car:
-				if (app.carDatas.size() > 0) {
+				if (carDatas.size() > 0) {
 					Intent intent = new Intent(TrafficActivity.this, CarUpdateActivity.class);
 					intent.putExtra("index", index_car);
+					intent.putExtra("isService", isService);
 					startActivity(intent);
 				}
 				break;
@@ -248,8 +259,8 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 	private void showCarTraffic() {
 		trafficViews = new ArrayList<TrafficView>();
 		hsl_traffic.removeAllViews();
-		showImage(app.carDatas.size());
-		for (int i = 0; i < app.carDatas.size(); i++) {
+		showImage(carDatas.size());
+		for (int i = 0; i < carDatas.size(); i++) {
 			TrafficView trafficView = new TrafficView();
 			View v = LayoutInflater.from(this).inflate(R.layout.item_traffics, null);
 			hsl_traffic.addView(v);
@@ -297,7 +308,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 	/** 获取违章信息 **/
 	private void GetTraffic() {
 		// 判断数据时候读取，读取了就不再读
-		String Nick_name = app.carDatas.get(index_car).getNick_name();
+		String Nick_name = carDatas.get(index_car).getNick_name();
 		if (Nick_name == null) {
 			tv_car.setText("");
 		} else {
@@ -306,8 +317,8 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		changeImage(index_car);
 		TrafficView trafficView = trafficViews.get(index_car);
 		if (trafficView.getTrafficDatas() == null) {
-			GetSystem.myLog(TAG, app.carDatas.get(index_car).toString());
-			CarData carData = app.carDatas.get(index_car);
+			GetSystem.myLog(TAG, carDatas.get(index_car).toString());
+			CarData carData = carDatas.get(index_car);
 			ArrayList<String> citys = carData.getVio_citys();
 			if (citys == null || citys.size() == 0) {// 提示添加违章城市
 				trafficView.setType(1);
@@ -561,7 +572,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		TrafficView trafficView = trafficViews.get(index_car);
 		trafficView.getxListView().startHeaderWheel();
 		try {
-			String url = Constant.BaseUrl + "vehicle/" + app.carDatas.get(index_car).getObj_id() + "/violation?auth_code=" + app.auth_code;
+			String url = Constant.BaseUrl + "vehicle/" + carDatas.get(index_car).getObj_id() + "/violation?auth_code=" + app.auth_code;
 			new NetThread.GetDataThread(handler, url, refresh_traffic, index_car).start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -833,7 +844,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 				trafficViews.get(index_car).getTv_note().setText("没选择违章城市");
 				trafficViews.get(index_car).getLl_wait_show().setVisibility(View.GONE);
 			} else {
-				CarData carData = app.carDatas.get(index_car);
+				CarData carData = carDatas.get(index_car);
 				// 违章信息保存
 				ArrayList<String> vio_citys = new ArrayList<String>();
 				ArrayList<String> vio_citys_code = new ArrayList<String>();
@@ -898,12 +909,12 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			}
 		} else if (requestCode == 2 && resultCode == 3) {
 			// 跳转到车辆信息界面，保存返回，直接读取数据
-			GetSystem.myLog(TAG, app.carDatas.get(index_car).toString());
+			GetSystem.myLog(TAG, carDatas.get(index_car).toString());
 			getFristTraffic();
 		} else if (requestCode == 2 && resultCode == 0) {
 			// 跳转到车辆信息界面，未保存数据返回，判断判断原有的车架号是否符合规则
 			TrafficView trafficView = trafficViews.get(index_car);
-			CarData carData = app.carDatas.get(index_car);
+			CarData carData = carDatas.get(index_car);
 			List<CityData> chooseCityDatas = new ArrayList<CityData>();
 			for (int i = 0; i < carData.getVio_citys().size(); i++) {
 				CityData cityData = new CityData();
@@ -999,7 +1010,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			trafficViews.get(index).getxListView().setAdapter(new TrafficAdapter(trafficViews.get(index_car).getTrafficDatas()));
 		} else if (requestCode == 4 && resultCode == 3) {
 			// 添加车辆返回
-			if (app.carDatas != null && app.carDatas.size() > 0) {
+			if (carDatas != null && carDatas.size() > 0) {
 				showCarTraffic();
 			}
 		}
@@ -1037,7 +1048,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		trafficViews.get(index_car).getLl_wait_show().setVisibility(View.VISIBLE);
 		trafficViews.get(index_car).getLl_wait().startWheel(index_car);
 		try {
-			String url = Constant.BaseUrl + "vehicle/" + app.carDatas.get(index_car).getObj_id() + "/violation?auth_code=" + app.auth_code;
+			String url = Constant.BaseUrl + "vehicle/" + carDatas.get(index_car).getObj_id() + "/violation?auth_code=" + app.auth_code;
 			new NetThread.GetDataThread(handler, url, frist_traffic, index_car).start();
 		} catch (Exception e) {
 			e.printStackTrace();

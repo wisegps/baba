@@ -300,7 +300,9 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 			startActivity(new Intent(LoginActivity.this, RemindListActivity.class));
 			break;
 		case MoreActivity.TRAFFIC:
-			startActivity(new Intent(LoginActivity.this, TrafficActivity.class));
+			Intent intent = new Intent(LoginActivity.this, TrafficActivity.class);
+			intent.putExtra("isService", false);
+			startActivity(intent);
 			break;
 		}
 	}
