@@ -307,9 +307,10 @@ public class FragmentHome extends Fragment {
 	public interface OnExitListener {
 		public abstract void exit();
 	}
+	PopupWindow mPopupWindow;
 	OnCardMenuListener onCardMenuListener = new OnCardMenuListener() {		
 		@Override
-		public void showCarMenu(String CardName) {
+		public void showCarMenu(final String CardName) {
 			//弹出卡片菜单
 			LayoutInflater mLayoutInflater = LayoutInflater.from(getActivity());
 			View popunwindwow = mLayoutInflater.inflate(R.layout.pop_card_menu, null);
@@ -317,8 +318,7 @@ public class FragmentHome extends Fragment {
 			bt_card_share.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					
+					mPopupWindow.dismiss();
 				}
 			});
 			Button bt_card_delete = (Button)popunwindwow.findViewById(R.id.bt_card_delete);
@@ -326,16 +326,22 @@ public class FragmentHome extends Fragment {
 				@Override
 				public void onClick(View v) {
 					for (int i = 0; i < sCards.length; i++) {
-						if (sCards[i].equals("weather")) {
-												
-						} else if (sCards[i].equals("hotNews")) {
-							FragmentTransaction transaction = fragmentManager.beginTransaction();
-							transaction.remove(fragmentHotNews);
-							transaction.commit();
-							fragmentHotNews = null;
+						if(sCards[i].equals(CardName)){
+							if (sCards[i].equals("weather")) {
+								FragmentTransaction transaction = fragmentManager.beginTransaction();
+								transaction.remove(fragmentWeather);
+								transaction.commit();
+								fragmentWeather = null;
+							} else if (sCards[i].equals("hotNews")) {
+								FragmentTransaction transaction = fragmentManager.beginTransaction();
+								transaction.remove(fragmentHotNews);
+								transaction.commit();
+								fragmentHotNews = null;
+							}
 							break;
-						}
+						}						
 					}
+					mPopupWindow.dismiss();
 				}
 			});
 			PopupWindow mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);

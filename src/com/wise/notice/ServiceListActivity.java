@@ -11,8 +11,10 @@ import customView.CircleImageView;
 import data.FriendData;
 import pubclas.Constant;
 import pubclas.GetSystem;
+import pubclas.Info;
 import pubclas.NetThread;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -23,10 +25,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * 服务商列表
@@ -51,8 +55,21 @@ public class ServiceListActivity extends Activity{
 		friendAdapter = new FriendAdapter();
 		lv_friend.setAdapter(friendAdapter);
 		lv_friend.setOnScrollListener(onScrollListener);
+		lv_friend.setOnItemClickListener(onItemClickListener);
 		getFriendData();
 	}
+	/** 好友列表点击 **/
+	OnItemClickListener onItemClickListener = new OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			// 去介绍界面
+			Intent intent = new Intent(ServiceListActivity.this, FriendInfoActivity.class);
+			intent.putExtra("FriendId", String.valueOf(friendDatas.get(arg2).getFriend_id()));
+			intent.putExtra("name", friendDatas.get(arg2).getFriend_name());
+			intent.putExtra(Info.FriendStatusKey, Info.FriendStatus.FriendInfo);
+			startActivityForResult(intent, 4);
+		}
+	};
 	Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {

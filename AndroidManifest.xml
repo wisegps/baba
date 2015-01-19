@@ -115,6 +115,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.setting.AddCards"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.setting.LoginActivity"
             android:screenOrientation="portrait" >
         </activity>
