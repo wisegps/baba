@@ -263,7 +263,7 @@ public class ManageActivity extends Activity {
 			}
 			//油耗
 			if(detail.equals("油耗")){
-				Intent intent = new Intent(ManageActivity.this, DriveActivity.class);
+				Intent intent = new Intent(ManageActivity.this, FuelActivity.class);
 				intent.putExtra("carData", carData);
 				intent.putExtra("type", FEE);
 				startActivity(intent);

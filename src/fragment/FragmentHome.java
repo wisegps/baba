@@ -308,31 +308,42 @@ public class FragmentHome extends Fragment {
 		public abstract void exit();
 	}
 	OnCardMenuListener onCardMenuListener = new OnCardMenuListener() {		
-		
 		@Override
 		public void showCarMenu(String CardName) {
 			//弹出卡片菜单
 			LayoutInflater mLayoutInflater = LayoutInflater.from(getActivity());
 			View popunwindwow = mLayoutInflater.inflate(R.layout.pop_card_menu, null);
-			
+			Button bt_card_share = (Button)popunwindwow.findViewById(R.id.bt_card_share);
+			bt_card_share.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			Button bt_card_delete = (Button)popunwindwow.findViewById(R.id.bt_card_delete);
+			bt_card_delete.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+					for (int i = 0; i < sCards.length; i++) {
+						if (sCards[i].equals("weather")) {
+												
+						} else if (sCards[i].equals("hotNews")) {
+							FragmentTransaction transaction = fragmentManager.beginTransaction();
+							transaction.remove(fragmentHotNews);
+							transaction.commit();
+							fragmentHotNews = null;
+							break;
+						}
+					}
+				}
+			});
 			PopupWindow mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 			mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
 			mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
 			mPopupWindow.setFocusable(true);
 			mPopupWindow.setOutsideTouchable(true);
 			mPopupWindow.showAtLocation(ll_cards, Gravity.BOTTOM, 0, 0);
-			
-			for (int i = 0; i < sCards.length; i++) {
-				if (sCards[i].equals("weather")) {
-										
-				} else if (sCards[i].equals("hotNews")) {
-					FragmentTransaction transaction = fragmentManager.beginTransaction();
-					transaction.remove(fragmentHotNews);
-					transaction.commit();
-					fragmentHotNews = null;
-					break;
-				}
-			}
 		}
 	};
 }
