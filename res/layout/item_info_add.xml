@@ -6,9 +6,8 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/ll_item_add"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dip"
         android:orientation="horizontal"
         android:padding="8dip" >
 

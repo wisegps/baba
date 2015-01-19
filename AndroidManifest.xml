@@ -135,7 +135,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.wise.setting.ChooseInfoCard"
+            android:name="com.wise.setting.ChooseCard"
             android:screenOrientation="portrait" >
         </activity>
         <activity
