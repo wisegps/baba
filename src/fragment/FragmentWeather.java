@@ -4,6 +4,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import listener.OnCardMenuListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -70,7 +72,9 @@ public class FragmentWeather extends Fragment {
 				startActivity(new Intent(getActivity(), SelectCityActivity.class));
 				break;
 			case R.id.iv_weather_menu:
-				picPop();
+				if(onCardMenuListener != null){
+					onCardMenuListener.showCarMenu("weather");
+				}
 				break;
 			}
 		}
@@ -136,36 +140,8 @@ public class FragmentWeather extends Fragment {
 		super.onResume();
 		getWeather();
 	}
-
-	private void picPop() {
-		List<String> items = new ArrayList<String>();
-		items.add("拍照");
-		items.add("从手机相册中选取");
-		final PopView popView = new PopView(getActivity());
-		popView.initView(iv_weather);
-		popView.setData(items);
-		popView.SetOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void OnItemClick(int index) {
-				switch (index) {
-				case 0:
-					Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-					startActivityForResult(intent1, 1);
-					popView.dismiss();
-					break;
-
-				case 1:
-					Intent intent = new Intent();
-					/* 开启Pictures画面Type设定为image */
-					intent.setType("image/*");
-					/* 使用Intent.ACTION_GET_CONTENT这个Action */
-					intent.setAction(Intent.ACTION_GET_CONTENT);
-					/* 取得相片后返回本画面 */
-					startActivityForResult(intent, 9);
-					popView.dismiss();
-					break;
-				}
-			}
-		});
+	OnCardMenuListener onCardMenuListener;
+	public void setOnCardMenuListener(OnCardMenuListener onCardMenuListener){
+		this.onCardMenuListener = onCardMenuListener;
 	}
 }
