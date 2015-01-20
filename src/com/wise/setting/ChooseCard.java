@@ -47,14 +47,12 @@ public class ChooseCard extends Activity {
 			inItem.setTitle(Constant.title[i]);
 			inItem.setContent(Constant.content[i]);
 			inItem.setCardName(Constant.cards[i]);
-			inItem.setCardPosition(i);
 			list.add(inItem);
 		}
 
 		SharedPreferences sharedPreferences = getSharedPreferences(
 				"card_choose", Activity.MODE_PRIVATE);
 		cardsString = sharedPreferences.getString("cardsJson", "");
-
 		card_choose = (ListView) findViewById(R.id.card_choose);
 		CardAdapter cardAdapter = new CardAdapter();
 		card_choose.setAdapter(cardAdapter);
@@ -114,19 +112,17 @@ public class ChooseCard extends Activity {
 			mHolder.info_icon.setImageResource(list.get(position).getIcon());
 			mHolder.tv_info_title.setText(list.get(position).getTitle());
 			mHolder.tv_info_content.setText(list.get(position).getContent());
-
 			if (cardsString != null && !cardsString.equals("")) {
 				try {
 					JSONArray jsonArray = new JSONArray(cardsString);
 					for (int i = 0; i < jsonArray.length(); i++) {
-						if (position == jsonArray.getJSONObject(i).getInt(
-								"cardPosition")) {
+						if (list.get(position)
+								.getCardName()
+								.equals(jsonArray.getJSONObject(i).getString(
+										"cardName"))) {
 							mHolder.item_add.setText("已添加");
 							mHolder.item_add.setEnabled(false);
 							break;
-						} else {
-							mHolder.item_add.setText("添加");
-							mHolder.item_add.setEnabled(true);
 						}
 					}
 				} catch (JSONException e) {
@@ -139,8 +135,6 @@ public class ChooseCard extends Activity {
 				public void onClick(View v) {
 					try {
 						JSONObject object = new JSONObject();
-						object.put("cardPosition", list.get(position)
-								.getCardPosition());
 						object.put("cardName", list.get(position).getCardName());
 						cardsJson.put(object);
 					} catch (JSONException e) {

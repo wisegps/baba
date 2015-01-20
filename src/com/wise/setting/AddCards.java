@@ -41,20 +41,23 @@ public class AddCards extends Activity {
 		SharedPreferences sharedPreferences = getSharedPreferences(
 				"card_choose", Activity.MODE_PRIVATE);
 		String cardsJson = sharedPreferences.getString("cardsJson", "");
-		System.out.println(cardsJson);
 		if (!cardsJson.equals("") && cardsJson != null) {
 			try {
 				JSONArray jsonArray = new JSONArray(cardsJson);
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject object = jsonArray.getJSONObject(i);
-					int index = object.getInt("cardPosition");
-					CardsData cardsData = new CardsData();
-					cardsData.setIcon(Constant.picture[index]);
-					cardsData.setTitle(Constant.title[index]);
-					cardsData.setContent(Constant.content[index]);
-					cardsData.setCardPosition(index);
-					cardsData.setCardName(object.getString("cardName"));
-					list.add(cardsData);
+					String cardName = object.getString("cardName");
+					for (int j = 0; j < Constant.cards.length; j++) {
+						if (cardName.equals(Constant.cards[j])) {
+							CardsData cardsData = new CardsData();
+							cardsData.setIcon(Constant.picture[j]);
+							cardsData.setTitle(Constant.title[j]);
+							cardsData.setContent(Constant.content[j]);
+							cardsData.setCardName(cardName);
+							list.add(cardsData);
+							break;
+						}
+					}
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -109,14 +112,18 @@ public class AddCards extends Activity {
 				JSONArray jsonArray = new JSONArray(cardsJson);
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject object = jsonArray.getJSONObject(i);
-					int index = object.getInt("cardPosition");
-					CardsData cardsData = new CardsData();
-					cardsData.setIcon(Constant.picture[index]);
-					cardsData.setTitle(Constant.title[index]);
-					cardsData.setContent(Constant.content[index]);
-					cardsData.setCardPosition(index);
-					cardsData.setCardName(object.getString("cardName"));
-					list.add(cardsData);
+					String cardName = object.getString("cardName");
+					for (int j = 0; j < Constant.cards.length; j++) {
+						if (cardName.equals(Constant.cards[j])) {
+							CardsData cardsData = new CardsData();
+							cardsData.setIcon(Constant.picture[j]);
+							cardsData.setTitle(Constant.title[j]);
+							cardsData.setContent(Constant.content[j]);
+							cardsData.setCardName(cardName);
+							list.add(cardsData);
+							break;
+						}
+					}
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -135,7 +142,6 @@ public class AddCards extends Activity {
 		try {
 			for (int i = 0; i < list.size(); i++) {
 				JSONObject object = new JSONObject();
-				object.put("cardPosition", list.get(i).getCardPosition());
 				object.put("cardName", list.get(i).getCardName());
 				jsonArray.put(object);
 			}
