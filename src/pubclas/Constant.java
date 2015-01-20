@@ -121,13 +121,12 @@ public class Constant {
 	public static String A_UpdateCar = "com.wise.wawc.update_car";
 	/** 更新首页信息 **/
 	public static String A_RefreshHomeCar = "com.wise.baba.refresh_home_car";
-
+	/**修改首页卡片广播**/
+	public static String A_ChangeCards = "com.wise.baba.change_cards";
 	/** 登录广播，首页获取车辆用到 */
 	public static String A_Login = "com.wise.baba.login";
 	/** 注销账号广播 **/
 	public static String A_LoginOut = "com.wise.baba.login_out";
-	/** 改变用户类别 **/
-	public static String A_ChangeCustomerType = "com.wise.baba.change_customer_type";
 	/** 收到私信通知 **/
 	public static String A_ReceiverLetter = "com.wise.baba.letter";
 	/**

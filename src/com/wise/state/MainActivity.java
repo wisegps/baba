@@ -78,7 +78,7 @@ public class MainActivity extends FragmentActivity {
 		intentFilter.addAction(Constant.A_RefreshHomeCar);
 		intentFilter.addAction(Constant.A_Login);
 		intentFilter.addAction(Constant.A_LoginOut);
-		intentFilter.addAction(Constant.A_ChangeCustomerType);
+		intentFilter.addAction(Constant.A_ChangeCards);
 		registerReceiver(myBroadCastReceiver, intentFilter);
 
 		// 从通知栏跳转
@@ -219,23 +219,10 @@ public class MainActivity extends FragmentActivity {
 					fragmentNotice.ClearNotice(); // 清除通知信息
 				}
 			} else if (action.equals(Constant.A_City)) {
-				// try {
-				// app.City = intent.getStringExtra("City");
-				// app.Province = intent.getStringExtra("Province");
-				// SharedPreferences preferences =
-				// getActivity().getSharedPreferences(Constant.sharedPreferencesName,
-				// Context.MODE_PRIVATE);
-				// Editor editor = preferences.edit();
-				// editor.putString(Constant.sp_city, app.City);
-				// editor.putString(Constant.sp_province, app.Province);
-				// editor.commit();
-				// } catch (Exception e) {
-				// e.printStackTrace();
-				// }
-			} else if (action.equals(Constant.A_ChangeCustomerType)) {
-				// 类型改变
+			} else if (action.equals(Constant.A_ChangeCards)) {
+				// 卡片有可能改变
 				if (fragmentHome != null) {
-					// fragmentHome.resetAllView();
+					fragmentHome.isChangeCards();
 				}
 			}
 		}

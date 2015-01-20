@@ -216,6 +216,37 @@ public class FragmentHome extends Fragment {
 	public void resetAllView() {
 		isChange = true;
 	}
+	/**判断卡片的是否变化，变化了需要重新加载**/
+	public void isChangeCards(){
+		SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+				"card_choose", Activity.MODE_PRIVATE);
+		String cardsJson = sharedPreferences.getString("cardsJson", "");
+		if(cardsJson.equals("")){
+			if(cardNames.size() == 0){
+				isChange = false;//没有改变
+			}else{
+				isChange = true;//改变
+			}
+		}else{
+			try {
+				JSONArray jsonArray = new JSONArray(cardsJson);
+				if(jsonArray.length() != cardNames.size()){
+					isChange = true;//改变
+					return;
+				}
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject object = jsonArray.getJSONObject(i);
+					String cardName = object.getString("cardName");
+					if(cardName != cardNames.get(i)){
+						isChange = true;//改变
+						return;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	/** 刷新车辆卡片 **/
 	public void refreshCarInfo() {
