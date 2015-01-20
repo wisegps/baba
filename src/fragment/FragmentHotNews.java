@@ -25,14 +25,18 @@ import com.wise.baba.R;
 import customView.BidirSlidingLayout;
 
 /**
+ * 本地资讯
  * @author honesty
  **/
 public class FragmentHotNews extends Fragment {
-	/** 本地资讯 **/
-	private static final int gethot_news = 4;
+	/** 获取本地资讯 **/
+	private static final int startGetNewThread = 1;
+	private static final int gethot_news = 2;
 	private BidirSlidingLayout bidirSldingLayout;
 	TextView tv_hot_content, tv_host_title;
 	AppApplication app;
+	boolean isDestory = false;
+	boolean isPause = false;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,12 +55,19 @@ public class FragmentHotNews extends Fragment {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					gethot_news();
-					Thread.sleep(30000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				while(!isDestory){
+					try {	
+						if(!isPause){
+							System.out.println("startGetNewThread");
+							Message message = new Message();
+							message.what = startGetNewThread;
+							handler.sendMessage(message);
+						}
+						Thread.sleep(30000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}				
 			}
 		}).start();
 	}
@@ -82,6 +93,9 @@ public class FragmentHotNews extends Fragment {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
+			case startGetNewThread:
+				gethot_news();
+				break;
 			case gethot_news:
 				jsonhot_news(msg.obj.toString());
 				break;
@@ -95,6 +109,7 @@ public class FragmentHotNews extends Fragment {
 		try {
 			String url = Constant.BaseUrl + "base/hot_news?city=" + URLEncoder.encode(app.City, "UTF-8");
 			new NetThread.GetDataThread(handler, url, gethot_news).start();
+			System.out.println("startGetNewThread = " + url);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -116,5 +131,21 @@ public class FragmentHotNews extends Fragment {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		isPause = false;
+	}
+	@Override
+	public void onPause() {
+		super.onPause();
+		isPause = true;
+	}
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		isDestory = true;
+		System.out.println("FragmentHotNews onDestroy");
 	}
 }

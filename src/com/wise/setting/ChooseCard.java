@@ -3,9 +3,18 @@ package com.wise.setting;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import pubclas.Constant;
+
 import com.wise.baba.R;
 
+import data.CardsData;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,12 +30,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class ChooseInfoCard extends Activity {
+public class ChooseCard extends Activity {
 	ListView card_choose;
-	List<InformationItem> list = new ArrayList<InformationItem>();
-	public static String[] cards = { "weather", "hotNews" };
+	List<CardsData> list = new ArrayList<CardsData>();
 	String weather;
 	String hotNews;
+	JSONArray cardsJson = new JSONArray();
+	public static final int CARDCODE = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +48,14 @@ public class ChooseInfoCard extends Activity {
 				R.drawable.icon_jinqi_normal };
 		String[] title = { "天气", "新闻" };
 		String[] content = { "今天天气概况", "最新新闻更新和内容" };
+		String[] cardName = { "weather", "hotNews" };
+
 		for (int i = 0; i < 2; i++) {
-			InformationItem inItem = new InformationItem();
+			CardsData inItem = new CardsData();
 			inItem.setIcon(picture[i]);
 			inItem.setTitle(title[i]);
 			inItem.setContent(content[i]);
+			inItem.setCardName(cardName[i]);
 			list.add(inItem);
 		}
 
@@ -58,6 +71,9 @@ public class ChooseInfoCard extends Activity {
 		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.putExtra("cardsJson", cardsJson.toString());
+				setResult(CARDCODE, intent);
 				finish();
 			}
 		});
@@ -85,8 +101,8 @@ public class ChooseInfoCard extends Activity {
 			final Holder mHolder;
 			if (convertView == null) {
 				mHolder = new Holder();
-				convertView = (LayoutInflater.from(ChooseInfoCard.this))
-						.inflate(R.layout.item_info_add, null);
+				convertView = (LayoutInflater.from(ChooseCard.this)).inflate(
+						R.layout.item_info_add, null);
 				mHolder.info_icon = (ImageView) convertView
 						.findViewById(R.id.info_icon);
 				mHolder.tv_info_title = (TextView) convertView
@@ -104,7 +120,7 @@ public class ChooseInfoCard extends Activity {
 			mHolder.tv_info_content.setText(list.get(position).getContent());
 
 			if (position == 0) {
-				if (weather.equals(cards[position])) {
+				if (weather.equals(Constant.cards[position])) {
 					mHolder.item_add.setText("已添加");
 					mHolder.item_add.setEnabled(false);
 				} else {
@@ -113,7 +129,7 @@ public class ChooseInfoCard extends Activity {
 				}
 			}
 			if (position == 1) {
-				if (hotNews.equals(cards[position])) {
+				if (hotNews.equals(Constant.cards[position])) {
 					mHolder.item_add.setText("已添加");
 					mHolder.item_add.setEnabled(false);
 				} else {
@@ -124,13 +140,24 @@ public class ChooseInfoCard extends Activity {
 			mHolder.item_add.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					try {
+						JSONObject object = new JSONObject();
+						object.put("icon", list.get(position).getIcon());
+						object.put("title", list.get(position).getTitle());
+						object.put("content", list.get(position).getContent());
+						object.put("cardName", list.get(position).getCardName());
+						cardsJson.put(object);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+
 					SharedPreferences sharedPreferences = getSharedPreferences(
 							"card_choose", Activity.MODE_PRIVATE);
 					SharedPreferences.Editor editor = sharedPreferences.edit();
 					if (position == 0) {
-						editor.putString("weather", cards[0]);
+						editor.putString("weather", Constant.cards[0]);
 					} else if (position == 1) {
-						editor.putString("hotNews", cards[1]);
+						editor.putString("hotNews", Constant.cards[1]);
 					}
 					editor.commit();
 					mHolder.item_add.setText("已添加");
@@ -145,42 +172,6 @@ public class ChooseInfoCard extends Activity {
 			ImageView info_icon;
 			TextView tv_info_title, tv_info_content;
 			Button item_add;
-		}
-	}
-
-	class InformationItem {
-		private int icon;
-		private String title;
-		private String content;
-
-		public int getIcon() {
-			return icon;
-		}
-
-		public void setIcon(int icon) {
-			this.icon = icon;
-		}
-
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
-
-		public String getContent() {
-			return content;
-		}
-
-		public void setContent(String content) {
-			this.content = content;
-		}
-
-		@Override
-		public String toString() {
-			return "InformationItem [icon=" + icon + ", title=" + title
-					+ ", content=" + content + "]";
 		}
 	}
 }

@@ -42,6 +42,7 @@ import com.wise.car.BarcodeActivity;
 import com.wise.notice.FriendAddActivity;
 import com.wise.notice.FriendDetailActivity;
 import com.wise.notice.FriendInfoActivity;
+import com.wise.notice.ServiceListActivity;
 import com.wise.notice.SureFriendActivity;
 
 import customView.CircleImageView;
@@ -49,6 +50,7 @@ import data.FriendData;
 import data.FriendSearch;
 
 /**
+ * 好友列表
  * @author honesty
  **/
 public class FragmentFriend extends Fragment {
@@ -154,6 +156,9 @@ public class FragmentFriend extends Fragment {
 			if (arg2 == 1) {
 				// 新的朋友(我添加的和别人添加我的)
 				startActivityForResult(new Intent(getActivity(), SureFriendActivity.class), 3);
+			}else if (arg2 == 2) {
+				// TODO 服务商
+				startActivityForResult(new Intent(getActivity(),  ServiceListActivity.class), 3);
 			} else {
 				// 去介绍界面
 				Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
@@ -263,16 +268,20 @@ public class FragmentFriend extends Fragment {
 
 	/** 获取好友数据 **/
 	public void getFriendData() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/get_friends?auth_code=" + app.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/get_friends?auth_code=" + app.auth_code +"&friend_type=1";
 		new NetThread.GetDataThread(handler, url, get_all_friend).start();
 	}
 
 	private void jsonFriendData(String result) {
+		System.out.println(result);
 		try {
 			app.friendDatas.clear();
 			FriendData fData = new FriendData();
 			fData.setFriend_name("新的朋友");
 			app.friendDatas.add(fData);
+			FriendData fData1 = new FriendData();
+			fData1.setFriend_name("服务商");
+			app.friendDatas.add(fData1);
 			JSONArray jsonArray = new JSONArray(result);
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -327,6 +336,9 @@ public class FragmentFriend extends Fragment {
 			holder.tv_name.setText(friendData.getFriend_name());
 			if (position == 0) {
 				// 第一项是新的朋友
+				holder.iv_image.setImageResource(R.drawable.icon_people_no);
+			}else if (position == 1) {
+				// 第二项是服务商
 				holder.iv_image.setImageResource(R.drawable.icon_people_no);
 			} else {
 				if (new File(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png").exists()) {

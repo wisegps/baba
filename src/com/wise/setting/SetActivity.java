@@ -173,7 +173,7 @@ public class SetActivity extends Activity implements TagAliasCallback {
 				break;
 			case R.id.tv_info:
 				startActivity(new Intent(SetActivity.this,
-						AddInformationItem.class));
+						AddCards.class));
 				break;
 			case R.id.tv_offline_map:
 				startActivity(new Intent(SetActivity.this,

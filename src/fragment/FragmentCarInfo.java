@@ -747,7 +747,7 @@ public class FragmentCarInfo extends Fragment {
 				startActivityForResult(intent, 2);
 			} else {
 				Intent intent = new Intent(getActivity(), FuelActivity.class);
-				intent.putExtra("index_car", index);
+				intent.putExtra("carData", app.carDatas.get(index));
 				// 传递跳转类型常量进行跳转
 				intent.putExtra("type", type);
 				startActivity(intent);

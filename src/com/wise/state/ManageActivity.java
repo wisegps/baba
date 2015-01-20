@@ -151,7 +151,12 @@ public class ManageActivity extends Activity {
 
 		@Override
 		public int getChildrenCount(int groupPosition) {
-			return (carDatas.size() == 0)?0:1;
+			List<String> strs = details.get(groupPosition);
+			if(strs.size() == 0){
+				return 0;
+			}else{
+				return 1;
+			}
 		}
 
 		@Override
@@ -258,7 +263,7 @@ public class ManageActivity extends Activity {
 			}
 			//油耗
 			if(detail.equals("油耗")){
-				Intent intent = new Intent(ManageActivity.this, DriveActivity.class);
+				Intent intent = new Intent(ManageActivity.this, FuelActivity.class);
 				intent.putExtra("carData", carData);
 				intent.putExtra("type", FEE);
 				startActivity(intent);
@@ -343,5 +348,11 @@ public class ManageActivity extends Activity {
 		private class ViewHolder {
 			TextView tv_item_hot;
 		}
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		//static 文件手动删除
+		carDatas.clear();
 	}
 }

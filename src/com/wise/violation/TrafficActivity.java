@@ -1039,6 +1039,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 	private void turnCarUpdate() {
 		Intent intent = new Intent(TrafficActivity.this, CarUpdateActivity.class);
 		intent.putExtra("index", index_car);
+		intent.putExtra("isService", isService);
 		startActivityForResult(intent, 2);
 	}
 

@@ -1,5 +1,7 @@
 package fragment;
 
+import listener.OnCardMenuListener;
+
 import org.json.JSONObject;
 
 import pubclas.Constant;
@@ -8,25 +10,31 @@ import pubclas.Info;
 import pubclas.Judge;
 import pubclas.NetThread;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.car.CarLocationActivity;
+import com.wise.notice.FriendInfoActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.show.ShowActivity;
 
@@ -50,6 +58,8 @@ public class FragmentHome extends Fragment {
 	AppApplication app;
 	FragmentCarInfo fragmentCarInfo;
 	FragmentScrollMessage fragmentScrollMessage;
+	FragmentWeather fragmentWeather;
+	FragmentHotNews fragmentHotNews;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -90,7 +100,7 @@ public class FragmentHome extends Fragment {
 		}
 		getCards();
 	}
-
+	String[] sCards;
 	/** 显示卡片布局 **/
 	private void getCards() {
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -107,13 +117,14 @@ public class FragmentHome extends Fragment {
 		}
 		// 可选布局
 		String cards = "weather,hotNews";
-		String[] sCards = cards.split(",");
+		sCards = cards.split(",");
 		for (int i = 0; i < sCards.length; i++) {
 			if (sCards[i].equals("weather")) {
-				FragmentWeather fragmentWeather = new FragmentWeather();
+				fragmentWeather = new FragmentWeather();
+				fragmentWeather.setOnCardMenuListener(onCardMenuListener);
 				transaction.add(R.id.ll_cards, fragmentWeather);
 			} else if (sCards[i].equals("hotNews")) {
-				FragmentHotNews fragmentHotNews = new FragmentHotNews();
+				fragmentHotNews = new FragmentHotNews();
 				transaction.add(R.id.ll_cards, fragmentHotNews);
 			}
 		}
@@ -274,6 +285,7 @@ public class FragmentHome extends Fragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		//点击设置跳转到更多页面，退出系统后接受
 		if (requestCode == 5 && resultCode == 1) {
 			if (onExitListener != null) {
 				onExitListener.exit();
@@ -295,4 +307,49 @@ public class FragmentHome extends Fragment {
 	public interface OnExitListener {
 		public abstract void exit();
 	}
+	PopupWindow mPopupWindow;
+	OnCardMenuListener onCardMenuListener = new OnCardMenuListener() {		
+		@Override
+		public void showCarMenu(final String CardName) {
+			//弹出卡片菜单
+			LayoutInflater mLayoutInflater = LayoutInflater.from(getActivity());
+			View popunwindwow = mLayoutInflater.inflate(R.layout.pop_card_menu, null);
+			Button bt_card_share = (Button)popunwindwow.findViewById(R.id.bt_card_share);
+			bt_card_share.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+					mPopupWindow.dismiss();
+				}
+			});
+			Button bt_card_delete = (Button)popunwindwow.findViewById(R.id.bt_card_delete);
+			bt_card_delete.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View v) {
+					for (int i = 0; i < sCards.length; i++) {
+						if(sCards[i].equals(CardName)){
+							if (sCards[i].equals("weather")) {
+								FragmentTransaction transaction = fragmentManager.beginTransaction();
+								transaction.remove(fragmentWeather);
+								transaction.commit();
+								fragmentWeather = null;
+							} else if (sCards[i].equals("hotNews")) {
+								FragmentTransaction transaction = fragmentManager.beginTransaction();
+								transaction.remove(fragmentHotNews);
+								transaction.commit();
+								fragmentHotNews = null;
+							}
+							break;
+						}						
+					}
+					mPopupWindow.dismiss();
+				}
+			});
+			PopupWindow mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+			mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
+			mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
+			mPopupWindow.setFocusable(true);
+			mPopupWindow.setOutsideTouchable(true);
+			mPopupWindow.showAtLocation(ll_cards, Gravity.BOTTOM, 0, 0);
+		}
+	};
 }

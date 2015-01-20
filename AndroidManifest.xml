@@ -115,6 +115,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.setting.AddCards"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.setting.LoginActivity"
             android:screenOrientation="portrait" >
         </activity>
@@ -135,7 +139,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.wise.setting.ChooseInfoCard"
+            android:name="com.wise.setting.ChooseCard"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -161,10 +165,6 @@
         </activity>
         <activity
             android:name="com.wise.state.FaultDetectionActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name="com.wise.state.ServiceProviderActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -212,6 +212,10 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.wise.notice.ServiceListActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.wise.notice.FriendLocationActivity"
             android:screenOrientation="portrait" >
         </activity>
@@ -252,10 +256,6 @@
             android:name="com.wise.notice.LetterActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
-        </activity>
-        <activity
-            android:name="com.wise.state.TestActivity"
-            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.wise.show.PinDaoActivity"
