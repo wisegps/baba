@@ -7,12 +7,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pubclas.Constant;
+
 import xlist.DragListView;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,7 +22,6 @@ import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wise.baba.R;
@@ -30,7 +30,6 @@ import data.CardsData;
 
 public class AddCards extends Activity {
 	DragListView infoListView;
-
 	List<CardsData> list = new ArrayList<CardsData>();
 	InforAdapter adapter;
 
@@ -48,10 +47,12 @@ public class AddCards extends Activity {
 				JSONArray jsonArray = new JSONArray(cardsJson);
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject object = jsonArray.getJSONObject(i);
+					int index = object.getInt("cardPosition");
 					CardsData cardsData = new CardsData();
-					cardsData.setIcon(object.getInt("icon"));
-					cardsData.setTitle(object.getString("title"));
-					cardsData.setContent(object.getString("content"));
+					cardsData.setIcon(Constant.picture[index]);
+					cardsData.setTitle(Constant.title[index]);
+					cardsData.setContent(Constant.content[index]);
+					cardsData.setCardPosition(index);
 					cardsData.setCardName(object.getString("cardName"));
 					list.add(cardsData);
 				}
@@ -64,16 +65,6 @@ public class AddCards extends Activity {
 		adapter = new InforAdapter();
 		infoListView.setAdapter(adapter);
 		infoListView.setDragListener(mDrapListener);
-		// infoListView.setOnItemClickListener(new OnItemClickListener() {
-		//
-		// @Override
-		// public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-		// long arg3) {
-		// infoListView.setDoTouch(true);
-		// Toast.makeText(AddCards.this, "1111111", Toast.LENGTH_SHORT)
-		// .show();
-		// }
-		// });
 
 		findViewById(R.id.tv_info_add).setOnClickListener(
 				new OnClickListener() {
@@ -105,8 +96,6 @@ public class AddCards extends Activity {
 			item = list.get(from);
 			list.set(from, list.get(to));
 			list.set(to, item);
-			// list.remove(from);
-			// list.add(to, item);
 			adapter.notifyDataSetChanged();
 		}
 	};
@@ -120,10 +109,12 @@ public class AddCards extends Activity {
 				JSONArray jsonArray = new JSONArray(cardsJson);
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject object = jsonArray.getJSONObject(i);
+					int index = object.getInt("cardPosition");
 					CardsData cardsData = new CardsData();
-					cardsData.setIcon(object.getInt("icon"));
-					cardsData.setTitle(object.getString("title"));
-					cardsData.setContent(object.getString("content"));
+					cardsData.setIcon(Constant.picture[index]);
+					cardsData.setTitle(Constant.title[index]);
+					cardsData.setContent(Constant.content[index]);
+					cardsData.setCardPosition(index);
 					cardsData.setCardName(object.getString("cardName"));
 					list.add(cardsData);
 				}
@@ -144,9 +135,7 @@ public class AddCards extends Activity {
 		try {
 			for (int i = 0; i < list.size(); i++) {
 				JSONObject object = new JSONObject();
-				object.put("icon", list.get(i).getIcon());
-				object.put("title", list.get(i).getTitle());
-				object.put("content", list.get(i).getContent());
+				object.put("cardPosition", list.get(i).getCardPosition());
 				object.put("cardName", list.get(i).getCardName());
 				jsonArray.put(object);
 			}
@@ -210,27 +199,9 @@ public class AddCards extends Activity {
 				@Override
 				public void onClick(View v) {
 					infoListView.stopDrag();
-					SharedPreferences sharedPreferences = getSharedPreferences(
-							"card_choose", Activity.MODE_PRIVATE);
-					SharedPreferences.Editor editor = sharedPreferences.edit();
-					editor.remove(list.get(position).getCardName());
 					list.remove(position);
 					adapter.notifyDataSetChanged();
-					JSONArray cardsJson = new JSONArray();
-					try {
-						for (int i = 0; i < list.size(); i++) {
-							JSONObject object = new JSONObject();
-							object.put("icon", list.get(i).getIcon());
-							object.put("title", list.get(i).getTitle());
-							object.put("content", list.get(i).getContent());
-							object.put("cardName", list.get(i).getCardName());
-							cardsJson.put(object);
-						}
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-					editor.putString("cardsJson", cardsJson.toString());
-					editor.commit();
+					putJson();
 				}
 			});
 			if (index == position) {
@@ -242,7 +213,6 @@ public class AddCards extends Activity {
 		}
 
 		class Holder {
-			LinearLayout llLayout;
 			ImageView info_icon;
 			TextView tv_info_title, tv_info_content;
 			Button item_add;

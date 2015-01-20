@@ -32,9 +32,9 @@ import android.widget.TextView;
 
 public class ChooseCard extends Activity {
 	ListView card_choose;
-	List<CardsData> list = new ArrayList<CardsData>();
-	String weather;
-	String hotNews;
+	List<CardsData> list = new ArrayList<CardsData>();;
+	int index = -1;
+	String cardsString;
 	JSONArray cardsJson = new JSONArray();
 	public static final int CARDCODE = 1;
 
@@ -50,6 +50,7 @@ public class ChooseCard extends Activity {
 			inItem.setTitle(Constant.title[i]);
 			inItem.setContent(Constant.content[i]);
 			inItem.setCardName(Constant.cards[i]);
+			inItem.setCardPosition(i);
 			list.add(inItem);
 		}
 
@@ -113,24 +114,24 @@ public class ChooseCard extends Activity {
 			mHolder.tv_info_title.setText(list.get(position).getTitle());
 			mHolder.tv_info_content.setText(list.get(position).getContent());
 
-			if (position == 0) {
-				if (weather.equals(Constant.cards[position])) {
-					mHolder.item_add.setText("已添加");
-					mHolder.item_add.setEnabled(false);
-				} else {
-					mHolder.item_add.setText("添加");
-					mHolder.item_add.setEnabled(true);
-				}
-			}
-			if (position == 1) {
-				if (hotNews.equals(Constant.cards[position])) {
-					mHolder.item_add.setText("已添加");
-					mHolder.item_add.setEnabled(false);
-				} else {
-					mHolder.item_add.setText("添加");
-					mHolder.item_add.setEnabled(true);
-				}
-			}
+//			if (position == 0) {
+//				if (weather.equals(Constant.cards[position])) {
+//					mHolder.item_add.setText("已添加");
+//					mHolder.item_add.setEnabled(false);
+//				} else {
+//					mHolder.item_add.setText("添加");
+//					mHolder.item_add.setEnabled(true);
+//				}
+//			}
+//			if (position == 1) {
+//				if (hotNews.equals(Constant.cards[position])) {
+//					mHolder.item_add.setText("已添加");
+//					mHolder.item_add.setEnabled(false);
+//				} else {
+//					mHolder.item_add.setText("添加");
+//					mHolder.item_add.setEnabled(true);
+//				}
+//			}
 			mHolder.item_add.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {

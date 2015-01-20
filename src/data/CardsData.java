@@ -5,6 +5,24 @@ public class CardsData {
 	private String title;
 	private String content;
 	private String cardName;
+	private boolean isAdd;
+	private int cardPosition;
+
+	public int getCardPosition() {
+		return cardPosition;
+	}
+
+	public void setCardPosition(int cardPosition) {
+		this.cardPosition = cardPosition;
+	}
+
+	public boolean isAdd() {
+		return isAdd;
+	}
+
+	public void setAdd(boolean isAdd) {
+		this.isAdd = isAdd;
+	}
 
 	public int getIcon() {
 		return icon;
