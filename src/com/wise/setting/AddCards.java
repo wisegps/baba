@@ -86,6 +86,8 @@ public class AddCards extends Activity {
 			public void onClick(View v) {
 				putJson();
 				list.clear();
+				Intent intent = new Intent(Constant.A_ChangeCards);
+				sendBroadcast(intent);
 				finish();
 			}
 		});
@@ -109,6 +111,8 @@ public class AddCards extends Activity {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			putJson();
 			list.clear();
+			Intent intent = new Intent(Constant.A_ChangeCards);
+			sendBroadcast(intent);
 			finish();
 			return true;
 		}
