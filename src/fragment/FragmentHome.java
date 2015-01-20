@@ -1,15 +1,21 @@
 package fragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import listener.OnCardMenuListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.Info;
 import pubclas.Judge;
 import pubclas.NetThread;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,17 +33,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TextView;
-
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.car.CarLocationActivity;
-import com.wise.notice.FriendInfoActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.show.ShowActivity;
-
 import data.CarData;
 
 /**
@@ -85,22 +87,17 @@ public class FragmentHome extends Fragment {
 		if (Judge.isLogin(app)) {// 已登录
 			GetSystem.myLog(TAG, "已登录,app.carDatas = " + app.carDatas.size());
 			getCounter();
-
-			if (app.carDatas.size() == 0) {// 如果没有车则显示广告
-
-			}
 		} else {// 未登录
 			GetSystem.myLog(TAG, "未登录,app.carDatas = " + app.carDatas.size());
 			// 给个临时id
 			app.cust_id = "0";
 			app.auth_code = "127a154df2d7850c4232542b4faa2c3d";
-			// setLoginView();
 			Intent intent = new Intent(getActivity(), LoginActivity.class);
 			startActivity(intent);
 		}
 		getCards();
 	}
-	String[] sCards;
+	List<String> cardNames = new ArrayList<String>();
 	/** 显示卡片布局 **/
 	private void getCards() {
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -116,16 +113,36 @@ public class FragmentHome extends Fragment {
 			transaction.add(R.id.ll_cards, fragmentScrollMessage);
 		}
 		// 可选布局
-		String cards = "weather,hotNews";
-		sCards = cards.split(",");
-		for (int i = 0; i < sCards.length; i++) {
-			if (sCards[i].equals("weather")) {
-				fragmentWeather = new FragmentWeather();
-				fragmentWeather.setOnCardMenuListener(onCardMenuListener);
-				transaction.add(R.id.ll_cards, fragmentWeather);
-			} else if (sCards[i].equals("hotNews")) {
-				fragmentHotNews = new FragmentHotNews();
-				transaction.add(R.id.ll_cards, fragmentHotNews);
+		SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+				"card_choose", Activity.MODE_PRIVATE);
+		String cardsJson = sharedPreferences.getString("cardsJson", "");
+		if(cardsJson.equals("")){//默认显示天气和新闻
+			fragmentWeather = new FragmentWeather();
+			fragmentWeather.setOnCardMenuListener(onCardMenuListener);
+			transaction.add(R.id.ll_cards, fragmentWeather);
+			fragmentHotNews = new FragmentHotNews();
+			fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
+			transaction.add(R.id.ll_cards, fragmentHotNews);
+		}else{
+			try {
+				JSONArray jsonArray = new JSONArray(cardsJson);
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject object = jsonArray.getJSONObject(i);
+					String cardName = object.getString("cardName");
+					if (cardName.equals("weather")) {
+						fragmentWeather = new FragmentWeather();
+						fragmentWeather.setOnCardMenuListener(onCardMenuListener);
+						transaction.add(R.id.ll_cards, fragmentWeather);
+						cardNames.add("weather");
+					} else if (cardName.equals("hotNews")) {
+						fragmentHotNews = new FragmentHotNews();
+						fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
+						transaction.add(R.id.ll_cards, fragmentHotNews);
+						cardNames.add("hotNews");
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		transaction.commit();
@@ -325,18 +342,22 @@ public class FragmentHome extends Fragment {
 			bt_card_delete.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View v) {
-					for (int i = 0; i < sCards.length; i++) {
-						if(sCards[i].equals(CardName)){
-							if (sCards[i].equals("weather")) {
+					for (int i = 0; i < cardNames.size(); i++) {
+						if(cardNames.get(i).equals(CardName)){
+							if (cardNames.get(i).equals("weather")) {
 								FragmentTransaction transaction = fragmentManager.beginTransaction();
 								transaction.remove(fragmentWeather);
 								transaction.commit();
 								fragmentWeather = null;
-							} else if (sCards[i].equals("hotNews")) {
+								cardNames.remove(i);
+								setCardsInSharedPreferences();
+							} else if (cardNames.get(i).equals("hotNews")) {
 								FragmentTransaction transaction = fragmentManager.beginTransaction();
 								transaction.remove(fragmentHotNews);
 								transaction.commit();
 								fragmentHotNews = null;
+								cardNames.remove(i);
+								setCardsInSharedPreferences();
 							}
 							break;
 						}						
@@ -344,7 +365,7 @@ public class FragmentHome extends Fragment {
 					mPopupWindow.dismiss();
 				}
 			});
-			PopupWindow mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+			mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 			mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
 			mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
 			mPopupWindow.setFocusable(true);
@@ -352,4 +373,22 @@ public class FragmentHome extends Fragment {
 			mPopupWindow.showAtLocation(ll_cards, Gravity.BOTTOM, 0, 0);
 		}
 	};
+	/**删除卡片后保存最新的数据在本地**/
+	private void setCardsInSharedPreferences(){
+		SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+				"card_choose", Activity.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		JSONArray jsonArray = new JSONArray();
+		try {
+			for (int i = 0; i < cardNames.size(); i++) {
+				JSONObject object = new JSONObject();
+				object.put("cardName", cardNames.get(i));
+				jsonArray.put(object);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		editor.putString("cardsJson", jsonArray.toString());
+		editor.commit();
+	}
 }

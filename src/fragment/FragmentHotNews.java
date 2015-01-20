@@ -2,6 +2,8 @@ package fragment;
 
 import java.net.URLEncoder;
 
+import listener.OnCardMenuListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wise.baba.AppApplication;
@@ -32,7 +35,6 @@ public class FragmentHotNews extends Fragment {
 	/** 获取本地资讯 **/
 	private static final int startGetNewThread = 1;
 	private static final int gethot_news = 2;
-	private BidirSlidingLayout bidirSldingLayout;
 	TextView tv_hot_content, tv_host_title;
 	AppApplication app;
 	boolean isDestory = false;
@@ -47,11 +49,11 @@ public class FragmentHotNews extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
-		bidirSldingLayout = (BidirSlidingLayout) getActivity().findViewById(R.id.bidir_sliding_layout);
 		tv_hot_content = (TextView) getActivity().findViewById(R.id.tv_hot_content);
-		bidirSldingLayout.setScrollEvent(tv_hot_content);
 		tv_hot_content.setOnClickListener(onClickListener);
 		tv_host_title = (TextView) getActivity().findViewById(R.id.tv_host_title);
+		ImageView iv_weather_menu = (ImageView) getActivity().findViewById(R.id.iv_hot_news_menu);
+		iv_weather_menu.setOnClickListener(onClickListener);
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -82,6 +84,11 @@ public class FragmentHotNews extends Fragment {
 				intent_hot.putExtra("title", hot_title);
 				intent_hot.putExtra("hot_content", hot_content);
 				startActivity(intent_hot);
+				break;
+			case R.id.iv_hot_news_menu:
+				if(onCardMenuListener != null){
+					onCardMenuListener.showCarMenu("hotNews");
+				}
 				break;
 			}
 		}
@@ -147,5 +154,9 @@ public class FragmentHotNews extends Fragment {
 		super.onDestroy();
 		isDestory = true;
 		System.out.println("FragmentHotNews onDestroy");
+	}
+	OnCardMenuListener onCardMenuListener;
+	public void setOnCardMenuListener(OnCardMenuListener onCardMenuListener){
+		this.onCardMenuListener = onCardMenuListener;
 	}
 }
