@@ -107,13 +107,13 @@ public class FriendInfoActivity extends Activity {
 //			iv_menu.setVisibility(View.GONE);
 //			bt_find_location.setVisibility(View.GONE);
 //			getFriendInfoName(name);
-
-		} else if (friendStatus == FriendStatus.FriendAddFromId) {
-			iv_menu.setVisibility(View.GONE);
-			bt_find_location.setVisibility(View.GONE);
-			FriendId = Integer.valueOf(Friendid);
-			getFriendInfoId();
-			judgeIsAddFriend();
+//
+//		} else if (friendStatus == FriendStatus.FriendAddFromId) {
+//			iv_menu.setVisibility(View.GONE);
+//			bt_find_location.setVisibility(View.GONE);
+//			FriendId = Integer.valueOf(Friendid);
+//			getFriendInfoId();
+//			judgeIsAddFriend();
 		}
 	}
 
@@ -143,7 +143,12 @@ public class FriendInfoActivity extends Activity {
 				showMenu();
 				break;
 			case R.id.tv_compet:
-				startActivity(new Intent(FriendInfoActivity.this, SetCompetActivity.class));
+				intent = new Intent(FriendInfoActivity.this, SetCompetActivity.class);
+				intent.putExtra("friendId", FriendId);
+				int visible = iv_service.getVisibility();
+				boolean isService = visible == View.VISIBLE?true:false;
+				intent.putExtra("isService",isService);
+				startActivity(intent);
 				mPopupWindow.dismiss();
 				break;
 			case R.id.tv_delete:
@@ -201,26 +206,26 @@ public class FriendInfoActivity extends Activity {
 		}
 	}
 
-	/** 判断好友是否已经添加 **/
-	private void judgeIsAddFriend() {
-		if (app.cust_id.equals(String.valueOf(FriendId))) {
-			// 自己
-			bt_add_friend.setVisibility(View.GONE);
-			bt_send_message.setVisibility(View.GONE);
-			return;
-		}
-		for (FriendData friendData : app.friendDatas) {
-			if (friendData.getFriend_id() == FriendId) {
-				// 好友已存在
-				bt_add_friend.setVisibility(View.GONE);
-				bt_send_message.setVisibility(View.VISIBLE);
-				return;
-			}
-		}
-		// 好友不存在，可以添加好友
-		bt_add_friend.setVisibility(View.VISIBLE);
-		bt_send_message.setVisibility(View.GONE);
-	}
+//	/** 判断好友是否已经添加 **/
+//	private void judgeIsAddFriend() {
+//		if (app.cust_id.equals(String.valueOf(FriendId))) {
+//			// 自己
+//			bt_add_friend.setVisibility(View.GONE);
+//			bt_send_message.setVisibility(View.GONE);
+//			return;
+//		}
+//		for (FriendData friendData : app.friendDatas) {
+//			if (friendData.getFriend_id() == FriendId) {
+//				// 好友已存在
+//				bt_add_friend.setVisibility(View.GONE);
+//				bt_send_message.setVisibility(View.VISIBLE);
+//				return;
+//			}
+//		}
+//		// 好友不存在，可以添加好友
+//		bt_add_friend.setVisibility(View.VISIBLE);
+//		bt_send_message.setVisibility(View.GONE);
+//	}
 
 //	private void addFriend() {
 //		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/send_friend_request?auth_code=" + app.auth_code;
@@ -266,7 +271,7 @@ public class FriendInfoActivity extends Activity {
 			JSONObject jsonObject = new JSONObject(result);
 
 			FriendId = jsonObject.getInt("cust_id");
-			judgeIsAddFriend();
+			//judgeIsAddFriend();
 			FriendName = jsonObject.getString("cust_name");
 			tv_name.setText(FriendName);
 			tv_area.setText(jsonObject.getString("province") + "    " + jsonObject.getString("city"));

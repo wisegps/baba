@@ -18,6 +18,17 @@
             android:text="设置好友权限"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
+        
+         <ImageView 
+            android:id="@+id/iv_add"
+	        android:layout_width="@dimen/title_hight"
+	        android:layout_height="@dimen/title_hight"
+	        android:layout_marginRight="@dimen/margins"
+	        android:layout_alignParentRight="true"
+	        android:padding="@dimen/margins"
+	        android:layout_centerVertical="true"
+	        android:onClick="onClick"
+	        android:src="@drawable/nav_ok"/>
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="@dimen/title_hight"
@@ -25,6 +36,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margins"
             android:padding="@dimen/margins"
+            android:onClick="onClick"
             android:src="@drawable/nav_back" />
     </RelativeLayout>
     <ScrollView 
@@ -32,6 +44,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
         <LinearLayout 
+             android:id="@+id/llytList"  
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -49,9 +62,11 @@
 			        android:layout_centerVertical="true"
 			        android:textColor="@color/navy"
 			        android:text="访问OBD标准数据"/>
-			    <CheckBox 
+			    <CheckBox
+			        android:id="@+id/chkOBDStandard" 
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
+			        android:onClick="onClick"
 			        android:layout_alignParentRight="true"/>
 			</RelativeLayout>	    
 		    <View
@@ -69,8 +84,10 @@
 			        android:textColor="@color/navy"
 			        android:text="访问OBD故障码数据"/>
 			    <CheckBox 
+			         android:id="@+id/chkOBDFault" 
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
+			        android:onClick="onClick"
 			        android:layout_alignParentRight="true"/>
 			</RelativeLayout>	    
 		    <View
@@ -88,8 +105,10 @@
 			        android:textColor="@color/navy"
 			        android:text="访问车务提醒"/>
 			    <CheckBox 
+			        android:id="@+id/chkNotice" 
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
+			        android:onClick="onClick"
 			        android:layout_alignParentRight="true"/>
 			</RelativeLayout>	    
 		    <View
@@ -107,15 +126,18 @@
 			        android:textColor="@color/navy"
 			        android:text="访问车辆违章"/>
 			    <CheckBox 
+			        android:id="@+id/chkViolation" 
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
+			        android:onClick="onClick"
 			        android:layout_alignParentRight="true"/>
 			</RelativeLayout>	    
 		    <View
 		        android:layout_width="fill_parent"
 		        android:layout_height="1dp"
 		        android:background="@color/gray_lights" />
-			<RelativeLayout 
+			<RelativeLayout
+			    android:id="@+id/rlytLocation"  
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
 			    android:padding="@dimen/margins">
@@ -126,16 +148,19 @@
 			        android:textColor="@color/navy"
 			        android:text="访问车辆实时位置"/>
 			    <CheckBox 
-			        android:id="@+id/cb_location"
+			        android:id="@+id/chkLocation" 
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
+			        android:onClick="onClick"
 			        android:layout_alignParentRight="true"/>
 			</RelativeLayout>	    
 		    <View
+		        android:id="@+id/viewLine"  
 		        android:layout_width="fill_parent"
 		        android:layout_height="1dp"
 		        android:background="@color/gray_lights" />
 			<RelativeLayout 
+			    android:id="@+id/rlytTrip"  
 			    android:layout_width="fill_parent"
 			    android:layout_height="wrap_content"
 			    android:padding="@dimen/margins">
@@ -146,9 +171,10 @@
 			        android:textColor="@color/navy"
 			        android:text="访问车辆行程"/>
 			    <CheckBox 
-			        android:id="@+id/cb_trip"
+			        android:id="@+id/chkTrip"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
+			        android:onClick="onClick"
 			        android:layout_alignParentRight="true"/>
 			</RelativeLayout>	    
 		    <View
@@ -166,8 +192,10 @@
 			        android:textColor="@color/navy"
 			        android:text="访问车辆油耗明细"/>
 			    <CheckBox 
+			        android:id="@+id/chkFuel" 
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
+			        android:onClick="onClick"
 			        android:layout_alignParentRight="true"/>
 			</RelativeLayout>	    
 		    <View
@@ -185,8 +213,10 @@
 			        android:textColor="@color/navy"
 			        android:text="访问车辆驾驶习惯数据"/>
 			    <CheckBox 
+			        android:id="@+id/chkDriving" 
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
+			        android:onClick="onClick"
 			        android:layout_alignParentRight="true"/>
 			</RelativeLayout>	    
         </LinearLayout>
