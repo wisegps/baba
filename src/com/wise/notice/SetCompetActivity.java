@@ -22,11 +22,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import pubclas.GetSystem;
+import pubclas.HttpFriend;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,7 +61,7 @@ import com.wise.baba.R;
  * 
  * @author honesty
  **/
-public class SetCompetActivity extends Activity implements OnClickListener {
+public class SetCompetActivity extends Activity implements OnClickListener,Callback {
 
 	private int friendId;
 	private boolean isService;
@@ -89,7 +92,7 @@ public class SetCompetActivity extends Activity implements OnClickListener {
 		Intent intent = getIntent();
 		friendId = intent.getIntExtra("friendId", 0);
 		isService = intent.getBooleanExtra("isService", false);
-		handler = new Handler();
+		handler = new Handler(this);
 		initView();
 		
 
@@ -111,7 +114,6 @@ public class SetCompetActivity extends Activity implements OnClickListener {
 
 		setServiceMode(isService);
 		getAuthorization();
-		setAuthorization();
 	}
 
 	public void get(String url) {
@@ -187,13 +189,13 @@ public class SetCompetActivity extends Activity implements OnClickListener {
 	}
 
 	/**
-	 * 获取有哪些权限
+	 * 设置有哪些权限
 	 */
 	public void getAuthorization() {
-		String id = app.cust_id;
-		String url = "http://api.bibibaba.cn/customer/" + friendId + "/friend/"
-				+ id + "/rights?auth_code=" + app.auth_code;
-		get(url);
+			
+			String url = "http://api.bibibaba.cn/customer/" + friendId + "/friend/"
+					+ app.cust_id  + "/rights?auth_code=" + app.auth_code;
+			get(url);
 	}
 
 	/**
@@ -288,10 +290,17 @@ public class SetCompetActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.iv_add:
 			setAuthorization();
+			this.finish();
 			break;
 		default:
 			break;
 		}
 
+	}
+
+	@Override
+	public boolean handleMessage(Message arg0) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

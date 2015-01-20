@@ -33,8 +33,8 @@ import android.widget.TextView;
 public class ChooseCard extends Activity {
 	ListView card_choose;
 	List<CardsData> list = new ArrayList<CardsData>();
-	//String weather;
-	//String hotNews;
+	String weather;
+	String hotNews;
 	JSONArray cardsJson = new JSONArray();
 	public static final int CARDCODE = 1;
 

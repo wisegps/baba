@@ -7,11 +7,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.CheckBox;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -44,6 +49,7 @@ public class HttpFriend {
 		this.context = context;
 		this.handler = handler;
 		app = (AppApplication) ((Activity) context).getApplication();
+		mQueue = Volley.newRequestQueue(context);
 	}
 
 	/** 通过名称获取好友信息 **/
@@ -72,7 +78,6 @@ public class HttpFriend {
 	 * @param url
 	 */
 	public void request(String url) {
-		mQueue = Volley.newRequestQueue(context);
 		Listener listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
 				Message msg = new Message();
@@ -114,7 +119,44 @@ public class HttpFriend {
 
 		return friends;
 	}
-
+	
+	/**
+	 * 获取好友权限
+	 * @param url
+	 */
+	public void getAuthCode(String url){
+		Listener listener = new Response.Listener<String>() {
+			public void onResponse(String response) {
+				try {
+					JSONObject jsonObject = new JSONObject(response);
+					JSONArray values = jsonObject.getJSONArray("rights");
+					int[] authCode = new int[values.length()];
+					for(int i =0;i<values.length();i++){
+						int code = values.getInt(i);
+						authCode[i] = code;
+						Message msg = new Message();
+						int get_authToMe = 2;
+						msg.what = get_authToMe;
+						msg.obj = authCode;
+						handler.sendMessage(msg);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}			
+				System.out.println("url request " + response);
+			}
+		};
+		ErrorListener errorListener = new ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				System.out.println("url error " + error.getMessage());
+			}
+		};
+		Request request = new StringRequest(url, listener, errorListener);
+		mQueue.add(request);
+		mQueue.start();
+	}
+	
 	public void cancle() {
 		if (mQueue != null) {
 			mQueue.cancelAll(context);
