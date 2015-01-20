@@ -164,7 +164,7 @@ public class FragmentFriend extends Fragment {
 				Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
 				intent.putExtra("FriendId", String.valueOf(app.friendDatas.get(arg2 - 1).getFriend_id()));
 				intent.putExtra("name", app.friendDatas.get(arg2 - 1).getFriend_name());
-				intent.putExtra(Info.FriendStatusKey, Info.FriendStatus.FriendInfo);
+				intent.putExtra("cust_type", 1);
 				startActivityForResult(intent, 4);
 			}
 		}

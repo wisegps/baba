@@ -43,8 +43,6 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.state.ManageActivity;
 
-import data.FriendData;
-
 /**
  * 个人信息界面
  * 
@@ -57,19 +55,17 @@ public class FriendInfoActivity extends Activity implements Callback {
 	private static final int get_authToMe = 2;
 	private int RIGHT_LOCATION = 0x6005; // 访问车辆实时位置（个人好友及服务商）
 	private Handler handler;
-	private int[] authToMe;//朋友授权给我的权限
-	//private int[] authToFriend;//我授权给朋友的权限
-	Button  bt_send_message,bt_add_friend, bt_find_location, bt_management;
+	private int[] authToMe;// 朋友授权给我的权限
+	// private int[] authToFriend;//我授权给朋友的权限
+	Button bt_send_message, bt_add_friend, bt_find_location, bt_management;
 	ImageView iv_logo, iv_sex, iv_service, iv_menu;
 	TextView tv_name, tv_area;
 
 	RequestQueue mQueue;
-	private HttpFriend  httpFriend;
+	private HttpFriend httpFriend;
 	AppApplication app;
 	int FriendId = 0;
 	String FriendName;
-	/** 判断当前页面的状态 **/
-	FriendStatus friendStatus;
 
 	enum abc {
 		a, b
@@ -102,21 +98,21 @@ public class FriendInfoActivity extends Activity implements Callback {
 		bt_management = (Button) findViewById(R.id.bt_management);
 		bt_management.setOnClickListener(onClickListener);
 		Intent intent = getIntent();
-		friendStatus = (FriendStatus) intent.getSerializableExtra(Info.FriendStatusKey);
 		String Friendid = intent.getStringExtra("FriendId");
+		cust_type = intent.getIntExtra("cust_type", 1);
 		String name = intent.getStringExtra("name");
 
-		if (friendStatus == FriendStatus.FriendInfo) {
-			FriendId = Integer.valueOf(Friendid);
-			getFriendInfoId();
-			bt_find_location.setVisibility(View.GONE);
-			iv_menu.setVisibility(View.VISIBLE);
-			//得到朋友给予我哪些权限，是否可以查看位置等
-			getAuthorization(app.cust_id,FriendId+"");
+		FriendId = Integer.valueOf(Friendid);
+		getFriendInfoId();
+		bt_find_location.setVisibility(View.GONE);
+		bt_management.setVisibility(View.GONE);
+		iv_menu.setVisibility(View.VISIBLE);
+		// 得到朋友给予我哪些权限，是否可以查看位置等
+		if(cust_type != 2){//服务商不会授权给用户
+			getAuthorization(app.cust_id, FriendId + "");
 		}
 	}
 
-	
 	@Override
 	public boolean handleMessage(Message msg) {
 		switch (msg.what) {
@@ -124,7 +120,7 @@ public class FriendInfoActivity extends Activity implements Callback {
 			jsonFriendInfo(msg.obj.toString());
 			break;
 		case get_authToMe:
-			authToMe =(int[]) msg.obj; 
+			authToMe = (int[]) msg.obj;
 			showViewByAuthCode();
 			break;
 		case delete_friend:
@@ -134,19 +130,26 @@ public class FriendInfoActivity extends Activity implements Callback {
 		return false;
 	}
 
-	
 	/**
 	 * 根据权限设置一些按钮是否可见
 	 */
-	public void showViewByAuthCode(){
-		if(authToMe!=null){
-			for(int i =0 ;i<authToMe.length;i++){
-				if(authToMe[i] == RIGHT_LOCATION)
+	public void showViewByAuthCode() {
+		if (authToMe != null) {
+			if(app.cust_type != 2 && cust_type != 2){//用户对用户
+				if(authToMe.length > 0){
 					bt_find_location.setVisibility(View.VISIBLE);
 				}
-			}
+			}else if(app.cust_type == 2 && cust_type != 2){//服务商对用户
+				if(authToMe.length > 0){
+					bt_management.setVisibility(View.VISIBLE);
+				}
+			}			
+		} else {
+			bt_management.setVisibility(View.GONE);
+			bt_find_location.setVisibility(View.GONE);
+		}
 	}
-	
+
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -173,9 +176,9 @@ public class FriendInfoActivity extends Activity implements Callback {
 				intent = new Intent(FriendInfoActivity.this, SetCompetActivity.class);
 				intent.putExtra("friendId", FriendId);
 				int visible = iv_service.getVisibility();
-				boolean isService = visible == View.VISIBLE?true:false;
-				intent.putExtra("isService",isService);
-				//intent.putExtra("authCode", authToMe);
+				boolean isService = visible == View.VISIBLE ? true : false;
+				intent.putExtra("isService", isService);
+				// intent.putExtra("authCode", authToMe);
 				startActivity(intent);
 				mPopupWindow.dismiss();
 				break;
@@ -198,15 +201,14 @@ public class FriendInfoActivity extends Activity implements Callback {
 	 * 获取有哪些权限
 	 * 
 	 */
-	public void getAuthorization(String id,String friendId) {
-		
-		String url = "http://api.bibibaba.cn/customer/" + id + "/friend/"
-				+ friendId + "/rights?auth_code=" + app.auth_code;
-		
+	public void getAuthorization(String id, String friendId) {
+
+		String url = "http://api.bibibaba.cn/customer/" + id + "/friend/" + friendId + "/rights?auth_code=" + app.auth_code;
+
 		httpFriend.getAuthCode(url);
-		
+
 	}
-	
+
 	/** 删除好友 **/
 	private void deleteFriend() {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/friend/" + FriendId + "?auth_code=" + app.auth_code;
@@ -231,12 +233,13 @@ public class FriendInfoActivity extends Activity implements Callback {
 		}
 	}
 
-
 	/** 通过id获取要添加的好友信息 **/
 	private void getFriendInfoId() {
 		String url = Constant.BaseUrl + "customer/" + FriendId + "?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, get_customer).start();
 	}
+
+	int cust_type = -1;
 
 	/** 解析好友信息 **/
 	private void jsonFriendInfo(String result) {
@@ -257,7 +260,7 @@ public class FriendInfoActivity extends Activity implements Callback {
 			} else {
 				iv_sex.setImageResource(R.drawable.icon_woman);
 			}
-			int cust_type = jsonObject.getInt("cust_type");
+			cust_type = jsonObject.getInt("cust_type");
 			// 如果是服务商显示标志
 			if (cust_type == 2) {
 				iv_service.setVisibility(View.VISIBLE);
@@ -303,5 +306,4 @@ public class FriendInfoActivity extends Activity implements Callback {
 		mPopupWindow.showAsDropDown(FriendInfoActivity.this.findViewById(R.id.iv_menu), 0, 0);
 	}
 
-	
 }

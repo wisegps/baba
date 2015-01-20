@@ -66,7 +66,7 @@ public class ServiceListActivity extends Activity{
 			Intent intent = new Intent(ServiceListActivity.this, FriendInfoActivity.class);
 			intent.putExtra("FriendId", String.valueOf(friendDatas.get(arg2).getFriend_id()));
 			intent.putExtra("name", friendDatas.get(arg2).getFriend_name());
-			intent.putExtra(Info.FriendStatusKey, Info.FriendStatus.FriendInfo);
+			intent.putExtra("cust_type", 2);
 			startActivityForResult(intent, 4);
 		}
 	};
