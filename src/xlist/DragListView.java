@@ -152,7 +152,7 @@ public class DragListView extends ListView {
 	public void onDrag(int y) {
 		int drag_top = y - dragPoint;// 拖拽view的top值不能＜0，否则则出界.
 		if (dragImageView != null && drag_top >= 0) {
-			windowParams.alpha = 0.8f;
+			windowParams.alpha = 1.0f;
 			windowParams.y = y - dragPoint + dragOffset;
 			windowManager.updateViewLayout(dragImageView, windowParams);// 时时移动.(时时改变视图)
 		}

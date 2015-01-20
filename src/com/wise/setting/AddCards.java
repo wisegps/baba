@@ -88,6 +88,7 @@ public class AddCards extends Activity {
 		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				putJson();
 				list.clear();
 				finish();
 			}
@@ -129,26 +130,30 @@ public class AddCards extends Activity {
 				e.printStackTrace();
 			}
 			adapter.notifyDataSetChanged();
-
-			SharedPreferences sharedPreferences = getSharedPreferences(
-					"card_choose", Activity.MODE_PRIVATE);
-			SharedPreferences.Editor editor = sharedPreferences.edit();
-			JSONArray jsonArray = new JSONArray();
-			try {
-				for (int i = 0; i < list.size(); i++) {
-					JSONObject object = new JSONObject();
-					object.put("icon", list.get(i).getIcon());
-					object.put("title", list.get(i).getTitle());
-					object.put("content", list.get(i).getContent());
-					object.put("cardName", list.get(i).getCardName());
-					jsonArray.put(object);
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			editor.putString("cardsJson", jsonArray.toString());
-			editor.commit();
+			putJson();
 		}
+	}
+
+	// 保存数据
+	private void putJson() {
+		SharedPreferences sharedPreferences = getSharedPreferences(
+				"card_choose", Activity.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		JSONArray jsonArray = new JSONArray();
+		try {
+			for (int i = 0; i < list.size(); i++) {
+				JSONObject object = new JSONObject();
+				object.put("icon", list.get(i).getIcon());
+				object.put("title", list.get(i).getTitle());
+				object.put("content", list.get(i).getContent());
+				object.put("cardName", list.get(i).getCardName());
+				jsonArray.put(object);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		editor.putString("cardsJson", jsonArray.toString());
+		editor.commit();
 	}
 
 	class InforAdapter extends BaseAdapter {
