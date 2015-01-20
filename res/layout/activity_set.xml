@@ -174,7 +174,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_white"
             android:padding="@dimen/double_margins"
-            android:text="配置信息"
+            android:text="管理卡片"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />
 

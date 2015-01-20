@@ -33,8 +33,8 @@ import android.widget.TextView;
 public class ChooseCard extends Activity {
 	ListView card_choose;
 	List<CardsData> list = new ArrayList<CardsData>();
-	String weather;
-	String hotNews;
+	//String weather;
+	//String hotNews;
 	JSONArray cardsJson = new JSONArray();
 	public static final int CARDCODE = 1;
 
@@ -44,25 +44,19 @@ public class ChooseCard extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_choose_info_card);
 
-		int[] picture = { R.drawable.icon_dianyuan_normal,
-				R.drawable.icon_jinqi_normal };
-		String[] title = { "天气", "新闻" };
-		String[] content = { "今天天气概况", "最新新闻更新和内容" };
-		String[] cardName = { "weather", "hotNews" };
-
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < Constant.cards.length; i++) {
 			CardsData inItem = new CardsData();
-			inItem.setIcon(picture[i]);
-			inItem.setTitle(title[i]);
-			inItem.setContent(content[i]);
-			inItem.setCardName(cardName[i]);
+			inItem.setIcon(Constant.picture[i]);
+			inItem.setTitle(Constant.title[i]);
+			inItem.setContent(Constant.content[i]);
+			inItem.setCardName(Constant.cards[i]);
 			list.add(inItem);
 		}
 
 		SharedPreferences sharedPreferences = getSharedPreferences(
 				"card_choose", Activity.MODE_PRIVATE);
-		weather = sharedPreferences.getString("weather", "");
-		hotNews = sharedPreferences.getString("hotNews", "");
+		//weather = sharedPreferences.getString("weather", "");
+		//hotNews = sharedPreferences.getString("hotNews", "");
 
 		card_choose = (ListView) findViewById(R.id.card_choose);
 		CardAdapter cardAdapter = new CardAdapter();

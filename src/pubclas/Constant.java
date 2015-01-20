@@ -153,5 +153,11 @@ public class Constant {
 	public static int[] items_note_type_image = { R.drawable.icon_cw_niansheng, R.drawable.icon_cw_nianjian, R.drawable.icon_cw_baoyang,
 			R.drawable.icon_cw_xuxian, R.drawable.icon_xx_notice, R.drawable.icon_xx_notice };
 	public static String[] items_note_mode = { "不重复", "按月重复", "按周重复", "按日重复", "末月按周重复，其他按月重复" };
+	//卡片管理
+
+	public static int[] picture = { R.drawable.icon_dianyuan_normal,
+			R.drawable.icon_jinqi_normal };
+	public static String[] title = { "天气", "新闻" };
+	public static String[] content = { "今天天气概况", "最新新闻更新和内容" };
 	public static String[] cards = { "weather", "hotNews" };
 }

@@ -3,30 +3,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_white"
-    android:orientation="vertical" >
+    android:orientation="horizontal" >
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="60dip"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dip" >
+        android:padding="5dip" >
 
         <ImageView
             android:id="@+id/info_icon"
             android:layout_width="0dip"
-            android:layout_height="fill_parent"
-            android:layout_marginRight="5dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             android:src="@drawable/amp2" />
 
         <LinearLayout
             android:layout_width="0dip"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="4"
-            android:gravity="center_vertical"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:padding="3dip" >
 
             <TextView
                 android:id="@+id/tv_info_title"
@@ -47,10 +47,9 @@
 
         <Button
             android:id="@+id/item_add"
-            android:layout_width="0dip"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
             android:background="@drawable/bg_bt_green"
             android:text="添加"
             android:textSize="@dimen/content" />
