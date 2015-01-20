@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import pubclas.Constant;
 import pubclas.GetSystem;
+import pubclas.HttpFriend;
 import pubclas.Info;
 import pubclas.Info.FriendStatus;
 import pubclas.NetThread;
@@ -20,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,17 +50,21 @@ import data.FriendData;
  * 
  * @author honesty
  **/
-public class FriendInfoActivity extends Activity {
+public class FriendInfoActivity extends Activity implements Callback {
 
 	private static final int get_customer = 1;
-	private static final int add_friend = 2;
 	private static final int delete_friend = 3;
-
-	Button bt_add_friend, bt_send_message, bt_find_location, bt_management;
+	private static final int get_authToMe = 2;
+	private int RIGHT_LOCATION = 0x6005; // 访问车辆实时位置（个人好友及服务商）
+	private Handler handler;
+	private int[] authToMe;//朋友授权给我的权限
+	//private int[] authToFriend;//我授权给朋友的权限
+	Button  bt_send_message,bt_add_friend, bt_find_location, bt_management;
 	ImageView iv_logo, iv_sex, iv_service, iv_menu;
 	TextView tv_name, tv_area;
 
 	RequestQueue mQueue;
+	private HttpFriend  httpFriend;
 	AppApplication app;
 	int FriendId = 0;
 	String FriendName;
@@ -76,6 +82,8 @@ public class FriendInfoActivity extends Activity {
 		setContentView(R.layout.activity_friend_info);
 		app = (AppApplication) getApplication();
 		mQueue = Volley.newRequestQueue(this);
+		handler = new Handler(this);
+		httpFriend = new HttpFriend(this, handler);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		iv_menu = (ImageView) findViewById(R.id.iv_menu);
@@ -101,31 +109,50 @@ public class FriendInfoActivity extends Activity {
 		if (friendStatus == FriendStatus.FriendInfo) {
 			FriendId = Integer.valueOf(Friendid);
 			getFriendInfoId();
-			bt_find_location.setVisibility(View.VISIBLE);
+			bt_find_location.setVisibility(View.GONE);
 			iv_menu.setVisibility(View.VISIBLE);
-		} else if (friendStatus == FriendStatus.FriendAddFromName) {
-			iv_menu.setVisibility(View.GONE);
-			bt_find_location.setVisibility(View.GONE);
-			getFriendInfoName(name);
-
-		} else if (friendStatus == FriendStatus.FriendAddFromId) {
-			iv_menu.setVisibility(View.GONE);
-			bt_find_location.setVisibility(View.GONE);
-			FriendId = Integer.valueOf(Friendid);
-			getFriendInfoId();
-			judgeIsAddFriend();
+			//得到朋友给予我哪些权限，是否可以查看位置等
+			getAuthorization(app.cust_id,FriendId+"");
 		}
 	}
 
+	
+	@Override
+	public boolean handleMessage(Message msg) {
+		switch (msg.what) {
+		case get_customer:
+			jsonFriendInfo(msg.obj.toString());
+			break;
+		case get_authToMe:
+			authToMe =(int[]) msg.obj; 
+			showViewByAuthCode();
+			break;
+		case delete_friend:
+			jsonDeleteFriend(msg.obj.toString());
+			break;
+		}
+		return false;
+	}
+
+	
+	/**
+	 * 根据权限设置一些按钮是否可见
+	 */
+	public void showViewByAuthCode(){
+		if(authToMe!=null){
+			for(int i =0 ;i<authToMe.length;i++){
+				if(authToMe[i] == RIGHT_LOCATION)
+					bt_find_location.setVisibility(View.VISIBLE);
+				}
+			}
+	}
+	
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.iv_back:
 				finish();
-				break;
-			case R.id.bt_add_friend:
-				addFriend();
 				break;
 			case R.id.bt_send_message:
 				Intent intent = new Intent(FriendInfoActivity.this, LetterActivity.class);
@@ -143,7 +170,13 @@ public class FriendInfoActivity extends Activity {
 				showMenu();
 				break;
 			case R.id.tv_compet:
-				startActivity(new Intent(FriendInfoActivity.this, SetCompetActivity.class));
+				intent = new Intent(FriendInfoActivity.this, SetCompetActivity.class);
+				intent.putExtra("friendId", FriendId);
+				int visible = iv_service.getVisibility();
+				boolean isService = visible == View.VISIBLE?true:false;
+				intent.putExtra("isService",isService);
+				//intent.putExtra("authCode", authToMe);
+				startActivity(intent);
 				mPopupWindow.dismiss();
 				break;
 			case R.id.tv_delete:
@@ -154,29 +187,26 @@ public class FriendInfoActivity extends Activity {
 			case R.id.bt_management:
 				Intent manageLocation = new Intent(FriendInfoActivity.this, ManageActivity.class);
 				manageLocation.putExtra("FriendId", FriendId);
+				manageLocation.putExtra("authToMe", authToMe);
 				startActivity(manageLocation);
 				break;
 			}
 		}
 	};
-	Handler handler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			switch (msg.what) {
-			case get_customer:
-				jsonFriendInfo(msg.obj.toString());
-				break;
-			case add_friend:
-				jsonAddFriend(msg.obj.toString());
-				break;
-			case delete_friend:
-				jsonDeleteFriend(msg.obj.toString());
-				break;
-			}
-		}
-	};
 
+	/**
+	 * 获取有哪些权限
+	 * 
+	 */
+	public void getAuthorization(String id,String friendId) {
+		
+		String url = "http://api.bibibaba.cn/customer/" + id + "/friend/"
+				+ friendId + "/rights?auth_code=" + app.auth_code;
+		
+		httpFriend.getAuthCode(url);
+		
+	}
+	
 	/** 删除好友 **/
 	private void deleteFriend() {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/friend/" + FriendId + "?auth_code=" + app.auth_code;
@@ -201,57 +231,6 @@ public class FriendInfoActivity extends Activity {
 		}
 	}
 
-	/** 判断好友是否已经添加 **/
-	private void judgeIsAddFriend() {
-		if (app.cust_id.equals(String.valueOf(FriendId))) {
-			// 自己
-			bt_add_friend.setVisibility(View.GONE);
-			bt_send_message.setVisibility(View.GONE);
-			return;
-		}
-		for (FriendData friendData : app.friendDatas) {
-			if (friendData.getFriend_id() == FriendId) {
-				// 好友已存在
-				bt_add_friend.setVisibility(View.GONE);
-				bt_send_message.setVisibility(View.VISIBLE);
-				return;
-			}
-		}
-		// 好友不存在，可以添加好友
-		bt_add_friend.setVisibility(View.VISIBLE);
-		bt_send_message.setVisibility(View.GONE);
-	}
-
-	private void addFriend() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/send_friend_request?auth_code=" + app.auth_code;
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("friend_id", String.valueOf(FriendId)));
-		params.add(new BasicNameValuePair("cust_name", app.cust_name));
-		new NetThread.postDataThread(handler, url, params, add_friend).start();
-	}
-
-	private void jsonAddFriend(String result) {
-		// TODO 添加好友
-		System.out.println(result);
-		try {
-			JSONObject jsonObject = new JSONObject(result);
-			if (jsonObject.getInt("status_code") == 0) {
-				Toast.makeText(FriendInfoActivity.this, "添加成功，等待对方确认!", Toast.LENGTH_SHORT).show();
-				setResult(2);
-				finish();
-			} else {
-				Toast.makeText(FriendInfoActivity.this, "添加好友失败，请重试", Toast.LENGTH_SHORT).show();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/** 通过名称获取好友信息 **/
-	private void getFriendInfoName(String name) {
-		String url = Constant.BaseUrl + "customer/search?auth_code=" + app.auth_code + "&account=" + name;
-		new NetThread.GetDataThread(handler, url, get_customer).start();
-	}
 
 	/** 通过id获取要添加的好友信息 **/
 	private void getFriendInfoId() {
@@ -264,9 +243,7 @@ public class FriendInfoActivity extends Activity {
 		try {
 			System.out.println("解析好友信息列表" + result);
 			JSONObject jsonObject = new JSONObject(result);
-
 			FriendId = jsonObject.getInt("cust_id");
-			judgeIsAddFriend();
 			FriendName = jsonObject.getString("cust_name");
 			tv_name.setText(FriendName);
 			tv_area.setText(jsonObject.getString("province") + "    " + jsonObject.getString("city"));
@@ -325,4 +302,6 @@ public class FriendInfoActivity extends Activity {
 		mPopupWindow.setOutsideTouchable(true);
 		mPopupWindow.showAsDropDown(FriendInfoActivity.this.findViewById(R.id.iv_menu), 0, 0);
 	}
+
+	
 }

@@ -54,6 +54,7 @@ public class ManageActivity extends Activity {
 	public static List<CarData> carDatas = new ArrayList<CarData>();
 	List<List<String>> details = new ArrayList<List<String>>();
 	ManageAdapter manageAdapter;
+	private int[] authToMe;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class ManageActivity extends Activity {
 		setContentView(R.layout.activity_manage);
 		app = (AppApplication) getApplication();
 		friendId = ""+getIntent().getIntExtra("FriendId", 0);
+		authToMe = getIntent().getIntArrayExtra("authToMe");
 		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		elv_cars = (ExpandableListView) findViewById(R.id.elv_cars);
@@ -117,18 +119,42 @@ public class ManageActivity extends Activity {
 		String url = Constant.BaseUrl + "customer/" + friendId + "/vehicle?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, getAllCarData).start();
 	}
-
+	private int RIGHT_OBD_DATA = 0x6001; // 访问OBD标准数据（服务商）
+	private int RIGHT_ODB_ERR = 0x6002; // 访问OBD故障码数据（服务商）
+	private int RIGHT_EVENT = 0x6003; // 访问车务提醒（服务商）
+	private int RIGHT_VIOLATION = 0x6004; // 访问车辆违章（服务商）
+	private int RIGHT_LOCATION = 0x6005; // 访问车辆实时位置（个人好友及服务商）
+	private int RIGHT_TRIP = 0x6006; // 访问车辆行程（个人好友及服务商）
+	private int RIGHT_FUEL = 0x6007; // 访问车辆油耗明细（服务商）
+	private int RIGHT_DRIVESTAT = 0x6008; // 访问车辆驾驶习惯数据（服务商）
+	
 	private void jsonAllCarData(String result) {
 		carDatas.addAll(JsonData.jsonCarInfo(result));
 		for (CarData carData : carDatas) {
 			List<String> strs = new ArrayList<String>();
-			strs.add("信息");
-			strs.add("行程");
-			strs.add("车况");
-			strs.add("油耗");
-			strs.add("驾驶");
-			strs.add("车务");
-			strs.add("违章");
+			if(authToMe != null){
+				for(int i = 0 ; i < authToMe.length ; i++){
+					System.out.println("authToMe = " + authToMe[i]);
+					if(RIGHT_LOCATION == authToMe[i]){
+						
+					}else if(RIGHT_TRIP == authToMe[i]){
+						strs.add("行程");
+					}else if(RIGHT_OBD_DATA == authToMe[i]){
+						strs.add("车况");
+					}else if(RIGHT_ODB_ERR == authToMe[i]){
+						
+					}else if(RIGHT_EVENT == authToMe[i]){
+						strs.add("车务");
+					}else if(RIGHT_VIOLATION == authToMe[i]){
+						strs.add("违章");
+					}else if(RIGHT_FUEL == authToMe[i]){
+						strs.add("油耗");
+					}else if(RIGHT_DRIVESTAT == authToMe[i]){
+						strs.add("驾驶");
+					}
+				}
+				//strs.add("信息");
+			}			
 			details.add(strs);
 		}
 	}

@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import pubclas.Constant;
+import pubclas.HttpFriend;
 import pubclas.Info;
 import pubclas.MyVolley;
 import pubclas.NetThread;
@@ -43,7 +44,7 @@ public class FriendAddActivity extends Activity implements Callback {
 	private EditText et_name;
 	private AppApplication app;
 	private Handler handler;
-	private MyVolley volley;
+	private HttpFriend httpFriend;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class FriendAddActivity extends Activity implements Callback {
 		iv_search.setOnClickListener(onClickListener);
 		app = (AppApplication) getApplication();
 		handler = new Handler(this);
-		volley = new MyVolley(this, handler);
+		httpFriend = new HttpFriend(this, handler);
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -73,7 +74,7 @@ public class FriendAddActivity extends Activity implements Callback {
 					toast("不能为空哦");
 					return;
 				}
-				searchByName(name);
+				httpFriend.searchByName(name);
 				break;
 			}
 		}
@@ -90,18 +91,12 @@ public class FriendAddActivity extends Activity implements Callback {
 
 	@Override
 	public boolean handleMessage(Message msg) {
-		parseJsonString((String) msg.obj);
-		return true;
-	}
-
-	public void parseJsonString(String strJson) {
-		Gson gson = new Gson();
-		if (strJson.startsWith("[]")) {
+		List<FriendSearch> friends = (List<FriendSearch>) msg.obj;
+		if (friends == null) {
 			et_name.setText("");
 			toast("搜索结果为空！");
-			return;
-		} else if (strJson.startsWith("{")) {// 只有一条数据
-			FriendSearch friend = gson.fromJson(strJson, FriendSearch.class);
+		} else if (friends.size()==1) {// 只有一条数据
+			FriendSearch friend = friends.get(0);
 			//toast("一条数据" + friend.getCust_name());
 			Intent intent = new Intent(this,
 					FriendDetailActivity.class);
@@ -109,32 +104,15 @@ public class FriendAddActivity extends Activity implements Callback {
 					Info.FriendStatus.FriendAddFromName);
 			intent.putExtra("friend", (Serializable)friend);
 			startActivityForResult(intent, 1);
-			
-			
 		} else {// 搜索到多个好友
-			List<FriendSearch> friends = new LinkedList<FriendSearch>();
-			friends = gson.fromJson(strJson,
-					new TypeToken<List<FriendSearch>>() {
-					}.getType());
 			Intent intent = new Intent(FriendAddActivity.this,
 					FriendListActivity.class);
 			intent.putExtra("friends", (Serializable) friends);
 			startActivityForResult(intent, 1);
 		}
-
+		return true;
 	}
 
-	/** 通过名称获取好友信息 **/
-	private void searchByName(String name) {
-		try {
-			name = URLEncoder.encode(name, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		String url = Constant.BaseUrl + "customer/search?auth_code="
-				+ app.auth_code + "&account=" + name;
-		volley.request(url);
-	}
 
 	public void toast(String info) {
 		Toast toast = Toast.makeText(FriendAddActivity.this, info,
@@ -146,7 +124,7 @@ public class FriendAddActivity extends Activity implements Callback {
 	@Override
 	protected void onStop() {
 		//取消网络请求
-		volley.cancle();
+		httpFriend.cancle();
 		super.onStop();
 	}
 	

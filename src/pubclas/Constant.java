@@ -155,9 +155,9 @@ public class Constant {
 	public static String[] items_note_mode = { "不重复", "按月重复", "按周重复", "按日重复", "末月按周重复，其他按月重复" };
 	//卡片管理
 
-	public static int[] picture = { R.drawable.icon_dianyuan_normal,
+	public static int[] picture = { R.drawable.icon_dianyuan_normal,R.drawable.icon_dianyuan_normal,
 			R.drawable.icon_jinqi_normal };
-	public static String[] title = { "天气", "新闻" };
-	public static String[] content = { "今天天气概况", "最新新闻更新和内容" };
-	public static String[] cards = { "weather", "hotNews" };
+	public static String[] title = { "服务商","天气", "新闻" };
+	public static String[] content = { "服务商","今天天气概况", "最新新闻更新和内容" };
+	public static String[] cards = { "service","weather", "hotNews" };
 }
