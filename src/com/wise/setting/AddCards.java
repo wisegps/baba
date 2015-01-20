@@ -42,6 +42,7 @@ public class AddCards extends Activity {
 		SharedPreferences sharedPreferences = getSharedPreferences(
 				"card_choose", Activity.MODE_PRIVATE);
 		String cardsJson = sharedPreferences.getString("cardsJson", "");
+		System.out.println(cardsJson);
 		if (!cardsJson.equals("") && cardsJson != null) {
 			try {
 				JSONArray jsonArray = new JSONArray(cardsJson);
