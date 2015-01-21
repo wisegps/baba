@@ -116,6 +116,7 @@
 	        android:layout_marginTop="@dimen/margins"
 	        android:layout_marginLeft="@dimen/double_margins"
 	        android:layout_marginRight="@dimen/double_margins"
+	         android:background="@drawable/bt_green"
 	        android:visibility="gone"
 	        android:text="添加好友"/>
 	    <Button 
