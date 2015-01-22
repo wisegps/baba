@@ -621,6 +621,17 @@ public class LetterActivity extends Activity implements IXListViewListener {
 			return false;
 		}
 	};
+	
+	OnClickListener friendLogoClickListener = new OnClickListener() {
+
+		@Override
+		public void onClick(View view) {
+			Intent intent = new Intent(LetterActivity.this,FriendInfoActivity.class);
+			intent.putExtra("FriendId", friend_id);
+			startActivity(intent);
+			
+		}
+	};
 
 	class LetterAdapter extends BaseAdapter {
 		LayoutInflater inflater = LayoutInflater.from(LetterActivity.this);
@@ -664,6 +675,7 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					viewFriendText.iv_friend = (CircleImageView) convertView.findViewById(R.id.iv_friend);
 					viewFriendText.tv_friend_content = (TextView) convertView.findViewById(R.id.tv_friend_content);
 					convertView.setTag(viewFriendText);
+					
 					break;
 				case FriendImage:
 					convertView = inflater.inflate(R.layout.item_letter_friend_image, null);
@@ -777,6 +789,10 @@ public class LetterActivity extends Activity implements IXListViewListener {
 					break;
 				}
 			}
+			
+			
+			
+			
 			boolean isTimeShow = false;
 			final LetterData letterData = letterDatas.get(position);
 			if (position == 0) { // 第一条特殊考虑
@@ -1095,6 +1111,15 @@ public class LetterActivity extends Activity implements IXListViewListener {
 				}
 				break;
 			}
+			
+			View logo = convertView.findViewById(R.id.iv_friend);
+			if(logo!=null){
+				logo.setOnClickListener(friendLogoClickListener);
+			}
+			
+			
+			
+			
 			return convertView;
 		}
 
