@@ -17,6 +17,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,23 @@ public class ChooseCard extends Activity {
 				finish();
 			}
 		});
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			SharedPreferences sharedPreferences = getSharedPreferences(
+					"card_choose", Activity.MODE_PRIVATE);
+			SharedPreferences.Editor editor = sharedPreferences.edit();
+			editor.putString("cardsJson", cardsJson.toString());
+			editor.commit();
+			Intent intent = new Intent();
+			intent.putExtra("cardsJson", cardsJson.toString());
+			setResult(CARDCODE, intent);
+			finish();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	class CardAdapter extends BaseAdapter {
