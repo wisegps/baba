@@ -14,7 +14,10 @@ import pubclas.Judge;
 import pubclas.NetThread;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -77,6 +80,10 @@ public class FragmentNotice extends Fragment implements IXListViewListener {
 		noticeAdapter = new NoticeAdapter();
 		lv_notice.setAdapter(noticeAdapter);
 		lv_notice.setOnScrollListener(onScrollListener);
+		SharedPreferences preferences = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		String notice = preferences.getString(Constant.sp_notice + app.cust_id, "");
+		jsonData(notice);
+		noticeAdapter.notifyDataSetChanged();
 	}
 
 	OnFinishListener onFinishListener = new OnFinishListener() {
@@ -124,12 +131,14 @@ public class FragmentNotice extends Fragment implements IXListViewListener {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case getNotice:
+				saveSp(msg.obj.toString());
 				jsonData(msg.obj.toString());
 				noticeAdapter.notifyDataSetChanged();
 				getNoticeImage();
 				break;
 			case refreshNotice:
 				refresh = msg.obj.toString();
+				saveSp(refresh);
 				lv_notice.runFast(0);
 				getNoticeImage();
 				break;
@@ -141,6 +150,13 @@ public class FragmentNotice extends Fragment implements IXListViewListener {
 			}
 		}
 	};
+	/**存储最新的通知**/
+	private void saveSp(String result){
+		SharedPreferences preferences = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		Editor editor = preferences.edit();
+		editor.putString(Constant.sp_notice + app.cust_id, result);
+		editor.commit();
+	}
 
 	private void itemClick(int position) {
 		NoticeData noticeData = noticeDatas.get(position);

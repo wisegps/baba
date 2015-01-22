@@ -4,9 +4,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.JsonData;
@@ -38,12 +36,10 @@ import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qzone.QZone;
-
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.CollectionActivity;
 import com.wise.baba.ManageActivity;
-import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.notice.NoticeActivity;
 import com.wise.remind.RemindListActivity;
@@ -284,22 +280,25 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 		setResult(1);
 		finish();
 	}
-
+	public static final int SMS = 1;// 传递信息页面跳转类型
+	public static final int COLLCETION = 2;// 收藏
+	public static final int TRAFFIC = 3;// 违章
+	public static final int REMIND = 4;// 提醒
 	// 页面跳转方法，根据登录前传过来的跳转类型进行相应界面的跳转
 	// 如果未登录点击通知，收藏等，需要先跳转到登录页面，登录后在跳转到对应的界面
 	private void getActivityState(Intent i) {
 		int state = i.getIntExtra("ActivityState", 0);
 		switch (state) {
-		case MoreActivity.SMS:
+		case SMS:
 			startActivity(new Intent(LoginActivity.this, NoticeActivity.class));
 			break;
-		case MoreActivity.COLLCETION:
+		case COLLCETION:
 			startActivity(new Intent(LoginActivity.this, CollectionActivity.class));
 			break;
-		case MoreActivity.REMIND:
+		case REMIND:
 			startActivity(new Intent(LoginActivity.this, RemindListActivity.class));
 			break;
-		case MoreActivity.TRAFFIC:
+		case TRAFFIC:
 			Intent intent = new Intent(LoginActivity.this, TrafficActivity.class);
 			intent.putExtra("isService", false);
 			startActivity(intent);

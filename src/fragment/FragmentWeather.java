@@ -1,14 +1,9 @@
 package fragment;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-
 import listener.OnCardMenuListener;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
@@ -18,7 +13,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,13 +20,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.SelectCityActivity;
-
-import customView.PopView;
-import customView.PopView.OnItemClickListener;
 
 /**
  * @author honesty
@@ -62,6 +52,12 @@ public class FragmentWeather extends Fragment {
 		ImageView iv_weather_menu = (ImageView) getActivity().findViewById(R.id.iv_weather_menu);
 		iv_weather_menu.setOnClickListener(onClickListener);
 	}
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+	}
+
 
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
@@ -85,7 +81,9 @@ public class FragmentWeather extends Fragment {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case getWeather:
-				jsonWeather(msg.obj.toString());
+				if(!isDestroy){
+					jsonWeather(msg.obj.toString());
+				}
 				break;
 			}
 		}
@@ -131,15 +129,25 @@ public class FragmentWeather extends Fragment {
 
 	/** 返回天气对应的r资源名称 **/
 	public int getResource(String imageName) {
+		System.out.println("getResource");
 		int resId = getResources().getIdentifier(imageName, "drawable", "com.wise.baba");
 		return resId;
 	}
-
+	
 	@Override
 	public void onResume() {
 		super.onResume();
+		isDestroy = false;
 		getWeather();
 	}
+	boolean isDestroy = false;
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		isDestroy = true;
+	}
+
+
 	OnCardMenuListener onCardMenuListener;
 	public void setOnCardMenuListener(OnCardMenuListener onCardMenuListener){
 		this.onCardMenuListener = onCardMenuListener;

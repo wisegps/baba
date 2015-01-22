@@ -1,5 +1,9 @@
 package com.wise.state;
 
+import listener.OnFinishListener;
+
+import org.json.JSONObject;
+
 import pubclas.Constant;
 import pubclas.FaceConversionUtil;
 import pubclas.GetLocation;
@@ -19,16 +23,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
+import cn.jpush.android.api.JPushInterface;
 
 import com.baidu.lbsapi.auth.LBSAuthManagerListener;
 import com.baidu.navisdk.BaiduNaviManager;
 import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
 import com.umeng.update.UmengUpdateAgent;
-import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
+import com.wise.notice.NoticeActivity;
+import com.wise.remind.RemindListActivity;
+import com.wise.violation.TrafficActivity;
 
 import fragment.FragmentFriend;
 import fragment.FragmentHome;
+import fragment.FragmentMore;
 import fragment.FragmentHome.OnExitListener;
 import fragment.FragmentNotice;
 
@@ -44,6 +52,7 @@ public class MainActivity extends FragmentActivity {
 	FragmentHome fragmentHome;
 	FragmentNotice fragmentNotice;
 	FragmentFriend fragmentFriend;
+	FragmentMore fragmentMore;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -84,10 +93,25 @@ public class MainActivity extends FragmentActivity {
 		// 从通知栏跳转
 		boolean isSpecify = getIntent().getBooleanExtra("isSpecify", false);
 		if (isSpecify) {
-			Intent intent = new Intent(MainActivity.this, MoreActivity.class);
-			intent.putExtra("isSpecify", isSpecify);
-			intent.putExtras(getIntent().getExtras());
-			startActivityForResult(intent, 5);
+			String extras = getIntent().getExtras().getString(JPushInterface.EXTRA_EXTRA);
+			try {
+				JSONObject jsonObject = new JSONObject(extras);
+				int msg_type = jsonObject.getInt("msg_type");
+				if(msg_type == 1){//提醒界面
+			        Intent intent = new Intent(MainActivity.this, RemindListActivity.class);
+			        startActivity(intent);
+				}else if(msg_type == 4){//违章界面
+					Intent intent = new Intent(MainActivity.this, TrafficActivity.class);
+			        startActivity(intent);
+				}else{//跳转到通知界面
+					Intent nIntent = new Intent(MainActivity.this, NoticeActivity.class);
+					nIntent.putExtra("isSpecify", isSpecify);
+					nIntent.putExtras(getIntent().getExtras());
+					startActivity(nIntent);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		/**定位**/
 		new GetLocation(this);
@@ -103,7 +127,7 @@ public class MainActivity extends FragmentActivity {
 		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(), mNaviEngineInitListener, new LBSAuthManagerListener() {
 			@Override
 			public void onAuthResult(int status, String msg) {
-				//s
+				
 			}
 		});
 	}
@@ -174,7 +198,7 @@ public class MainActivity extends FragmentActivity {
 
 				break;
 			case R.id.bt_set:
-				startActivityForResult(new Intent(MainActivity.this, MoreActivity.class), 5);
+				showMore();
 				break;
 			}
 		}
@@ -230,8 +254,27 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		startActivityForResult(new Intent(MainActivity.this, MoreActivity.class), 5);
+		showMore();
 		return true;
+	}
+	private void showMore(){
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		hideFragments(transaction);
+		if (fragmentMore == null) {
+			fragmentMore = new FragmentMore();
+			fragmentMore.setOnFinishListener(new OnFinishListener() {
+				@Override
+				public void onFinish() {
+					finish();
+				}
+			});
+			
+			transaction.add(R.id.ll_content, fragmentMore);
+			transaction.commit();
+		} else {
+			transaction.show(fragmentMore);
+			transaction.commit();
+		}
 	}
 
 	@Override

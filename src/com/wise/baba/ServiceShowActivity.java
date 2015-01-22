@@ -67,7 +67,7 @@ public class ServiceShowActivity extends Activity{
 	
 	private void ShowMenuPop(View auchor) {
         LayoutInflater mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popunwindwow = mLayoutInflater.inflate(R.layout.activity_more,null);
+        View popunwindwow = mLayoutInflater.inflate(R.layout.fragment_more,null);
         PopupWindow mPopupWindow = new PopupWindow(popunwindwow, screenWidth,LayoutParams.WRAP_CONTENT);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
         mPopupWindow.setFocusable(true);

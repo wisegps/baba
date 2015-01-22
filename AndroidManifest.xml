@@ -82,10 +82,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".MoreActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".BrowserActivity"
             android:screenOrientation="portrait" >
         </activity>

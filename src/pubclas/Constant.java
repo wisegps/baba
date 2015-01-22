@@ -80,6 +80,8 @@ public class Constant {
 	public static final String sp_drive_score = "sp_drive_score";
 	/** 存放个人信息 **/
 	public static final String sp_customer = "sp_customer";
+	/**存放通知消息**/
+	public static final String sp_notice = "sp_notice";
 	/**
 	 * 油价
 	 */

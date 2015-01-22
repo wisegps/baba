@@ -2,9 +2,7 @@ package fragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import listener.OnCardMenuListener;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +33,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
-import com.wise.baba.MoreActivity;
 import com.wise.baba.R;
 import com.wise.car.CarLocationActivity;
 import com.wise.setting.LoginActivity;
@@ -79,6 +76,7 @@ public class FragmentHome extends Fragment {
 		iv_back.setOnClickListener(onClickListener);
 		iv_noti = (ImageView) getActivity().findViewById(R.id.iv_noti);
 		ImageView iv_menu = (ImageView) getActivity().findViewById(R.id.iv_menu);
+		iv_menu.setVisibility(View.GONE);
 		iv_menu.setOnClickListener(onClickListener);
 		getActivity().findViewById(R.id.iv_location_hot).setOnClickListener(onClickListener);
 
@@ -98,31 +96,41 @@ public class FragmentHome extends Fragment {
 		getCards();
 	}
 	List<String> cardNames = new ArrayList<String>();
+	FragmentTransaction transaction;
 	/** 显示卡片布局 **/
 	private void getCards() {
-		FragmentTransaction transaction = fragmentManager.beginTransaction();
+		System.out.println("设置卡片布局");
 		// 默认显示的布局
 		if (app.cust_type == Info.ServiceProvider) {// 服务商
 
 		} else {
 			// 车辆卡片
+			transaction = fragmentManager.beginTransaction();
 			fragmentCarInfo = new FragmentCarInfo();
 			transaction.add(R.id.ll_cards, fragmentCarInfo);
+			transaction.commit();
 			// 滚动消息卡片
+			transaction = fragmentManager.beginTransaction();
 			fragmentScrollMessage = new FragmentScrollMessage();
 			transaction.add(R.id.ll_cards, fragmentScrollMessage);
+			transaction.commit();
 		}
 		// 可选布局
 		SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
 				"card_choose", Activity.MODE_PRIVATE);
 		String cardsJson = sharedPreferences.getString("cardsJson", "");
 		if(cardsJson.equals("")){//默认显示天气和新闻
+			transaction = fragmentManager.beginTransaction();
 			fragmentWeather = new FragmentWeather();
 			fragmentWeather.setOnCardMenuListener(onCardMenuListener);
 			transaction.add(R.id.ll_cards, fragmentWeather);
+			transaction.commit();
+			
+			transaction = fragmentManager.beginTransaction();
 			fragmentHotNews = new FragmentHotNews();
 			fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
 			transaction.add(R.id.ll_cards, fragmentHotNews);
+			transaction.commit();
 		}else{
 			try {
 				JSONArray jsonArray = new JSONArray(cardsJson);
@@ -130,22 +138,25 @@ public class FragmentHome extends Fragment {
 					JSONObject object = jsonArray.getJSONObject(i);
 					String cardName = object.getString("cardName");
 					if (cardName.equals("weather")) {
+						transaction = fragmentManager.beginTransaction();
 						fragmentWeather = new FragmentWeather();
 						fragmentWeather.setOnCardMenuListener(onCardMenuListener);
 						transaction.add(R.id.ll_cards, fragmentWeather);
 						cardNames.add("weather");
+						transaction.commit();
 					} else if (cardName.equals("hotNews")) {
+						transaction = fragmentManager.beginTransaction();
 						fragmentHotNews = new FragmentHotNews();
 						fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
 						transaction.add(R.id.ll_cards, fragmentHotNews);
 						cardNames.add("hotNews");
+						transaction.commit();
 					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		transaction.commit();
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -153,7 +164,7 @@ public class FragmentHome extends Fragment {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.iv_menu:
-				startActivityForResult(new Intent(getActivity(), MoreActivity.class), 5);
+				//startActivityForResult(new Intent(getActivity(), MoreActivity.class), 5);
 				break;
 			case R.id.iv_location_hot:
 				if (!Judge.isLogin(app)) {
@@ -225,12 +236,14 @@ public class FragmentHome extends Fragment {
 			if(cardNames.size() == 0){
 				isChange = false;//没有改变
 			}else{
+				System.out.println("1");
 				isChange = true;//改变
 			}
 		}else{
 			try {
 				JSONArray jsonArray = new JSONArray(cardsJson);
 				if(jsonArray.length() != cardNames.size()){
+					System.out.println("2");
 					isChange = true;//改变
 					return;
 				}
@@ -238,6 +251,7 @@ public class FragmentHome extends Fragment {
 					JSONObject object = jsonArray.getJSONObject(i);
 					String cardName = object.getString("cardName");
 					if(cardName != cardNames.get(i)){
+						System.out.println("3");
 						isChange = true;//改变
 						return;
 					}
@@ -307,7 +321,34 @@ public class FragmentHome extends Fragment {
 		if (isChange) {
 			isChange = false;
 			// 删除所有view
-			ll_cards.removeAllViews();
+			if(fragmentCarInfo != null){
+				FragmentTransaction transaction = fragmentManager.beginTransaction();
+				System.out.println("remove fragmentCarInfo");
+				transaction.remove(fragmentCarInfo);
+				transaction.commit();
+				fragmentCarInfo = null;
+			}
+			if(fragmentScrollMessage != null){
+				FragmentTransaction transaction = fragmentManager.beginTransaction();
+				System.out.println("remove fragmentScrollMessage");
+				transaction.remove(fragmentScrollMessage);
+				transaction.commit();
+				fragmentScrollMessage = null;
+			}
+			if(fragmentWeather != null){
+				FragmentTransaction transaction = fragmentManager.beginTransaction();
+				System.out.println("remove fragmentWeather");
+				transaction.remove(fragmentWeather);
+				transaction.commit();
+				fragmentWeather = null;
+			}
+			if(fragmentHotNews != null){
+				FragmentTransaction transaction = fragmentManager.beginTransaction();
+				System.out.println("remove fragmentHotNews");
+				transaction.remove(fragmentHotNews);
+				transaction.commit();
+				fragmentHotNews = null;
+			}
 			// 加载对应的view
 			getCards();
 		}
