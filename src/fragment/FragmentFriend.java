@@ -308,7 +308,6 @@ public class FragmentFriend extends Fragment {
 	}
 
 	private void jsonFriendData(String result) {
-		System.out.println(result);
 		try {
 			
 			

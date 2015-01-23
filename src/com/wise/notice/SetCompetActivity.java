@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.volley.AuthFailureError;
@@ -67,9 +68,8 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 	private boolean isService;
 	private CheckBox chkOBDStandard, chkOBDFault, chkNotice, chkViolation,
 			chkLocation, chkTrip, chkFuel, chkDriving;
-
 	private LinearLayout llytList;
-
+	private ImageView btnSave;//保存权限图标
 	private int RIGHT_OBD_DATA = 0x6001; // 访问OBD标准数据（服务商）
 	private int RIGHT_ODB_ERR = 0x6002; // 访问OBD故障码数据（服务商）
 	private int RIGHT_EVENT = 0x6003; // 访问车务提醒（服务商）
@@ -81,6 +81,7 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 	private AppApplication app;
 	private RequestQueue mQueue;
 	private Handler handler;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +95,6 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 		isService = intent.getBooleanExtra("isService", false);
 		handler = new Handler(this);
 		initView();
-		
-
 	}
 
 	/**
@@ -112,6 +111,8 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 		chkFuel = (CheckBox) findViewById(R.id.chkFuel);
 		chkDriving = (CheckBox) findViewById(R.id.chkDriving);
 
+		
+		btnSave = (ImageView) findViewById(R.id.iv_add);
 		setServiceMode(isService);
 		getAuthorization();
 	}
@@ -291,6 +292,16 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 		case R.id.iv_add:
 			setAuthorization();
 			this.finish();
+			break;
+		case R.id.chkOBDStandard:
+		case R.id.chkOBDFault:
+		case R.id.chkNotice:
+		case R.id.chkViolation:
+		case R.id.chkLocation:
+		case R.id.chkTrip:
+		case R.id.chkFuel:
+		case R.id.chkDriving:
+			btnSave.setVisibility(View.VISIBLE);
 			break;
 		default:
 			break;
