@@ -2,6 +2,8 @@ package fragment;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -16,6 +18,7 @@ import xlist.XListView;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +42,8 @@ import android.widget.Toast;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.BarcodeActivity;
+import com.wise.car.SideBar;
+import com.wise.car.SideBar.OnTouchingLetterChangedListener;
 import com.wise.notice.FriendAddActivity;
 import com.wise.notice.FriendDetailActivity;
 import com.wise.notice.FriendInfoActivity;
@@ -46,6 +51,7 @@ import com.wise.notice.ServiceListActivity;
 import com.wise.notice.SureFriendActivity;
 
 import customView.CircleImageView;
+import data.CharacterParser;
 import data.FriendData;
 import data.FriendSearch;
 
@@ -63,7 +69,10 @@ public class FragmentFriend extends Fragment {
 	XListView lv_friend;
 	FriendAdapter friendAdapter;
 	AppApplication app;
-
+	private TextView letterIndex = null; // 字母索引选中提示框
+	private SideBar sideBar = null; // 右侧字母索引栏
+	private final PinyinComparator comparator = new PinyinComparator(); // 根据拼音排序
+	CharacterParser characterParser = new CharacterParser().getInstance(); // 将汉字转成拼音
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragement_friend, container, false);
@@ -85,6 +94,26 @@ public class FragmentFriend extends Fragment {
 		lv_friend.setOnItemClickListener(onItemClickListener);
 		lv_friend.setOnScrollListener(onScrollListener);
 		getFriendData();
+		
+		letterIndex = (TextView)  getActivity().findViewById(R.id.dialog);
+		sideBar = (SideBar)  getActivity().findViewById(R.id.sidrbar);
+		sideBar.setTextView(letterIndex); // 选中某个拼音索引 提示框显示
+		sideBar.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
+			@Override
+			public void onTouchingLetterChanged(String s) {
+				
+				for (int i = 0; i < app.friendDatas.size(); i++) {
+					FriendData friend = app.friendDatas.get(i);
+					String letter = friend.getGroup_letter();
+					if (letter!=null&& letter.equals(s)) {
+						lv_friend.setSelection(i);
+						break;
+					}
+				}
+			}
+		});
+		
+		
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -160,10 +189,16 @@ public class FragmentFriend extends Fragment {
 				// TODO 服务商
 				startActivityForResult(new Intent(getActivity(),  ServiceListActivity.class), 3);
 			} else {
+				//判断是否是标题行
+				FriendData friendData = app.friendDatas.get(arg2 - 1);
+				String letter = friendData.getGroup_letter();
+				if(letter!=null && letter.trim().length() >0){
+					return;
+				}
 				// 去介绍界面
 				Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
-				intent.putExtra("FriendId", String.valueOf(app.friendDatas.get(arg2 - 1).getFriend_id()));
-				intent.putExtra("name", app.friendDatas.get(arg2 - 1).getFriend_name());
+				intent.putExtra("FriendId", String.valueOf(friendData.getFriend_id()));
+				intent.putExtra("name", friendData.getFriend_name());
 				intent.putExtra("cust_type", 1);
 				startActivityForResult(intent, 4);
 			}
@@ -275,14 +310,11 @@ public class FragmentFriend extends Fragment {
 	private void jsonFriendData(String result) {
 		System.out.println(result);
 		try {
-			app.friendDatas.clear();
-			FriendData fData = new FriendData();
-			fData.setFriend_name("新的朋友");
-			app.friendDatas.add(fData);
-			FriendData fData1 = new FriendData();
-			fData1.setFriend_name("服务商");
-			app.friendDatas.add(fData1);
+			
+			
+			List<FriendData> jsonList = new ArrayList<FriendData>();
 			JSONArray jsonArray = new JSONArray(result);
+			
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				FriendData friendData = new FriendData();
@@ -293,8 +325,31 @@ public class FragmentFriend extends Fragment {
 				friendData.setFriend_id(jsonObject.getInt("friend_id"));
 				friendData.setUser_id(jsonObject.getInt("user_id"));
 				friendData.setFriend_relat_id(jsonObject.getInt("friend_relat_id"));
-				app.friendDatas.add(friendData);
+				jsonList.add(friendData);
 			}
+			
+			Collections.sort(jsonList, comparator);
+			
+			String Letter = "";
+			for (int i = 0; i < jsonList.size(); i++) {
+				String name = jsonList.get(i).getFriend_name();
+				String firstLetter =  GetFristLetter(name);
+				if (!Letter.equals(firstLetter)) {
+					// 增加分组标题
+					Letter = firstLetter;
+					FriendData title = new FriendData();
+					title.setGroup_letter(Letter);
+					jsonList.add(i, title);
+				}
+			}
+			app.friendDatas.clear();
+			FriendData fData = new FriendData();
+			fData.setFriend_name("新的朋友");
+			jsonList.add(0,fData);
+			FriendData fData1 = new FriendData();
+			fData1.setFriend_name("服务商");
+			jsonList.add(1,fData1);
+			app.friendDatas = jsonList;
 			friendAdapter.notifyDataSetChanged();
 			getFriendLogo();
 		} catch (Exception e) {
@@ -328,11 +383,26 @@ public class FragmentFriend extends Fragment {
 				holder = new ViewHolder();
 				holder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
 				holder.iv_image = (CircleImageView) convertView.findViewById(R.id.iv_image);
+				holder.tv_title = (TextView) convertView.findViewById(R.id.tv_item_group_title);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 			FriendData friendData = app.friendDatas.get(position);
+			//判断是否是分组标题
+			if(friendData.getGroup_letter()!=null){
+				holder.tv_name.setVisibility(View.GONE);
+				holder.iv_image.setVisibility(View.GONE);
+				holder.tv_title.setVisibility(View.VISIBLE);
+				holder.tv_title.setText(friendData.getGroup_letter());
+				return convertView;
+			}else{
+				holder.tv_name.setVisibility(View.VISIBLE);
+				holder.iv_image.setVisibility(View.VISIBLE);
+				holder.tv_title.setVisibility(View.GONE);
+			}
+			
+			
 			holder.tv_name.setText(friendData.getFriend_name());
 			if (position == 0) {
 				// 第一项是新的朋友
@@ -354,6 +424,7 @@ public class FragmentFriend extends Fragment {
 		private class ViewHolder {
 			TextView tv_name;
 			CircleImageView iv_image;
+			TextView tv_title;
 		}
 	}
 
@@ -386,4 +457,28 @@ public class FragmentFriend extends Fragment {
 			getFriendData();
 		}
 	}
+	
+	
+	
+	
+	private String GetFristLetter(String city) {
+		String pinyin = characterParser.getSelling(city);
+		String sortString = pinyin.substring(0, 1).toUpperCase();
+		// 正则表达式，判断首字母是否是英文字母
+		if (sortString.matches("[A-Z]")) {
+			return sortString.toUpperCase();
+		}
+		return "#";
+	}
+	
+	private class PinyinComparator implements Comparator<FriendData> {
+		@Override
+		public int compare(FriendData o1, FriendData o2) {
+			// TODO Auto-generated method stub
+			String name1 = characterParser.getSelling(o1.getFriend_name());
+			String name2 = characterParser.getSelling(o2.getFriend_name());
+			return name1.compareTo(name2);
+		}
+	}
+
 }

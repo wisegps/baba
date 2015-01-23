@@ -10,6 +10,13 @@ public class FriendData {
 	private int friend_id;		
 	private int user_id;		
 	private int friend_relat_id;
+	private String group_letter;
+	public String getGroup_letter() {
+		return group_letter;
+	}
+	public void setGroup_letter(String group_letter) {
+		this.group_letter = group_letter;
+	}
 	public int getSex() {
 		return sex;
 	}

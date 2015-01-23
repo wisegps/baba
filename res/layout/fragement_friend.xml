@@ -2,22 +2,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical" >
+
     <RelativeLayout
         android:id="@+id/rl_top"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/title_hight"
         android:background="@color/title_back" >
-        <ImageView 
+
+        <ImageView
             android:id="@+id/iv_add"
-	        android:layout_width="@dimen/title_hight"
-	        android:layout_height="@dimen/title_hight"
-	        android:layout_marginRight="@dimen/margins"
-	        android:layout_alignParentRight="true"
-	        android:padding="@dimen/margins"
-	        android:layout_centerVertical="true"
-	        android:src="@drawable/icon_add"/>
+            android:layout_width="@dimen/title_hight"
+            android:layout_height="@dimen/title_hight"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margins"
+            android:padding="@dimen/margins"
+            android:src="@drawable/icon_add" />
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -26,21 +29,47 @@
             android:text="好友"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
+
         <ImageView
             android:id="@+id/iv_fm_back"
             android:layout_width="@dimen/title_hight"
             android:layout_height="@dimen/title_hight"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margins"
-            android:visibility="gone"
             android:padding="@dimen/margins"
-            android:src="@drawable/nav_back" />
+            android:src="@drawable/nav_back"
+            android:visibility="gone" />
     </RelativeLayout>
-    <xlist.XListView
-        android:id="@+id/lv_friend"
+
+    <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:divider="@null"
-        android:footerDividersEnabled="true"
-        android:cacheColorHint="#00000000"></xlist.XListView> 
+        android:layout_height="fill_parent" >
+
+        <xlist.XListView
+            android:id="@+id/lv_friend"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:cacheColorHint="#00000000"
+            android:divider="@null"
+            android:footerDividersEnabled="true" >
+        </xlist.XListView>
+        <!-- 点击字母显示 -->
+        <TextView
+            android:id="@+id/dialog"
+            android:layout_width="80.0dip"
+            android:layout_height="80.0dip"
+            android:layout_gravity="center"
+            android:background="@drawable/show_head_toast_bg"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="30.0dip"
+            android:visibility="invisible" />
+        <!-- 右边字母索引 -->
+        <com.wise.car.SideBar
+            android:id="@+id/sidrbar"
+            android:layout_width="30.0dip"
+            android:layout_height="fill_parent"
+            android:layout_gravity="right|center" />
+    </FrameLayout>
+
 </LinearLayout>
