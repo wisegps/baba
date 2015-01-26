@@ -31,7 +31,7 @@
             android:drawableLeft="@drawable/toolbar_icon_search"
             android:gravity="center_vertical"
             android:hint="输入名称或地址"
-            android:textColor="@color/black1" />
+            android:textColor="@color/black" />
     </RelativeLayout>
 
     <View

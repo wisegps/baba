@@ -161,7 +161,7 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 		for(MKOLUpdateElement m : localMapList){
 			if(m.update){
 				tv_update.setEnabled(true);
-				tv_update.setTextColor(getResources().getColor(R.color.black1));
+				tv_update.setTextColor(getResources().getColor(R.color.black));
 				break;
 			}
 		}
@@ -170,7 +170,7 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 		tv_down.setEnabled(false);
 		tv_down.setTextColor(getResources().getColor(R.color.gray));
 		tv_pause.setEnabled(true);
-		tv_pause.setTextColor(getResources().getColor(R.color.black1));
+		tv_pause.setTextColor(getResources().getColor(R.color.black));
 		for(MKOLUpdateElement m : localMapList){
 			if(m.ratio != 100){
 				mOffline.start(m.cityID);
@@ -182,7 +182,7 @@ public class OfflineActivity extends Activity implements MKOfflineMapListener{
 		tv_pause.setEnabled(false);
 		tv_pause.setTextColor(getResources().getColor(R.color.gray));
 		tv_down.setEnabled(true);
-		tv_down.setTextColor(getResources().getColor(R.color.black1));
+		tv_down.setTextColor(getResources().getColor(R.color.black));
 		for(MKOLUpdateElement m : localMapList){
 			mOffline.pause(m.cityID);
 		}

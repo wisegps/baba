@@ -1,12 +1,9 @@
 package fragment;
 
 import java.net.URLEncoder;
-
 import listener.OnCardMenuListener;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import pubclas.Constant;
 import pubclas.NetThread;
 import android.content.Intent;
@@ -20,12 +17,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.wise.baba.AppApplication;
 import com.wise.baba.BrowserActivity;
 import com.wise.baba.R;
-
-import customView.BidirSlidingLayout;
 
 /**
  * 本地资讯
@@ -60,7 +54,6 @@ public class FragmentHotNews extends Fragment {
 				while(!isDestory){
 					try {	
 						if(!isPause){
-							System.out.println("startGetNewThread");
 							Message message = new Message();
 							message.what = startGetNewThread;
 							handler.sendMessage(message);
@@ -116,7 +109,6 @@ public class FragmentHotNews extends Fragment {
 		try {
 			String url = Constant.BaseUrl + "base/hot_news?city=" + URLEncoder.encode(app.City, "UTF-8");
 			new NetThread.GetDataThread(handler, url, gethot_news).start();
-			System.out.println("startGetNewThread = " + url);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -153,7 +145,6 @@ public class FragmentHotNews extends Fragment {
 	public void onDestroy() {
 		super.onDestroy();
 		isDestory = true;
-		System.out.println("FragmentHotNews onDestroy");
 	}
 	OnCardMenuListener onCardMenuListener;
 	public void setOnCardMenuListener(OnCardMenuListener onCardMenuListener){

@@ -94,7 +94,7 @@
     <color name="common_red">#e41d34</color>
     <color name="white_inactive">#7fFFFFFF</color>
     <color name="white">#FFFFFF</color>
-    <color name="black1">#000000</color>
+    <color name="black">#000000</color>
     <color name="white_light">#CCFFFFFF</color>
     <color name="bd_wallet_item_bg_blue">#ff37a6fb</color>
     <color name="bd_wallet_item_bg_blue_hover">#ff5fb2f9</color>

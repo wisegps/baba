@@ -7,6 +7,7 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import pubclas.NetThread;
+import pubclas.ShowErWeiMa;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 import cn.sharesdk.framework.Platform;
@@ -194,7 +195,13 @@ public class SetActivity extends Activity implements TagAliasCallback {
 				break;
 			case R.id.iv_eweima:
 				// TODO 打开二维码
-				openErWeiMa();
+				DisplayMetrics dm = new DisplayMetrics();
+				getWindowManager().getDefaultDisplay().getMetrics(dm);
+				int width = dm.widthPixels;
+				int QR_WIDTH = width / 2;
+				ShowErWeiMa showErWeiMa = new ShowErWeiMa(getApplicationContext(), iv_logo, QR_WIDTH, app.cust_id);
+				showErWeiMa.openErWeiMa();
+				//openErWeiMa();
 				break;
 			}
 		}
@@ -391,7 +398,7 @@ public class SetActivity extends Activity implements TagAliasCallback {
 		} catch (WriterException e) {
 			e.printStackTrace();
 		}
-		return bitmap;
+		return null;
 	}
 
 	@Override

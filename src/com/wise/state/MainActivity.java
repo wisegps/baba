@@ -155,6 +155,7 @@ public class MainActivity extends FragmentActivity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.bt_home: {
+				fragmentManager = getSupportFragmentManager();
 				FragmentTransaction transaction = fragmentManager.beginTransaction();
 				hideFragments(transaction);
 				if (fragmentHome == null) {
@@ -170,6 +171,7 @@ public class MainActivity extends FragmentActivity {
 				break;
 
 			case R.id.bt_info: {
+				fragmentManager = getSupportFragmentManager();
 				FragmentTransaction transaction = fragmentManager.beginTransaction();
 				hideFragments(transaction);
 				if (fragmentNotice == null) {
@@ -184,6 +186,7 @@ public class MainActivity extends FragmentActivity {
 
 				break;
 			case R.id.bt_friend: {
+				fragmentManager = getSupportFragmentManager();
 				FragmentTransaction transaction = fragmentManager.beginTransaction();
 				hideFragments(transaction);
 				if (fragmentFriend == null) {
@@ -214,6 +217,9 @@ public class MainActivity extends FragmentActivity {
 		if (fragmentFriend != null) {
 			transaction.hide(fragmentFriend);
 		}
+		if (fragmentMore != null) {
+			transaction.hide(fragmentMore);
+		}
 	}
 
 	class MyBroadCastReceiver extends BroadcastReceiver {
@@ -235,7 +241,7 @@ public class MainActivity extends FragmentActivity {
 				if (fragmentFriend != null) {
 					fragmentFriend.getFriendData();// 获取好友
 				}
-			} else if (action.equals(Constant.A_LoginOut)) {// 注销账号
+			} else if (action.equals(Constant.A_LoginOut)) {//注销账号
 				if (fragmentHome != null) {
 					fragmentHome.setLoginOutView();// 通知首页账号注销
 				}
@@ -258,6 +264,7 @@ public class MainActivity extends FragmentActivity {
 		return true;
 	}
 	private void showMore(){
+		fragmentManager = getSupportFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		hideFragments(transaction);
 		if (fragmentMore == null) {

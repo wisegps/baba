@@ -55,6 +55,7 @@ public class FragmentHome extends Fragment {
 	private FragmentManager fragmentManager;
 
 	AppApplication app;
+	FragmentService fragmentService;
 	FragmentCarInfo fragmentCarInfo;
 	FragmentScrollMessage fragmentScrollMessage;
 	FragmentWeather fragmentWeather;
@@ -102,7 +103,10 @@ public class FragmentHome extends Fragment {
 		System.out.println("设置卡片布局");
 		// 默认显示的布局
 		if (app.cust_type == Info.ServiceProvider) {// 服务商
-
+			transaction = fragmentManager.beginTransaction();
+			fragmentService = new FragmentService();
+			transaction.add(R.id.ll_cards, fragmentService);
+			transaction.commit();
 		} else {
 			// 车辆卡片
 			transaction = fragmentManager.beginTransaction();
@@ -278,6 +282,9 @@ public class FragmentHome extends Fragment {
 		if (fragmentCarInfo != null) {
 			fragmentCarInfo.setLoginView();
 		}
+		if(fragmentService != null){
+			//TODO fragmentService
+		}
 		// 通知滚动消息刷新数据
 		if (fragmentScrollMessage != null) {
 			fragmentScrollMessage.getScrollMessage();
@@ -321,6 +328,12 @@ public class FragmentHome extends Fragment {
 		if (isChange) {
 			isChange = false;
 			// 删除所有view
+			if(fragmentService != null){
+				FragmentTransaction transaction = fragmentManager.beginTransaction();
+				transaction.remove(fragmentService);
+				transaction.commit();
+				fragmentService = null;
+			}
 			if(fragmentCarInfo != null){
 				FragmentTransaction transaction = fragmentManager.beginTransaction();
 				System.out.println("remove fragmentCarInfo");
@@ -366,8 +379,8 @@ public class FragmentHome extends Fragment {
 			// 隐藏提醒
 			iv_noti.setVisibility(View.GONE);
 		} else {
-			// 显示提醒
-			iv_noti.setVisibility(View.VISIBLE);
+			//TODO 暂时不显示 显示提醒
+			iv_noti.setVisibility(View.GONE);
 		}
 	}
 
