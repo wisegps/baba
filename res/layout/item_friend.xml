@@ -6,30 +6,48 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_white"
     android:orientation="vertical" >
+
     <LinearLayout
-        android:padding="@dimen/margins"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
+
         <customView.CircleImageView
             android:id="@+id/iv_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginRight="@dimen/margins"
+            android:layout_margin="@dimen/margins"
             android:contentDescription="@string/app_name"
             android:src="@drawable/icon_xx_notice"
             app:border_color="@color/white"
             app:border_width="1dp" />
+
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:textColor="@color/navy"
             android:textSize="@dimen/main" />
+
+        <TextView
+            android:id="@+id/tv_item_group_title"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/Green_collection"
+            android:paddingBottom="5dp"
+            android:paddingLeft="@dimen/margins"
+            android:paddingRight="@dimen/margins"
+            android:paddingTop="5dp"
+            android:text="hhhh"
+            android:textColor="@color/navy_light"
+            android:visibility="gone" />
     </LinearLayout>
+
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:background="@color/gray_lights" />
+
 </LinearLayout>

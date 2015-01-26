@@ -28,12 +28,11 @@
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
         <ImageView
-            android:id="@+id/iv_fm_back"
+            android:id="@+id/iv_back"
             android:layout_width="@dimen/title_hight"
             android:layout_height="@dimen/title_hight"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margins"
-            android:visibility="gone"
             android:padding="@dimen/margins"
             android:src="@drawable/nav_back" />
     </RelativeLayout>

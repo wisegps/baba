@@ -24,9 +24,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
@@ -51,6 +53,8 @@ public class ServiceListActivity extends Activity{
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_service_list);
 		app = (AppApplication) getApplication();
+		ImageView iv_back = (ImageView)findViewById(R.id.iv_back);
+		iv_back.setOnClickListener(onClickListener);
 		lv_friend = (ListView) findViewById(R.id.lv_friend);
 		friendAdapter = new FriendAdapter();
 		lv_friend.setAdapter(friendAdapter);
@@ -58,6 +62,16 @@ public class ServiceListActivity extends Activity{
 		lv_friend.setOnItemClickListener(onItemClickListener);
 		getFriendData();
 	}
+	OnClickListener onClickListener = new OnClickListener() {		
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.iv_back:
+				finish();
+				break;
+			}
+		}
+	};
 	/** 好友列表点击 **/
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
 		@Override
