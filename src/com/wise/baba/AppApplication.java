@@ -61,5 +61,7 @@ public class AppApplication extends LitePalApplication {
 		GetSystem.myLog(TAG, "onCreate");
 		// 百度地图初始化
 		SDKInitializer.initialize(getApplicationContext());
+		CrashHandler crashHandler = CrashHandler.getInstance();
+		crashHandler.init(getApplicationContext());
 	}
 }

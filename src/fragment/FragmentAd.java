@@ -71,14 +71,6 @@ public class FragmentAd extends Fragment {
 				tv_content.setText(adDatas.get(view).getContent());
 				changeImage(view);
 			}
-
-			@Override
-			public void OnLastView() {
-			}
-
-			@Override
-			public void OnFinish(int index) {
-			}
 		});
 	}
 

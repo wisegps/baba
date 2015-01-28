@@ -154,9 +154,6 @@ public class EnergyGroup extends ViewGroup{
      * @param whichScreen
      */
     public void snapToScreen(int whichScreen){
-        if(whichScreen > (getChildCount() -1)){
-            addView();
-        }
         whichScreen = Math.max(0, Math.min(whichScreen, (getChildCount() - 1)));//防止输入不再范围内的数字
         if(getScrollX() != getWidth() * whichScreen){//时候需要移动
             int delta = whichScreen*getWidth()-getScrollX();  //还有多少没有显示
@@ -186,10 +183,5 @@ public class EnergyGroup extends ViewGroup{
     }
     public void setOnViewChangeListener(OnViewChangeListener onViewChangeListener){
         mOnViewChangeListener = onViewChangeListener;
-    }
-    public void addView(){
-        if(mOnViewChangeListener != null){
-            mOnViewChangeListener.OnLastView();
-        }
     }
 }

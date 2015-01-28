@@ -61,9 +61,6 @@ public class NoticeScrollTextView extends ViewGroup {
      * @param whichScreen
      */
     public void snapToScreen(int whichScreen) {
-        if (whichScreen > (getChildCount() - 1)) {
-            addView();
-        }
         whichScreen = Math.max(0, Math.min(whichScreen, (getChildCount() - 1)));// 防止输入不再范围内的数字
         if (getScrollY() != getHeight() * whichScreen) {// 时候需要移动
             int delta = whichScreen * getHeight() - getScrollY(); // 还有多少没有显示
@@ -95,10 +92,5 @@ public class NoticeScrollTextView extends ViewGroup {
     public void setOnViewChangeListener(
             OnViewChangeListener onViewChangeListener) {
         mOnViewChangeListener = onViewChangeListener;
-    }
-    public void addView() {
-        if (mOnViewChangeListener != null) {
-            mOnViewChangeListener.OnLastView();
-        }
     }
 }

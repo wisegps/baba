@@ -93,10 +93,6 @@ public class SmsActivity extends Activity implements IXListViewListener{
 				getSms();
 				setCheck();
 			}			
-			@Override
-			public void OnLastView() {}
-			@Override
-			public void OnFinish(int index) {}
 		});
 		showSms();
 		handler.postDelayed(new Runnable() {			

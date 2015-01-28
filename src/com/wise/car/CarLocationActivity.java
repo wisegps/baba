@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import pubclas.Constant;
 import pubclas.GetSystem;
+import pubclas.GetUrl;
 import pubclas.NetThread;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -69,9 +70,11 @@ import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.utils.DistanceUtil;
+import com.google.gson.Gson;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 
+import data.ActiveGpsData;
 import data.CarData;
 
 public class CarLocationActivity extends Activity {
@@ -174,12 +177,11 @@ public class CarLocationActivity extends Activity {
 					while (isStop) {
 						// 获取gps信息
 						try {
-							Thread.sleep(10000);
+							Thread.sleep(30000);
 							if (carData == null || carData.getDevice_id() == null || carData.getDevice_id().equals("0")) {
 								// 不需要获取gps信息
 							} else {
-								String gpsUrl = Constant.BaseUrl + "device/" + carData.getDevice_id() + "/active_gps_data?auth_code=" + app.auth_code
-										+ "&update_time=2014-01-01%2019:06:43";
+								String gpsUrl = GetUrl.getCarGpsData(carData.getDevice_id(), app.auth_code);
 								new NetThread.GetDataThread(handler, gpsUrl, get_gps).start();
 							}
 						} catch (InterruptedException e) {
@@ -220,7 +222,12 @@ public class CarLocationActivity extends Activity {
 			case R.id.bt_location_travel:// 行程
 				if (isHotLocation) {
 					Intent i = new Intent(CarLocationActivity.this, TravelActivity.class);
-					i.putExtra("index", index);
+					i.putExtra("device_id", carData.getDevice_id());
+					String Gas_no = "93#(92#)";;
+					if(carData.getGas_no() != null){
+						Gas_no = carData.getGas_no();
+					}
+					i.putExtra("Gas_no", Gas_no);
 					startActivity(i);
 				} else {
 					showHotDialog();
@@ -739,23 +746,19 @@ public class CarLocationActivity extends Activity {
 		if (!isStop) {
 			return;
 		}
-
 		LatLng startTracking = new LatLng(carData.getLat(), carData.getLon());
-
-		try {
-			JSONObject jsonObject = new JSONObject(str).getJSONObject("active_gps_data");
-			double lat = jsonObject.getDouble("lat");
-			double lon = jsonObject.getDouble("lon");
-
-			if (isTracking) {
+		Gson gson = new Gson();
+		ActiveGpsData activeGpsData = gson.fromJson(str, ActiveGpsData.class);
+		if(activeGpsData != null){
+			double lat = activeGpsData.getActive_gps_data().getLat();
+			double lon = activeGpsData.getActive_gps_data().getLon();
+			if (isTracking) {//跟踪需要划线
 				LatLng endTracking = new LatLng(lat, lon);
 				trackingCar(startTracking, endTracking);
 			}
-			getCarLocation();
 			carData.setLat(lat);
 			carData.setLon(lon);
-		} catch (JSONException e) {
-			e.printStackTrace();
+			getCarLocation();
 		}
 	}
 

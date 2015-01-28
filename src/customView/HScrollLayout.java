@@ -190,41 +190,17 @@ public class HScrollLayout extends ViewGroup {
 		return true;
 	}
 
-	boolean isNeedOnFinish = false;
-
-	public void isNeedOnFinish(boolean isNeedOnFinish) {
-		this.isNeedOnFinish = isNeedOnFinish;
-	}
-
 	/**
 	 * 跳转到那个屏幕
 	 * 
 	 * @param whichScreen
 	 */
 	public void snapToScreen(int whichScreen) {
-		if (whichScreen > (getChildCount() - 1)) {
-			addView();
-		}
 		final int hichScreen = Math.max(0,
 				Math.min(whichScreen, (getChildCount() - 1)));// 防止输入不再范围内的数字
 		if (getScrollX() != getWidth() * whichScreen) {// 时候需要移动
 			final int delta = whichScreen * getWidth() - getScrollX(); // 还有多少没有显示
 			scroller.startScroll(getScrollX(), 0, delta, 0, Math.abs(delta) * 2);// 滚动完剩下的距离
-
-			if (isNeedOnFinish) {
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							Thread.sleep(Math.abs(delta) * 2);
-							mOnViewChangeListener.OnFinish(hichScreen);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}).start();
-			}
-
 			mCurScreen = whichScreen;
 			invalidate();
 			if (mOnViewChangeListener != null) {
@@ -267,11 +243,5 @@ public class HScrollLayout extends ViewGroup {
 	public void setOnViewChangeListener(
 			OnViewChangeListener onViewChangeListener) {
 		mOnViewChangeListener = onViewChangeListener;
-	}
-
-	public void addView() {
-		if (mOnViewChangeListener != null) {
-			mOnViewChangeListener.OnLastView();
-		}
 	}
 }

@@ -115,14 +115,6 @@ public class FaultDetectionActivity extends Activity {
 				fristSetLeftRight();
 				getSpHistoryData(index);
 			}
-
-			@Override
-			public void OnLastView() {
-			}
-
-			@Override
-			public void OnFinish(int index) {
-			}
 		});
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);

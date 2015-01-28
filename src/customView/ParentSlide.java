@@ -203,11 +203,6 @@ public class ParentSlide extends ViewGroup {
         }
         return true;
     }
-        
-    boolean isNeedOnFinish = false;
-    public void isNeedOnFinish(boolean isNeedOnFinish){
-    	this.isNeedOnFinish = isNeedOnFinish;
-    }
 
     /**
      * 跳转到那个屏幕
@@ -219,20 +214,7 @@ public class ParentSlide extends ViewGroup {
         if (getScrollX() != getWidth() * whichScreen) {// 时候需要移动
             final int delta = whichScreen * getWidth() - getScrollX(); // 还有多少没有显示
             scroller.startScroll(getScrollX(), 0, delta, 0, Math.abs(delta) * 2);// 滚动完剩下的距离
-            if(isNeedOnFinish){
-            	new Thread(new Runnable() {
-    				@Override
-    				public void run() {
-    					try {
-    						Thread.sleep(Math.abs(delta) * 2);
-    						mOnViewChangeListener.OnFinish(hichScreen);
-    					} catch (InterruptedException e) {
-    						e.printStackTrace();
-    					}
-    				}
-    			}).start();
-            }
-            
+                        
             mCurScreen = whichScreen;
             invalidate();
             if (mOnViewChangeListener != null) {

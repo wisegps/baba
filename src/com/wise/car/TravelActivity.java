@@ -239,9 +239,7 @@ public class TravelActivity extends Activity {
 				double lat = Double.valueOf(travelDatas.get(i).getStart_lat());
 				double lon = Double.valueOf(travelDatas.get(i).getStart_lon());
 				LatLng latLng = new LatLng(lat, lon);
-				System.out.println("获取位置");
 				if (mGeoCoder != null) {
-					System.out.println("reverseGeoCode");
 					mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
 				}
 			}
@@ -472,7 +470,6 @@ public class TravelActivity extends Activity {
 	 * **/
 	private void judgeCollect(String result, int type) {
 		try {
-			System.out.println(result);
 			String url = Constant.BaseUrl + "favorite/is_collect?auth_code=" + app.auth_code + "&names=" + URLEncoder.encode(result, "UTF-8") + "&cust_id="
 					+ app.cust_id;
 			new Thread(new NetThread.GetDataThread(handler, url, getIsCollect, type)).start();
@@ -744,7 +741,6 @@ public class TravelActivity extends Activity {
 					sb.append("，" + travelData.getCost());
 					sb.append("，" + travelData.getAverageOil());
 					sb.append("，" + travelData.getSpeed());
-					System.out.println(sb.toString());
 					GetSystem.share(TravelActivity.this, sb.toString(), "", 0, 0, "行程", "");
 				}
 			});
@@ -979,12 +975,11 @@ public class TravelActivity extends Activity {
 
 		@Override
 		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult arg0) {
-			System.out.println("onGetReverseGeoCodeResult");
 			try {
 				if (!isDestory) {
 					String strInfo = "";
 					if (arg0 == null || arg0.error != SearchResult.ERRORNO.NO_ERROR) {
-						System.out.println("onGetReverseGeoCodeResult = " + arg0.error);
+						
 					} else {
 						strInfo = arg0.getAddress();
 						strInfo = strInfo.substring((strInfo.indexOf("市") + 1), strInfo.length());

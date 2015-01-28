@@ -118,15 +118,8 @@ public class FragmentCarInfo extends Fragment {
 			@Override
 			public void OnViewChange(int view) {
 				index = view;
+				System.out.println("读取数据");
 				getTotalData();
-			}
-
-			@Override
-			public void OnLastView() {
-			}
-
-			@Override
-			public void OnFinish(int index) {
 			}
 		});
 
@@ -537,7 +530,6 @@ public class FragmentCarInfo extends Fragment {
 				if(activeGpsData == null){
 					return;
 				}
-				System.out.println(activeGpsData.toString());
 				GpsData gpsData = activeGpsData.getActive_gps_data();
 				if(gpsData != null){
 					LatLng latLng = new LatLng(gpsData.getLat(), gpsData.getLon());
@@ -558,10 +550,7 @@ public class FragmentCarInfo extends Fragment {
 	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
 		@Override
 		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
-			System.out.println("onGetReverseGeoCodeResult");
 			if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
-				// 没有检索到结果
-				System.out.println("onGetReverseGeoCodeResult = " + result.error);
 			} else {
 				try {
 					String adress = result.getAddress();

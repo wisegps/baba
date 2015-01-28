@@ -105,14 +105,6 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 				index_car = view;
 				GetTraffic();
 			}
-
-			@Override
-			public void OnLastView() {
-			}
-
-			@Override
-			public void OnFinish(int index) {
-			}
 		});
 		isService = getIntent().getBooleanExtra("isService", false);
 		if(isService){
