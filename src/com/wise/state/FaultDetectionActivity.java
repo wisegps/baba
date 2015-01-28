@@ -846,13 +846,12 @@ public class FaultDetectionActivity extends Activity {
 				}
 				if (isStop) {
 					// 提示车辆未启动
-					//Message message = new Message();
-					//message.what = CAR_TYPE_STOP;
-					//handler.sendMessage(message);
-					//return;
+					Message message = new Message();
+					message.what = CAR_TYPE_STOP;
+					handler.sendMessage(message);
+					return;
 				}
 				carDatas.get(index).setStop(isStop); //几下车辆启动状态
-				System.out.println("初始化状态");
 				//初始化状态
 				Message message = new Message();
 				message.what = INIT_STATUS;
