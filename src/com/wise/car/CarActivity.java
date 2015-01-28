@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pubclas.Constant;
+import pubclas.GetDataFromUrl;
 import pubclas.GetSystem;
 import pubclas.JsonData;
 import pubclas.NetThread;
@@ -408,7 +409,7 @@ public class CarActivity extends Activity {
 		public void run() {
 			super.run();
 			// 得到车辆信息
-			String result = NetThread.getData(Constant.BaseUrl + "base/car_brand");
+			String result = GetDataFromUrl.getData(Constant.BaseUrl + "base/car_brand");
 			List<BrandData> brandDatas = new ArrayList<BrandData>();
 			if (!result.equals("")) {
 				try {

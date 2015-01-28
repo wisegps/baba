@@ -25,4 +25,6 @@ public class Info {
 
 	/** 服务商 **/
 	public static int ServiceProvider = 2;
+	/**车辆启动状态**/
+	public static int CarStartStatus = 8196;
 }

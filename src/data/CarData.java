@@ -65,7 +65,6 @@ public class CarData implements Serializable{
 	private String Adress; // 车辆位置
 	private String gps_time; // 定位时间
 	private String rcv_time;// 最后上传数据时间
-	private String uni_status;// 车辆启动状态
 	/** 位置 **/
 	private double Lat;
 	private double Lon;
@@ -76,23 +75,16 @@ public class CarData implements Serializable{
 	/** 油价 **/
 	private double fuel_price;
 
-	private boolean state;// 是否启动状态
-	private boolean isOnline;// 是否在线状态
+	private boolean isStop;// 是否启动状态
 
-	public boolean isState() {
-		return state;
+	
+
+	public boolean isStop() {
+		return isStop;
 	}
 
-	public void setState(boolean state) {
-		this.state = state;
-	}
-
-	public boolean isOnline() {
-		return isOnline;
-	}
-
-	public void setOnline(boolean isOnline) {
-		this.isOnline = isOnline;
+	public void setStop(boolean isStop) {
+		this.isStop = isStop;
 	}
 
 	public double getFuel_price() {
@@ -102,15 +94,6 @@ public class CarData implements Serializable{
 	public void setFuel_price(double fuel_price) {
 		this.fuel_price = fuel_price;
 	}
-
-	public String getUni_status() {
-		return uni_status;
-	}
-
-	public void setUni_status(String uni_status) {
-		this.uni_status = uni_status;
-	}
-
 	public String getRcv_time() {
 		return rcv_time;
 	}

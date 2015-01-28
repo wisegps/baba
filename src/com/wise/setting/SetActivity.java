@@ -1,6 +1,5 @@
 package com.wise.setting;
 
-import java.util.Hashtable;
 import java.util.Set;
 import org.json.JSONObject;
 import pubclas.Constant;
@@ -19,11 +18,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
 import com.wise.baba.AboutActivity;
@@ -40,24 +34,17 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.Config;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * 设置界面
@@ -201,7 +188,6 @@ public class SetActivity extends Activity implements TagAliasCallback {
 				int QR_WIDTH = width / 2;
 				ShowErWeiMa showErWeiMa = new ShowErWeiMa(getApplicationContext(), iv_logo, QR_WIDTH, app.cust_id);
 				showErWeiMa.openErWeiMa();
-				//openErWeiMa();
 				break;
 			}
 		}
@@ -328,79 +314,7 @@ public class SetActivity extends Activity implements TagAliasCallback {
 			handler.sendMessage(message);
 		}
 	}
-
-	/** 弹出二维码界面 **/
-	private void openErWeiMa() {
-		// 得到二维码
-		Bitmap bitmap = createImage();
-		if (bitmap == null) {
-			Toast.makeText(getApplicationContext(), "生成二维码失败",
-					Toast.LENGTH_SHORT).show();
-			return;
-		}
-		LayoutInflater mLayoutInflater = LayoutInflater.from(SetActivity.this);
-		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_erweima, null);
-		ImageView iv_erweima = (ImageView) popunwindwow
-				.findViewById(R.id.iv_erweima);
-		iv_erweima.setImageBitmap(bitmap);
-		PopupWindow mPopupWindow = new PopupWindow(popunwindwow,
-				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
-		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
-		mPopupWindow.setFocusable(true);
-		mPopupWindow.setOutsideTouchable(true);
-		mPopupWindow.showAtLocation(iv_logo, Gravity.CENTER, 0, 0);
-	}
-
-	private Bitmap createImage() {
-		try {
-			DisplayMetrics dm = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(dm);
-			int width = dm.widthPixels;
-			int QR_WIDTH = width / 2;
-			int QR_HEIGHT = width / 2;
-			// 需要引入core包
-			QRCodeWriter writer = new QRCodeWriter();
-			String text = app.cust_id;
-			Log.i(TAG, "生成的文本：" + text);
-			if (text == null || "".equals(text) || text.length() < 1) {
-				return null;
-			}
-			// 把输入的文本转为二维码
-			BitMatrix martix = writer.encode(text, BarcodeFormat.QR_CODE,
-					QR_WIDTH, QR_HEIGHT);
-
-			System.out.println("w:" + martix.getWidth() + "h:"
-					+ martix.getHeight());
-
-			Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
-			hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-			BitMatrix bitMatrix = new QRCodeWriter().encode(text,
-					BarcodeFormat.QR_CODE, QR_WIDTH, QR_HEIGHT, hints);
-			int[] pixels = new int[QR_WIDTH * QR_HEIGHT];
-			for (int y = 0; y < QR_HEIGHT; y++) {
-				for (int x = 0; x < QR_WIDTH; x++) {
-					if (bitMatrix.get(x, y)) {
-						pixels[y * QR_WIDTH + x] = 0xff000000;
-					} else {
-						pixels[y * QR_WIDTH + x] = 0xffffffff;
-					}
-
-				}
-			}
-
-			Bitmap bitmap = Bitmap.createBitmap(QR_WIDTH, QR_HEIGHT,
-					Bitmap.Config.ARGB_8888);
-
-			bitmap.setPixels(pixels, 0, QR_WIDTH, 0, 0, QR_WIDTH, QR_HEIGHT);
-			return bitmap;
-
-		} catch (WriterException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);

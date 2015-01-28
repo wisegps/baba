@@ -102,33 +102,6 @@ public class NetThread {
 			}
 		}
 	}
-	/**获取数据(非线程)**/
-	public static String getData(String url){
-		try {
-			URL myURL = new URL(url);
-			HttpURLConnection httpsConn = (HttpURLConnection) myURL.openConnection();
-			if (httpsConn != null) {
-				httpsConn.setConnectTimeout(5*1000);
-				httpsConn.setReadTimeout(5*1000);
-		        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				InputStream inputStream = httpsConn.getInputStream();
-				byte[] buffer = new byte[1024];
-				int len = -1;
-				while((len = inputStream.read(buffer))!= -1){
-				    baos.write(buffer, 0, len);
-				}
-				String data = new String(baos.toByteArray(), "UTF-8");				
-				inputStream.close();
-				return data;			
-			}else{
-				return "";
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "";
-		}
-		
-	}
 	
 	public static class putDataThread extends Thread{
 		Handler handler;

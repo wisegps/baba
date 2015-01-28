@@ -38,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
+ * 服务商模块
  *@author honesty
  **/
 public class FragmentService extends Fragment{

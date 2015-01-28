@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import pubclas.Constant;
 import pubclas.GetSystem;
+import pubclas.GetUrl;
 import pubclas.NetThread;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +41,7 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.google.gson.Gson;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.CarLocationActivity;
@@ -53,7 +55,9 @@ import com.wise.state.TasksCompletedView;
 
 import customView.HScrollLayout;
 import customView.OnViewChangeListener;
+import data.ActiveGpsData;
 import data.CarData;
+import data.GpsData;
 
 /**
  * 车辆信息卡片
@@ -143,8 +147,7 @@ public class FragmentCarInfo extends Fragment {
 
 								} else {
 									// 获取gps信息
-									String gpsUrl = Constant.BaseUrl + "device/" + device_id + "?auth_code=" + app.auth_code
-											+ "&update_time=2014-01-01%2019:06:43";
+									String gpsUrl = GetUrl.getCarGpsData(device_id, app.auth_code);
 									new NetThread.GetDataThread(handler, gpsUrl, get_gps, index).start();
 								}
 							} else {
@@ -451,7 +454,7 @@ public class FragmentCarInfo extends Fragment {
 							+ endMonth + "&city=" + URLEncoder.encode(app.City, "UTF-8") + "&gas_no=" + Gas_no;
 					new NetThread.GetDataThread(handler, url, getData, index).start();
 					// 获取gps信息
-					String gpsUrl = Constant.BaseUrl + "device/" + device_id + "?auth_code=" + app.auth_code + "&update_time=2014-01-01%2019:06:43";
+					String gpsUrl = GetUrl.getCarGpsData(device_id, app.auth_code);
 					new NetThread.GetDataThread(handler, gpsUrl, get_gps, index).start();
 
 					// 从服务器获取体检信息
@@ -529,26 +532,25 @@ public class FragmentCarInfo extends Fragment {
 	private void jsonGps(String str, int index) {
 		try {
 			if (index < app.carDatas.size()) {
-				JSONObject jsonObject = new JSONObject(str).getJSONObject("active_gps_data");
-				double lat = jsonObject.getDouble("lat");
-				double lon = jsonObject.getDouble("lon");
-				String uni_status = jsonObject.getString("uni_status");
-				String rcv_time = jsonObject.getString("rcv_time");
-				LatLng latLng = new LatLng(lat, lon);
-				app.carDatas.get(index).setUni_status(uni_status);
-				app.carDatas.get(index).setLat(lat);
-				app.carDatas.get(index).setLon(lon);
-				app.carDatas.get(index).setRcv_time(GetSystem.ChangeTimeZone(rcv_time.substring(0, 19).replace("T", " ")));
-				mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
-
-				JSONObject jObject = new JSONObject(str).getJSONObject("params");
-				int sensitivity = 0;
-				if (jObject.opt("sensitivity") != null) {
-					sensitivity = jObject.getInt("sensitivity");
+				Gson gson = new Gson();
+				ActiveGpsData activeGpsData = gson.fromJson(str, ActiveGpsData.class);
+				if(activeGpsData == null){
+					return;
 				}
-				app.carDatas.get(index).setSensitivity(sensitivity);
+				System.out.println(activeGpsData.toString());
+				GpsData gpsData = activeGpsData.getActive_gps_data();
+				if(gpsData != null){
+					LatLng latLng = new LatLng(gpsData.getLat(), gpsData.getLon());
+					app.carDatas.get(index).setLat(gpsData.getLat());
+					app.carDatas.get(index).setLon(gpsData.getLon());
+					app.carDatas.get(index).setRcv_time(GetSystem.ChangeTimeZone(gpsData.getRcv_time().substring(0, 19).replace("T", " ")));
+					mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));	
+				}
+				if(activeGpsData.getParams() != null){
+					app.carDatas.get(index).setSensitivity(activeGpsData.getParams().getSensitivity());	
+				}		
 			}
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
