@@ -108,7 +108,7 @@ public class FaultDetectionActivity extends Activity {
 		hs_car = (FaultDeletionView) findViewById(R.id.hs_car);
 		hs_car.setOnViewChangeListener(new OnViewChangeListener() {
 			@Override
-			public void OnViewChange(int view) {
+			public void OnViewChange(int view, int duration) {
 				// 关闭线程
 				mCurrent = 100;
 				index = view;

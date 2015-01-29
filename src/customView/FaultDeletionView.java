@@ -186,7 +186,7 @@ public class FaultDeletionView extends ViewGroup {
             mCurScreen = whichScreen;
             invalidate();
             if (mOnViewChangeListener != null) {
-                mOnViewChangeListener.OnViewChange(whichScreen);
+                mOnViewChangeListener.OnViewChange(whichScreen, 0);
             }
         }
     }
@@ -198,7 +198,7 @@ public class FaultDeletionView extends ViewGroup {
             mCurScreen = whichScreen;
             invalidate();
             if (mOnViewChangeListener != null) {
-                mOnViewChangeListener.OnViewChange(whichScreen);
+                mOnViewChangeListener.OnViewChange(whichScreen, 0);
             }
         }
     }

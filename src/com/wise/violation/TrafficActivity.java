@@ -101,7 +101,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		hsl_traffic = (HScrollLayout) findViewById(R.id.hsl_traffic);
 		hsl_traffic.setOnViewChangeListener(new OnViewChangeListener() {
 			@Override
-			public void OnViewChange(int view) {
+			public void OnViewChange(int view, int duration) {
 				index_car = view;
 				GetTraffic();
 			}

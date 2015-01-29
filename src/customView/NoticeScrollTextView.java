@@ -67,7 +67,7 @@ public class NoticeScrollTextView extends ViewGroup {
             scroller.startScroll(0, getScrollY(), 0, delta, Math.abs(delta) * 5);// 滚动完剩下的距离
             invalidate();
             if (mOnViewChangeListener != null) {
-                mOnViewChangeListener.OnViewChange(whichScreen);
+                mOnViewChangeListener.OnViewChange(whichScreen, 0);
             }
         }
     }
@@ -78,7 +78,7 @@ public class NoticeScrollTextView extends ViewGroup {
             scroller.startScroll(getScrollX(), 0, delta, 0);// 滚动完剩下的距离 
             invalidate();
             if (mOnViewChangeListener != null) {
-                mOnViewChangeListener.OnViewChange(whichScreen);
+                mOnViewChangeListener.OnViewChange(whichScreen, 0);
             }
         }
     }

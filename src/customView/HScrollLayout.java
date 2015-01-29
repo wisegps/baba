@@ -200,11 +200,12 @@ public class HScrollLayout extends ViewGroup {
 				Math.min(whichScreen, (getChildCount() - 1)));// 防止输入不再范围内的数字
 		if (getScrollX() != getWidth() * whichScreen) {// 时候需要移动
 			final int delta = whichScreen * getWidth() - getScrollX(); // 还有多少没有显示
-			scroller.startScroll(getScrollX(), 0, delta, 0, Math.abs(delta) * 2);// 滚动完剩下的距离
+			int duration = Math.abs(delta) * 2;
+			scroller.startScroll(getScrollX(), 0, delta, 0, duration);// 滚动完剩下的距离
 			mCurScreen = whichScreen;
 			invalidate();
 			if (mOnViewChangeListener != null) {
-				mOnViewChangeListener.OnViewChange(whichScreen);
+				mOnViewChangeListener.OnViewChange(whichScreen, duration);
 			}
 		}
 	}
@@ -218,7 +219,7 @@ public class HScrollLayout extends ViewGroup {
 			scrollTo(getWidth() * whichScreen, 0);
 			invalidate();
 			if (mOnViewChangeListener != null) {
-				mOnViewChangeListener.OnViewChange(whichScreen);
+				mOnViewChangeListener.OnViewChange(whichScreen, 0);
 			}
 		}
 	}

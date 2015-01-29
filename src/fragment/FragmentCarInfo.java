@@ -116,10 +116,17 @@ public class FragmentCarInfo extends Fragment {
 		initDataView();
 		hs_car.setOnViewChangeListener(new OnViewChangeListener() {
 			@Override
-			public void OnViewChange(int view) {
-				index = view;
-				System.out.println("读取数据");
-				getTotalData();
+			public void OnViewChange(int view, int duration) {
+				if(index != view){
+					index = view;
+					//等待滚动完毕后查询数据
+					handler.postDelayed(new Runnable() {						
+						@Override
+						public void run() {
+							getTotalData();
+						}
+					}, duration);
+				}
 			}
 		});
 

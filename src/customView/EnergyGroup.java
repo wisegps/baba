@@ -161,7 +161,7 @@ public class EnergyGroup extends ViewGroup{
             mCurScreen = whichScreen;
             invalidate();
             if(mOnViewChangeListener != null){
-                mOnViewChangeListener.OnViewChange(whichScreen);
+                mOnViewChangeListener.OnViewChange(whichScreen, 0);
             }
         }
     }

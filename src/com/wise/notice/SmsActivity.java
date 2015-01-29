@@ -88,7 +88,7 @@ public class SmsActivity extends Activity implements IXListViewListener{
 		hsl_sms = (HScrollLayout) findViewById(R.id.hsl_sms);
 		hsl_sms.setOnViewChangeListener(new OnViewChangeListener() {			
 			@Override
-			public void OnViewChange(int view) {
+			public void OnViewChange(int view, int duration) {
 				index_view = view;
 				getSms();
 				setCheck();

@@ -218,7 +218,7 @@ public class ParentSlide extends ViewGroup {
             mCurScreen = whichScreen;
             invalidate();
             if (mOnViewChangeListener != null) {
-                mOnViewChangeListener.OnViewChange(whichScreen);
+                mOnViewChangeListener.OnViewChange(whichScreen, 0);
             }
         }
     }
@@ -229,7 +229,7 @@ public class ParentSlide extends ViewGroup {
             scrollTo(getWidth() * whichScreen, 0);
             invalidate();
             if (mOnViewChangeListener != null) {
-                mOnViewChangeListener.OnViewChange(whichScreen);
+                mOnViewChangeListener.OnViewChange(whichScreen, 0);
             }
         }
     }

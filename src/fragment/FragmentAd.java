@@ -66,7 +66,7 @@ public class FragmentAd extends Fragment {
 		ll_image = (LinearLayout) getActivity().findViewById(R.id.ll_image);
 		hs_photo.setOnViewChangeListener(new OnViewChangeListener() {
 			@Override
-			public void OnViewChange(int view) {
+			public void OnViewChange(int view, int duration) {
 				image_position = view;
 				tv_content.setText(adDatas.get(view).getContent());
 				changeImage(view);
