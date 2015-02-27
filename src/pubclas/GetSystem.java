@@ -692,7 +692,7 @@ public class GetSystem {
 		oks.setAddress("");
 		oks.setTitle(title);
 		oks.setTitleUrl("http://www.bibibaba.cn/");
-		oks.setText(Content + " (来自@叭叭,点击下载http://dl.bibibaba.cn/ )");
+		oks.setText(Content + " (来自@自游自在,点击下载http://dl.bibibaba.cn/ )");
 		oks.setImagePath(imagePath);
 		// oks.setImageUrl("http://img.appgo.cn/imgs/sharesdk/content/2013/07/25/1374723172663.jpg");
 		oks.setUrl("http://www.sharesdk.cn");

@@ -183,7 +183,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_white"
             android:padding="@dimen/double_margins"
-            android:text="关于叭叭"
+            android:text="关于自游自在"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />
     </LinearLayout>

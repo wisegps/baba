@@ -68,7 +68,7 @@ public class SearchServiceActivity extends Activity{
 	private void setData(){
 		for(int i = 0 ; i < 5 ; i++){
 			ServiceData serviceData = new ServiceData();
-			serviceData.setName("叭叭");
+			serviceData.setName("自游自在");
 			serviceDatas.add(serviceData);
 		}
 	}

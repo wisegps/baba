@@ -79,7 +79,7 @@ public class ServiceShowActivity extends Activity{
 	private void setData(){
 		for(int i = 0 ; i < 15 ; i++){
 			ServiceData serviceData = new ServiceData();
-			serviceData.setName("叭叭");
+			serviceData.setName("自游自在");
 			serviceData.setType("洗车");
 			serviceData.setScore(5);
 			serviceData.setDistance(4.4);

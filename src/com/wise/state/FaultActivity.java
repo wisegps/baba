@@ -1161,7 +1161,7 @@ public class FaultActivity extends FragmentActivity {
 			}
 		});
 		TextView tv_name = (TextView) v.findViewById(R.id.tv_name);
-		tv_name.setText("绑定叭叭车载智能配件");
+		tv_name.setText("绑定自游自在车载智能配件");
 	}
 
 	/** 获取消息数据 **/
