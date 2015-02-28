@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="关于叭叭"
+            android:text="关于自游自在"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
 

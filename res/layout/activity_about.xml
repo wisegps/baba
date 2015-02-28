@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="关于叭叭"
+            android:text="关于自游自在"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
         <ImageView
@@ -68,5 +68,5 @@
         android:textSize="@dimen/content"
         android:textColor="@color/Green"
         android:layout_centerInParent="true"
-        android:text="叭叭V1.0"/>
+        android:text="自游自在V1.0"/>
 </RelativeLayout>
