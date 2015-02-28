@@ -14,8 +14,9 @@ import org.litepal.crud.DataSupport;
 import pubclas.Constant;
 import pubclas.NetThread;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
+
 import data.CharacterParser;
 import data.CityData;
 import data.ProvinceData;

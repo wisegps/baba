@@ -1,4 +1,6 @@
-package com.wise.baba;
+package com.wise.carfree;
+
+import com.wise.baba.R;
 
 import android.app.Activity;
 import android.os.Bundle;

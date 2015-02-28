@@ -1,4 +1,4 @@
-package com.wise.baba;
+package com.wise.carfree;
 
 import pubclas.Constant;
 import pubclas.GetSystem;
@@ -7,6 +7,7 @@ import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
 import com.umeng.update.UpdateStatus;
+import com.wise.baba.R;
 
 import android.app.Activity;
 import android.os.Bundle;

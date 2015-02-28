@@ -36,8 +36,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
 import com.wise.notice.LetterActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.show.MyScrollView.OnFlowClickListener;

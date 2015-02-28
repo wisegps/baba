@@ -19,9 +19,10 @@ import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import com.aliyun.android.oss.task.PutObjectTask;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.ModelsActivity;
+import com.wise.carfree.AppApplication;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;

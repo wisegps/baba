@@ -28,8 +28,8 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
 /**
  * 在地图查看发送的位置
  * @author honesty

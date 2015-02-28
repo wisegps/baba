@@ -26,12 +26,13 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
-import com.wise.baba.AboutActivity;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-import com.wise.baba.SelectCityActivity;
 import com.wise.car.CarActivity;
 import com.wise.car.OfflineActivity;
+import com.wise.carfree.AboutActivity;
+import com.wise.carfree.AppApplication;
+import com.wise.carfree.SelectCityActivity;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

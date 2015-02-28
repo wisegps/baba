@@ -28,8 +28,9 @@ import com.baidu.navisdk.BaiduNaviManager;
 import com.baidu.navisdk.BaiduNaviManager.OnStartNavigationListener;
 import com.baidu.navisdk.comapi.routeplan.RoutePlanParams.NE_RoutePlan_Mode;
 import com.baidu.navisdk.util.common.CoordinateTransformUtil;
-import com.wise.baba.BNavigatorActivity;
 import com.wise.baba.R;
+import com.wise.carfree.BNavigatorActivity;
+
 import data.TimeData;
 import data.WeekData;
 import android.app.Activity;

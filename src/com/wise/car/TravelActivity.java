@@ -44,9 +44,9 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.R.string;
+import com.wise.carfree.AppApplication;
 
 import data.AdressData;
 

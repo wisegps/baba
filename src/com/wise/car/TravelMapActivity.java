@@ -29,8 +29,9 @@ import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.model.LatLngBounds.Builder;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;

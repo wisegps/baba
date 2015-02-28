@@ -1,7 +1,10 @@
-package com.wise.baba;
+package com.wise.carfree;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.wise.baba.R;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
@@ -15,26 +18,23 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-public class ServiceRankingActivity extends Activity{
+public class ServiceShowActivity extends Activity{
 	ListView lv_service;
 	int screenWidth;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_service_ranking);
+		setContentView(R.layout.activity_service);
 		TextView tv_service_providers = (TextView)findViewById(R.id.tv_service_providers);
 		tv_service_providers.setOnClickListener(onClickListener);
 		TextView tv_service = (TextView)findViewById(R.id.tv_service);
 		tv_service.setOnClickListener(onClickListener);
 		TextView tv_distance = (TextView)findViewById(R.id.tv_distance);
 		tv_distance.setOnClickListener(onClickListener);
-		Button bt_show = (Button)findViewById(R.id.bt_show);
-		bt_show.setOnClickListener(onClickListener);
 		DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         screenWidth = dm.widthPixels/3;
@@ -56,9 +56,6 @@ public class ServiceRankingActivity extends Activity{
 			case R.id.tv_distance:
 				ShowMenuPop(v);
 				break;
-			case R.id.bt_show:
-				startActivity(new Intent(ServiceRankingActivity.this, SearchServiceActivity.class));
-				break;
 			}
 		}
 	};
@@ -67,7 +64,7 @@ public class ServiceRankingActivity extends Activity{
 		@Override
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			startActivity(new Intent(ServiceRankingActivity.this, ServiceInfoActivity.class));
+			startActivity(new Intent(ServiceShowActivity.this, ServiceShowInfoActivity.class));
 		}
 	};
 	
@@ -94,7 +91,7 @@ public class ServiceRankingActivity extends Activity{
 	}
 	
 	private class ServiceAdapter extends BaseAdapter{
-		LayoutInflater mInflater = LayoutInflater.from(ServiceRankingActivity.this);
+		LayoutInflater mInflater = LayoutInflater.from(ServiceShowActivity.this);
 		@Override
 		public int getCount() {
 			return serviceDatas.size();

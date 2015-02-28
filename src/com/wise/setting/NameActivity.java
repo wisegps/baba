@@ -9,8 +9,9 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.NetThread;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

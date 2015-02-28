@@ -1,8 +1,9 @@
-package com.wise.baba;
+package com.wise.carfree;
 
 import com.baidu.lbsapi.BMapManager;
 import com.baidu.lbsapi.MKGeneralListener;
 import com.baidu.lbsapi.panoramaview.PanoramaView;
+import com.wise.baba.R;
 
 import android.os.Bundle;
 import android.app.Activity;

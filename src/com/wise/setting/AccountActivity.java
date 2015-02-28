@@ -25,8 +25,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
+
 import customView.PopView;
 import customView.PopView.OnItemClickListener;
 import android.app.Activity;

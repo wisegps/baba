@@ -48,13 +48,13 @@
     <uses-permission android:name="android.permission.FLASHLIGHT" />
 
     <application
-        android:name="com.wise.baba.AppApplication"
+        android:name="com.wise.carfree.AppApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".WelcomeActivity"
+            android:name="com.wise.carfree.WelcomeActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
@@ -65,53 +65,53 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.wise.carfree.MainActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".BNavigatorActivity"
+            android:name="com.wise.carfree.BNavigatorActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
-            android:name=".ServiceActivity"
+            android:name="com.wise.carfree.ServiceActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ServiceInfoActivity"
+            android:name="com.wise.carfree.ServiceInfoActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ShowCarActivity"
+            android:name="com.wise.carfree.ShowCarActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".MoreActivity"
+            android:name="com.wise.carfree.MoreActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".BrowserActivity"
+            android:name="com.wise.carfree.BrowserActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".FeedBackActivity"
+            android:name="com.wise.carfree.FeedBackActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".AboutActivity"
+            android:name="com.wise.carfree.AboutActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".SelectCityActivity"
+            android:name="com.wise.carfree.SelectCityActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
         </activity>
         <activity
-            android:name=".TestActivity"
+            android:name="com.wise.carfree.TestActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".NotificationActivity"
+            android:name="com.wise.carfree.NotificationActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -381,47 +381,47 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" >
         </activity>
         <activity
-            android:name=".AskActivity"
+            android:name="com.wise.carfree.AskActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".AskInfoActivity"
+            android:name="com.wise.carfree.AskInfoActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".QuestionActivity"
+            android:name="com.wise.carfree.QuestionActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".FriendQuestionActivity"
+            android:name="com.wise.carfree.FriendQuestionActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ReplyActivity"
+            android:name="com.wise.carfree.ReplyActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ServiceRankingActivity"
+            android:name="com.wise.carfree.ServiceRankingActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".SearchServiceActivity"
+            android:name="com.wise.carfree.SearchServiceActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ServiceShowActivity"
+            android:name="com.wise.carfree.ServiceShowActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ServiceShowInfoActivity"
+            android:name="com.wise.carfree.ServiceShowInfoActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".AddShowActivity"
+            android:name="com.wise.carfree.AddShowActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".CollectionActivity"
+            android:name="com.wise.carfree.CollectionActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -433,7 +433,7 @@
             android:screenOrientation="portrait" >
         </activity>
 
-        <service android:name=".LocationService" >
+        <service android:name="com.wise.carfree.LocationService" >
         </service>
 
         <activity
@@ -456,7 +456,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".LocationService" >
+        <service android:name="com.wise.carfree.LocationService" >
         </service>
         <service
             android:name="com.baidu.location.f"
@@ -520,7 +520,7 @@
         <!-- Required SDK核心功能 -->
         <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
         <receiver
-            android:name="com.wise.baba.SmsReceiver"
+            android:name="com.wise.carfree.SmsReceiver"
             android:enabled="true" >
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTRATION" />

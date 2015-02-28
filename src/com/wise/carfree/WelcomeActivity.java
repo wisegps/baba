@@ -1,4 +1,4 @@
-package com.wise.baba;
+package com.wise.carfree;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -10,6 +10,7 @@ import cn.jpush.android.api.TagAliasCallback;
 import cn.sharesdk.framework.ShareSDK;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
+import com.wise.baba.R;
 import com.wise.setting.LoginActivity;
 import com.wise.state.FaultActivity;
 import customView.WaitLinearLayout;

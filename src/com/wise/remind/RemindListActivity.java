@@ -6,8 +6,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
+
 import data.CarData;
 import data.RemindData;
 import pubclas.Constant;

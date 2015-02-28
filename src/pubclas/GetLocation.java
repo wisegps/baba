@@ -4,7 +4,8 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.wise.baba.AppApplication;
+import com.wise.carfree.AppApplication;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

@@ -11,8 +11,8 @@ import pubclas.NetThread;
 import cn.jpush.android.util.s;
 
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
 
 import customView.EnergyCurveView;
 

@@ -1,9 +1,11 @@
-package com.wise.baba;
+package com.wise.carfree;
 
 import org.json.JSONObject;
 import pubclas.GetSystem;
 import pubclas.Judge;
 import cn.jpush.android.api.JPushInterface;
+
+import com.wise.baba.R;
 import com.wise.notice.NoticeActivity;
 import com.wise.remind.RemindListActivity;
 import com.wise.setting.LoginActivity;

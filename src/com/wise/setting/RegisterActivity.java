@@ -7,9 +7,10 @@ import pubclas.Constant;
 import pubclas.NetThread;
 
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
-import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
+import com.wise.carfree.ManageActivity;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

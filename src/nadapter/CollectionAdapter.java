@@ -6,9 +6,10 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.NaviPara;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.CarLocationActivity;
+import com.wise.carfree.AppApplication;
+
 import customView.SlidingView;
 import data.AdressData;
 import android.app.Activity;

@@ -10,8 +10,9 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
+
 import customView.EnergyCurveView;
 import customView.FanView;
 import customView.FanView.OnViewRotateListener;

@@ -15,8 +15,9 @@ import pubclas.NetThread;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
+
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;
 import android.app.Activity;

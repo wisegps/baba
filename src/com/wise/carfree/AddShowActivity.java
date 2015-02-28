@@ -1,12 +1,14 @@
-package com.wise.baba;
+package com.wise.carfree;
+
+import com.wise.baba.R;
 
 import android.app.Activity;
 import android.os.Bundle;
 
-public class ServiceInfoActivity extends Activity{
+public class AddShowActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_service_info);
+		setContentView(R.layout.activity_add_show);
 	}
 }

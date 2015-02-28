@@ -1,6 +1,6 @@
 package pubclas;
 
-import com.wise.baba.AppApplication;
+import com.wise.carfree.AppApplication;
 
 public class Judge {
 	/**

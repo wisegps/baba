@@ -1,4 +1,4 @@
-package com.wise.baba;
+package com.wise.carfree;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +13,8 @@ import pubclas.Constant;
 import pubclas.GetLocation;
 import pubclas.GetSystem;
 import pubclas.NetThread;
+
+import com.wise.baba.R;
 import com.wise.car.ClearEditText;
 import com.wise.car.SideBar;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;

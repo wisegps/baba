@@ -1,10 +1,11 @@
-package com.wise.baba;
+package com.wise.carfree;
 
 import java.util.List;
 import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.GetSystem;
 
+import com.wise.baba.R;
 import com.wise.notice.LetterActivity;
 import com.wise.notice.SmsActivity;
 import com.wise.remind.RemindListActivity;

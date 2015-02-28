@@ -18,11 +18,12 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qzone.QZone;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
-import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
 import com.wise.car.CarAddActivity;
 import com.wise.car.ModelsActivity;
+import com.wise.carfree.AppApplication;
+import com.wise.carfree.ManageActivity;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

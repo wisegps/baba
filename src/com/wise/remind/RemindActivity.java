@@ -9,9 +9,9 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.CarActivity;
+import com.wise.carfree.AppApplication;
 
 import data.RemindData;
 import android.app.Activity;

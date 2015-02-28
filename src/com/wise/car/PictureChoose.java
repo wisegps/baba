@@ -30,8 +30,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.aliyun.android.oss.task.PutObjectTask;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
 
 import customView.PopView;
 import customView.PopView.OnItemClickListener;

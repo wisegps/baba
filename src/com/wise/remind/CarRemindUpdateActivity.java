@@ -15,9 +15,9 @@ import wheel.widget.WheelView;
 import widget.adapters.ArrayWheelAdapter;
 import widget.adapters.NumericWheelAdapter;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.CarActivity;
+import com.wise.carfree.AppApplication;
 
 import data.CarData;
 import data.RemindData;

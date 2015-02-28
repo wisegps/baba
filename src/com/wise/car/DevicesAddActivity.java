@@ -18,9 +18,9 @@ import pubclas.NetThread;
 import com.aliyun.android.oss.model.OSSObject;
 import com.aliyun.android.oss.task.GetObjectTask;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
-import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
+import com.wise.carfree.ManageActivity;
 
 import customView.WaitLinearLayout;
 import customView.WaitLinearLayout.OnFinishListener;

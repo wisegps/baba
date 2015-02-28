@@ -1,4 +1,4 @@
-package com.wise.baba;
+package com.wise.carfree;
 
 import org.json.JSONObject;
 import cn.jpush.android.api.JPushInterface;

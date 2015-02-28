@@ -15,10 +15,10 @@ import wheel.widget.WheelView;
 import widget.adapters.ArrayWheelAdapter;
 import widget.adapters.NumericWheelAdapter;
 import com.umeng.analytics.MobclickAgent;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.CarActivity;
 import com.wise.car.CarAddActivity;
+import com.wise.carfree.AppApplication;
 import com.wise.setting.CaptchaActivity;
 import com.wise.setting.RegisterActivity;
 

@@ -1,4 +1,6 @@
-package com.wise.baba;
+package com.wise.carfree;
+
+import com.wise.baba.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,11 +11,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-public class ReplyActivity extends Activity{
+public class QuestionActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_friend_ask);
+		setContentView(R.layout.activity_question);
 	}
 	OnClickListener onClickListener = new OnClickListener(){
 		@Override

@@ -10,8 +10,8 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.NetThread;
 
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.carfree.AppApplication;
 import com.wise.notice.LetterActivity;
 import customView.CircleImageView;
 import android.app.Activity;
