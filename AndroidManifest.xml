@@ -566,13 +566,11 @@
             android:name="UMENG_CHANNEL"
             android:value="Channel ID" />
         <!--
-		debug：0QNTY4tnP9Tv6ghXpGa6XXOm
-		正     式：DhT4kz88wR3r5yCl6tQCpaNW
-		本机：qfRNMbrcCCxi2zO4yGSdh2In
+		本机：talX6p2iU636eNchAl6nzOzS
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="0QNTY4tnP9Tv6ghXpGa6XXOm" />
+            android:value="talX6p2iU636eNchAl6nzOzS" />
     </application>
 
 </manifest>
