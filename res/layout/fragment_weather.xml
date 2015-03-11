@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="10dp"
     android:background="@drawable/bg_adress_map"
     android:padding="@dimen/margins" >
 
@@ -40,13 +41,15 @@
                 android:text="[  ]"
                 android:textColor="@color/content_gray"
                 android:textSize="@dimen/content" />
-            <ImageView 
+
+            <ImageView
                 android:id="@+id/iv_weather_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/btn_jiantou_lvse_xia"/>
+                android:padding="5dp"
+                android:src="@drawable/btn_jiantou_lvse_xia" />
+
             <TextView
                 android:id="@+id/tv_weather_time"
                 android:layout_width="wrap_content"
@@ -74,4 +77,5 @@
             android:textColor="@color/content_gray"
             android:textSize="@dimen/content" />
     </LinearLayout>
+
 </RelativeLayout>

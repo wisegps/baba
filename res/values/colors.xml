@@ -30,6 +30,10 @@
     <color name="gay_adress">#D3DCE0</color>
     <!-- 灰色背景 -->
     <color name="gray_bg">#F4F6F6</color>
+    <!-- 首页所有卡片的背景 -->
+    <color name="cards_bg">#eeedeb</color>
+    
+    
     <!-- 蓝色背景，违章城市 -->
     <color name="blue_bg_traffic">#E3F0F4</color>
     <!-- 黄色，首页背景 -->

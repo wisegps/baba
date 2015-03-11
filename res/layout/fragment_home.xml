@@ -99,16 +99,22 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_above="@id/ll_bottom"
-            android:layout_below="@id/ll_main" >
+            android:layout_below="@id/ll_main"
+            android:background="@color/cards_bg" >
+
             <ScrollView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:scrollbars="none" >
+
                 <LinearLayout
                     android:id="@+id/ll_cards"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingTop="10dp" >
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>

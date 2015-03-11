@@ -162,6 +162,7 @@ public class FragmentHome extends Fragment {
 			}
 		}
 	}
+	
 
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
