@@ -60,6 +60,8 @@ public class FragmentHome extends Fragment {
 	FragmentScrollMessage fragmentScrollMessage;
 	FragmentWeather fragmentWeather;
 	FragmentHotNews fragmentHotNews;
+	FragmetnHomePOI fragmetnHomePOI;
+	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -101,6 +103,12 @@ public class FragmentHome extends Fragment {
 	/** 显示卡片布局 **/
 	private void getCards() {
 		System.out.println("设置卡片布局");
+		transaction = fragmentManager.beginTransaction();
+		fragmetnHomePOI = new FragmetnHomePOI();
+		transaction.add(R.id.ll_cards, fragmetnHomePOI);
+		transaction.commit();
+		
+		
 		// 默认显示的布局
 		if (app.cust_type == Info.ServiceProvider) {// 服务商
 			transaction = fragmentManager.beginTransaction();
