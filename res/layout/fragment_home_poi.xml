@@ -1,28 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-     android:focusable="true"
-        android:focusableInTouchMode="true"
-    android:background="@color/white"
+    style="@style/home_card_style"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical" >
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp" >
         <TextView
             android:id="@+id/textNearby"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            
+            style="@style/home_card_title_style"
             android:text="周边"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            />
 
         <ImageView
             android:id="@+id/imgCar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/textNearby"
             android:src="@drawable/ico_car" />
@@ -31,34 +29,39 @@
             android:id="@+id/imgDown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:src="@drawable/ico_down" />
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_height="1dp"
-        android:background="#bbbbbb" >
+        android:background="#bbbbbb"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
     </View>
 
     <AutoCompleteTextView
         android:id="@+id/autoTextSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+         android:layout_marginTop="25dp"
         android:drawableLeft="@drawable/ico_search"
+        android:background="@drawable/bg_border_rect"
         android:ems="10"
-        android:hint="搜索">
+        android:onClick="onClick"
+        android:hint=" 搜索" >
     </AutoCompleteTextView>
 
-    <GridView
+    <customView.CustomGridView
         android:id="@+id/gridPOI"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:verticalSpacing="10dp"
-        android:numColumns="1"
-         >
-    </GridView>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:numColumns="4"
+        android:verticalSpacing="15dp" >
+    </customView.CustomGridView>
 
 </LinearLayout>

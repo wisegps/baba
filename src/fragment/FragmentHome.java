@@ -103,6 +103,7 @@ public class FragmentHome extends Fragment {
 	/** 显示卡片布局 **/
 	private void getCards() {
 		System.out.println("设置卡片布局");
+		
 		transaction = fragmentManager.beginTransaction();
 		fragmetnHomePOI = new FragmetnHomePOI();
 		transaction.add(R.id.ll_cards, fragmetnHomePOI);
