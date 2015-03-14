@@ -1207,35 +1207,35 @@ public class CarLocationActivity extends Activity {
 		super.onResume();
 		mMapView.onResume();
 		mLocClient.start();
+			toSearchPOI();
 	}
 
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
 		// TODO Auto-generated method stub
 		super.onWindowFocusChanged(hasFocus);
-		if(hasFocus = true){
-			toSearchPOI();
-		}
+		
 		
 		
 	}
 
 	public void toSearchPOI() {
+		if(POI_FLAG == null){
+			return;
+		}
 		System.out.println("search poi");
 		new Handler().postDelayed(new Runnable() {
 
 			@Override
 			public void run() {
-				
-				if (POI_FLAG!= null && POI_FLAG.equals("home")) {
+				System.out.println(POI_FLAG);
+				if (POI_FLAG.equals("home")) {
 					home.performClick();
-				} else if (POI_FLAG!= null && POI_FLAG.equals("company")) {
+				} else if (POI_FLAG.equals("company")) {
 					company.performClick();
-				}else if (POI_FLAG!= null && POI_FLAG.equals("address")) {
+				}else if (POI_FLAG.equals("address")) {
 					searchAddress.performClick();
 				}
-				
-				
 				POI_FLAG = null;
 			}
 

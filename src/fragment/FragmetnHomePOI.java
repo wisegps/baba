@@ -85,6 +85,7 @@ public class FragmetnHomePOI extends Fragment implements OnItemClickListener,and
 		imgDown = (ImageView) view.findViewById(R.id.imgDown);
 		autoTextSearch = (AutoCompleteTextView) view
 				.findViewById(R.id.autoTextSearch);
+		autoTextSearch.setOnClickListener(this);
 		gridPOI = (CustomGridView) view.findViewById(R.id.gridPOI);
 		SimpleAdapter simpleAdapter = getAdapter();
 		gridPOI.setAdapter(simpleAdapter);

@@ -46,11 +46,10 @@
         android:id="@+id/autoTextSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-         android:layout_marginTop="25dp"
+         android:layout_marginTop="20dp"
         android:drawableLeft="@drawable/ico_search"
         android:background="@drawable/bg_border_rect"
         android:ems="10"
-        android:onClick="onClick"
         android:hint=" 搜索" >
     </AutoCompleteTextView>
 
