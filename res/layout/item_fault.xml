@@ -1,174 +1,259 @@
-<LinearLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:tc="http://schemas.android.com/apk/res/com.wise.baba"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/white"
     android:orientation="vertical" >
-    <RelativeLayout 
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">        
-	    <TextView
-	        android:id="@+id/tv_name"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:gravity="center_horizontal"
-	        android:layout_marginTop="10dp"
-	        android:textColor="@color/navy"
-	        android:text="我的爱车"
-	        android:textSize="@dimen/main" />	    
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/home_card_title_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="昂科塞拉" />
+
+        <LinearLayout
+            android:id="@+id/ll_adress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tv_name"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/tv_name" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ico_map" />
+
+            <TextView
+                android:id="@+id/tv_adress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/color_navy_light" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ico_down" />
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#bbbbbb"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
+    </View>
+
+    <!-- SIM -->
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp" >
+
+        <TextView
+            android:id="@+id/textSIM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:alpha="0.8"
+            android:text="SIM: 11M/30M"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/imgKey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ico_key" />
+
+        <ImageView
+            android:id="@+id/imgWifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/imgKey"
+            android:src="@drawable/ico_wifi" />
+    </RelativeLayout>
+
     <LinearLayout
-        android:id="@+id/ll_adress" 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-	    android:visibility="invisible"
-	    android:paddingTop="5dp"
-	    android:paddingBottom="@dimen/margins"
-        android:gravity="center">
-        <ImageView 
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginRight="5dp"
-            android:src="@drawable/icon_place"/>
-        <TextView 
-	        android:id="@+id/tv_adress"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:singleLine="true"
-	        android:textColor="@color/color_navy_light"/>
-    </LinearLayout>
-    <LinearLayout 
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/double_margins"
+        android:layout_marginTop="@dimen/margins"
         android:gravity="center_horizontal"
-	    android:layout_marginTop="@dimen/margins"
-	    android:layout_marginBottom="@dimen/double_margins"
-        android:orientation="horizontal">
+        android:orientation="horizontal" >
+
         <RelativeLayout
             android:id="@+id/rl_left_complete"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content">	    
-		    <com.wise.state.TasksCompletedView
-		        android:id="@+id/tasks_view"
-		        android:layout_width="140dp"
-		        android:layout_height="140dp"
-		        android:layout_centerHorizontal="true"
-		        tc:radius="60dp"
-		        tc:circleColor="@color/ring_bg_color"
-		        tc:ringColor="@color/ring_color"
-		        tc:strokeWidth="10dp" />
-		    <LinearLayout 
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_centerInParent="true"
-		        android:gravity="center_horizontal"
-		        android:orientation="vertical">
-		        <TextView 
-		            android:id="@+id/tv_title"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:textColor="@color/navy"
-		            android:text="健康指数"/>
-		        <LinearLayout 
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:orientation="horizontal">
-		            <TextView
-		                android:id="@+id/tv_score" 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/bigs_number"
-			            android:text="80"/>
-		            <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textColor="@color/navy"
-			            android:text="分"/>
-		        </LinearLayout>
-		        <TextView
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:textColor="@color/blue_press"
-		            android:text="点击体检"/>
-		    </LinearLayout>
-		</RelativeLayout>
-		<RelativeLayout 
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content">	    
-		    <com.wise.state.TasksCompletedView
-		        android:id="@+id/tcv_drive"
-		        android:layout_width="140dp"
-		        android:layout_height="140dp"
-		        android:layout_centerHorizontal="true"
-		        tc:radius="60dp"
-		        tc:circleColor="@color/ring_bg_color"
-		        tc:ringColor="@color/ring_color"
-		        tc:strokeWidth="10dp" />
-		    <LinearLayout 
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_centerInParent="true"
-		        android:gravity="center_horizontal"
-		        android:orientation="vertical">
-		        <TextView
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:textColor="@color/navy"
-		            android:text="驾驶指数"/>
-		        <LinearLayout 
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:orientation="horizontal">
-		            <TextView
-		                android:id="@+id/tv_drive"
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textSize="@dimen/bigs_number"
-			            android:text="80"/>
-		            <TextView 
-			            android:layout_width="wrap_content"
-			            android:layout_height="wrap_content"
-			            android:textColor="@color/navy"
-			            android:text="分"/>
-		        </LinearLayout>
-		        <TextView 
-		            android:id="@+id/tv_xx"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:textColor="@color/blue_press"
-		            android:text="今日限行"/>
-		    </LinearLayout>
-		</RelativeLayout>
-    </LinearLayout>	
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <com.wise.state.TasksCompletedView
+                android:id="@+id/tasks_view"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_centerHorizontal="true"
+                tc:circleColor="@color/ring_bg_color"
+                tc:radius="60dp"
+                tc:ringColor="@color/ring_color"
+                tc:strokeWidth="10dp" 
+                android:alpha="0.01"
+                />
+            
+            
+             <ImageView
+                android:id="@+id/imgCircle"
+                android:layout_width="159.2dp"
+                android:layout_height="125.6dp"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/circle"
+               />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="健康指数"
+                    android:textColor="@color/navy" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/tv_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="80"
+                        android:textSize="@dimen/bigs_number" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="分"
+                        android:textColor="@color/navy" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="点击体检"
+                    android:textColor="@color/blue_press" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/imgCircle1"
+               android:layout_width="159.2dp"
+                android:layout_height="125.6dp"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/circle"
+               />
+            
+            <com.wise.state.TasksCompletedView
+                android:id="@+id/tcv_drive"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_centerHorizontal="true"
+                tc:circleColor="@color/ring_bg_color"
+                tc:radius="60dp"
+                android:alpha="0.01"
+                tc:ringColor="@color/ring_color"
+                tc:strokeWidth="10dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="驾驶指数"
+                    android:textColor="@color/navy" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/tv_drive"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="80"
+                        android:textSize="@dimen/bigs_number" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="分"
+                        android:textColor="@color/navy" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_xx"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="今日限行"
+                    android:textColor="@color/blue_press" />
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/ll_fee"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margins"
         android:orientation="horizontal" >
+
         <LinearLayout
             android:id="@+id/Liner_distance"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_weight="1"
             android:orientation="vertical" >
-            <TextView
-                android:id="@+id/tv_current_distance"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_horizontal"
-                android:text="本月里程"
-                android:textColor="@color/color_navy"
-                android:textSize="@dimen/content" />
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal" >
+
                 <TextView
                     android:id="@+id/tv_distance"
                     android:layout_width="wrap_content"
@@ -176,6 +261,7 @@
                     android:text="0"
                     android:textColor="@color/color_navy"
                     android:textSize="@dimen/big_number" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -183,44 +269,54 @@
                     android:textColor="@color/color_navy"
                     android:textSize="@dimen/content" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/imgDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ico_distance" />
+
+                <TextView
+                    android:id="@+id/tv_current_distance"
+                    android:layout_width="fill_parent"
+                    
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_horizontal"
+                    android:text="本月里程"
+                    android:alpha="0.8"
+                    android:textColor="@color/color_navy"
+                    android:textSize="@dimen/content" />
+            </LinearLayout>
         </LinearLayout>
+
         <View
             android:layout_width="0.5dp"
             android:layout_height="fill_parent"
             android:background="@color/line" />
+
         <LinearLayout
             android:id="@+id/Liner_fuel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
-            <LinearLayout 
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:gravity="center_vertical"
-	            android:layout_marginBottom="5dp"
-                android:orientation="horizontal">                
-	            <TextView
-	                android:id="@+id/tv_oil"
-	                android:layout_width="fill_parent"
-	                android:layout_height="wrap_content"
-	                android:text="本月油耗"
-	                android:textColor="@color/color_navy"
-	                android:layout_marginLeft="20dp"
-	                android:textSize="@dimen/content" />
-	            <ImageView 
-	                android:id="@+id/iv_update_oil"
-	                android:layout_width="25dp"
-	                android:layout_height="15dp"
-	                android:paddingLeft="5dp"
-	                android:paddingRight="5dp"	                
-	                android:src="@drawable/correct_oil"/>
-            </LinearLayout>            
+             android:gravity="center"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal" >
+
                 <TextView
                     android:id="@+id/tv_fuel"
                     android:layout_width="wrap_content"
@@ -228,6 +324,7 @@
                     android:text="0"
                     android:textColor="@color/color_navy"
                     android:textSize="@dimen/big_number" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -235,36 +332,77 @@
                     android:textColor="@color/color_navy"
                     android:textSize="@dimen/content" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/iv_update_oil"
+                    android:layout_width="25dp"
+                    android:layout_height="15dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:src="@drawable/correct_oil"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:id="@+id/imgGas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ico_gas" />
+
+                    <TextView
+                        android:id="@+id/tv_oil"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                         android:layout_marginLeft="5dp"
+                        android:text="本月油耗"
+                        android:alpha="0.8"
+                        android:textColor="@color/color_navy"
+                        android:textSize="@dimen/content" />
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
+
         <View
             android:layout_width="0.5dp"
             android:layout_height="fill_parent"
             android:background="@color/line" />
+
         <LinearLayout
             android:id="@+id/Liner_fee"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+             android:gravity="center"
             android:layout_weight="1"
             android:orientation="vertical" >
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="center_horizontal"
-                android:text="本月花费"
-                android:textColor="@color/color_navy"
-                android:textSize="@dimen/content" />
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal" >
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="￥"
                     android:textColor="@color/color_navy"
                     android:textSize="@dimen/content" />
+
                 <TextView
                     android:id="@+id/tv_fee"
                     android:layout_width="wrap_content"
@@ -273,6 +411,33 @@
                     android:textColor="@color/color_navy"
                     android:textSize="@dimen/big_number" />
             </LinearLayout>
+
+             <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:id="@+id/imgCost"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ico_cost" />
+            
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                 android:layout_marginLeft="5dp"
+                android:text="本月花费"
+                android:alpha="0.8"
+                android:textColor="@color/color_navy"
+                android:textSize="@dimen/content" />
+            
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
 </LinearLayout>

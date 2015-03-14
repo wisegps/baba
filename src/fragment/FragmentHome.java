@@ -60,11 +60,11 @@ public class FragmentHome extends Fragment {
 	FragmentScrollMessage fragmentScrollMessage;
 	FragmentWeather fragmentWeather;
 	FragmentHotNews fragmentHotNews;
-	FragmetnHomePOI fragmetnHomePOI;
-	
+	FragmentHomePOI fragmetnHomePOI;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_home, container, false);
 	}
 
@@ -75,13 +75,16 @@ public class FragmentHome extends Fragment {
 		ll_cards = (LinearLayout) getActivity().findViewById(R.id.ll_cards);
 		Button bt_show = (Button) getActivity().findViewById(R.id.bt_show);
 		bt_show.setOnClickListener(onClickListener);
-		ImageView iv_back = (ImageView) getActivity().findViewById(R.id.iv_back);
+		ImageView iv_back = (ImageView) getActivity()
+				.findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		iv_noti = (ImageView) getActivity().findViewById(R.id.iv_noti);
-		ImageView iv_menu = (ImageView) getActivity().findViewById(R.id.iv_menu);
+		ImageView iv_menu = (ImageView) getActivity()
+				.findViewById(R.id.iv_menu);
 		iv_menu.setVisibility(View.GONE);
 		iv_menu.setOnClickListener(onClickListener);
-		getActivity().findViewById(R.id.iv_location_hot).setOnClickListener(onClickListener);
+		getActivity().findViewById(R.id.iv_location_hot).setOnClickListener(
+				onClickListener);
 
 		fragmentManager = getActivity().getSupportFragmentManager();
 
@@ -98,18 +101,14 @@ public class FragmentHome extends Fragment {
 		}
 		getCards();
 	}
+
 	List<String> cardNames = new ArrayList<String>();
 	FragmentTransaction transaction;
+
 	/** 显示卡片布局 **/
 	private void getCards() {
 		System.out.println("设置卡片布局");
-		
-		transaction = fragmentManager.beginTransaction();
-		fragmetnHomePOI = new FragmetnHomePOI();
-		transaction.add(R.id.ll_cards, fragmetnHomePOI);
-		transaction.commit();
-		
-		
+
 		// 默认显示的布局
 		if (app.cust_type == Info.ServiceProvider) {// 服务商
 			transaction = fragmentManager.beginTransaction();
@@ -117,11 +116,24 @@ public class FragmentHome extends Fragment {
 			transaction.add(R.id.ll_cards, fragmentService);
 			transaction.commit();
 		} else {
+			// 周边信息卡片
+			transaction = fragmentManager.beginTransaction();
+			fragmetnHomePOI = new FragmentHomePOI();
+			transaction.add(R.id.ll_cards, fragmetnHomePOI);
+			transaction.commit();
+
+//			// 新车辆卡片
+//			transaction = fragmentManager.beginTransaction();
+//			fragmentHomeCarInfo = new FragmentHomeCarInfo();
+//			transaction.add(R.id.ll_cards, fragmentHomeCarInfo);
+//			transaction.commit();
+
 			// 车辆卡片
 			transaction = fragmentManager.beginTransaction();
 			fragmentCarInfo = new FragmentCarInfo();
 			transaction.add(R.id.ll_cards, fragmentCarInfo);
 			transaction.commit();
+
 			// 滚动消息卡片
 			transaction = fragmentManager.beginTransaction();
 			fragmentScrollMessage = new FragmentScrollMessage();
@@ -129,22 +141,22 @@ public class FragmentHome extends Fragment {
 			transaction.commit();
 		}
 		// 可选布局
-		SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-				"card_choose", Activity.MODE_PRIVATE);
+		SharedPreferences sharedPreferences = getActivity()
+				.getSharedPreferences("card_choose", Activity.MODE_PRIVATE);
 		String cardsJson = sharedPreferences.getString("cardsJson", "");
-		if(cardsJson.equals("")){//默认显示天气和新闻
+		if (cardsJson.equals("")) {// 默认显示天气和新闻
 			transaction = fragmentManager.beginTransaction();
 			fragmentWeather = new FragmentWeather();
 			fragmentWeather.setOnCardMenuListener(onCardMenuListener);
 			transaction.add(R.id.ll_cards, fragmentWeather);
 			transaction.commit();
-			
+
 			transaction = fragmentManager.beginTransaction();
 			fragmentHotNews = new FragmentHotNews();
 			fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
 			transaction.add(R.id.ll_cards, fragmentHotNews);
 			transaction.commit();
-		}else{
+		} else {
 			try {
 				JSONArray jsonArray = new JSONArray(cardsJson);
 				for (int i = 0; i < jsonArray.length(); i++) {
@@ -153,14 +165,16 @@ public class FragmentHome extends Fragment {
 					if (cardName.equals("weather")) {
 						transaction = fragmentManager.beginTransaction();
 						fragmentWeather = new FragmentWeather();
-						fragmentWeather.setOnCardMenuListener(onCardMenuListener);
+						fragmentWeather
+								.setOnCardMenuListener(onCardMenuListener);
 						transaction.add(R.id.ll_cards, fragmentWeather);
 						cardNames.add("weather");
 						transaction.commit();
 					} else if (cardName.equals("hotNews")) {
 						transaction = fragmentManager.beginTransaction();
 						fragmentHotNews = new FragmentHotNews();
-						fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
+						fragmentHotNews
+								.setOnCardMenuListener(onCardMenuListener);
 						transaction.add(R.id.ll_cards, fragmentHotNews);
 						cardNames.add("hotNews");
 						transaction.commit();
@@ -171,14 +185,14 @@ public class FragmentHome extends Fragment {
 			}
 		}
 	}
-	
 
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.iv_menu:
-				//startActivityForResult(new Intent(getActivity(), MoreActivity.class), 5);
+				// startActivityForResult(new Intent(getActivity(),
+				// MoreActivity.class), 5);
 				break;
 			case R.id.iv_location_hot:
 				if (!Judge.isLogin(app)) {
@@ -189,12 +203,13 @@ public class FragmentHome extends Fragment {
 						return;
 					}
 					int index = 0;
-					if(fragmentCarInfo != null){
+					if (fragmentCarInfo != null) {
 						fragmentCarInfo.getIndex();
 					}
 					CarData carData = app.carDatas.get(index);
 					String device_id = carData.getDevice_id();
-					if (device_id == null || device_id.equals("") || device_id.equals("0")) {
+					if (device_id == null || device_id.equals("")
+							|| device_id.equals("0")) {
 						goCarMap(false);
 					} else {
 						goCarMap(true);
@@ -227,7 +242,7 @@ public class FragmentHome extends Fragment {
 	// 跳转到地图界面
 	private void goCarMap(boolean b) {
 		int index = 0;
-		if(fragmentCarInfo != null){
+		if (fragmentCarInfo != null) {
 			fragmentCarInfo.getIndex();
 		}
 		Intent intent = new Intent(getActivity(), CarLocationActivity.class);
@@ -237,36 +252,38 @@ public class FragmentHome extends Fragment {
 	}
 
 	boolean isChange = false;
+
 	/** 刷新所有布局 **/
 	public void resetAllView() {
 		isChange = true;
 	}
-	/**判断卡片的是否变化，变化了需要重新加载**/
-	public void isChangeCards(){
-		SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-				"card_choose", Activity.MODE_PRIVATE);
+
+	/** 判断卡片的是否变化，变化了需要重新加载 **/
+	public void isChangeCards() {
+		SharedPreferences sharedPreferences = getActivity()
+				.getSharedPreferences("card_choose", Activity.MODE_PRIVATE);
 		String cardsJson = sharedPreferences.getString("cardsJson", "");
-		if(cardsJson.equals("")){
-			if(cardNames.size() == 0){
-				isChange = false;//没有改变
-			}else{
+		if (cardsJson.equals("")) {
+			if (cardNames.size() == 0) {
+				isChange = false;// 没有改变
+			} else {
 				System.out.println("1");
-				isChange = true;//改变
+				isChange = true;// 改变
 			}
-		}else{
+		} else {
 			try {
 				JSONArray jsonArray = new JSONArray(cardsJson);
-				if(jsonArray.length() != cardNames.size()){
+				if (jsonArray.length() != cardNames.size()) {
 					System.out.println("2");
-					isChange = true;//改变
+					isChange = true;// 改变
 					return;
 				}
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject object = jsonArray.getJSONObject(i);
 					String cardName = object.getString("cardName");
-					if(cardName != cardNames.get(i)){
+					if (cardName != cardNames.get(i)) {
 						System.out.println("3");
-						isChange = true;//改变
+						isChange = true;// 改变
 						return;
 					}
 				}
@@ -292,8 +309,8 @@ public class FragmentHome extends Fragment {
 		if (fragmentCarInfo != null) {
 			fragmentCarInfo.setLoginView();
 		}
-		if(fragmentService != null){
-			//TODO fragmentService
+		if (fragmentService != null) {
+			// TODO fragmentService
 		}
 		// 通知滚动消息刷新数据
 		if (fragmentScrollMessage != null) {
@@ -309,7 +326,8 @@ public class FragmentHome extends Fragment {
 
 	/** 获取消息数据 **/
 	private void getCounter() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/counter?auth_code=" + app.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "/counter?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, get_counter).start();
 	}
 
@@ -334,39 +352,54 @@ public class FragmentHome extends Fragment {
 		super.onResume();
 		setNotiView();
 		MobclickAgent.onResume(getActivity());
-		System.out.println("isChange = " + isChange + " , app.cust_type = " + app.cust_type);
+		System.out.println("isChange = " + isChange + " , app.cust_type = "
+				+ app.cust_type);
 		if (isChange) {
 			isChange = false;
 			// 删除所有view
-			if(fragmentService != null){
-				FragmentTransaction transaction = fragmentManager.beginTransaction();
+			if (fragmentService != null) {
+				FragmentTransaction transaction = fragmentManager
+						.beginTransaction();
 				transaction.remove(fragmentService);
 				transaction.commit();
 				fragmentService = null;
 			}
-			if(fragmentCarInfo != null){
-				FragmentTransaction transaction = fragmentManager.beginTransaction();
+			
+			if (fragmetnHomePOI != null) {
+				FragmentTransaction transaction = fragmentManager
+						.beginTransaction();
+				transaction.remove(fragmetnHomePOI);
+				transaction.commit();
+				fragmetnHomePOI = null;
+			}
+			
+			if (fragmentCarInfo != null) {
+				FragmentTransaction transaction = fragmentManager
+						.beginTransaction();
 				System.out.println("remove fragmentCarInfo");
 				transaction.remove(fragmentCarInfo);
 				transaction.commit();
 				fragmentCarInfo = null;
 			}
-			if(fragmentScrollMessage != null){
-				FragmentTransaction transaction = fragmentManager.beginTransaction();
+			if (fragmentScrollMessage != null) {
+				FragmentTransaction transaction = fragmentManager
+						.beginTransaction();
 				System.out.println("remove fragmentScrollMessage");
 				transaction.remove(fragmentScrollMessage);
 				transaction.commit();
 				fragmentScrollMessage = null;
 			}
-			if(fragmentWeather != null){
-				FragmentTransaction transaction = fragmentManager.beginTransaction();
+			if (fragmentWeather != null) {
+				FragmentTransaction transaction = fragmentManager
+						.beginTransaction();
 				System.out.println("remove fragmentWeather");
 				transaction.remove(fragmentWeather);
 				transaction.commit();
 				fragmentWeather = null;
 			}
-			if(fragmentHotNews != null){
-				FragmentTransaction transaction = fragmentManager.beginTransaction();
+			if (fragmentHotNews != null) {
+				FragmentTransaction transaction = fragmentManager
+						.beginTransaction();
 				System.out.println("remove fragmentHotNews");
 				transaction.remove(fragmentHotNews);
 				transaction.commit();
@@ -389,7 +422,7 @@ public class FragmentHome extends Fragment {
 			// 隐藏提醒
 			iv_noti.setVisibility(View.GONE);
 		} else {
-			//TODO 暂时不显示 显示提醒
+			// TODO 暂时不显示 显示提醒
 			iv_noti.setVisibility(View.GONE);
 		}
 	}
@@ -397,7 +430,7 @@ public class FragmentHome extends Fragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		//点击设置跳转到更多页面，退出系统后接受
+		// 点击设置跳转到更多页面，退出系统后接受
 		if (requestCode == 5 && resultCode == 1) {
 			if (onExitListener != null) {
 				onExitListener.exit();
@@ -419,35 +452,41 @@ public class FragmentHome extends Fragment {
 	public interface OnExitListener {
 		public abstract void exit();
 	}
+
 	PopupWindow mPopupWindow;
-	OnCardMenuListener onCardMenuListener = new OnCardMenuListener() {		
+	OnCardMenuListener onCardMenuListener = new OnCardMenuListener() {
 		@Override
 		public void showCarMenu(final String CardName) {
-			//弹出卡片菜单
+			// 弹出卡片菜单
 			LayoutInflater mLayoutInflater = LayoutInflater.from(getActivity());
-			View popunwindwow = mLayoutInflater.inflate(R.layout.pop_card_menu, null);
-			Button bt_card_share = (Button)popunwindwow.findViewById(R.id.bt_card_share);
-			bt_card_share.setOnClickListener(new OnClickListener() {				
+			View popunwindwow = mLayoutInflater.inflate(R.layout.pop_card_menu,
+					null);
+			Button bt_card_share = (Button) popunwindwow
+					.findViewById(R.id.bt_card_share);
+			bt_card_share.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					mPopupWindow.dismiss();
 				}
 			});
-			Button bt_card_delete = (Button)popunwindwow.findViewById(R.id.bt_card_delete);
-			bt_card_delete.setOnClickListener(new OnClickListener() {				
+			Button bt_card_delete = (Button) popunwindwow
+					.findViewById(R.id.bt_card_delete);
+			bt_card_delete.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					for (int i = 0; i < cardNames.size(); i++) {
-						if(cardNames.get(i).equals(CardName)){
+						if (cardNames.get(i).equals(CardName)) {
 							if (cardNames.get(i).equals("weather")) {
-								FragmentTransaction transaction = fragmentManager.beginTransaction();
+								FragmentTransaction transaction = fragmentManager
+										.beginTransaction();
 								transaction.remove(fragmentWeather);
 								transaction.commit();
 								fragmentWeather = null;
 								cardNames.remove(i);
 								setCardsInSharedPreferences();
 							} else if (cardNames.get(i).equals("hotNews")) {
-								FragmentTransaction transaction = fragmentManager.beginTransaction();
+								FragmentTransaction transaction = fragmentManager
+										.beginTransaction();
 								transaction.remove(fragmentHotNews);
 								transaction.commit();
 								fragmentHotNews = null;
@@ -455,12 +494,13 @@ public class FragmentHome extends Fragment {
 								setCardsInSharedPreferences();
 							}
 							break;
-						}						
+						}
 					}
 					mPopupWindow.dismiss();
 				}
 			});
-			mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+			mPopupWindow = new PopupWindow(popunwindwow,
+					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 			mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
 			mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
 			mPopupWindow.setFocusable(true);
@@ -468,10 +508,11 @@ public class FragmentHome extends Fragment {
 			mPopupWindow.showAtLocation(ll_cards, Gravity.BOTTOM, 0, 0);
 		}
 	};
-	/**删除卡片后保存最新的数据在本地**/
-	private void setCardsInSharedPreferences(){
-		SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
-				"card_choose", Activity.MODE_PRIVATE);
+
+	/** 删除卡片后保存最新的数据在本地 **/
+	private void setCardsInSharedPreferences() {
+		SharedPreferences sharedPreferences = getActivity()
+				.getSharedPreferences("card_choose", Activity.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		JSONArray jsonArray = new JSONArray();
 		try {

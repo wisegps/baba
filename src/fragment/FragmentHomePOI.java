@@ -39,7 +39,7 @@ import android.widget.Toast;
  * @author c 首页周边信息
  * 
  */
-public class FragmetnHomePOI extends Fragment implements OnItemClickListener,android.view.View.OnClickListener{
+public class FragmentHomePOI extends Fragment implements OnItemClickListener,android.view.View.OnClickListener{
 	
 	private ImageView imgDown;// 下拉箭头
 	private AutoCompleteTextView autoTextSearch;// 搜索框
@@ -140,7 +140,7 @@ public class FragmetnHomePOI extends Fragment implements OnItemClickListener,and
 			return;
 		}
 		// 地图搜寻
-		Intent intent = new Intent(FragmetnHomePOI.this.getActivity(), SearchMapActivity.class);
+		Intent intent = new Intent(FragmentHomePOI.this.getActivity(), SearchMapActivity.class);
 		intent.putExtra("keyWord", keyWord);
 		intent.putExtra("key", keyWord);
 		startActivity(intent);
