@@ -111,26 +111,24 @@
                 android:layout_width="140dp"
                 android:layout_height="140dp"
                 android:layout_centerHorizontal="true"
+                android:alpha="0.01"
                 tc:circleColor="@color/ring_bg_color"
                 tc:radius="60dp"
                 tc:ringColor="@color/ring_color"
-                tc:strokeWidth="10dp" 
-                android:alpha="0.01"
-                />
-            
-            
-             <ImageView
+                tc:strokeWidth="10dp" />
+
+            <ImageView
                 android:id="@+id/imgCircle"
                 android:layout_width="159.2dp"
                 android:layout_height="125.6dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/circle"
-               />
+                android:background="@drawable/circle" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_alignBottom="@id/imgCircle"
+                android:layout_centerHorizontal="true"
                 android:gravity="center_horizontal"
                 android:orientation="vertical" >
 
@@ -139,32 +137,32 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="健康指数"
-                    android:textColor="@color/navy" />
+                    android:textColor="@color/navy_gray" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
                     android:orientation="horizontal" >
 
                     <TextView
                         android:id="@+id/tv_score"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:alpha="0.8"
+                        android:fontFamily="sans-serif-light"
                         android:text="80"
-                        android:textSize="@dimen/bigs_number" />
+                        android:textColor="@color/navy_blue"
+                        android:textSize="@dimen/score_number" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
                         android:text="分"
-                        android:textColor="@color/navy" />
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/navy_blue" />
                 </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="点击体检"
-                    android:textColor="@color/blue_press" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -174,27 +172,27 @@
 
             <ImageView
                 android:id="@+id/imgCircle1"
-               android:layout_width="159.2dp"
+                android:layout_width="159.2dp"
                 android:layout_height="125.6dp"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/circle"
-               />
-            
+                android:background="@drawable/circle" />
+
             <com.wise.state.TasksCompletedView
                 android:id="@+id/tcv_drive"
                 android:layout_width="140dp"
                 android:layout_height="140dp"
                 android:layout_centerHorizontal="true"
+                android:alpha="0.01"
                 tc:circleColor="@color/ring_bg_color"
                 tc:radius="60dp"
-                android:alpha="0.01"
                 tc:ringColor="@color/ring_color"
                 tc:strokeWidth="10dp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_alignBottom="@id/imgCircle1"
+                android:layout_centerHorizontal="true"
                 android:gravity="center_horizontal"
                 android:orientation="vertical" >
 
@@ -202,7 +200,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="驾驶指数"
-                    android:textColor="@color/navy" />
+                    android:textColor="@color/navy_gray" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -213,22 +211,20 @@
                         android:id="@+id/tv_drive"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:alpha="0.8"
+                        android:fontFamily="sans-serif-light"
                         android:text="80"
-                        android:textSize="@dimen/bigs_number" />
+                        android:textColor="@color/navy_blue"
+                        android:textSize="@dimen/score_number" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
                         android:text="分"
-                        android:textColor="@color/navy" />
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/navy_blue" />
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv_xx"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="今日限行"
-                    android:textColor="@color/blue_press" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
@@ -244,8 +240,8 @@
             android:id="@+id/Liner_distance"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical" >
 
             <LinearLayout
@@ -273,8 +269,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal" >
 
@@ -287,12 +283,11 @@
                 <TextView
                     android:id="@+id/tv_current_distance"
                     android:layout_width="fill_parent"
-                    
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
+                    android:alpha="0.8"
                     android:gravity="center_horizontal"
                     android:text="本月里程"
-                    android:alpha="0.8"
                     android:textColor="@color/color_navy"
                     android:textSize="@dimen/content" />
             </LinearLayout>
@@ -307,8 +302,8 @@
             android:id="@+id/Liner_fuel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-             android:gravity="center"
             android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical" >
 
             <LinearLayout
@@ -336,8 +331,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
                 android:layout_marginBottom="5dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal" >
 
                 <ImageView
@@ -352,9 +347,9 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal" >
 
                     <ImageView
@@ -367,13 +362,12 @@
                         android:id="@+id/tv_oil"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                         android:layout_marginLeft="5dp"
-                        android:text="本月油耗"
+                        android:layout_marginLeft="5dp"
                         android:alpha="0.8"
+                        android:text="本月油耗"
                         android:textColor="@color/color_navy"
                         android:textSize="@dimen/content" />
                 </LinearLayout>
-
             </LinearLayout>
         </LinearLayout>
 
@@ -386,8 +380,8 @@
             android:id="@+id/Liner_fee"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-             android:gravity="center"
             android:layout_weight="1"
+            android:gravity="center"
             android:orientation="vertical" >
 
             <LinearLayout
@@ -412,30 +406,29 @@
                     android:textSize="@dimen/big_number" />
             </LinearLayout>
 
-             <LinearLayout
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/imgCost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:orientation="horizontal" >
+                    android:src="@drawable/ico_cost" />
 
-                    <ImageView
-                        android:id="@+id/imgCost"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ico_cost" />
-            
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                 android:layout_marginLeft="5dp"
-                android:text="本月花费"
-                android:alpha="0.8"
-                android:textColor="@color/color_navy"
-                android:textSize="@dimen/content" />
-            
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:alpha="0.8"
+                    android:gravity="center_horizontal"
+                    android:text="本月花费"
+                    android:textColor="@color/color_navy"
+                    android:textSize="@dimen/content" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

@@ -9,6 +9,13 @@
     <color name="blue_press">#50B7DE</color>
     <!-- 深蓝色字体 -->
     <color name="navy">#225065</color>
+    
+    <!-- 灰色字体颜色 -->
+    <color name="navy_gray">#aeaeae</color>
+     <!-- 浅蓝色字体 -->
+    <color name="navy_blue">#28b9ee</color>
+    
+    
     <!-- 蓝色，圆点 -->
     <color name="navy_light">#4C225065</color>
     <!-- 蓝色，登录 -->

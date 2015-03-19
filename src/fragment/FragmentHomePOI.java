@@ -3,6 +3,8 @@ package fragment;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import listener.OnCardMenuListener;
+
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.model.LatLng;
@@ -86,6 +88,7 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 		autoTextSearch = (AutoCompleteTextView) view
 				.findViewById(R.id.autoTextSearch);
 		autoTextSearch.setOnClickListener(this);
+		imgDown.setOnClickListener(this);
 		gridPOI = (CustomGridView) view.findViewById(R.id.gridPOI);
 		SimpleAdapter simpleAdapter = getAdapter();
 		gridPOI.setAdapter(simpleAdapter);
@@ -125,6 +128,11 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 			intent.putExtra("POI_FLAG", "address");
 			startActivity(intent);
 			break;
+		case R.id.imgDown:
+			if(onCardMenuListener != null){
+				onCardMenuListener.showCarMenu("weather");
+			}
+			break;
 		}
 		
 	}
@@ -144,6 +152,12 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 		intent.putExtra("keyWord", keyWord);
 		intent.putExtra("key", keyWord);
 		startActivity(intent);
+	}
+
+	OnCardMenuListener onCardMenuListener;
+	public void setOnCardMenuListener(OnCardMenuListener onCardMenuListener) {
+		this.onCardMenuListener = onCardMenuListener;
+		
 	}
 
 

@@ -330,7 +330,6 @@ public class FragmentHomeCarInfo extends Fragment {
 			TextView tv_fee = (TextView) v.findViewById(R.id.tv_fee);
 			TextView tv_fuel = (TextView) v.findViewById(R.id.tv_fuel);
 			TextView tv_name = (TextView) v.findViewById(R.id.tv_name);
-			TextView tv_xx = (TextView) v.findViewById(R.id.tv_xx);
 			TextView tv_adress = (TextView) v.findViewById(R.id.tv_adress);
 
 			v.findViewById(R.id.Liner_distance).setOnClickListener(onClickListener);
@@ -349,7 +348,6 @@ public class FragmentHomeCarInfo extends Fragment {
 			carView.setTv_fuel(tv_fuel);
 			carView.setTv_score(tv_score);
 			carView.setTv_title(tv_title);
-			carView.setTv_xx(tv_xx);
 			carView.setTv_adress(tv_adress);
 			carView.setTcv_drive(tcv_drive);
 			carView.setTv_drive(tv_drive);

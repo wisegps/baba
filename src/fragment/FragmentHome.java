@@ -119,6 +119,7 @@ public class FragmentHome extends Fragment {
 			// 周边信息卡片
 			transaction = fragmentManager.beginTransaction();
 			fragmetnHomePOI = new FragmentHomePOI();
+			fragmetnHomePOI.setOnCardMenuListener(onCardMenuListener);
 			transaction.add(R.id.ll_cards, fragmetnHomePOI);
 			transaction.commit();
 
