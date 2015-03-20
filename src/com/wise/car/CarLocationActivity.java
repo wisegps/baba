@@ -120,6 +120,8 @@ public class CarLocationActivity extends Activity {
 		app = (AppApplication) getApplication();
 		Intent intent = this.getIntent();
 		POI_FLAG = intent.getStringExtra("POI_FLAG");
+		
+		Log.i("CarLocationActivity", "onCreate POI_FLAG "+POI_FLAG);
 
 		ImageView iv_more = (ImageView) findViewById(R.id.iv_more);
 		iv_more.setOnClickListener(onClickListener);
@@ -1207,7 +1209,7 @@ public class CarLocationActivity extends Activity {
 		super.onResume();
 		mMapView.onResume();
 		mLocClient.start();
-			toSearchPOI();
+		toSearchPOI();
 	}
 
 	@Override
@@ -1220,8 +1222,11 @@ public class CarLocationActivity extends Activity {
 	}
 
 	public void toSearchPOI() {
-		if(POI_FLAG == null){
+		
+		if(POI_FLAG == null || POI_FLAG.equals("")){
+			POI_FLAG = null;
 			return;
+			
 		}
 		System.out.println("search poi");
 		new Handler().postDelayed(new Runnable() {

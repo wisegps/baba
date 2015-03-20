@@ -1,10 +1,12 @@
 package com.wise.baba.ui.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.wise.baba.R;
@@ -16,23 +18,23 @@ public class DialView extends View {
 	public Bitmap bmCursor; // 外层圆形状光标 circular cursor
 	public DialBitmapFactory dialFactory;
 	public Context context;
-
 	public float value = 72 ;
 	public DialView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.context = context;
 		init();
 	}
+	
+	
 
 	public void init() {
+		
 		bmColor = BitmapFactory.decodeResource(context.getResources(),
 				R.drawable.circle_dial_color);
 		bmGray = BitmapFactory.decodeResource(context.getResources(),
 				R.drawable.circle_dial_gray);
 		bmCursor = BitmapFactory.decodeResource(context.getResources(),
 				R.drawable.circle_cursor);
-		dialFactory = new DialBitmapFactory(bmColor.getWidth(),
-				bmColor.getHeight());
 	}
 
 	/**

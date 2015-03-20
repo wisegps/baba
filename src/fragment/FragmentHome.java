@@ -21,6 +21,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +50,6 @@ public class FragmentHome extends Fragment {
 	private static final String TAG = "FaultActivity";
 	/** 获取消息数据 **/
 	private static final int get_counter = 8;
-
 	ImageView iv_noti;
 	LinearLayout ll_cards;
 	private FragmentManager fragmentManager;
@@ -65,12 +65,15 @@ public class FragmentHome extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		Log.i("fragment", "onCreateView");
 		return inflater.inflate(R.layout.fragment_home, container, false);
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		Log.i("fragment", "onActivityCreated");
+		
 		app = (AppApplication) getActivity().getApplication();
 		ll_cards = (LinearLayout) getActivity().findViewById(R.id.ll_cards);
 		Button bt_show = (Button) getActivity().findViewById(R.id.bt_show);
@@ -107,7 +110,8 @@ public class FragmentHome extends Fragment {
 
 	/** 显示卡片布局 **/
 	private void getCards() {
-		System.out.println("设置卡片布局");
+		
+		Log.i("fragment", "设置卡片布局");
 
 		// 默认显示的布局
 		if (app.cust_type == Info.ServiceProvider) {// 服务商
@@ -350,6 +354,8 @@ public class FragmentHome extends Fragment {
 
 	@Override
 	public void onResume() {
+		
+		Log.i("fragment", "onResume");
 		super.onResume();
 		setNotiView();
 		MobclickAgent.onResume(getActivity());

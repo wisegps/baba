@@ -106,29 +106,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
-            <com.wise.state.TasksCompletedView
-                android:id="@+id/tasks_view"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_centerHorizontal="true"
-                android:alpha="0.01"
-                tc:circleColor="@color/ring_bg_color"
-                tc:radius="60dp"
-                tc:ringColor="@color/ring_color"
-                tc:strokeWidth="10dp" />
 
             <ImageView
-                android:id="@+id/imgCircle"
-                android:layout_width="159.2dp"
-                android:layout_height="125.6dp"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/circle" />
+                android:id="@+id/imgHealthScore"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_centerInParent="true" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/imgCircle"
-                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
                 android:gravity="center_horizontal"
                 android:orientation="vertical" >
 
@@ -142,7 +130,6 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
                     android:orientation="horizontal" >
 
                     <TextView
@@ -171,28 +158,15 @@
             android:layout_height="wrap_content" >
 
             <ImageView
-                android:id="@+id/imgCircle1"
-                android:layout_width="159.2dp"
-                android:layout_height="125.6dp"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/circle" />
-
-            <com.wise.state.TasksCompletedView
-                android:id="@+id/tcv_drive"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_centerHorizontal="true"
-                android:alpha="0.01"
-                tc:circleColor="@color/ring_bg_color"
-                tc:radius="60dp"
-                tc:ringColor="@color/ring_color"
-                tc:strokeWidth="10dp" />
+                android:id="@+id/imgDriveScore"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_centerInParent="true" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/imgCircle1"
-                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
                 android:gravity="center_horizontal"
                 android:orientation="vertical" >
 
