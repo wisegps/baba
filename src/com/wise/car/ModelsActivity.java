@@ -474,7 +474,7 @@ public class ModelsActivity extends Activity implements IXListViewListener {
 				intent.putExtra("brankId", carBrankId);
 				intent.putExtra("series", carSerie);
 				intent.putExtra("seriesId", carSeriesId);
-				intent.putExtra("typeId", "");
+				intent.putExtra("typeId", "0");
 				intent.putExtra("type", "");
 				intent.putExtra("logo", logoUrl);
 				ModelsActivity.this.setResult(1, intent);
