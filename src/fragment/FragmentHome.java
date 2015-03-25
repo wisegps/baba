@@ -62,12 +62,34 @@ public class FragmentHome extends Fragment {
 	FragmentWeather fragmentWeather;
 	FragmentHotNews fragmentHotNews;
 	FragmentHomePOI fragmetnHomePOI;
-
 	private View rootView;
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		Log.i("fragment", "onCreate");
+		super.onCreate(savedInstanceState);
+	}
+
+
+
+	@Override
+	public void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+	}
+
+
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+	}
+
+
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
+		Log.i("fragment", "onCreateView");
 		if(rootView == null){
 			rootView = inflater.inflate(R.layout.fragment_home, container,
 					false);
@@ -85,7 +107,6 @@ public class FragmentHome extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
 		Log.i("fragment", "onActivityCreated");
 		app = (AppApplication) getActivity().getApplication();
 		ll_cards = (LinearLayout) getActivity().findViewById(R.id.ll_cards);
@@ -102,7 +123,6 @@ public class FragmentHome extends Fragment {
 		getActivity().findViewById(R.id.iv_location_hot).setOnClickListener(
 				onClickListener);
 		fragmentManager = getActivity().getSupportFragmentManager();
-		
 		if (Judge.isLogin(app)) {// 已登录
 			GetSystem.myLog(TAG, "已登录,app.carDatas = " + app.carDatas.size());
 			getCounter();
@@ -115,7 +135,10 @@ public class FragmentHome extends Fragment {
 			startActivity(intent);
 		}
 		
-		getCards();
+		
+		resetAllView();
+		//getCards();
+		
 
 	}
 
@@ -124,12 +147,9 @@ public class FragmentHome extends Fragment {
 
 	/** 显示卡片布局 **/
 	private void getCards() {
-			ViewGroup group = (ViewGroup) this.getActivity().findViewById(R.id.ll_cards);
-			group.removeAllViews();
 		Log.i("fragment", "设置卡片布局");
 		// 默认显示的布局
 		if (app.cust_type == Info.ServiceProvider) {// 服务商
-			
 			Log.i("fragment", "设置服务商卡片布局");
 			transaction = fragmentManager.beginTransaction();
 			fragmentService = new FragmentService();
@@ -140,15 +160,9 @@ public class FragmentHome extends Fragment {
 			// 周边信息卡片
 			transaction = fragmentManager.beginTransaction();
 			fragmetnHomePOI = new FragmentHomePOI();
-			fragmetnHomePOI.setOnCardMenuListener(onCardMenuListener);
-			transaction.add(R.id.ll_cards, fragmetnHomePOI,"test");
+			transaction.add(R.id.ll_cards, fragmetnHomePOI,"POI");
 			transaction.commit();
 
-			// // 新车辆卡片
-			// transaction = fragmentManager.beginTransaction();
-			// fragmentHomeCarInfo = new FragmentHomeCarInfo();
-			// transaction.add(R.id.ll_cards, fragmentHomeCarInfo);
-			// transaction.commit();
 
 			Log.i("fragment", "设置车辆卡片布局");
 			// 车辆卡片
@@ -169,18 +183,17 @@ public class FragmentHome extends Fragment {
 				.getSharedPreferences("card_choose", Activity.MODE_PRIVATE);
 		String cardsJson = sharedPreferences.getString("cardsJson", "");
 		if (cardsJson.equals("")) {// 默认显示天气和新闻
-			
-			Log.i("fragment", "设置天气卡片布局");
+			Log.i("fragment", "设置天气卡片布局1");
 			transaction = fragmentManager.beginTransaction();
 			fragmentWeather = new FragmentWeather();
-			fragmentWeather.setOnCardMenuListener(onCardMenuListener);
+			//fragmentWeather.setOnCardMenuListener(onCardMenuListener);
 			transaction.add(R.id.ll_cards, fragmentWeather);
 			transaction.commit();
 
-			Log.i("fragment", "设置新闻卡片布局");
+			Log.i("fragment", "设置新闻卡片布局1");
 			transaction = fragmentManager.beginTransaction();
 			fragmentHotNews = new FragmentHotNews();
-			fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
+			//fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
 			transaction.add(R.id.ll_cards, fragmentHotNews);
 			transaction.commit();
 		} else {
@@ -191,21 +204,19 @@ public class FragmentHome extends Fragment {
 					String cardName = object.getString("cardName");
 					if (cardName.equals("weather")) {
 						
-						Log.i("fragment", "设置天气卡片布局");
+						Log.i("fragment", "设置天气卡片布局2");
 						transaction = fragmentManager.beginTransaction();
 						fragmentWeather = new FragmentWeather();
-						fragmentWeather
-								.setOnCardMenuListener(onCardMenuListener);
+						//fragmentWeather.setOnCardMenuListener(onCardMenuListener);
 						transaction.add(R.id.ll_cards, fragmentWeather);
 						cardNames.add("weather");
 						transaction.commit();
 					} else if (cardName.equals("hotNews")) {
 						
-						Log.i("fragment", "设置新闻卡片布局");
+						Log.i("fragment", "设置新闻卡片布局2");
 						transaction = fragmentManager.beginTransaction();
 						fragmentHotNews = new FragmentHotNews();
-						fragmentHotNews
-								.setOnCardMenuListener(onCardMenuListener);
+						//fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
 						transaction.add(R.id.ll_cards, fragmentHotNews);
 						cardNames.add("hotNews");
 						transaction.commit();
@@ -324,6 +335,16 @@ public class FragmentHome extends Fragment {
 		}
 	}
 
+	
+	public void removeFragment(String tag){
+		
+		Fragment fragment = fragmentManager.findFragmentByTag(tag);
+		if(fragment!= null && fragment.isAdded()){
+			Log.i("fragment", "remove fragment"+tag);
+			fragmentManager.beginTransaction().remove(fragment).commit();
+		}
+		
+	}
 	/** 刷新车辆卡片 **/
 	public void refreshCarInfo() {
 		fragmentCarInfo.initDataView();
@@ -385,8 +406,7 @@ public class FragmentHome extends Fragment {
 		super.onResume();
 		setNotiView();
 		MobclickAgent.onResume(getActivity());
-		System.out.println("isChange = " + isChange + " , app.cust_type = "
-				+ app.cust_type);
+		Log.i("fragment", "isChange" + isChange);
 		if (isChange) {
 			isChange = false;
 			// 加载对应的view

@@ -259,11 +259,9 @@ public class MainActivity extends FragmentActivity {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			GetSystem.myLog(TAG, action);
-			FragmentHome fragmentHome = (FragmentHome) fragmentManager.findFragmentByTag("home");
-			FragmentNotice fragmentNotice = (FragmentNotice) fragments
-					.get("message");
-			FragmentFriend fragmentFriend = (FragmentFriend) fragments
-					.get("friend");
+			FragmentHome fragmentHome = (FragmentHome) fragments.get("home");
+			FragmentNotice fragmentNotice = (FragmentNotice) fragments.get("message");
+			FragmentFriend fragmentFriend = (FragmentFriend) fragments.get("friend");
 			if (action.equals(Constant.A_RefreshHomeCar)) {
 				if (fragmentHome != null) {
 					fragmentHome.refreshCarInfo();

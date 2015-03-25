@@ -47,7 +47,6 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 	private AutoCompleteTextView autoTextSearch;// 搜索框
 	private CustomGridView gridPOI = null;// 周边信息
 	private View view;
-
 	/**
 	 * 
 	 * @周边信息GridView适配器
@@ -83,7 +82,16 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		view = inflater.inflate(R.layout.fragment_home_poi, container, false);
+		if(view == null){
+			view = inflater.inflate(R.layout.fragment_home_poi, container,
+					false);
+		}else{
+			ViewGroup parent = (ViewGroup) view.getParent();
+			if (null != parent) {
+				parent.removeView(view);
+			}
+		}
+		
 		imgDown = (ImageView) view.findViewById(R.id.imgDown);
 		autoTextSearch = (AutoCompleteTextView) view
 				.findViewById(R.id.autoTextSearch);
@@ -94,6 +102,9 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 		gridPOI.setAdapter(simpleAdapter);
 		simpleAdapter.notifyDataSetChanged();
 		gridPOI.setOnItemClickListener(this);
+		
+		
+		
 		return view;
 	}
 
