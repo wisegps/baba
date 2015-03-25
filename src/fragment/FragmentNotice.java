@@ -61,10 +61,19 @@ public class FragmentNotice extends Fragment implements IXListViewListener {
 	XListView lv_notice;
 	List<NoticeData> noticeDatas = new ArrayList<NoticeData>();
 	AppApplication app;
-
+	private View rootView;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_notice, container, false);
+		if(rootView == null){
+			rootView = inflater.inflate(R.layout.fragment_notice, container,
+					false);
+		}else{
+			ViewGroup parent = (ViewGroup) rootView.getParent();
+			if (null != parent) {
+				parent.removeView(rootView);
+			}
+		}
+		return rootView;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package fragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import listener.OnCardMenuListener;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,18 +63,30 @@ public class FragmentHome extends Fragment {
 	FragmentHotNews fragmentHotNews;
 	FragmentHomePOI fragmetnHomePOI;
 
+	private View rootView;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.i("fragment", "onCreateView");
-		return inflater.inflate(R.layout.fragment_home, container, false);
+		
+		if(rootView == null){
+			rootView = inflater.inflate(R.layout.fragment_home, container,
+					false);
+		}else{
+			ViewGroup parent = (ViewGroup) rootView.getParent();
+			if (null != parent) {
+				parent.removeView(rootView);
+			}
+		}
+		return rootView;
 	}
+
+
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		Log.i("fragment", "onActivityCreated");
 		
+		Log.i("fragment", "onActivityCreated");
 		app = (AppApplication) getActivity().getApplication();
 		ll_cards = (LinearLayout) getActivity().findViewById(R.id.ll_cards);
 		Button bt_show = (Button) getActivity().findViewById(R.id.bt_show);
@@ -88,9 +101,8 @@ public class FragmentHome extends Fragment {
 		iv_menu.setOnClickListener(onClickListener);
 		getActivity().findViewById(R.id.iv_location_hot).setOnClickListener(
 				onClickListener);
-
 		fragmentManager = getActivity().getSupportFragmentManager();
-
+		
 		if (Judge.isLogin(app)) {// 已登录
 			GetSystem.myLog(TAG, "已登录,app.carDatas = " + app.carDatas.size());
 			getCounter();
@@ -102,7 +114,9 @@ public class FragmentHome extends Fragment {
 			Intent intent = new Intent(getActivity(), LoginActivity.class);
 			startActivity(intent);
 		}
+		
 		getCards();
+
 	}
 
 	List<String> cardNames = new ArrayList<String>();
@@ -110,35 +124,40 @@ public class FragmentHome extends Fragment {
 
 	/** 显示卡片布局 **/
 	private void getCards() {
-		
+			ViewGroup group = (ViewGroup) this.getActivity().findViewById(R.id.ll_cards);
+			group.removeAllViews();
 		Log.i("fragment", "设置卡片布局");
-
 		// 默认显示的布局
 		if (app.cust_type == Info.ServiceProvider) {// 服务商
+			
+			Log.i("fragment", "设置服务商卡片布局");
 			transaction = fragmentManager.beginTransaction();
 			fragmentService = new FragmentService();
 			transaction.add(R.id.ll_cards, fragmentService);
 			transaction.commit();
 		} else {
+			Log.i("fragment", "设置周边卡片布局");
 			// 周边信息卡片
 			transaction = fragmentManager.beginTransaction();
 			fragmetnHomePOI = new FragmentHomePOI();
 			fragmetnHomePOI.setOnCardMenuListener(onCardMenuListener);
-			transaction.add(R.id.ll_cards, fragmetnHomePOI);
+			transaction.add(R.id.ll_cards, fragmetnHomePOI,"test");
 			transaction.commit();
 
-//			// 新车辆卡片
-//			transaction = fragmentManager.beginTransaction();
-//			fragmentHomeCarInfo = new FragmentHomeCarInfo();
-//			transaction.add(R.id.ll_cards, fragmentHomeCarInfo);
-//			transaction.commit();
+			// // 新车辆卡片
+			// transaction = fragmentManager.beginTransaction();
+			// fragmentHomeCarInfo = new FragmentHomeCarInfo();
+			// transaction.add(R.id.ll_cards, fragmentHomeCarInfo);
+			// transaction.commit();
 
+			Log.i("fragment", "设置车辆卡片布局");
 			// 车辆卡片
 			transaction = fragmentManager.beginTransaction();
 			fragmentCarInfo = new FragmentCarInfo();
 			transaction.add(R.id.ll_cards, fragmentCarInfo);
 			transaction.commit();
 
+			Log.i("fragment", "设置消息卡片布局");
 			// 滚动消息卡片
 			transaction = fragmentManager.beginTransaction();
 			fragmentScrollMessage = new FragmentScrollMessage();
@@ -150,12 +169,15 @@ public class FragmentHome extends Fragment {
 				.getSharedPreferences("card_choose", Activity.MODE_PRIVATE);
 		String cardsJson = sharedPreferences.getString("cardsJson", "");
 		if (cardsJson.equals("")) {// 默认显示天气和新闻
+			
+			Log.i("fragment", "设置天气卡片布局");
 			transaction = fragmentManager.beginTransaction();
 			fragmentWeather = new FragmentWeather();
 			fragmentWeather.setOnCardMenuListener(onCardMenuListener);
 			transaction.add(R.id.ll_cards, fragmentWeather);
 			transaction.commit();
 
+			Log.i("fragment", "设置新闻卡片布局");
 			transaction = fragmentManager.beginTransaction();
 			fragmentHotNews = new FragmentHotNews();
 			fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
@@ -168,6 +190,8 @@ public class FragmentHome extends Fragment {
 					JSONObject object = jsonArray.getJSONObject(i);
 					String cardName = object.getString("cardName");
 					if (cardName.equals("weather")) {
+						
+						Log.i("fragment", "设置天气卡片布局");
 						transaction = fragmentManager.beginTransaction();
 						fragmentWeather = new FragmentWeather();
 						fragmentWeather
@@ -176,6 +200,8 @@ public class FragmentHome extends Fragment {
 						cardNames.add("weather");
 						transaction.commit();
 					} else if (cardName.equals("hotNews")) {
+						
+						Log.i("fragment", "设置新闻卡片布局");
 						transaction = fragmentManager.beginTransaction();
 						fragmentHotNews = new FragmentHotNews();
 						fragmentHotNews
@@ -354,7 +380,7 @@ public class FragmentHome extends Fragment {
 
 	@Override
 	public void onResume() {
-		
+
 		Log.i("fragment", "onResume");
 		super.onResume();
 		setNotiView();
@@ -363,57 +389,54 @@ public class FragmentHome extends Fragment {
 				+ app.cust_type);
 		if (isChange) {
 			isChange = false;
-			// 删除所有view
-			if (fragmentService != null) {
-				FragmentTransaction transaction = fragmentManager
-						.beginTransaction();
-				transaction.remove(fragmentService);
-				transaction.commit();
-				fragmentService = null;
-			}
-			
-			if (fragmetnHomePOI != null) {
-				FragmentTransaction transaction = fragmentManager
-						.beginTransaction();
-				transaction.remove(fragmetnHomePOI);
-				transaction.commit();
-				fragmetnHomePOI = null;
-			}
-			
-			if (fragmentCarInfo != null) {
-				FragmentTransaction transaction = fragmentManager
-						.beginTransaction();
-				System.out.println("remove fragmentCarInfo");
-				transaction.remove(fragmentCarInfo);
-				transaction.commit();
-				fragmentCarInfo = null;
-			}
-			if (fragmentScrollMessage != null) {
-				FragmentTransaction transaction = fragmentManager
-						.beginTransaction();
-				System.out.println("remove fragmentScrollMessage");
-				transaction.remove(fragmentScrollMessage);
-				transaction.commit();
-				fragmentScrollMessage = null;
-			}
-			if (fragmentWeather != null) {
-				FragmentTransaction transaction = fragmentManager
-						.beginTransaction();
-				System.out.println("remove fragmentWeather");
-				transaction.remove(fragmentWeather);
-				transaction.commit();
-				fragmentWeather = null;
-			}
-			if (fragmentHotNews != null) {
-				FragmentTransaction transaction = fragmentManager
-						.beginTransaction();
-				System.out.println("remove fragmentHotNews");
-				transaction.remove(fragmentHotNews);
-				transaction.commit();
-				fragmentHotNews = null;
-			}
 			// 加载对应的view
 			getCards();
+		}
+	}
+
+	public void removeAllFragments() {
+		// 删除所有view
+		if (fragmentService != null) {
+			transaction = fragmentManager.beginTransaction();
+			transaction.remove(fragmentService);
+			transaction.commit();
+			fragmentService = null;
+		}
+
+		if (fragmetnHomePOI != null) {
+			transaction = fragmentManager.beginTransaction();
+			transaction.remove(fragmetnHomePOI);
+			transaction.commit();
+			fragmetnHomePOI = null;
+		}
+
+		if (fragmentCarInfo != null) {
+			transaction = fragmentManager.beginTransaction();
+			System.out.println("remove fragmentCarInfo");
+			transaction.remove(fragmentCarInfo);
+			transaction.commit();
+			fragmentCarInfo = null;
+		}
+		if (fragmentScrollMessage != null) {
+			transaction = fragmentManager.beginTransaction();
+			System.out.println("remove fragmentScrollMessage");
+			transaction.remove(fragmentScrollMessage);
+			transaction.commit();
+			fragmentScrollMessage = null;
+		}
+		if (fragmentWeather != null) {
+			transaction = fragmentManager.beginTransaction();
+			System.out.println("remove fragmentWeather");
+			transaction.remove(fragmentWeather);
+			transaction.commit();
+			fragmentWeather = null;
+		}
+		if (fragmentHotNews != null) {
+			transaction = fragmentManager.beginTransaction();
+			System.out.println("remove fragmentHotNews");
+			transaction.remove(fragmentHotNews);
+			transaction.commit();
+			fragmentHotNews = null;
 		}
 	}
 
@@ -515,6 +538,7 @@ public class FragmentHome extends Fragment {
 			mPopupWindow.showAtLocation(ll_cards, Gravity.BOTTOM, 0, 0);
 		}
 	};
+	
 
 	/** 删除卡片后保存最新的数据在本地 **/
 	private void setCardsInSharedPreferences() {
@@ -534,4 +558,5 @@ public class FragmentHome extends Fragment {
 		editor.putString("cardsJson", jsonArray.toString());
 		editor.commit();
 	}
+
 }

@@ -33,10 +33,20 @@ public class FragmentMore extends Fragment {
 	public static final int REMIND = 4;// 提醒
 	
 	AppApplication app;
-
+	private View rootView;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_more, container, false);
+		if(rootView == null){
+			rootView = inflater.inflate(R.layout.fragment_more, container,
+					false);
+		}else{
+			ViewGroup parent = (ViewGroup) rootView.getParent();
+			if (null != parent) {
+				parent.removeView(rootView);
+			}
+		}
+		return rootView;
+		
 	}
 
 	@Override

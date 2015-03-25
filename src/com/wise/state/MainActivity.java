@@ -1,5 +1,9 @@
 package com.wise.state;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import listener.OnFinishListener;
 
 import org.json.JSONObject;
@@ -14,9 +18,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -49,17 +58,17 @@ public class MainActivity extends FragmentActivity {
 	private static final String TAG = "MainActivity";
 	private FragmentManager fragmentManager;
 	MyBroadCastReceiver myBroadCastReceiver;
-	FragmentHome fragmentHome;
-	FragmentNotice fragmentNotice;
-	FragmentFriend fragmentFriend;
-	FragmentMore fragmentMore;
+	// FragmentHome fragmentHome;
+	// FragmentNotice fragmentNotice;
+	// FragmentFriend fragmentFriend;
+	// FragmentMore fragmentMore;
+	HashMap<String, Fragment> fragments = new HashMap<String, Fragment>();
 
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
-
 		Button bt_home = (Button) findViewById(R.id.bt_home);
 		bt_home.setOnClickListener(onClickListener);
 		Button bt_info = (Button) findViewById(R.id.bt_info);
@@ -69,18 +78,15 @@ public class MainActivity extends FragmentActivity {
 		Button bt_set = (Button) findViewById(R.id.bt_set);
 		bt_set.setOnClickListener(onClickListener);
 
-		System.out.println("onCreate");
+		Log.i("MainActivity", "onCreate");
 		fragmentManager = getSupportFragmentManager();
-		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		fragmentHome = new FragmentHome();
-		transaction.add(R.id.ll_content, fragmentHome);
-		transaction.commit();
-		fragmentHome.setOnExitListener(new OnExitListener() {
-			@Override
-			public void exit() {
-				finish();
-			}
-		});
+		showFragment("home");
+		// fragmentHome.setOnExitListener(new OnExitListener() {
+		// @Override
+		// public void exit() {
+		// finish();
+		// }
+		// });
 
 		myBroadCastReceiver = new MyBroadCastReceiver();
 		IntentFilter intentFilter = new IntentFilter();
@@ -93,18 +99,22 @@ public class MainActivity extends FragmentActivity {
 		// 从通知栏跳转
 		boolean isSpecify = getIntent().getBooleanExtra("isSpecify", false);
 		if (isSpecify) {
-			String extras = getIntent().getExtras().getString(JPushInterface.EXTRA_EXTRA);
+			String extras = getIntent().getExtras().getString(
+					JPushInterface.EXTRA_EXTRA);
 			try {
 				JSONObject jsonObject = new JSONObject(extras);
 				int msg_type = jsonObject.getInt("msg_type");
-				if(msg_type == 1){//提醒界面
-			        Intent intent = new Intent(MainActivity.this, RemindListActivity.class);
-			        startActivity(intent);
-				}else if(msg_type == 4){//违章界面
-					Intent intent = new Intent(MainActivity.this, TrafficActivity.class);
-			        startActivity(intent);
-				}else{//跳转到通知界面
-					Intent nIntent = new Intent(MainActivity.this, NoticeActivity.class);
+				if (msg_type == 1) {// 提醒界面
+					Intent intent = new Intent(MainActivity.this,
+							RemindListActivity.class);
+					startActivity(intent);
+				} else if (msg_type == 4) {// 违章界面
+					Intent intent = new Intent(MainActivity.this,
+							TrafficActivity.class);
+					startActivity(intent);
+				} else {// 跳转到通知界面
+					Intent nIntent = new Intent(MainActivity.this,
+							NoticeActivity.class);
 					nIntent.putExtra("isSpecify", isSpecify);
 					nIntent.putExtras(getIntent().getExtras());
 					startActivity(nIntent);
@@ -113,7 +123,7 @@ public class MainActivity extends FragmentActivity {
 				e.printStackTrace();
 			}
 		}
-		/**定位**/
+		/** 定位 **/
 		new GetLocation(this);
 		UmengUpdateAgent.update(MainActivity.this);
 		/** 开启线程初始化表情 **/
@@ -124,16 +134,18 @@ public class MainActivity extends FragmentActivity {
 			}
 		}).start();
 		// 初始化导航，必须
-		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(), mNaviEngineInitListener, new LBSAuthManagerListener() {
-			@Override
-			public void onAuthResult(int status, String msg) {
-				
-			}
-		});
+		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(),
+				mNaviEngineInitListener, new LBSAuthManagerListener() {
+					@Override
+					public void onAuthResult(int status, String msg) {
+
+					}
+				});
 	}
 
 	private String getSdcardDir() {
-		if (Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
+		if (Environment.getExternalStorageState().equalsIgnoreCase(
+				Environment.MEDIA_MOUNTED)) {
 			return Environment.getExternalStorageDirectory().toString();
 		}
 		return null;
@@ -154,72 +166,92 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.bt_home: {
-				fragmentManager = getSupportFragmentManager();
-				FragmentTransaction transaction = fragmentManager.beginTransaction();
-				hideFragments(transaction);
-				if (fragmentHome == null) {
-					fragmentHome = new FragmentHome();
-					transaction.add(R.id.ll_content, fragmentHome);
-					transaction.commit();
-				} else {
-					transaction.show(fragmentHome);
-					transaction.commit();
-				}
-			}
-
+			case R.id.bt_home:
+				showFragment("home");
 				break;
 
-			case R.id.bt_info: {
-				fragmentManager = getSupportFragmentManager();
-				FragmentTransaction transaction = fragmentManager.beginTransaction();
-				hideFragments(transaction);
-				if (fragmentNotice == null) {
-					fragmentNotice = new FragmentNotice();
-					transaction.add(R.id.ll_content, fragmentNotice);
-					transaction.commit();
-				} else {
-					transaction.show(fragmentNotice);
-					transaction.commit();
-				}
-			}
-
+			case R.id.bt_info:
+				showFragment("message");
 				break;
-			case R.id.bt_friend: {
-				fragmentManager = getSupportFragmentManager();
-				FragmentTransaction transaction = fragmentManager.beginTransaction();
-				hideFragments(transaction);
-				if (fragmentFriend == null) {
-					fragmentFriend = new FragmentFriend();
-					transaction.add(R.id.ll_content, fragmentFriend);
-					transaction.commit();
-				} else {
-					transaction.show(fragmentFriend);
-					transaction.commit();
-				}
-			}
-
+			case R.id.bt_friend:
+				showFragment("friend");
 				break;
 			case R.id.bt_set:
-				showMore();
+				showFragment("setting");
 				break;
 			}
 		}
 	};
 
-	private void hideFragments(FragmentTransaction transaction) {
-		if (fragmentHome != null) {
-			transaction.hide(fragmentHome);
+	/**
+	 * 
+	 * @param 显示某个fragment
+	 */
+	public void showFragment(String name) {
+		Log.i("MainActivity", "显示fragment: " + name);
+		// 开启一个事务
+
+		FragmentTransaction trans;
+		// 添加相应的fragment
+		Fragment fragment = fragments.get(name);
+
+		if (fragment == null) {
+			Log.i("MainActivity", "显示fragment  为空");
+			if (name.equals("home")) {// 首页
+				fragment = new FragmentHome();
+				OnExitListener exitListener = new OnExitListener() {
+					@Override
+					public void exit() {
+						finish();
+					}
+				};
+				((FragmentHome) fragment).setOnExitListener(exitListener);
+			} else if (name.equals("message")) {// 信息
+				fragment = new FragmentNotice();
+			} else if (name.equals("friend")) {// 好友
+				fragment = new FragmentFriend();
+			} else if (name.equals("setting")) {// 设置
+				fragment = new FragmentMore();
+				OnFinishListener finishListener = new OnFinishListener() {
+					@Override
+					public void onFinish() {
+						finish();
+					}
+				};
+				((FragmentMore) fragment).setOnFinishListener(finishListener);
+			}
+
+			fragments.put(name, fragment);
+			Fragment last = fragmentManager.findFragmentByTag(name);
+			trans = fragmentManager.beginTransaction();
+			if(last != null && last.isAdded()){
+				Log.i("MainActivity", "删除一个fragment");
+				trans.remove(last).commit();
+			}
+			trans = fragmentManager.beginTransaction();
+			trans.add(R.id.content, fragment, name).commit();
 		}
-		if (fragmentNotice != null) {
-			transaction.hide(fragmentNotice);
+
+		
+
+		// 先隐藏所有fragment
+		Iterator<String> keys = fragments.keySet().iterator();
+		while (keys.hasNext()) {
+			trans = fragmentManager.beginTransaction();
+			String key = (String) keys.next();
+			Fragment value = fragments.get(key);
+			if (value != null) {
+				trans.hide(value);
+				trans.commit();
+			}
 		}
-		if (fragmentFriend != null) {
-			transaction.hide(fragmentFriend);
-		}
-		if (fragmentMore != null) {
-			transaction.hide(fragmentMore);
-		}
+		
+
+		trans = fragmentManager.beginTransaction();
+		// 然后显示所要显示的fragment
+		trans.show(fragment);
+		trans.commit();
+
 	}
 
 	class MyBroadCastReceiver extends BroadcastReceiver {
@@ -227,11 +259,17 @@ public class MainActivity extends FragmentActivity {
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
 			GetSystem.myLog(TAG, action);
+			FragmentHome fragmentHome = (FragmentHome) fragmentManager.findFragmentByTag("home");
+			FragmentNotice fragmentNotice = (FragmentNotice) fragments
+					.get("message");
+			FragmentFriend fragmentFriend = (FragmentFriend) fragments
+					.get("friend");
 			if (action.equals(Constant.A_RefreshHomeCar)) {
 				if (fragmentHome != null) {
 					fragmentHome.refreshCarInfo();
 				}
 			} else if (action.equals(Constant.A_Login)) {// 登录
+
 				if (fragmentHome != null) {
 					fragmentHome.resetAllView();//
 				}
@@ -241,7 +279,7 @@ public class MainActivity extends FragmentActivity {
 				if (fragmentFriend != null) {
 					fragmentFriend.getFriendData();// 获取好友
 				}
-			} else if (action.equals(Constant.A_LoginOut)) {//注销账号
+			} else if (action.equals(Constant.A_LoginOut)) {// 注销账号
 				if (fragmentHome != null) {
 					fragmentHome.setLoginOutView();// 通知首页账号注销
 				}
@@ -260,28 +298,8 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		showMore();
+		showFragment("setting");
 		return true;
-	}
-	private void showMore(){
-		fragmentManager = getSupportFragmentManager();
-		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		hideFragments(transaction);
-		if (fragmentMore == null) {
-			fragmentMore = new FragmentMore();
-			fragmentMore.setOnFinishListener(new OnFinishListener() {
-				@Override
-				public void onFinish() {
-					finish();
-				}
-			});
-			
-			transaction.add(R.id.ll_content, fragmentMore);
-			transaction.commit();
-		} else {
-			transaction.show(fragmentMore);
-			transaction.commit();
-		}
 	}
 
 	@Override
@@ -306,8 +324,31 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	@Override
+	public void finish() {
+		Log.i("MainActivity", "finish");
+		// TODO Auto-generated method stub
+		super.finish();
+
+		// 删除所有fragment
+		FragmentTransaction trans = null;
+		String name[] = {"home","msg","friend","setting"};
+		for(int i=0;i<name.length;i++){
+			Fragment last = fragmentManager.findFragmentByTag(name[i]);
+			if(last !=null){
+				trans = fragmentManager.beginTransaction();
+				trans.remove(last).commit();
+			}
+			
+		}
+		
+
+	}
+
+	@Override
 	protected void onDestroy() {
+
 		super.onDestroy();
 		unregisterReceiver(myBroadCastReceiver);
 	}
+
 }

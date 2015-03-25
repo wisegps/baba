@@ -57,6 +57,7 @@ import data.FriendSearch;
 
 /**
  * 好友列表
+ * 
  * @author honesty
  **/
 public class FragmentFriend extends Fragment {
@@ -73,9 +74,23 @@ public class FragmentFriend extends Fragment {
 	private SideBar sideBar = null; // 右侧字母索引栏
 	private final PinyinComparator comparator = new PinyinComparator(); // 根据拼音排序
 	CharacterParser characterParser = new CharacterParser().getInstance(); // 将汉字转成拼音
+
+	private View rootView;
+
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_friend, container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+
+		if (rootView == null) {
+			rootView = inflater.inflate(R.layout.fragment_friend, container,
+					false);
+		} else {
+			ViewGroup parent = (ViewGroup) rootView.getParent();
+			if (null != parent) {
+				parent.removeView(rootView);
+			}
+		}
+		return rootView;
 	}
 
 	@Override
@@ -94,26 +109,25 @@ public class FragmentFriend extends Fragment {
 		lv_friend.setOnItemClickListener(onItemClickListener);
 		lv_friend.setOnScrollListener(onScrollListener);
 		getFriendData();
-		
-		letterIndex = (TextView)  getActivity().findViewById(R.id.dialog);
-		sideBar = (SideBar)  getActivity().findViewById(R.id.sidrbar);
+
+		letterIndex = (TextView) getActivity().findViewById(R.id.dialog);
+		sideBar = (SideBar) getActivity().findViewById(R.id.sidrbar);
 		sideBar.setTextView(letterIndex); // 选中某个拼音索引 提示框显示
 		sideBar.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
 			@Override
 			public void onTouchingLetterChanged(String s) {
-				
+
 				for (int i = 0; i < app.friendDatas.size(); i++) {
 					FriendData friend = app.friendDatas.get(i);
 					String letter = friend.getGroup_letter();
-					if (letter!=null&& letter.equals(s)) {
+					if (letter != null && letter.equals(s)) {
 						lv_friend.setSelection(i);
 						break;
 					}
 				}
 			}
 		});
-		
-		
+
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -127,7 +141,8 @@ public class FragmentFriend extends Fragment {
 				startActivity(new Intent(getActivity(), FriendAddActivity.class));
 				break;
 			case R.id.tv_camera:
-				startActivityForResult(new Intent(getActivity(), BarcodeActivity.class), 1);
+				startActivityForResult(new Intent(getActivity(),
+						BarcodeActivity.class), 1);
 				break;
 			}
 		}
@@ -148,12 +163,15 @@ public class FragmentFriend extends Fragment {
 			case searchById:
 				System.out.println("searchById");
 				List<FriendSearch> friends = (List<FriendSearch>) msg.obj;
-				if(friends==null || friends.size()<1){
-					Toast.makeText(FragmentFriend.this.getActivity(), "暂无记录", Toast.LENGTH_SHORT).show();
+				if (friends == null || friends.size() < 1) {
+					Toast.makeText(FragmentFriend.this.getActivity(), "暂无记录",
+							Toast.LENGTH_SHORT).show();
 					break;
 				}
-				Intent intent = new Intent(getActivity(), FriendDetailActivity.class);
-				intent.putExtra(Info.FriendStatusKey, Info.FriendStatus.FriendAddFromId);
+				Intent intent = new Intent(getActivity(),
+						FriendDetailActivity.class);
+				intent.putExtra(Info.FriendStatusKey,
+						Info.FriendStatus.FriendAddFromId);
 				intent.putExtra("friend", friends.get(0));
 				startActivityForResult(intent, 2);
 				break;
@@ -165,39 +183,49 @@ public class FragmentFriend extends Fragment {
 
 	private void showMenu() {
 		LayoutInflater mLayoutInflater = LayoutInflater.from(getActivity());
-		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_add_friend, null);
-		TextView tv_add_friend = (TextView) popunwindwow.findViewById(R.id.tv_add_friend);
+		View popunwindwow = mLayoutInflater.inflate(R.layout.pop_add_friend,
+				null);
+		TextView tv_add_friend = (TextView) popunwindwow
+				.findViewById(R.id.tv_add_friend);
 		tv_add_friend.setOnClickListener(onClickListener);
-		TextView tv_camera = (TextView) popunwindwow.findViewById(R.id.tv_camera);
+		TextView tv_camera = (TextView) popunwindwow
+				.findViewById(R.id.tv_camera);
 		tv_camera.setOnClickListener(onClickListener);
-		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		mPopupWindow = new PopupWindow(popunwindwow, LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT);
 		mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
 		mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
 		mPopupWindow.setFocusable(true);
 		mPopupWindow.setOutsideTouchable(true);
-		mPopupWindow.showAsDropDown(getActivity().findViewById(R.id.iv_add), 0, 0);
+		mPopupWindow.showAsDropDown(getActivity().findViewById(R.id.iv_add), 0,
+				0);
 	}
 
 	/** 好友列表点击 **/
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {
 		@Override
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
 			if (arg2 == 1) {
 				// 新的朋友(我添加的和别人添加我的)
-				startActivityForResult(new Intent(getActivity(), SureFriendActivity.class), 3);
-			}else if (arg2 == 2) {
+				startActivityForResult(new Intent(getActivity(),
+						SureFriendActivity.class), 3);
+			} else if (arg2 == 2) {
 				// TODO 服务商
-				startActivityForResult(new Intent(getActivity(),  ServiceListActivity.class), 3);
+				startActivityForResult(new Intent(getActivity(),
+						ServiceListActivity.class), 3);
 			} else {
-				//判断是否是标题行
+				// 判断是否是标题行
 				FriendData friendData = app.friendDatas.get(arg2 - 1);
 				String letter = friendData.getGroup_letter();
-				if(letter!=null && letter.trim().length() >0){
+				if (letter != null && letter.trim().length() > 0) {
 					return;
 				}
 				// 去介绍界面
-				Intent intent = new Intent(getActivity(), FriendInfoActivity.class);
-				intent.putExtra("FriendId", String.valueOf(friendData.getFriend_id()));
+				Intent intent = new Intent(getActivity(),
+						FriendInfoActivity.class);
+				intent.putExtra("FriendId",
+						String.valueOf(friendData.getFriend_id()));
 				intent.putExtra("name", friendData.getFriend_name());
 				intent.putExtra("cust_type", 1);
 				startActivityForResult(intent, 4);
@@ -219,7 +247,8 @@ public class FragmentFriend extends Fragment {
 		}
 
 		@Override
-		public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		public void onScroll(AbsListView view, int firstVisibleItem,
+				int visibleItemCount, int totalItemCount) {
 		}
 	};
 
@@ -232,9 +261,12 @@ public class FragmentFriend extends Fragment {
 				return;
 			}
 			FriendData friendData = app.friendDatas.get(i);
-			if (friendData.getLogo() != null && (!friendData.getLogo().equals(""))) {
+			if (friendData.getLogo() != null
+					&& (!friendData.getLogo().equals(""))) {
 				// 判断图片是否存在
-				if (new File(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png").exists()) {
+				if (new File(Constant.userIconPath
+						+ GetSystem.getM5DEndo(friendData.getLogo()) + ".png")
+						.exists()) {
 
 				} else {
 					if (isFriendThreadRun(i)) {
@@ -284,9 +316,14 @@ public class FragmentFriend extends Fragment {
 		@Override
 		public void run() {
 			super.run();
-			Bitmap bitmap = GetSystem.getBitmapFromURL(app.friendDatas.get(position).getLogo());
+			Bitmap bitmap = GetSystem.getBitmapFromURL(app.friendDatas.get(
+					position).getLogo());
 			if (bitmap != null) {
-				GetSystem.saveImageSD(bitmap, Constant.userIconPath, GetSystem.getM5DEndo(app.friendDatas.get(position).getLogo()) + ".png", 100);
+				GetSystem.saveImageSD(
+						bitmap,
+						Constant.userIconPath,
+						GetSystem.getM5DEndo(app.friendDatas.get(position)
+								.getLogo()) + ".png", 100);
 			}
 			for (int i = 0; i < friendThreadId.size(); i++) {
 				if (friendThreadId.get(i) == position) {
@@ -303,17 +340,17 @@ public class FragmentFriend extends Fragment {
 
 	/** 获取好友数据 **/
 	public void getFriendData() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/get_friends?auth_code=" + app.auth_code +"&friend_type=1";
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "/get_friends?auth_code=" + app.auth_code + "&friend_type=1";
 		new NetThread.GetDataThread(handler, url, get_all_friend).start();
 	}
 
 	private void jsonFriendData(String result) {
 		try {
-			
-			
+
 			List<FriendData> jsonList = new ArrayList<FriendData>();
 			JSONArray jsonArray = new JSONArray(result);
-			
+
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				FriendData friendData = new FriendData();
@@ -323,16 +360,17 @@ public class FragmentFriend extends Fragment {
 				friendData.setFriend_type(jsonObject.getInt("friend_type"));
 				friendData.setFriend_id(jsonObject.getInt("friend_id"));
 				friendData.setUser_id(jsonObject.getInt("user_id"));
-				friendData.setFriend_relat_id(jsonObject.getInt("friend_relat_id"));
+				friendData.setFriend_relat_id(jsonObject
+						.getInt("friend_relat_id"));
 				jsonList.add(friendData);
 			}
-			
+
 			Collections.sort(jsonList, comparator);
-			
+
 			String Letter = "";
 			for (int i = 0; i < jsonList.size(); i++) {
 				String name = jsonList.get(i).getFriend_name();
-				String firstLetter =  GetFristLetter(name);
+				String firstLetter = GetFristLetter(name);
 				if (!Letter.equals(firstLetter)) {
 					// 增加分组标题
 					Letter = firstLetter;
@@ -344,10 +382,10 @@ public class FragmentFriend extends Fragment {
 			app.friendDatas.clear();
 			FriendData fData = new FriendData();
 			fData.setFriend_name("新的朋友");
-			jsonList.add(0,fData);
+			jsonList.add(0, fData);
 			FriendData fData1 = new FriendData();
 			fData1.setFriend_name("服务商");
-			jsonList.add(1,fData1);
+			jsonList.add(1, fData1);
 			app.friendDatas = jsonList;
 			friendAdapter.notifyDataSetChanged();
 			getFriendLogo();
@@ -380,38 +418,45 @@ public class FragmentFriend extends Fragment {
 			if (convertView == null) {
 				convertView = inflater.inflate(R.layout.item_friend, null);
 				holder = new ViewHolder();
-				holder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-				holder.iv_image = (CircleImageView) convertView.findViewById(R.id.iv_image);
-				holder.tv_title = (TextView) convertView.findViewById(R.id.tv_item_group_title);
+				holder.tv_name = (TextView) convertView
+						.findViewById(R.id.tv_name);
+				holder.iv_image = (CircleImageView) convertView
+						.findViewById(R.id.iv_image);
+				holder.tv_title = (TextView) convertView
+						.findViewById(R.id.tv_item_group_title);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 			FriendData friendData = app.friendDatas.get(position);
-			//判断是否是分组标题
-			if(friendData.getGroup_letter()!=null){
+			// 判断是否是分组标题
+			if (friendData.getGroup_letter() != null) {
 				holder.tv_name.setVisibility(View.GONE);
 				holder.iv_image.setVisibility(View.GONE);
 				holder.tv_title.setVisibility(View.VISIBLE);
 				holder.tv_title.setText(friendData.getGroup_letter());
 				return convertView;
-			}else{
+			} else {
 				holder.tv_name.setVisibility(View.VISIBLE);
 				holder.iv_image.setVisibility(View.VISIBLE);
 				holder.tv_title.setVisibility(View.GONE);
 			}
-			
-			
+
 			holder.tv_name.setText(friendData.getFriend_name());
 			if (position == 0) {
 				// 第一项是新的朋友
 				holder.iv_image.setImageResource(R.drawable.icon_people_no);
-			}else if (position == 1) {
+			} else if (position == 1) {
 				// 第二项是服务商
 				holder.iv_image.setImageResource(R.drawable.icon_people_no);
 			} else {
-				if (new File(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png").exists()) {
-					Bitmap image = BitmapFactory.decodeFile(Constant.userIconPath + GetSystem.getM5DEndo(friendData.getLogo()) + ".png");
+				if (new File(Constant.userIconPath
+						+ GetSystem.getM5DEndo(friendData.getLogo()) + ".png")
+						.exists()) {
+					Bitmap image = BitmapFactory
+							.decodeFile(Constant.userIconPath
+									+ GetSystem.getM5DEndo(friendData.getLogo())
+									+ ".png");
 					holder.iv_image.setImageBitmap(image);
 				} else {
 					holder.iv_image.setImageResource(R.drawable.icon_people_no);
@@ -433,7 +478,7 @@ public class FragmentFriend extends Fragment {
 		if (requestCode == 1 && resultCode == 2) {
 			String FriendId = data.getStringExtra("result");
 			// 二维码扫描后跳转到用户信息界面
-			HttpFriend http = new HttpFriend(this.getActivity(),handler);
+			HttpFriend http = new HttpFriend(this.getActivity(), handler);
 			http.searchById(FriendId);
 			return;
 		} else if (requestCode == 2 && resultCode == 2) {
@@ -456,10 +501,7 @@ public class FragmentFriend extends Fragment {
 			getFriendData();
 		}
 	}
-	
-	
-	
-	
+
 	private String GetFristLetter(String city) {
 		String pinyin = characterParser.getSelling(city);
 		String sortString = pinyin.substring(0, 1).toUpperCase();
@@ -469,7 +511,7 @@ public class FragmentFriend extends Fragment {
 		}
 		return "#";
 	}
-	
+
 	private class PinyinComparator implements Comparator<FriendData> {
 		@Override
 		public int compare(FriendData o1, FriendData o2) {
