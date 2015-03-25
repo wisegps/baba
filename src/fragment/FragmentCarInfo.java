@@ -264,10 +264,12 @@ public class FragmentCarInfo extends Fragment {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					// 健康指数
 					int health_score = jsonObject.getInt("health_score");
-					ImageView  imgCircle = carViews.get(msg.arg1).getImgHealthScore();
+					final ImageView  imgCircle = carViews.get(msg.arg1).getImgHealthScore();
 					setCircleBitmapValue(imgCircle,health_score);
 					carViews.get(msg.arg1).getTv_score().setText(String.valueOf(health_score));
 					carViews.get(msg.arg1).getTv_title().setText("健康指数");
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

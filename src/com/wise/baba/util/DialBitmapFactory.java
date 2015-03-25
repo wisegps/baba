@@ -47,7 +47,6 @@ public class DialBitmapFactory {
 	}
 
 	public Bitmap getBitmapByValue(float value) {
-		
 		mBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
 		mCanvas = new Canvas(mBitmap);
 		mCanvas.save();
