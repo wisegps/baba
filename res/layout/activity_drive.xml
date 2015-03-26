@@ -107,39 +107,43 @@
                         android:layout_centerInParent="true" />
 
                     <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="驾驶指数"
+                    android:textColor="@color/navy_gray" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/tv_drive"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical" >
+                        android:alpha="0.8"
+                        android:fontFamily="sans-serif-light"
+                        android:text="80"
+                        android:textColor="@color/navy_blue"
+                        android:textSize="@dimen/score_number" />
 
-                        <TextView
-                            android:id="@+id/tv_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="驾驶得分"
-                            android:textColor="@color/navy" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal" >
-
-                            <TextView
-                                android:id="@+id/tv_drive"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textColor="@color/navy"
-                                android:textSize="@dimen/bigs_number" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="分"
-                                android:textColor="@color/navy" />
-                        </LinearLayout>
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:text="分"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/navy_blue" />
+                </LinearLayout>
+            </LinearLayout>
 
                     <ImageView
                         android:id="@+id/iv_left"

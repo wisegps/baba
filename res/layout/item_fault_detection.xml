@@ -9,50 +9,51 @@
         android:id="@+id/rl_task"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
-	    android:background="@color/white">	    
-	    <com.wise.state.TasksCompletedView
-	        android:id="@+id/tasks_view"
-	        android:layout_centerInParent="true"
-	        android:layout_width="fill_parent"
-	        android:layout_height="140dp"
-	        tc:radius="60dp"
-	        tc:circleColor="@color/ring_bg_color"
-	        tc:ringColor="@color/ring_color"
-	        tc:strokeWidth="10dp" />
-	    <LinearLayout 
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerInParent="true"
-	        android:gravity="center_horizontal"
-	        android:orientation="vertical">
-	        <TextView 
-	            android:id="@+id/tv_title"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:textColor="@color/navy"
-	            android:text="健康指数"/>
-	        <LinearLayout 
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:orientation="horizontal">
-	            <TextView
-	                android:id="@+id/tv_score" 
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:textSize="@dimen/bigs_number"
-		            android:text="100"/>
-	            <TextView 
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:textColor="@color/navy"
-		            android:text="分"/>
-	        </LinearLayout>	        
-	        <TextView
-	            android:id="@+id/tv_detection_status"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:textColor="@color/blue_press"
-	            android:text="点击体检"/>
-	    </LinearLayout>
+	    android:background="@color/white">
+	    
+        <ImageView
+                android:id="@+id/imgHealthScore"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_centerInParent="true" />
+        	    
+	    <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="健康指数"
+                    android:textColor="@color/navy_gray" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/tv_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.8"
+                        android:fontFamily="sans-serif-light"
+                        android:text="80"
+                        android:textColor="@color/navy_blue"
+                        android:textSize="@dimen/score_number" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:text="分"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/navy_blue" />
+                </LinearLayout>
+            </LinearLayout>
 	</RelativeLayout>
 </LinearLayout>
