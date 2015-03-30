@@ -11,8 +11,10 @@
 	    android:layout_height="fill_parent"
 	    android:background="@color/white">
 	    
-        <ImageView
-                android:id="@+id/imgHealthScore"
+        
+        
+        <com.wise.baba.ui.widget.DialView
+                android:id="@+id/dialHealthScore"
                 android:layout_width="160dp"
                 android:layout_height="160dp"
                 android:layout_centerInParent="true" />

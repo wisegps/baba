@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.ui.widget.DialView;
 import com.wise.baba.util.DialBitmapFactory;
 import com.wise.car.DevicesAddActivity;
 import com.wise.car.SearchMapActivity;
@@ -176,7 +177,7 @@ public class FaultDetectionActivity extends Activity {
 						iv_right.setVisibility(View.GONE);
 					}
 				}
-			} else if (v.getId() == R.id.imgHealthScore) {// 点击体检
+			} else if (v.getId() == R.id.dialHealthScore) {// 点击体检
 				clickHealth();
 			} else if (v.getId() == R.id.iv_back) {
 				Back();
@@ -355,8 +356,8 @@ public class FaultDetectionActivity extends Activity {
 				break;
 			case refresh_score:
 				carViews.get(index).getTv_score().setText(String.valueOf(mCurrentProgress));
-				ImageView imgHealthScore = carViews.get(index).getImgHealthScore();
-				setCircleBitmapValue(imgHealthScore, mCurrentProgress);
+				
+				 carViews.get(index).getDialHealthScore().initValue(mCurrentProgress);
 				if (msg.arg2 == 0) {
 					//carViews.get(index).getTv_detection_status().setText("点击体检");
 				}
@@ -375,12 +376,6 @@ public class FaultDetectionActivity extends Activity {
 	};
 	List<CarView> carViews = new ArrayList<CarView>();
 
-	//设置圆环刻度值
-		public void setCircleBitmapValue(ImageView imgView,int value){
-			DialBitmapFactory factory = new DialBitmapFactory(this);
-			Bitmap mBitmap = factory.getBitmapByValue(value);
-			imgView.setImageBitmap(mBitmap);
-		}
 	/** 滑动车辆布局 **/
 	private void initDataView() {
 		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
@@ -391,12 +386,13 @@ public class FaultDetectionActivity extends Activity {
 			//TasksCompletedView mTasksView = (TasksCompletedView) v.findViewById(R.id.tasks_view);
 			//mTasksView.setOnClickListener(onClickListener);
 			
-			imgHealthScore = (ImageView) v.findViewById(R.id.imgHealthScore);
-			imgHealthScore.setOnClickListener(onClickListener);
+			
+			DialView dialHealthScore =  (DialView) v.findViewById(R.id.dialHealthScore);
+			dialHealthScore.setOnClickListener(onClickListener);
 			TextView tv_score = (TextView) v.findViewById(R.id.tv_score);
 			TextView tv_title = (TextView) v.findViewById(R.id.tv_title);
 			CarView carView = new CarView();
-			carView.setImgHealthScore(imgHealthScore);
+			carView.setDialHealthScore(dialHealthScore);
 			carView.setTv_score(tv_score);
 			carView.setTv_title(tv_title);
 			carViews.add(carView);
@@ -404,8 +400,7 @@ public class FaultDetectionActivity extends Activity {
 			tv_name.setText(carDatas.get(i).getCar_series() + "(" + carDatas.get(i).getNick_name() + ")");
 			String result = preferences.getString(Constant.sp_health_score + carDatas.get(i).getObj_id(), "");
 			if (result.equals("")) {// 未体检过
-				ImageView imgHealthScore = carViews.get(index).getImgHealthScore();
-				setCircleBitmapValue(imgHealthScore, 100);
+				carViews.get(index).getDialHealthScore().initValue(100);
 				tv_score.setText("0");
 				tv_title.setText("未体检过");
 			} else {
@@ -413,8 +408,7 @@ public class FaultDetectionActivity extends Activity {
 					JSONObject jsonObject = new JSONObject(result);
 					// 健康指数
 					int health_score = jsonObject.getInt("health_score");
-					ImageView imgHealthScore = carViews.get(index).getImgHealthScore();
-					setCircleBitmapValue(imgHealthScore, health_score);
+					carViews.get(index).getDialHealthScore().initValue(health_score);
 					tv_score.setText(String.valueOf(health_score));
 					tv_title.setText("健康指数");
 				} catch (Exception e) {
@@ -434,8 +428,7 @@ public class FaultDetectionActivity extends Activity {
 
 		String Device_id = carData.getDevice_id();
 		if (Device_id == null || Device_id.equals("")) {
-			ImageView imgHealthScore = carViews.get(index).getImgHealthScore();
-			setCircleBitmapValue(imgHealthScore, 100);
+			carViews.get(index).getDialHealthScore().initValue(100);
 			carViews.get(index).getTv_score().setText(String.valueOf(0));
 
 			tv_guzhang.setText("未绑定");
@@ -477,8 +470,7 @@ public class FaultDetectionActivity extends Activity {
 			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 			result = preferences.getString(Constant.sp_health_score + carDatas.get(index).getObj_id(), "");
 			if (result.equals("")) {// 未体检过
-				ImageView imgHealthScore = carViews.get(index).getImgHealthScore();
-				setCircleBitmapValue(imgHealthScore, 100);
+				carViews.get(index).getDialHealthScore().initValue(100);
 				carViews.get(index).getTv_score().setText(String.valueOf(0));
 
 				tv_guzhang.setText("无故障码");
@@ -523,8 +515,7 @@ public class FaultDetectionActivity extends Activity {
 					// 健康指数
 					int health_score = jsonObject.getInt("health_score");
 					carViews.get(index).getTv_score().setText(String.valueOf(health_score));
-					ImageView imgHealthScore = carViews.get(index).getImgHealthScore();
-					setCircleBitmapValue(imgHealthScore, health_score);
+					carViews.get(index).getDialHealthScore().initValue(health_score);
 
 					JSONArray jsonErrArray = jsonObject.getJSONArray("active_obd_err");
 					if (jsonErrArray.length() > 0) {
@@ -638,17 +629,18 @@ public class FaultDetectionActivity extends Activity {
 	private class CarView {
 		TextView tv_score;
 		TextView tv_title;
-		ImageView imgHealthScore;
+		DialView dialHealthScore;
 		
 		
-		public ImageView getImgHealthScore() {
-			return imgHealthScore;
+
+
+		public DialView getDialHealthScore() {
+			return dialHealthScore;
 		}
 
-		public void setImgHealthScore(ImageView imgHealthScore) {
-			this.imgHealthScore = imgHealthScore;
+		public void setDialHealthScore(DialView dialHealthScore) {
+			this.dialHealthScore = dialHealthScore;
 		}
-
 
 		public TextView getTv_title() {
 			return tv_title;
@@ -674,8 +666,7 @@ public class FaultDetectionActivity extends Activity {
 		mCurrent = 0;
 		mTotalProgress = 100;
 		Interval = 30 / Point;
-		ImageView imgHealthScore = carViews.get(index).getImgHealthScore();
-		setCircleBitmapValue(imgHealthScore, 100);
+		carViews.get(index).getDialHealthScore().initValue(100);
 		carViews.get(index).getTv_score().setText(String.valueOf(100));
 		//carViews.get(index).getTv_detection_status().setText("体检中");
 		// 始化数据

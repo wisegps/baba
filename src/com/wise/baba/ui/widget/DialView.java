@@ -1,60 +1,145 @@
 package com.wise.baba.ui.widget;
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.wise.baba.R;
 import com.wise.baba.util.DialBitmapFactory;
 
-public class DialView extends View {
-	public Bitmap bmColor;// 彩色刻度
-	public Bitmap bmGray; // 灰色刻度
-	public Bitmap bmCursor; // 外层圆形状光标 circular cursor
-	public DialBitmapFactory dialFactory;
-	public Context context;
-	public float value = 72 ;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.util.AttributeSet;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+
+/**
+ * 
+ * @author c 圆形刻度表盘
+ * 
+ *         一，静态设置值 ：initValue
+ *         二，动画效果：setValue
+ * 
+ */
+public class DialView extends FrameLayout {
+	private ImageView imgColor; // 彩色刻度
+	private ImageView imgCusor; // 圆环光标
+	private ImageView imgCover; // 圆环底部覆盖扇形
+	private Context context;
+	private DialBitmapFactory bitmapFactory;
+	private long period = 50;//刻度转动单位时间
+	private int currentValue = 100;
+	private int value = 100;
+	private Handler handler;
+
 	public DialView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.context = context;
-		init();
-	}
-	
-	
+		handler = new Handler();
+		bitmapFactory = new DialBitmapFactory(context);
+		initChildView();
 
-	public void init() {
-		
-		bmColor = BitmapFactory.decodeResource(context.getResources(),
-				R.drawable.circle_dial_color);
-		bmGray = BitmapFactory.decodeResource(context.getResources(),
-				R.drawable.circle_dial_gray);
-		bmCursor = BitmapFactory.decodeResource(context.getResources(),
-				R.drawable.circle_cursor);
 	}
 
 	/**
-	 * 选择转动值 0---100
-	 * */
-	public void changeValue(float value) {
-		this.value = value;
+	 * 初始化子控件（图层）
+	 */
+	public void initChildView() {
+
+		// 创建子图层
+		imgColor = new ImageView(context);
+		imgCusor = new ImageView(context);
+		imgCover = new ImageView(context);
+
+		// 填充父布局
+		FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		imgColor.setLayoutParams(lp);
+		imgCusor.setLayoutParams(lp);
+		imgCover.setLayoutParams(lp);
+
+		Bitmap bmColor = bitmapFactory.getBitmapByValue(value, true);
+		imgColor.setImageBitmap(bmColor);
+		imgCusor.setImageResource(R.drawable.circle_cursor);
+		imgCover.setImageResource(R.drawable.circle_cover);
+
+		this.addView(imgColor);
+		this.addView(imgCusor);
+		this.addView(imgCover);
 	}
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		canvas.save();
-		// 第一层，画彩色刻度
-		canvas.drawBitmap(bmColor, 0, 0, null);
-		// 第二层，画灰色刻度
-		Bitmap gray = dialFactory.getGray(bmGray, value);
-		canvas.drawBitmap(gray, 0, 0, null);
-		// 第三层，画圆环光标
-		Bitmap angleCursor = dialFactory.sector(bmCursor, value);
-		canvas.drawBitmap(angleCursor, 0, 0, null);
-		canvas.restore();
+	// 初始化一个固定值
+	public void initValue(int value) {
+		imgCusor.setImageBitmap(null);
+		Bitmap bitmp = bitmapFactory.getBitmapByValue(value, true);
+		imgColor.setImageBitmap(bitmp);
 	}
+
+	
+	//設置一個值，出現動畫滾動到該值
+	public void setValue(int value) {
+		this.value = value;
+		imgCusor.setImageResource(R.drawable.circle_cursor);
+		currentValue = 100;
+		startColorAnimation();
+		rolateCursor(value);
+	}
+
+	/**
+	 * 彩色刻度绘制动画
+	 */
+	public void startColorAnimation() {
+
+		final Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				handler.post(new Runnable() {
+					@Override
+					public void run() {
+						if (currentValue <= value) {
+							// 动画运动到这里就停止
+							timer.cancel();
+							timer.purge();
+						}
+						Bitmap bitmp = bitmapFactory.getBitmapByValue(
+								currentValue--, false);
+						imgColor.setImageBitmap(bitmp);
+					}
+				});
+
+			}
+
+		}, 1, period);
+
+	}
+
+	/**
+	 * 圆环光标逆时针旋转动画
+	 * 
+	 * @param value
+	 */
+	public void rolateCursor(final float value) {
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				float rotateAngel = bitmapFactory.calcAngel(value);
+				RotateAnimation animation = new RotateAnimation(0f,
+						-rotateAngel, Animation.RELATIVE_TO_SELF, 0.5f,
+						Animation.RELATIVE_TO_SELF, 0.5f);
+				animation.setInterpolator(new LinearInterpolator());
+				animation.setFillAfter(true);
+				animation.setDuration((long) (period * (100 - value)));
+				imgCusor.startAnimation(animation);
+			}
+		});
+
+	}
+
 }

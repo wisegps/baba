@@ -1,5 +1,6 @@
 package com.wise.baba.util;
 
+
 import com.wise.baba.R;
 
 import android.content.Context;
@@ -20,7 +21,7 @@ import android.graphics.RectF;
  */
 
 public class DialBitmapFactory {
-	public float startAngle = 35;// 圆环缺口 从35度开始 ，横扫110度
+	public float startAngle = 0;// 圆环缺口 从35度开始 ，横扫110度
 	public float sweepAngle = 110;
 
 	public int width;
@@ -46,7 +47,13 @@ public class DialBitmapFactory {
 		height = bmColor.getHeight();
 	}
 
-	public Bitmap getBitmapByValue(float value) {
+	/**
+	 * 
+	 * @param value    值  ：0-100
+	 * @param hasCursor  是否带圆环光标
+	 * @return
+	 */
+	public Bitmap getBitmapByValue(float value,boolean hasCursor) {
 		mBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
 		mCanvas = new Canvas(mBitmap);
 		mCanvas.save();
@@ -56,12 +63,14 @@ public class DialBitmapFactory {
 		Bitmap gray = getGray(bmGray, value);
 		mCanvas.drawBitmap(gray, 0, 0, null);
 		// 第三层，画圆环光标
-		Bitmap angleCursor = sector(bmCursor, value);
-		mCanvas.drawBitmap(angleCursor, 0, 0, null);
+		if(hasCursor == true){
+			Bitmap angleCursor = sector(bmCursor, value);
+			mCanvas.drawBitmap(angleCursor, 0, 0, null);
+		}
+
 		mCanvas.restore();
 
 		return mBitmap;
-
 	}
 
 	/**
@@ -79,7 +88,7 @@ public class DialBitmapFactory {
 		// 根据刻度值计算旋转角度
 		float degrees = calcAngel(value);
 		// 剪去旋转部分（彩色刻度范围）
-		clip(canvas, startAngle, sweepAngle + degrees);
+		clip(canvas, 35, 360-degrees);
 		canvas.restore();// 存储
 		return newBitmap;
 	}
@@ -102,11 +111,11 @@ public class DialBitmapFactory {
 		// 根据刻度值计算旋转角度
 		float degrees = calcAngel(value);
 		Matrix matrix = new Matrix();
-		matrix.setRotate(degrees, width / 2, height / 2);
+		matrix.setRotate(-degrees, width / 2, height / 2);
 		canvas.drawBitmap(src, matrix, null);
 
 		// 3，擦除圆环缺口
-		clip(canvas, startAngle, sweepAngle);
+		//clip(canvas, startAngle, sweepAngle);
 		canvas.restore();// 存储
 
 		return newBitmap;
@@ -124,13 +133,13 @@ public class DialBitmapFactory {
 
 	/**
 	 * 
-	 * 根据刻度值，计算需要旋转的角度
+	 * 根据刻度值，计算需要逆时针旋转的角度
 	 * 
 	 * @return 返回要旋转的角度
 	 */
 	public float calcAngel(float value) {
-		float angelAll = 360 - sweepAngle;
-		float angleDial = (angelAll / 100) * value;
+		float angelAll = 250;//圆360度，缺口110度，有效角度为250度
+		float angleDial = (angelAll / 100) * (100-value);
 		return angleDial;
 	}
 

@@ -1,5 +1,7 @@
 package com.wise.baba.entity;
 
+import com.wise.baba.ui.widget.DialView;
+
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,8 +18,21 @@ public class CarView {
 	TextView tv_xx;
 	TextView tv_drive;
 	
-	ImageView imgHealthScore;
-	ImageView imgDriveScore;
+	DialView dialHealthScore;
+	DialView dialDriveScore;
+	
+	public DialView getDialDriveScore() {
+		return dialDriveScore;
+	}
+	public void setDialDriveScore(DialView dialDriveScore) {
+		this.dialDriveScore = dialDriveScore;
+	}
+	public DialView getDialHealthScore() {
+		return dialHealthScore;
+	}
+	public void setDialHealthScore(DialView dialHealthScore) {
+		this.dialHealthScore = dialHealthScore;
+	}
 	public LinearLayout getLl_adress() {
 		return ll_adress;
 	}
@@ -77,18 +92,6 @@ public class CarView {
 	}
 	public void setTv_drive(TextView tv_drive) {
 		this.tv_drive = tv_drive;
-	}
-	public ImageView getImgHealthScore() {
-		return imgHealthScore;
-	}
-	public void setImgHealthScore(ImageView imgHealthScore) {
-		this.imgHealthScore = imgHealthScore;
-	}
-	public ImageView getImgDriveScore() {
-		return imgDriveScore;
-	}
-	public void setImgDriveScore(ImageView imgDriveScore) {
-		this.imgDriveScore = imgDriveScore;
 	}
 	
 	

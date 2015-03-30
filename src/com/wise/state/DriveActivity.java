@@ -8,6 +8,7 @@ import pubclas.GetSystem;
 import pubclas.NetThread;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.ui.widget.DialView;
 import com.wise.baba.util.DialBitmapFactory;
 import com.wise.car.TravelActivity;
 import data.CarData;
@@ -32,8 +33,8 @@ public class DriveActivity extends Activity {
 	private static final int getData = 1;
 	TextView tv_drive, tv_advice, tv_safe, tv_eco, tv_env, tv_distance,
 			tv_fuel, tv_avg_fuel, tv_date;
-	ImageView iv_right, imgDriveScore;
-	// TasksCompletedView mTasksView;
+	ImageView iv_right;
+	DialView dialDriveScore;
 	String Date = "";
 	String Device_id = "";
 	/** 把最近的数据存储 **/
@@ -47,7 +48,7 @@ public class DriveActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_drive);
 		app = (AppApplication) getApplication();
-		imgDriveScore = (ImageView) findViewById(R.id.imgDriveScore);
+		dialDriveScore = (DialView) findViewById(R.id.dialDriveScore);
 		Button bt_drive_rank = (Button) findViewById(R.id.bt_drive_rank);
 		bt_drive_rank.setOnClickListener(onClickListener);
 		Button bt_drive_travel = (Button) findViewById(R.id.bt_drive_travel);
@@ -159,13 +160,14 @@ public class DriveActivity extends Activity {
 	// 设置圆环刻度值
 	public void setCircleBitmapValue(ImageView imgView, int value) {
 		DialBitmapFactory factory = new DialBitmapFactory(this);
-		Bitmap mBitmap = factory.getBitmapByValue(value);
+		Bitmap mBitmap = factory.getBitmapByValue(value,true);
 		imgView.setImageBitmap(mBitmap);
 	}
 
 	private void jsonData(String Data) {
 		if (Data == null || Data.equals("")) {
-			setCircleBitmapValue(imgDriveScore,0);
+
+			dialDriveScore.initValue(0);
 			tv_advice.setText("");
 			tv_safe.setText("" + 0);
 			tv_eco.setText("" + 0);
@@ -189,7 +191,7 @@ public class DriveActivity extends Activity {
 			String total_distance = jsonObject.getString("total_distance");
 			String total_fuel = jsonObject.getString("total_fuel");
 			String avg_fuel = jsonObject.getString("avg_fuel");
-			setCircleBitmapValue(imgDriveScore,drive_score);
+			dialDriveScore.initValue(drive_score);
 			tv_advice.setText(drive_advice);
 			tv_safe.setText("" + safe_score);
 			tv_eco.setText("" + eco_score);

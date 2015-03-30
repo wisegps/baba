@@ -46,6 +46,7 @@ import com.google.gson.Gson;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.entity.CarView;
+import com.wise.baba.ui.widget.DialView;
 import com.wise.baba.util.DialBitmapFactory;
 import com.wise.car.CarLocationActivity;
 import com.wise.car.DevicesAddActivity;
@@ -178,8 +179,8 @@ public class FragmentCarInfo extends Fragment {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.imgHealthScore:
-				GetSystem.myLog(TAG, "imgHealthScore : app.carDatas.size() = " + app.carDatas.size());
+			case R.id.dialHealthScore:
+				GetSystem.myLog(TAG, "dialHealthScore : app.carDatas.size() = " + app.carDatas.size());
 				if (app.carDatas != null && app.carDatas.size() != 0) {
 					String Device_id = app.carDatas.get(index).getDevice_id();
 					if (Device_id == null || Device_id.equals("")) {
@@ -196,7 +197,7 @@ public class FragmentCarInfo extends Fragment {
 					}
 				}
 				break;
-			case R.id.imgDriveScore:
+			case R.id.dialDriveScore:
 				if (app.carDatas != null && app.carDatas.size() != 0) {
 					String Device_id = app.carDatas.get(index).getDevice_id();
 					if (Device_id == null || Device_id.equals("")) {
@@ -264,8 +265,7 @@ public class FragmentCarInfo extends Fragment {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					// 健康指数
 					int health_score = jsonObject.getInt("health_score");
-					final ImageView  imgCircle = carViews.get(msg.arg1).getImgHealthScore();
-					setCircleBitmapValue(imgCircle,health_score);
+					carViews.get(msg.arg1).getDialHealthScore().initValue(health_score);
 					carViews.get(msg.arg1).getTv_score().setText(String.valueOf(health_score));
 					carViews.get(msg.arg1).getTv_title().setText("健康指数");
 					
@@ -284,8 +284,7 @@ public class FragmentCarInfo extends Fragment {
 					int drive_score = jsonObject.getInt("drive_score");
 					if (drive_score != 0) {
 						
-						ImageView  imgCircle = carViews.get(msg.arg1).getImgDriveScore();
-						setCircleBitmapValue(imgCircle,drive_score);
+						carViews.get(msg.arg1).getDialDriveScore().initValue(drive_score);
 						carViews.get(msg.arg1).getTv_drive().setText(String.valueOf(drive_score));
 						// 存在本地
 						SharedPreferences preferences1 = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
@@ -342,11 +341,12 @@ public class FragmentCarInfo extends Fragment {
 			v.findViewById(R.id.Liner_fee).setOnClickListener(onClickListener);
 
 			TextView tv_drive = (TextView) v.findViewById(R.id.tv_drive);
-			ImageView imgHealthScore = (ImageView) v.findViewById(R.id.imgHealthScore);
-			ImageView imgDriveScore = (ImageView) v.findViewById(R.id.imgDriveScore);
+			DialView dialHealthScore = (DialView) v.findViewById(R.id.dialHealthScore);
 			
-			imgHealthScore.setOnClickListener(onClickListener);
-			imgDriveScore.setOnClickListener(onClickListener);
+			DialView dialDriveScore = (DialView) v.findViewById(R.id.dialDriveScore);
+			
+			dialHealthScore.setOnClickListener(onClickListener);
+			dialDriveScore.setOnClickListener(onClickListener);
 			CarView carView = new CarView();
 			carView.setLl_adress(ll_adress);
 			carView.setTv_distance(tv_distance);
@@ -357,22 +357,23 @@ public class FragmentCarInfo extends Fragment {
 			carView.setTv_adress(tv_adress);
 			carView.setTv_drive(tv_drive);
 			carView.setTv_current_distance(tv_current_distance);
-			carView.setImgHealthScore(imgHealthScore);
+			//carView.setImgHealthScore(dialHealthScore);
+			carView.setDialHealthScore(dialHealthScore);
 			carViews.add(carView);
 
 			tv_name.setText(app.carDatas.get(i).getNick_name());
 			String Device_id = app.carDatas.get(i).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
 				
-				setCircleBitmapValue(imgHealthScore, 100);
+				dialHealthScore.initValue(100);
 				tv_score.setText("0");
 				tv_title.setText("未绑定终端");
-				setCircleBitmapValue(imgDriveScore, 100);
+				dialDriveScore.initValue(100);
 				tv_drive.setText("0");
 			} else {
 				String result = preferences.getString(Constant.sp_health_score + app.carDatas.get(i).getObj_id(), "");
 				if (result.equals("")) {// 未体检过
-					setCircleBitmapValue(imgHealthScore, 100);
+					dialHealthScore.initValue(100);
 					tv_score.setText("0");
 					tv_title.setText("未体检过");
 				} else {
@@ -380,7 +381,7 @@ public class FragmentCarInfo extends Fragment {
 						JSONObject jsonObject = new JSONObject(result);
 						// 健康指数
 						int health_score = jsonObject.getInt("health_score");
-						setCircleBitmapValue(imgHealthScore, health_score);
+						dialHealthScore.initValue(health_score);
 						tv_score.setText(String.valueOf(health_score));
 						tv_title.setText("健康指数");
 					} catch (Exception e) {
@@ -390,13 +391,13 @@ public class FragmentCarInfo extends Fragment {
 				/** 驾驶信息 **/
 				String drive = preferences.getString(Constant.sp_drive_score + app.carDatas.get(i).getObj_id(), "");
 				if (drive.equals("")) {
-					setCircleBitmapValue(imgDriveScore, 100);
+					dialHealthScore.initValue(100);
 					tv_drive.setText("0");
 				} else {
 					try {
 						JSONObject jsonObject = new JSONObject(drive);
 						int drive_score = jsonObject.getInt("drive_score");
-						setCircleBitmapValue(imgDriveScore, drive_score);
+						dialHealthScore.initValue(drive_score);
 						tv_drive.setText(String.valueOf(drive_score));
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -409,12 +410,6 @@ public class FragmentCarInfo extends Fragment {
 	}
 
 	
-	//设置圆环刻度值
-	public void setCircleBitmapValue(ImageView imgView,int value){
-		DialBitmapFactory factory = new DialBitmapFactory(this.getActivity());
-		Bitmap mBitmap = factory.getBitmapByValue(value);
-		imgView.setImageBitmap(mBitmap);
-	}
 	/** 未登录显示 **/
 	public void setLoginView() {
 		hs_car.removeAllViews();
@@ -431,13 +426,11 @@ public class FragmentCarInfo extends Fragment {
 		tv_title.setText("未体检过");
 		
 		
-		ImageView imgHealthScore = (ImageView) v.findViewById(R.id.imgHealthScore);
-		DialBitmapFactory factory = new DialBitmapFactory(this.getActivity());
-		Bitmap mBitmap = factory.getBitmapByValue(100);
-		imgHealthScore.setImageBitmap(mBitmap);
+		DialView dialHealthScore = (DialView) v.findViewById(R.id.dialHealthScore);
+		dialHealthScore.initValue(100);
 		
 		
-		imgHealthScore.setOnClickListener(new OnClickListener() {
+		dialHealthScore.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(getActivity(), LoginActivity.class));
@@ -714,8 +707,7 @@ public class FragmentCarInfo extends Fragment {
 				try {
 					JSONObject jsonObject = new JSONObject(drive);
 					int drive_score = jsonObject.getInt("drive_score");
-					ImageView imgDrive = carViews.get(index).getImgDriveScore();
-					setCircleBitmapValue(imgDrive, drive_score);
+					carViews.get(index).getDialDriveScore().initValue(drive_score);
 					carViews.get(index).getTv_drive().setText(String.valueOf(drive_score));
 				} catch (Exception e) {
 					e.printStackTrace();
