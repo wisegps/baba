@@ -10,7 +10,6 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.util.DialBitmapFactory;
 import com.wise.car.TravelActivity;
-
 import data.CarData;
 import android.app.Activity;
 import android.content.Context;
@@ -30,9 +29,7 @@ import android.widget.TextView;
 
 /** 驾驶习惯 **/
 public class DriveActivity extends Activity {
-
 	private static final int getData = 1;
-
 	TextView tv_drive, tv_advice, tv_safe, tv_eco, tv_env, tv_distance,
 			tv_fuel, tv_avg_fuel, tv_date;
 	ImageView iv_right, imgDriveScore;
