@@ -5,11 +5,13 @@ import java.util.TimerTask;
 
 import com.wise.baba.R;
 import com.wise.baba.util.DialBitmapFactory;
+import com.wise.state.FaultDetectionActivity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
@@ -18,6 +20,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * 
@@ -33,7 +36,7 @@ public class DialView extends FrameLayout {
 	private ImageView imgCover; // 圆环底部覆盖扇形
 	private Context context;
 	private DialBitmapFactory bitmapFactory;
-	private long period = 50;//刻度转动单位时间
+	private long period = 70;//刻度转动单位时间
 	private int currentValue = 100;
 	private int value = 100;
 	private Handler handler;
@@ -83,8 +86,9 @@ public class DialView extends FrameLayout {
 
 	
 	//設置一個值，出現動畫滾動到該值
-	public void setValue(int value) {
+	public void startCheckAnimation(int value,Handler handler) {
 		this.value = value;
+		this.handler = handler;
 		imgCusor.setImageResource(R.drawable.circle_cursor);
 		currentValue = 100;
 		startColorAnimation();
@@ -95,7 +99,7 @@ public class DialView extends FrameLayout {
 	 * 彩色刻度绘制动画
 	 */
 	public void startColorAnimation() {
-
+		
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
@@ -103,11 +107,16 @@ public class DialView extends FrameLayout {
 				handler.post(new Runnable() {
 					@Override
 					public void run() {
+						Message msg = new Message();
+						msg.what = FaultDetectionActivity.refreshValue;
+						msg.arg1 = currentValue;
+						handler.sendMessage(msg);
 						if (currentValue <= value) {
 							// 动画运动到这里就停止
 							timer.cancel();
 							timer.purge();
 						}
+						
 						Bitmap bitmp = bitmapFactory.getBitmapByValue(
 								currentValue--, false);
 						imgColor.setImageBitmap(bitmp);
