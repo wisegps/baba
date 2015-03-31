@@ -12,7 +12,6 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.car.AddressActivity;
 import com.wise.car.CarLocationActivity;
-import com.wise.car.SearchLocationActivity;
 import com.wise.car.SearchMapActivity;
 
 import customView.CustomGridView;
