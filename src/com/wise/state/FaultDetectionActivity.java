@@ -116,7 +116,7 @@ public class FaultDetectionActivity extends Activity {
 			@Override
 			public void OnViewChange(int view, int duration) {
 				// 关闭线程
-				mCurrent = 100;
+				//mCurrent = 100;
 				index = view;
 				fristSetLeftRight();
 				getSpHistoryData(index);
@@ -842,8 +842,8 @@ public class FaultDetectionActivity extends Activity {
 
 	/** 初始化数据 **/
 	private void initapp() {
-		j = 0;
-		mCurrent = 0;
+//		j = 0;
+//		mCurrent = 0;
 		mTotalProgress = 100;
 		Interval = 30 / Point;
 		carViews.get(index).getDialHealthScore().initValue(100);
@@ -922,46 +922,46 @@ public class FaultDetectionActivity extends Activity {
 		rl_paifang.setOnClickListener(onClickListener);
 	}
 
-	int i = 0;
-	int j = 0;
-	/** 开始检测设为0，切换车辆设为100，关闭线程 **/
-	int mCurrent = 0;
-
-	/** 做出动态效果 **/
-	class ProgressRunable implements Runnable {
-		int count = ThreadCount;
-
-		@Override
-		public void run() {
-			// 设置3s检测完毕
-			isCheck = true;
-			while (count > mCurrent) {
-				count--;
-				// 计算 60 100分 间隔 40分 40/30
-				mCurrentProgress = (int) (100 - (100 - mTotalProgress)
-						* (1 - (float) count / 30));
-				Message message = new Message();
-				message.what = refresh_score;
-				message.arg2 = count;
-				handler.sendMessage(message);
-				i++;
-				if (i == Interval) {
-					i = 0;
-					j++;
-					Message message1 = new Message();
-					message1.what = refresh;
-					message1.arg1 = j;
-					handler.sendMessage(message1);
-				}
-				try {
-					Thread.sleep(100);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			isCheck = false;
-		}
-	}
+//	int i = 0;
+//	int j = 0;
+//	/** 开始检测设为0，切换车辆设为100，关闭线程 **/
+//	int mCurrent = 0;
+//
+//	/** 做出动态效果 **/
+//	class ProgressRunable implements Runnable {
+//		int count = ThreadCount;
+//
+//		@Override
+//		public void run() {
+//			// 设置3s检测完毕
+//			isCheck = true;
+//			while (count > mCurrent) {
+//				count--;
+//				// 计算 60 100分 间隔 40分 40/30
+//				mCurrentProgress = (int) (100 - (100 - mTotalProgress)
+//						* (1 - (float) count / 30));
+//				Message message = new Message();
+//				message.what = refresh_score;
+//				message.arg2 = count;
+//				handler.sendMessage(message);
+//				i++;
+//				if (i == Interval) {
+//					i = 0;
+//					j++;
+//					Message message1 = new Message();
+//					message1.what = refresh;
+//					message1.arg1 = j;
+//					handler.sendMessage(message1);
+//				}
+//				try {
+//					Thread.sleep(100);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			isCheck = false;
+//		}
+//	}
 
 	/** 点击体检 **/
 	private void clickHealth() {

@@ -66,8 +66,9 @@ public class DialBitmapFactory {
 		if(hasCursor == true){
 			Bitmap angleCursor = sector(bmCursor, value);
 			mCanvas.drawBitmap(angleCursor, 0, 0, null);
+			angleCursor.recycle();
 		}
-
+		gray.recycle();
 		mCanvas.restore();
 
 		return mBitmap;

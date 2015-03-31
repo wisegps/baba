@@ -10,6 +10,7 @@ import com.wise.state.FaultDetectionActivity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -119,6 +120,19 @@ public class DialView extends FrameLayout {
 						
 						Bitmap bitmp = bitmapFactory.getBitmapByValue(
 								currentValue--, false);
+						
+						
+						BitmapDrawable bitmapDrawable = (BitmapDrawable) imgColor.getDrawable();
+
+						//如果图片还未回收，先强制回收该图片
+
+						if(!bitmapDrawable.getBitmap().isRecycled())
+
+						{
+
+						    bitmapDrawable.getBitmap().recycle();
+
+						}
 						imgColor.setImageBitmap(bitmp);
 					}
 				});
