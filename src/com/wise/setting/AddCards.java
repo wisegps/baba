@@ -28,12 +28,13 @@ import android.widget.TextView;
 import com.wise.baba.R;
 
 import data.CardsData;
+import fragment.FragmentHome;
 
 public class AddCards extends Activity {
 	DragListView infoListView;
 	List<CardsData> list = new ArrayList<CardsData>();
 	InforAdapter adapter;
-
+	private String[] cards = {FragmentHome.TAG_SERVICE,FragmentHome.TAG_WEATHER,FragmentHome.TAG_NEWS};
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,8 +49,8 @@ public class AddCards extends Activity {
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject object = jsonArray.getJSONObject(i);
 					String cardName = object.getString("cardName");
-					for (int j = 0; j < Constant.cards.length; j++) {
-						if (cardName.equals(Constant.cards[j])) {
+					for (int j = 0; j < cards.length; j++) {
+						if (cardName.equals(cards[j])) {
 							CardsData cardsData = new CardsData();
 							cardsData.setIcon(Constant.picture[j]);
 							cardsData.setTitle(Constant.title[j]);
@@ -129,8 +130,8 @@ public class AddCards extends Activity {
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject object = jsonArray.getJSONObject(i);
 					String cardName = object.getString("cardName");
-					for (int j = 0; j < Constant.cards.length; j++) {
-						if (cardName.equals(Constant.cards[j])) {
+					for (int j = 0; j < cards.length; j++) {
+						if (cardName.equals(cards[j])) {
 							CardsData cardsData = new CardsData();
 							cardsData.setIcon(Constant.picture[j]);
 							cardsData.setTitle(Constant.title[j]);
@@ -166,6 +167,7 @@ public class AddCards extends Activity {
 		}
 		editor.putString("cardsJson", jsonArray.toString());
 		editor.commit();
+		FragmentHome.isChange = true;
 	}
 
 	class InforAdapter extends BaseAdapter {

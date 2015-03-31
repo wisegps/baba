@@ -12,6 +12,7 @@ import pubclas.Constant;
 import com.wise.baba.R;
 
 import data.CardsData;
+import fragment.FragmentHome;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -35,6 +36,7 @@ public class ChooseCard extends Activity {
 	String cardsString;
 	JSONArray cardsJson = new JSONArray();
 	public static final int CARDCODE = 1;
+	private String[] cards = {FragmentHome.TAG_SERVICE,FragmentHome.TAG_WEATHER,FragmentHome.TAG_NEWS};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +44,12 @@ public class ChooseCard extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_choose_info_card);
 
-		for (int i = 0; i < Constant.cards.length; i++) {
+		for (int i = 0; i < cards.length; i++) {
 			CardsData inItem = new CardsData();
 			inItem.setIcon(Constant.picture[i]);
 			inItem.setTitle(Constant.title[i]);
 			inItem.setContent(Constant.content[i]);
-			inItem.setCardName(Constant.cards[i]);
+			inItem.setCardName(cards[i]);
 			list.add(inItem);
 		}
 
@@ -69,6 +71,7 @@ public class ChooseCard extends Activity {
 				Intent intent = new Intent();
 				intent.putExtra("cardsJson", cardsJson.toString());
 				setResult(CARDCODE, intent);
+				FragmentHome.isChange = true;
 				finish();
 			}
 		});
@@ -85,6 +88,7 @@ public class ChooseCard extends Activity {
 			Intent intent = new Intent();
 			intent.putExtra("cardsJson", cardsJson.toString());
 			setResult(CARDCODE, intent);
+			FragmentHome.isChange = true;
 			finish();
 			return true;
 		}

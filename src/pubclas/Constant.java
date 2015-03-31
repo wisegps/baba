@@ -160,5 +160,5 @@ public class Constant {
 			R.drawable.icon_jinqi_normal };
 	public static String[] title = { "服务商","天气", "新闻" };
 	public static String[] content = { "服务商","今天天气概况", "最新新闻更新和内容" };
-	public static String[] cards = { "service","weather", "hotNews" };
+	//public static String[] cards = { "service","weather", "hotNews" };
 }

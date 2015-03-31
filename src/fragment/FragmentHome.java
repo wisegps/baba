@@ -3,6 +3,7 @@ package fragment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +64,7 @@ public class FragmentHome extends Fragment {
 	LinearLayout ll_cards;
 	FragmentManager fragmentManager;
 	AppApplication app;
-	HashMap<String, Fragment> cards = new HashMap<String,Fragment>();
+	Map<String, Fragment> cards = new LinkedHashMap<String,Fragment>();
 	private View rootView;
 
 	@Override
@@ -120,15 +121,16 @@ public class FragmentHome extends Fragment {
 
 	/** 显示卡片布局 **/
 	private void getCards() {
+		cards.clear();
 		Log.i("fragment", "设置卡片布局");
 		if (app.cust_type == Info.ServiceProvider) {
 			Log.i("fragment", "设置服务商卡片布局");
 			removeFragment(TAG_SERVICE);
 			transaction = fragmentManager.beginTransaction();
 			FragmentService fragmentService = new FragmentService();
-			cards.put(TAG_SERVICE,fragmentService);
 			transaction.add(R.id.ll_cards, fragmentService, TAG_SERVICE);
 			transaction.commit();
+			cards.put(TAG_SERVICE,fragmentService);
 		} else {
 			Log.i("fragment", "设置周边卡片布局");
 			removeFragment(TAG_POI);
@@ -151,6 +153,9 @@ public class FragmentHome extends Fragment {
 		SharedPreferences sharedPreferences = getActivity()
 				.getSharedPreferences("card_choose", Activity.MODE_PRIVATE);
 		String cardsJson = sharedPreferences.getString("cardsJson", "");
+		
+		Log.i("fragment", "cards json "+cardsJson);
+		
 		if (cardsJson.equals("")) {// 默认显示天气和新闻
 			Log.i("fragment", "设置天气卡片布局1");
 			removeFragment(TAG_WEATHER);
@@ -168,7 +173,7 @@ public class FragmentHome extends Fragment {
 			fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
 			transaction.add(R.id.ll_cards, fragmentHotNews, TAG_NEWS);
 			transaction.commit();
-			cards.put(TAG_WEATHER,fragmentHotNews);
+			cards.put(TAG_NEWS,fragmentHotNews);
 			
 		} else {
 			try {
@@ -177,6 +182,8 @@ public class FragmentHome extends Fragment {
 					JSONObject object = jsonArray.getJSONObject(i);
 					String cardName = object.getString("cardName");
 					if (cardName.equals(TAG_WEATHER)) {
+						
+						Log.i("fragment", "设置天气卡片布局2");
 						removeFragment(TAG_WEATHER);
 						transaction = fragmentManager.beginTransaction();
 						FragmentWeather fragmentWeather = new FragmentWeather();
@@ -274,16 +281,13 @@ public class FragmentHome extends Fragment {
 		startActivity(intent);
 	}
 
-	boolean isChange = false;
+	public static boolean isChange = false;
 
 	/** 刷新所有布局 **/
 	public void resetAllView() {
 		isChange = true;
 	}
 
-	/** 判断卡片的是否变化，变化了需要重新加载 **/
-	public void isChangeCards() {
-	}
 
 	public void removeFragment(String tag) {
 		Fragment fragment = fragmentManager.findFragmentByTag(tag);
@@ -354,9 +358,9 @@ public class FragmentHome extends Fragment {
 		MobclickAgent.onResume(getActivity());
 		Log.i("fragment", "isChange" + isChange);
 		if (isChange) {
-			isChange = false;
 			// 加载对应的view
 			getCards();
+			isChange = false;
 		}
 	}
 
@@ -421,6 +425,8 @@ public class FragmentHome extends Fragment {
 					mPopupWindow.dismiss();
 				}
 			});
+			
+			
 			Button bt_card_delete = (Button) popunwindwow
 					.findViewById(R.id.bt_card_delete);
 			bt_card_delete.setOnClickListener(new OnClickListener() {
@@ -428,10 +434,21 @@ public class FragmentHome extends Fragment {
 				public void onClick(View v) {
 					removeFragment(CardName);
 					cards.remove(CardName);
-					mPopupWindow.dismiss();
 					setCardsInSharedPreferences();
+					mPopupWindow.dismiss();
+					
 				}
 			});
+			
+			Button bt_card_cancle = (Button) popunwindwow
+					.findViewById(R.id.bt_card_cancel);
+			bt_card_cancle.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mPopupWindow.dismiss();
+				}
+			});
+			
 			mPopupWindow = new PopupWindow(popunwindwow,
 					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 			mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
@@ -447,9 +464,9 @@ public class FragmentHome extends Fragment {
 		SharedPreferences sharedPreferences = getActivity()
 				.getSharedPreferences("card_choose", Activity.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.clear();
 		JSONArray jsonArray = new JSONArray();
 		Iterator<String> keys= cards.keySet().iterator();
-		
 		while(keys.hasNext()){
 			String key = keys.next();
 			JSONObject object = new JSONObject();
@@ -461,6 +478,7 @@ public class FragmentHome extends Fragment {
 			jsonArray.put(object);
 		}
 		editor.putString("cardsJson", jsonArray.toString());
+		Log.i("fragment", "json "+jsonArray.toString());
 		editor.commit();
 		getCards();
 	}

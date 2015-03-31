@@ -288,7 +288,7 @@ public class MainActivity extends FragmentActivity {
 			} else if (action.equals(Constant.A_ChangeCards)) {
 				// 卡片有可能改变
 				if (fragmentHome != null) {
-					fragmentHome.isChangeCards();
+					//fragmentHome.isChangeCards();
 				}
 			}
 		}
