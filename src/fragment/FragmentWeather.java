@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -69,7 +70,7 @@ public class FragmentWeather extends Fragment {
 				break;
 			case R.id.iv_weather_menu:
 				if(onCardMenuListener != null){
-					onCardMenuListener.showCarMenu("weather");
+					onCardMenuListener.showCarMenu(FragmentHome.TAG_WEATHER);
 				}
 				break;
 			}

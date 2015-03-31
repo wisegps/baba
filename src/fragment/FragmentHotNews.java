@@ -80,7 +80,7 @@ public class FragmentHotNews extends Fragment {
 				break;
 			case R.id.iv_hot_news_menu:
 				if(onCardMenuListener != null){
-					onCardMenuListener.showCarMenu("hotNews");
+					onCardMenuListener.showCarMenu(FragmentHome.TAG_NEWS);
 				}
 				break;
 			}
