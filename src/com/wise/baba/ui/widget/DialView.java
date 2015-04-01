@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.wise.baba.R;
+import com.wise.baba.util.BitmapUtil;
 import com.wise.baba.util.DialBitmapFactory;
 import com.wise.state.FaultDetectionActivity;
 
@@ -80,7 +81,8 @@ public class DialView extends FrameLayout {
 
 	// 初始化一个固定值
 	public void initValue(int value) {
-		imgCusor.setImageBitmap(null);
+		BitmapUtil.recycleBitmap(imgCusor);
+		BitmapUtil.recycleBitmap(imgColor);
 		Bitmap bitmp = bitmapFactory.getBitmapByValue(value, true);
 		imgColor.setImageBitmap(bitmp);
 	}
@@ -90,6 +92,7 @@ public class DialView extends FrameLayout {
 	public void startCheckAnimation(int value,Handler handler) {
 		this.value = value;
 		this.handler = handler;
+		BitmapUtil.recycleBitmap(imgCusor);
 		imgCusor.setImageResource(R.drawable.circle_cursor);
 		currentValue = 100;
 		startColorAnimation();
@@ -117,22 +120,9 @@ public class DialView extends FrameLayout {
 							timer.cancel();
 							timer.purge();
 						}
-						
+						BitmapUtil.recycleBitmap(imgColor);
 						Bitmap bitmp = bitmapFactory.getBitmapByValue(
 								currentValue--, false);
-						
-						
-						BitmapDrawable bitmapDrawable = (BitmapDrawable) imgColor.getDrawable();
-
-						//如果图片还未回收，先强制回收该图片
-
-						if(!bitmapDrawable.getBitmap().isRecycled())
-
-						{
-
-						    bitmapDrawable.getBitmap().recycle();
-
-						}
 						imgColor.setImageBitmap(bitmp);
 					}
 				});
@@ -164,5 +154,15 @@ public class DialView extends FrameLayout {
 		});
 
 	}
+
+	@Override
+	protected void onDetachedFromWindow() {
+		BitmapUtil.recycleBitmap(imgColor);
+		BitmapUtil.recycleBitmap(imgCusor);
+		super.onDetachedFromWindow();
+	}
+	
+	
+	
 
 }

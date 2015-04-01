@@ -3,6 +3,8 @@ package com.wise.baba.util;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.widget.ImageView;
 
 public class BitmapUtil {
 	
@@ -35,5 +37,18 @@ public class BitmapUtil {
 	    // 使用获取到的inSampleSize值再次解析图片
 	    options.inJustDecodeBounds = false;
 	    return BitmapFactory.decodeResource(res, resId, options);
+	}
+	
+	public static void recycleBitmap(ImageView imgView) {
+		BitmapDrawable drawable = (BitmapDrawable) imgView.getDrawable();
+		if(drawable != null){
+			Bitmap bitmap = drawable.getBitmap();
+			if(bitmap != null && !bitmap.isRecycled()){
+				System.out.println("回收了 "+bitmap.getByteCount());
+				bitmap.recycle();
+				bitmap = null;
+				System.gc();
+			}
+		}
 	}
 }
