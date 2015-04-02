@@ -157,11 +157,18 @@ public class DialView extends FrameLayout {
 
 	@Override
 	protected void onDetachedFromWindow() {
-		BitmapUtil.recycleBitmap(imgColor);
-		BitmapUtil.recycleBitmap(imgCusor);
+		freeMemory();
 		super.onDetachedFromWindow();
 	}
 	
+	
+	public void freeMemory(){
+		BitmapUtil.recycleBitmap(imgColor);
+		BitmapUtil.recycleBitmap(imgCusor);
+		imgCover.setImageBitmap(null);
+		bitmapFactory = null;
+		this.handler = null; 
+	}
 	
 	
 

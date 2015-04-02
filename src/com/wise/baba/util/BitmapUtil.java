@@ -47,6 +47,7 @@ public class BitmapUtil {
 				System.out.println("回收了 "+bitmap.getByteCount());
 				bitmap.recycle();
 				bitmap = null;
+				imgView.setImageBitmap(null);
 				System.gc();
 			}
 		}

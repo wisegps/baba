@@ -40,6 +40,7 @@ import android.widget.PopupWindow;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.db.ShareCards;
 import com.wise.car.CarLocationActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.show.ShowActivity;
@@ -64,8 +65,9 @@ public class FragmentHome extends Fragment {
 	LinearLayout ll_cards;
 	FragmentManager fragmentManager;
 	AppApplication app;
-	Map<String, Fragment> cards = new LinkedHashMap<String,Fragment>();
+	Map<String, Fragment> cards = new LinkedHashMap<String, Fragment>();
 	private View rootView;
+	private ShareCards cardsSharePreferences;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,6 +89,7 @@ public class FragmentHome extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
+		cardsSharePreferences = new ShareCards(this.getActivity());
 		ll_cards = (LinearLayout) getActivity().findViewById(R.id.ll_cards);
 		Button bt_show = (Button) getActivity().findViewById(R.id.bt_show);
 		bt_show.setOnClickListener(onClickListener);
@@ -122,6 +125,7 @@ public class FragmentHome extends Fragment {
 	/** 显示卡片布局 **/
 	private void getCards() {
 		cards.clear();
+		ll_cards.removeAllViews();
 		Log.i("fragment", "设置卡片布局");
 		if (app.cust_type == Info.ServiceProvider) {
 			Log.i("fragment", "设置服务商卡片布局");
@@ -130,7 +134,7 @@ public class FragmentHome extends Fragment {
 			FragmentService fragmentService = new FragmentService();
 			transaction.add(R.id.ll_cards, fragmentService, TAG_SERVICE);
 			transaction.commit();
-			cards.put(TAG_SERVICE,fragmentService);
+			cards.put(TAG_SERVICE, fragmentService);
 		} else {
 			Log.i("fragment", "设置周边卡片布局");
 			removeFragment(TAG_POI);
@@ -138,80 +142,47 @@ public class FragmentHome extends Fragment {
 			FragmentHomePOI fragmetnHomePOI = new FragmentHomePOI();
 			transaction.add(R.id.ll_cards, fragmetnHomePOI, TAG_POI);
 			transaction.commit();
-			cards.put(TAG_POI,fragmetnHomePOI);
-			
+			cards.put(TAG_POI, fragmetnHomePOI);
+
 			Log.i("fragment", "设置车辆卡片布局");
 			removeFragment(TAG_CAR);
 			transaction = fragmentManager.beginTransaction();
 			FragmentCarInfo fragmentCarInfo = new FragmentCarInfo();
 			transaction.add(R.id.ll_cards, fragmentCarInfo, TAG_CAR);
 			transaction.commit();
-			cards.put(TAG_CAR,fragmentCarInfo);
+			cards.put(TAG_CAR, fragmentCarInfo);
 
 		}
-		// 可选布局
-		SharedPreferences sharedPreferences = getActivity()
-				.getSharedPreferences("card_choose", Activity.MODE_PRIVATE);
-		String cardsJson = sharedPreferences.getString("cardsJson", "");
-		
-		Log.i("fragment", "cards json "+cardsJson);
-		
-		if (cardsJson.equals("")) {// 默认显示天气和新闻
-			Log.i("fragment", "设置天气卡片布局1");
-			removeFragment(TAG_WEATHER);
-			transaction = fragmentManager.beginTransaction();
-			FragmentWeather fragmentWeather = new FragmentWeather();
-			fragmentWeather.setOnCardMenuListener(onCardMenuListener);
-			transaction.add(R.id.ll_cards, fragmentWeather, TAG_WEATHER);
-			transaction.commit();
-			cards.put(TAG_WEATHER,fragmentWeather);
+		// // 可选布局
 
-			Log.i("fragment", "设置新闻卡片布局1");
-			removeFragment(TAG_NEWS);
-			transaction = fragmentManager.beginTransaction();
-			FragmentHotNews fragmentHotNews = new FragmentHotNews();
-			fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
-			transaction.add(R.id.ll_cards, fragmentHotNews, TAG_NEWS);
-			transaction.commit();
-			cards.put(TAG_NEWS,fragmentHotNews);
-			
-		} else {
-			try {
-				JSONArray jsonArray = new JSONArray(cardsJson);
-				for (int i = 0; i < jsonArray.length(); i++) {
-					JSONObject object = jsonArray.getJSONObject(i);
-					String cardName = object.getString("cardName");
-					if (cardName.equals(TAG_WEATHER)) {
-						
-						Log.i("fragment", "设置天气卡片布局2");
-						removeFragment(TAG_WEATHER);
-						transaction = fragmentManager.beginTransaction();
-						FragmentWeather fragmentWeather = new FragmentWeather();
-						fragmentWeather
-								.setOnCardMenuListener(onCardMenuListener);
-						transaction.add(R.id.ll_cards, fragmentWeather,
-								TAG_WEATHER);
-						transaction.commit();
-						cards.put(TAG_WEATHER,fragmentWeather);
-						
-					} else if (cardName.equals(TAG_NEWS)) {
-						Log.i("fragment", "设置新闻卡片布局2");
-						removeFragment(TAG_NEWS);
-						transaction = fragmentManager.beginTransaction();
-						FragmentHotNews fragmentHotNews = new FragmentHotNews();
-						fragmentHotNews
-								.setOnCardMenuListener(onCardMenuListener);
-						transaction.add(R.id.ll_cards, fragmentHotNews,
-								TAG_NEWS);
-						transaction.commit();
-						
-						cards.put(TAG_NEWS,fragmentHotNews);
-					}
+		String sharedCards[] = cardsSharePreferences.get();
+		
+		
+			for (int i = 0; i < sharedCards.length; i++) {
+				String cardName = sharedCards[i];
+				Log.i("fragment", "get " + i +" "+cardName);
+				if (cardName.equals(TAG_WEATHER)) {
+					Log.i("fragment", "设置天气卡片布局2");
+					removeFragment(TAG_WEATHER);
+					transaction = fragmentManager.beginTransaction();
+					FragmentWeather fragmentWeather = new FragmentWeather();
+					fragmentWeather.setOnCardMenuListener(onCardMenuListener);
+					transaction
+							.add(R.id.ll_cards, fragmentWeather, TAG_WEATHER);
+					transaction.commit();
+					cards.put(TAG_WEATHER, fragmentWeather);
+
+				} else if (cardName.equals(TAG_NEWS)) {
+					Log.i("fragment", "设置新闻卡片布局2");
+					removeFragment(TAG_NEWS);
+					transaction = fragmentManager.beginTransaction();
+					FragmentHotNews fragmentHotNews = new FragmentHotNews();
+					fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
+					transaction.add(R.id.ll_cards, fragmentHotNews, TAG_NEWS);
+					transaction.commit();
+					cards.put(TAG_NEWS, fragmentHotNews);
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
-		}
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -231,7 +202,8 @@ public class FragmentHome extends Fragment {
 						return;
 					}
 					int index = 0;
-					FragmentCarInfo  fragmentCarInfo = (FragmentCarInfo) cards.get(TAG_CAR);
+					FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards
+							.get(TAG_CAR);
 					if (fragmentCarInfo != null) {
 						fragmentCarInfo.getIndex();
 					}
@@ -271,7 +243,7 @@ public class FragmentHome extends Fragment {
 	// 跳转到地图界面
 	private void goCarMap(boolean b) {
 		int index = 0;
-		FragmentCarInfo  fragmentCarInfo = (FragmentCarInfo) cards.get(TAG_CAR);
+		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards.get(TAG_CAR);
 		if (fragmentCarInfo != null) {
 			fragmentCarInfo.getIndex();
 		}
@@ -288,7 +260,6 @@ public class FragmentHome extends Fragment {
 		isChange = true;
 	}
 
-
 	public void removeFragment(String tag) {
 		Fragment fragment = fragmentManager.findFragmentByTag(tag);
 		if (fragment != null && fragment.isAdded()) {
@@ -297,10 +268,17 @@ public class FragmentHome extends Fragment {
 		}
 
 	}
+	
+	public void removeAllFragment() {
+		Iterator<String> keys = cards.keySet().iterator();
+		while(keys.hasNext()){
+			removeFragment(keys.next());
+		}
+	}
 
 	/** 刷新车辆卡片 **/
 	public void refreshCarInfo() {
-		FragmentCarInfo  fragmentCarInfo = (FragmentCarInfo) cards.get(TAG_CAR);
+		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards.get(TAG_CAR);
 		if (fragmentCarInfo != null) {
 			fragmentCarInfo.initDataView();
 		}
@@ -313,8 +291,8 @@ public class FragmentHome extends Fragment {
 		// 清除有消息的红点提醒
 		clearCounter();
 		// 通知车辆信息卡片退出登录
-		
-		FragmentCarInfo  fragmentCarInfo = (FragmentCarInfo) cards.get(TAG_CAR);
+
+		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards.get(TAG_CAR);
 		if (fragmentCarInfo != null) {
 			fragmentCarInfo.setLoginView();
 		}
@@ -412,7 +390,7 @@ public class FragmentHome extends Fragment {
 		@Override
 		public void showCarMenu(final String CardName) {
 
-			Log.i("fragment", "delete card name " + CardName);
+			
 			// 弹出卡片菜单
 			LayoutInflater mLayoutInflater = LayoutInflater.from(getActivity());
 			View popunwindwow = mLayoutInflater.inflate(R.layout.pop_card_menu,
@@ -425,21 +403,21 @@ public class FragmentHome extends Fragment {
 					mPopupWindow.dismiss();
 				}
 			});
-			
-			
+
 			Button bt_card_delete = (Button) popunwindwow
 					.findViewById(R.id.bt_card_delete);
 			bt_card_delete.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					Log.i("fragment", "delete card name " + CardName);
 					removeFragment(CardName);
 					cards.remove(CardName);
 					setCardsInSharedPreferences();
 					mPopupWindow.dismiss();
-					
+
 				}
 			});
-			
+
 			Button bt_card_cancle = (Button) popunwindwow
 					.findViewById(R.id.bt_card_cancel);
 			bt_card_cancle.setOnClickListener(new OnClickListener() {
@@ -448,7 +426,7 @@ public class FragmentHome extends Fragment {
 					mPopupWindow.dismiss();
 				}
 			});
-			
+
 			mPopupWindow = new PopupWindow(popunwindwow,
 					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 			mPopupWindow.setAnimationStyle(R.style.PopupAnimation);
@@ -461,26 +439,12 @@ public class FragmentHome extends Fragment {
 
 	/** 删除卡片后保存最新的数据在本地 **/
 	private void setCardsInSharedPreferences() {
-		SharedPreferences sharedPreferences = getActivity()
-				.getSharedPreferences("card_choose", Activity.MODE_PRIVATE);
-		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.clear();
-		JSONArray jsonArray = new JSONArray();
-		Iterator<String> keys= cards.keySet().iterator();
-		while(keys.hasNext()){
-			String key = keys.next();
-			JSONObject object = new JSONObject();
-			try {
-				object.put("cardName", key);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			jsonArray.put(object);
+		Iterator<String> keys = cards.keySet().iterator();
+		String cardNames[] = cards.keySet().toArray(new String[0]);
+		for(int i = 0;i<cardNames.length;i++){
+			Log.i("fragment", "保存 " + i+" "+ cardNames[i]);
 		}
-		editor.putString("cardsJson", jsonArray.toString());
-		Log.i("fragment", "json "+jsonArray.toString());
-		editor.commit();
-		getCards();
+		cardsSharePreferences.put(cardNames);
 	}
 
 }

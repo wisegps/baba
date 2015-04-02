@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wise.baba.R;
+import com.wise.baba.db.ShareCards;
 
 import data.CardsData;
 import fragment.FragmentHome;
@@ -34,38 +35,17 @@ public class AddCards extends Activity {
 	DragListView infoListView;
 	List<CardsData> list = new ArrayList<CardsData>();
 	InforAdapter adapter;
-	private String[] cards = {FragmentHome.TAG_SERVICE,FragmentHome.TAG_WEATHER,FragmentHome.TAG_NEWS};
+	private String[] cards = { FragmentHome.TAG_SERVICE,
+			FragmentHome.TAG_WEATHER, FragmentHome.TAG_NEWS };
+	private ShareCards cardsSharePreferences;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_info);
-		SharedPreferences sharedPreferences = getSharedPreferences(
-				"card_choose", Activity.MODE_PRIVATE);
-		String cardsJson = sharedPreferences.getString("cardsJson", "");
-		if (!cardsJson.equals("") && cardsJson != null) {
-			try {
-				JSONArray jsonArray = new JSONArray(cardsJson);
-				for (int i = 0; i < jsonArray.length(); i++) {
-					JSONObject object = jsonArray.getJSONObject(i);
-					String cardName = object.getString("cardName");
-					for (int j = 0; j < cards.length; j++) {
-						if (cardName.equals(cards[j])) {
-							CardsData cardsData = new CardsData();
-							cardsData.setIcon(Constant.picture[j]);
-							cardsData.setTitle(Constant.title[j]);
-							cardsData.setContent(Constant.content[j]);
-							cardsData.setCardName(cardName);
-							list.add(cardsData);
-							break;
-						}
-					}
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-
+		cardsSharePreferences = new ShareCards(this);
+		setCardsDataList();
 		infoListView = (DragListView) findViewById(R.id.info_add);
 		adapter = new InforAdapter();
 		infoListView.setAdapter(adapter);
@@ -92,6 +72,27 @@ public class AddCards extends Activity {
 				finish();
 			}
 		});
+	}
+
+	public void setCardsDataList() {
+		list.clear();
+		String[] sharedCards = cardsSharePreferences.get();
+		if (sharedCards != null) {
+			for (int i = 0; i < sharedCards.length; i++) {
+				String cardName = sharedCards[i];
+				for (int j = 0; j < cards.length; j++) {
+					if (cardName.equals(cards[j])) {
+						CardsData cardsData = new CardsData();
+						cardsData.setIcon(Constant.picture[j]);
+						cardsData.setTitle(Constant.title[j]);
+						cardsData.setContent(Constant.content[j]);
+						cardsData.setCardName(cardName);
+						list.add(cardsData);
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	// 交换listview的数据
@@ -121,52 +122,20 @@ public class AddCards extends Activity {
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == ChooseCard.CARDCODE) {
-			String cardsJson = data.getStringExtra("cardsJson");
-			try {
-				JSONArray jsonArray = new JSONArray(cardsJson);
-				for (int i = 0; i < jsonArray.length(); i++) {
-					JSONObject object = jsonArray.getJSONObject(i);
-					String cardName = object.getString("cardName");
-					for (int j = 0; j < cards.length; j++) {
-						if (cardName.equals(cards[j])) {
-							CardsData cardsData = new CardsData();
-							cardsData.setIcon(Constant.picture[j]);
-							cardsData.setTitle(Constant.title[j]);
-							cardsData.setContent(Constant.content[j]);
-							cardsData.setCardName(cardName);
-							list.add(cardsData);
-							break;
-						}
-					}
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			adapter.notifyDataSetChanged();
-			putJson();
-		}
+	protected void onStart() {
+		super.onStart();
+		setCardsDataList();
+		adapter.notifyDataSetChanged();
 	}
 
 	// 保存数据
 	private void putJson() {
-		SharedPreferences sharedPreferences = getSharedPreferences(
-				"card_choose", Activity.MODE_PRIVATE);
-		SharedPreferences.Editor editor = sharedPreferences.edit();
-		JSONArray jsonArray = new JSONArray();
-		try {
-			for (int i = 0; i < list.size(); i++) {
-				JSONObject object = new JSONObject();
-				object.put("cardName", list.get(i).getCardName());
-				jsonArray.put(object);
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
+
+		String[] cardNames = new String[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			cardNames[i] = list.get(i).getCardName();
 		}
-		editor.putString("cardsJson", jsonArray.toString());
-		editor.commit();
+		cardsSharePreferences.put(cardNames);
 		FragmentHome.isChange = true;
 	}
 

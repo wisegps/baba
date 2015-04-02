@@ -623,9 +623,21 @@ public class FragmentCarInfo extends Fragment {
 
 	@Override
 	public void onDestroy() {
+//		for(int i =0;i<carViews.size();i++){
+//			DialView dialScroe1 = carViews.get(i).getDialHealthScore();
+//			dialScroe1.freeMemory();
+//			dialScroe1 = null;
+//			DialView dialDriveScore = carViews.get(i).getDialDriveScore();
+//			dialDriveScore.freeMemory();
+//			dialDriveScore = null;
+//		}
+//		carViews.clear();
+//		carViews = null;
 		super.onDestroy();
 		isDestroy = true;
 		isGetAllData = false;
+		
+		
 	}
 
 	// 跳转类型

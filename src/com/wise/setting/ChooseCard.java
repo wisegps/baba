@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import pubclas.Constant;
 
 import com.wise.baba.R;
+import com.wise.baba.db.ShareCards;
 
 import data.CardsData;
 import fragment.FragmentHome;
@@ -33,10 +34,14 @@ import android.widget.TextView;
 public class ChooseCard extends Activity {
 	ListView card_choose;
 	List<CardsData> list = new ArrayList<CardsData>();;
-	String cardsString;
-	JSONArray cardsJson = new JSONArray();
+	// String cardsString;
+	// JSONArray cardsJson = new JSONArray();
+
 	public static final int CARDCODE = 1;
-	private String[] cards = {FragmentHome.TAG_SERVICE,FragmentHome.TAG_WEATHER,FragmentHome.TAG_NEWS};
+	private String[] cards = { FragmentHome.TAG_SERVICE,
+			FragmentHome.TAG_WEATHER, FragmentHome.TAG_NEWS };
+	private ShareCards cardsSharePreferences;
+	private String[] sharedCards = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +58,11 @@ public class ChooseCard extends Activity {
 			list.add(inItem);
 		}
 
-		SharedPreferences sharedPreferences = getSharedPreferences(
-				"card_choose", Activity.MODE_PRIVATE);
-		cardsString = sharedPreferences.getString("cardsJson", "");
+		cardsSharePreferences = new ShareCards(this);
+		sharedCards = cardsSharePreferences.get();
+		// SharedPreferences sharedPreferences = getSharedPreferences(
+		// "card_choose", Activity.MODE_PRIVATE);
+		// cardsString = sharedPreferences.getString("cardsJson", "");
 		card_choose = (ListView) findViewById(R.id.card_choose);
 		CardAdapter cardAdapter = new CardAdapter();
 		card_choose.setAdapter(cardAdapter);
@@ -63,14 +70,14 @@ public class ChooseCard extends Activity {
 		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				SharedPreferences sharedPreferences = getSharedPreferences(
-						"card_choose", Activity.MODE_PRIVATE);
-				SharedPreferences.Editor editor = sharedPreferences.edit();
-				editor.putString("cardsJson", cardsJson.toString());
-				editor.commit();
-				Intent intent = new Intent();
-				intent.putExtra("cardsJson", cardsJson.toString());
-				setResult(CARDCODE, intent);
+				// SharedPreferences sharedPreferences = getSharedPreferences(
+				// "card_choose", Activity.MODE_PRIVATE);
+				// SharedPreferences.Editor editor = sharedPreferences.edit();
+				// editor.putString("cardsJson", cardsJson.toString());
+				// editor.commit();
+				// Intent intent = new Intent();
+				// intent.putExtra("cardsJson", cardsJson.toString());
+				// setResult(CARDCODE, intent);
 				FragmentHome.isChange = true;
 				finish();
 			}
@@ -80,14 +87,14 @@ public class ChooseCard extends Activity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			SharedPreferences sharedPreferences = getSharedPreferences(
-					"card_choose", Activity.MODE_PRIVATE);
-			SharedPreferences.Editor editor = sharedPreferences.edit();
-			editor.putString("cardsJson", cardsJson.toString());
-			editor.commit();
-			Intent intent = new Intent();
-			intent.putExtra("cardsJson", cardsJson.toString());
-			setResult(CARDCODE, intent);
+			// SharedPreferences sharedPreferences = getSharedPreferences(
+			// "card_choose", Activity.MODE_PRIVATE);
+			// SharedPreferences.Editor editor = sharedPreferences.edit();
+			// editor.putString("cardsJson", cardsJson.toString());
+			// editor.commit();
+			// Intent intent = new Intent();
+			// intent.putExtra("cardsJson", cardsJson.toString());
+			// setResult(CARDCODE, intent);
 			FragmentHome.isChange = true;
 			finish();
 			return true;
@@ -134,34 +141,21 @@ public class ChooseCard extends Activity {
 			mHolder.info_icon.setImageResource(list.get(position).getIcon());
 			mHolder.tv_info_title.setText(list.get(position).getTitle());
 			mHolder.tv_info_content.setText(list.get(position).getContent());
-			if (cardsString != null && !cardsString.equals("")) {
-				try {
-					JSONArray jsonArray = new JSONArray(cardsString);
-					for (int i = 0; i < jsonArray.length(); i++) {
-						if (list.get(position)
-								.getCardName()
-								.equals(jsonArray.getJSONObject(i).getString(
-										"cardName"))) {
-							mHolder.item_add.setText("已添加");
-							mHolder.item_add.setEnabled(false);
-							break;
-						}
+			if (sharedCards != null) {
+				for (int i = 0; i < sharedCards.length; i++) {
+					if (list.get(position).getCardName().equals(sharedCards[i])) {
+						mHolder.item_add.setText("已添加");
+						mHolder.item_add.setEnabled(false);
+						break;
 					}
-				} catch (JSONException e) {
-					e.printStackTrace();
 				}
 			}
 
 			mHolder.item_add.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					try {
-						JSONObject object = new JSONObject();
-						object.put("cardName", list.get(position).getCardName());
-						cardsJson.put(object);
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
+					String cardName = list.get(position).getCardName();
+					cardsSharePreferences.put(cardName);
 					mHolder.item_add.setText("已添加");
 					mHolder.item_add.setEnabled(false);
 				}
