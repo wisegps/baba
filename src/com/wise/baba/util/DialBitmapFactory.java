@@ -33,6 +33,8 @@ public class DialBitmapFactory {
 
 	public Bitmap mBitmap;
 	public Canvas mCanvas;
+	
+	public int realwidth;
 
 	public DialBitmapFactory(Context context) {
 		super();
@@ -46,6 +48,21 @@ public class DialBitmapFactory {
 		width = bmColor.getWidth();
 		height = bmColor.getHeight();
 	}
+
+	public DialBitmapFactory(Context context, int realwidth) {
+		super();
+		// TODO Auto-generated constructor stub
+		this.realwidth = realwidth;
+		this.context = context;
+		bmColor = BitmapUtil.decodeBitmap(context.getResources(), R.drawable.circle_dial_color, realwidth, realwidth);
+		bmGray =  BitmapUtil.decodeBitmap(context.getResources(), R.drawable.circle_dial_gray, realwidth, realwidth);
+		bmCursor =  BitmapUtil.decodeBitmap(context.getResources(), R.drawable.circle_cursor, realwidth, realwidth);
+		width = bmColor.getWidth();
+		height = bmColor.getHeight();
+		
+	}
+
+
 
 	/**
 	 * 

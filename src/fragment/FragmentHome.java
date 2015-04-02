@@ -124,8 +124,8 @@ public class FragmentHome extends Fragment {
 
 	/** 显示卡片布局 **/
 	private void getCards() {
+		isChange = false;
 		cards.clear();
-		ll_cards.removeAllViews();
 		Log.i("fragment", "设置卡片布局");
 		if (app.cust_type == Info.ServiceProvider) {
 			Log.i("fragment", "设置服务商卡片布局");
@@ -335,11 +335,10 @@ public class FragmentHome extends Fragment {
 		setNotiView();
 		MobclickAgent.onResume(getActivity());
 		Log.i("fragment", "isChange" + isChange);
-		if (isChange) {
-			// 加载对应的view
-			getCards();
-			isChange = false;
-		}
+//		if (isChange) {
+//			// 加载对应的view
+//			getCards();
+//		}
 	}
 
 	@Override

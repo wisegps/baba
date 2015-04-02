@@ -157,12 +157,12 @@ public class DriveActivity extends Activity {
 		}
 	}
 
-	// 设置圆环刻度值
-	public void setCircleBitmapValue(ImageView imgView, int value) {
-		DialBitmapFactory factory = new DialBitmapFactory(this);
-		Bitmap mBitmap = factory.getBitmapByValue(value,true);
-		imgView.setImageBitmap(mBitmap);
-	}
+//	// 设置圆环刻度值
+//	public void setCircleBitmapValue(ImageView imgView, int value) {
+//		DialBitmapFactory factory = new DialBitmapFactory(this);
+//		Bitmap mBitmap = factory.getBitmapByValue(value,true);
+//		imgView.setImageBitmap(mBitmap);
+//	}
 
 	private void jsonData(String Data) {
 		if (Data == null || Data.equals("")) {

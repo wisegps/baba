@@ -3,6 +3,8 @@ package com.wise.baba.ui.widget;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import pubclas.DensityUtil;
+
 import com.wise.baba.R;
 import com.wise.baba.util.BitmapUtil;
 import com.wise.baba.util.DialBitmapFactory;
@@ -15,6 +17,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -28,8 +31,7 @@ import android.widget.TextView;
  * 
  * @author c 圆形刻度表盘
  * 
- *         一，静态设置值 ：initValue
- *         二，动画效果：setValue
+ *         一，静态设置值 ：initValue 二，动画效果：setValue
  * 
  */
 public class DialView extends FrameLayout {
@@ -38,7 +40,7 @@ public class DialView extends FrameLayout {
 	private ImageView imgCover; // 圆环底部覆盖扇形
 	private Context context;
 	private DialBitmapFactory bitmapFactory;
-	private long period = 70;//刻度转动单位时间
+	private long period = 70;// 刻度转动单位时间
 	private int currentValue = 100;
 	private int value = 100;
 	private Handler handler;
@@ -47,10 +49,21 @@ public class DialView extends FrameLayout {
 		super(context, attrs);
 		this.context = context;
 		handler = new Handler();
-		bitmapFactory = new DialBitmapFactory(context);
+		String  w = "";
+		for (int i = 0; i < attrs.getAttributeCount(); i++) {
+			if ("layout_width".equals(attrs.getAttributeName(i))) {
+				w = attrs.getAttributeValue(i);
+				break;
+			}
+		}
+		w = w.replace("dip", "");
+		int realWidth = DensityUtil.dip2px(context, Float.parseFloat(w));
+		System.out.println("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr" + realWidth);
+		bitmapFactory = new DialBitmapFactory(context, realWidth);
 		initChildView();
 
 	}
+
 
 	/**
 	 * 初始化子控件（图层）
@@ -81,18 +94,16 @@ public class DialView extends FrameLayout {
 
 	// 初始化一个固定值
 	public void initValue(int value) {
-		BitmapUtil.recycleBitmap(imgCusor);
+		//BitmapUtil.recycleBitmap(imgCusor);
 		BitmapUtil.recycleBitmap(imgColor);
 		Bitmap bitmp = bitmapFactory.getBitmapByValue(value, true);
 		imgColor.setImageBitmap(bitmp);
 	}
 
-	
-	//設置一個值，出現動畫滾動到該值
-	public void startCheckAnimation(int value,Handler handler) {
+	// 設置一個值，出現動畫滾動到該值
+	public void startCheckAnimation(int value, Handler handler) {
 		this.value = value;
 		this.handler = handler;
-		BitmapUtil.recycleBitmap(imgCusor);
 		imgCusor.setImageResource(R.drawable.circle_cursor);
 		currentValue = 100;
 		startColorAnimation();
@@ -103,7 +114,7 @@ public class DialView extends FrameLayout {
 	 * 彩色刻度绘制动画
 	 */
 	public void startColorAnimation() {
-		
+
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
@@ -160,16 +171,13 @@ public class DialView extends FrameLayout {
 		freeMemory();
 		super.onDetachedFromWindow();
 	}
-	
-	
-	public void freeMemory(){
+
+	public void freeMemory() {
 		BitmapUtil.recycleBitmap(imgColor);
 		BitmapUtil.recycleBitmap(imgCusor);
 		imgCover.setImageBitmap(null);
 		bitmapFactory = null;
-		this.handler = null; 
+		this.handler = null;
 	}
-	
-	
 
 }
