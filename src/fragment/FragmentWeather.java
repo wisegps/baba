@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.SelectCityActivity;
+import com.wise.baba.app.Const;
 
 /**
  * @author honesty
@@ -70,7 +71,7 @@ public class FragmentWeather extends Fragment {
 				break;
 			case R.id.iv_weather_menu:
 				if(onCardMenuListener != null){
-					onCardMenuListener.showCarMenu(FragmentHome.TAG_WEATHER);
+					onCardMenuListener.showCarMenu(Const.TAG_WEATHER);
 				}
 				break;
 			}

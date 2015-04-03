@@ -40,6 +40,7 @@ import android.widget.PopupWindow;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Const;
 import com.wise.baba.db.ShareCards;
 import com.wise.car.CarLocationActivity;
 import com.wise.setting.LoginActivity;
@@ -56,11 +57,11 @@ public class FragmentHome extends Fragment {
 	private static final String TAG = "FaultActivity";
 	/** 获取消息数据 **/
 	private static final int get_counter = 8;
-	public static final String TAG_SERVICE = "fragmentService";
-	public static final String TAG_POI = "fragmetnHomePOI";
-	public static final String TAG_CAR = "fragmentCarInfo";
-	public static final String TAG_WEATHER = "fragmentWeather";
-	public static final String TAG_NEWS = "fragmentHotNews";
+//	public static final String TAG_SERVICE = "fragmentService";
+//	public static final String TAG_POI = "fragmetnHomePOI";
+//	public static final String TAG_CAR = "fragmentCarInfo";
+//	public static final String TAG_WEATHER = "fragmentWeather";
+//	public static final String TAG_NEWS = "fragmentHotNews";
 	ImageView iv_noti;
 	LinearLayout ll_cards;
 	FragmentManager fragmentManager;
@@ -129,28 +130,28 @@ public class FragmentHome extends Fragment {
 		Log.i("fragment", "设置卡片布局");
 		if (app.cust_type == Info.ServiceProvider) {
 			Log.i("fragment", "设置服务商卡片布局");
-			removeFragment(TAG_SERVICE);
+			removeFragment(Const.TAG_SERVICE);
 			transaction = fragmentManager.beginTransaction();
 			FragmentService fragmentService = new FragmentService();
-			transaction.add(R.id.ll_cards, fragmentService, TAG_SERVICE);
+			transaction.add(R.id.ll_cards, fragmentService, Const.TAG_SERVICE);
 			transaction.commit();
-			cards.put(TAG_SERVICE, fragmentService);
+			cards.put(Const.TAG_SERVICE, fragmentService);
 		} else {
 			Log.i("fragment", "设置周边卡片布局");
-			removeFragment(TAG_POI);
+			removeFragment(Const.TAG_POI);
 			transaction = fragmentManager.beginTransaction();
 			FragmentHomePOI fragmetnHomePOI = new FragmentHomePOI();
-			transaction.add(R.id.ll_cards, fragmetnHomePOI, TAG_POI);
+			transaction.add(R.id.ll_cards, fragmetnHomePOI, Const.TAG_POI);
 			transaction.commit();
-			cards.put(TAG_POI, fragmetnHomePOI);
+			cards.put(Const.TAG_POI, fragmetnHomePOI);
 
 			Log.i("fragment", "设置车辆卡片布局");
-			removeFragment(TAG_CAR);
+			removeFragment(Const.TAG_CAR);
 			transaction = fragmentManager.beginTransaction();
 			FragmentCarInfo fragmentCarInfo = new FragmentCarInfo();
-			transaction.add(R.id.ll_cards, fragmentCarInfo, TAG_CAR);
+			transaction.add(R.id.ll_cards, fragmentCarInfo, Const.TAG_CAR);
 			transaction.commit();
-			cards.put(TAG_CAR, fragmentCarInfo);
+			cards.put(Const.TAG_CAR, fragmentCarInfo);
 
 		}
 		// // 可选布局
@@ -161,26 +162,26 @@ public class FragmentHome extends Fragment {
 			for (int i = 0; i < sharedCards.length; i++) {
 				String cardName = sharedCards[i];
 				Log.i("fragment", "get " + i +" "+cardName);
-				if (cardName.equals(TAG_WEATHER)) {
+				if (cardName.equals(Const.TAG_WEATHER)) {
 					Log.i("fragment", "设置天气卡片布局2");
-					removeFragment(TAG_WEATHER);
+					removeFragment(Const.TAG_WEATHER);
 					transaction = fragmentManager.beginTransaction();
 					FragmentWeather fragmentWeather = new FragmentWeather();
 					fragmentWeather.setOnCardMenuListener(onCardMenuListener);
 					transaction
-							.add(R.id.ll_cards, fragmentWeather, TAG_WEATHER);
+							.add(R.id.ll_cards, fragmentWeather, Const.TAG_WEATHER);
 					transaction.commit();
-					cards.put(TAG_WEATHER, fragmentWeather);
+					cards.put(Const.TAG_WEATHER, fragmentWeather);
 
-				} else if (cardName.equals(TAG_NEWS)) {
+				} else if (cardName.equals(Const.TAG_NEWS)) {
 					Log.i("fragment", "设置新闻卡片布局2");
-					removeFragment(TAG_NEWS);
+					removeFragment(Const.TAG_NEWS);
 					transaction = fragmentManager.beginTransaction();
 					FragmentHotNews fragmentHotNews = new FragmentHotNews();
 					fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
-					transaction.add(R.id.ll_cards, fragmentHotNews, TAG_NEWS);
+					transaction.add(R.id.ll_cards, fragmentHotNews, Const.TAG_NEWS);
 					transaction.commit();
-					cards.put(TAG_NEWS, fragmentHotNews);
+					cards.put(Const.TAG_NEWS, fragmentHotNews);
 				}
 			}
 	}
@@ -203,7 +204,7 @@ public class FragmentHome extends Fragment {
 					}
 					int index = 0;
 					FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards
-							.get(TAG_CAR);
+							.get(Const.TAG_CAR);
 					if (fragmentCarInfo != null) {
 						fragmentCarInfo.getIndex();
 					}
@@ -243,7 +244,7 @@ public class FragmentHome extends Fragment {
 	// 跳转到地图界面
 	private void goCarMap(boolean b) {
 		int index = 0;
-		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards.get(TAG_CAR);
+		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards.get(Const.TAG_CAR);
 		if (fragmentCarInfo != null) {
 			fragmentCarInfo.getIndex();
 		}
@@ -278,7 +279,7 @@ public class FragmentHome extends Fragment {
 
 	/** 刷新车辆卡片 **/
 	public void refreshCarInfo() {
-		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards.get(TAG_CAR);
+		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards.get(Const.TAG_CAR);
 		if (fragmentCarInfo != null) {
 			fragmentCarInfo.initDataView();
 		}
@@ -292,7 +293,7 @@ public class FragmentHome extends Fragment {
 		clearCounter();
 		// 通知车辆信息卡片退出登录
 
-		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards.get(TAG_CAR);
+		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards.get(Const.TAG_CAR);
 		if (fragmentCarInfo != null) {
 			fragmentCarInfo.setLoginView();
 		}

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.wise.baba.AppApplication;
 import com.wise.baba.BrowserActivity;
 import com.wise.baba.R;
+import com.wise.baba.app.Const;
 
 /**
  * 本地资讯
@@ -80,7 +81,7 @@ public class FragmentHotNews extends Fragment {
 				break;
 			case R.id.iv_hot_news_menu:
 				if(onCardMenuListener != null){
-					onCardMenuListener.showCarMenu(FragmentHome.TAG_NEWS);
+					onCardMenuListener.showCarMenu(Const.TAG_NEWS);
 				}
 				break;
 			}

@@ -3,33 +3,27 @@ package com.wise.setting;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import pubclas.Constant;
-
-import com.wise.baba.R;
-import com.wise.baba.db.ShareCards;
-
-import data.CardsData;
-import fragment.FragmentHome;
-
 import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.wise.baba.R;
+import com.wise.baba.app.Const;
+import com.wise.baba.db.ShareCards;
+
+import data.CardsData;
+import fragment.FragmentHome;
 
 public class ChooseCard extends Activity {
 	ListView card_choose;
@@ -38,8 +32,8 @@ public class ChooseCard extends Activity {
 	// JSONArray cardsJson = new JSONArray();
 
 	public static final int CARDCODE = 1;
-	private String[] cards = { FragmentHome.TAG_SERVICE,
-			FragmentHome.TAG_WEATHER, FragmentHome.TAG_NEWS };
+	private String[] cards = { Const.TAG_SERVICE,
+			Const.TAG_WEATHER, Const.TAG_NEWS };
 	private ShareCards cardsSharePreferences;
 	private String[] sharedCards = null;
 

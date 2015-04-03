@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wise.baba.R;
+import com.wise.baba.app.Const;
 import com.wise.baba.db.ShareCards;
 
 import data.CardsData;
@@ -35,8 +36,8 @@ public class AddCards extends Activity {
 	DragListView infoListView;
 	List<CardsData> list = new ArrayList<CardsData>();
 	InforAdapter adapter;
-	private String[] cards = { FragmentHome.TAG_SERVICE,
-			FragmentHome.TAG_WEATHER, FragmentHome.TAG_NEWS };
+	private String[] cards = { Const.TAG_SERVICE,
+			Const.TAG_WEATHER, Const.TAG_NEWS };
 	private ShareCards cardsSharePreferences;
 
 	@Override
