@@ -32,7 +32,6 @@ public class FragmentHomeSpeed extends Fragment implements Callback {
 	/**
 	 * 1=电源，2=进气，节气门，3=怠速，4=冷却，水温，5=排放，
 	 */
-	int type = Const.TYPE_DY;
 	
 	private TextView textSpeed,textRotary,textVoltage,textTemperature,textLoad,textThrottle,textOil;
 	private View view;
@@ -58,7 +57,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback {
 		app = (AppApplication) this.getActivity().getApplication();
 		handler = new Handler(this);
 		http = new HttpGetData(this.getActivity(), handler);
-		http.request(type);
+		http.request();
 	}
 
 	/*
@@ -68,29 +67,26 @@ public class FragmentHomeSpeed extends Fragment implements Callback {
 	 */
 	@Override
 	public boolean handleMessage(Message msg) {
-		String result = (String) msg.obj;
-		Log.i("FragmentHomeSpeed" , msg.what +" : "+result);
-		switch (msg.what) {
-		case Const.TYPE_DY://电源电压
-			textVoltage.setText(result);
-			http.request(Const.TYPE_SW);
-			break;
-		case Const.TYPE_SW://水温
-			textTemperature.setText(result);
-			http.request(Const.TYPE_DS);
-			break;
-		case Const.TYPE_DS://怠速，转速
-			textRotary.setText(result);
-			http.request(Const.TYPE_JQM);
-			break;
-		case Const.TYPE_JQM://节气门
-			textThrottle.setText(result);
-			//http.request(Const.TYPE_DS);
-			break;
-		case Const.TYPE_PF:
-			textLoad.setText(result);
-			break;
-		}
+		
+		Bundle bundle = msg.getData();
+		
+		String ss = bundle.getInt("ss")+"";
+		textSpeed.setText(ss);
+		
+		String fdjfz = bundle.getInt("fdjfz")+"";
+		textRotary.setText(fdjfz);
+		
+		
+		String dpdy = bundle.getInt("dpdy")+"";
+		textVoltage.setText(dpdy);
+		
+		String sw = bundle.getInt("sw")+"";
+		textTemperature.setText(sw);
+		
+		String syyl = bundle.getInt("syyl")+"";
+		textOil.setText(syyl);
+		
+	
 		return false;
 	}
 

@@ -144,31 +144,6 @@
                 android:layout_height="0.5dp"
                 android:background="@color/line" />
 
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp" >
-
-                <TextView
-                    android:id="@+id/tv_dpdy"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/bg_white"
-                    android:gravity="right"
-                    android:textColor="@color/color_blue"
-                    android:textSize="@dimen/content" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="最后行程检测值"
-                    android:textColor="@color/common"
-                    android:textSize="@dimen/content" />
-            </RelativeLayout>
-
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="0.5dp"
@@ -197,6 +172,34 @@
                     android:text="最后行程检测结果"
                     android:textColor="@color/common"
                     android:textSize="@dimen/content" />
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:padding="10dp" >
+
+                    <TextView
+                        android:id="@+id/tv_dpdy"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/bg_white"
+                        android:gravity="right"
+                        android:textColor="@color/color_blue"
+                        android:textSize="@dimen/content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="最后行程检测值"
+                        android:textColor="@color/common"
+                        android:textSize="@dimen/content" />
+                </RelativeLayout>
+
             </RelativeLayout>
 
             <View

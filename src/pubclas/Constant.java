@@ -9,6 +9,7 @@ import com.wise.baba.R;
  * 
  * @author honesty
  */
+
 public class Constant {
 	public static boolean isLog = true;
 	/** 在阿里云上url **/

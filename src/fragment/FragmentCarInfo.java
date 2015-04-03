@@ -470,10 +470,13 @@ public class FragmentCarInfo extends Fragment {
 					// 从服务器获取体检信息
 					String url1 = Constant.BaseUrl + "device/" + device_id + "/health_exam?auth_code=" + app.auth_code + "&brand="
 							+ URLEncoder.encode(carData.getCar_brand(), "UTF-8");
+					
+					System.out.println("从服务器获取体检信息 url1 "+url1);
 					new NetThread.GetDataThread(handler, url1, get_health, index).start();
 					// 获取驾驶信息
 					String url2 = Constant.BaseUrl + "device/" + device_id + "/day_drive?auth_code=" + app.auth_code + "&day="
 							+ GetSystem.GetNowMonth().getDay() + "&city=" + URLEncoder.encode(app.City, "UTF-8") + "&gas_no=" + Gas_no;
+					System.out.println("从服务器获取体检信息 url2 "+url2);
 					new NetThread.GetDataThread(handler, url2, get_device, index).start();
 				}
 				// 获取限行信息
