@@ -12,7 +12,7 @@
         android:layout_marginTop="15dp" >
 
         <TextView
-            android:id="@+id/textSpeed"
+            android:id="@+id/textTitleSpeed"
             style="@style/home_card_title_style"
             android:text="速度" />
 
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/textSpeed"
+            android:layout_toRightOf="@+id/textTitleSpeed"
             android:src="@drawable/ico_speed" />
 
         <ImageView

@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import pubclas.Constant;
 import pubclas.HttpFriend;
 import pubclas.Info;
-import pubclas.MyVolley;
 import pubclas.NetThread;
 import android.app.Activity;
 import android.content.Intent;

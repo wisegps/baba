@@ -24,4 +24,16 @@ public class Const {
 	public static final String TAG_NAV = "fragmentNavigation";//快速导航
 	public static final String TAG_WEATHER = "fragmentWeather";//天气
 	public static final String TAG_NEWS = "fragmentHotNews";//新闻
+	
+	/**
+	 * 速度卡片，各参数类型
+	 */
+	//1=电源，2=进气，节气门，3=怠速，4=冷却，水温，5=排放，
+	public static final int TYPE_DY = 1;
+	public static final int TYPE_JQM = 2;
+	public static final int TYPE_DS = 3;
+	public static final int TYPE_SW = 4;
+	public static final int TYPE_PF = 5;
+	 
+	
 }
