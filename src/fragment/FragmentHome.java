@@ -152,6 +152,14 @@ public class FragmentHome extends Fragment {
 			transaction.add(R.id.ll_cards, fragmentCarInfo, Const.TAG_CAR);
 			transaction.commit();
 			cards.put(Const.TAG_CAR, fragmentCarInfo);
+			
+			Log.i("fragment", "设置速度卡片布局");
+			removeFragment(Const.TAG_SPEED);
+			transaction = fragmentManager.beginTransaction();
+			FragmentHomeSpeed fragmenSpeed = new FragmentHomeSpeed();
+			transaction.add(R.id.ll_cards, fragmenSpeed, Const.TAG_SPEED);
+			transaction.commit();
+			cards.put(Const.TAG_CAR, fragmentCarInfo);
 
 		}
 		// // 可选布局

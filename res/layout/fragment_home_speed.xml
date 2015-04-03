@@ -20,8 +20,8 @@
             android:id="@+id/imgSpeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/textSpeed"
             android:src="@drawable/ico_speed" />
 
@@ -29,8 +29,8 @@
             android:id="@+id/imgDown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:src="@drawable/ico_down" />
     </RelativeLayout>
 
@@ -42,15 +42,40 @@
         android:focusableInTouchMode="true" >
     </View>
 
-
-    <customView.CustomGridView
-        android:id="@+id/gridSpeed"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginTop="15dp"
-        android:numColumns="4"
-        android:verticalSpacing="15dp" >
-    </customView.CustomGridView>
+        android:layout_marginTop="@dimen/double_margins" >
+
+        <com.wise.baba.ui.widget.DialView
+            android:id="@+id/dialSpeed"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/tv_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:alpha="0.8"
+            android:fontFamily="sans-serif-light"
+            android:text="80"
+            android:textColor="@color/navy_blue"
+            android:textSize="@dimen/score_number" />
+
+        <TextView
+            android:id="@+id/tv_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_score"
+            android:layout_toRightOf="@+id/tv_score"
+            android:fontFamily="sans-serif-light"
+            android:text="km"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/navy_blue" />
+
+    </RelativeLayout>
+	<include layout="@layout/include_home_speed"/>
 
 </LinearLayout>
