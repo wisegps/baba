@@ -18,6 +18,7 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
 import com.wise.baba.biz.HttpGetData;
+import com.wise.baba.ui.widget.DialView;
 
 /**
  * 
@@ -29,17 +30,19 @@ public class FragmentHomeSpeed extends Fragment implements Callback {
 	private Handler handler;
 	private AppApplication app;
 	private HttpGetData http;
+	private DialView dialSpeed;
 	/**
 	 * 1=电源，2=进气，节气门，3=怠速，4=冷却，水温，5=排放，
 	 */
 	
-	private TextView textSpeed,textRotary,textVoltage,textTemperature,textLoad,textThrottle,textOil;
+	private TextView textSpeed,textRotary,textVoltage,textTemperature,textLoad,textThrottle,textOil,textScore;
 	private View view;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.fragment_home_speed, container, false);
+		dialSpeed = (DialView) view.findViewById(R.id.dialSpeed);
 		textSpeed = (TextView) view.findViewById(R.id.textSpeed);
 		textRotary = (TextView) view.findViewById(R.id.textRotary);
 		textVoltage = (TextView) view.findViewById(R.id.textVoltage);
@@ -47,6 +50,8 @@ public class FragmentHomeSpeed extends Fragment implements Callback {
 		textLoad = (TextView) view.findViewById(R.id.textLoad);
 		textThrottle = (TextView) view.findViewById(R.id.textThrottle);
 		textOil = (TextView) view.findViewById(R.id.textOil);
+		
+		textScore =  (TextView) view.findViewById(R.id.tv_score);
 		return view;
 	}
 
@@ -70,8 +75,10 @@ public class FragmentHomeSpeed extends Fragment implements Callback {
 		
 		Bundle bundle = msg.getData();
 		
-		String ss = bundle.getInt("ss")+"";
-		textSpeed.setText(ss);
+		int ss = bundle.getInt("ss");
+		textSpeed.setText(ss+"");
+		dialSpeed.initValue(ss);
+		textScore.setText(ss+"");
 		
 		String fdjfz = bundle.getInt("fdjfz")+"";
 		textRotary.setText(fdjfz);

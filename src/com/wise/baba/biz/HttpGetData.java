@@ -65,14 +65,15 @@ public class HttpGetData {
 	 * @param url
 	 */
 	public void request() {
-		
-		String url = Constant.BaseUrl + "device/" + deviceId + "?auth_code=" + app.auth_code ;
+		Log.i("HttpGetData", "11");
+		String url = Constant.BaseUrl + "device/" + deviceId + "?auth_code=" + app.auth_code+"&brand"+brand ;
 //		http://api.bibibaba.cn/device/819?auth_code=a166883973f608f2d22085038a79998a&brand=%E6%A0%87%E8%87%B4
 //		String url = Constant.BaseUrl + "device/" + deviceId
 //				+ "/obd_data?auth_code=" + app.auth_code + "&type=" + type;
 		Log.i("HttpGetData", url);
 		Listener listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
+				Log.i("HttpGetData", "fffff"+ response);
 					Message msg = new Message();
 					Bundle bundle = parse(response);
 					msg.setData(bundle);
@@ -84,6 +85,8 @@ public class HttpGetData {
 		ErrorListener errorListener = new ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
+				
+				Log.i("HttpGetData", error.getMessage());
 			}
 		};
 		Request request = new StringRequest(url, listener, errorListener);
@@ -103,6 +106,7 @@ public class HttpGetData {
 			budle.putInt("jqmkd", jsonObject.getInt("jqmkd"));
 			budle.putInt("syyl", jsonObject.getInt("syyl"));
 		} catch (JSONException e) {
+			Log.i("HttpGetData", e.getMessage());
 			e.printStackTrace();
 		}
 		
@@ -112,7 +116,7 @@ public class HttpGetData {
 //		Bundle bundle = new Bundle();
 //		msg.setData(data);
 		
-		return null;
+		return budle;
 		
 	}
 
