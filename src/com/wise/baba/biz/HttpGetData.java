@@ -48,10 +48,11 @@ public class HttpGetData {
 		this.context = context;
 		this.handler = handler;
 		app = (AppApplication) ((Activity) context).getApplication();
-		deviceId = app.carDatas.get(0).getDevice_id();
-		brand = app.carDatas.get(0).getCar_brand();
+		deviceId = "";
+		brand = "";
+
 		try {
-			brand =  URLEncoder.encode(brand, "UTF-8");
+			brand = URLEncoder.encode(brand, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -65,19 +66,25 @@ public class HttpGetData {
 	 * @param url
 	 */
 	public void request() {
+		if (app.carDatas.size() > 1) {
+			deviceId = app.carDatas.get(0).getDevice_id();
+			brand = app.carDatas.get(0).getCar_brand();
+		}
+
 		Log.i("HttpGetData", "11");
-		String url = Constant.BaseUrl + "device/" + deviceId + "?auth_code=" + app.auth_code+"&brand"+brand ;
-//		http://api.bibibaba.cn/device/819?auth_code=a166883973f608f2d22085038a79998a&brand=%E6%A0%87%E8%87%B4
-//		String url = Constant.BaseUrl + "device/" + deviceId
-//				+ "/obd_data?auth_code=" + app.auth_code + "&type=" + type;
+		String url = Constant.BaseUrl + "device/" + deviceId + "?auth_code="
+				+ app.auth_code + "&brand" + brand;
+		// http://api.bibibaba.cn/device/819?auth_code=a166883973f608f2d22085038a79998a&brand=%E6%A0%87%E8%87%B4
+		// String url = Constant.BaseUrl + "device/" + deviceId
+		// + "/obd_data?auth_code=" + app.auth_code + "&type=" + type;
 		Log.i("HttpGetData", url);
 		Listener listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
-				Log.i("HttpGetData", "fffff"+ response);
-					Message msg = new Message();
-					Bundle bundle = parse(response);
-					msg.setData(bundle);
-					handler.sendMessage(msg);
+				Log.i("HttpGetData", "fffff" + response);
+				Message msg = new Message();
+				Bundle bundle = parse(response);
+				msg.setData(bundle);
+				handler.sendMessage(msg);
 
 			}
 		};
@@ -85,7 +92,7 @@ public class HttpGetData {
 		ErrorListener errorListener = new ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
-				
+
 				Log.i("HttpGetData", error.getMessage());
 			}
 		};
@@ -94,11 +101,11 @@ public class HttpGetData {
 		mQueue.start();
 	}
 
-	
-	public Bundle parse(String response){
+	public Bundle parse(String response) {
 		Bundle budle = new Bundle();
 		try {
-			JSONObject jsonObject  = new JSONObject(response).getJSONObject("active_obd_data");
+			JSONObject jsonObject = new JSONObject(response)
+					.getJSONObject("active_obd_data");
 			budle.putInt("ss", jsonObject.getInt("ss"));
 			budle.putInt("fdjfz", jsonObject.getInt("fdjfz"));
 			budle.putInt("dpdy", jsonObject.getInt("dpdy"));
@@ -109,15 +116,15 @@ public class HttpGetData {
 			Log.i("HttpGetData", e.getMessage());
 			e.printStackTrace();
 		}
-		
-//		Double realValue = (Double) jsonObject.getDouble("real_value");
-//		msg.obj = String.format("%.0f", realValue);
-//		Log.i("HttpGetData", realValue+"");
-//		Bundle bundle = new Bundle();
-//		msg.setData(data);
-		
+
+		// Double realValue = (Double) jsonObject.getDouble("real_value");
+		// msg.obj = String.format("%.0f", realValue);
+		// Log.i("HttpGetData", realValue+"");
+		// Bundle bundle = new Bundle();
+		// msg.setData(data);
+
 		return budle;
-		
+
 	}
 
 	public void cancle() {

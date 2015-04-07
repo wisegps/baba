@@ -159,7 +159,17 @@ public class FragmentHome extends Fragment {
 			FragmentHomeSpeed fragmenSpeed = new FragmentHomeSpeed();
 			transaction.add(R.id.ll_cards, fragmenSpeed, Const.TAG_SPEED);
 			transaction.commit();
-			cards.put(Const.TAG_CAR, fragmentCarInfo);
+			cards.put(Const.TAG_CAR, fragmenSpeed);
+			
+			
+//
+//			Log.i("fragment", "设置导航卡片布局");
+//			removeFragment(Const.TAG_NAV);
+//			transaction = fragmentManager.beginTransaction();
+//			FragmentHomeNavigation fragmenNavigation = new FragmentHomeNavigation();
+//			transaction.add(R.id.ll_cards, fragmenNavigation, Const.TAG_NAV);
+//			transaction.commit();
+//			cards.put(Const.TAG_NAV, fragmenNavigation);
 
 		}
 		// // 可选布局
