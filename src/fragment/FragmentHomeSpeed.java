@@ -27,7 +27,8 @@ import com.wise.baba.ui.widget.DialView;
  * @author c 首页速度信息
  * 
  */
-public class FragmentHomeSpeed extends Fragment implements Callback,OnClickListener {
+public class FragmentHomeSpeed extends Fragment implements Callback,
+		OnClickListener {
 
 	private Handler handler;
 	private AppApplication app;
@@ -36,61 +37,66 @@ public class FragmentHomeSpeed extends Fragment implements Callback,OnClickListe
 	/**
 	 * 1=电源，2=进气，节气门，3=怠速，4=冷却，水温，5=排放，
 	 */
-	
-	//private TextView textSpeed,textRotary,textVoltage,textTemperature,textLoad,textThrottle,textOil,textScore;
-	private View view;
-	private LinearLayout llytSpeed,llytRotary,llytVoltage,llytTemperature,llytLoad,llytThrottle,llytOil;
 
-	private int textId[] = {R.id.textSpeed,R.id.textRotary,R.id.textVoltage,R.id.textTemperature,R.id.textLoad,R.id.textThrottle,R.id.textOil};
-	private int llytId[] = {R.id.llytSpeed,R.id.llytRotary,R.id.llytVoltage,R.id.llytTemperature,R.id.llytLoad,R.id.llytThrottle,R.id.llytOil};
-	private int value [] = new int[7];
+	// private TextView
+	// textSpeed,textRotary,textVoltage,textTemperature,textLoad,textThrottle,textOil,textScore;
+	private View view;
+	private LinearLayout llytSpeed, llytRotary, llytVoltage, llytTemperature,
+			llytLoad, llytThrottle, llytOil;
+
+	private int textId[] = { R.id.textSpeed, R.id.textRotary, R.id.textVoltage,
+			R.id.textTemperature, R.id.textLoad, R.id.textThrottle,
+			R.id.textOil };
+	private int llytId[] = { R.id.llytSpeed, R.id.llytRotary, R.id.llytVoltage,
+			R.id.llytTemperature, R.id.llytLoad, R.id.llytThrottle,
+			R.id.llytOil };
+	private int value[] = new int[7];
 	private TextView textScore;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.fragment_home_speed, container, false);
 		dialSpeed = (DialView) view.findViewById(R.id.dialSpeed);
-		
-//		for(int i =0;i<7;i++){
-//			view.findViewById(llytId[i]).setOnClickListener(this);
-//		}
-		
-//		textSpeed = (TextView) view.findViewById(R.id.textSpeed);
-//		textRotary = (TextView) view.findViewById(R.id.textRotary);
-//		textVoltage = (TextView) view.findViewById(R.id.textVoltage);
-//		textTemperature = (TextView) view.findViewById(R.id.textTemperature);
-//		textLoad = (TextView) view.findViewById(R.id.textLoad);
-//		textThrottle = (TextView) view.findViewById(R.id.textThrottle);
-//		textOil = (TextView) view.findViewById(R.id.textOil);
-		
-		
-//		llytSpeed = (LinearLayout) view.findViewById(R.id.llytSpeed);
-//		llytRotary = (LinearLayout) view.findViewById(R.id.llytRotary);
-//		llytVoltage = (LinearLayout) view.findViewById(R.id.llytVoltage);
-//		llytTemperature = (LinearLayout) view.findViewById(R.id.llytTemperature);
-//		llytLoad = (LinearLayout) view.findViewById(R.id.llytLoad);
-//		llytThrottle = (LinearLayout) view.findViewById(R.id.llytThrottle);
-//		llytOil = (LinearLayout) view.findViewById(R.id.llytOil);
-//		
-//		llytSpeed.setOnClickListener(this);
-//		llytRotary.setOnClickListener(this);
-//		llytVoltage.setOnClickListener(this);
-//		llytTemperature.setOnClickListener(this);
-//		llytLoad.setOnClickListener(this);
-//		llytThrottle.setOnClickListener(this);
-//		llytOil.setOnClickListener(this);
-		
-//		textSpeed = (TextView) view.findViewById(R.id.textSpeed);
-//		textRotary = (TextView) view.findViewById(R.id.textRotary);
-//		textVoltage = (TextView) view.findViewById(R.id.textVoltage);
-//		textTemperature = (TextView) view.findViewById(R.id.textTemperature);
-//		textLoad = (TextView) view.findViewById(R.id.textLoad);
-//		textThrottle = (TextView) view.findViewById(R.id.textThrottle);
-//		textOil = (TextView) view.findViewById(R.id.textOil);
-		
-		
-		
-		textScore =  (TextView) view.findViewById(R.id.tv_score);
+
+		for (int i = 0; i < 7; i++) {
+			view.findViewById(llytId[i]).setOnClickListener(this);
+		}
+
+		// textSpeed = (TextView) view.findViewById(R.id.textSpeed);
+		// textRotary = (TextView) view.findViewById(R.id.textRotary);
+		// textVoltage = (TextView) view.findViewById(R.id.textVoltage);
+		// textTemperature = (TextView) view.findViewById(R.id.textTemperature);
+		// textLoad = (TextView) view.findViewById(R.id.textLoad);
+		// textThrottle = (TextView) view.findViewById(R.id.textThrottle);
+		// textOil = (TextView) view.findViewById(R.id.textOil);
+
+		// llytSpeed = (LinearLayout) view.findViewById(R.id.llytSpeed);
+		// llytRotary = (LinearLayout) view.findViewById(R.id.llytRotary);
+		// llytVoltage = (LinearLayout) view.findViewById(R.id.llytVoltage);
+		// llytTemperature = (LinearLayout)
+		// view.findViewById(R.id.llytTemperature);
+		// llytLoad = (LinearLayout) view.findViewById(R.id.llytLoad);
+		// llytThrottle = (LinearLayout) view.findViewById(R.id.llytThrottle);
+		// llytOil = (LinearLayout) view.findViewById(R.id.llytOil);
+		//
+		// llytSpeed.setOnClickListener(this);
+		// llytRotary.setOnClickListener(this);
+		// llytVoltage.setOnClickListener(this);
+		// llytTemperature.setOnClickListener(this);
+		// llytLoad.setOnClickListener(this);
+		// llytThrottle.setOnClickListener(this);
+		// llytOil.setOnClickListener(this);
+
+		// textSpeed = (TextView) view.findViewById(R.id.textSpeed);
+		// textRotary = (TextView) view.findViewById(R.id.textRotary);
+		// textVoltage = (TextView) view.findViewById(R.id.textVoltage);
+		// textTemperature = (TextView) view.findViewById(R.id.textTemperature);
+		// textLoad = (TextView) view.findViewById(R.id.textLoad);
+		// textThrottle = (TextView) view.findViewById(R.id.textThrottle);
+		// textOil = (TextView) view.findViewById(R.id.textOil);
+
+		textScore = (TextView) view.findViewById(R.id.tv_score);
 		return view;
 	}
 
@@ -111,40 +117,47 @@ public class FragmentHomeSpeed extends Fragment implements Callback,OnClickListe
 	 */
 	@Override
 	public boolean handleMessage(Message msg) {
-		
-		Bundle bundle = msg.getData();
-		
-		value[0] = bundle.getInt("ss");
-		value[1] = bundle.getInt("fdjfz");
-		value[2] = bundle.getInt("dpdy");
-		value[3] = bundle.getInt("sw");
-		value[4] = 0;
-		value[5] = bundle.getInt("jqmkd");
-		value[6] = bundle.getInt("syyl");
-		
-		for(int i =0;i<7;i++){
-			((TextView)view.findViewById(textId[i])).setText(value[i]+"");
+		Log.i("FragmentHomeSpeed", "handleMessage");
+		if (msg.what == 1) {
+			Bundle bundle = msg.getData();
+			value[0] = bundle.getInt("ss");
+			value[1] = bundle.getInt("fdjfz");
+			value[2] = bundle.getInt("dpdy");
+			value[3] = bundle.getInt("sw");
+			value[4] = 0;
+			value[5] = bundle.getInt("jqmkd");
+			value[6] = bundle.getInt("syyl");
+
+			for (int i = 0; i < 7; i++) {
+				((TextView) view.findViewById(textId[i]))
+						.setText(value[i] + "");
+			}
+			textScore.setText(value[0] + "");
+			dialSpeed.initValue(value[0]);
 		}
-		textScore.setText(value[0]+"");
-		dialSpeed.initValue(value[0]);
-		
+
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.view.View.OnClickListener#onClick(android.view.View)
 	 */
 	@Override
 	public void onClick(View v) {
+		Log.i("FragmentHomeSpeed", "clicke");
 		int id = v.getId();
-//		for(int i =0;i<7;i++){
-//			if(id == llytId[i]){
-//				dialSpeed.startCheckAnimation(value[i], handler);
-//				textScore.setText(value[i]);
-//				break;
-//			}
-//		}
-//		dialSpeed.startCheckAnimation(textSpeed.get, handler)
+		for (int i = 0; i < 7; i++) {
+			final int index = i;
+			if (id == llytId[i]) {
+				Log.i("FragmentHomeSpeed","clicke"+index);
+				dialSpeed.startCheckAnimation(value[index], handler);
+				textScore.setText(value[index]);
+				return;
+			}
+		}
+		// dialSpeed.startCheckAnimation(textSpeed.get, handler)
 	}
 
 }

@@ -48,15 +48,7 @@ public class HttpGetData {
 		this.context = context;
 		this.handler = handler;
 		app = (AppApplication) ((Activity) context).getApplication();
-		deviceId = "";
-		brand = "";
 
-		try {
-			brand = URLEncoder.encode(brand, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		mQueue = Volley.newRequestQueue(context);
 	}
 
@@ -66,9 +58,17 @@ public class HttpGetData {
 	 * @param url
 	 */
 	public void request() {
-		if (app.carDatas.size() > 1) {
-			deviceId = app.carDatas.get(0).getDevice_id();
-			brand = app.carDatas.get(0).getCar_brand();
+		if (app.carDatas.size() < 1) {
+			return;
+		}
+		
+		deviceId = app.carDatas.get(0).getDevice_id();
+		brand = app.carDatas.get(0).getCar_brand();
+		try {
+			brand = URLEncoder.encode(brand, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		Log.i("HttpGetData", "11");
@@ -82,6 +82,7 @@ public class HttpGetData {
 			public void onResponse(String response) {
 				Log.i("HttpGetData", "fffff" + response);
 				Message msg = new Message();
+				msg.what = 1;
 				Bundle bundle = parse(response);
 				msg.setData(bundle);
 				handler.sendMessage(msg);
