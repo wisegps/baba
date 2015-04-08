@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Msg;
 import com.wise.baba.ui.widget.DialView;
 import com.wise.baba.util.DialBitmapFactory;
 import com.wise.car.DevicesAddActivity;
@@ -71,7 +72,7 @@ public class FaultDetectionActivity extends Activity {
 	/** 开始体检时初始化状态 **/
 	private static final int INIT_STATUS = 7;
 	/** 体检动画变化的值 */
-	public static final int refreshValue = 8;
+	//public static final int refreshValue = 8;
 	TextView tv_name;
 	TextView tv_guzhang, tv_guzhang_icon, tv_dianyuan, tv_dianyuan_icon,
 			tv_jinqi, tv_jinqi_icon, tv_daisu, tv_daisu_icon, tv_lengque,
@@ -394,7 +395,7 @@ public class FaultDetectionActivity extends Activity {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
-			case refreshValue:
+			case Msg.Dial_Refresh_Value:
 				int value = msg.arg1;
 				carViews.get(index).getTv_score().setText("" + value);
 				int peroid = mTotalProgress / Point;
@@ -424,7 +425,7 @@ public class FaultDetectionActivity extends Activity {
 				jsonHealth(msg.obj.toString());
 				// 体检
 				isCheck = true;
-				carViews.get(index).getDialHealthScore().startCheckAnimation(mTotalProgress, handler);
+				carViews.get(index).getDialHealthScore().startAnimation(mTotalProgress, handler);
 				//new Thread(new ProgressRunable()).start();
 				break;
 			case refresh:
@@ -988,7 +989,7 @@ public class FaultDetectionActivity extends Activity {
 		// carViews.get(index).getDialHealthScore().startCheckAnimation(mTotalProgress,
 		// carViews.get(index).getTv_score());
 		mTotalProgress = 50;
-		carViews.get(index).getDialHealthScore().startCheckAnimation(mTotalProgress,handler);
+		carViews.get(index).getDialHealthScore().startAnimation(mTotalProgress,handler);
 
 	}
 

@@ -19,7 +19,8 @@ import android.widget.TextView;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
-import com.wise.baba.biz.HttpGetData;
+import com.wise.baba.app.Msg;
+import com.wise.baba.biz.HttpGetObdData;
 import com.wise.baba.ui.widget.DialView;
 
 /**
@@ -32,18 +33,12 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 
 	private Handler handler;
 	private AppApplication app;
-	private HttpGetData http;
+	private HttpGetObdData http;
 	private DialView dialSpeed;
 	/**
-	 * 1=电源，2=进气，节气门，3=怠速，4=冷却，水温，5=排放，
+	 * 0，速度 1，转速 2，电源电压 3，水温 4 ，负荷 5，节气门  ，6，剩余油量
 	 */
-
-	// private TextView
-	// textSpeed,textRotary,textVoltage,textTemperature,textLoad,textThrottle,textOil,textScore;
 	private View view;
-	private LinearLayout llytSpeed, llytRotary, llytVoltage, llytTemperature,
-			llytLoad, llytThrottle, llytOil;
-
 	private int textId[] = { R.id.textSpeed, R.id.textRotary, R.id.textVoltage,
 			R.id.textTemperature, R.id.textLoad, R.id.textThrottle,
 			R.id.textOil };
@@ -63,39 +58,6 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 			view.findViewById(llytId[i]).setOnClickListener(this);
 		}
 
-		// textSpeed = (TextView) view.findViewById(R.id.textSpeed);
-		// textRotary = (TextView) view.findViewById(R.id.textRotary);
-		// textVoltage = (TextView) view.findViewById(R.id.textVoltage);
-		// textTemperature = (TextView) view.findViewById(R.id.textTemperature);
-		// textLoad = (TextView) view.findViewById(R.id.textLoad);
-		// textThrottle = (TextView) view.findViewById(R.id.textThrottle);
-		// textOil = (TextView) view.findViewById(R.id.textOil);
-
-		// llytSpeed = (LinearLayout) view.findViewById(R.id.llytSpeed);
-		// llytRotary = (LinearLayout) view.findViewById(R.id.llytRotary);
-		// llytVoltage = (LinearLayout) view.findViewById(R.id.llytVoltage);
-		// llytTemperature = (LinearLayout)
-		// view.findViewById(R.id.llytTemperature);
-		// llytLoad = (LinearLayout) view.findViewById(R.id.llytLoad);
-		// llytThrottle = (LinearLayout) view.findViewById(R.id.llytThrottle);
-		// llytOil = (LinearLayout) view.findViewById(R.id.llytOil);
-		//
-		// llytSpeed.setOnClickListener(this);
-		// llytRotary.setOnClickListener(this);
-		// llytVoltage.setOnClickListener(this);
-		// llytTemperature.setOnClickListener(this);
-		// llytLoad.setOnClickListener(this);
-		// llytThrottle.setOnClickListener(this);
-		// llytOil.setOnClickListener(this);
-
-		// textSpeed = (TextView) view.findViewById(R.id.textSpeed);
-		// textRotary = (TextView) view.findViewById(R.id.textRotary);
-		// textVoltage = (TextView) view.findViewById(R.id.textVoltage);
-		// textTemperature = (TextView) view.findViewById(R.id.textTemperature);
-		// textLoad = (TextView) view.findViewById(R.id.textLoad);
-		// textThrottle = (TextView) view.findViewById(R.id.textThrottle);
-		// textOil = (TextView) view.findViewById(R.id.textOil);
-
 		textScore = (TextView) view.findViewById(R.id.tv_score);
 		return view;
 	}
@@ -106,7 +68,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) this.getActivity().getApplication();
 		handler = new Handler(this);
-		http = new HttpGetData(this.getActivity(), handler);
+		http = new HttpGetObdData(this.getActivity(), handler);
 		http.request();
 	}
 
@@ -118,7 +80,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	@Override
 	public boolean handleMessage(Message msg) {
 		Log.i("FragmentHomeSpeed", "handleMessage");
-		if (msg.what == 1) {
+		if (msg.what == Msg.Get_OBD_Data) {
 			Bundle bundle = msg.getData();
 			value[0] = bundle.getInt("ss");
 			value[1] = bundle.getInt("fdjfz");
@@ -134,6 +96,10 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 			}
 			textScore.setText(value[0] + "");
 			dialSpeed.initValue(value[0]);
+		}else if(msg.what == Msg.Dial_Refresh_Value){
+			int value = msg.arg1;
+			textScore.setText(value + "");
+			//dialSpeed.startCheckAnimation(value, handler);
 		}
 
 		return false;
@@ -146,18 +112,15 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	 */
 	@Override
 	public void onClick(View v) {
-		Log.i("FragmentHomeSpeed", "clicke");
+
 		int id = v.getId();
 		for (int i = 0; i < 7; i++) {
-			final int index = i;
 			if (id == llytId[i]) {
-				Log.i("FragmentHomeSpeed","clicke"+index);
-				dialSpeed.startCheckAnimation(value[index], handler);
-				textScore.setText(value[index]);
-				return;
+				Log.i("FragmentHomeSpeed", "clicke" + i);
+				dialSpeed.startAnimation(value[i], handler);
+				break;
 			}
 		}
-		// dialSpeed.startCheckAnimation(textSpeed.get, handler)
 	}
 
 }

@@ -26,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
+import com.wise.baba.app.Msg;
 
 /**
  * 
@@ -34,7 +35,7 @@ import com.wise.baba.AppApplication;
  * @date 2015-4-3
  * 
  */
-public class HttpGetData {
+public class HttpGetObdData {
 
 	private Context context;
 	private Handler handler;
@@ -43,7 +44,7 @@ public class HttpGetData {
 	private String deviceId;
 	private String brand;
 
-	public HttpGetData(Context context, Handler handler) {
+	public HttpGetObdData(Context context, Handler handler) {
 		super();
 		this.context = context;
 		this.handler = handler;
@@ -74,15 +75,12 @@ public class HttpGetData {
 		Log.i("HttpGetData", "11");
 		String url = Constant.BaseUrl + "device/" + deviceId + "?auth_code="
 				+ app.auth_code + "&brand" + brand;
-		// http://api.bibibaba.cn/device/819?auth_code=a166883973f608f2d22085038a79998a&brand=%E6%A0%87%E8%87%B4
-		// String url = Constant.BaseUrl + "device/" + deviceId
-		// + "/obd_data?auth_code=" + app.auth_code + "&type=" + type;
 		Log.i("HttpGetData", url);
 		Listener listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
 				Log.i("HttpGetData", "fffff" + response);
 				Message msg = new Message();
-				msg.what = 1;
+				msg.what = Msg.Get_OBD_Data;
 				Bundle bundle = parse(response);
 				msg.setData(bundle);
 				handler.sendMessage(msg);
@@ -107,12 +105,21 @@ public class HttpGetData {
 		try {
 			JSONObject jsonObject = new JSONObject(response)
 					.getJSONObject("active_obd_data");
-			budle.putInt("ss", jsonObject.getInt("ss"));
-			budle.putInt("fdjfz", jsonObject.getInt("fdjfz"));
-			budle.putInt("dpdy", jsonObject.getInt("dpdy"));
-			budle.putInt("sw", jsonObject.getInt("sw"));
-			budle.putInt("jqmkd", jsonObject.getInt("jqmkd"));
-			budle.putInt("syyl", jsonObject.getInt("syyl"));
+			int ss = $(jsonObject.get("ss"));
+			int fdjfz = $(jsonObject.get("fdjfz"));
+			int dpdy = $(jsonObject.get("dpdy"));
+			int sw = $(jsonObject.get("sw"));
+			int jqmkd = $(jsonObject.get("jqmkd"));
+			int syyl = $(jsonObject.get("syyl"));
+			
+			
+			budle.putInt("ss", ss);
+			budle.putInt("fdjfz", fdjfz);
+			budle.putInt("dpdy", dpdy);
+			budle.putInt("sw", sw);
+			budle.putInt("jqmkd", jqmkd);
+			budle.putInt("syyl", syyl);
+			
 		} catch (JSONException e) {
 			Log.i("HttpGetData", e.getMessage());
 			e.printStackTrace();
@@ -126,6 +133,17 @@ public class HttpGetData {
 
 		return budle;
 
+	}
+	
+	public int  $(Object obj){
+		
+		String s = String.valueOf(obj);
+		Log.i("HttpGetData", "s" + s);
+		if(obj == null || s.equals("null")){
+			return 0;
+		}else {
+			return (int) Double.parseDouble(s);
+		}
 	}
 
 	public void cancle() {
