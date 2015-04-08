@@ -70,25 +70,28 @@ public class DialBitmapFactory {
 	 * @param hasCursor  是否带圆环光标
 	 * @return
 	 */
-	public Bitmap getBitmapByValue(float value,boolean hasCursor) {
-		mBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-		mCanvas = new Canvas(mBitmap);
-		mCanvas.save();
-		// 第一层，画彩色刻度
-		mCanvas.drawBitmap(bmColor, 0, 0, null);
-		// 第二层，画灰色刻度
-		Bitmap gray = getGray(bmGray, value);
-		mCanvas.drawBitmap(gray, 0, 0, null);
-		// 第三层，画圆环光标
-		if(hasCursor == true){
-			Bitmap angleCursor = sector(bmCursor, value);
-			mCanvas.drawBitmap(angleCursor, 0, 0, null);
-			angleCursor.recycle();
-		}
-		gray.recycle();
-		mCanvas.restore();
-
+	public Bitmap getBitmapByValue(final float value,final boolean hasCursor) {
+				mBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+				mCanvas = new Canvas(mBitmap);
+				mCanvas.save();
+				// 第一层，画彩色刻度
+				mCanvas.drawBitmap(bmColor, 0, 0, null);
+				// 第二层，画灰色刻度
+				Bitmap gray = getGray(bmGray, value);
+				mCanvas.drawBitmap(gray, 0, 0, null);
+				// 第三层，画圆环光标
+				if(hasCursor == true){
+					Bitmap angleCursor = sector(bmCursor, value);
+					mCanvas.drawBitmap(angleCursor, 0, 0, null);
+					angleCursor.recycle();
+				}
+				gray.recycle();
+				mCanvas.restore();
+				
+		
 		return mBitmap;
+
+		
 	}
 
 	/**

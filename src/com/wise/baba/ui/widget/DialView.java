@@ -9,24 +9,17 @@ import com.wise.baba.R;
 import com.wise.baba.app.Msg;
 import com.wise.baba.util.BitmapUtil;
 import com.wise.baba.util.DialBitmapFactory;
-import com.wise.state.FaultDetectionActivity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 /**
  * 
@@ -44,7 +37,7 @@ public class DialView extends FrameLayout {
 	private long period = 70;// 刻度转动单位时间
 	private int currentValue = 100;
 	private int value = 100;
-	private Handler handler;
+	private Handler handler = null;
 	
 	private Timer timer = null;
 	
@@ -53,7 +46,6 @@ public class DialView extends FrameLayout {
 	public DialView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.context = context;
-		handler = new Handler();
 		String  w = "";
 		for (int i = 0; i < attrs.getAttributeCount(); i++) {
 			if ("layout_width".equals(attrs.getAttributeName(i))) {
@@ -64,10 +56,6 @@ public class DialView extends FrameLayout {
 		w = w.replace("dip", "");
 		int realWidth = DensityUtil.dip2px(context, Float.parseFloat(w));
 		bitmapFactory = new DialBitmapFactory(context, realWidth);
-		
-		
-		
-		
 		initChildView();
 		
 
@@ -148,18 +136,18 @@ public class DialView extends FrameLayout {
 						msg.what = Msg.Dial_Refresh_Value;
 						msg.arg1 = currentValue;
 						handler.sendMessage(msg);
-						if (currentValue <= value) {
-							// 动画运动到这里就停止
-							msg.arg2 = -1;
-							handler.sendMessage(msg);
-							timer.cancel();
-							timer.purge();
-							timer = null;
-						}
+						
 						BitmapUtil.recycleBitmap(imgColor);
 						Bitmap bitmp = bitmapFactory.getBitmapByValue(
 								currentValue--, false);
 						imgColor.setImageBitmap(bitmp);
+						
+						if (currentValue < value) {
+							// 动画运动到这里就停止
+							timer.cancel();
+							timer.purge();
+							timer = null;
+						}
 					}
 				});
 
@@ -175,6 +163,7 @@ public class DialView extends FrameLayout {
 	 * @param value
 	 */
 	public void rolateCursor(final float value) {
+		
 		handler.post(new Runnable() {
 			@Override
 			public void run() {
@@ -199,7 +188,7 @@ public class DialView extends FrameLayout {
 
 	public void freeMemory() {
 		BitmapUtil.recycleBitmap(imgColor);
-		BitmapUtil.recycleBitmap(imgCusor);
+		//BitmapUtil.recycleBitmap(imgCusor);
 		imgCover.setImageBitmap(null);
 		bitmapFactory = null;
 		this.handler = null;
