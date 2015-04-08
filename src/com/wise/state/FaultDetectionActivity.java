@@ -439,7 +439,7 @@ public class FaultDetectionActivity extends Activity {
 						.setText(String.valueOf(mCurrentProgress));
 
 				carViews.get(index).getDialHealthScore()
-						.initValue(mCurrentProgress);
+						.initValue(mCurrentProgress,handler);
 				if (msg.arg2 == 0) {
 					// carViews.get(index).getTv_detection_status().setText("点击体检");
 				}
@@ -487,7 +487,7 @@ public class FaultDetectionActivity extends Activity {
 			String result = preferences.getString(Constant.sp_health_score
 					+ carDatas.get(i).getObj_id(), "");
 			if (result.equals("")) {// 未体检过
-				carViews.get(index).getDialHealthScore().initValue(100);
+				carViews.get(index).getDialHealthScore().initValue(100,handler);
 				tv_score.setText("0");
 				tv_title.setText("未体检过");
 			} else {
@@ -496,7 +496,7 @@ public class FaultDetectionActivity extends Activity {
 					// 健康指数
 					int health_score = jsonObject.getInt("health_score");
 					carViews.get(index).getDialHealthScore()
-							.initValue(health_score);
+							.initValue(health_score,handler);
 					tv_score.setText(String.valueOf(health_score));
 					tv_title.setText("健康指数");
 				} catch (Exception e) {
@@ -516,7 +516,7 @@ public class FaultDetectionActivity extends Activity {
 
 		String Device_id = carData.getDevice_id();
 		if (Device_id == null || Device_id.equals("")) {
-			carViews.get(index).getDialHealthScore().initValue(100);
+			carViews.get(index).getDialHealthScore().initValue(100,handler);
 			carViews.get(index).getTv_score().setText(String.valueOf(0));
 
 			tv_guzhang.setText("未绑定");
@@ -574,7 +574,7 @@ public class FaultDetectionActivity extends Activity {
 			result = preferences.getString(Constant.sp_health_score
 					+ carDatas.get(index).getObj_id(), "");
 			if (result.equals("")) {// 未体检过
-				carViews.get(index).getDialHealthScore().initValue(100);
+				carViews.get(index).getDialHealthScore().initValue(100,handler);
 				carViews.get(index).getTv_score().setText(String.valueOf(0));
 
 				tv_guzhang.setText("无故障码");
@@ -643,7 +643,7 @@ public class FaultDetectionActivity extends Activity {
 					carViews.get(index).getTv_score()
 							.setText(String.valueOf(health_score));
 					carViews.get(index).getDialHealthScore()
-							.initValue(health_score);
+							.initValue(health_score,handler);
 
 					JSONArray jsonErrArray = jsonObject
 							.getJSONArray("active_obd_err");
@@ -847,7 +847,7 @@ public class FaultDetectionActivity extends Activity {
 //		mCurrent = 0;
 		mTotalProgress = 100;
 		Interval = 30 / Point;
-		carViews.get(index).getDialHealthScore().initValue(100);
+		carViews.get(index).getDialHealthScore().initValue(100,handler);
 		carViews.get(index).getTv_score().setText(String.valueOf(100));
 		// carViews.get(index).getTv_detection_status().setText("体检中");
 		// 始化数据

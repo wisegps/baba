@@ -265,7 +265,7 @@ public class FragmentCarInfo extends Fragment {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					// 健康指数
 					int health_score = jsonObject.getInt("health_score");
-					carViews.get(msg.arg1).getDialHealthScore().initValue(health_score);
+					carViews.get(msg.arg1).getDialHealthScore().initValue(health_score,handler);
 					carViews.get(msg.arg1).getTv_score().setText(String.valueOf(health_score));
 					carViews.get(msg.arg1).getTv_title().setText("健康指数");
 					
@@ -284,7 +284,7 @@ public class FragmentCarInfo extends Fragment {
 					int drive_score = jsonObject.getInt("drive_score");
 					if (drive_score != 0) {
 						
-						carViews.get(msg.arg1).getDialDriveScore().initValue(drive_score);
+						carViews.get(msg.arg1).getDialDriveScore().initValue(drive_score,handler);
 						carViews.get(msg.arg1).getTv_drive().setText(String.valueOf(drive_score));
 						// 存在本地
 						SharedPreferences preferences1 = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
@@ -365,15 +365,15 @@ public class FragmentCarInfo extends Fragment {
 			String Device_id = app.carDatas.get(i).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
 				
-				dialHealthScore.initValue(100);
+				dialHealthScore.initValue(100,handler);
 				tv_score.setText("0");
 				tv_title.setText("未绑定终端");
-				dialDriveScore.initValue(100);
+				dialDriveScore.initValue(100,handler);
 				tv_drive.setText("0");
 			} else {
 				String result = preferences.getString(Constant.sp_health_score + app.carDatas.get(i).getObj_id(), "");
 				if (result.equals("")) {// 未体检过
-					dialHealthScore.initValue(100);
+					dialHealthScore.initValue(100,handler);
 					tv_score.setText("0");
 					tv_title.setText("未体检过");
 				} else {
@@ -381,7 +381,7 @@ public class FragmentCarInfo extends Fragment {
 						JSONObject jsonObject = new JSONObject(result);
 						// 健康指数
 						int health_score = jsonObject.getInt("health_score");
-						dialHealthScore.initValue(health_score);
+						dialHealthScore.initValue(health_score,handler);
 						tv_score.setText(String.valueOf(health_score));
 						tv_title.setText("健康指数");
 					} catch (Exception e) {
@@ -391,13 +391,13 @@ public class FragmentCarInfo extends Fragment {
 				/** 驾驶信息 **/
 				String drive = preferences.getString(Constant.sp_drive_score + app.carDatas.get(i).getObj_id(), "");
 				if (drive.equals("")) {
-					dialHealthScore.initValue(100);
+					dialHealthScore.initValue(100,handler);
 					tv_drive.setText("0");
 				} else {
 					try {
 						JSONObject jsonObject = new JSONObject(drive);
 						int drive_score = jsonObject.getInt("drive_score");
-						dialHealthScore.initValue(drive_score);
+						dialHealthScore.initValue(drive_score,handler);
 						tv_drive.setText(String.valueOf(drive_score));
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -427,7 +427,7 @@ public class FragmentCarInfo extends Fragment {
 		
 		
 		DialView dialHealthScore = (DialView) v.findViewById(R.id.dialHealthScore);
-		dialHealthScore.initValue(100);
+		dialHealthScore.initValue(100,handler);
 		
 		
 		dialHealthScore.setOnClickListener(new OnClickListener() {
@@ -722,7 +722,7 @@ public class FragmentCarInfo extends Fragment {
 				try {
 					JSONObject jsonObject = new JSONObject(drive);
 					int drive_score = jsonObject.getInt("drive_score");
-					carViews.get(index).getDialDriveScore().initValue(drive_score);
+					carViews.get(index).getDialDriveScore().initValue(drive_score,handler);
 					carViews.get(index).getTv_drive().setText(String.valueOf(drive_score));
 				} catch (Exception e) {
 					e.printStackTrace();

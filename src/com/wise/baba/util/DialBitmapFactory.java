@@ -24,8 +24,7 @@ public class DialBitmapFactory {
 	public float startAngle = 0;// 圆环缺口 从35度开始 ，横扫110度
 	public float sweepAngle = 110;
 
-	public int width;
-	public int height;
+//	public int width;
 	public Context context;
 	public Bitmap bmColor;// 彩色刻度
 	public Bitmap bmGray; // 灰色刻度
@@ -34,31 +33,29 @@ public class DialBitmapFactory {
 	public Bitmap mBitmap;
 	public Canvas mCanvas;
 	
-	public int realwidth;
+	public int width;
 
-	public DialBitmapFactory(Context context) {
-		super();
-		this.context = context;
-		bmColor = BitmapFactory.decodeResource(context.getResources(),
-				R.drawable.circle_dial_color);
-		bmGray = BitmapFactory.decodeResource(context.getResources(),
-				R.drawable.circle_dial_gray);
-		bmCursor = BitmapFactory.decodeResource(context.getResources(),
-				R.drawable.circle_cursor);
-		width = bmColor.getWidth();
-		height = bmColor.getHeight();
-	}
+//	public DialBitmapFactory(Context context) {
+//		super();
+//		this.context = context;
+//		bmColor = BitmapFactory.decodeResource(context.getResources(),
+//				R.drawable.circle_dial_color);
+//		bmGray = BitmapFactory.decodeResource(context.getResources(),
+//				R.drawable.circle_dial_gray);
+//		bmCursor = BitmapFactory.decodeResource(context.getResources(),
+//				R.drawable.circle_cursor);
+//		width = bmColor.getWidth();
+//		height = bmColor.getHeight();
+//	}
 
 	public DialBitmapFactory(Context context, int realwidth) {
 		super();
 		// TODO Auto-generated constructor stub
-		this.realwidth = realwidth;
 		this.context = context;
 		bmColor = BitmapUtil.decodeBitmap(context.getResources(), R.drawable.circle_dial_color, realwidth, realwidth);
 		bmGray =  BitmapUtil.decodeBitmap(context.getResources(), R.drawable.circle_dial_gray, realwidth, realwidth);
 		bmCursor =  BitmapUtil.decodeBitmap(context.getResources(), R.drawable.circle_cursor, realwidth, realwidth);
 		width = bmColor.getWidth();
-		height = bmColor.getHeight();
 		
 	}
 
@@ -71,7 +68,7 @@ public class DialBitmapFactory {
 	 * @return
 	 */
 	public Bitmap getBitmapByValue(final float value,final boolean hasCursor) {
-				mBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+				mBitmap = Bitmap.createBitmap(width, width, Config.ARGB_8888);
 				mCanvas = new Canvas(mBitmap);
 				mCanvas.save();
 				// 第一层，画彩色刻度
@@ -102,7 +99,7 @@ public class DialBitmapFactory {
 	 */
 	public Bitmap getGray(Bitmap src, float value) {
 		// 1,先建立一个原图的副本
-		Bitmap newBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+		Bitmap newBitmap = Bitmap.createBitmap(width, width, Config.ARGB_8888);
 		Canvas canvas = new Canvas(newBitmap);
 		canvas.save();
 		canvas.drawBitmap(src, 0, 0, null);
@@ -124,7 +121,7 @@ public class DialBitmapFactory {
 	public Bitmap sector(Bitmap src, float value) {
 
 		// 1,先建立一个原图的副本
-		Bitmap newBitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+		Bitmap newBitmap = Bitmap.createBitmap(width, width, Config.ARGB_8888);
 		Canvas canvas = new Canvas(newBitmap);
 		canvas.save();
 
@@ -132,7 +129,7 @@ public class DialBitmapFactory {
 		// 根据刻度值计算旋转角度
 		float degrees = calcAngel(value);
 		Matrix matrix = new Matrix();
-		matrix.setRotate(-degrees, width / 2, height / 2);
+		matrix.setRotate(-degrees, width / 2, width / 2);
 		canvas.drawBitmap(src, matrix, null);
 
 		// 3，擦除圆环缺口

@@ -1,7 +1,5 @@
 package fragment;
 
-import pubclas.Constant;
-import pubclas.NetThread;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -13,12 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-import com.wise.baba.app.Const;
 import com.wise.baba.app.Msg;
 import com.wise.baba.biz.HttpGetObdData;
 import com.wise.baba.ui.widget.DialView;
@@ -46,7 +42,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 			R.id.llytTemperature, R.id.llytLoad, R.id.llytThrottle,
 			R.id.llytOil };
 	private int value[] = new int[7];
-	private TextView textScore;
+	private TextView textScore,textUnit;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +55,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 		}
 
 		textScore = (TextView) view.findViewById(R.id.tv_score);
+		textUnit= (TextView) view.findViewById(R.id.tv_unit);
 		return view;
 	}
 
@@ -95,7 +92,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 						.setText(value[i] + "");
 			}
 			textScore.setText(value[0] + "");
-			dialSpeed.initValue(value[0]);
+			dialSpeed.initValue(value[0],handler);
 		}else if(msg.what == Msg.Dial_Refresh_Value){
 			int value = msg.arg1;
 			textScore.setText(value + "");
@@ -116,6 +113,17 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 		int id = v.getId();
 		for (int i = 0; i < 7; i++) {
 			if (id == llytId[i]) {
+				//先设置单位
+				if(i<=1){
+					textUnit.setText("km");
+				}else if(i == 2){
+					textUnit.setText("v");
+				}else if(i == 3){
+					textUnit.setText("℃");
+				}else{
+					textUnit.setText("%");
+				}
+				
 				Log.i("FragmentHomeSpeed", "clicke" + i);
 				dialSpeed.startAnimation(value[i], handler);
 				break;

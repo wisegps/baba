@@ -167,7 +167,7 @@ public class DriveActivity extends Activity {
 	private void jsonData(String Data) {
 		if (Data == null || Data.equals("")) {
 
-			dialDriveScore.initValue(0);
+			dialDriveScore.initValue(0,handler);
 			tv_advice.setText("");
 			tv_safe.setText("" + 0);
 			tv_eco.setText("" + 0);
@@ -191,7 +191,7 @@ public class DriveActivity extends Activity {
 			String total_distance = jsonObject.getString("total_distance");
 			String total_fuel = jsonObject.getString("total_fuel");
 			String avg_fuel = jsonObject.getString("avg_fuel");
-			dialDriveScore.initValue(drive_score);
+			dialDriveScore.initValue(drive_score,handler);
 			tv_advice.setText(drive_advice);
 			tv_safe.setText("" + safe_score);
 			tv_eco.setText("" + eco_score);
