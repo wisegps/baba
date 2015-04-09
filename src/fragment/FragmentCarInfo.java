@@ -282,8 +282,7 @@ public class FragmentCarInfo extends Fragment {
 				try {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					int drive_score = jsonObject.getInt("drive_score");
-					if (drive_score != 0) {
-						
+					if (drive_score != 0 ) {
 						carViews.get(msg.arg1).getDialDriveScore().initValue(drive_score,handler);
 						carViews.get(msg.arg1).getTv_drive().setText(String.valueOf(drive_score));
 						// 存在本地

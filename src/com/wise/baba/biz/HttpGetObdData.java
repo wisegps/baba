@@ -49,8 +49,8 @@ public class HttpGetObdData {
 		this.context = context;
 		this.handler = handler;
 		app = (AppApplication) ((Activity) context).getApplication();
-
 		mQueue = Volley.newRequestQueue(context);
+		
 	}
 
 	/**
@@ -71,12 +71,10 @@ public class HttpGetObdData {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		Log.i("HttpGetData", "11");
 		String url = Constant.BaseUrl + "device/" + deviceId + "?auth_code="
 				+ app.auth_code + "&brand" + brand;
-		Log.i("HttpGetData", url);
-		Listener listener = new Response.Listener<String>() {
+		
+		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
 				Log.i("HttpGetData", "fffff" + response);
 				Message msg = new Message();
@@ -84,7 +82,6 @@ public class HttpGetObdData {
 				Bundle bundle = parse(response);
 				msg.setData(bundle);
 				handler.sendMessage(msg);
-
 			}
 		};
 
@@ -95,23 +92,29 @@ public class HttpGetObdData {
 				Log.i("HttpGetData", error.getMessage());
 			}
 		};
-		Request request = new StringRequest(url, listener, errorListener);
+		Request request = new StringRequest("http://api.bibibaba.cn/device/819?auth_code=737d20cbc9867eb9e116dadc8376eba0&brand%E6%A0%87%E8%87%B4", listener, errorListener);
 		mQueue.add(request);
 		mQueue.start();
 	}
 
+	
+	/**
+	 * 
+	 * 解析返回字符串
+	 * @param response
+	 * @return
+	 */
 	public Bundle parse(String response) {
 		Bundle budle = new Bundle();
 		try {
 			JSONObject jsonObject = new JSONObject(response)
 					.getJSONObject("active_obd_data");
-			int ss = $(jsonObject.get("ss"));
-			int fdjfz = $(jsonObject.get("fdjfz"));
-			int dpdy = $(jsonObject.get("dpdy"));
-			int sw = $(jsonObject.get("sw"));
-			int jqmkd = $(jsonObject.get("jqmkd"));
-			int syyl = $(jsonObject.get("syyl"));
-			
+			int ss = $(jsonObject.getDouble("ss"));
+			int fdjfz = $(jsonObject.getDouble("fdjfz"));
+			int dpdy = $(jsonObject.getDouble("dpdy"));
+			int sw = $(jsonObject.getDouble("sw"));
+			int jqmkd = $(jsonObject.getDouble("jqmkd"));
+			int syyl = $(jsonObject.getDouble("syyl"));
 			
 			budle.putInt("ss", ss);
 			budle.putInt("fdjfz", fdjfz);
@@ -125,24 +128,17 @@ public class HttpGetObdData {
 			e.printStackTrace();
 		}
 
-		// Double realValue = (Double) jsonObject.getDouble("real_value");
-		// msg.obj = String.format("%.0f", realValue);
-		// Log.i("HttpGetData", realValue+"");
-		// Bundle bundle = new Bundle();
-		// msg.setData(data);
 
 		return budle;
 
 	}
 	
-	public int  $(Object obj){
-		
-		String s = String.valueOf(obj);
-		Log.i("HttpGetData", "s" + s);
-		if(obj == null || s.equals("null")){
+	public int  $(Double value){
+		Log.i("HttpGetData", value+" obj");
+		if(value == null){
 			return 0;
 		}else {
-			return (int) Double.parseDouble(s);
+			return value.intValue();
 		}
 	}
 

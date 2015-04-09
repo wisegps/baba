@@ -1,5 +1,10 @@
 package fragment;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import pubclas.Constant;
+import pubclas.NetThread;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -60,12 +65,25 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	}
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+	}
+
+	@Override
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) this.getActivity().getApplication();
 		handler = new Handler(this);
 		http = new HttpGetObdData(this.getActivity(), handler);
+		
+	}
+
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
 		http.request();
 	}
 
