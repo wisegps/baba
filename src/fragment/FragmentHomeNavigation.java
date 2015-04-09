@@ -5,24 +5,13 @@ import java.util.HashMap;
 
 import listener.OnCardMenuListener;
 
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.model.LatLng;
-import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
-import com.wise.car.AddressActivity;
-import com.wise.car.CarLocationActivity;
-import com.wise.car.SearchMapActivity;
 
 import customView.CustomGridView;
-import data.CarData;
 
-import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -56,8 +45,8 @@ public class FragmentHomeNavigation extends Fragment implements OnItemClickListe
 		int[] imgId = { R.drawable.ico_nav_home, R.drawable.ico_nav_company,
 				R.drawable.ico_nav_gas, R.drawable.ico_nav_parking,
 				R.drawable.ico_nav_food, R.drawable.ico_nav_hotel,
-				R.drawable.ico_nav_movie, R.drawable.ico_nav_more };
-		String[] text = getPOIName();
+				R.drawable.ico_nav_movie, R.drawable.ico_nav_more,R.drawable.ico_nav_movie};
+		String[] text = getNavName();
 		HashMap<String, Object> map;
 		for (int i = 0; i < imgId.length; i++) {
 			map = new HashMap<String, Object>();
@@ -67,15 +56,15 @@ public class FragmentHomeNavigation extends Fragment implements OnItemClickListe
 		}
 
 		SimpleAdapter saImageItems = new SimpleAdapter(this.getActivity(),
-				listItem, R.layout.item_home_poi, new String[] { "imgItem",
+				listItem, R.layout.item_home_nav, new String[] { "imgItem",
 						"textItem" }, new int[] { R.id.imgItem, R.id.textItem });
 
 		return saImageItems;
 	}
 	
-	public String[] getPOIName(){
-		String[] points = { "家", "公司", "加油站", "停车场", "美食", "酒店", "电影院", "更多" };
-		return points;
+	public String[] getNavName(){
+		String[] navigations = { "位置监控", "车辆行程", "车辆体检", "驾驶得分", "油耗分析", "费用分析", "费用明细", "车务提醒", "违章查询" };
+		return navigations;
 	}
 
 	@Override
@@ -93,7 +82,8 @@ public class FragmentHomeNavigation extends Fragment implements OnItemClickListe
 		
 		imgDown = (ImageView) view.findViewById(R.id.imgDown);
 		imgDown.setOnClickListener(this);
-		gridNav = (CustomGridView) view.findViewById(R.id.gridPOI);
+		gridNav = (CustomGridView) view.findViewById(R.id.gridNav);
+		gridNav.setSelector(new ColorDrawable(Color.TRANSPARENT));//取消GridView中Item选中时默认的背景色  
 		SimpleAdapter simpleAdapter = getAdapter();
 		gridNav.setAdapter(simpleAdapter);
 		simpleAdapter.notifyDataSetChanged();

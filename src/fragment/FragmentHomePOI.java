@@ -22,6 +22,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -97,6 +99,7 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 		autoTextSearch.setOnClickListener(this);
 		imgDown.setOnClickListener(this);
 		gridPOI = (CustomGridView) view.findViewById(R.id.gridPOI);
+		gridPOI.setSelector(new ColorDrawable(Color.TRANSPARENT));//取消GridView中Item选中时默认的背景色  
 		SimpleAdapter simpleAdapter = getAdapter();
 		gridPOI.setAdapter(simpleAdapter);
 		simpleAdapter.notifyDataSetChanged();

@@ -92,7 +92,7 @@ public class HttpGetObdData {
 				Log.i("HttpGetData", error.getMessage());
 			}
 		};
-		Request request = new StringRequest("http://api.bibibaba.cn/device/819?auth_code=737d20cbc9867eb9e116dadc8376eba0&brand%E6%A0%87%E8%87%B4", listener, errorListener);
+		Request request = new StringRequest(url, listener, errorListener);
 		mQueue.add(request);
 		mQueue.start();
 	}
