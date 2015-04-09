@@ -42,10 +42,10 @@ public class FragmentHomeNavigation extends Fragment implements OnItemClickListe
 	public SimpleAdapter getAdapter() {
 		// 生成动态数组，并且转入数据
 		ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
-		int[] imgId = { R.drawable.ico_nav_home, R.drawable.ico_nav_company,
-				R.drawable.ico_nav_gas, R.drawable.ico_nav_parking,
-				R.drawable.ico_nav_food, R.drawable.ico_nav_hotel,
-				R.drawable.ico_nav_movie, R.drawable.ico_nav_more,R.drawable.ico_nav_movie};
+		int[] imgId = { R.drawable.ico_nav_location, R.drawable.ico_nav_trip,
+				R.drawable.ico_nav_health, R.drawable.ico_nav_drive,
+				R.drawable.ico_nav_oil, R.drawable.ico_nav_expenses,
+				R.drawable.ico_nav_detail, R.drawable.ico_nav_notice,R.drawable.ico_nav_query};
 		String[] text = getNavName();
 		HashMap<String, Object> map;
 		for (int i = 0; i < imgId.length; i++) {

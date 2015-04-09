@@ -23,7 +23,7 @@
             android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/textNearby"
-            android:src="@drawable/ico_car" />
+            android:src="@drawable/ico_nav" />
 
         <ImageView
             android:id="@+id/imgDown"
@@ -45,12 +45,15 @@
 
     <customView.CustomGridView
         android:id="@+id/gridNav"
+        android:background="#bcbcbc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:horizontalSpacing="1dp"
+        android:verticalSpacing="1dp"
         android:layout_marginBottom="15dp"
         android:layout_marginTop="15dp"
         android:numColumns="3"
-        android:verticalSpacing="15dp" >
+      >
     </customView.CustomGridView>
 
 </LinearLayout>

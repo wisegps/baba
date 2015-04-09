@@ -55,10 +55,10 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 	public SimpleAdapter getAdapter() {
 		// 生成动态数组，并且转入数据
 		ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
-		int[] imgId = { R.drawable.ico_nav_home, R.drawable.ico_nav_company,
-				R.drawable.ico_nav_gas, R.drawable.ico_nav_parking,
-				R.drawable.ico_nav_food, R.drawable.ico_nav_hotel,
-				R.drawable.ico_nav_movie, R.drawable.ico_nav_more };
+		int[] imgId = { R.drawable.ico_poi_home, R.drawable.ico_poi_company,
+				R.drawable.ico_poi_gas, R.drawable.ico_poi_parking,
+				R.drawable.ico_poi_food, R.drawable.ico_poi_hotel,
+				R.drawable.ico_poi_movie, R.drawable.ico_poi_more };
 		String[] text = getPOIName();
 		HashMap<String, Object> map;
 		for (int i = 0; i < imgId.length; i++) {
