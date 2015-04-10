@@ -137,29 +137,29 @@ public class FragmentHome extends Fragment {
 			transaction.commit();
 			cards.put(Const.TAG_SERVICE, fragmentService);
 		} else {
-//			Log.i("fragment", "设置周边卡片布局");
-//			removeFragment(Const.TAG_POI);
-//			transaction = fragmentManager.beginTransaction();
-//			FragmentHomePOI fragmetnHomePOI = new FragmentHomePOI();
-//			transaction.add(R.id.ll_cards, fragmetnHomePOI, Const.TAG_POI);
-//			transaction.commit();
-//			cards.put(Const.TAG_POI, fragmetnHomePOI);
+			Log.i("fragment", "设置周边卡片布局");
+			removeFragment(Const.TAG_POI);
+			transaction = fragmentManager.beginTransaction();
+			FragmentHomePOI fragmetnHomePOI = new FragmentHomePOI();
+			transaction.add(R.id.ll_cards, fragmetnHomePOI, Const.TAG_POI);
+			transaction.commit();
+			cards.put(Const.TAG_POI, fragmetnHomePOI);
 
-//			Log.i("fragment", "设置车辆卡片布局");
-//			removeFragment(Const.TAG_CAR);
-//			transaction = fragmentManager.beginTransaction();
-//			FragmentCarInfo fragmentCarInfo = new FragmentCarInfo();
-//			transaction.add(R.id.ll_cards, fragmentCarInfo, Const.TAG_CAR);
-//			transaction.commit();
-//			cards.put(Const.TAG_CAR, fragmentCarInfo);
-//			
-//			Log.i("fragment", "设置速度卡片布局");
-//			removeFragment(Const.TAG_SPEED);
-//			transaction = fragmentManager.beginTransaction();
-//			FragmentHomeSpeed fragmenSpeed = new FragmentHomeSpeed();
-//			transaction.add(R.id.ll_cards, fragmenSpeed, Const.TAG_SPEED);
-//			transaction.commit();
-//			cards.put(Const.TAG_CAR, fragmenSpeed);
+			Log.i("fragment", "设置车辆卡片布局");
+			removeFragment(Const.TAG_CAR);
+			transaction = fragmentManager.beginTransaction();
+			FragmentCarInfo fragmentCarInfo = new FragmentCarInfo();
+			transaction.add(R.id.ll_cards, fragmentCarInfo, Const.TAG_CAR);
+			transaction.commit();
+			cards.put(Const.TAG_CAR, fragmentCarInfo);
+			
+			Log.i("fragment", "设置速度卡片布局");
+			removeFragment(Const.TAG_SPEED);
+			transaction = fragmentManager.beginTransaction();
+			FragmentHomeSpeed fragmenSpeed = new FragmentHomeSpeed();
+			transaction.add(R.id.ll_cards, fragmenSpeed, Const.TAG_SPEED);
+			transaction.commit();
+			cards.put(Const.TAG_CAR, fragmenSpeed);
 			
 			
 

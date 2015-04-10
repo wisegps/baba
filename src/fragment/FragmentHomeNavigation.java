@@ -3,13 +3,25 @@ package fragment;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import pubclas.Judge;
+
 import listener.OnCardMenuListener;
 
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
+import com.wise.car.CarLocationActivity;
+import com.wise.car.TravelActivity;
+import com.wise.setting.LoginActivity;
+import com.wise.state.DriveActivity;
+import com.wise.state.FaultDetectionActivity;
+import com.wise.state.FuelActivity;
+import com.wise.violation.TrafficActivity;
 
 import customView.CustomGridView;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -97,6 +109,48 @@ public class FragmentHomeNavigation extends Fragment implements OnItemClickListe
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
+		Class toActivity = null;
+		switch(position){
+		case 0://位置监控
+			toActivity = CarLocationActivity.class;
+			break;
+		case 1://车辆行程
+			toActivity = TravelActivity.class;
+			break;
+		case 2://车辆体检
+			toActivity = FaultDetectionActivity.class;
+			break;
+		case 3://驾驶得分
+			toActivity = DriveActivity.class;
+			break;
+		case 4://油耗分析
+			toActivity = FuelActivity.class;
+			break;
+		case 5://费用分析
+			toActivity = FaultDetectionActivity.class;
+			break;
+		case 6://费用明细
+			toActivity = FaultDetectionActivity.class;
+			break;
+		case 7://车务提醒
+			toActivity = FaultDetectionActivity.class;
+			break;
+		case 8://违章查询
+			AppApplication app = (AppApplication) getActivity().getApplication();
+			if(Judge.isLogin(app)){
+				app.vio_count = 0;
+				Intent intent = new Intent(getActivity(), TrafficActivity.class);
+				intent.putExtra("isService", false);
+				startActivity(intent);
+			}else{
+				Intent intent = new Intent(getActivity(), LoginActivity.class);
+				intent.putExtra("ActivityState", 3);
+				startActivity(intent);
+			}
+			return;
+		}
+		Intent intent = new Intent(this.getActivity(),toActivity);
+		this.startActivity(intent);
 		
 	}
 
