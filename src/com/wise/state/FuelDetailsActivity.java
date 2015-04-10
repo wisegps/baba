@@ -72,6 +72,9 @@ public class FuelDetailsActivity extends Activity implements IXListViewListener 
 		fuelAdapter = new FuelAdapter();
 		lv_fuel.setAdapter(fuelAdapter);
 		carData = (CarData)getIntent().getSerializableExtra("carData");
+		if(carData == null && app.carDatas.size()>0){
+			carData = app.carDatas.get(0);
+		}
 		tv_name.setText(carData.getNick_name());
 		NowYear = GetNowYear();
 		getData();

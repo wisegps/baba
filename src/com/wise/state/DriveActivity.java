@@ -72,6 +72,10 @@ public class DriveActivity extends Activity {
 		TextView tv_name = (TextView) findViewById(R.id.tv_name);
 		isNearData = getIntent().getBooleanExtra("isNearData", false);
 		carData = (CarData) getIntent().getSerializableExtra("carData");
+		if(carData == null && app.carDatas.size()>0){
+			carData = app.carDatas.get(0);
+		}
+		
 		tv_name.setText(carData.getNick_name());
 		Device_id = carData.getDevice_id();
 		Date = GetSystem.GetNowMonth().getDay();

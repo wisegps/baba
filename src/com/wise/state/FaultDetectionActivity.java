@@ -105,7 +105,9 @@ public class FaultDetectionActivity extends Activity {
 		setContentView(R.layout.activity_fault_detection);
 		app = (AppApplication) getApplication();
 		index = getIntent().getIntExtra("index", 0);
-		carDatas = (List<CarData>) getIntent().getSerializableExtra("carDatas");
+		
+		carDatas = app.carDatas;
+		
 		initView();
 		ll_fault = (LinearLayout) findViewById(R.id.ll_fault);
 		iv_right = (ImageView) findViewById(R.id.iv_right);
