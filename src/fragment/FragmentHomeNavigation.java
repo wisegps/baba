@@ -13,6 +13,7 @@ import com.wise.baba.R;
 import com.wise.baba.app.Const;
 import com.wise.car.CarLocationActivity;
 import com.wise.car.TravelActivity;
+import com.wise.remind.RemindListActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.state.DriveActivity;
 import com.wise.state.FaultDetectionActivity;
@@ -50,7 +51,7 @@ public class FragmentHomeNavigation extends Fragment implements
 	private ImageView imgDown;// 下拉箭头
 	private CustomGridView gridNav = null;// 导航信息
 	private View view;
-
+	AppApplication app ;
 	/**
 	 * 
 	 * 导航信息GridView适配器
@@ -106,7 +107,8 @@ public class FragmentHomeNavigation extends Fragment implements
 		gridNav.setAdapter(simpleAdapter);
 		simpleAdapter.notifyDataSetChanged();
 		gridNav.setOnItemClickListener(this);
-
+		app = (AppApplication) getActivity()
+				.getApplication();
 		return view;
 	}
 
@@ -148,11 +150,17 @@ public class FragmentHomeNavigation extends Fragment implements
 			toActivity = FuelDetailsActivity.class;
 			break;
 		case 7:// 车务提醒
-			toActivity = FaultDetectionActivity.class;
-			break;
+			
+			if(Judge.isLogin(app)){
+				startActivity(new Intent(getActivity(), RemindListActivity.class));
+			}else{
+				Intent intent = new Intent(getActivity(), LoginActivity.class);
+				intent.putExtra("ActivityState", 4);
+				startActivity(intent);
+			}
+			return;
 		case 8:// 违章查询
-			AppApplication app = (AppApplication) getActivity()
-					.getApplication();
+			
 			if (Judge.isLogin(app)) {
 				app.vio_count = 0;
 				Intent intent = new Intent(getActivity(), TrafficActivity.class);
