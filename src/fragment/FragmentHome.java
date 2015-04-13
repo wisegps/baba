@@ -57,11 +57,6 @@ public class FragmentHome extends Fragment {
 	private static final String TAG = "FaultActivity";
 	/** 获取消息数据 **/
 	private static final int get_counter = 8;
-//	public static final String TAG_SERVICE = "fragmentService";
-//	public static final String TAG_POI = "fragmetnHomePOI";
-//	public static final String TAG_CAR = "fragmentCarInfo";
-//	public static final String TAG_WEATHER = "fragmentWeather";
-//	public static final String TAG_NEWS = "fragmentHotNews";
 	ImageView iv_noti;
 	LinearLayout ll_cards;
 	FragmentManager fragmentManager;

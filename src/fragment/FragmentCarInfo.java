@@ -133,37 +133,9 @@ public class FragmentCarInfo extends Fragment {
 				}
 			}
 		});
+	}
 
-		// 30秒定位，显示当前位子
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (!isDestroy) {
-					if (isResume) {
-						if (app.carDatas == null || app.carDatas.size() == 0) {
-
-						} else {
-							// 防止删除车辆后数组越界
-							if (index < app.carDatas.size()) {
-								CarData carData = app.carDatas.get(index);
-								String device_id = carData.getDevice_id();
-								if (device_id == null || device_id.equals("")) {
-
-								} else {
-									// 获取gps信息
-									String gpsUrl = GetUrl.getCarGpsData(device_id, app.auth_code);
-									new NetThread.GetDataThread(handler, gpsUrl, get_gps, index).start();
-								}
-							} else {
-								Log.d(TAG, "刷新位置数组越界");
-							}
-						}
-					}
-					SystemClock.sleep(30000);
-				}
-			}
-		}).start();
-
+	public void initTotalData(){
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -174,7 +146,38 @@ public class FragmentCarInfo extends Fragment {
 			}
 		}).start();
 	}
+	public void initLoaction(){
+		// 30秒定位，显示当前位子
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						while (!isDestroy) {
+							if (isResume) {
+								if (app.carDatas == null || app.carDatas.size() == 0) {
 
+								} else {
+									// 防止删除车辆后数组越界
+									if (index < app.carDatas.size()) {
+										CarData carData = app.carDatas.get(index);
+										String device_id = carData.getDevice_id();
+										if (device_id == null || device_id.equals("")) {
+
+										} else {
+											// 获取gps信息
+											String gpsUrl = GetUrl.getCarGpsData(device_id, app.auth_code);
+											new NetThread.GetDataThread(handler, gpsUrl, get_gps, index).start();
+										}
+									} else {
+										Log.d(TAG, "刷新位置数组越界");
+									}
+								}
+							}
+							SystemClock.sleep(30000);
+						}
+					}
+				}).start();
+		
+	}
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -615,6 +618,9 @@ public class FragmentCarInfo extends Fragment {
 	public void onResume() {
 		super.onResume();
 		isResume = true;
+		initLoaction();
+		initTotalData();
+		
 	}
 
 	@Override
