@@ -7,7 +7,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="5dp" >
+    android:padding="8dp" >
 
     <ImageView
         android:id="@+id/imgTab"
