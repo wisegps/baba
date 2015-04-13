@@ -39,6 +39,7 @@ import com.baidu.navisdk.BaiduNaviManager;
 import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
 import com.umeng.update.UmengUpdateAgent;
 import com.wise.baba.R;
+import com.wise.baba.ui.widget.NavigationLayout;
 import com.wise.notice.NoticeActivity;
 import com.wise.remind.RemindListActivity;
 import com.wise.violation.TrafficActivity;
@@ -54,7 +55,7 @@ import fragment.FragmentNotice;
  * 
  * @author honesty
  **/
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements listener.OnTabChangedListener{
 	private static final String TAG = "MainActivity";
 	private FragmentManager fragmentManager;
 	MyBroadCastReceiver myBroadCastReceiver;
@@ -69,15 +70,8 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(arg0);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
-		Button bt_home = (Button) findViewById(R.id.bt_home);
-		bt_home.setOnClickListener(onClickListener);
-		Button bt_info = (Button) findViewById(R.id.bt_info);
-		bt_info.setOnClickListener(onClickListener);
-		Button bt_friend = (Button) findViewById(R.id.bt_friend);
-		bt_friend.setOnClickListener(onClickListener);
-		Button bt_set = (Button) findViewById(R.id.bt_set);
-		bt_set.setOnClickListener(onClickListener);
-
+		NavigationLayout navigationLayout = (NavigationLayout) findViewById(R.id.navigationLayout);
+		navigationLayout.setOnTabChangedListener(this);
 		Log.i("MainActivity", "onCreate");
 		fragmentManager = getSupportFragmentManager();
 		showFragment("home");
@@ -160,26 +154,6 @@ public class MainActivity extends FragmentActivity {
 		}
 
 		public void engineInitFail() {
-		}
-	};
-	OnClickListener onClickListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			switch (v.getId()) {
-			case R.id.bt_home:
-				showFragment("home");
-				break;
-
-			case R.id.bt_info:
-				showFragment("message");
-				break;
-			case R.id.bt_friend:
-				showFragment("friend");
-				break;
-			case R.id.bt_set:
-				showFragment("setting");
-				break;
-			}
 		}
 	};
 
@@ -347,6 +321,29 @@ public class MainActivity extends FragmentActivity {
 
 		super.onDestroy();
 		unregisterReceiver(myBroadCastReceiver);
+	}
+
+	/* (non-Javadoc)
+	 * @see listener.OnTabChangedListener#onTabClick(int)
+	 */
+	@Override
+	public void onTabClick(int index) {
+		switch (index) {
+		case 0:
+			showFragment("home");
+			break;
+
+		case 1:
+			showFragment("message");
+			break;
+		case 2:
+			showFragment("friend");
+			break;
+		case 3:
+			showFragment("setting");
+			break;
+		}
+		
 	}
 
 }

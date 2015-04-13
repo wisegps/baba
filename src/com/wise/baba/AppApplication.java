@@ -52,6 +52,9 @@ public class AppApplication extends LitePalApplication {
 	public double Lon = 0;
 	/** 车辆信息 **/
 	public List<CarData> carDatas = new ArrayList<CarData>();
+	
+	public static int CarIndex = -1;//当前车辆
+	
 	/** 好友信息 **/
 	public List<FriendData> friendDatas = new ArrayList<FriendData>();
 

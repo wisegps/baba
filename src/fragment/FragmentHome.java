@@ -107,7 +107,7 @@ public class FragmentHome extends Fragment {
 		fragmentManager = this.getChildFragmentManager();
 		if (Judge.isLogin(app)) {// 已登录
 			GetSystem.myLog(TAG, "已登录,app.carDatas = " + app.carDatas.size());
-			getCounter();
+			//getCounter();
 		} else {// 未登录
 			GetSystem.myLog(TAG, "未登录,app.carDatas = " + app.carDatas.size());
 			// 给个临时id

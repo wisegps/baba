@@ -2,69 +2,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/white">
-    <LinearLayout
-        android:id="@+id/ll_bottom"
+    android:background="@color/white" >
+
+    <View
+        android:id="@+id/viewLine"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_above="@+id/navigationLayout"
+        android:background="#bcbcbc" />
+
+    <com.wise.baba.ui.widget.NavigationLayout
+        android:id="@+id/navigationLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/bt_home"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/bg_green"
-            android:padding="@dimen/margins"
-            android:text="首页"
-            android:textColor="@color/white"
-            android:textSize="@dimen/bt" />
-	    <View
-            android:layout_width="0.5dp"
-            android:layout_height="fill_parent"
-            android:background="@color/white" />
-        <Button
-            android:id="@+id/bt_info"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/bg_green"
-            android:padding="@dimen/margins"
-            android:text="信息"
-            android:textColor="@color/white"
-            android:textSize="@dimen/bt" />
-	    <View
-            android:layout_width="0.5dp"
-            android:layout_height="fill_parent"
-            android:background="@color/white" />
-        <Button
-            android:id="@+id/bt_friend"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/bg_green"
-            android:padding="@dimen/margins"
-            android:text="好友"
-            android:textColor="@color/white"
-            android:textSize="@dimen/bt" />
-	    <View
-            android:layout_width="0.5dp"
-            android:layout_height="fill_parent"
-            android:background="@color/white" />
-        <Button
-            android:id="@+id/bt_set"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/bg_green"
-            android:padding="@dimen/margins"
-            android:text="设置"
-            android:textColor="@color/white"
-            android:textSize="@dimen/bt" />
-    </LinearLayout>
+        android:orientation="horizontal" >
+
+        <include layout="@layout/navigation_item" />
+
+        <include layout="@layout/navigation_item" />
+
+        <include layout="@layout/navigation_item" />
+
+        <include layout="@layout/navigation_item" />
+    </com.wise.baba.ui.widget.NavigationLayout>
+
     <FrameLayout
-         android:id="@+id/content"
+        android:id="@+id/content"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/ll_bottom"></FrameLayout>
+        android:layout_above="@id/viewLine" >
+    </FrameLayout>
+
 </RelativeLayout>
