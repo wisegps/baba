@@ -98,12 +98,6 @@ public class FragmentHome extends Fragment {
 				.findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		iv_noti = (ImageView) getActivity().findViewById(R.id.iv_noti);
-		ImageView iv_menu = (ImageView) getActivity()
-				.findViewById(R.id.iv_menu);
-		iv_menu.setVisibility(View.GONE);
-		iv_menu.setOnClickListener(onClickListener);
-		getActivity().findViewById(R.id.iv_location_hot).setOnClickListener(
-				onClickListener);
 		fragmentManager = this.getChildFragmentManager();
 		if (Judge.isLogin(app)) {// 已登录
 			GetSystem.myLog(TAG, "已登录,app.carDatas = " + app.carDatas.size());
@@ -161,7 +155,6 @@ public class FragmentHome extends Fragment {
 			transaction.commit();
 			cards.put(Const.TAG_CAR, fragmenSpeed);
 			
-			
 
 			Log.i("fragment", "设置导航卡片布局");
 			removeFragment(Const.TAG_NAV);
@@ -208,35 +201,6 @@ public class FragmentHome extends Fragment {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.iv_menu:
-				// startActivityForResult(new Intent(getActivity(),
-				// MoreActivity.class), 5);
-				break;
-			case R.id.iv_location_hot:
-				if (!Judge.isLogin(app)) {
-					startActivity(new Intent(getActivity(), LoginActivity.class));
-				} else {
-					if (app.carDatas == null || app.carDatas.size() == 0) {
-						goCarMap(false);
-						return;
-					}
-					int index = 0;
-					FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards
-							.get(Const.TAG_CAR);
-					if (fragmentCarInfo != null) {
-						fragmentCarInfo.getIndex();
-					}
-					CarData carData = app.carDatas.get(index);
-					String device_id = carData.getDevice_id();
-					if (device_id == null || device_id.equals("")
-							|| device_id.equals("0")) {
-						goCarMap(false);
-					} else {
-						goCarMap(true);
-					}
-
-				}
-				break;
 			case R.id.bt_show:
 				startActivity(new Intent(getActivity(), ShowActivity.class));
 				break;

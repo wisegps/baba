@@ -95,6 +95,23 @@ public class FragmentNotice extends Fragment implements IXListViewListener {
 		noticeAdapter.notifyDataSetChanged();
 	}
 
+	
+	
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		/** 开启线程初始化表情 **/
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				FaceConversionUtil.getInstace().getFileText(app);
+			}
+		}).start();
+	}
+
+
+
 	OnFinishListener onFinishListener = new OnFinishListener() {
 		@Override
 		public void OnFinish(int index) {

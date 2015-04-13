@@ -55,14 +55,11 @@ import fragment.FragmentNotice;
  * 
  * @author honesty
  **/
-public class MainActivity extends FragmentActivity implements listener.OnTabChangedListener{
+public class MainActivity extends FragmentActivity implements
+		listener.OnTabChangedListener {
 	private static final String TAG = "MainActivity";
 	private FragmentManager fragmentManager;
 	MyBroadCastReceiver myBroadCastReceiver;
-	// FragmentHome fragmentHome;
-	// FragmentNotice fragmentNotice;
-	// FragmentFriend fragmentFriend;
-	// FragmentMore fragmentMore;
 	HashMap<String, Fragment> fragments = new HashMap<String, Fragment>();
 
 	@Override
@@ -75,21 +72,42 @@ public class MainActivity extends FragmentActivity implements listener.OnTabChan
 		Log.i("MainActivity", "onCreate");
 		fragmentManager = getSupportFragmentManager();
 		showFragment("home");
-		// fragmentHome.setOnExitListener(new OnExitListener() {
-		// @Override
-		// public void exit() {
-		// finish();
-		// }
-		// });
+		registerReceiver();
+		checkIndication();
 
+		
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		/** 定位 **/
+		new GetLocation(this);
+		UmengUpdateAgent.update(MainActivity.this);
+		// 初始化导航，必须
+		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(),
+				mNaviEngineInitListener, new LBSAuthManagerListener() {
+					@Override
+					public void onAuthResult(int status, String msg) {
+
+					}
+				});
+	}
+
+
+
+	//注册广播接收
+	public void registerReceiver(){
 		myBroadCastReceiver = new MyBroadCastReceiver();
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(Constant.A_RefreshHomeCar);
 		intentFilter.addAction(Constant.A_Login);
 		intentFilter.addAction(Constant.A_LoginOut);
-		intentFilter.addAction(Constant.A_ChangeCards);
 		registerReceiver(myBroadCastReceiver, intentFilter);
-
+	}
+	// 如果从通知栏过来
+	public void checkIndication() {
 		// 从通知栏跳转
 		boolean isSpecify = getIntent().getBooleanExtra("isSpecify", false);
 		if (isSpecify) {
@@ -117,26 +135,9 @@ public class MainActivity extends FragmentActivity implements listener.OnTabChan
 				e.printStackTrace();
 			}
 		}
-		/** 定位 **/
-		new GetLocation(this);
-		UmengUpdateAgent.update(MainActivity.this);
-		/** 开启线程初始化表情 **/
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				FaceConversionUtil.getInstace().getFileText(getApplication());
-			}
-		}).start();
-		// 初始化导航，必须
-		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(),
-				mNaviEngineInitListener, new LBSAuthManagerListener() {
-					@Override
-					public void onAuthResult(int status, String msg) {
-
-					}
-				});
 	}
-
+	
+	
 	private String getSdcardDir() {
 		if (Environment.getExternalStorageState().equalsIgnoreCase(
 				Environment.MEDIA_MOUNTED)) {
@@ -198,15 +199,13 @@ public class MainActivity extends FragmentActivity implements listener.OnTabChan
 			fragments.put(name, fragment);
 			Fragment last = fragmentManager.findFragmentByTag(name);
 			trans = fragmentManager.beginTransaction();
-			if(last != null && last.isAdded()){
+			if (last != null && last.isAdded()) {
 				Log.i("MainActivity", "删除一个fragment");
 				trans.remove(last).commit();
 			}
 			trans = fragmentManager.beginTransaction();
 			trans.add(R.id.content, fragment, name).commit();
 		}
-
-		
 
 		// 先隐藏所有fragment
 		Iterator<String> keys = fragments.keySet().iterator();
@@ -219,7 +218,6 @@ public class MainActivity extends FragmentActivity implements listener.OnTabChan
 				trans.commit();
 			}
 		}
-		
 
 		trans = fragmentManager.beginTransaction();
 		// 然后显示所要显示的fragment
@@ -234,8 +232,10 @@ public class MainActivity extends FragmentActivity implements listener.OnTabChan
 			String action = intent.getAction();
 			GetSystem.myLog(TAG, action);
 			FragmentHome fragmentHome = (FragmentHome) fragments.get("home");
-			FragmentNotice fragmentNotice = (FragmentNotice) fragments.get("message");
-			FragmentFriend fragmentFriend = (FragmentFriend) fragments.get("friend");
+			FragmentNotice fragmentNotice = (FragmentNotice) fragments
+					.get("message");
+			FragmentFriend fragmentFriend = (FragmentFriend) fragments
+					.get("friend");
 			if (action.equals(Constant.A_RefreshHomeCar)) {
 				if (fragmentHome != null) {
 					fragmentHome.refreshCarInfo();
@@ -262,7 +262,7 @@ public class MainActivity extends FragmentActivity implements listener.OnTabChan
 			} else if (action.equals(Constant.A_ChangeCards)) {
 				// 卡片有可能改变
 				if (fragmentHome != null) {
-					//fragmentHome.isChangeCards();
+					// fragmentHome.isChangeCards();
 				}
 			}
 		}
@@ -303,16 +303,15 @@ public class MainActivity extends FragmentActivity implements listener.OnTabChan
 
 		// 删除所有fragment
 		FragmentTransaction trans = null;
-		String name[] = {"home","msg","friend","setting"};
-		for(int i=0;i<name.length;i++){
+		String name[] = { "home", "msg", "friend", "setting" };
+		for (int i = 0; i < name.length; i++) {
 			Fragment last = fragmentManager.findFragmentByTag(name[i]);
-			if(last !=null){
+			if (last != null) {
 				trans = fragmentManager.beginTransaction();
 				trans.remove(last).commit();
 			}
-			
+
 		}
-		
 
 	}
 
@@ -323,7 +322,9 @@ public class MainActivity extends FragmentActivity implements listener.OnTabChan
 		unregisterReceiver(myBroadCastReceiver);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see listener.OnTabChangedListener#onTabClick(int)
 	 */
 	@Override
@@ -343,7 +344,7 @@ public class MainActivity extends FragmentActivity implements listener.OnTabChan
 			showFragment("setting");
 			break;
 		}
-		
+
 	}
 
 }

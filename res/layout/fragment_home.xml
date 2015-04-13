@@ -25,15 +25,6 @@
                 android:textSize="@dimen/title" />
 
             <ImageView
-                android:id="@+id/iv_location_hot"
-                android:layout_width="@dimen/title_hight"
-                android:layout_height="@dimen/title_hight"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/margins"
-                android:padding="@dimen/margins"
-                android:src="@drawable/location_hot" />
-
-            <ImageView
                 android:id="@+id/iv_back"
                 android:layout_width="@dimen/title_hight"
                 android:layout_height="@dimen/title_hight"
@@ -43,15 +34,6 @@
                 android:src="@drawable/nav_back"
                 android:visibility="gone" />
 
-            <ImageView
-                android:id="@+id/iv_menu"
-                android:layout_width="@dimen/title_hight"
-                android:layout_height="@dimen/title_hight"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/margins"
-                android:padding="@dimen/margins"
-                android:src="@drawable/bg_set" />
 
             <ImageView
                 android:id="@+id/iv_noti"

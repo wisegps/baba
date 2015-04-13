@@ -51,16 +51,22 @@ public class NavigationLayout extends LinearLayout implements OnClickListener {
 		super(context, attrs);
 	}
 
+	
 	@Override
-	protected void onLayout(boolean changed, int l, int t, int r, int b) {
+	protected void onFinishInflate() {
 		// TODO Auto-generated method stub
-		super.onLayout(changed, l, t, r, b);
+		super.onFinishInflate();
+		initView();
+		
+	}
+	
+	public void initView(){
 		for (int i = 0; i < this.getChildCount(); i++) {
 			LinearLayout llytTab = (LinearLayout) this.getChildAt(i);
 			llytTab.setTag(i);
 			llytTab.setOnClickListener(this);
-			TextView textTab = (TextView) llytTab.findViewById(R.id.textTab);
-			ImageView imgTab = (ImageView) llytTab.findViewById(R.id.imgTab);
+			TextView textTab = (TextView) llytTab.getChildAt(1);
+			ImageView imgTab = (ImageView) llytTab.getChildAt(0);
 			textTab.setText(text[i]);
 			if (index == i) {
 				imgTab.setImageResource(imgPress[i]);
@@ -73,6 +79,14 @@ public class NavigationLayout extends LinearLayout implements OnClickListener {
 		}
 	}
 
+
+	@Override
+	protected void onLayout(boolean changed, int l, int t, int r, int b) {
+		// TODO Auto-generated method stub
+		super.onLayout(changed, l, t, r, b);
+		
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -81,7 +95,7 @@ public class NavigationLayout extends LinearLayout implements OnClickListener {
 	@Override
 	public void onClick(View view) {
 		this.index = (Integer) view.getTag();
-		this.invalidate();
+		initView();
 		if (onTabChangedListener != null) {
 			this.onTabChangedListener.onTabClick(index);
 		}
