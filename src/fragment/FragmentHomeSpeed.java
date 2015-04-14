@@ -22,6 +22,7 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Msg;
 import com.wise.baba.biz.HttpGetObdData;
+import com.wise.baba.ui.widget.ClockwiseDialView;
 import com.wise.baba.ui.widget.DialView;
 
 /**
@@ -35,7 +36,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	private Handler handler;
 	private AppApplication app;
 	private HttpGetObdData http;
-	private DialView dialSpeed;
+	private ClockwiseDialView dialSpeed;
 	/**
 	 * 0，速度 1，转速 2，电源电压 3，水温 4 ，负荷 5，节气门  ，6，剩余油量
 	 */
@@ -53,7 +54,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.fragment_home_speed, container, false);
-		dialSpeed = (DialView) view.findViewById(R.id.dialSpeed);
+		dialSpeed = (ClockwiseDialView) view.findViewById(R.id.dialSpeed);
 
 		for (int i = 0; i < 7; i++) {
 			view.findViewById(llytId[i]).setOnClickListener(this);
