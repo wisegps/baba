@@ -76,7 +76,7 @@
             android:textSize="20sp" />
 
         <ImageView
-            android:id="@+id/imgKey"
+            android:id="@+id/imgOnLine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -84,13 +84,22 @@
             android:src="@drawable/ico_key" />
 
         <ImageView
-            android:id="@+id/imgWifi"
+            android:id="@+id/imgSingal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/imgKey"
-            android:src="@drawable/ico_wifi" />
+            android:layout_toLeftOf="@+id/imgOnLine"
+            android:src="@drawable/ico_wifi_0" />
+          <ImageView
+            android:id="@+id/imgState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/imgSingal"
+            android:src="@drawable/ico_state_0" />
+        
     </RelativeLayout>
 
     <LinearLayout

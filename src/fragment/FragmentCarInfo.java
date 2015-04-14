@@ -77,9 +77,12 @@ public class FragmentCarInfo extends Fragment {
 	/** 获取健康体检信息 **/
 	private static final int get_health = 11;
 	/** 获取驾驶指数 **/
-	private static final int get_device = 12;
+	private static final int get_drive = 12;
 	/** 获取gps信息 **/
 	private static final int get_gps = 10;
+	
+	/** 获取Device信息 **/
+	private static final int get_device = 13;
 
 	HScrollLayout hs_car;
 	AppApplication app;
@@ -92,6 +95,9 @@ public class FragmentCarInfo extends Fragment {
 	/** 仪表盘的间距 **/
 	int completed;
 	private GeoCoder mGeoCoder = null;
+	
+	private ImageView imgOnLine,imgSingal,imgState;
+	private TextView textSIM;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -253,6 +259,10 @@ public class FragmentCarInfo extends Fragment {
 			}
 			super.handleMessage(msg);
 			switch (msg.what) {
+			
+			case get_device:
+				jsonDevice(msg.obj.toString());
+				break;
 			case getData:
 				jsonData(msg.obj.toString(), msg.arg1);
 				break;
@@ -281,7 +291,7 @@ public class FragmentCarInfo extends Fragment {
 				editor.putString(Constant.sp_health_score + app.carDatas.get(msg.arg1).getObj_id(), msg.obj.toString());
 				editor.commit();
 				break;
-			case get_device:
+			case get_drive:
 				try {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					int drive_score = jsonObject.getInt("drive_score");
@@ -303,6 +313,55 @@ public class FragmentCarInfo extends Fragment {
 			}
 		}
 	};
+	
+	public void jsonDevice(String json){
+			Log.i("FragmentCarInfo", json);
+			try {
+				JSONObject jsonObject = new JSONObject(json);
+				
+				//SIM卡总流量，单位M
+				Double total_traffic = jsonObject.getDouble("total_traffic");
+				//SIM卡剩余流量，单位M
+				Double remain_traffic = jsonObject.getDouble("remain_traffic");	
+				//车辆状态 0: 静止  1：运行  2：设防  3：报警
+				int device_flag = jsonObject.getInt("device_flag");
+
+				//信号强度 0 离线(灰色)，1 差(蓝色1格)，2中(蓝色2格)，3优(蓝色3格)
+				int signal_level = jsonObject.getInt("signal_level");
+				//是否在线
+				boolean is_online = jsonObject.getBoolean("is_online");
+				
+				
+			
+				
+				TextView textSIM = (TextView) hs_car.findViewById(R.id.textSIM);
+				ImageView imgState = (ImageView) hs_car.findViewById(R.id.imgState);
+				ImageView imgSingal = (ImageView) hs_car.findViewById(R.id.imgSingal);
+				ImageView imgOnLine = (ImageView) hs_car.findViewById(R.id.imgOnLine);
+				
+				String simValue = "SIM:"+remain_traffic.intValue()+"/"+total_traffic.intValue();
+				textSIM.setText(simValue);
+				
+				int[] stateDrawable = {R.drawable.ico_state_0,R.drawable.ico_state_1,R.drawable.ico_state_2,R.drawable.ico_state_3};
+				imgState.setImageResource(stateDrawable[device_flag]);
+				
+				int[] signalDrawable = {R.drawable.ico_wifi_0,R.drawable.ico_wifi_1,R.drawable.ico_wifi_2,R.drawable.ico_wifi_3};
+				imgSingal.setImageResource(signalDrawable[signal_level]);
+				
+				
+				if(is_online){
+					imgOnLine.setImageResource(R.drawable.ico_key);
+				}else{
+					imgOnLine.setImageResource(R.drawable.ico_key_close);
+				}
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			//int drive_score = jsonObject.getInt("drive_score");
+			
+	}
+	
 
 	/** 滑动车辆布局 **/
 	public void initDataView() {// 布局
@@ -317,7 +376,10 @@ public class FragmentCarInfo extends Fragment {
 		carViews.clear();
 		for (int i = 0; i < app.carDatas.size(); i++) {
 			View v = LayoutInflater.from(getActivity()).inflate(R.layout.item_fault, null);
+			
 			hs_car.addView(v);
+			
+			
 			ImageView iv_update_oil = (ImageView) v.findViewById(R.id.iv_update_oil);
 			iv_update_oil.setOnClickListener(onClickListener);
 			RelativeLayout rl_left_complete = (RelativeLayout) v.findViewById(R.id.rl_left_complete);
@@ -461,7 +523,12 @@ public class FragmentCarInfo extends Fragment {
 					} else {
 						Gas_no = carData.getGas_no();
 					}
-					// 获取当前月的数据
+					// 获取设备信息
+					String deviceUrl = Constant.BaseUrl + "device/" + device_id + "?auth_code=" + app.auth_code + "&brand="
+							+ URLEncoder.encode(carData.getCar_brand(), "UTF-8");
+					new NetThread.GetDataThread(handler, deviceUrl, get_device, index).start();
+					
+									// 获取当前月的数据
 					String url = Constant.BaseUrl + "device/" + device_id + "/total?auth_code=" + app.auth_code + "&start_day=" + startMonth + "&end_day="
 							+ endMonth + "&city=" + URLEncoder.encode(app.City, "UTF-8") + "&gas_no=" + Gas_no;
 					new NetThread.GetDataThread(handler, url, getData, index).start();
@@ -479,7 +546,7 @@ public class FragmentCarInfo extends Fragment {
 					String url2 = Constant.BaseUrl + "device/" + device_id + "/day_drive?auth_code=" + app.auth_code + "&day="
 							+ GetSystem.GetNowMonth().getDay() + "&city=" + URLEncoder.encode(app.City, "UTF-8") + "&gas_no=" + Gas_no;
 					System.out.println("从服务器获取体检信息 url2 "+url2);
-					new NetThread.GetDataThread(handler, url2, get_device, index).start();
+					new NetThread.GetDataThread(handler, url2, get_drive, index).start();
 				}
 				// 获取限行信息
 				if (app.City == null || carData.getObj_name() == null || app.City.equals("") || carData.getObj_name().equals("")) {
