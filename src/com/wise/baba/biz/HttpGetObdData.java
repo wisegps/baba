@@ -25,6 +25,8 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.wise.baba.AppApplication;
 import com.wise.baba.app.Msg;
 
@@ -50,7 +52,7 @@ public class HttpGetObdData {
 		this.handler = handler;
 		app = (AppApplication) ((Activity) context).getApplication();
 		mQueue = Volley.newRequestQueue(context);
-		
+
 	}
 
 	/**
@@ -59,10 +61,11 @@ public class HttpGetObdData {
 	 * @param url
 	 */
 	public void request() {
+		cancle();
 		if (app.carDatas.size() < 1) {
 			return;
 		}
-		
+
 		deviceId = app.carDatas.get(0).getDevice_id();
 		brand = app.carDatas.get(0).getCar_brand();
 		try {
@@ -73,10 +76,10 @@ public class HttpGetObdData {
 		}
 		String url = Constant.BaseUrl + "device/" + deviceId + "?auth_code="
 				+ app.auth_code + "&brand" + brand;
-		
+		Log.i("HttpGetData", "aaa " + url);
+
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
-				Log.i("HttpGetData", "fffff" + response);
 				Message msg = new Message();
 				msg.what = Msg.Get_OBD_Data;
 				Bundle bundle = parse(response);
@@ -89,18 +92,19 @@ public class HttpGetObdData {
 			@Override
 			public void onErrorResponse(VolleyError error) {
 
-				Log.i("HttpGetData", error.getMessage());
+				// Log.i("HttpGetData", error.getMessage());
 			}
 		};
 		Request request = new StringRequest(url, listener, errorListener);
+		request.setShouldCache(false);
 		mQueue.add(request);
 		mQueue.start();
 	}
 
-	
 	/**
 	 * 
 	 * 解析返回字符串
+	 * 
 	 * @param response
 	 * @return
 	 */
@@ -109,35 +113,44 @@ public class HttpGetObdData {
 		try {
 			JSONObject jsonObject = new JSONObject(response)
 					.getJSONObject("active_obd_data");
-			int ss = $(jsonObject.getDouble("ss"));
-			int fdjfz = $(jsonObject.getDouble("fdjfz"));
-			int dpdy = $(jsonObject.getDouble("dpdy"));
-			int sw = $(jsonObject.getDouble("sw"));
-			int jqmkd = $(jsonObject.getDouble("jqmkd"));
-			int syyl = $(jsonObject.getDouble("syyl"));
-			
+
+			int ss = $(jsonObject, "ss");
+			int fdjfz = $(jsonObject, "fdjfz");
+			int dpdy = $(jsonObject, "dpdy");
+			int sw = $(jsonObject, "sw");
+			int jqmkd = $(jsonObject, "jqmkd");
+			int syyl = $(jsonObject, "syyl");
+
 			budle.putInt("ss", ss);
 			budle.putInt("fdjfz", fdjfz);
 			budle.putInt("dpdy", dpdy);
 			budle.putInt("sw", sw);
 			budle.putInt("jqmkd", jqmkd);
 			budle.putInt("syyl", syyl);
-			
+
 		} catch (JSONException e) {
-			Log.i("HttpGetData", e.getMessage());
+			Log.i("HttpGetData", "exception " + e.getMessage());
 			e.printStackTrace();
 		}
-
 
 		return budle;
 
 	}
-	
-	public int  $(Double value){
-		Log.i("HttpGetData", value+" obj");
-		if(value == null){
+
+	// 把json对象为空判断 转化为int
+	public int $(JSONObject json, String key) {
+
+		Object obj = null;
+		try {
+			obj = json.get(key);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		if (obj.equals(null)) {
 			return 0;
-		}else {
+		} else {
+			Double value = Double.parseDouble(obj.toString());
 			return value.intValue();
 		}
 	}

@@ -126,21 +126,21 @@ public class FragmentHome extends Fragment {
 			transaction.commit();
 			cards.put(Const.TAG_SERVICE, fragmentService);
 		} else {
-			Log.i("fragment", "设置周边卡片布局");
-			removeFragment(Const.TAG_POI);
-			transaction = fragmentManager.beginTransaction();
-			FragmentHomePOI fragmetnHomePOI = new FragmentHomePOI();
-			transaction.add(R.id.ll_cards, fragmetnHomePOI, Const.TAG_POI);
-			transaction.commit();
-			cards.put(Const.TAG_POI, fragmetnHomePOI);
+//			Log.i("fragment", "设置周边卡片布局");
+//			removeFragment(Const.TAG_POI);
+//			transaction = fragmentManager.beginTransaction();
+//			FragmentHomePOI fragmetnHomePOI = new FragmentHomePOI();
+//			transaction.add(R.id.ll_cards, fragmetnHomePOI, Const.TAG_POI);
+//			transaction.commit();
+//			cards.put(Const.TAG_POI, fragmetnHomePOI);
 
-			Log.i("fragment", "设置车辆卡片布局");
-			removeFragment(Const.TAG_CAR);
-			transaction = fragmentManager.beginTransaction();
-			FragmentCarInfo fragmentCarInfo = new FragmentCarInfo();
-			transaction.add(R.id.ll_cards, fragmentCarInfo, Const.TAG_CAR);
-			transaction.commit();
-			cards.put(Const.TAG_CAR, fragmentCarInfo);
+//			Log.i("fragment", "设置车辆卡片布局");
+//			removeFragment(Const.TAG_CAR);
+//			transaction = fragmentManager.beginTransaction();
+//			FragmentCarInfo fragmentCarInfo = new FragmentCarInfo();
+//			transaction.add(R.id.ll_cards, fragmentCarInfo, Const.TAG_CAR);
+//			transaction.commit();
+//			cards.put(Const.TAG_CAR, fragmentCarInfo);
 			
 			Log.i("fragment", "设置速度卡片布局");
 			removeFragment(Const.TAG_SPEED);
@@ -151,13 +151,13 @@ public class FragmentHome extends Fragment {
 			cards.put(Const.TAG_CAR, fragmenSpeed);
 			
 
-			Log.i("fragment", "设置导航卡片布局");
-			removeFragment(Const.TAG_NAV);
-			transaction = fragmentManager.beginTransaction();
-			FragmentHomeNavigation fragmenNavigation = new FragmentHomeNavigation();
-			transaction.add(R.id.ll_cards, fragmenNavigation, Const.TAG_NAV);
-			transaction.commit();
-			cards.put(Const.TAG_NAV, fragmenNavigation);
+//			Log.i("fragment", "设置导航卡片布局");
+//			removeFragment(Const.TAG_NAV);
+//			transaction = fragmentManager.beginTransaction();
+//			FragmentHomeNavigation fragmenNavigation = new FragmentHomeNavigation();
+//			transaction.add(R.id.ll_cards, fragmenNavigation, Const.TAG_NAV);
+//			transaction.commit();
+//			cards.put(Const.TAG_NAV, fragmenNavigation);
 
 		}
 		// // 可选布局

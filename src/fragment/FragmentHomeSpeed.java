@@ -75,8 +75,8 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) this.getActivity().getApplication();
-		handler = new Handler(this);
-		http = new HttpGetObdData(FragmentHomeSpeed.this.getActivity(), handler);
+		
+		
 		
 	}
 
@@ -85,6 +85,8 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		handler = new Handler(this);
+		http = new HttpGetObdData(FragmentHomeSpeed.this.getActivity(), handler);
 		http.request();
 	}
 
