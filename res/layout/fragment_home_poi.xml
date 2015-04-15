@@ -50,6 +50,7 @@
         android:drawableLeft="@drawable/ico_search"
         android:background="@drawable/bg_border_rect"
         android:ems="10"
+        android:focusable="false"
         android:hint=" 搜索" >
     </AutoCompleteTextView>
 

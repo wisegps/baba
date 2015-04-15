@@ -56,7 +56,8 @@ public class SearchLocationActivity extends Activity {
 	private PoiSearch mPoiSearch = null;
 
 	public static final int HISTORY_CODE = 1;
-
+//	private String POI_FLAG = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,6 +67,9 @@ public class SearchLocationActivity extends Activity {
 		mPoiSearch = PoiSearch.newInstance();
 		mPoiSearch.setOnGetPoiSearchResultListener(poiListener);
 
+		//POI_FLAG = this.getIntent().getStringExtra("POI_FLAG");
+		
+		
 		ed_search = (EditText) findViewById(R.id.ed_search);
 		ed_search.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -112,12 +116,17 @@ public class SearchLocationActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Intent i = new Intent();
-				i.putExtra("history_lat", oftenDatas.get(position).getLat());
-				i.putExtra("history_lon", oftenDatas.get(position).getLon());
-				i.putExtra("re_name", oftenDatas.get(position).getAdress());
-				setResult(HISTORY_CODE, i);
-				finish();
+//				Intent i = new Intent();
+//				i.putExtra("history_lat", oftenDatas.get(position).getLat());
+//				i.putExtra("history_lon", oftenDatas.get(position).getLon());
+//				i.putExtra("re_name", oftenDatas.get(position).getAdress());
+//				setResult(HISTORY_CODE, i);
+//				finish();
+				Double lat = oftenDatas.get(position).getLat();
+				Double lon = oftenDatas.get(position).getLon();
+				String address = oftenDatas.get(position).getAdress();
+				intentToMap(lat,lon,address);
+				
 			}
 		});
 
@@ -141,6 +150,11 @@ public class SearchLocationActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				
+				Double intentLat = 0.0;
+				Double intentLon = 0.0;
+				String intentAddress = null;
+				
 				SharedPreferences preferences = getSharedPreferences(
 						"history_search", Activity.MODE_PRIVATE);
 				SharedPreferences.Editor editor = preferences.edit();
@@ -148,11 +162,14 @@ public class SearchLocationActivity extends Activity {
 				JSONObject historyJson = new JSONObject();
 				JSONArray historyArray = new JSONArray();
 				if (adressDatas.size() == 0 || adressDatas == null) {
-					i.putExtra("history_lat", historyDatas.get(position)
-							.getLat());
-					i.putExtra("history_lon", historyDatas.get(position)
-							.getLon());
-					i.putExtra("re_name", historyDatas.get(position).getName());
+
+					intentLat = historyDatas.get(position)
+							.getLat();
+					intentLon = historyDatas.get(position)
+							.getLon();
+					intentAddress = historyDatas.get(position).getName();
+					
+					
 					AdressData data_1 = historyDatas.get(position);
 					historyDatas.remove(position);
 					historyDatas.add(0, data_1);
@@ -170,11 +187,12 @@ public class SearchLocationActivity extends Activity {
 						e.printStackTrace();
 					}
 				} else {
-					i.putExtra("history_lat", adressDatas.get(position)
-							.getLat());
-					i.putExtra("history_lon", adressDatas.get(position)
-							.getLon());
-					i.putExtra("re_name", adressDatas.get(position).getName());
+					
+					intentLat = adressDatas.get(position)
+							.getLat();
+					intentLon = adressDatas.get(position)
+							.getLon();
+					intentAddress = adressDatas.get(position).getName();
 					try {
 						if (historyDatas.size() == 0 || historyDatas == null) {
 							JSONObject jsonObject = new JSONObject();
@@ -233,22 +251,33 @@ public class SearchLocationActivity extends Activity {
 				}
 				editor.putString("historyJson", historyJson.toString());
 				editor.commit();
-				setResult(HISTORY_CODE, i);
-				finish();
+				intentToMap(intentLat, intentLon, intentAddress);
 			}
 		});
 
 		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent();
-				i.putExtra("re_name", "");
-				setResult(HISTORY_CODE, i);
+//				Intent i = new Intent();
+//				i.putExtra("re_name", "");
+//				setResult(HISTORY_CODE, i);
 				finish();
 			}
 		});
 	}
 
+	private void intentToMap(double history_lat,double history_lon,String re_name){
+		Intent intent = new Intent(this,CarLocationActivity.class);
+		if(history_lat != 0 ){
+			intent.putExtra("history_lat", history_lat);
+		}else if(history_lon!=0){
+			intent.putExtra("history_lon", history_lon);
+		}else if(re_name!=null && re_name.length()>0){
+			intent.putExtra("re_name", re_name);
+		}
+		startActivity(intent);
+		this.finish();
+	}
 	private void getOftenJsonData() {
 		SharedPreferences preferences = getSharedPreferences("address_add",
 				Activity.MODE_PRIVATE);

@@ -13,6 +13,7 @@ import com.wise.baba.R;
 import com.wise.baba.db.SharePOI;
 import com.wise.car.AddressActivity;
 import com.wise.car.CarLocationActivity;
+import com.wise.car.SearchLocationActivity;
 import com.wise.car.SearchMapActivity;
 
 import customView.CustomGridView;
@@ -157,8 +158,9 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.autoTextSearch:
-			Intent intent = new Intent(this.getActivity(), CarLocationActivity.class);
-			intent.putExtra("POI_FLAG", "address");
+			Intent intent = new Intent(this.getActivity(),
+					SearchLocationActivity.class);
+			//intent.putExtra("POI_FLAG", "autoTextSearch");
 			startActivity(intent);
 			break;
 		case R.id.imgDown:

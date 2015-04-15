@@ -108,7 +108,6 @@ public class CarLocationActivity extends Activity {
 	/** 实时路口 **/
 	boolean isTraffic = false;
 
-	private String POI_FLAG = null;
 
 	private View home, company;
 
@@ -118,11 +117,6 @@ public class CarLocationActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_location);
 		app = (AppApplication) getApplication();
-		Intent intent = this.getIntent();
-		POI_FLAG = intent.getStringExtra("POI_FLAG");
-		
-		Log.i("CarLocationActivity", "onCreate POI_FLAG "+POI_FLAG);
-
 		ImageView iv_more = (ImageView) findViewById(R.id.iv_more);
 		iv_more.setOnClickListener(onClickListener);
 		ImageView iv_maplayers = (ImageView) findViewById(R.id.iv_maplayers);
@@ -209,9 +203,28 @@ public class CarLocationActivity extends Activity {
 				}
 			}).start();
 		}
+		
+		searchLocationByKeywords();
 
 	}
 
+	
+	public void searchLocationByKeywords(){
+		Intent intent = this.getIntent();
+		String re_name = intent.getStringExtra("re_name");
+		Double lat = intent.getDoubleExtra("history_lat", 0);
+		Double lon = intent.getDoubleExtra("history_lon", 0);
+			if (re_name != null && !re_name.equals("")) {
+				searchAddress.setText(re_name);
+				LatLng llg = new LatLng(lat,lon);
+				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
+				mBaiduMap.setMapStatus(u);
+				setTransitRoute(ll, llg);
+			} else {
+				getCarLocation();
+			}
+		
+	}
 	/** 页面destory时改为false **/
 	boolean isStop = true;
 	private static final int SEARCH_CODE = 8;
@@ -226,7 +239,8 @@ public class CarLocationActivity extends Activity {
 			case R.id.search_address:
 				Intent search = new Intent(CarLocationActivity.this,
 						SearchLocationActivity.class);
-				startActivityForResult(search, SEARCH_CODE);
+				startActivity(search);
+				CarLocationActivity.this.finish();
 				break;
 			case R.id.bt_location_findCar:// 寻车,客户端导航
 				if (isHotLocation) {
@@ -499,24 +513,6 @@ public class CarLocationActivity extends Activity {
 		}).setNegativeButton("取消", null).show();
 	}
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == SearchLocationActivity.HISTORY_CODE) {
-			String re_name = data.getExtras().getString("re_name");
-			if (re_name != null && !re_name.equals("")) {
-				searchAddress.setText(re_name);
-				LatLng llg = new LatLng(data.getExtras().getDouble(
-						"history_lat"), data.getExtras().getDouble(
-						"history_lon"));
-				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
-				mBaiduMap.setMapStatus(u);
-				setTransitRoute(ll, llg);
-			} else {
-				getCarLocation();
-			}
-		}
-	}
 
 	private void setMapLayers() {
 		iv_satellite
@@ -1209,7 +1205,7 @@ public class CarLocationActivity extends Activity {
 		super.onResume();
 		mMapView.onResume();
 		mLocClient.start();
-		toSearchPOI();
+		//toSearchPOI();
 	}
 
 	@Override
@@ -1221,32 +1217,32 @@ public class CarLocationActivity extends Activity {
 		
 	}
 
-	public void toSearchPOI() {
-		
-		if(POI_FLAG == null || POI_FLAG.equals("")){
-			POI_FLAG = null;
-			return;
-			
-		}
-		System.out.println("search poi");
-		new Handler().postDelayed(new Runnable() {
-
-			@Override
-			public void run() {
-				System.out.println(POI_FLAG);
-				if (POI_FLAG.equals("home")) {
-					home.performClick();
-				} else if (POI_FLAG.equals("company")) {
-					company.performClick();
-				}else if (POI_FLAG.equals("address")) {
-					searchAddress.performClick();
-				}
-				POI_FLAG = null;
-			}
-
-		}, 500);
-
-	}
+//	public void toSearchPOI() {
+//		
+//		if(POI_FLAG == null || POI_FLAG.equals("")){
+//			POI_FLAG = null;
+//			return;
+//			
+//		}
+//		System.out.println("search poi");
+//		new Handler().postDelayed(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				System.out.println(POI_FLAG);
+//				if (POI_FLAG.equals("home")) {
+//					home.performClick();
+//				} else if (POI_FLAG.equals("company")) {
+//					company.performClick();
+//				}else if (POI_FLAG.equals("address")) {
+//					searchAddress.performClick();
+//				}
+//				POI_FLAG = null;
+//			}
+//
+//		}, 500);
+//
+//	}
 
 	@Override
 	protected void onPause() {
