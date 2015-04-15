@@ -134,6 +134,7 @@ public class DialView extends FrameLayout {
 	 * 彩色刻度绘制动画
 	 */
 	public void startColorAnimation() {
+		
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
 			@Override
@@ -156,9 +157,11 @@ public class DialView extends FrameLayout {
 
 						if (currentValue < value) {
 							// 动画运动到这里就停止
-							timer.cancel();
-							timer.purge();
-							timer = null;
+							if(timer!=null){
+								timer.cancel();
+								timer.purge();
+								timer = null;
+							}
 						}
 
 					}
@@ -205,7 +208,15 @@ public class DialView extends FrameLayout {
 	 * 
 	 * @param value
 	 */
-	public void rolateCursor(final float value, final long duration) {
+	public void rolateCursor(float value, long duration) {
+		
+		if(value == 0){
+			value = 0.01f;
+			duration = 1;
+		}
+		
+		
+		
 		float rotateAngel = bitmapFactory.calcAngel(value);
 		cusorAnimation = new RotateAnimation(0f, -rotateAngel,
 				Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
@@ -224,7 +235,7 @@ public class DialView extends FrameLayout {
 
 	@Override
 	protected void onDetachedFromWindow() {
-		//freeMemory();
+		freeMemory();
 		super.onDetachedFromWindow();
 	}
 

@@ -157,9 +157,11 @@ public class ClockwiseDialView extends FrameLayout {
 
 						if (currentValue > value) {
 							// 动画运动到这里就停止
-							timer.cancel();
-							timer.purge();
-							timer = null;
+							if(timer!=null){
+								timer.cancel();
+								timer.purge();
+								timer = null;
+							}
 						}
 
 					}
