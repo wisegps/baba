@@ -10,6 +10,7 @@ import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.db.SharePOI;
 import com.wise.car.AddressActivity;
 import com.wise.car.CarLocationActivity;
 import com.wise.car.SearchMapActivity;
@@ -114,19 +115,38 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		if(position ==0){//家
+			SharePOI share = new SharePOI(this.getActivity());
+			double[] location = share.getHomeLocation();
 			
-			Intent intent = new Intent(this.getActivity(), CarLocationActivity.class);
-			intent.putExtra("POI_FLAG", "home");
-			startActivity(intent);
+			if (location[0] == 0.0 && location[1] == 0.0) {
+				Toast.makeText(this.getActivity(), "家的地址未设置",
+						Toast.LENGTH_SHORT).show();
+				startActivity(new Intent(this.getActivity(),
+						AddressActivity.class));
+			} else {
+				Intent intent = new Intent(this.getActivity(), CarLocationActivity.class);
+				intent.putExtra("POI_FLAG", "home");
+				startActivity(intent);
+			}
 			
 		}else if(position == 1){//公司
 			
-			Intent intent = new Intent(this.getActivity(), CarLocationActivity.class);
-			intent.putExtra("POI_FLAG", "company");
-			startActivity(intent);
+			SharePOI share = new SharePOI(this.getActivity());
+			double[] location = share.getCompanyLocation();
+			
+			if (location[0] == 0.0 && location[1] == 0.0) {
+				Toast.makeText(this.getActivity(), "公司的地址未设置",
+						Toast.LENGTH_SHORT).show();
+				startActivity(new Intent(this.getActivity(),
+						AddressActivity.class));
+			} else {
+				Intent intent = new Intent(this.getActivity(), CarLocationActivity.class);
+				intent.putExtra("POI_FLAG", "company");
+				startActivity(intent);
+			}
 			
 		}else if(position ==7){//更多
-			
+			Toast.makeText(this.getActivity(), "敬请期待", Toast.LENGTH_SHORT).show();
 		}else{
 			toSearchMap(getPOIName()[position]);
 		}
