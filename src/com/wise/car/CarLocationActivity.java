@@ -133,7 +133,7 @@ public class CarLocationActivity extends Activity {
 		if (app.carDatas == null || index >= app.carDatas.size()) {
 
 		} else {
-			carData = app.carDatas.get(index);
+			carData = app.carDatas.get(1);
 			tv_car_name.setText(carData.getNick_name());
 		}
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
@@ -204,24 +204,26 @@ public class CarLocationActivity extends Activity {
 			}).start();
 		}
 		
-		searchLocationByKeywords();
-
+		
+		
 	}
 
 	
 	public void searchLocationByKeywords(){
+		
+		
 		Intent intent = this.getIntent();
 		String re_name = intent.getStringExtra("re_name");
 		Double lat = intent.getDoubleExtra("history_lat", 0);
 		Double lon = intent.getDoubleExtra("history_lon", 0);
 			if (re_name != null && !re_name.equals("")) {
+				Log.i("CarLocationActivity","go...");
+				
 				searchAddress.setText(re_name);
 				LatLng llg = new LatLng(lat,lon);
 				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
 				mBaiduMap.setMapStatus(u);
 				setTransitRoute(ll, llg);
-			} else {
-				getCarLocation();
 			}
 		
 	}
@@ -803,6 +805,8 @@ public class CarLocationActivity extends Activity {
 					mBaiduMap.setMapStatus(mapStatusUpdate);
 				}
 			}
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1118,6 +1122,8 @@ public class CarLocationActivity extends Activity {
 		if (startLatLng == null || stopLatLng == null) {
 			return;
 		}
+		
+		Log.i("CarLocationActivity", "画出2点之间的驾车轨迹");
 		showDialog(startLatLng, stopLatLng);// driving,walking
 	}
 
@@ -1205,7 +1211,12 @@ public class CarLocationActivity extends Activity {
 		super.onResume();
 		mMapView.onResume();
 		mLocClient.start();
-		//toSearchPOI();
+		handler.post(new Runnable(){
+			@Override
+			public void run() {
+				searchLocationByKeywords();
+			}
+		});
 	}
 
 	@Override
