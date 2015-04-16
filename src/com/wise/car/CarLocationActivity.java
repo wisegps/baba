@@ -91,7 +91,7 @@ public class CarLocationActivity extends Activity {
 	LocationClient mLocClient;
 	public MyLocationListenner myListener = new MyLocationListenner();
 	RoutePlanSearch mSearch = null;
-
+	String POI_FLAG = null;
 	/** 获取gps信息 **/
 	private static final int get_gps = 1;
 	private static final int set_vibrate = 2;
@@ -133,7 +133,7 @@ public class CarLocationActivity extends Activity {
 		if (app.carDatas == null || index >= app.carDatas.size()) {
 
 		} else {
-			carData = app.carDatas.get(1);
+			carData = app.carDatas.get(index);
 			tv_car_name.setText(carData.getNick_name());
 		}
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
@@ -207,23 +207,39 @@ public class CarLocationActivity extends Activity {
 		
 		
 	}
+	
 
+	
 	
 	public void searchLocationByKeywords(){
 		
 		
 		Intent intent = this.getIntent();
-		String re_name = intent.getStringExtra("re_name");
-		Double lat = intent.getDoubleExtra("history_lat", 0);
-		Double lon = intent.getDoubleExtra("history_lon", 0);
+		final String re_name = intent.getStringExtra("re_name");
+		Log.i("CarLocationActivity","re_name" + re_name);
+		final Double lat = intent.getDoubleExtra("history_lat", 0);
+		Log.i("CarLocationActivity","lat" + lat);
+		final Double lon = intent.getDoubleExtra("history_lon", 0);
+		Log.i("CarLocationActivity","lon" + lon);
 			if (re_name != null && !re_name.equals("")) {
 				Log.i("CarLocationActivity","go...");
 				
-				searchAddress.setText(re_name);
-				LatLng llg = new LatLng(lat,lon);
-				MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
-				mBaiduMap.setMapStatus(u);
-				setTransitRoute(ll, llg);
+				new Handler().postDelayed(new Runnable() {
+
+					@Override
+					public void run() {
+						searchAddress.setText(re_name);
+						LatLng llg = new LatLng(lat,lon);
+						MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
+						mBaiduMap.setMapStatus(u);
+						setTransitRoute(ll, llg);
+						
+					}
+
+				}, 500);
+				
+				
+				
 			}
 		
 	}
@@ -575,6 +591,31 @@ public class CarLocationActivity extends Activity {
 					}
 				});
 		builder.create().show();
+	}
+
+	
+	public void toSearchPOI() {
+		POI_FLAG = this.getIntent().getStringExtra("POI_FLAG");
+		if(POI_FLAG == null || POI_FLAG.equals("")){
+			return;
+		}
+		new Handler().postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				System.out.println(POI_FLAG);
+				if (POI_FLAG.equals("home")) {
+					home.performClick();
+				} else if (POI_FLAG.equals("company")) {
+					company.performClick();
+				}else if (POI_FLAG.equals("address")) {
+					searchAddress.performClick();
+				}
+				POI_FLAG = null;
+			}
+
+		}, 500);
+
 	}
 
 	/**
@@ -1211,12 +1252,8 @@ public class CarLocationActivity extends Activity {
 		super.onResume();
 		mMapView.onResume();
 		mLocClient.start();
-		handler.post(new Runnable(){
-			@Override
-			public void run() {
-				searchLocationByKeywords();
-			}
-		});
+		toSearchPOI();
+		searchLocationByKeywords();
 	}
 
 	@Override
