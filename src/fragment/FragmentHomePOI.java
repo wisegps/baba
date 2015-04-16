@@ -106,9 +106,6 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 		gridPOI.setAdapter(simpleAdapter);
 		simpleAdapter.notifyDataSetChanged();
 		gridPOI.setOnItemClickListener(this);
-		
-		
-		
 		return view;
 	}
 

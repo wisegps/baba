@@ -65,6 +65,7 @@ public class FragmentHome extends Fragment {
 	private View rootView;
 	private ShareCards cardsSharePreferences;
 
+	private boolean isLoaded = false;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -310,7 +311,11 @@ public class FragmentHome extends Fragment {
 
 		Log.i("fragment", "onResume");
 		super.onResume();
+		if(isLoaded == false){
+			
+		}
 		setNotiView();
+		
 		MobclickAgent.onResume(getActivity());
 		Log.i("fragment", "isChange" + isChange);
 //		if (isChange) {
