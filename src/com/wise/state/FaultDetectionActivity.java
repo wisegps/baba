@@ -986,12 +986,12 @@ public class FaultDetectionActivity extends Activity {
 		}
 		// 开启线程获取数据
 
-		// new Thread(new MyThread()).start();
+		 new Thread(new MyThread()).start();
 
 		// carViews.get(index).getDialHealthScore().startCheckAnimation(mTotalProgress,
 		// carViews.get(index).getTv_score());
-		mTotalProgress = 50;
-		carViews.get(index).getDialHealthScore().startAnimation(mTotalProgress,handler);
+//		mTotalProgress = 50;
+//		carViews.get(index).getDialHealthScore().startAnimation(mTotalProgress,handler);
 
 	}
 
