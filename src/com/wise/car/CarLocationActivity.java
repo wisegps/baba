@@ -608,13 +608,15 @@ public class CarLocationActivity extends Activity {
 					home.performClick();
 				} else if (POI_FLAG.equals("company")) {
 					company.performClick();
+					
+					System.out.println("company.....................");
 				}else if (POI_FLAG.equals("address")) {
 					searchAddress.performClick();
 				}
 				POI_FLAG = null;
 			}
 
-		}, 500);
+		}, 1000);
 
 	}
 
