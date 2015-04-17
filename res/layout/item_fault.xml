@@ -33,15 +33,23 @@
                 android:id="@+id/imgLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                
+                
                 android:src="@drawable/ico_location_off" />
 
-            <TextView
+            <com.wise.baba.ui.widget.MarqueeTextView
                 android:id="@+id/textLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="11"
+	            android:ellipsize="marquee" 
+                android:marqueeRepeatLimit="marquee_forever"
+                
+                android:focusableInTouchMode="true" 
+                android:focusable ="true"
                 android:singleLine="true"
                  android:alpha="0.3"
+                 android:selectAllOnFocus="true"
                />
         </LinearLayout>
 
