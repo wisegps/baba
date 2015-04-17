@@ -10,9 +10,10 @@ import com.wise.remind.RemindListActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.setting.SetActivity;
 import com.wise.violation.TrafficActivity;
+
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

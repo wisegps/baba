@@ -3,11 +3,12 @@ package com.wise.notice;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+
 import android.view.Window;
 import cn.jpush.android.api.JPushInterface;
 
@@ -17,13 +18,13 @@ import fragment.FragmentNotice;
 import fragment.FragmentNotice.BtnListener;
 
 /** 通知 **/
-public class NoticeActivity extends FragmentActivity {
+public class NoticeActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_notice);
-		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentManager fragmentManager = this.getFragmentManager();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		FragmentNotice noticeFragment = new FragmentNotice();
 		transaction.add(R.id.ll_content, noticeFragment);

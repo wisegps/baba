@@ -12,6 +12,9 @@ import pubclas.Constant;
 import pubclas.FaceConversionUtil;
 import pubclas.GetLocation;
 import pubclas.GetSystem;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,10 +24,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -55,10 +54,10 @@ import fragment.FragmentNotice;
  * 
  * @author honesty
  **/
-public class MainActivity extends FragmentActivity implements
+public class MainActivity extends Activity implements
 		listener.OnTabChangedListener {
 	private static final String TAG = "MainActivity";
-	private FragmentManager fragmentManager;
+	private android.app.FragmentManager fragmentManager;
 	MyBroadCastReceiver myBroadCastReceiver;
 	HashMap<String, Fragment> fragments = new HashMap<String, Fragment>();
 
@@ -70,7 +69,7 @@ public class MainActivity extends FragmentActivity implements
 		NavigationLayout navigationLayout = (NavigationLayout) findViewById(R.id.navigationLayout);
 		navigationLayout.setOnTabChangedListener(this);
 		Log.i("MainActivity", "onCreate");
-		fragmentManager = getSupportFragmentManager();
+		fragmentManager = this.getFragmentManager();
 		showFragment("home");
 		registerReceiver();
 		checkIndication();

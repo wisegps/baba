@@ -165,6 +165,7 @@
         </activity>
         <activity
             android:name="com.wise.state.MainActivity"
+            android:launchMode="singleTask"
 			android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" >
         </activity>
