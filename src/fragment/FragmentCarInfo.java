@@ -339,7 +339,7 @@ public class FragmentCarInfo extends Fragment {
 				ImageView imgSingal = (ImageView) hs_car.findViewById(R.id.imgSingal);
 				ImageView imgOnLine = (ImageView) hs_car.findViewById(R.id.imgOnLine);
 				
-				String simValue = "SIM:"+remain_traffic.intValue()+"/"+total_traffic.intValue();
+				String simValue = "SIM:  "+remain_traffic.intValue()+"M/"+total_traffic.intValue()+"M";
 				textSIM.setText(simValue);
 				
 				int[] stateDrawable = {R.drawable.ico_state_0,R.drawable.ico_state_1,R.drawable.ico_state_2,R.drawable.ico_state_3};

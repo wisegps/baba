@@ -38,7 +38,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:textColor="@color/color_navy_light" />
+                 android:alpha="0.3"
+               />
         </LinearLayout>
 
         <ImageView
@@ -67,9 +68,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
-            android:alpha="0.8"
+            android:alpha="0.5"
             android:text="SIM: 11M/30M"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/imgOnLine"
@@ -102,7 +103,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/double_margins"
-        android:layout_marginTop="@dimen/margins"
+        android:layout_marginTop="@dimen/double_margins"
         android:gravity="center_horizontal"
         android:orientation="horizontal" >
 
