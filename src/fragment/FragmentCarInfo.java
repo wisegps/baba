@@ -12,12 +12,16 @@ import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.GetUrl;
 import pubclas.NetThread;
+import android.R.color;
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -96,8 +100,6 @@ public class FragmentCarInfo extends Fragment {
 	int completed;
 	private GeoCoder mGeoCoder = null;
 	
-	private ImageView imgOnLine,imgSingal,imgState;
-	private TextView textSIM;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -248,6 +250,17 @@ public class FragmentCarInfo extends Fragment {
 				intent.putExtra("isHotLocation", true);
 				startActivity(intent);
 				break;
+			case R.id.imgSwitch:
+				if(v.getTag().equals("off")){
+					((ImageView)v).setImageResource(R.drawable.ico_key);
+					v.setTag("on");
+				}else{
+					((ImageView)v).setImageResource(R.drawable.ico_key_close);
+					v.setTag("off");
+				}
+				
+				break;	
+				
 			}
 		}
 	};
@@ -261,7 +274,7 @@ public class FragmentCarInfo extends Fragment {
 			switch (msg.what) {
 			
 			case get_device:
-				jsonDevice(msg.obj.toString());
+				jsonDevice(msg.obj.toString(),msg.arg1);
 				break;
 			case getData:
 				jsonData(msg.obj.toString(), msg.arg1);
@@ -314,7 +327,8 @@ public class FragmentCarInfo extends Fragment {
 		}
 	};
 	
-	public void jsonDevice(String json){
+	@SuppressLint("ResourceAsColor")
+	public void jsonDevice(String json,int childIndex){
 			Log.i("FragmentCarInfo", json);
 			try {
 				JSONObject jsonObject = new JSONObject(json);
@@ -330,14 +344,17 @@ public class FragmentCarInfo extends Fragment {
 				int signal_level = jsonObject.getInt("signal_level");
 				//是否在线
 				boolean is_online = jsonObject.getBoolean("is_online");
-				
+				ViewGroup carLayout = (ViewGroup) hs_car.getChildAt(childIndex);
 				
 			
 				
-				TextView textSIM = (TextView) hs_car.findViewById(R.id.textSIM);
-				ImageView imgState = (ImageView) hs_car.findViewById(R.id.imgState);
-				ImageView imgSingal = (ImageView) hs_car.findViewById(R.id.imgSingal);
-				ImageView imgOnLine = (ImageView) hs_car.findViewById(R.id.imgOnLine);
+				ImageView imgLocation = (ImageView) carLayout.findViewById(R.id.imgLocation);
+				TextView textAddress = (TextView) carLayout.findViewById(R.id.textLocation);
+				
+				TextView textSIM = (TextView) carLayout.findViewById(R.id.textSIM);
+				ImageView imgState = (ImageView) carLayout.findViewById(R.id.imgState);
+				ImageView imgSingal = (ImageView) carLayout.findViewById(R.id.imgSingal);
+				ImageView imgSwitch = (ImageView) carLayout.findViewById(R.id.imgSwitch);
 				
 				String simValue = "SIM:  "+remain_traffic.intValue()+"M/"+total_traffic.intValue()+"M";
 				textSIM.setText(simValue);
@@ -350,9 +367,15 @@ public class FragmentCarInfo extends Fragment {
 				
 				
 				if(is_online){
-					imgOnLine.setImageResource(R.drawable.ico_key);
+					imgLocation.setImageResource(R.drawable.ico_location_on);
+					textAddress.setTextColor(Color.rgb(0, 186, 236));
+					textAddress.setAlpha(0.6f);
+					//imgOnLine.setImageResource(R.drawable.ico_key);
 				}else{
-					imgOnLine.setImageResource(R.drawable.ico_key_close);
+					//imgOnLine.setImageResource(R.drawable.ico_key_close);
+					imgLocation.setImageResource(R.drawable.ico_location_off);
+					textAddress.setTextColor(Color.BLACK);
+					textAddress.setAlpha(0.3f);
 				}
 				
 			} catch (JSONException e) {
@@ -379,6 +402,9 @@ public class FragmentCarInfo extends Fragment {
 			
 			hs_car.addView(v);
 			
+			ImageView imgSwitch = (ImageView) v.findViewById(R.id.imgSwitch);
+			imgSwitch.setOnClickListener(onClickListener);
+			
 			
 			ImageView iv_update_oil = (ImageView) v.findViewById(R.id.iv_update_oil);
 			iv_update_oil.setOnClickListener(onClickListener);
@@ -398,7 +424,7 @@ public class FragmentCarInfo extends Fragment {
 			TextView tv_fee = (TextView) v.findViewById(R.id.tv_fee);
 			TextView tv_fuel = (TextView) v.findViewById(R.id.tv_fuel);
 			TextView tv_name = (TextView) v.findViewById(R.id.tv_name);
-			TextView tv_adress = (TextView) v.findViewById(R.id.tv_adress);
+			TextView textLocation = (TextView) v.findViewById(R.id.textLocation);
 
 			v.findViewById(R.id.Liner_distance).setOnClickListener(onClickListener);
 			v.findViewById(R.id.Liner_fuel).setOnClickListener(onClickListener);
@@ -418,7 +444,7 @@ public class FragmentCarInfo extends Fragment {
 			carView.setTv_fuel(tv_fuel);
 			carView.setTv_score(tv_score);
 			carView.setTv_title(tv_title);
-			carView.setTv_adress(tv_adress);
+			carView.setTv_location(textLocation);
 			carView.setTv_drive(tv_drive);
 			carView.setTv_current_distance(tv_current_distance);
 			//carView.setImgHealthScore(dialHealthScore);
@@ -661,7 +687,7 @@ public class FragmentCarInfo extends Fragment {
 					}
 					// 显示时间
 					carViews.get(index).getLl_adress().setVisibility(View.VISIBLE);
-					carViews.get(index).getTv_adress().setText(adress + "  " + showTime);
+					carViews.get(index).getTv_location().setText(adress + "  " + showTime);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

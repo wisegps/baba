@@ -38,6 +38,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
+
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
@@ -379,18 +381,18 @@ public class FragmentHome extends Fragment {
 			LayoutInflater mLayoutInflater = LayoutInflater.from(getActivity());
 			View popunwindwow = mLayoutInflater.inflate(R.layout.pop_card_menu,
 					null);
-			Button bt_card_share = (Button) popunwindwow
-					.findViewById(R.id.bt_card_share);
-			bt_card_share.setOnClickListener(new OnClickListener() {
+			TextView text_card_share = (TextView) popunwindwow
+					.findViewById(R.id.text_card_share);
+			text_card_share.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					mPopupWindow.dismiss();
 				}
 			});
 
-			Button bt_card_delete = (Button) popunwindwow
-					.findViewById(R.id.bt_card_delete);
-			bt_card_delete.setOnClickListener(new OnClickListener() {
+			TextView text_card_delete = (TextView) popunwindwow
+					.findViewById(R.id.text_card_delete);
+			text_card_delete.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					Log.i("fragment", "delete card name " + CardName);
@@ -402,9 +404,9 @@ public class FragmentHome extends Fragment {
 				}
 			});
 
-			Button bt_card_cancle = (Button) popunwindwow
-					.findViewById(R.id.bt_card_cancel);
-			bt_card_cancle.setOnClickListener(new OnClickListener() {
+			TextView text_card_cancle = (TextView) popunwindwow
+					.findViewById(R.id.text_card_cancel);
+			text_card_cancle.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					mPopupWindow.dismiss();

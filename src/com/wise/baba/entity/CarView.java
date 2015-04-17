@@ -10,7 +10,6 @@ public class CarView {
 	LinearLayout ll_adress;
 	TextView tv_current_distance;
 	TextView tv_distance;
-	TextView tv_adress;
 	TextView tv_fee;
 	TextView tv_fuel;
 	TextView tv_score;
@@ -18,6 +17,15 @@ public class CarView {
 	TextView tv_xx;
 	TextView tv_drive;
 	
+	TextView tv_location;
+	
+	
+	public TextView getTv_location() {
+		return tv_location;
+	}
+	public void setTv_location(TextView tv_location) {
+		this.tv_location = tv_location;
+	}
 	DialView dialHealthScore;
 	DialView dialDriveScore;
 	
@@ -50,12 +58,6 @@ public class CarView {
 	}
 	public void setTv_distance(TextView tv_distance) {
 		this.tv_distance = tv_distance;
-	}
-	public TextView getTv_adress() {
-		return tv_adress;
-	}
-	public void setTv_adress(TextView tv_adress) {
-		this.tv_adress = tv_adress;
 	}
 	public TextView getTv_fee() {
 		return tv_fee;

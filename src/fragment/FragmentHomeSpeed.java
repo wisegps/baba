@@ -136,9 +136,11 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 		for (int i = 0; i < 7; i++) {
 			if (id == llytId[i]) {
 				//先设置单位
-				if(i<=1){
+				if(i<1){
 					textUnit.setText("km");
-				}else if(i == 2){
+				}else if(i<1){
+					textUnit.setText("rpm");
+				} else if(i == 2){
 					textUnit.setText("v");
 				}else if(i == 3){
 					textUnit.setText("℃");
