@@ -19,7 +19,7 @@ public class Const {
 	public static final String TAG_SERVICE = "fragmentService";//服务商
 	public static final String TAG_POI = "fragmetnHomePOI";//周边
 	public static final String TAG_CAR = "fragmentCarInfo";//汽车
-	public static final String TAG_SPEED = "fragmentWeather";//速度
+	public static final String TAG_SPEED = "fragmentSpeed";//速度
 	public static final String TAG_SHOOP = "fragmentShop";//我的店铺
 	public static final String TAG_NAV = "fragmentNavigation";//快速导航
 	public static final String TAG_WEATHER = "fragmentWeather";//天气

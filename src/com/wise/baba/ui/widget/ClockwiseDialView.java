@@ -16,6 +16,7 @@ import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -97,7 +98,10 @@ public class ClockwiseDialView extends FrameLayout {
 			@Override
 			public void run() {
 				BitmapUtil.recycleBitmap(imgColor);
+				Log.i("ClockwiseDialView", "ClockwiseDialView1");
+				Log.i("ClockwiseDialView", "bitmapFactory" +bitmapFactory);
 				Bitmap bitmp = bitmapFactory.getBitmapByValue(value, true);
+				Log.i("ClockwiseDialView", "ClockwiseDialView2");
 				imgColor.setImageBitmap(bitmp);
 			}
 			
@@ -256,8 +260,7 @@ public class ClockwiseDialView extends FrameLayout {
 		imgColor.setImageBitmap(null);
 		//imgCusor.setImageBitmap(null);
 		//imgCover.setImageBitmap(null);
-		bitmapFactory = null;
-		this.handler = null;
+		//bitmapFactory = null;
 	}
 
 }

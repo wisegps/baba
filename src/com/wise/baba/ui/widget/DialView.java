@@ -245,8 +245,7 @@ public class DialView extends FrameLayout {
 		imgColor.setImageBitmap(null);
 		//imgCusor.setImageBitmap(null);
 		//imgCover.setImageBitmap(null);
-		bitmapFactory = null;
-		this.handler = null;
+		//bitmapFactory = null;
 	}
 
 }

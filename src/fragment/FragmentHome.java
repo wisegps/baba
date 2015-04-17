@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentManager.BackStackEntry;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -116,6 +117,11 @@ public class FragmentHome extends Fragment {
 	}
 
 	FragmentTransaction transaction;
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+	}
 
 	/** 显示卡片布局 **/
 	private void getCards() {
@@ -153,7 +159,7 @@ public class FragmentHome extends Fragment {
 			FragmentHomeSpeed fragmenSpeed = new FragmentHomeSpeed();
 			transaction.add(R.id.ll_cards, fragmenSpeed, Const.TAG_SPEED);
 			transaction.commit();
-			cards.put(Const.TAG_CAR, fragmenSpeed);
+			cards.put(Const.TAG_SPEED, fragmenSpeed);
 			
 
 			Log.i("fragment", "设置导航卡片布局");
@@ -253,10 +259,13 @@ public class FragmentHome extends Fragment {
 	}
 	
 	public void removeAllFragment() {
+		
 		Iterator<String> keys = cards.keySet().iterator();
 		while(keys.hasNext()){
 			removeFragment(keys.next());
 		}
+		
+		
 	}
 
 	/** 刷新车辆卡片 **/
@@ -321,11 +330,12 @@ public class FragmentHome extends Fragment {
 		setNotiView();
 		
 		MobclickAgent.onResume(getActivity());
-		Log.i("fragment", "isChange" + isChange);
-//		if (isChange) {
-//			// 加载对应的view
-//			getCards();
-//		}
+		if(isChange){
+			removeAllFragment();
+			getCards();
+		}
+		
+		
 	}
 
 	@Override

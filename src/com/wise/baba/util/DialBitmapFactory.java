@@ -13,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
+import android.util.Log;
 
 /**
  * 
@@ -68,6 +69,8 @@ public class DialBitmapFactory {
 	 * @return
 	 */
 	public Bitmap getBitmapByValue(final float value,final boolean hasCursor) {
+		
+				Log.i("DialBitmapFactory", "DialBitmapFactory1");
 				mBitmap = Bitmap.createBitmap(width, width, Config.ARGB_8888);
 				mCanvas = new Canvas(mBitmap);
 				mCanvas.save();
@@ -78,13 +81,14 @@ public class DialBitmapFactory {
 				mCanvas.drawBitmap(gray, 0, 0, null);
 				// 第三层，画圆环光标
 				if(hasCursor == true){
+					Log.i("DialBitmapFactory", "hasCursor");
 					Bitmap angleCursor = sector(bmCursor, value);
 					mCanvas.drawBitmap(angleCursor, 0, 0, null);
 					angleCursor.recycle();
 				}
 				gray.recycle();
 				mCanvas.restore();
-				
+				Log.i("DialBitmapFactory", "DialBitmapFactory2");
 		
 		return mBitmap;
 

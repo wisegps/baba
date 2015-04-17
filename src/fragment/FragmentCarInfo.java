@@ -329,7 +329,6 @@ public class FragmentCarInfo extends Fragment {
 	
 	@SuppressLint("ResourceAsColor")
 	public void jsonDevice(String json,int childIndex){
-			Log.i("FragmentCarInfo", json);
 			try {
 				JSONObject jsonObject = new JSONObject(json);
 				
