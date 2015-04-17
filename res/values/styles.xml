@@ -45,4 +45,15 @@
          <item name="android:alpha">0.8</item>
           <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
+    
+       <!-- 卡片布局 下拉箭头 -->
+     <style name="home_card_img_down_style">
+           <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+         <item name="android:layout_centerVertical">true</item>
+         <item name="android:layout_marginRight">8dp</item>
+          <item name="android:layout_alignParentRight">true</item>
+          <item name="android:src">@drawable/ico_down</item>
+    </style>
+     
 </resources>
