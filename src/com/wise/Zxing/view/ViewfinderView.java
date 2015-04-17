@@ -99,6 +99,9 @@ public final class ViewfinderView extends View {
 			paint.setStrokeWidth(2);
 			paint.setTextSize(36);
 			String testString = "将二维码放入框内，即可扫描添加终端";
+			if(this.getTag()!= null && this.getTag().equals("friend")){
+				testString = "将二维码放入框内，即可扫描添加好友";
+			}
 			paint.setColor(getResources().getColor(R.color.white));
 			FontMetricsInt fontMetrics = paint.getFontMetricsInt();
 			int baseline = targetRect.top

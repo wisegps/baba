@@ -141,8 +141,10 @@ public class FragmentFriend extends Fragment {
 				startActivity(new Intent(getActivity(), FriendAddActivity.class));
 				break;
 			case R.id.tv_camera:
-				startActivityForResult(new Intent(getActivity(),
-						BarcodeActivity.class), 1);
+				Intent add = new Intent(getActivity(),
+						BarcodeActivity.class);
+				add.putExtra("desc", "friend");
+				startActivityForResult(add, 1);
 				break;
 			}
 		}

@@ -55,7 +55,15 @@ public class BarcodeActivity extends Activity implements Callback {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_barcode);
         CameraManager.init(getApplication());
+        
+        
+        
         viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
+        
+        String desc = this.getIntent().getStringExtra("desc");
+        if(desc != null && desc.equals("friend")){
+        	viewfinderView.setTag(desc);
+        }
         txtResult = (TextView) findViewById(R.id.txtResult);
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
