@@ -185,8 +185,7 @@ public class FragmentHome extends Fragment {
 					transaction = fragmentManager.beginTransaction();
 					FragmentWeather fragmentWeather = new FragmentWeather();
 					fragmentWeather.setOnCardMenuListener(onCardMenuListener);
-					transaction
-							.add(R.id.ll_cards, fragmentWeather, Const.TAG_WEATHER);
+					transaction.add(R.id.ll_cards, fragmentWeather, Const.TAG_WEATHER);
 					transaction.commit();
 					cards.put(Const.TAG_WEATHER, fragmentWeather);
 
