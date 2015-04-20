@@ -627,12 +627,12 @@
             android:value="Channel ID" />
         <!--
 		debug：0QNTY4tnP9Tv6ghXpGa6XXOm
-		正     式：BDG8ozGlC0WQQXVKs0XkXkdq
+		正     式：H0GxiO8nsgGK4zArlY1uqkcL
 		本机：ENAit7WmjvYO0DmxKMOU4CLx
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="BDG8ozGlC0WQQXVKs0XkXkdq" />
+            android:value="H0GxiO8nsgGK4zArlY1uqkcL" />
     </application>
 
 </manifest>
