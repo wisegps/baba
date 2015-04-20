@@ -1,12 +1,22 @@
 package fragment;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import pubclas.Judge;
-
 import listener.OnCardMenuListener;
+import pubclas.Judge;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
+import android.widget.SimpleAdapter;
 
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
@@ -22,23 +32,6 @@ import com.wise.state.FuelDetailsActivity;
 import com.wise.violation.TrafficActivity;
 
 import customView.CustomGridView;
-
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AutoCompleteTextView;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 /**
  * 

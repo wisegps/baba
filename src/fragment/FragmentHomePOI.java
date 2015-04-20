@@ -4,10 +4,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import listener.OnCardMenuListener;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.db.SharePOI;
@@ -17,27 +28,6 @@ import com.wise.car.SearchLocationActivity;
 import com.wise.car.SearchMapActivity;
 
 import customView.CustomGridView;
-import data.CarData;
-
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AutoCompleteTextView;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 /**
  * 

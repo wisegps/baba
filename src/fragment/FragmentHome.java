@@ -1,40 +1,34 @@
 package fragment;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import listener.OnCardMenuListener;
-import org.json.JSONArray;
-import org.json.JSONException;
+
 import org.json.JSONObject;
+
 import pubclas.Constant;
 import pubclas.GetSystem;
 import pubclas.Info;
 import pubclas.Judge;
 import pubclas.NetThread;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentManager.BackStackEntry;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,7 +43,6 @@ import com.wise.baba.db.ShareCards;
 import com.wise.car.CarLocationActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.show.ShowActivity;
-import data.CarData;
 
 /**
  * 车况信息

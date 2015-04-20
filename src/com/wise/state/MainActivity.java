@@ -1,6 +1,5 @@
 package com.wise.state;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -9,33 +8,28 @@ import listener.OnFinishListener;
 import org.json.JSONObject;
 
 import pubclas.Constant;
-import pubclas.FaceConversionUtil;
 import pubclas.GetLocation;
 import pubclas.GetSystem;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Handler.Callback;
-import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.Button;
 import cn.jpush.android.api.JPushInterface;
 
 import com.baidu.lbsapi.auth.LBSAuthManagerListener;
-import com.baidu.navisdk.BaiduNaviManager;
 import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
+import com.baidu.navisdk.BaiduNaviManager;
 import com.umeng.update.UmengUpdateAgent;
 import com.wise.baba.R;
 import com.wise.baba.ui.widget.NavigationLayout;
@@ -45,19 +39,20 @@ import com.wise.violation.TrafficActivity;
 
 import fragment.FragmentFriend;
 import fragment.FragmentHome;
-import fragment.FragmentMore;
 import fragment.FragmentHome.OnExitListener;
+import fragment.FragmentMore;
 import fragment.FragmentNotice;
+
 
 /**
  * 主界面
  * 
  * @author honesty
  **/
-public class MainActivity extends Activity implements
+public class MainActivity extends FragmentActivity implements
 		listener.OnTabChangedListener {
 	private static final String TAG = "MainActivity";
-	private android.app.FragmentManager fragmentManager;
+	private FragmentManager fragmentManager;
 	MyBroadCastReceiver myBroadCastReceiver;
 	HashMap<String, Fragment> fragments = new HashMap<String, Fragment>();
 
@@ -69,7 +64,7 @@ public class MainActivity extends Activity implements
 		NavigationLayout navigationLayout = (NavigationLayout) findViewById(R.id.navigationLayout);
 		navigationLayout.setOnTabChangedListener(this);
 		Log.i("MainActivity", "onCreate");
-		fragmentManager = this.getFragmentManager();
+		fragmentManager = getSupportFragmentManager();
 		showFragment("home");
 		registerReceiver();
 		checkIndication();
