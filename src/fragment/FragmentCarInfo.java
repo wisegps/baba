@@ -46,6 +46,7 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.google.gson.Gson;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.biz.HttpCarInfo;
 import com.wise.baba.entity.CarView;
 import com.wise.baba.ui.widget.DialView;
 import com.wise.car.CarLocationActivity;
@@ -86,7 +87,7 @@ public class FragmentCarInfo extends Fragment {
 	HScrollLayout hs_car;
 	AppApplication app;
 	/** 当前车在列表中位置 **/
-	int index = 0;
+	public  int index = 0;
 	/** 获取油耗数据开始时间 **/
 	String startMonth;
 	/** 获取油耗数据结束时间 **/
@@ -95,7 +96,8 @@ public class FragmentCarInfo extends Fragment {
 	int completed;
 	private GeoCoder mGeoCoder = null;
 	
-
+	private final int Stealth_Mode_True= 1,Stealth_Mode_False = 0;//是否隐身 1：隐身  0：不隐身
+	private HttpCarInfo http;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_car_info, container, false);
@@ -106,6 +108,7 @@ public class FragmentCarInfo extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
 
+		
 		String Month = GetSystem.GetNowMonth().getMonth();
 		startMonth = Month + "-01";
 		endMonth = GetSystem.getMonthLastDay(Month);
@@ -119,6 +122,8 @@ public class FragmentCarInfo extends Fragment {
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
 
+		
+		
 		hs_car = (HScrollLayout) getActivity().findViewById(R.id.hs_car);
 		initDataView();
 		hs_car.setOnViewChangeListener(new OnViewChangeListener() {
@@ -126,6 +131,9 @@ public class FragmentCarInfo extends Fragment {
 			public void OnViewChange(int view, int duration) {
 				if(index != view){
 					index = view;
+					app.currentCarIndex = view;
+					
+					Log.i("FragmentCarInfo", "当前车辆"+app.currentCarIndex);
 					//等待滚动完毕后查询数据
 					handler.postDelayed(new Runnable() {						
 						@Override
@@ -136,6 +144,8 @@ public class FragmentCarInfo extends Fragment {
 				}
 			}
 		});
+		
+		http = new HttpCarInfo(this.getActivity(),handler);
 	}
 
 	public void initTotalData(){
@@ -245,13 +255,15 @@ public class FragmentCarInfo extends Fragment {
 				intent.putExtra("isHotLocation", true);
 				startActivity(intent);
 				break;
-			case R.id.imgSwitch:
-				if(v.getTag().equals("off")){
+			case R.id.imgStealth:
+				if(v.getTag().equals(Stealth_Mode_True)){//当前隐身模式，切换到非隐身模式
 					((ImageView)v).setImageResource(R.drawable.ico_key);
-					v.setTag("on");
+					v.setTag(Stealth_Mode_False);
+					http.putStealthMode(Stealth_Mode_False);
 				}else{
 					((ImageView)v).setImageResource(R.drawable.ico_key_close);
-					v.setTag("off");
+					v.setTag(Stealth_Mode_True);
+					http.putStealthMode(Stealth_Mode_True);
 				}
 				
 				break;	
@@ -325,6 +337,7 @@ public class FragmentCarInfo extends Fragment {
 	@SuppressLint("ResourceAsColor")
 	public void jsonDevice(String json,int childIndex){
 			try {
+				Log.i("FragmentCarInfo", json);
 				JSONObject jsonObject = new JSONObject(json);
 				
 				//SIM卡总流量，单位M
@@ -338,9 +351,13 @@ public class FragmentCarInfo extends Fragment {
 				int signal_level = jsonObject.getInt("signal_level");
 				//是否在线
 				boolean is_online = jsonObject.getBoolean("is_online");
+				//是否隐身 1：隐身  0：不隐身
+				int stealthMode = jsonObject.getInt("stealth_mode"); 
+				
+				
 				ViewGroup carLayout = (ViewGroup) hs_car.getChildAt(childIndex);
 				
-			
+				
 				
 				ImageView imgLocation = (ImageView) carLayout.findViewById(R.id.imgLocation);
 				TextView textAddress = (TextView) carLayout.findViewById(R.id.textLocation);
@@ -348,7 +365,7 @@ public class FragmentCarInfo extends Fragment {
 				TextView textSIM = (TextView) carLayout.findViewById(R.id.textSIM);
 				ImageView imgState = (ImageView) carLayout.findViewById(R.id.imgState);
 				ImageView imgSingal = (ImageView) carLayout.findViewById(R.id.imgSingal);
-				ImageView imgSwitch = (ImageView) carLayout.findViewById(R.id.imgSwitch);
+				ImageView imgStealth = (ImageView) carLayout.findViewById(R.id.imgStealth);
 				
 				String simValue = "SIM:  "+remain_traffic.intValue()+"M/"+total_traffic.intValue()+"M";
 				textSIM.setText(simValue);
@@ -370,6 +387,17 @@ public class FragmentCarInfo extends Fragment {
 					imgLocation.setImageResource(R.drawable.ico_location_off);
 					textAddress.setTextColor(Color.BLACK);
 					textAddress.setAlpha(0.3f);
+				}
+				
+				
+				//隐身的
+				if(stealthMode == Stealth_Mode_True){
+					imgStealth.setImageResource(R.drawable.ico_key_close);
+					imgStealth.setTag(stealthMode);
+				}else{
+					//在线的
+					imgStealth.setImageResource(R.drawable.ico_key);
+					imgStealth.setTag(Stealth_Mode_False);
 				}
 				
 			} catch (JSONException e) {
@@ -396,7 +424,7 @@ public class FragmentCarInfo extends Fragment {
 			
 			hs_car.addView(v);
 			
-			ImageView imgSwitch = (ImageView) v.findViewById(R.id.imgSwitch);
+			ImageView imgSwitch = (ImageView) v.findViewById(R.id.imgStealth);
 			imgSwitch.setOnClickListener(onClickListener);
 			
 			

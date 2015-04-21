@@ -30,6 +30,8 @@ import com.google.gson.JsonObject;
 import com.wise.baba.AppApplication;
 import com.wise.baba.app.Msg;
 
+import fragment.FragmentCarInfo;
+
 /**
  * 
  * @author c
@@ -61,13 +63,13 @@ public class HttpGetObdData {
 	 * @param url
 	 */
 	public void request() {
-		cancle();
+		//cancle();
 		if (app.carDatas.size() < 1) {
 			return;
 		}
 
-		deviceId = app.carDatas.get(0).getDevice_id();
-		brand = app.carDatas.get(0).getCar_brand();
+		deviceId = app.carDatas.get(app.currentCarIndex).getDevice_id();
+		brand = app.carDatas.get(app.currentCarIndex).getCar_brand();
 		try {
 			brand = URLEncoder.encode(brand, "UTF-8");
 		} catch (UnsupportedEncodingException e) {

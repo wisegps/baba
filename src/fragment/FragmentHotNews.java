@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -109,6 +110,8 @@ public class FragmentHotNews extends Fragment {
 	private void gethot_news() {
 		try {
 			String url = Constant.BaseUrl + "base/hot_news?city=" + URLEncoder.encode(app.City, "UTF-8");
+			Log.i("FragmentHotNews", url);
+			
 			new NetThread.GetDataThread(handler, url, gethot_news).start();
 		} catch (Exception e) {
 			e.printStackTrace();

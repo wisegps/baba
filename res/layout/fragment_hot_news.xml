@@ -1,10 +1,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bidir_sliding_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="10dp"
-    android:background="@color/gray_lights">
+    style="@style/home_card_style"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp" >
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/home_card_title_style"
+            android:text="本地车讯" />
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/tv_title"
+            android:src="@drawable/ico_hotnews" />
+
+        <ImageView
+            android:id="@+id/iv_hot_news_menu"
+            style="@style/home_card_img_down_style" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#bbbbbb"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
+    </View>
 
     <RelativeLayout
         android:id="@+id/rl_hot_news_content"
@@ -52,13 +83,6 @@
 	                android:text="长安铃木启悦23日上市"
 	                android:textColor="@color/back"
 	                android:textSize="@dimen/content" />
-	            <ImageView 
-	                android:id="@+id/iv_hot_news_menu"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:padding="5dp"
-	                android:layout_alignParentRight="true"
-	                android:src="@drawable/btn_jiantou_lvse_xia"/>
 			</RelativeLayout>
 
             <TextView

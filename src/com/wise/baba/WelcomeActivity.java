@@ -318,7 +318,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 
 	/** 清空静态数据 **/
 	private void clearData() {
-		app.CarIndex = -1;
+		app.currentCarIndex = 0;
 		app.auth_code = null;
 		app.cust_id = null;
 		app.cust_name = "";

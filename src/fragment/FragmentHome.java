@@ -79,7 +79,6 @@ public class FragmentHome extends Fragment {
 		return rootView;
 	}
 
-	@SuppressLint("NewApi")
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);

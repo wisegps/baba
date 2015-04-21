@@ -83,7 +83,7 @@
             android:textSize="16sp" />
 
         <ImageView
-            android:id="@+id/imgSwitch"
+            android:id="@+id/imgStealth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/imgSwitch"
+            android:layout_toLeftOf="@+id/imgStealth"
             android:src="@drawable/ico_wifi_0" />
           <ImageView
             android:id="@+id/imgState"
