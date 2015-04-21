@@ -13,10 +13,14 @@ import pubclas.NetThread;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,9 +39,9 @@ import com.wise.baba.app.Const;
 public class FragmentWeather extends Fragment {
 	/** 获取天气信息 **/
 	private static final int getWeather = 2;
-	AppApplication app;
-	TextView tv_advice, tv_weather_time, tv_weather, tv_city;
-	ImageView iv_weather;
+	private AppApplication app;
+	private TextView tvCity , tvDate, tvTemperature ,tvWeather,tvAirQuality;
+	private ImageView ivIconCity,ivWeather;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,12 +52,20 @@ public class FragmentWeather extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
-		tv_city = (TextView) getActivity().findViewById(R.id.tv_city);
-		tv_city.setOnClickListener(onClickListener);
-		tv_weather_time = (TextView) getActivity().findViewById(R.id.tv_weather_time);
-		tv_weather = (TextView) getActivity().findViewById(R.id.tv_weather);
-		tv_advice = (TextView) getActivity().findViewById(R.id.tv_advice);
-		iv_weather = (ImageView) getActivity().findViewById(R.id.iv_weather);
+		
+		tvCity = (TextView) getActivity().findViewById(R.id.tv_city);
+		tvCity.setOnClickListener(onClickListener);
+		
+		tvDate = (TextView) getActivity().findViewById(R.id.tv_date);
+		tvTemperature = (TextView) getActivity().findViewById(R.id.tv_temperature);
+		tvWeather = (TextView) getActivity().findViewById(R.id.tv_weather);
+		tvAirQuality = (TextView) getActivity().findViewById(R.id.tv_air_quality);
+		
+		ivIconCity = (ImageView) getActivity().findViewById(R.id.iv_icon);
+		ivIconCity.setOnClickListener(onClickListener);
+		
+		
+		ivWeather = (ImageView) getActivity().findViewById(R.id.iv_weather);
 		ImageView iv_weather_menu = (ImageView) getActivity().findViewById(R.id.iv_weather_menu);
 		iv_weather_menu.setOnClickListener(onClickListener);
 	}
@@ -69,6 +81,7 @@ public class FragmentWeather extends Fragment {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.tv_city:
+			case R.id.iv_icon:
 				/** 跳转到修改城市，天气信息在resume里刷新了 **/
 				startActivity(new Intent(getActivity(), SelectCityActivity.class));
 				break;
@@ -100,7 +113,7 @@ public class FragmentWeather extends Fragment {
 	private void getWeather() {
 		SharedPreferences preferences = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		app.City = preferences.getString(Constant.sp_city, "");
-		tv_city.setText("[ " + app.City + " ]");
+		tvCity.setText( app.City);
 		app.Province = preferences.getString(Constant.sp_province, "");
 		try {
 			String url = Constant.BaseUrl + "base/weather2?city=" + URLEncoder.encode(app.City, "UTF-8");
@@ -110,23 +123,46 @@ public class FragmentWeather extends Fragment {
 		}
 	}
 
+	
+	public Spanned getAirQuality(String quality){
+		String color = "";
+		if(quality.contains("优")){
+			color = "#6eb720";
+		}else if(quality.contains("良")){
+			color = "#d6c60f";
+		}else if(quality.contains("轻度污染")){
+			color = "#ec7e22";
+		}else if(quality.contains("中度污染")){
+			color = "#df2d00";
+		}else if(quality.contains("重度污染")){
+			color = "#b414bb";
+		}else if(quality.contains("严重污染")){
+			color = "#6f0474";
+			
+		}
+		
+		Spanned html = Html.fromHtml("空气质量:    "+"<font color = "+color+">"+quality+"</font>");
+		
+		return html;
+		
+	}
 	private void jsonWeather(String str) {
+		Log.i("FragmentWeather", str);
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-			String time = jsonObject.getJSONObject("sk").getString("time");
-			tv_weather_time.setText(GetSystem.getTime(time));
+			String date = jsonObject.getJSONObject("today").getString("week");
+			tvDate.setText("今天  "+date);
 			String temperature = jsonObject.getJSONObject("today").getString("temperature");
 			String weather = jsonObject.getJSONObject("today").getString("weather");
+			String wind = jsonObject.getJSONObject("today").getString("wind");
 			String quality = jsonObject.getString("quality");
-			tv_weather.setText(temperature + "  " + weather + "   空气质量" + quality);
-			String tips = jsonObject.getString("tips");
-			if (tips.equals("")) {
-				tv_advice.setText(jsonObject.getJSONObject("today").getString("dressing_advice"));
-			} else {
-				tv_advice.setText(tips);
-			}
+			
+			tvTemperature.setText(temperature);
+			tvWeather.setText(weather +"  "+wind);
+			tvAirQuality.setText(getAirQuality(quality));
+			
 			int fa = jsonObject.getJSONObject("today").getJSONObject("weather_id").getInt("fa");
-			iv_weather.setImageResource(getResource("x" + fa));
+			ivWeather.setImageResource(getResource("weather" + fa));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

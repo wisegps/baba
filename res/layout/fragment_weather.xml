@@ -1,81 +1,102 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="10dp"
-    android:background="@drawable/bg_adress_map"
-    android:padding="@dimen/margins" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/home_card_style"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/iv_weather"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/margins"
-        android:layout_marginRight="@dimen/double_margins"
-        android:src="@drawable/x1" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp" >
+
+        <TextView
+            android:id="@+id/tv_city"
+            style="@style/home_card_title_style"
+            android:text="城市" />
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/tv_city"
+            android:src="@drawable/ico_city" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+             android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/iv_icon"
+            android:text="今天   星期三" />
+
+        <ImageView
+            android:id="@+id/iv_weather_menu"
+            style="@style/home_card_img_down_style" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#bbbbbb"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
+    </View>
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/iv_weather"
-        android:orientation="vertical" >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="30dp" >
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/tv_city_weather"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="今日天气 "
-                android:textColor="@color/content_gray"
-                android:textSize="@dimen/content" />
-
-            <TextView
-                android:id="@+id/tv_city"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/tv_city_weather"
-                android:text="[  ]"
-                android:textColor="@color/content_gray"
-                android:textSize="@dimen/content" />
-
-            <ImageView
-                android:id="@+id/iv_weather_menu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:padding="5dp"
-                android:src="@drawable/btn_jiantou_lvse_xia" />
-
-            <TextView
-                android:id="@+id/tv_weather_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/iv_weather_menu"
-                android:textColor="@color/content_gray"
-                android:textSize="@dimen/content" />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tv_weather"
-            android:layout_width="fill_parent"
+        <ImageView
+            android:id="@+id/iv_weather"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="26℃~32℃ 多云"
-            android:textColor="@color/back"
-            android:textSize="@dimen/content" />
+            android:layout_weight="1"
+            android:src="@drawable/x0" />
 
-        <TextView
-            android:id="@+id/tv_advice"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="今日有雨，道路实话，请减慢车速，小心驾驶"
-            android:textColor="@color/content_gray"
-            android:textSize="@dimen/content" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tv_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="left"
+                android:text="温度：15.C"
+                android:singleLine="true"
+                android:layout_weight="1.4"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_weather"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:alpha="1"
+                android:textColor="#8c8688"
+                 android:textSize="15sp"
+                android:text="多云  微风" />
+
+            <TextView
+                android:id="@+id/tv_air_quality"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                 android:alpha="1"
+                 android:textSize="15sp"
+                 android:textColor="#8c8688"
+                android:text="空气质量：30 优" />
+        </LinearLayout>
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
