@@ -1,14 +1,13 @@
 package fragment;
 
-import java.net.URLEncoder;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+
 import listener.OnCardMenuListener;
-import org.json.JSONException;
-import org.json.JSONObject;
-import pubclas.Constant;
-import pubclas.NetThread;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,27 +16,34 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.wise.baba.AppApplication;
 import com.wise.baba.BrowserActivity;
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
+import com.wise.baba.app.Msg;
+import com.wise.baba.biz.HttpHotNews;
+import com.wise.baba.entity.News;
 
 /**
  * 本地资讯
+ * 
  * @author honesty
  **/
-public class FragmentHotNews extends Fragment {
+public class FragmentHotNews extends Fragment implements Callback {
 	/** 获取本地资讯 **/
-	private static final int startGetNewThread = 1;
-	private static final int gethot_news = 2;
-	TextView tv_hot_content, tv_host_title;
 	AppApplication app;
-	boolean isDestory = false;
-	boolean isPause = false;
+	private int[] titleId = { R.id.tv_title0, R.id.tv_title1, R.id.tv_title2,
+			R.id.tv_title3 };
+	private TextView tvContent;
+	private LinearLayout llytNews;
+	private HttpHotNews http;
+	private List<News> newsList;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_hot_news, container, false);
 	}
 
@@ -45,110 +51,111 @@ public class FragmentHotNews extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
-		ImageView iv_weather_menu = (ImageView) getActivity().findViewById(R.id.iv_hot_news_menu);
+
+		tvContent = (TextView) getActivity().findViewById(
+				R.id.tv_title0_content);
+		llytNews = (LinearLayout) getActivity().findViewById(R.id.llytNews);
+		
+		ImageView iv_weather_menu = (ImageView) getActivity().findViewById(
+				R.id.iv_hot_news_menu);
+		llytNews.setOnClickListener(onClickListener);
 		iv_weather_menu.setOnClickListener(onClickListener);
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while(!isDestory){
-					try {	
-						if(!isPause){
-							Message message = new Message();
-							message.what = startGetNewThread;
-							handler.sendMessage(message);
-						}
-						Thread.sleep(30000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}				
-			}
-		}).start();
+		http = new HttpHotNews(getActivity(), new Handler(this));
+		http.request();
+
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			int index = -1;
 			switch (v.getId()) {
-			case R.id.tv_hot_content:
-				Intent intent_hot = new Intent(getActivity(), BrowserActivity.class);
-				intent_hot.putExtra("url", hot_url);
-				intent_hot.putExtra("title", hot_title);
-				intent_hot.putExtra("hot_content", hot_content);
-				startActivity(intent_hot);
-				break;
 			case R.id.iv_hot_news_menu:
-				if(onCardMenuListener != null){
+				if (onCardMenuListener != null) {
 					onCardMenuListener.showCarMenu(Const.TAG_NEWS);
 				}
 				break;
-			}
-		}
-	};
-
-	Handler handler = new Handler() {
-
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			switch (msg.what) {
-			case startGetNewThread:
-				//gethot_news();
+			case R.id.llytNews:
+				index = 0;
 				break;
-			case gethot_news:
-				//jsonhot_news(msg.obj.toString());
-				break;
+			case R.id.tv_title1:
+				index = 1;
+				break; 
+			case R.id.tv_title2:
+				index = 2;
+				break; 
+			case R.id.tv_title3:
+				index = 3;
+				break; 
 			}
-		}
-
-	};
-
-	/** 获取热点信息 **/
-	private void gethot_news() {
-		try {
-			String url = Constant.BaseUrl + "base/hot_news?city=" + URLEncoder.encode(app.City, "UTF-8");
-			Log.i("FragmentHotNews", url);
+			if(index!=-1){
+				Intent intent_hot = new Intent(getActivity(),
+						BrowserActivity.class);
+				News news = newsList.get(index);
+				intent_hot.putExtra("url", news.getUrl());
+				intent_hot.putExtra("title", news.getTitle());
+				intent_hot.putExtra("hot_content", news.getContent());
+				startActivity(intent_hot);
+			}
 			
-			new NetThread.GetDataThread(handler, url, gethot_news).start();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-	}
+	};
 
-	String hot_url;
-	String hot_title;
-	String hot_content;
-
-	/** 解析乐一下 **/
-	private void jsonhot_news(String str) {
-		try {
-			JSONObject jsonObject = new JSONObject(str);
-			hot_content = jsonObject.getString("content");
-			tv_hot_content.setText(hot_content);
-			hot_title = jsonObject.getString("title");
-			tv_host_title.setText(hot_title);
-			hot_url = jsonObject.getString("url");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-	@Override
-	public void onResume() {
-		super.onResume();
-		isPause = false;
-	}
-	@Override
-	public void onPause() {
-		super.onPause();
-		isPause = true;
-	}
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		isDestory = true;
-	}
 	OnCardMenuListener onCardMenuListener;
-	public void setOnCardMenuListener(OnCardMenuListener onCardMenuListener){
+
+	public void setOnCardMenuListener(OnCardMenuListener onCardMenuListener) {
 		this.onCardMenuListener = onCardMenuListener;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.os.Handler.Callback#handleMessage(android.os.Message)
+	 */
+	@Override
+	public boolean handleMessage(Message msg) {
+		switch(msg.what){
+		case Msg.Get_News_List:
+			this.newsList = (List<News>) msg.obj;
+			setNewsTitle();
+			break;
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * 设置首页新闻
+	 */
+	public void setNewsTitle(){
+		if(newsList== null){
+			return;
+		}
+		
+		
+		int titleLength = titleId.length;
+		int newsSize = newsList.size();
+		int count = titleLength<newsSize?titleLength:newsSize;
+		Log.i("FragmentHotNews", "count "+count);
+		for(int i =0;i<count;i++){
+			News news = (News) newsList.get(i);
+			if(i == 0 ){
+				String content =news.getContent().trim().replaceAll("/n", "");
+				Log.i("FragmentHotNews", "getContent "+content);
+				tvContent.setText(content);
+			}
+			TextView tvTitle = (TextView) getActivity().findViewById(titleId[i]);
+			tvTitle.setOnClickListener(onClickListener);
+			tvTitle.setText(news.getTitle());
+		}
+	}
+
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		http.cancle();
+	}
+	
+	
 }

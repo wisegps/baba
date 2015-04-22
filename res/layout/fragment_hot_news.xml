@@ -50,6 +50,7 @@
             android:textColor="#70b3ce" />
 
         <LinearLayout
+            android:id="@+id/llytNews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -64,12 +65,13 @@
                 android:src="@drawable/hot" />
 
             <TextView
-                android:id="@+id/tv_content"
+                android:id="@+id/tv_title0_content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:lines="3"
-                android:text="这个新闻内容很长的abcdefghijklmnopqrstuvwxyz know you see i can say my abc safdasdfasdfsdfgdfgh"
+				android:ellipsize="end"
+                android:text="abcdefghijklmnopqrstuvwxyz know you see i can say my abc safdasdfasdfsdfgdfgh"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#c9c9c9" />
         </LinearLayout>

@@ -25,4 +25,10 @@ public class Msg {
 	
 	public static final int Get_OBD_Data = 2;
 
+	
+	/**
+	 * FragmentHomeHotNews
+	 */
+	
+	public static final int Get_News_List = 6;
 }

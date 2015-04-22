@@ -26,6 +26,7 @@ public class BrowserActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_browser);
 		url = getIntent().getStringExtra("url");
+		
 		hot_title = getIntent().getStringExtra("title");
 		hot_content = getIntent().getStringExtra("hot_content");
 		TextView tv_title = (TextView) findViewById(R.id.tv_title);
