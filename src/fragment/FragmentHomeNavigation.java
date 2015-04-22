@@ -21,6 +21,7 @@ import android.widget.SimpleAdapter;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
+import com.wise.baba.ui.widget.CustomGridView;
 import com.wise.car.CarLocationActivity;
 import com.wise.car.TravelActivity;
 import com.wise.remind.RemindListActivity;
@@ -31,7 +32,6 @@ import com.wise.state.FuelActivity;
 import com.wise.state.FuelDetailsActivity;
 import com.wise.violation.TrafficActivity;
 
-import customView.CustomGridView;
 
 /**
  * 

@@ -39,7 +39,7 @@
     </View>
 
 
-    <customView.CustomGridView
+    <com.wise.baba.ui.widget.CustomGridView
         android:id="@+id/gridNav"
         android:background="#bcbcbc"
         android:layout_width="match_parent"
@@ -50,6 +50,6 @@
         android:stretchMode="columnWidth"
         android:numColumns="3"
       >
-    </customView.CustomGridView>
+    </com.wise.baba.ui.widget.CustomGridView>
 
 </LinearLayout>

@@ -1,4 +1,4 @@
-package customView;
+package com.wise.baba.ui.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
