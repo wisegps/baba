@@ -2,13 +2,13 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
     <style name="AppBaseTheme" parent="android:Theme.Light">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
         -->
     </style>
 
@@ -36,24 +36,41 @@
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:background">@color/white</item>
     </style>
-    
-     <!-- 卡片布局标题样式   周边等 -->
-     <style name="home_card_title_style">
+
+    <!-- 卡片布局标题样式   周边等 -->
+    <style name="home_card_title_style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-         <item name="android:layout_marginLeft">10dp</item>
-         <item name="android:alpha">0.8</item>
-          <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:alpha">0.8</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
-    
-       <!-- 卡片布局 下拉箭头 -->
-     <style name="home_card_img_down_style">
-           <item name="android:layout_width">wrap_content</item>
+
+    <!-- 卡片布局 下拉箭头 -->
+    <style name="home_card_img_down_style">
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-         <item name="android:layout_centerVertical">true</item>
-         <item name="android:layout_marginRight">8dp</item>
-          <item name="android:layout_alignParentRight">true</item>
-          <item name="android:src">@drawable/ico_down</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:src">@drawable/ico_down</item>
     </style>
-     
+
+    <!-- 新闻分隔线 -->
+    <style name="home_news_line_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:layout_margin">12dp</item>
+        <item name="android:background">#bbbbbb</item>
+    </style>
+
+     <!-- 新闻字體 -->
+    <style name="home_news_title_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">12dp</item>
+         <item name="android:layout_marginRight">12dp</item>
+        <item name="android:textColor">#36353a</item>
+         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
 </resources>

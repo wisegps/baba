@@ -45,9 +45,6 @@ public class FragmentHotNews extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
-		tv_hot_content = (TextView) getActivity().findViewById(R.id.tv_hot_content);
-		tv_hot_content.setOnClickListener(onClickListener);
-		tv_host_title = (TextView) getActivity().findViewById(R.id.tv_host_title);
 		ImageView iv_weather_menu = (ImageView) getActivity().findViewById(R.id.iv_hot_news_menu);
 		iv_weather_menu.setOnClickListener(onClickListener);
 		new Thread(new Runnable() {
@@ -96,10 +93,10 @@ public class FragmentHotNews extends Fragment {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case startGetNewThread:
-				gethot_news();
+				//gethot_news();
 				break;
 			case gethot_news:
-				jsonhot_news(msg.obj.toString());
+				//jsonhot_news(msg.obj.toString());
 				break;
 			}
 		}
