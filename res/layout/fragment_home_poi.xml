@@ -52,7 +52,7 @@
         android:hint=" 搜索" >
     </AutoCompleteTextView>
 
-    <customView.CustomGridView
+    <com.wise.baba.ui.widget.CustomGridView
         android:id="@+id/gridPOI"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,6 +60,6 @@
         android:layout_marginTop="15dp"
         android:numColumns="4"
         android:verticalSpacing="15dp" >
-    </customView.CustomGridView>
+    </com.wise.baba.ui.widget.CustomGridView>
 
 </LinearLayout>
