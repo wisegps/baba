@@ -18,6 +18,7 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
@@ -46,6 +47,8 @@ public class ClockwiseDialView extends FrameLayout {
 	private RotateAnimation cusorAnimation;
 
 	private boolean init = true;
+	
+	private boolean isRunning = false;
 	public ClockwiseDialView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.context = context;
@@ -67,7 +70,6 @@ public class ClockwiseDialView extends FrameLayout {
 	 * 初始化子控件（图层）
 	 */
 	public void initChildView() {
-
 		// 创建子图层
 		imgColor = new ImageView(context);
 		imgCusor = new ImageView(context);
@@ -238,6 +240,20 @@ public class ClockwiseDialView extends FrameLayout {
 		cusorAnimation.setInterpolator(new LinearInterpolator());
 		cusorAnimation.setFillAfter(true);
 		cusorAnimation.setDuration(duration);
+		cusorAnimation.setAnimationListener(new AnimationListener() {
+			@Override
+			public void onAnimationStart(Animation animation) {
+				isRunning = true;
+			}
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+			}
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				isRunning = false;
+				
+			}
+		});
 		handler.post(new Runnable() {
 			@Override
 			public void run() {
@@ -247,6 +263,10 @@ public class ClockwiseDialView extends FrameLayout {
 
 	}
 
+	public boolean getStatus(){
+		return isRunning;
+	}
+	
 	@Override
 	protected void onDetachedFromWindow() {
 		freeMemory();

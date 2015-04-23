@@ -54,7 +54,6 @@ public class HttpGetObdData {
 		this.handler = handler;
 		app = (AppApplication) ((Activity) context).getApplication();
 		mQueue = Volley.newRequestQueue(context);
-
 	}
 
 	/**

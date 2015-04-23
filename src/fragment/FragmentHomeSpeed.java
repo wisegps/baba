@@ -1,5 +1,8 @@
 package fragment;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -32,6 +35,8 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	private AppApplication app;
 	private HttpGetObdData http;
 	private ClockwiseDialView dialSpeed;
+	private int index = 0;
+	private Timer timer;
 	/**
 	 * 0，速度 1，转速 2，电源电压 3，水温 4 ，负荷 5，节气门 ，6，剩余油量
 	 */
@@ -80,16 +85,31 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) this.getActivity().getApplication();
-
+		handler = new Handler(this);
+		
 	}
 
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
-		handler = new Handler(this);
 		http = new HttpGetObdData(FragmentHomeSpeed.this.getActivity(), handler);
-		http.request();
+		timer = new Timer();
+		timer.schedule(new TimerTask(){
+			@Override
+			public void run() {
+				http.request();
+				Log.i("FragmentHomeSpeed", "timer");
+			}
+		}, 1, 3000);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		if(timer!=null){
+			timer.cancel();
+			timer.purge();
+		}
 	}
 
 	/*
@@ -99,8 +119,14 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	 */
 	@Override
 	public boolean handleMessage(Message msg) {
-		Log.i("FragmentHomeSpeed", "handleMessage");
+		
 		if (msg.what == Msg.Get_OBD_Data) {
+			if(dialSpeed.getStatus() == true){
+				//动画运行状态  忽略本次更新
+				return true;
+			}
+			
+			Log.i("FragmentHomeSpeed", "Get_OBD_Data");
 			Bundle bundle = msg.getData();
 			value[0] = bundle.getInt("ss");
 			value[1] = bundle.getInt("fdjfz");
@@ -114,9 +140,10 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 				((TextView) view.findViewById(textId[i]))
 						.setText(value[i] + "");
 			}
-			textScore.setText(value[0] + "");
-			dialSpeed.initValue(value[0], handler);
+			textScore.setText(value[index] + "");
+			dialSpeed.initValue(value[index], handler);
 		} else if (msg.what == Msg.Dial_Refresh_Value) {
+			Log.i("FragmentHomeSpeed", "Dial_Refresh_Value");
 			int value = msg.arg1;
 			textScore.setText(value + "");
 			// dialSpeed.startCheckAnimation(value, handler);
@@ -137,7 +164,6 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 
 		String title = "速度";
 		String unit = "km";
-		int index = 0;
 		switch (id) {
 		case R.id.llytSpeed:
 			title = "速度";
