@@ -31,8 +31,7 @@ import android.widget.ImageView;
  *         一，静态设置值 ：initValue 二，动画效果：setValue
  * 
  */
-
-public class ClockwiseDialView extends FrameLayout {
+public class CopyOfClockwiseDialView extends FrameLayout {
 	private ImageView imgColor; // 彩色刻度
 	private ImageView imgCusor; // 圆环光标
 	private ImageView imgCover; // 圆环底部覆盖扇形
@@ -50,7 +49,7 @@ public class ClockwiseDialView extends FrameLayout {
 	private boolean init = true;
 	
 	private boolean isRunning = false;
-	public ClockwiseDialView(Context context, AttributeSet attrs) {
+	public CopyOfClockwiseDialView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.context = context;
 		String w = "";

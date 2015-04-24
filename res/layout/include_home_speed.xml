@@ -461,7 +461,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:alpha="0.7"
-                        android:text="%"
+                        android:text="L"
                         android:textSize="12sp" />
                 </LinearLayout>
 

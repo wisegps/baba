@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/double_margins" >
 
-        <com.wise.baba.ui.widget.ClockwiseDialView
+        <com.wise.baba.ui.widget.DialView
             android:id="@+id/dialSpeed"
             android:layout_width="160dp"
             android:layout_height="160dp"

@@ -21,7 +21,7 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Msg;
 import com.wise.baba.biz.HttpGetObdData;
-import com.wise.baba.ui.widget.ClockwiseDialView;
+import com.wise.baba.ui.widget.DialView;
 
 /**
  * 
@@ -34,27 +34,37 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	private Handler handler;
 	private AppApplication app;
 	private HttpGetObdData http;
-	private ClockwiseDialView dialSpeed;
+	private DialView dialSpeed;
 	private int index = 0;
 	private Timer timer;
+	
 	/**
 	 * 0，速度 1，转速 2，电源电压 3，水温 4 ，负荷 5，节气门 ，6，剩余油量
 	 */
 	private View view;
+	//值文字显示
 	private int textId[] = { R.id.textSpeed, R.id.textRotary, R.id.textVoltage,
 			R.id.textTemperature, R.id.textLoad, R.id.textThrottle,
 			R.id.textOil };
-
+	//各图片
 	private int icon[] = { R.drawable.ico_speed,
 			R.drawable.ico_home_speed__rotary,
 			R.drawable.ico_home_speed_voltage,
 			R.drawable.ico_home_speed__temperature,
 			R.drawable.ico_home_speed__load,
 			R.drawable.ico_home_speed_throttle, R.drawable.ico_home_speed_oil };
+	//各项布局
 	private int llytId[] = { R.id.llytSpeed, R.id.llytRotary, R.id.llytVoltage,
 			R.id.llytTemperature, R.id.llytLoad, R.id.llytThrottle,
 			R.id.llytOil };
+	
+	//各项标题
+	private String[] title = {"速度","转速","电源电压","水温","负荷","节气门","剩余油量"};
+	//各项单位
+	private String[] unit = {"km","rpm","v","℃","%","%", "L"};
+	
 	private int value[] = new int[7];
+	private int maxValue[] = {120,1000,15,112,100,17,70};
 	private TextView tvCardTitle, textScore, textUnit;
 	private ImageView ivCardIcon;
 
@@ -62,7 +72,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.fragment_home_speed, container, false);
-		dialSpeed = (ClockwiseDialView) view.findViewById(R.id.dialSpeed);
+		dialSpeed = (DialView) view.findViewById(R.id.dialSpeed);
 
 		for (int i = 0; i < 7; i++) {
 			view.findViewById(llytId[i]).setOnClickListener(this);
@@ -71,6 +81,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 		textScore = (TextView) view.findViewById(R.id.tv_score);
 		textUnit = (TextView) view.findViewById(R.id.tv_unit);
 		ivCardIcon = (ImageView) view.findViewById(R.id.iv_card_icon);
+		
 		return view;
 	}
 
@@ -121,11 +132,6 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	public boolean handleMessage(Message msg) {
 		
 		if (msg.what == Msg.Get_OBD_Data) {
-			if(dialSpeed.getStatus() == true){
-				//动画运行状态  忽略本次更新
-				return true;
-			}
-			
 			Log.i("FragmentHomeSpeed", "Get_OBD_Data");
 			Bundle bundle = msg.getData();
 			value[0] = bundle.getInt("ss");
@@ -141,11 +147,11 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 						.setText(value[i] + "");
 			}
 			textScore.setText(value[index] + "");
-			dialSpeed.initValue(value[index], handler);
+			dialSpeed.initValue(caclPercent(index), handler);
 		} else if (msg.what == Msg.Dial_Refresh_Value) {
-			Log.i("FragmentHomeSpeed", "Dial_Refresh_Value");
-			int value = msg.arg1;
-			textScore.setText(value + "");
+//			/Log.i("FragmentHomeSpeed", "Dial_Refresh_Value");
+			//int value = msg.arg1;
+			
 			// dialSpeed.startCheckAnimation(value, handler);
 		}
 
@@ -161,51 +167,52 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	public void onClick(View v) {
 
 		int id = v.getId();
-
-		String title = "速度";
-		String unit = "km";
-		switch (id) {
-		case R.id.llytSpeed:
-			title = "速度";
-			unit = "km";
-			index = 0;
-			break;
-		case R.id.llytRotary:
-			title = "转速";
-			unit = "rpm";
-			index = 1;
-			break;
-		case R.id.llytVoltage:
-			title = "电源电压";
-			unit = "v";
-			index = 2;
-			break;
-		case R.id.llytTemperature:
-			title = "水温";
-			unit = "℃";
-			index = 3;
-			break;
-		case R.id.llytLoad:
-			title = "负荷";
-			unit = "%";
-			index = 4;
-			break;
-		case R.id.llytThrottle:
-			title = "节气门";
-			unit = "%";
-			index = 5;
-			break;
-		case R.id.llytOil:
-			title = "剩余油量";
-			unit = "%";
-			index = 6;
-			break;
+		
+		for(int i =0;i<llytId.length;i++){
+			if(id == llytId[i]){
+				this.index = i;
+				//圆环刻度设置
+				dialSpeed.initValue(caclPercent(i), handler);
+				//切换标题
+				tvCardTitle.setText(title[i]);
+				//切换图片
+				ivCardIcon.setImageResource(icon[i]);
+				
+				//中间单位设置
+				textUnit.setText(unit[i]);
+				
+				//中间分值设置
+				textScore.setText(value[i] + "");
+				                                        
+				
+				
+				
+			
+				break;
+			}
 		}
-		// 先设置单位
-		textUnit.setText(unit);
-		tvCardTitle.setText(title);
-		dialSpeed.startAnimation(value[index], handler);
-		ivCardIcon.setImageResource(icon[index]);
+		
 	}
-
+	
+	
+	/**
+	 * 计算当前数值 相对于 最大值 的百分比 
+	 * @param index
+	 * @return
+	 */
+	public int caclPercent(int index){
+		int percent = 100;
+		//数值过大，比值设为100
+		float v = value[index];
+		float mv = maxValue[index];
+		Log.i("FragmentHomeSpeed", "value "+value[index]);
+		Log.i("FragmentHomeSpeed", "maxValue "+maxValue[index]);
+		if(v>=mv){
+			percent = 100;
+		}else{
+			percent = (int) (v/mv * 100f);
+		}
+		Log.i("FragmentHomeSpeed", "percent "+percent);
+		return percent;
+	}
 }

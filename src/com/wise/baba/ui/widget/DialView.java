@@ -104,6 +104,7 @@ public class DialView extends FrameLayout {
 		});
 	
 	}
+	
 
 	// 設置一個值，出現動畫滾動到該值
 	public void startAnimation(int value, Handler handler) {
