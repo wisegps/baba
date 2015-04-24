@@ -165,6 +165,7 @@
                     android:textColor="@color/color_blue"
                     android:textSize="@dimen/content" />
 
+                <!-- 不知道干什么用，注释掉
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -172,7 +173,7 @@
                     android:text="最后行程检测结果"
                     android:textColor="@color/common"
                     android:textSize="@dimen/content" />
-
+ 				-->
                 <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
