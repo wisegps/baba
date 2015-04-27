@@ -24,19 +24,25 @@ public class GridShopAdapter extends BaseAdapter {
 
 	private Context context;
 	private LayoutInflater inflater;
+	private int[] value;
 
 	public GridShopAdapter(Context context) {
 		super();
+		value = new int[]{0,0,0,0,0,0};
 		this.context = context;
 		inflater = LayoutInflater.from(context);
+		
 	}
 
+	public void setValue(int value[]){
+		this.value = value;
+	}
 	/*
 	 * @see android.widget.Adapter#getCount()
 	 */
 	@Override
 	public int getCount() {
-		return 9;
+		return 6;
 	}
 
 	/*
@@ -78,21 +84,17 @@ public class GridShopAdapter extends BaseAdapter {
 		
 		TextView tvNumber = (TextView) convertView.findViewById(R.id.tv_number);
 		tvItem.setText(getText()[position]);
-		tvNumber.setText(getNumber()[position]+"");
+		tvNumber.setText(value[position]+"");
 		ivItem.setImageResource(getResource("ico_shop_"+position));
 		return convertView;
 	}
 	
 
 	public String[] getText(){
-		
-		return new String[]{"用户总数","到期终端数","车辆数","报价车辆数","故障车辆数","未读消息数","产品数","评价数",""};
+		//new String[]{"用户总数","到期终端数","车辆数","报价车辆数","故障车辆数","未读消息数","产品数","评价数",""};
+		return new String[]{"用户总数","车辆数","车务提醒数","报警车辆数","故障车辆数","到期终端数"};
 	}
 	
-	public int[] getNumber(){
-		
-		return new int[]{100,1000,100,20,234,123,67,567,0};
-	}
 	/** 返回天气对应的r资源名称 **/
 	public int getResource(String imageName) {
 		int resId = context.getResources().getIdentifier(imageName, "drawable", "com.wise.baba");

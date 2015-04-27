@@ -18,6 +18,8 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Msg;
+import com.wise.baba.biz.HttpServiceProvider;
 import com.wise.baba.ui.adapter.GridShopAdapter;
 import com.wise.baba.ui.widget.CustomGridView;
 
@@ -30,8 +32,12 @@ import android.graphics.Color;
 import android.graphics.Bitmap.Config;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -48,11 +54,14 @@ import android.widget.TextView;
  * 服务商模块
  *@author honesty
  **/
-public class FragmentService extends Fragment implements OnItemClickListener{
+public class FragmentService extends Fragment implements OnItemClickListener, Callback{
 
 	private AppApplication app;
 	private View view;
 	private CustomGridView gridShop;
+	private GridShopAdapter adapter;
+	private HttpServiceProvider  HttpService;
+	private Handler handler;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
@@ -68,7 +77,7 @@ public class FragmentService extends Fragment implements OnItemClickListener{
 
 		gridShop = (CustomGridView) view.findViewById(R.id.gridShop);
 		gridShop.setSelector(new ColorDrawable(Color.TRANSPARENT));// 取消GridView中Item选中时默认的背景色
-		GridShopAdapter adapter = new GridShopAdapter(this.getActivity());
+		adapter = new GridShopAdapter(this.getActivity());
 		gridShop.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		gridShop.setOnItemClickListener(this);
@@ -80,11 +89,28 @@ public class FragmentService extends Fragment implements OnItemClickListener{
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
+		handler = new Handler(this);
+		HttpService= new HttpServiceProvider(this.getActivity(), handler);
+		HttpService.request();
 	}
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		
+	}
+	/* (non-Javadoc)
+	 * @see android.os.Handler.Callback#handleMessage(android.os.Message)
+	 */
+	@Override
+	public boolean handleMessage(Message msg) {
+		switch(msg.what){
+		case Msg.Get_Customer_Total:
+			int [] totals = (int[]) msg.obj;
+			adapter.setValue(totals);
+			adapter.notifyDataSetChanged();
+			break;
+		}
+		return false;
 	}
 	
 }

@@ -31,4 +31,10 @@ public class Msg {
 	 */
 	
 	public static final int Get_News_List = 6;
+	
+	/**
+	 * FragmentService
+	 */
+	
+	public static final int Get_Customer_Total = 9;
 }
