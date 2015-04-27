@@ -379,7 +379,7 @@ public class FragmentCarInfo extends Fragment {
 				
 				if(is_online){
 					imgLocation.setImageResource(R.drawable.ico_location_on);
-					textAddress.setTextColor(Color.rgb(0, 186, 236));
+					textAddress.setTextColor(Color.parseColor("#50b7de"));
 					textAddress.setAlpha(0.6f);
 					//imgOnLine.setImageResource(R.drawable.ico_key);
 				}else{
