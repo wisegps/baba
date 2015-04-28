@@ -121,23 +121,7 @@ public class FragmentHome extends Fragment {
 		isChange = false;
 		cards.clear();
 		Log.i("fragment", "设置卡片布局");
-		if (app.cust_type == Info.ServiceProvider) {
-			Log.i("fragment", "设置服务商卡片布局");
-			removeFragment(Const.TAG_SERVICE);
-			transaction = fragmentManager.beginTransaction();
-			FragmentService fragmentService = new FragmentService();
-			transaction.add(R.id.ll_cards, fragmentService, Const.TAG_SERVICE);
-			transaction.commit();
-			cards.put(Const.TAG_SERVICE, fragmentService);
-		} else {
-			Log.i("fragment", "设置周边卡片布局");
-			removeFragment(Const.TAG_POI);
-			transaction = fragmentManager.beginTransaction();
-			FragmentHomePOI fragmetnHomePOI = new FragmentHomePOI();
-			transaction.add(R.id.ll_cards, fragmetnHomePOI, Const.TAG_POI);
-			transaction.commit();
-			cards.put(Const.TAG_POI, fragmetnHomePOI);
-		}
+
 		// // 可选布局
 
 		String sharedCards[] = cardsSharePreferences.get();
@@ -145,7 +129,15 @@ public class FragmentHome extends Fragment {
 		for (int i = 0; i < sharedCards.length; i++) {
 			String cardName = sharedCards[i];
 			Log.i("fragment", "get " + i + " " + cardName);
-			if (cardName.equals(Const.TAG_CAR)) {
+			if (cardName.equals(Const.TAG_POI)) {
+				Log.i("fragment", "设置周边卡片布局");
+				removeFragment(Const.TAG_POI);
+				transaction = fragmentManager.beginTransaction();
+				FragmentHomePOI fragmetnHomePOI = new FragmentHomePOI();
+				transaction.add(R.id.ll_cards, fragmetnHomePOI, Const.TAG_POI);
+				transaction.commit();
+				cards.put(Const.TAG_POI, fragmetnHomePOI);
+			} else if (cardName.equals(Const.TAG_CAR)) {
 				Log.i("fragment", "设置车辆卡片布局");
 				removeFragment(Const.TAG_CAR);
 				transaction = fragmentManager.beginTransaction();
@@ -154,7 +146,7 @@ public class FragmentHome extends Fragment {
 				transaction.add(R.id.ll_cards, fragmentCarInfo, Const.TAG_CAR);
 				transaction.commit();
 				cards.put(Const.TAG_CAR, fragmentCarInfo);
-			}else if (cardName.equals(Const.TAG_SPEED)) {
+			} else if (cardName.equals(Const.TAG_SPEED)) {
 				Log.i("fragment", "设置速度卡片布局");
 				removeFragment(Const.TAG_SPEED);
 				transaction = fragmentManager.beginTransaction();
@@ -163,17 +155,15 @@ public class FragmentHome extends Fragment {
 				transaction.add(R.id.ll_cards, fragmenSpeed, Const.TAG_SPEED);
 				transaction.commit();
 				cards.put(Const.TAG_SPEED, fragmenSpeed);
-			}else if (cardName.equals(Const.TAG_NAV)) {
-
-				Log.i("fragment", "设置导航卡片布局");
-				removeFragment(Const.TAG_NAV);
+			}else if (cardName.equals(Const.TAG_NEWS)) {
+				Log.i("fragment", "设置新闻卡片布局2");
+				removeFragment(Const.TAG_NEWS);
 				transaction = fragmentManager.beginTransaction();
-				FragmentHomeNavigation fragmenNavigation = new FragmentHomeNavigation();
-				fragmenNavigation.setOnCardMenuListener(onCardMenuListener);
-				transaction.add(R.id.ll_cards, fragmenNavigation, Const.TAG_NAV);
+				FragmentHotNews fragmentHotNews = new FragmentHotNews();
+				fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
+				transaction.add(R.id.ll_cards, fragmentHotNews, Const.TAG_NEWS);
 				transaction.commit();
-				cards.put(Const.TAG_NAV, fragmenNavigation);
-
+				cards.put(Const.TAG_NEWS, fragmentHotNews);
 			} else if (cardName.equals(Const.TAG_WEATHER)) {
 				Log.i("fragment", "设置天气卡片布局2");
 				removeFragment(Const.TAG_WEATHER);
@@ -185,16 +175,29 @@ public class FragmentHome extends Fragment {
 				transaction.commit();
 				cards.put(Const.TAG_WEATHER, fragmentWeather);
 
-			} else if (cardName.equals(Const.TAG_NEWS)) {
-				Log.i("fragment", "设置新闻卡片布局2");
-				removeFragment(Const.TAG_NEWS);
+			} else if (cardName.equals(Const.TAG_SERVICE)
+					&& app.cust_type == Info.ServiceProvider) {
+				Log.i("fragment", "设置服务商卡片布局");
+				removeFragment(Const.TAG_SERVICE);
 				transaction = fragmentManager.beginTransaction();
-				FragmentHotNews fragmentHotNews = new FragmentHotNews();
-				fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
-				transaction.add(R.id.ll_cards, fragmentHotNews, Const.TAG_NEWS);
+				FragmentService fragmentService = new FragmentService();
+				transaction.add(R.id.ll_cards, fragmentService,
+						Const.TAG_SERVICE);
 				transaction.commit();
-				cards.put(Const.TAG_NEWS, fragmentHotNews);
-			}
+				cards.put(Const.TAG_SERVICE, fragmentService);
+			} else if (cardName.equals(Const.TAG_NAV)) {
+
+				Log.i("fragment", "设置导航卡片布局");
+				removeFragment(Const.TAG_NAV);
+				transaction = fragmentManager.beginTransaction();
+				FragmentHomeNavigation fragmenNavigation = new FragmentHomeNavigation();
+				fragmenNavigation.setOnCardMenuListener(onCardMenuListener);
+				transaction
+						.add(R.id.ll_cards, fragmenNavigation, Const.TAG_NAV);
+				transaction.commit();
+				cards.put(Const.TAG_NAV, fragmenNavigation);
+
+			} 
 		}
 	}
 

@@ -32,8 +32,8 @@ public class ChooseCard extends Activity {
 	// JSONArray cardsJson = new JSONArray();
 
 	public static final int CARDCODE = 1;
-	private String[] cards = { Const.TAG_SERVICE,Const.TAG_CAR,Const.TAG_SPEED,Const.TAG_NAV,
-			Const.TAG_WEATHER, Const.TAG_NEWS };
+	private String[] cards = { Const.TAG_POI,Const.TAG_CAR,Const.TAG_SPEED,
+			 Const.TAG_NEWS ,Const.TAG_WEATHER,Const.TAG_SERVICE,Const.TAG_NAV};
 	private ShareCards cardsSharePreferences;
 	private String[] sharedCards = null;
 
