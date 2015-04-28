@@ -36,7 +36,7 @@ public class AddCards extends Activity {
 	DragListView infoListView;
 	List<CardsData> list = new ArrayList<CardsData>();
 	InforAdapter adapter;
-	private String[] cards = { Const.TAG_SERVICE,
+	private String[] cards = { Const.TAG_SERVICE,Const.TAG_CAR,Const.TAG_SPEED,Const.TAG_NAV,
 			Const.TAG_WEATHER, Const.TAG_NEWS };
 	private ShareCards cardsSharePreferences;
 

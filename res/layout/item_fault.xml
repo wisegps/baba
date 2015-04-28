@@ -54,7 +54,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/imgDown"
+            android:id="@+id/iv_drive_menu"
            style="@style/home_card_img_down_style" />
     </RelativeLayout>
 

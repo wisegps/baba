@@ -3,6 +3,8 @@ package fragment;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import listener.OnCardMenuListener;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Const;
 import com.wise.baba.app.Msg;
 import com.wise.baba.biz.HttpGetObdData;
 import com.wise.baba.ui.widget.DialView;
@@ -73,7 +76,8 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.fragment_home_speed, container, false);
 		dialSpeed = (DialView) view.findViewById(R.id.dialSpeed);
-
+		
+		view.findViewById(R.id.iv_speed_menu).setOnClickListener(this);
 		for (int i = 0; i < 7; i++) {
 			view.findViewById(llytId[i]).setOnClickListener(this);
 		}
@@ -168,6 +172,13 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 
 		int id = v.getId();
 		
+		if(id == R.id.iv_speed_menu){
+			if (onCardMenuListener != null) {
+				onCardMenuListener.showCarMenu(Const.TAG_SPEED);
+			}
+			return;
+		}
+		
 		for(int i =0;i<llytId.length;i++){
 			if(id == llytId[i]){
 				this.index = i;
@@ -194,6 +205,12 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 		
 	}
 	
+	OnCardMenuListener onCardMenuListener;
+
+	public void setOnCardMenuListener(OnCardMenuListener onCardMenuListener) {
+		this.onCardMenuListener = onCardMenuListener;
+
+	}
 	
 	/**
 	 * 计算当前数值 相对于 最大值 的百分比 

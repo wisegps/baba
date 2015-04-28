@@ -91,7 +91,7 @@ public class ShareCards {
 		/**检查是否初始化过，否则增加两个值*/
 		String strCardNames = sharedPreferences.getString("cardNames", "");
 		if(strCardNames.equals("")){
-			String initCardNames[] = {Const.TAG_WEATHER,Const.TAG_NEWS};
+			String initCardNames[] = {Const.TAG_CAR,Const.TAG_SPEED,Const.TAG_NAV,Const.TAG_WEATHER,Const.TAG_NEWS};
 			put(initCardNames);
 		}
 		

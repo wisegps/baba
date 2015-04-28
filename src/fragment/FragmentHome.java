@@ -63,6 +63,7 @@ public class FragmentHome extends Fragment {
 	private ShareCards cardsSharePreferences;
 
 	private boolean isLoaded = false;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -94,7 +95,7 @@ public class FragmentHome extends Fragment {
 		fragmentManager = this.getChildFragmentManager();
 		if (Judge.isLogin(app)) {// 已登录
 			GetSystem.myLog(TAG, "已登录,app.carDatas = " + app.carDatas.size());
-			//getCounter();
+			// getCounter();
 		} else {// 未登录
 			GetSystem.myLog(TAG, "未登录,app.carDatas = " + app.carDatas.size());
 			// 给个临时id
@@ -109,7 +110,7 @@ public class FragmentHome extends Fragment {
 	}
 
 	FragmentTransaction transaction;
-	
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -136,62 +137,65 @@ public class FragmentHome extends Fragment {
 			transaction.add(R.id.ll_cards, fragmetnHomePOI, Const.TAG_POI);
 			transaction.commit();
 			cards.put(Const.TAG_POI, fragmetnHomePOI);
-
-			Log.i("fragment", "设置车辆卡片布局");
-			removeFragment(Const.TAG_CAR);
-			transaction = fragmentManager.beginTransaction();
-			FragmentCarInfo fragmentCarInfo = new FragmentCarInfo();
-			transaction.add(R.id.ll_cards, fragmentCarInfo, Const.TAG_CAR);
-			transaction.commit();
-			cards.put(Const.TAG_CAR, fragmentCarInfo);
-			
-			Log.i("fragment", "设置速度卡片布局");
-			removeFragment(Const.TAG_SPEED);
-			transaction = fragmentManager.beginTransaction();
-			FragmentHomeSpeed fragmenSpeed = new FragmentHomeSpeed();
-			transaction.add(R.id.ll_cards, fragmenSpeed, Const.TAG_SPEED);
-			transaction.commit();
-			cards.put(Const.TAG_SPEED, fragmenSpeed);
-			
-
-			Log.i("fragment", "设置导航卡片布局");
-			removeFragment(Const.TAG_NAV);
-			transaction = fragmentManager.beginTransaction();
-			FragmentHomeNavigation fragmenNavigation = new FragmentHomeNavigation();
-			transaction.add(R.id.ll_cards, fragmenNavigation, Const.TAG_NAV);
-			transaction.commit();
-			cards.put(Const.TAG_NAV, fragmenNavigation);
-
 		}
 		// // 可选布局
 
 		String sharedCards[] = cardsSharePreferences.get();
-		
-		
-			for (int i = 0; i < sharedCards.length; i++) {
-				String cardName = sharedCards[i];
-				Log.i("fragment", "get " + i +" "+cardName);
-				if (cardName.equals(Const.TAG_WEATHER)) {
-					Log.i("fragment", "设置天气卡片布局2");
-					removeFragment(Const.TAG_WEATHER);
-					transaction = fragmentManager.beginTransaction();
-					FragmentWeather fragmentWeather = new FragmentWeather();
-					fragmentWeather.setOnCardMenuListener(onCardMenuListener);
-					transaction.add(R.id.ll_cards, fragmentWeather, Const.TAG_WEATHER);
-					transaction.commit();
-					cards.put(Const.TAG_WEATHER, fragmentWeather);
 
-				} else if (cardName.equals(Const.TAG_NEWS)) {
-					Log.i("fragment", "设置新闻卡片布局2");
-					removeFragment(Const.TAG_NEWS);
-					transaction = fragmentManager.beginTransaction();
-					FragmentHotNews fragmentHotNews = new FragmentHotNews();
-					fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
-					transaction.add(R.id.ll_cards, fragmentHotNews, Const.TAG_NEWS);
-					transaction.commit();
-					cards.put(Const.TAG_NEWS, fragmentHotNews);
-				}
+		for (int i = 0; i < sharedCards.length; i++) {
+			String cardName = sharedCards[i];
+			Log.i("fragment", "get " + i + " " + cardName);
+			if (cardName.equals(Const.TAG_CAR)) {
+				Log.i("fragment", "设置车辆卡片布局");
+				removeFragment(Const.TAG_CAR);
+				transaction = fragmentManager.beginTransaction();
+				FragmentCarInfo fragmentCarInfo = new FragmentCarInfo();
+				fragmentCarInfo.setOnCardMenuListener(onCardMenuListener);
+				transaction.add(R.id.ll_cards, fragmentCarInfo, Const.TAG_CAR);
+				transaction.commit();
+				cards.put(Const.TAG_CAR, fragmentCarInfo);
+			}else if (cardName.equals(Const.TAG_SPEED)) {
+				Log.i("fragment", "设置速度卡片布局");
+				removeFragment(Const.TAG_SPEED);
+				transaction = fragmentManager.beginTransaction();
+				FragmentHomeSpeed fragmenSpeed = new FragmentHomeSpeed();
+				fragmenSpeed.setOnCardMenuListener(onCardMenuListener);
+				transaction.add(R.id.ll_cards, fragmenSpeed, Const.TAG_SPEED);
+				transaction.commit();
+				cards.put(Const.TAG_SPEED, fragmenSpeed);
+			}else if (cardName.equals(Const.TAG_NAV)) {
+
+				Log.i("fragment", "设置导航卡片布局");
+				removeFragment(Const.TAG_NAV);
+				transaction = fragmentManager.beginTransaction();
+				FragmentHomeNavigation fragmenNavigation = new FragmentHomeNavigation();
+				fragmenNavigation.setOnCardMenuListener(onCardMenuListener);
+				transaction.add(R.id.ll_cards, fragmenNavigation, Const.TAG_NAV);
+				transaction.commit();
+				cards.put(Const.TAG_NAV, fragmenNavigation);
+
+			} else if (cardName.equals(Const.TAG_WEATHER)) {
+				Log.i("fragment", "设置天气卡片布局2");
+				removeFragment(Const.TAG_WEATHER);
+				transaction = fragmentManager.beginTransaction();
+				FragmentWeather fragmentWeather = new FragmentWeather();
+				fragmentWeather.setOnCardMenuListener(onCardMenuListener);
+				transaction.add(R.id.ll_cards, fragmentWeather,
+						Const.TAG_WEATHER);
+				transaction.commit();
+				cards.put(Const.TAG_WEATHER, fragmentWeather);
+
+			} else if (cardName.equals(Const.TAG_NEWS)) {
+				Log.i("fragment", "设置新闻卡片布局2");
+				removeFragment(Const.TAG_NEWS);
+				transaction = fragmentManager.beginTransaction();
+				FragmentHotNews fragmentHotNews = new FragmentHotNews();
+				fragmentHotNews.setOnCardMenuListener(onCardMenuListener);
+				transaction.add(R.id.ll_cards, fragmentHotNews, Const.TAG_NEWS);
+				transaction.commit();
+				cards.put(Const.TAG_NEWS, fragmentHotNews);
 			}
+		}
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -223,7 +227,8 @@ public class FragmentHome extends Fragment {
 	// 跳转到地图界面
 	private void goCarMap(boolean b) {
 		int index = 0;
-		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards.get(Const.TAG_CAR);
+		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards
+				.get(Const.TAG_CAR);
 		if (fragmentCarInfo != null) {
 			fragmentCarInfo.getIndex();
 		}
@@ -248,20 +253,20 @@ public class FragmentHome extends Fragment {
 		}
 
 	}
-	
+
 	public void removeAllFragment() {
-		
+
 		Iterator<String> keys = cards.keySet().iterator();
-		while(keys.hasNext()){
+		while (keys.hasNext()) {
 			removeFragment(keys.next());
 		}
-		
-		
+
 	}
 
 	/** 刷新车辆卡片 **/
 	public void refreshCarInfo() {
-		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards.get(Const.TAG_CAR);
+		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards
+				.get(Const.TAG_CAR);
 		if (fragmentCarInfo != null) {
 			fragmentCarInfo.initDataView();
 		}
@@ -275,7 +280,8 @@ public class FragmentHome extends Fragment {
 		clearCounter();
 		// 通知车辆信息卡片退出登录
 
-		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards.get(Const.TAG_CAR);
+		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards
+				.get(Const.TAG_CAR);
 		if (fragmentCarInfo != null) {
 			fragmentCarInfo.setLoginView();
 		}
@@ -315,18 +321,17 @@ public class FragmentHome extends Fragment {
 
 		Log.i("fragment", "onResume");
 		super.onResume();
-		if(isLoaded == false){
-			
+		if (isLoaded == false) {
+
 		}
 		setNotiView();
-		
+
 		MobclickAgent.onResume(getActivity());
-		if(isChange){
+		if (isChange) {
 			removeAllFragment();
 			getCards();
 		}
-		
-		
+
 	}
 
 	@Override
@@ -377,7 +382,6 @@ public class FragmentHome extends Fragment {
 		@Override
 		public void showCarMenu(final String CardName) {
 
-			
 			// 弹出卡片菜单
 			LayoutInflater mLayoutInflater = LayoutInflater.from(getActivity());
 			View popunwindwow = mLayoutInflater.inflate(R.layout.pop_card_menu,
@@ -428,8 +432,8 @@ public class FragmentHome extends Fragment {
 	private void setCardsInSharedPreferences() {
 		Iterator<String> keys = cards.keySet().iterator();
 		String cardNames[] = cards.keySet().toArray(new String[0]);
-		for(int i = 0;i<cardNames.length;i++){
-			Log.i("fragment", "保存 " + i+" "+ cardNames[i]);
+		for (int i = 0; i < cardNames.length; i++) {
+			Log.i("fragment", "保存 " + i + " " + cardNames[i]);
 		}
 		cardsSharePreferences.put(cardNames);
 	}

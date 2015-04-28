@@ -158,8 +158,8 @@ public class Constant {
 	//卡片管理
 
 	public static int[] picture = { R.drawable.icon_dianyuan_normal,R.drawable.icon_dianyuan_normal,
-			R.drawable.icon_jinqi_normal };
-	public static String[] title = { "服务商","天气", "新闻" };
-	public static String[] content = { "服务商","今天天气概况", "最新新闻更新和内容" };
+			R.drawable.icon_jinqi_normal , R.drawable.icon_dianyuan_normal, R.drawable.icon_dianyuan_normal,R.drawable.icon_dianyuan_normal};
+	public static String[] title = { "服务商","车辆信息","obd","快速导航","天气", "新闻" };
+	public static String[] content = { "服务商","查看体检信息，驾驶指数","获取终端obd信息","导航到其他常用操作","今天天气概况", "最新新闻更新和内容" };
 	//public static String[] cards = { "service","weather", "hotNews" };
 }

@@ -5,6 +5,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import listener.OnCardMenuListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,6 +48,7 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.google.gson.Gson;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Const;
 import com.wise.baba.biz.HttpCarInfo;
 import com.wise.baba.entity.CarView;
 import com.wise.baba.ui.widget.DialView;
@@ -98,6 +101,9 @@ public class FragmentCarInfo extends Fragment {
 	
 	private final int Stealth_Mode_True= 1,Stealth_Mode_False = 0;//是否隐身 1：隐身  0：不隐身
 	private HttpCarInfo http;
+	
+	private OnCardMenuListener onCardMenuListener;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_car_info, container, false);
@@ -191,6 +197,13 @@ public class FragmentCarInfo extends Fragment {
 				}).start();
 		
 	}
+	
+
+	public void setOnCardMenuListener(OnCardMenuListener onCardMenuListener) {
+		this.onCardMenuListener = onCardMenuListener;
+	}
+	
+	
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -267,6 +280,12 @@ public class FragmentCarInfo extends Fragment {
 				}
 				
 				break;	
+				
+			case R.id.iv_drive_menu:
+				if (onCardMenuListener != null) {
+					onCardMenuListener.showCarMenu(Const.TAG_CAR);
+				}
+				break;
 				
 			}
 		}
@@ -427,6 +446,10 @@ public class FragmentCarInfo extends Fragment {
 			ImageView imgSwitch = (ImageView) v.findViewById(R.id.imgStealth);
 			imgSwitch.setOnClickListener(onClickListener);
 			
+			
+			ImageView ivDriveMenu = (ImageView) getActivity().findViewById(
+					R.id.iv_drive_menu);
+			ivDriveMenu.setOnClickListener(onClickListener);
 			
 			ImageView iv_update_oil = (ImageView) v.findViewById(R.id.iv_update_oil);
 			iv_update_oil.setOnClickListener(onClickListener);
