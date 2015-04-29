@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
@@ -32,6 +33,7 @@ import com.wise.state.FuelActivity;
 import com.wise.state.FuelDetailsActivity;
 import com.wise.violation.TrafficActivity;
 
+import data.CarData;
 
 /**
  * 
@@ -44,7 +46,8 @@ public class FragmentHomeNavigation extends Fragment implements
 	private ImageView imgDown;// 下拉箭头
 	private CustomGridView gridNav = null;// 导航信息
 	private View view;
-	AppApplication app ;
+	AppApplication app;
+
 	/**
 	 * 
 	 * 导航信息GridView适配器
@@ -100,23 +103,39 @@ public class FragmentHomeNavigation extends Fragment implements
 		gridNav.setAdapter(simpleAdapter);
 		simpleAdapter.notifyDataSetChanged();
 		gridNav.setOnItemClickListener(this);
-		app = (AppApplication) getActivity()
-				.getApplication();
+		app = (AppApplication) getActivity().getApplication();
 		return view;
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
+		
+
 		Class toActivity = null;
 
 		switch (position) {
 		case 0:// 位置监控
-			toActivity = CarLocationActivity.class;
-			break;
+			if (Judge.isLogin(app) == false) {
+				Intent intentLogin = new Intent(getActivity(), LoginActivity.class);
+				startActivity(intentLogin);
+				return;
+			}
+			Intent intentLocation = new Intent(getActivity(), CarLocationActivity.class);
+			intentLocation.putExtra("isHotLocation", true);
+			startActivity(intentLocation);
+			return;
 		case 1:// 车辆行程
-			toActivity = TravelActivity.class;
-			break;
+			Intent intentTravel = new Intent(getActivity(), TravelActivity.class);
+			CarData carData = app.carDatas.get(app.currentCarIndex);
+			intentTravel.putExtra("device_id",carData.getDevice_id());
+			String Gas_no = "93#(92#)";
+			if (carData.getGas_no() != null) {
+				Gas_no = carData.getGas_no();
+			}
+			intentTravel.putExtra("Gas_no", Gas_no);
+			startActivity(intentTravel);
+			return;
 		case 2:// 车辆体检
 			toActivity = FaultDetectionActivity.class;
 			break;
@@ -143,17 +162,18 @@ public class FragmentHomeNavigation extends Fragment implements
 			toActivity = FuelDetailsActivity.class;
 			break;
 		case 7:// 车务提醒
-			
-			if(Judge.isLogin(app)){
-				startActivity(new Intent(getActivity(), RemindListActivity.class));
-			}else{
+
+			if (Judge.isLogin(app)) {
+				startActivity(new Intent(getActivity(),
+						RemindListActivity.class));
+			} else {
 				Intent intent = new Intent(getActivity(), LoginActivity.class);
 				intent.putExtra("ActivityState", 4);
 				startActivity(intent);
 			}
 			return;
 		case 8:// 违章查询
-			
+
 			if (Judge.isLogin(app)) {
 				app.vio_count = 0;
 				Intent intent = new Intent(getActivity(), TrafficActivity.class);

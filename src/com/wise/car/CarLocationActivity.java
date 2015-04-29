@@ -128,7 +128,7 @@ public class CarLocationActivity extends Activity {
 		iv_traffic = (ImageView) findViewById(R.id.iv_traffic);
 		iv_traffic.setOnClickListener(onClickListener);
 		TextView tv_car_name = (TextView) findViewById(R.id.tv_car_name);
-		index = getIntent().getIntExtra("index", 0);
+		index = app.currentCarIndex;
 		isHotLocation = getIntent().getBooleanExtra("isHotLocation", false);
 		if (app.carDatas == null || index >= app.carDatas.size()) {
 
