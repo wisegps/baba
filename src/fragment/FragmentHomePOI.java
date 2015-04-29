@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Const;
 import com.wise.baba.db.SharePOI;
 import com.wise.baba.ui.widget.CustomGridView;
 import com.wise.car.AddressActivity;
@@ -36,7 +37,7 @@ import com.wise.car.SearchMapActivity;
  */
 public class FragmentHomePOI extends Fragment implements OnItemClickListener,android.view.View.OnClickListener{
 	
-	private ImageView imgDown;// 下拉箭头
+	private ImageView iv_poi_menu;// 下拉箭头
 	private AutoCompleteTextView autoTextSearch;// 搜索框
 	private CustomGridView gridPOI = null;// 周边信息
 	private View view;
@@ -85,11 +86,11 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 			}
 		}
 		
-		imgDown = (ImageView) view.findViewById(R.id.imgDown);
+		iv_poi_menu = (ImageView) view.findViewById(R.id.iv_poi_menu);
 		autoTextSearch = (AutoCompleteTextView) view
 				.findViewById(R.id.autoTextSearch);
 		autoTextSearch.setOnClickListener(this);
-		imgDown.setOnClickListener(this);
+		iv_poi_menu.setOnClickListener(this);
 		gridPOI = (CustomGridView) view.findViewById(R.id.gridPOI);
 		gridPOI.setSelector(new ColorDrawable(Color.TRANSPARENT));//取消GridView中Item选中时默认的背景色  
 		SimpleAdapter simpleAdapter = getAdapter();
@@ -150,9 +151,9 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,and
 			//intent.putExtra("POI_FLAG", "autoTextSearch");
 			startActivity(intent);
 			break;
-		case R.id.imgDown:
+		case R.id.iv_poi_menu:
 			if(onCardMenuListener != null){
-				onCardMenuListener.showCarMenu("weather");
+				onCardMenuListener.showCarMenu(Const.TAG_POI);
 			}
 			break;
 		}

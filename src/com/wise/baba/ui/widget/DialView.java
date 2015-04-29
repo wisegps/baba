@@ -243,7 +243,10 @@ public class DialView extends FrameLayout {
 	public void freeMemory() {
 		//BitmapUtil.recycleBitmap(imgColor);
 		//BitmapUtil.recycleBitmap(imgCusor);
-		imgColor.setImageBitmap(null);
+		if(imgColor!=null){
+			BitmapUtil.recycleBitmap(imgColor);
+		}
+		//imgColor.setImageBitmap(null);
 		//imgCusor.setImageBitmap(null);
 		//imgCover.setImageBitmap(null);
 		//bitmapFactory = null;

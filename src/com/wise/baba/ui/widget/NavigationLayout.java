@@ -101,6 +101,14 @@ public class NavigationLayout extends LinearLayout implements OnClickListener {
 		}
 
 	}
+	
+	public void performTabClick(int index){
+		this.index = index;
+		initView();
+		if (onTabChangedListener != null) {
+			this.onTabChangedListener.onTabClick(index);
+		}
+	}
 
 	public void setOnTabChangedListener(
 			OnTabChangedListener onTabChangedListener) {

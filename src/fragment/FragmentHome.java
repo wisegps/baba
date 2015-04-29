@@ -135,6 +135,7 @@ public class FragmentHome extends Fragment {
 				removeFragment(Const.TAG_POI);
 				transaction = fragmentManager.beginTransaction();
 				FragmentHomePOI fragmetnHomePOI = new FragmentHomePOI();
+				fragmetnHomePOI.setOnCardMenuListener(onCardMenuListener);
 				transaction.add(R.id.ll_cards, fragmetnHomePOI, Const.TAG_POI);
 				transaction.commit();
 				cards.put(Const.TAG_POI, fragmetnHomePOI);
@@ -395,29 +396,32 @@ public class FragmentHome extends Fragment {
 					Log.i("fragment", "置顶 " + CardName);
 					
 					//建立一个新数组
-					Map    newCards = new LinkedHashMap<String, Fragment>();
-					Iterator<String> keys = cards.keySet().iterator();
-					String cardNames[] = cards.keySet().toArray(new String[0]);
-					newCards.put(CardName, cards.get(CardName));
-					for (int i = 0; i < cardNames.length; i++) {
-						if(!cardNames[i].equals(CardName)){
-							newCards.put(cardNames[i], cards.get(cardNames[i]));
-						}
-					}
-					
-					
-					cards = newCards;
+//					Map    newCards = new LinkedHashMap<String, Fragment>();
+//					Iterator<String> keys = cards.keySet().iterator();
+//					String cardNames[] = cards.keySet().toArray(new String[0]);
+//					newCards.put(CardName, cards.get(CardName));
+//					for (int i = 0; i < cardNames.length; i++) {
+//						if(!cardNames[i].equals(CardName)){
+//							newCards.put(cardNames[i], cards.get(cardNames[i]));
+//						}
+//					}
+//					
+//					
+//					cards = newCards;
+//					removeAllFragment();
+//					
 //					
 //					keys = cards.keySet().iterator();
 //					cardNames = cards.keySet().toArray(new String[0]);
 //					for (int i = 0; i < cardNames.length; i++) {
-//						transaction.add(R.id.ll_cards, cards.get(cards.get(cardNames[i])),
-//								cardNames[i]);
+//						transaction = fragmentManager.beginTransaction();
+//						transaction.add(R.id.ll_cards, cards.get(cardNames[i]),
+//								cardNames[i]).commit();
 //					}
-					
-					setCardsInSharedPreferences();
+//					
+					setCardsInSharedPreferences(CardName);
 					getCards();
-					
+					System.gc();
 					new Handler().post(new Runnable(){
 
 						@Override
@@ -474,6 +478,22 @@ public class FragmentHome extends Fragment {
 			Log.i("fragment", "保存 " + i + " " + cardNames[i]);
 		}
 		cardsSharePreferences.put(cardNames);
+	}
+	
+	/**置顶后保存最新的数据在本地 **/
+	private void setCardsInSharedPreferences(String topCardName) {
+		Iterator<String> keys = cards.keySet().iterator();
+		String cardNames[] = cards.keySet().toArray(new String[0]);
+		cardsSharePreferences.clear();
+		cardsSharePreferences.put(topCardName);
+		for (int i = 0; i < cardNames.length; i++) {
+			if(!cardNames[i].equals(topCardName)){
+				cardsSharePreferences.put(cardNames[i]);
+				Log.i("fragment", "保存 " + i + " " + cardNames[i]);
+			}
+			
+		}
+		
 	}
 
 }

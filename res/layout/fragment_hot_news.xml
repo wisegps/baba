@@ -98,11 +98,13 @@
         style="@style/home_news_title_style"
         android:text="新闻三" />
 
+  
     <View style="@style/home_news_line_style" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         android:layout_marginBottom="12dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
@@ -111,11 +113,14 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ico_news_more" />
+            android:src="@drawable/ico_news_more"
+            android:visibility="gone"
+             />
 
         <TextView
             android:id="@+id/tv_news_more"
             style="@style/home_news_title_style"
+            android:visibility="gone"
             android:layout_marginLeft="5dp"
             android:text="更多本地车讯"
             android:textColor="#70b3ce" />

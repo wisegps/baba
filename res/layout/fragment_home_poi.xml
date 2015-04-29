@@ -26,8 +26,7 @@
             android:src="@drawable/ico_car" />
 
         <ImageView
-            android:id="@+id/imgDown"
-            android:visibility="gone"
+            android:id="@+id/iv_poi_menu"
             style="@style/home_card_img_down_style"
             />
     </RelativeLayout>

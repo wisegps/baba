@@ -164,5 +164,7 @@ public class DialBitmapFactory {
 		float angleDial = (angelAll / 100) * (100-value);
 		return angleDial;
 	}
+	
+	
 
 }

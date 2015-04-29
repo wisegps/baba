@@ -22,6 +22,7 @@ import com.wise.baba.app.Msg;
 import com.wise.baba.biz.HttpServiceProvider;
 import com.wise.baba.ui.adapter.GridShopAdapter;
 import com.wise.baba.ui.widget.CustomGridView;
+import com.wise.baba.ui.widget.NavigationLayout;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -96,7 +97,8 @@ public class FragmentService extends Fragment implements OnItemClickListener, Ca
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		
+		NavigationLayout navigationLayout = (NavigationLayout) this.getActivity().findViewById(R.id.navigationLayout);
+		navigationLayout.performTabClick(2);
 	}
 	/* (non-Javadoc)
 	 * @see android.os.Handler.Callback#handleMessage(android.os.Message)
