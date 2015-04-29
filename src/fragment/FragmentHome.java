@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.umeng.analytics.MobclickAgent;
@@ -186,17 +187,14 @@ public class FragmentHome extends Fragment {
 				transaction.commit();
 				cards.put(Const.TAG_SERVICE, fragmentService);
 			} else if (cardName.equals(Const.TAG_NAV)) {
-
 				Log.i("fragment", "设置导航卡片布局");
 				removeFragment(Const.TAG_NAV);
 				transaction = fragmentManager.beginTransaction();
 				FragmentHomeNavigation fragmenNavigation = new FragmentHomeNavigation();
 				fragmenNavigation.setOnCardMenuListener(onCardMenuListener);
-				transaction
-						.add(R.id.ll_cards, fragmenNavigation, Const.TAG_NAV);
+				transaction.add(R.id.ll_cards, fragmenNavigation, Const.TAG_NAV);
 				transaction.commit();
 				cards.put(Const.TAG_NAV, fragmenNavigation);
-
 			} 
 		}
 	}
@@ -389,11 +387,48 @@ public class FragmentHome extends Fragment {
 			LayoutInflater mLayoutInflater = LayoutInflater.from(getActivity());
 			View popunwindwow = mLayoutInflater.inflate(R.layout.pop_card_menu,
 					null);
-			TextView text_card_share = (TextView) popunwindwow
-					.findViewById(R.id.text_card_share);
-			text_card_share.setOnClickListener(new OnClickListener() {
+			TextView text_card_top = (TextView) popunwindwow
+					.findViewById(R.id.text_card_top);
+			text_card_top.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					Log.i("fragment", "置顶 " + CardName);
+					
+					//建立一个新数组
+					Map    newCards = new LinkedHashMap<String, Fragment>();
+					Iterator<String> keys = cards.keySet().iterator();
+					String cardNames[] = cards.keySet().toArray(new String[0]);
+					newCards.put(CardName, cards.get(CardName));
+					for (int i = 0; i < cardNames.length; i++) {
+						if(!cardNames[i].equals(CardName)){
+							newCards.put(cardNames[i], cards.get(cardNames[i]));
+						}
+					}
+					
+					
+					cards = newCards;
+//					
+//					keys = cards.keySet().iterator();
+//					cardNames = cards.keySet().toArray(new String[0]);
+//					for (int i = 0; i < cardNames.length; i++) {
+//						transaction.add(R.id.ll_cards, cards.get(cards.get(cardNames[i])),
+//								cardNames[i]);
+//					}
+					
+					setCardsInSharedPreferences();
+					getCards();
+					
+					new Handler().post(new Runnable(){
+
+						@Override
+						public void run() {
+							ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView);
+							scrollView.smoothScrollTo(0, 0);
+						}
+						
+					});
+					
+					
 					mPopupWindow.dismiss();
 				}
 			});

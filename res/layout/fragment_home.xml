@@ -85,6 +85,7 @@
             android:background="@color/cards_bg" >
 
             <ScrollView
+                android:id="@+id/scrollView"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:scrollbars="none" >
