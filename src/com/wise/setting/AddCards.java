@@ -23,6 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
@@ -32,6 +33,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -241,14 +243,27 @@ public class AddCards extends Activity {
 			// if (convertView == null) {
 			mHolder = new Holder();
 			convertView = (LayoutInflater.from(AddCards.this)).inflate(
-					R.layout.item_info_add, null);
+					R.layout.item_info_delete, null);
 			mHolder.info_icon = (ImageView) convertView
 					.findViewById(R.id.info_icon);
 			mHolder.tv_info_title = (TextView) convertView
 					.findViewById(R.id.tv_info_title);
 			mHolder.tv_info_content = (TextView) convertView
 					.findViewById(R.id.tv_info_content);
+			
+			final LinearLayout llytLeft = (LinearLayout) convertView.findViewById(R.id.llytLeft);
 			mHolder.item_add = (TextView) convertView.findViewById(R.id.item_add);
+			
+			//
+			int llytLeftWidth = View.MeasureSpec.makeMeasureSpec(0,
+	                View.MeasureSpec.UNSPECIFIED);
+	        int llytLeftHeight = View.MeasureSpec.makeMeasureSpec(0,
+	                View.MeasureSpec.UNSPECIFIED);
+	        llytLeft.measure(llytLeftWidth, llytLeftHeight);
+	        
+	        int mLlytLeftHeight = llytLeft.getMeasuredHeight();
+	        
+	        mHolder.item_add.setHeight(mLlytLeftHeight);
 			convertView.setTag(mHolder);
 			// } else {
 			// mHolder = (Holder) convertView.getTag();

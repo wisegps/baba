@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,8 +34,8 @@ public class ChooseCard extends Activity {
 	// JSONArray cardsJson = new JSONArray();
 
 	public static final int CARDCODE = 1;
-	private String[] cards = { Const.TAG_POI,Const.TAG_CAR,Const.TAG_SPEED,
-			 Const.TAG_NEWS ,Const.TAG_WEATHER,Const.TAG_SERVICE,Const.TAG_NAV};
+	private String[] cards = { Const.TAG_POI, Const.TAG_CAR, Const.TAG_SPEED,
+			Const.TAG_NEWS, Const.TAG_WEATHER, Const.TAG_SERVICE, Const.TAG_NAV };
 	private ShareCards cardsSharePreferences;
 	private String[] sharedCards = null;
 
@@ -43,24 +45,48 @@ public class ChooseCard extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_choose_info_card);
 
-		for (int i = 0; i < cards.length; i++) {
-			CardsData inItem = new CardsData();
-			inItem.setIcon(Constant.picture[i]);
-			inItem.setTitle(Constant.title[i]);
-			inItem.setContent(Constant.content[i]);
-			inItem.setCardName(cards[i]);
-			list.add(inItem);
-		}
-
 		cardsSharePreferences = new ShareCards(this);
 		sharedCards = cardsSharePreferences.get();
+
+		
+		if (sharedCards != null && sharedCards.length > 0) {
+			for (int j = 0; j < cards.length; j++) {
+				
+				boolean have = false;
+				for (int i = 0; i < sharedCards.length; i++) {
+					if (sharedCards[i].equals(cards[j])) {
+						have = true;
+						break;
+					}
+				}
+				
+				if(have==false){
+					CardsData inItem = new CardsData();
+					inItem.setIcon(Constant.picture[j]);
+					inItem.setTitle(Constant.title[j]);
+					inItem.setContent(Constant.content[j]);
+					inItem.setCardName(cards[j]);
+					list.add(inItem);
+				}
+			}
+		}
+
 		// SharedPreferences sharedPreferences = getSharedPreferences(
 		// "card_choose", Activity.MODE_PRIVATE);
 		// cardsString = sharedPreferences.getString("cardsJson", "");
 		card_choose = (ListView) findViewById(R.id.card_choose);
 		CardAdapter cardAdapter = new CardAdapter();
 		card_choose.setAdapter(cardAdapter);
+		card_choose.setOnItemClickListener(new OnItemClickListener() {
 
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				String cardName = list.get(position).getCardName();
+				cardsSharePreferences.put(cardName);
+				ChooseCard.this.finish();
+			}
+		});
 		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -114,7 +140,7 @@ public class ChooseCard extends Activity {
 		}
 
 		@Override
-		public View getView(final int position, View convertView, ViewGroup arg2) {
+		public View getView(int position, View convertView, ViewGroup arg2) {
 			final Holder mHolder;
 			if (convertView == null) {
 				mHolder = new Holder();
@@ -135,23 +161,21 @@ public class ChooseCard extends Activity {
 			mHolder.info_icon.setImageResource(list.get(position).getIcon());
 			mHolder.tv_info_title.setText(list.get(position).getTitle());
 			mHolder.tv_info_content.setText(list.get(position).getContent());
-			if (sharedCards != null) {
-				for (int i = 0; i < sharedCards.length; i++) {
-					if (list.get(position).getCardName().equals(sharedCards[i])) {
-						mHolder.item_add.setText("已添加");
-						mHolder.item_add.setEnabled(false);
-						break;
-					}
-				}
-			}
+			// if (sharedCards != null) {
+			// for (int i = 0; i < sharedCards.length; i++) {
+			// if (list.get(position).getCardName().equals(sharedCards[i])) {
+			// return null;
+			// }
+			// }
+			// }
 
 			mHolder.item_add.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					String cardName = list.get(position).getCardName();
-					cardsSharePreferences.put(cardName);
-					mHolder.item_add.setText("已添加");
-					mHolder.item_add.setEnabled(false);
+					
+					
+					// mHolder.item_add.setText("已添加");
+					// mHolder.item_add.setEnabled(false);
 				}
 			});
 			return convertView;

@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_white"
-    android:orientation="horizontal" >
+    android:background="@drawable/bg_white" >
+
+    <TextView
+        android:id="@+id/item_add"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_vertical|right"
+        android:background="#ff3a30"
+        android:gravity="center"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="添加"
+        android:textColor="@color/white"
+        android:textSize="@dimen/content" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/llytLeft"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="horizontal"
@@ -47,16 +60,4 @@
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/item_add"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:paddingLeft="20dp"
-         android:paddingRight="20dp"
-         android:textColor="@color/white"
-         android:drawableRight="@drawable/btn_right"
-        android:text=" "
-        android:textSize="@dimen/content" />
-
-</LinearLayout>
+</FrameLayout>
