@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:animateLayoutChanges="true"
     android:background="@drawable/bg_white" >
 
-    <TextView
-        android:id="@+id/item_add"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_vertical|right"
-        android:background="#ff3a30"
-        android:gravity="center"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:text="添加"
-        android:textColor="@color/white"
-        android:textSize="@dimen/content" />
-
+  
     <LinearLayout
         android:id="@+id/llytLeft"
         android:layout_width="match_parent"
@@ -58,6 +48,30 @@
                 android:textColor="@color/content_gray"
                 android:textSize="13sp" />
         </LinearLayout>
+        
+          <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ico_card_delete" />
     </LinearLayout>
-
-</FrameLayout>
+    
+  <TextView
+        android:id="@+id/item_add"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_vertical|right"
+        android:background="#ff3a30"
+        android:gravity="center"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:visibility="visible"
+        android:text="删除"
+        android:textColor="@color/white"
+        android:textSize="@dimen/content" />
+    
+</LinearLayout>

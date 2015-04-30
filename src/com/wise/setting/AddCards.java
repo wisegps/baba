@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -239,7 +240,7 @@ public class AddCards extends Activity {
 
 		@Override
 		public View getView(final int position, View convertView, ViewGroup arg2) {
-			Holder mHolder;
+			final Holder mHolder;
 			// if (convertView == null) {
 			mHolder = new Holder();
 			convertView = (LayoutInflater.from(AddCards.this)).inflate(
@@ -250,11 +251,13 @@ public class AddCards extends Activity {
 					.findViewById(R.id.tv_info_title);
 			mHolder.tv_info_content = (TextView) convertView
 					.findViewById(R.id.tv_info_content);
+			mHolder.iv_delete = (ImageView) convertView
+					.findViewById(R.id.iv_delete);
 			
-			final LinearLayout llytLeft = (LinearLayout) convertView.findViewById(R.id.llytLeft);
+			
+			LinearLayout llytLeft = (LinearLayout) convertView.findViewById(R.id.llytLeft);
 			mHolder.item_add = (TextView) convertView.findViewById(R.id.item_add);
 			
-			//
 			int llytLeftWidth = View.MeasureSpec.makeMeasureSpec(0,
 	                View.MeasureSpec.UNSPECIFIED);
 	        int llytLeftHeight = View.MeasureSpec.makeMeasureSpec(0,
@@ -265,9 +268,57 @@ public class AddCards extends Activity {
 	        
 	        mHolder.item_add.setHeight(mLlytLeftHeight);
 			convertView.setTag(mHolder);
-			// } else {
-			// mHolder = (Holder) convertView.getTag();
-			// }
+
+
+			
+//			mHolder.iv_delete.setOnTouchListener(new OnTouchListener() {
+//				
+//				@Override
+//				public boolean onTouch(View v, MotionEvent event) {
+//					int e = event.getAction();
+//					
+//					switch(e){
+//					case MotionEvent.ACTION_UP:
+//						if(mHolder.item_add.getVisibility() == View.GONE){
+//							mHolder.item_add.setVisibility(View.VISIBLE);
+//						}else{
+//							mHolder.item_add.setVisibility(View.GONE);
+//						}
+//						
+//						break;
+//					
+//					}
+//					
+//					return true;
+//				}
+//			});
+//			mHolder.iv_delete.setOnClickListener(new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(View v) {
+//					mHolder.iv_delete.setEnabled(false);
+//					if(mHolder.item_add.getVisibility() == View.GONE){
+//						mHolder.item_add.setEnabled(false);
+//						mHolder.item_add.setVisibility(View.VISIBLE);
+//					}else{
+//						mHolder.item_add.setVisibility(View.GONE);
+//					}
+//					
+//					
+//					new Handler().postDelayed(new Runnable(){
+//
+//						@Override
+//						public void run() {
+//							mHolder.iv_delete.setEnabled(true);
+//							mHolder.item_add.setEnabled(true);
+//						}
+//						
+//					}, 20);
+//					
+//					
+//				}
+//			});
+			
 			mHolder.info_icon.setImageResource(list.get(position).getIcon());
 			mHolder.tv_info_title.setText(list.get(position).getTitle());
 			mHolder.tv_info_content.setText(list.get(position).getContent());
@@ -290,9 +341,10 @@ public class AddCards extends Activity {
 		}
 
 		class Holder {
-			ImageView info_icon;
+			ImageView info_icon,iv_delete;
 			TextView tv_info_title, tv_info_content;
 			TextView item_add;
+			
 		}
 	}
 }
