@@ -10,20 +10,30 @@ import org.json.JSONObject;
 import pubclas.Constant;
 
 import xlist.DragListView;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Transformation;
+import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
@@ -39,6 +49,7 @@ public class AddCards extends Activity {
 	private String[] cards = { Const.TAG_POI,Const.TAG_CAR,Const.TAG_SPEED,
 			 Const.TAG_NEWS ,Const.TAG_WEATHER,Const.TAG_SERVICE,Const.TAG_NAV};
 	private ShareCards cardsSharePreferences;
+	private boolean isResume = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +84,62 @@ public class AddCards extends Activity {
 				finish();
 			}
 		});
+		
+		
+		
+	}
+	
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		showTip();
+	}
+
+
+	/**
+	 * 显示提示
+	 */
+	public void showTip(){
+		
+		if(isResume == false){
+			
+			return;
+		}
+	
+		
+		new Handler().postDelayed(new Runnable(){
+			@Override
+			public void run() {
+				int childCount = 0;
+				childCount = infoListView.getChildCount();
+				if(childCount<1){
+					return;
+				}
+				View view = infoListView.getChildAt(childCount-1);
+				TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 0,-view.getMeasuredHeight());
+				translateAnimation.setDuration(700);
+				translateAnimation.setRepeatMode(Animation.REVERSE);
+				view.setAnimation(translateAnimation); 
+				if(childCount<2){
+					return;
+				}
+				View view1 = infoListView.getChildAt(childCount-2);
+				TranslateAnimation translateAnimation1 = new TranslateAnimation(0, 0, 0,view1.getMeasuredHeight());
+				translateAnimation1.setDuration(700);
+				translateAnimation1.setRepeatMode(Animation.REVERSE);
+				view1.setAnimation(translateAnimation1); 
+				translateAnimation.start();
+				translateAnimation1.start();
+				isResume = false;
+				
+				
+				Toast.makeText(AddCards.this, "上下拖动可以调整卡片顺序哦!", Toast.LENGTH_SHORT).show();
+			}
+			
+		}, 200);
+		
 	}
 
 	public void setCardsDataList() {
@@ -100,6 +167,7 @@ public class AddCards extends Activity {
 	private DragListView.DragListener mDrapListener = new DragListView.DragListener() {
 		@Override
 		public void drag(int from, int to, int i) {
+			
 			adapter.index = i;
 			CardsData item = new CardsData();
 			item = list.get(from);
@@ -180,7 +248,7 @@ public class AddCards extends Activity {
 					.findViewById(R.id.tv_info_title);
 			mHolder.tv_info_content = (TextView) convertView
 					.findViewById(R.id.tv_info_content);
-			mHolder.item_add = (Button) convertView.findViewById(R.id.item_add);
+			mHolder.item_add = (TextView) convertView.findViewById(R.id.item_add);
 			convertView.setTag(mHolder);
 			// } else {
 			// mHolder = (Holder) convertView.getTag();
@@ -209,7 +277,7 @@ public class AddCards extends Activity {
 		class Holder {
 			ImageView info_icon;
 			TextView tv_info_title, tv_info_content;
-			Button item_add;
+			TextView item_add;
 		}
 	}
 }

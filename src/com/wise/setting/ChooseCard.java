@@ -126,7 +126,7 @@ public class ChooseCard extends Activity {
 						.findViewById(R.id.tv_info_title);
 				mHolder.tv_info_content = (TextView) convertView
 						.findViewById(R.id.tv_info_content);
-				mHolder.item_add = (Button) convertView
+				mHolder.item_add = (TextView) convertView
 						.findViewById(R.id.item_add);
 				convertView.setTag(mHolder);
 			} else {
@@ -160,7 +160,7 @@ public class ChooseCard extends Activity {
 		class Holder {
 			ImageView info_icon;
 			TextView tv_info_title, tv_info_content;
-			Button item_add;
+			TextView item_add;
 		}
 	}
 }

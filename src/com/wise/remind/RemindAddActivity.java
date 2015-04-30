@@ -67,7 +67,8 @@ public class RemindAddActivity extends Activity {
 		setContentView(R.layout.activity_car_remind_add);
 		app = (AppApplication) getApplication();
 		cust_id = getIntent().getStringExtra("cust_id");
-        carDatas = (List<CarData>) getIntent().getSerializableExtra("carDatas");
+        carDatas = app.carDatas;
+        //(List<CarData>) getIntent().getSerializableExtra("carDatas");
 		ll_car = (LinearLayout) findViewById(R.id.ll_car);
 		ll_mileage = (LinearLayout) findViewById(R.id.ll_mileage);
 		ll_content = (LinearLayout) findViewById(R.id.ll_content);
