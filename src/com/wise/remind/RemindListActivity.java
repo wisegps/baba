@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,8 +57,8 @@ public class RemindListActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_car_remind);
         app = (AppApplication)getApplication();
-        cust_id = getIntent().getStringExtra("cust_id");
-        carDatas = (List<CarData>) getIntent().getSerializableExtra("carDatas");
+        cust_id = app.cust_id;
+        carDatas = app.carDatas;
         rl_Note = (RelativeLayout)findViewById(R.id.rl_Note);
         ll_frist = (LinearLayout)findViewById(R.id.ll_frist);
         ll_frist.setOnClickListener(onClickListener);
@@ -78,6 +79,7 @@ public class RemindListActivity extends Activity {
     private void getData(){
     	String url = Constant.BaseUrl + "customer/" + cust_id + "/reminder?auth_code=" + app.auth_code;
     	new Thread(new NetThread.GetDataThread(handler, url, get_remind)).start();
+    	Log.i("RemindListActivity", url);
     }
 
     Handler handler = new Handler() {
@@ -150,6 +152,8 @@ public class RemindListActivity extends Activity {
 	};
     private void jsonRemind(String str){
     	try {
+    		
+    		Log.i("RemindListActivity", str);
     		remindDatas.clear();
 			JSONArray jsonArray = new JSONArray(str);
 			for(int i = 0 ; i < jsonArray.length() ; i++){
