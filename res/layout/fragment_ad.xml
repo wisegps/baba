@@ -4,11 +4,10 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
-    <customView.HScrollLayout
+    <com.wise.baba.ui.widget.HScrollLayout
         android:id="@+id/hs_photo"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
-    </customView.HScrollLayout>
+        android:layout_height="fill_parent" />
 
     <LinearLayout
         android:layout_width="fill_parent"

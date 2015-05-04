@@ -3,11 +3,11 @@ package com.wise.baba.ui.widget;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import pubclas.DensityUtil;
 
 import com.wise.baba.R;
 import com.wise.baba.app.Msg;
 import com.wise.baba.util.BitmapUtil;
+import com.wise.baba.util.DensityUtil;
 import com.wise.baba.util.DialBitmapFactory;
 
 import android.content.Context;

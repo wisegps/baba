@@ -4,11 +4,10 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
-    <customView.NoticeScrollTextView
+    <com.wise.baba.ui.widget.NoticeScrollTextView
         android:id="@+id/nstv_message"
         android:layout_width="fill_parent"
         android:layout_height="35dp"
-        android:visibility="gone" >
-    </customView.NoticeScrollTextView>
+        android:visibility="gone"/>
 
 </RelativeLayout>

@@ -2,10 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/home_card_style" >
 
-    <customView.HScrollLayout
+    <com.wise.baba.ui.widget.HScrollLayout
         android:id="@+id/hs_car"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
-    </customView.HScrollLayout>
+        android:layout_height="fill_parent"/>
 
 </LinearLayout>

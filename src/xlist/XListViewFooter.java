@@ -1,7 +1,8 @@
 package xlist;
 
 import com.wise.baba.R;
-import customView.WaitLinearLayout;
+import com.wise.baba.ui.widget.WaitLinearLayout;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;

@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import pubclas.Constant;
 
 import xlist.DragListView;
 import android.annotation.SuppressLint;
@@ -40,10 +39,11 @@ import android.widget.Toast;
 
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
+import com.wise.baba.app.Constant;
 import com.wise.baba.db.ShareCards;
+import com.wise.baba.entity.CardsData;
+import com.wise.baba.ui.fragment.FragmentHome;
 
-import data.CardsData;
-import fragment.FragmentHome;
 
 public class AddCards extends Activity {
 	DragListView infoListView;

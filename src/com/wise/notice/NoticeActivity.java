@@ -13,9 +13,9 @@ import android.view.Window;
 import cn.jpush.android.api.JPushInterface;
 
 import com.wise.baba.R;
+import com.wise.baba.ui.fragment.FragmentNotice;
+import com.wise.baba.ui.fragment.FragmentNotice.BtnListener;
 
-import fragment.FragmentNotice;
-import fragment.FragmentNotice.BtnListener;
 
 /** 通知 **/
 public class NoticeActivity extends FragmentActivity {

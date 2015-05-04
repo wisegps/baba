@@ -53,7 +53,7 @@
 		        android:layout_height="wrap_content"
 		        android:gravity="center_vertical"
 		        android:orientation="horizontal">		        
-			    <customView.CircleImageView 
+			    <com.wise.baba.ui.widget.CircleImageView 
 	                    android:id="@+id/iv_logo"
 	                    android:layout_width="50dp"
 	                    android:layout_height="50dp"

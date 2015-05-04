@@ -1,7 +1,8 @@
 package com.wise.car;
 
 import java.util.Comparator;
-import data.BrandData;
+
+import com.wise.baba.entity.BrandData;
 
 /**
  * 根据拼音排序

@@ -5,7 +5,7 @@
     android:layout_height="35dp"
     android:background="@color/yellow_bg"
     android:orientation="horizontal" >
-    <customView.AlwaysMarqueeTextView
+    <com.wise.baba.ui.widget.AlwaysMarqueeTextView
         android:id="@+id/tv_message"
         android:layout_width="fill_parent"
         android:layout_height="35dp"

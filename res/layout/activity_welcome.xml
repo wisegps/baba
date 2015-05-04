@@ -17,13 +17,12 @@
             android:contentDescription="@string/app_name"
             android:src="@drawable/icon_baba" />
 
-        <customView.WaitLinearLayout
+        <com.wise.baba.ui.widget.WaitLinearLayout
             android:id="@+id/ll_wait"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="50dp"
-            android:layout_marginTop="50dp" >
-        </customView.WaitLinearLayout>
+            android:layout_marginTop="50dp" />
 
         <ImageView
             android:layout_width="wrap_content"

@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import pubclas.Constant;
-import pubclas.JsonData;
-import pubclas.NetThread;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,12 +28,15 @@ import android.widget.LinearLayout.LayoutParams;
 
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.JsonData;
+import com.wise.baba.entity.CarData;
+import com.wise.baba.net.NetThread;
 import com.wise.car.CarUpdateActivity;
 import com.wise.car.TravelActivity;
 import com.wise.remind.RemindListActivity;
 import com.wise.violation.TrafficActivity;
 
-import data.CarData;
 
 /**
  * 服务商管理界面

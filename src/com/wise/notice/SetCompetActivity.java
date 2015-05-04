@@ -21,8 +21,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import pubclas.GetSystem;
-import pubclas.HttpFriend;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -56,6 +54,8 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.biz.HttpFriend;
 
 /**
  * 设置好友权限

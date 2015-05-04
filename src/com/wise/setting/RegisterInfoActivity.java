@@ -10,9 +10,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import pubclas.Constant;
-import pubclas.GetSystem;
-import pubclas.NetThread;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -46,6 +43,9 @@ import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.net.NetThread;
 import com.wise.car.CarAddActivity;
 import com.wise.car.ModelsActivity;
 

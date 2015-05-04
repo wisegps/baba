@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import pubclas.Constant;
 import com.aliyun.android.oss.model.OSSObject;
 import com.aliyun.android.oss.task.GetObjectTask;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

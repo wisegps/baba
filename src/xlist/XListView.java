@@ -9,8 +9,8 @@
 package xlist;
 
 import com.wise.baba.R;
+import com.wise.baba.ui.widget.WaitLinearLayout.OnFinishListener;
 
-import customView.WaitLinearLayout.OnFinishListener;
 
 import android.content.Context;
 import android.util.AttributeSet;

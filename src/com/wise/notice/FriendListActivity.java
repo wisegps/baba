@@ -7,11 +7,6 @@ import java.util.List;
 import org.json.JSONObject;
 
 
-import pubclas.Constant;
-import pubclas.GetSystem;
-import pubclas.Info;
-import pubclas.NetThread;
-import pubclas.Info.FriendStatus;
 import widget.adapters.FriendListAdapter;
 import xlist.XListView;
 
@@ -20,9 +15,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.entity.FriendData;
+import com.wise.baba.entity.Info;
+import com.wise.baba.entity.Info.FriendStatus;
+import com.wise.baba.net.NetThread;
+import com.wise.baba.ui.widget.CircleImageView;
 
-import customView.CircleImageView;
-import data.FriendData;
 
 import android.app.Activity;
 import android.content.Intent;

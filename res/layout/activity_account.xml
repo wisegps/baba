@@ -42,7 +42,7 @@
             android:text="头像"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />
-        <customView.CircleImageView
+        <com.wise.baba.ui.widget.CircleImageView
             android:id="@+id/iv_pic"
             android:layout_width="50dp"
             android:layout_height="50dp"

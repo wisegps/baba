@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import pubclas.GetSystem;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -15,9 +14,10 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.R;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.entity.AdressData;
 import com.wise.setting.SetActivity;
 
-import data.AdressData;
 
 import android.app.Activity;
 import android.app.AlertDialog;

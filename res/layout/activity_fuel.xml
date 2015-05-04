@@ -351,7 +351,7 @@
                         android:textSize="@dimen/content" />
                 </RelativeLayout>
 
-                <customView.EnergyCurveView
+                <com.wise.baba.ui.widget.EnergyCurveView
                     android:id="@+id/ecv_fuel"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content" />
@@ -373,7 +373,7 @@
                     android:textColor="@color/Green"
                     android:textSize="@dimen/main" />
 
-                <customView.FanView
+                <com.wise.baba.ui.widget.FanView
                     android:id="@+id/fv"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"

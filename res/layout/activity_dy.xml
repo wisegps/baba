@@ -306,7 +306,7 @@
                         android:textSize="@dimen/content" />
                 </LinearLayout>
 
-                <customView.EnergyCurveView
+                <com.wise.baba.ui.widget.EnergyCurveView
                     android:id="@+id/ecv_real_dpdy"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content" />

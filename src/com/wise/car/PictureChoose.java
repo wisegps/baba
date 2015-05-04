@@ -10,10 +10,6 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import pubclas.Blur;
-import pubclas.Constant;
-import pubclas.NetThread;
-import pubclas.Uri2Path;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -32,9 +28,13 @@ import android.widget.Toast;
 import com.aliyun.android.oss.task.PutObjectTask;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.net.NetThread;
+import com.wise.baba.ui.widget.PopView;
+import com.wise.baba.ui.widget.PopView.OnItemClickListener;
+import com.wise.baba.util.Blur;
+import com.wise.baba.util.Uri2Path;
 
-import customView.PopView;
-import customView.PopView.OnItemClickListener;
 
 public class PictureChoose extends Activity {
 	AppApplication app;

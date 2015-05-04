@@ -7,16 +7,16 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.json.JSONObject;
-import pubclas.Constant;
-import pubclas.GetSystem;
-import pubclas.NetThread;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.entity.CarData;
+import com.wise.baba.entity.RemindData;
+import com.wise.baba.net.NetThread;
 import com.wise.car.CarActivity;
 
-import data.CarData;
-import data.RemindData;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

@@ -2,7 +2,6 @@ package com.wise.state;
 
 import java.util.ArrayList;
 
-import pubclas.DensityUtil;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,11 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wise.baba.R;
+import com.wise.baba.ui.fragment.FragmentFault;
+import com.wise.baba.ui.fragment.FragmentLocation;
+import com.wise.baba.ui.fragment.FragmentPersionInfo;
+import com.wise.baba.ui.fragment.FragmentRemind;
+import com.wise.baba.util.DensityUtil;
 
-import fragment.FragmentFault;
-import fragment.FragmentLocation;
-import fragment.FragmentPersionInfo;
-import fragment.FragmentRemind;
 
 /**
  * 服务商管理界面

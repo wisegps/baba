@@ -9,11 +9,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
-import pubclas.Constant;
-import pubclas.GetSystem;
-import pubclas.Info;
-import pubclas.Info.FriendStatus;
-import pubclas.NetThread;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -44,9 +39,14 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.entity.FriendData;
+import com.wise.baba.entity.FriendSearch;
+import com.wise.baba.entity.Info;
+import com.wise.baba.entity.Info.FriendStatus;
+import com.wise.baba.net.NetThread;
 
-import data.FriendData;
-import data.FriendSearch;
 
 /**
  * 添加好友界面

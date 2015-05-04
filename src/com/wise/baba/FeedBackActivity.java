@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import pubclas.Constant;
-import pubclas.NetThread;
+
+import com.wise.baba.app.Constant;
+import com.wise.baba.net.NetThread;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;

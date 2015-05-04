@@ -5,7 +5,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.CollectionData;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -13,9 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import pubclas.Constant;
-import pubclas.GetSystem;
-import pubclas.NetThread;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -49,8 +45,12 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.entity.AdressData;
+import com.wise.baba.entity.CollectionData;
+import com.wise.baba.net.NetThread;
 
-import data.AdressData;
 
 /**
  * 车辆行程列表

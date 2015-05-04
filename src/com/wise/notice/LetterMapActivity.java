@@ -1,6 +1,5 @@
 package com.wise.notice;
 
-import pubclas.GetSystem;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +28,7 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.biz.GetSystem;
 
 /**
  * 在地图查看聊天发送的位置

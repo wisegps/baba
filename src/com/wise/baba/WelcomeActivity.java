@@ -6,10 +6,6 @@ import java.util.Set;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import pubclas.Constant;
-import pubclas.GetSystem;
-import pubclas.JsonData;
-import pubclas.NetThread;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -27,10 +23,14 @@ import cn.sharesdk.framework.ShareSDK;
 
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.biz.JsonData;
+import com.wise.baba.net.NetThread;
+import com.wise.baba.ui.widget.WaitLinearLayout;
+import com.wise.baba.ui.widget.WaitLinearLayout.OnFinishListener;
 import com.wise.state.MainActivity;
 
-import customView.WaitLinearLayout;
-import customView.WaitLinearLayout.OnFinishListener;
 
 public class WelcomeActivity extends Activity implements TagAliasCallback {
 	private static final String TAG = "WelcomeActivity";

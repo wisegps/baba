@@ -7,12 +7,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
-import pubclas.Constant;
-import pubclas.GetSystem;
-import pubclas.HttpFriend;
-import pubclas.Info;
-import pubclas.Info.FriendStatus;
-import pubclas.NetThread;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -41,6 +35,12 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.biz.HttpFriend;
+import com.wise.baba.entity.Info;
+import com.wise.baba.entity.Info.FriendStatus;
+import com.wise.baba.net.NetThread;
 import com.wise.state.ManageActivity;
 
 /**

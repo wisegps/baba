@@ -2,12 +2,13 @@ package com.wise.car;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import pubclas.GetSystem;
 import com.baidu.mapapi.map.offline.MKOLSearchRecord;
 import com.baidu.mapapi.map.offline.MKOLUpdateElement;
 import com.baidu.mapapi.map.offline.MKOfflineMap;
 import com.baidu.mapapi.map.offline.MKOfflineMapListener;
 import com.wise.baba.R;
+import com.wise.baba.biz.GetSystem;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

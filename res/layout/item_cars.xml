@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <customView.SlidingView
+    <com.wise.baba.ui.widget.SlidingView
         android:id="@+id/sv"
         android:layout_width="fill_parent"
         android:layout_height="80dp" >
@@ -106,6 +106,6 @@
                 android:textColor="@color/white" >
             </TextView>
         </LinearLayout>
-    </customView.SlidingView>
+    </com.wise.baba.ui.widget.SlidingView>
 
 </LinearLayout>

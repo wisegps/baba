@@ -2,9 +2,9 @@ package com.wise.baba;
 
 import java.util.List;
 import org.json.JSONObject;
-import pubclas.Constant;
-import pubclas.GetSystem;
 
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
 import com.wise.notice.LetterActivity;
 import com.wise.notice.SmsActivity;
 import com.wise.remind.RemindListActivity;

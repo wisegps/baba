@@ -7,9 +7,6 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import pubclas.Constant;
-import pubclas.GetSystem;
-import pubclas.NetThread;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import android.app.Activity;
@@ -29,10 +26,13 @@ import android.widget.TextView;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.entity.CarData;
+import com.wise.baba.net.NetThread;
+import com.wise.baba.ui.widget.WaitLinearLayout;
+import com.wise.baba.ui.widget.WaitLinearLayout.OnFinishListener;
 
-import customView.WaitLinearLayout;
-import customView.WaitLinearLayout.OnFinishListener;
-import data.CarData;
 
 /** 油耗明细列表 **/
 public class FuelDetailsActivity extends Activity implements IXListViewListener {

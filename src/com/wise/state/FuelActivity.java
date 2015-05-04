@@ -8,9 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import pubclas.Constant;
-import pubclas.GetSystem;
-import pubclas.NetThread;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,12 +25,15 @@ import android.widget.TextView;
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.entity.CarData;
+import com.wise.baba.entity.EnergyItem;
+import com.wise.baba.net.NetThread;
+import com.wise.baba.ui.widget.EnergyCurveView;
+import com.wise.baba.ui.widget.FanView;
+import com.wise.baba.ui.widget.FanView.OnViewRotateListener;
 
-import customView.EnergyCurveView;
-import customView.FanView;
-import customView.FanView.OnViewRotateListener;
-import data.CarData;
-import data.EnergyItem;
 
 /**
  * 油耗

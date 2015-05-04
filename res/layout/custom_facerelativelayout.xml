@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<customView.FaceRelativeLayout 
+<com.wise.baba.ui.widget.FaceRelativeLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/FaceRelativeLayout"
     android:layout_width="fill_parent"
@@ -152,4 +152,4 @@
         </LinearLayout>
     </LinearLayout>
 
-</customView.FaceRelativeLayout>
+</com.wise.baba.ui.widget.FaceRelativeLayout>

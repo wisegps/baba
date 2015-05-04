@@ -13,11 +13,10 @@
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
 	        android:gravity="center">       
-		    <customView.WaitLinearLayout
+		    <com.wise.baba.ui.widget.WaitLinearLayout
 		        android:id="@+id/ll_wait"
 		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content">        
-		    </customView.WaitLinearLayout>
+		        android:layout_height="wrap_content"/>
 	    </LinearLayout>
         <RelativeLayout
             android:id="@+id/rl_Note"

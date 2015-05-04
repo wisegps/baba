@@ -3,7 +3,6 @@ package com.wise.setting;
 import java.util.ArrayList;
 import java.util.List;
 
-import pubclas.Constant;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -22,10 +21,11 @@ import android.widget.TextView;
 
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
+import com.wise.baba.app.Constant;
 import com.wise.baba.db.ShareCards;
+import com.wise.baba.entity.CardsData;
+import com.wise.baba.ui.fragment.FragmentHome;
 
-import data.CardsData;
-import fragment.FragmentHome;
 
 public class ChooseCard extends Activity {
 	ListView card_choose;

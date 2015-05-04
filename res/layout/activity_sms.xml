@@ -85,10 +85,9 @@
             android:background="@drawable/bg_border_right"
             android:text="其他"/>
     </LinearLayout>
-	<customView.HScrollLayout
+	<com.wise.baba.ui.widget.HScrollLayout
           xmlns:android="http://schemas.android.com/apk/res/android"    
           android:id="@+id/hsl_sms"
           android:layout_width="fill_parent"   
-          android:layout_height="fill_parent">            
-    </customView.HScrollLayout>
+          android:layout_height="fill_parent"/>
 </LinearLayout>

@@ -21,7 +21,7 @@
     	android:layout_marginLeft="50dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
-        <customView.CircleImageView 
+        <com.wise.baba.ui.widget.CircleImageView 
 	        android:id="@+id/iv_me"
 	        android:layout_width="40dp"
 	        android:layout_height="40dp"
@@ -41,8 +41,7 @@
 		        android:id="@+id/iv_me_pic" 
 		        android:scaleType="matrix"
 		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"/>		        
-		    <customView.TimTextView 
+		        android:layout_height="wrap_content"/>		    com.wise.baba.ui.widget.TimTextVieww.TimTextView 
 		        android:id="@+id/tv_send_in"
 		        android:visibility="gone"
 		        android:layout_width="wrap_content"

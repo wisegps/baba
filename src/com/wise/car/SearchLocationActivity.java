@@ -17,8 +17,8 @@ import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.entity.AdressData;
 
-import data.AdressData;
 
 import android.app.Activity;
 import android.content.Intent;

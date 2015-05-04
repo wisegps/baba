@@ -10,10 +10,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import pubclas.Blur;
-import pubclas.Constant;
-import pubclas.JsonData;
-import pubclas.NetThread;
 
 import com.aliyun.android.oss.model.OSSObject;
 import com.aliyun.android.oss.task.GetObjectTask;
@@ -21,10 +17,14 @@ import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.JsonData;
+import com.wise.baba.entity.CarData;
+import com.wise.baba.net.NetThread;
+import com.wise.baba.ui.widget.WaitLinearLayout;
+import com.wise.baba.ui.widget.WaitLinearLayout.OnFinishListener;
+import com.wise.baba.util.Blur;
 
-import customView.WaitLinearLayout;
-import customView.WaitLinearLayout.OnFinishListener;
-import data.CarData;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

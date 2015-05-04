@@ -1,6 +1,7 @@
 package com.wise.baba;
 
-import pubclas.GetSystem;
+import com.wise.baba.biz.GetSystem;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;

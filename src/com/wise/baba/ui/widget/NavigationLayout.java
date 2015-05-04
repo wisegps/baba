@@ -1,6 +1,5 @@
 package com.wise.baba.ui.widget;
 
-import listener.OnTabChangedListener;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
@@ -11,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wise.baba.R;
+import com.wise.baba.ui.adapter.OnTabChangedListener;
 
 /**
  * 

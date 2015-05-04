@@ -1,7 +1,7 @@
 package com.wise.baba.db;
 import com.wise.baba.app.Const;
+import com.wise.baba.ui.fragment.FragmentHome;
 
-import fragment.FragmentHome;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;

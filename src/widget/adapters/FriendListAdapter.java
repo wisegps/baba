@@ -2,8 +2,6 @@ package widget.adapters;
 
 import java.util.List;
 
-import pubclas.Constant;
-import pubclas.GetSystem;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,8 +20,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.entity.FriendSearch;
 
-import data.FriendSearch;
 
 /**
  * 

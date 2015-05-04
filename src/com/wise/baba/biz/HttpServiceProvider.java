@@ -9,7 +9,6 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import pubclas.Constant;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -27,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wise.baba.AppApplication;
+import com.wise.baba.app.Constant;
 import com.wise.baba.app.Msg;
 import com.wise.baba.entity.News;
 

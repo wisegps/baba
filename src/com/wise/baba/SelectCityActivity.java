@@ -5,17 +5,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import model.BaseData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
-import pubclas.Constant;
-import pubclas.GetLocation;
-import pubclas.GetSystem;
-import pubclas.NetThread;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -51,12 +46,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetLocation;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.entity.BaseData;
+import com.wise.baba.entity.CharacterParser;
+import com.wise.baba.net.NetThread;
 import com.wise.car.ClearEditText;
 import com.wise.car.SideBar;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;
 import com.wise.state.MainActivity;
 
-import data.CharacterParser;
 
 /**
  * 选择城市 欢迎界面进入 isWelcome = true; 天气界面或定位界面进入 ， 返回并保存数据在本地 秀一下选择城市进入，返回数据不保存在本地

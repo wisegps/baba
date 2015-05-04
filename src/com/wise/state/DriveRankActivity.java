@@ -6,14 +6,14 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pubclas.Constant;
-import pubclas.GetSystem;
-import pubclas.NetThread;
 
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.net.NetThread;
+import com.wise.baba.ui.widget.CircleImageView;
 import com.wise.notice.LetterActivity;
-import customView.CircleImageView;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;

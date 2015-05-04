@@ -46,12 +46,11 @@
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
     </LinearLayout>
-    <customView.HScrollLayout
+    <com.wise.baba.ui.widget.HScrollLayout
           xmlns:android="http://schemas.android.com/apk/res/android"    
           android:id="@+id/hsl_traffic"  
           android:layout_below="@id/ll_top"
           android:layout_above="@id/ll_image"
           android:layout_width="fill_parent"   
-          android:layout_height="fill_parent">            
-    </customView.HScrollLayout>
+          android:layout_height="fill_parent"/>
 </RelativeLayout>

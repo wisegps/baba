@@ -13,13 +13,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import pubclas.Blur;
-import pubclas.Constant;
-import pubclas.FaceConversionUtil;
-import pubclas.GetSystem;
-import pubclas.MyLruCache;
-import pubclas.NetThread;
-import pubclas.Uri2Path;
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import android.annotation.SuppressLint;
@@ -81,11 +74,18 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.biz.MyLruCache;
+import com.wise.baba.net.NetThread;
+import com.wise.baba.ui.widget.CircleImageView;
+import com.wise.baba.ui.widget.TimTextView;
+import com.wise.baba.ui.widget.WaitLinearLayout.OnFinishListener;
+import com.wise.baba.util.Blur;
+import com.wise.baba.util.FaceConversionUtil;
+import com.wise.baba.util.Uri2Path;
 import com.wise.show.ImageDetailsActivity;
 
-import customView.CircleImageView;
-import customView.TimTextView;
-import customView.WaitLinearLayout.OnFinishListener;
 
 /**
  * 私信 1：布局优化，解决图片上传阴影问题 2：语音优化，语言的时间越长显示越长 3：图片加上发送中状态 4：发送失败提示，可以从发。

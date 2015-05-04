@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.litepal.LitePalApplication;
 
-import pubclas.GetSystem;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.entity.CarData;
+import com.wise.baba.entity.FriendData;
 
-import data.CarData;
-import data.FriendData;
 
 /**
  * 初始化地图

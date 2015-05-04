@@ -2,9 +2,9 @@ package com.wise.show;
 
 import java.util.ArrayList;
 import java.util.List;
-import pubclas.GetSystem;
 import com.wise.baba.R;
 import com.wise.baba.SelectCityActivity;
+import com.wise.baba.biz.GetSystem;
 import com.wise.car.ModelsActivity;
 import android.app.Activity;
 import android.app.AlertDialog;

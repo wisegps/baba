@@ -5,10 +5,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import pubclas.Constant;
-import pubclas.GetSystem;
-import pubclas.JsonData;
-import pubclas.NetThread;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,10 +35,14 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.biz.JsonData;
+import com.wise.baba.entity.CarData;
+import com.wise.baba.net.NetThread;
 import com.wise.car.CarLocationActivity;
 import com.wise.car.TravelActivity;
 
-import data.CarData;
 
 /**
  * 查看好友的位置信息

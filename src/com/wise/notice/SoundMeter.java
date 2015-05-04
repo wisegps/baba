@@ -2,7 +2,8 @@ package com.wise.notice;
 
 import java.io.IOException;
 
-import pubclas.Constant;
+import com.wise.baba.app.Constant;
+
 
 import android.media.MediaRecorder;
 import android.os.Environment;

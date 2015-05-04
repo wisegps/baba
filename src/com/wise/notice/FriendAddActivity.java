@@ -10,10 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import pubclas.Constant;
-import pubclas.HttpFriend;
-import pubclas.Info;
-import pubclas.NetThread;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,8 +29,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.HttpFriend;
+import com.wise.baba.entity.FriendSearch;
+import com.wise.baba.entity.Info;
+import com.wise.baba.net.NetThread;
 
-import data.FriendSearch;
 
 /**
  * @author honesty

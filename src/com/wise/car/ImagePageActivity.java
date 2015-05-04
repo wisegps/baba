@@ -3,9 +3,9 @@ package com.wise.car;
 import java.util.ArrayList;
 import java.util.List;
 
-import pubclas.Constant;
 
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
 import com.wise.show.ZoomImageView;
 
 import android.app.Activity;

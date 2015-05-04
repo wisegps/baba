@@ -3,13 +3,9 @@ package com.wise.state;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import listener.OnFinishListener;
 
 import org.json.JSONObject;
 
-import pubclas.Constant;
-import pubclas.GetLocation;
-import pubclas.GetSystem;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,16 +28,20 @@ import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
 import com.baidu.navisdk.BaiduNaviManager;
 import com.umeng.update.UmengUpdateAgent;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetLocation;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.ui.adapter.OnFinishListener;
+import com.wise.baba.ui.fragment.FragmentFriend;
+import com.wise.baba.ui.fragment.FragmentHome;
+import com.wise.baba.ui.fragment.FragmentMore;
+import com.wise.baba.ui.fragment.FragmentNotice;
+import com.wise.baba.ui.fragment.FragmentHome.OnExitListener;
 import com.wise.baba.ui.widget.NavigationLayout;
 import com.wise.notice.NoticeActivity;
 import com.wise.remind.RemindListActivity;
 import com.wise.violation.TrafficActivity;
 
-import fragment.FragmentFriend;
-import fragment.FragmentHome;
-import fragment.FragmentHome.OnExitListener;
-import fragment.FragmentMore;
-import fragment.FragmentNotice;
 
 
 /**
@@ -50,7 +50,7 @@ import fragment.FragmentNotice;
  * @author honesty
  **/
 public class MainActivity extends FragmentActivity implements
-		listener.OnTabChangedListener {
+		com.wise.baba.ui.adapter.OnTabChangedListener {
 	private static final String TAG = "MainActivity";
 	private FragmentManager fragmentManager;
 	MyBroadCastReceiver myBroadCastReceiver;

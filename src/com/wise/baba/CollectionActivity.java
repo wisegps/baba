@@ -2,20 +2,22 @@ package com.wise.baba;
 
 import java.util.ArrayList;
 import java.util.List;
-import model.CollectionData;
-import nadapter.CollectionAdapter;
-import nadapter.CollectionAdapter.CollectionItemListener;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
-import customView.WaitLinearLayout;
-import customView.WaitLinearLayout.OnFinishListener;
-import pubclas.Constant;
-import pubclas.GetSystem;
-import pubclas.NetThread;
+
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.entity.AdressData;
+import com.wise.baba.entity.CollectionData;
+import com.wise.baba.net.NetThread;
+import com.wise.baba.ui.adapter.CollectionAdapter;
+import com.wise.baba.ui.adapter.CollectionAdapter.CollectionItemListener;
+import com.wise.baba.ui.widget.WaitLinearLayout;
+import com.wise.baba.ui.widget.WaitLinearLayout.OnFinishListener;
+
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
-import data.AdressData;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;

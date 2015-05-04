@@ -31,12 +31,11 @@
     <RelativeLayout 
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-        <customView.WaitLinearLayout
+        <com.wise.baba.ui.widget.WaitLinearLayout
 	        android:id="@+id/ll_wait"
 	        android:layout_centerInParent="true"
 	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content">        
-	    </customView.WaitLinearLayout>
+	        android:layout_height="wrap_content"/>
         <xlist.XListView
             android:id="@+id/lv_fuel"
             android:visibility="gone"

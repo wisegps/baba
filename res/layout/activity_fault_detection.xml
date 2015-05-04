@@ -353,13 +353,12 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <customView.FaultDeletionView
+    <com.wise.baba.ui.widget.FaultDeletionView
         android:id="@+id/hs_car"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/rl_content"
-        android:layout_below="@id/ll_main" >
-    </customView.FaultDeletionView>
+        android:layout_below="@id/ll_main" />
 
     <ImageView
         android:id="@+id/iv_left"

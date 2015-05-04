@@ -1,7 +1,8 @@
 package com.wise.show;
 
-import pubclas.DensityUtil;
 import com.wise.baba.R;
+import com.wise.baba.util.DensityUtil;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;

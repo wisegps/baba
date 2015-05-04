@@ -3,13 +3,14 @@ package com.wise.setting;
 import java.util.regex.Pattern;
 import org.json.JSONException;
 import org.json.JSONObject;
-import pubclas.Constant;
-import pubclas.NetThread;
 
 import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.net.NetThread;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

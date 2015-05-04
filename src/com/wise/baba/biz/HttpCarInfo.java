@@ -6,7 +6,6 @@ package com.wise.baba.biz;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import pubclas.Constant;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -22,8 +21,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
+import com.wise.baba.app.Constant;
+import com.wise.baba.ui.fragment.FragmentCarInfo;
 
-import fragment.FragmentCarInfo;
 
 /**
  * 
