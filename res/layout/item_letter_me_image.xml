@@ -41,7 +41,8 @@
 		        android:id="@+id/iv_me_pic" 
 		        android:scaleType="matrix"
 		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"/>		    com.wise.baba.ui.widget.TimTextVieww.TimTextView 
+		        android:layout_height="wrap_content"/>		    
+		        <com.wise.baba.ui.widget.TimTextVieww
 		        android:id="@+id/tv_send_in"
 		        android:visibility="gone"
 		        android:layout_width="wrap_content"

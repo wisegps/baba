@@ -447,10 +447,10 @@ public class FragmentFriend extends Fragment {
 			holder.tv_name.setText(friendData.getFriend_name());
 			if (position == 0) {
 				// 第一项是新的朋友
-				holder.iv_image.setImageResource(R.drawable.icon_people_no);
+				holder.iv_image.setImageResource(R.drawable.ico_friend_new);
 			} else if (position == 1) {
 				// 第二项是服务商
-				holder.iv_image.setImageResource(R.drawable.icon_people_no);
+				holder.iv_image.setImageResource(R.drawable.ico_friend_service);
 			} else {
 				if (new File(Constant.userIconPath
 						+ GetSystem.getM5DEndo(friendData.getLogo()) + ".png")

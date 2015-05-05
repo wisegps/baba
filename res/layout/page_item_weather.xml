@@ -16,7 +16,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margins"
             android:layout_marginRight="@dimen/double_margins"
-            android:src="@drawable/x1" />
+            android:src="@drawable/weather0" />
 
         <LinearLayout
             android:layout_width="fill_parent"

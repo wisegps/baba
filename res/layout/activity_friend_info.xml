@@ -18,7 +18,7 @@
 		         android:layout_width="fill_parent"
 		         android:layout_height="wrap_content"
 		         android:layout_centerInParent="true"
-		         android:text="详细信息"
+		         android:text="详细资料"
 		         android:gravity="center"
 		         android:textSize="@dimen/title"
 		         android:textColor="@color/white" />
@@ -114,9 +114,10 @@
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_marginTop="@dimen/margins"
-	        android:layout_marginLeft="@dimen/double_margins"
-	        android:layout_marginRight="@dimen/double_margins"
-	         android:background="@drawable/bt_green"
+	        android:layout_marginLeft="@dimen/margins"
+	        android:layout_marginRight="@dimen/margins"
+	         android:background="@color/color_btn_green"
+	         android:textColor="@color/white"
 	        android:visibility="gone"
 	        android:text="添加好友"/>
 	    <Button 
@@ -125,7 +126,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_margin="@dimen/margins"
 	        android:textColor="@color/white"
-	        android:background="@drawable/bt_green"
+	        android:background="@color/color_btn_green"
 	        android:visibility="visible"
 	        android:text="发送消息"/>
 	    <Button 
@@ -134,7 +135,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_margin="@dimen/margins"
 	        android:textColor="@color/white"
-	        android:background="@drawable/bt_green"
+	        android:background="@color/color_btn_blue"
 	        android:visibility="visible"
 	        android:text="查看位置"/>
 	    <Button 
@@ -143,7 +144,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_margin="@dimen/margins"
 	        android:textColor="@color/white"
-	        android:background="@drawable/bt_green"
+	        android:background="@color/color_btn_blue"
 	        android:text="车辆管理"/>
     </LinearLayout>
 </RelativeLayout>

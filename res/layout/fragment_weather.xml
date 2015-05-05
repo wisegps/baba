@@ -57,7 +57,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/x0" />
+            android:src="@drawable/weather0" />
 
         <LinearLayout
             android:layout_width="0dp"

@@ -20,7 +20,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/margins"
             android:padding="@dimen/margins"
-            android:src="@drawable/icon_add" />
+            android:src="@drawable/ico_friend_add" />
 
         <TextView
             android:layout_width="fill_parent"

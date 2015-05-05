@@ -18,6 +18,12 @@
     
     <!-- 蓝色，圆点 -->
     <color name="navy_light">#4C225065</color>
+    
+     <!-- 好友列表，灰色分隔 -->
+    <color name="color_gray_seperate">#ededed</color>
+    
+    
+    
     <!-- 蓝色，登录 -->
     <color name="blue_login">#407D8C</color>
     <!-- 蓝色，登录 -->
@@ -109,6 +115,11 @@
     <color name="white_light">#CCFFFFFF</color>
     <color name="bd_wallet_item_bg_blue">#ff37a6fb</color>
     <color name="bd_wallet_item_bg_blue_hover">#ff5fb2f9</color>
+    
+      <!-- 好友信息 -->
+    <color name="color_btn_green">#6cba54</color>
+    <color name="color_btn_blue">#50b7de</color>
+    
     <!-- 最外层圆环颜色 -->
     <color name="ring_color">#50B7DE</color>
     <color name="ring_bg_color">#76e6f4f5</color>
