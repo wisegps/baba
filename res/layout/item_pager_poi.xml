@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.wise.baba.ui.widget.CustomGridView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="15dp"
+    android:layout_marginTop="15dp"
+    android:numColumns="4"
+    android:verticalSpacing="15dp" >
+</com.wise.baba.ui.widget.CustomGridView>
