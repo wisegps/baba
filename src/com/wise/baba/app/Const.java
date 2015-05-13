@@ -36,4 +36,19 @@ public class Const {
 	public static final int TYPE_PF = 5;
 	 
 	
+	/**
+	 * 体检标示
+	 */
+	//-2=检测中返回单个项目结果  -1=未检测 0=未绑定终端，1= 检测中，2=历史检测纪录，3=检测
+	public static final int DETECT_PROGRESS_RESULT = -2;
+	public static final int DETECT_NOT_DETECTED = -1;
+	public static final int DETECT_NO_DEVICE = 0;
+	public static final int DETECT_IN_PROGRESS= 1;
+	public static final int DETECT_HISTORY = 2;
+	public static final int DETECT_RESULT = 3;
+	
+	
+	
+	
+	
 }

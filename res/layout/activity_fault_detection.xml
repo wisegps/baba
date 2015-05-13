@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/gray_bg" >
+    android:background="@color/white" >
 
     <RelativeLayout
         android:id="@+id/ll_main"
@@ -42,226 +42,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/blue_line" />
-
-            <RelativeLayout
-                android:id="@+id/rl_guzhang"
+            <ListView
+                android:id="@+id/listDetection"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_gray_fault"
-                android:padding="10dp" >
-
-                <TextView
-                    android:id="@+id/tv_guzhang_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:drawableLeft="@drawable/icon_guzhang_normal"
-                    android:drawablePadding="@dimen/margins"
-                    android:text="故障检测系统"
-                    android:textColor="@color/common"
-                    android:textSize="@dimen/content" />
-
-                <TextView
-                    android:id="@+id/tv_guzhang"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/margins"
-                    android:drawableRight="@drawable/btn_right"
-                    android:text="无故障码"
-                    android:textColor="@color/blue_press"
-                    android:textSize="@dimen/content" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/blue_line" />
-
-            <RelativeLayout
-                android:id="@+id/rl_dianyuan"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_gray_fault"
-                android:padding="10dp" >
-
-                <TextView
-                    android:id="@+id/tv_dianyuan_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:drawableLeft="@drawable/icon_dianyuan_normal"
-                    android:drawablePadding="@dimen/margins"
-                    android:text="电源系统"
-                    android:textColor="@color/common"
-                    android:textSize="@dimen/content" />
-
-                <TextView
-                    android:id="@+id/tv_dianyuan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/margins"
-                    android:drawableRight="@drawable/btn_right"
-                    android:text="蓄电池状态良好"
-                    android:textColor="@color/blue_press"
-                    android:textSize="@dimen/content" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/blue_line" />
-
-            <RelativeLayout
-                android:id="@+id/rl_jinqi"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_gray_fault"
-                android:padding="10dp" >
-
-                <TextView
-                    android:id="@+id/tv_jinqi_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:drawableLeft="@drawable/icon_jinqi_normal"
-                    android:drawablePadding="@dimen/margins"
-                    android:text="进气系统"
-                    android:textColor="@color/common"
-                    android:textSize="@dimen/content" />
-
-                <TextView
-                    android:id="@+id/tv_jinqi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/margins"
-                    android:drawableRight="@drawable/btn_right"
-                    android:text="节气门开度正常"
-                    android:textColor="@color/blue_press"
-                    android:textSize="@dimen/content" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/blue_line" />
-
-            <RelativeLayout
-                android:id="@+id/rl_daisu"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_gray_fault"
-                android:padding="10dp" >
-
-                <TextView
-                    android:id="@+id/tv_daisu_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:drawableLeft="@drawable/icon_daisu_normal"
-                    android:drawablePadding="@dimen/margins"
-                    android:text="怠速控制系统"
-                    android:textColor="@color/common"
-                    android:textSize="@dimen/content" />
-
-                <TextView
-                    android:id="@+id/tv_daisu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/margins"
-                    android:drawableRight="@drawable/btn_right"
-                    android:text="怠速稳定"
-                    android:textColor="@color/blue_press"
-                    android:textSize="@dimen/content" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/blue_line" />
-
-            <RelativeLayout
-                android:id="@+id/rl_lengque"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_gray_fault"
-                android:padding="10dp" >
-
-                <TextView
-                    android:id="@+id/tv_lengque_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:drawableLeft="@drawable/icon_lengque_normal"
-                    android:drawablePadding="@dimen/margins"
-                    android:text="冷却系统"
-                    android:textColor="@color/common"
-                    android:textSize="@dimen/content" />
-
-                <TextView
-                    android:id="@+id/tv_lengque"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/margins"
-                    android:drawableRight="@drawable/btn_right"
-                    android:text="水温正常"
-                    android:textColor="@color/blue_press"
-                    android:textSize="@dimen/content" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/blue_line" />
-
-            <RelativeLayout
-                android:id="@+id/rl_paifang"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_gray_fault"
-                android:padding="10dp" >
-
-                <TextView
-                    android:id="@+id/tv_paifang_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:drawableLeft="@drawable/icon_paifang_normal"
-                    android:drawablePadding="@dimen/margins"
-                    android:text="排放系统"
-                    android:textColor="@color/common"
-                    android:textSize="@dimen/content" />
-
-                <TextView
-                    android:id="@+id/tv_paifang"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:drawablePadding="@dimen/margins"
-                    android:drawableRight="@drawable/btn_right"
-                    android:text="三元催化器状态良好"
-                    android:textColor="@color/blue_press"
-                    android:textSize="@dimen/content" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/blue_line" />
+                 android:divider="#00000000"  
+          android:dividerHeight="0dip"  
+          android:listSelector="@android:color/transparent"   
+                 >
+            </ListView>
 
             <LinearLayout
                 android:id="@+id/ll_bottom"
@@ -360,28 +149,6 @@
         android:layout_above="@id/rl_content"
         android:layout_below="@id/ll_main" />
 
-    <ImageView
-        android:id="@+id/iv_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/hs_car"
-        android:layout_alignLeft="@id/hs_car"
-        android:layout_marginBottom="@dimen/double_margins"
-        android:layout_marginLeft="@dimen/double_margins"
-        android:background="@drawable/bg_common"
-        android:padding="@dimen/margins"
-        android:src="@drawable/btn_detection_left" />
 
-    <ImageView
-        android:id="@+id/iv_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/hs_car"
-        android:layout_alignRight="@id/hs_car"
-        android:layout_marginBottom="@dimen/double_margins"
-        android:layout_marginRight="@dimen/double_margins"
-        android:background="@drawable/bg_common"
-        android:padding="@dimen/margins"
-        android:src="@drawable/btn_detection_right" />
 
 </RelativeLayout>

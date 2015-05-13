@@ -55,6 +55,8 @@ public class AppApplication extends LitePalApplication {
 	
 	public static int currentCarIndex = 0;//当前车辆
 	
+	
+	
 	/** 好友信息 **/
 	public List<FriendData> friendDatas = new ArrayList<FriendData>();
 

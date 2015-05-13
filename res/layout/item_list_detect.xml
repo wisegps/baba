@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" 
+    android:orientation="horizontal"
+    >
+
+    <FrameLayout
+        android:id="@+id/flytIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        >
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="#cccccc" />
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ico_detect_def" />
+    </FrameLayout>
+
+    <RelativeLayout
+         android:id="@+id/rlytDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="2dp"
+        android:paddingRight="5dp"
+        android:layout_weight="1"
+         >
+
+        <ImageView
+            android:id="@+id/iv_border"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+             android:layout_alignParentRight="true"
+             android:layout_alignParentTop="true"
+             android:layout_alignParentBottom="true"
+            android:background="@drawable/ico_detect_fault_border" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="故障检测系统"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/txt_item_title_black"
+            android:textSize="@dimen/content" />
+
+        <TextView
+            android:id="@+id/tv_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="无故障码"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/txt_detect_normal_gray"
+            android:textSize="@dimen/content" />
+    </RelativeLayout>
+
+</LinearLayout>

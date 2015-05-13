@@ -120,6 +120,13 @@
     <color name="color_btn_green">#6cba54</color>
     <color name="color_btn_blue">#50b7de</color>
     
+    
+    <!-- 体检 -->
+   <color name="txt_detect_normal_gray">#bbbbbb</color>
+    <color name="txt_detect_fault_orange">#ff9f3f</color>
+    <color name="txt_item_title_black">#262533</color>
+    
+    
     <!-- 最外层圆环颜色 -->
     <color name="ring_color">#50B7DE</color>
     <color name="ring_bg_color">#76e6f4f5</color>

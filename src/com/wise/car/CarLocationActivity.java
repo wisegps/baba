@@ -59,11 +59,13 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.overlayutil.DrivingRouteOverlay;
 import com.baidu.mapapi.overlayutil.WalkingRouteOverlay;
 import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
 import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.google.gson.Gson;
@@ -576,8 +578,8 @@ public class CarLocationActivity extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						Toast.makeText(CarLocationActivity.this, "驾车规划中...",
 								Toast.LENGTH_SHORT).show();
-						// mSearch.drivingSearch(new
-						// DrivingRoutePlanOption().from(stNode).to(edNode));
+						 mSearch.drivingSearch(new
+						 DrivingRoutePlanOption().from(stNode).to(edNode));
 					}
 				});
 		builder.setNegativeButton("步行规划",
@@ -586,8 +588,7 @@ public class CarLocationActivity extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						Toast.makeText(CarLocationActivity.this, "步行规划中...",
 								Toast.LENGTH_SHORT).show();
-						// mSearch.walkingSearch(new
-						// WalkingRoutePlanOption().from(stNode).to(edNode));
+						 mSearch.walkingSearch(new WalkingRoutePlanOption().from(stNode).to(edNode));
 					}
 				});
 		builder.create().show();

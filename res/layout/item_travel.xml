@@ -135,7 +135,7 @@
 	                android:paddingRight="10dp"
 	                android:contentDescription="@string/app_name"
 	                android:visibility="invisible"
-	                android:src="@drawable/icon_guzhang_normal" />
+	                android:src="@drawable/ico_detect_def" />
             </LinearLayout>  
             <TextView
                 android:id="@+id/tv_item_travel_speed"
