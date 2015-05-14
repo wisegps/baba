@@ -127,7 +127,6 @@ public class FragmentCarInfo extends Fragment {
 
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
-
 		
 		
 		hs_car = (HScrollLayout) getActivity().findViewById(R.id.hs_car);
@@ -138,7 +137,6 @@ public class FragmentCarInfo extends Fragment {
 				if(index != view){
 					index = view;
 					app.currentCarIndex = view;
-					
 					Log.i("FragmentCarInfo", "当前车辆"+app.currentCarIndex);
 					//等待滚动完毕后查询数据
 					handler.postDelayed(new Runnable() {						
@@ -563,7 +561,6 @@ public class FragmentCarInfo extends Fragment {
 		
 		DialView dialHealthScore = (DialView) v.findViewById(R.id.dialHealthScore);
 		dialHealthScore.initValue(100,handler);
-		
 		
 		dialHealthScore.setOnClickListener(new OnClickListener() {
 			@Override

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_total"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:layout_marginTop="@dimen/double_margins"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/ll_distance"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tv_safe"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center_horizontal"
+            android:text="95"
+            android:textColor="@color/navy"
+            android:textSize="@dimen/big_number" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ico_drive_safe"
+            android:gravity="center_horizontal"
+            android:text=" 安全指数"
+            android:layout_gravity="center"
+            android:textColor="@color/navy"
+            android:textSize="@dimen/content" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="0.5dp"
+        android:layout_height="fill_parent"
+        android:background="@color/line" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tv_eco"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center_horizontal"
+            android:text="95"
+            android:textColor="@color/navy"
+            android:textSize="@dimen/big_number" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ico_drive_save"
+            android:gravity="center_horizontal"
+            android:text=" 经济指数"
+             android:layout_gravity="center"
+            android:textColor="@color/navy"
+            android:textSize="@dimen/content" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="0.5dp"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="@dimen/margins"
+        android:background="@color/line" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tv_env"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center_horizontal"
+            android:text="95"
+            android:textColor="@color/navy"
+            android:textSize="@dimen/big_number" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ico_drive_green"
+            android:gravity="center_horizontal"
+            android:text=" 环保指数"
+             android:layout_gravity="center"
+            android:textColor="@color/navy"
+            android:textSize="@dimen/content" />
+    </LinearLayout>
+
+</LinearLayout>

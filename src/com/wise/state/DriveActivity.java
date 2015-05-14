@@ -73,7 +73,7 @@ public class DriveActivity extends Activity {
 		isNearData = getIntent().getBooleanExtra("isNearData", false);
 		carData = (CarData) getIntent().getSerializableExtra("carData");
 		if(carData == null && app.carDatas.size()>0){
-			carData = app.carDatas.get(0);
+			carData = app.carDatas.get(app.currentCarIndex);
 		}
 		
 		tv_name.setText(carData.getNick_name());
