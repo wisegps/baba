@@ -208,18 +208,17 @@ public class FaultDetectionActivity extends Activity {
 				handler.sendMessage(message1);
 				break;
 			case getData:
-//				result = msg.obj.toString();
-//				jsonHealth(msg.obj.toString());
-//				// 体检
-//				isCheck = true;
-//				carViews.get(index).getDialHealthScore()
-//						.startAnimation(mTotalProgress, handler);
-				
 				result = msg.obj.toString();
+				jsonHealth(msg.obj.toString());
 				// 体检
-				mTotalProgress = 50;
 				carViews.get(index).getDialHealthScore()
-						.startAnimation(50, handler);
+						.startAnimation(mTotalProgress, handler);
+				
+//				result = msg.obj.toString();
+//				// 体检
+//				mTotalProgress = 50;
+//				carViews.get(index).getDialHealthScore()
+//						.startAnimation(50, handler);
 				
 				break;
 			case refresh:
@@ -430,7 +429,7 @@ public class FaultDetectionActivity extends Activity {
 		// carViews.get(index).getTv_detection_status().setText("体检中");
 		Log.i("FaultDetectionActivity", "体检中 初始化数据 ");
 		// 始化数据
-		notifyListView(Const.DETECT_IN_PROGRESS,null);
+		notifyListView(Const.DETECT_IN_PROGRESS,new int[]{-1,-1,-1,-1,-1,-1});
 	}
 	
 	public void notifyListView(final int flag ,final int[] faults){
@@ -443,6 +442,8 @@ public class FaultDetectionActivity extends Activity {
 			
 		});
 	}
+	
+	
 	
 
 	private void initView() {
@@ -604,9 +605,7 @@ public class FaultDetectionActivity extends Activity {
 			return;
 		}
 		// 开启线程获取数据
-
 		new Thread(new MyThread()).start();
-
 	}
 
 	/**
@@ -619,7 +618,7 @@ public class FaultDetectionActivity extends Activity {
 		@Override
 		public void run() {
 			try {
-				/*
+				
 				String Device_id = carDatas.get(index).getDevice_id();
 				// 获取车的最新信息
 				String gpsUrl = GetUrl.getCarGpsData(Device_id, app.auth_code);
@@ -686,21 +685,34 @@ public class FaultDetectionActivity extends Activity {
 				message.what = getData;
 				message.obj = healthResult;
 				handler.sendMessage(message);
-*/
+
 				
+				/*
 				Message message = new Message();
 				message.what = INIT_STATUS;
 				handler.sendMessage(message);
 				
 				
+				SharedPreferences preferences = getSharedPreferences(
+						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+				result = preferences.getString(Constant.sp_health_score
+						+ carDatas.get(index).getObj_id(), "");
+				
+				
 				 message = new Message();
 				message.what = getData;
-				message.obj = "aa";
+				message.obj = result;
 				handler.sendMessage(message);
+				
+				*/
+				
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
 		}
+		
 	}
 
 	/** 提示车辆离线 **/
@@ -735,13 +747,17 @@ public class FaultDetectionActivity extends Activity {
 	String dpdy_content, jqmkd_content, fdjzs_content, sw_content,
 			chqwd_content;
 
-	private void refreshHealth(int j) {
-			if (j== 0)  return;
+	private void refreshHealth(int r) {
+		
+			if (r== 0){
+				return;
+			}
+			
 		try {
-			Log.i("FaultDetectionActivity", "refreshHealth"+j);
 			JSONObject jsonObject = new JSONObject(result);
-			switch (j) {
+			switch(r){
 			case 1:
+				
 				JSONArray jsonErrArray = jsonObject
 						.getJSONArray("active_obd_err");
 				if (jsonErrArray.length() > 0) {
@@ -755,9 +771,9 @@ public class FaultDetectionActivity extends Activity {
 							.getString("active_obd_err")));
 					new NetThread.postDataThread(handler, url, params, getFault)
 							.start();
-					adapter.change(0, jsonErrArray.length());
+					changeItem(0, jsonErrArray.length());
 				} else {
-					adapter.change(0, 0);
+					changeItem(0, 0);
 				}
 				break;
 			case 2:
@@ -765,9 +781,9 @@ public class FaultDetectionActivity extends Activity {
 				boolean if_dpdy_err = !jsonObject.getBoolean("if_dpdy_err");
 				dpdy_content = jsonObject.getString("dpdy_content");
 				if (if_dpdy_err) {
-					adapter.change(1, 0);
+					changeItem(1, 0);
 				} else {
-					adapter.change(1, 1);
+					changeItem(1, 1);
 				}
 				break;
 			case 3:
@@ -775,19 +791,20 @@ public class FaultDetectionActivity extends Activity {
 				boolean if_jqmkd_err = !jsonObject.getBoolean("if_jqmkd_err");
 				jqmkd_content = jsonObject.getString("jqmkd_content");
 				if (if_jqmkd_err) {
-					adapter.change(2, 0);
+					changeItem(2, 0);
 				} else {
-					adapter.change(2, 1);
+					changeItem(2, 1);
 				}
 				break;
 			case 4:
 				// 怠速控制系统
+				
 				boolean if_fdjzs_err = !jsonObject.getBoolean("if_fdjzs_err");
 				fdjzs_content = jsonObject.getString("fdjzs_content");
 				if (if_fdjzs_err) {
-					adapter.change(3, 0);
+					changeItem(3, 0);
 				} else {
-					adapter.change(3, 1);
+					changeItem(3, 1);
 				}
 				break;
 			case 5:
@@ -795,9 +812,9 @@ public class FaultDetectionActivity extends Activity {
 				boolean if_sw_err = !jsonObject.getBoolean("if_sw_err");
 				sw_content = jsonObject.getString("sw_content");
 				if (if_sw_err) {
-					adapter.change(4, 0);
+					changeItem(4, 0);
 				} else {
-					adapter.change(4, 1);
+					changeItem(4, 1);
 				}
 				break;
 			case 6:
@@ -805,17 +822,28 @@ public class FaultDetectionActivity extends Activity {
 				boolean if_chqwd_err = !jsonObject.getBoolean("if_chqwd_err");
 				chqwd_content = jsonObject.getString("chqwd_content");
 				if (if_chqwd_err) {
-					adapter.change(5, 0);
+					changeItem(5, 0);
 				} else {
-					adapter.change(5, 1);
+					changeItem(5, 1);
 				}
 				break;
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		Log.i("FaultDetectionActivity", "改变一个");
-		adapter.notifyDataSetChanged();
+		
+	}
+	
+	public void changeItem(final int flag ,final int faultCode){
+		handler.post(new Runnable(){
+			@Override
+			public void run() {
+				Log.i("FaultDetectionActivity", "改变一个");
+				adapter.changeItem(flag,faultCode);
+				adapter.notifyDataSetChanged();
+			}
+			
+		});
 	}
 
 	// 存储

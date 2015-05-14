@@ -11,6 +11,7 @@ import com.wise.baba.app.Const;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class ListDetectAdapter extends BaseAdapter {
 	 *            是否有异常
 	 */
 	public void change(int detectionFlag, int[] faults) {
+		Log.i("FaultDetectionActivity", "是否有异常");
 		this.detectionFlag = detectionFlag;
 		this.faults = faults;
 
@@ -81,11 +83,13 @@ public class ListDetectAdapter extends BaseAdapter {
 		for (int i = 0; i < faults.length; i++) {
 			if (faults[i] == 0) { // 良好
 				desc[i] = normal[i];
-			} else {// 异常
+			} else if(faults[i] == 1){// 异常
 				desc[i] = fault[i];
 				if (i == 0) {
 					desc[i] = "有" + faults[i] + "个故障";
 				}
+			}else{
+				//还是原来的故障描述
 			}
 		}
 	}
@@ -96,9 +100,17 @@ public class ListDetectAdapter extends BaseAdapter {
 	 * @param position
 	 * @param faultCode
 	 */
-	public void change(int position, int faultCode) {
+	public void changeItem(int position, int faultCode) {
 		this.faults[position] = faultCode;
 		change(Const.DETECT_RESULT,this.faults);
+		String f = "";
+		String d = "";
+		for(int i=0;i<faults.length;i++){
+			f+=faults[i]+" ";
+			d+= desc[i]+" ";
+		}
+		Log.i("FaultDetectionActivity", "faults"+f);
+		Log.i("FaultDetectionActivity", "desc"+d);
 	}
 
 	@Override
