@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ico_drive_spd_stop"
             android:gravity="center_horizontal"
-            android:text=" 加速急刹"
+            android:text=" 急转弯  "
              android:layout_gravity="center"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />

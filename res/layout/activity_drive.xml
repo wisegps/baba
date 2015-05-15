@@ -13,12 +13,12 @@
         android:background="@color/title_back" >
 
         <TextView
-            android:id="@+id/tv_name"
+            android:id="@+id/tv_name_1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="我的车辆"
+            android:text="叭叭"
             android:textColor="@color/white"
             android:textSize="@dimen/title" />
 
@@ -87,15 +87,7 @@
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/margins" >
 
-                <TextView
-                    android:id="@+id/tv_date"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:padding="@dimen/margins"
-                    android:text="2013-12"
-                    android:textColor="@color/Green"
-                    android:textSize="@dimen/main" />
+                <include layout="@layout/include_drive_location"/>
 
                 <RelativeLayout
                     android:layout_width="fill_parent"

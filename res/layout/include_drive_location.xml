@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/margins" >
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.8"
+        android:gravity="center_horizontal"
+        android:text="2013-12"
+        android:textSize="@dimen/main" />
+
+    <RelativeLayout
+        android:id="@+id/rlytLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/tv_name"
+            style="@style/home_card_title_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="昂科塞拉" />
+
+        <LinearLayout
+            android:id="@+id/ll_adress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tv_name"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/tv_name"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/iv_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ico_location_off" />
+
+            <com.wise.baba.ui.widget.MarqueeTextView
+                android:id="@+id/tv_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.3"
+                android:ellipsize="marquee"
+                android:ems="11"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:selectAllOnFocus="true"
+                android:singleLine="true" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

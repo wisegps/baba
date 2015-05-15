@@ -236,6 +236,9 @@ public class FragmentCarInfo extends Fragment {
 					} else {
 						Intent intent = new Intent(getActivity(), DriveActivity.class);
 						intent.putExtra("carData", app.carDatas.get(index));
+						ViewGroup carLayout = (ViewGroup) hs_car.getChildAt(index);
+						Boolean is_online = (Boolean) carLayout.findViewById(R.id.imgLocation).getTag();
+						intent.putExtra("is_online", is_online);
 						startActivityForResult(intent, 2);
 					}
 				}
@@ -356,7 +359,6 @@ public class FragmentCarInfo extends Fragment {
 			try {
 				Log.i("FragmentCarInfo", json);
 				JSONObject jsonObject = new JSONObject(json);
-				
 				//SIM卡总流量，单位M
 				Double total_traffic = jsonObject.getDouble("total_traffic");
 				//SIM卡剩余流量，单位M
@@ -373,7 +375,6 @@ public class FragmentCarInfo extends Fragment {
 				
 				
 				ViewGroup carLayout = (ViewGroup) hs_car.getChildAt(childIndex);
-				
 				
 				
 				ImageView imgLocation = (ImageView) carLayout.findViewById(R.id.imgLocation);
@@ -396,12 +397,14 @@ public class FragmentCarInfo extends Fragment {
 				
 				if(is_online){
 					imgLocation.setImageResource(R.drawable.ico_location_on);
+					imgLocation.setTag(is_online);
 					textAddress.setTextColor(Color.parseColor("#50b7de"));
 					textAddress.setAlpha(0.6f);
 					//imgOnLine.setImageResource(R.drawable.ico_key);
 				}else{
 					//imgOnLine.setImageResource(R.drawable.ico_key_close);
 					imgLocation.setImageResource(R.drawable.ico_location_off);
+					imgLocation.setTag(is_online);
 					textAddress.setTextColor(Color.BLACK);
 					textAddress.setAlpha(0.3f);
 				}
