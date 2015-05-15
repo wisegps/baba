@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_total"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingBottom="@dimen/double_margins"
     android:orientation="horizontal" >
 
     <LinearLayout
-        android:id="@+id/ll_distance"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/tv_safe"
+            android:id="@+id/tv_speed_up"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -27,9 +24,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ico_drive_safe"
+            android:drawableLeft="@drawable/ico_drive_spd_up"
             android:gravity="center_horizontal"
-            android:text=" 安全指数"
+            android:text=" 急加速  "
             android:layout_gravity="center"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />
@@ -48,7 +45,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/tv_eco"
+            android:id="@+id/tv_speed_down"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -60,9 +57,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ico_drive_save"
+            android:drawableLeft="@drawable/ico_drive_spd_down"
             android:gravity="center_horizontal"
-            android:text=" 经济指数"
+            android:text=" 急减速  "
              android:layout_gravity="center"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />
@@ -81,7 +78,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/tv_env"
+            android:id="@+id/tv_speed_stop"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -93,9 +90,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ico_drive_green"
+            android:drawableLeft="@drawable/ico_drive_spd_stop"
             android:gravity="center_horizontal"
-            android:text=" 环保指数"
+            android:text=" 加速急刹"
              android:layout_gravity="center"
             android:textColor="@color/navy"
             android:textSize="@dimen/content" />
