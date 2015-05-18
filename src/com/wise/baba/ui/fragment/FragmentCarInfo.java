@@ -101,7 +101,6 @@ public class FragmentCarInfo extends Fragment {
 	
 	private final int Stealth_Mode_True= 1,Stealth_Mode_False = 0;//是否隐身 1：隐身  0：不隐身
 	private HttpCarInfo http;
-	
 	private OnCardMenuListener onCardMenuListener;
 	
 	@Override
@@ -113,7 +112,6 @@ public class FragmentCarInfo extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
-
 		
 		String Month = GetSystem.GetNowMonth().getMonth();
 		startMonth = Month + "-01";
@@ -137,7 +135,7 @@ public class FragmentCarInfo extends Fragment {
 				if(index != view){
 					index = view;
 					app.currentCarIndex = view;
-					Log.i("FragmentCarInfo", "当前车辆"+app.currentCarIndex);
+					//Log.i("FragmentCarInfo", "当前车辆"+app.currentCarIndex);
 					//等待滚动完毕后查询数据
 					handler.postDelayed(new Runnable() {						
 						@Override
@@ -178,7 +176,7 @@ public class FragmentCarInfo extends Fragment {
 										CarData carData = app.carDatas.get(index);
 										String device_id = carData.getDevice_id();
 										if (device_id == null || device_id.equals("")) {
-
+											
 										} else {
 											// 获取gps信息
 											String gpsUrl = GetUrl.getCarGpsData(device_id, app.auth_code);
@@ -287,7 +285,6 @@ public class FragmentCarInfo extends Fragment {
 					onCardMenuListener.showCarMenu(Const.TAG_CAR);
 				}
 				break;
-				
 			}
 		}
 	};
@@ -321,8 +318,6 @@ public class FragmentCarInfo extends Fragment {
 					carViews.get(msg.arg1).getDialHealthScore().initValue(health_score,handler);
 					carViews.get(msg.arg1).getTv_score().setText(String.valueOf(health_score));
 					carViews.get(msg.arg1).getTv_title().setText("健康指数");
-					
-					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -334,17 +329,15 @@ public class FragmentCarInfo extends Fragment {
 			case get_drive:
 				try {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
+					Log.i("FragmentCarInfo", "drive result"+msg.obj.toString());
 					int drive_score = jsonObject.getInt("drive_score");
-					if (drive_score != 0 ) {
-						carViews.get(msg.arg1).getDialDriveScore().initValue(drive_score,handler);
-						carViews.get(msg.arg1).getTv_drive().setText(String.valueOf(drive_score));
-						// 存在本地
-						SharedPreferences preferences1 = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-						Editor editor1 = preferences1.edit();
-						editor1.putString(Constant.sp_drive_score + app.carDatas.get(msg.arg1).getObj_id(), msg.obj.toString());
-						editor1.commit();
-					}
-
+					carViews.get(msg.arg1).getDialDriveScore().initValue(drive_score,handler);
+					carViews.get(msg.arg1).getTv_drive().setText(String.valueOf(drive_score));
+					// 存在本地
+					SharedPreferences preferences1 = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+					Editor editor1 = preferences1.edit();
+					editor1.putString(Constant.sp_drive_score + app.carDatas.get(msg.arg1).getObj_id(), msg.obj.toString());
+					editor1.commit();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -357,7 +350,7 @@ public class FragmentCarInfo extends Fragment {
 	@SuppressLint("ResourceAsColor")
 	public void jsonDevice(String json,int childIndex){
 			try {
-				Log.i("FragmentCarInfo", json);
+				//Log.i("FragmentCarInfo", json);
 				JSONObject jsonObject = new JSONObject(json);
 				//SIM卡总流量，单位M
 				Double total_traffic = jsonObject.getDouble("total_traffic");
@@ -447,7 +440,6 @@ public class FragmentCarInfo extends Fragment {
 			ImageView imgSwitch = (ImageView) v.findViewById(R.id.imgStealth);
 			imgSwitch.setOnClickListener(onClickListener);
 			
-			
 			ImageView ivDriveMenu = (ImageView) getActivity().findViewById(
 					R.id.iv_drive_menu);
 			ivDriveMenu.setOnClickListener(onClickListener);
@@ -493,8 +485,8 @@ public class FragmentCarInfo extends Fragment {
 			carView.setTv_location(textLocation);
 			carView.setTv_drive(tv_drive);
 			carView.setTv_current_distance(tv_current_distance);
-			//carView.setImgHealthScore(dialHealthScore);
 			carView.setDialHealthScore(dialHealthScore);
+			carView.setDialDriveScore(dialDriveScore);
 			carViews.add(carView);
 
 			tv_name.setText(app.carDatas.get(i).getNick_name());

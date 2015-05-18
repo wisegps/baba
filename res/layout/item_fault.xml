@@ -155,7 +155,7 @@
                         android:layout_height="wrap_content"
                         android:alpha="0.8"
                         android:fontFamily="sans-serif-light"
-                        android:text="80"
+                        android:text="100"
                         android:textColor="@color/navy_blue"
                         android:textSize="@dimen/score_number" />
 
@@ -204,7 +204,7 @@
                         android:layout_height="wrap_content"
                         android:alpha="0.8"
                         android:fontFamily="sans-serif-light"
-                        android:text="80"
+                        android:text="100"
                         android:textColor="@color/navy_blue"
                         android:textSize="@dimen/score_number" />
 
