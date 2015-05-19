@@ -158,19 +158,22 @@ public class ClockwiseDialView extends FrameLayout {
 							msg.arg1 = currentValue;
 							handler.sendMessage(msg);
 						}
-						Bitmap bitmp = bitmapFactory.getBitmapByValue(
-								currentValue++, false);
-						BitmapUtil.recycleBitmap(imgColor);
-						imgColor.setImageBitmap(bitmp);
+						
 
-						if (currentValue > value) {
+						if (currentValue >= value) {
 							// 动画运动到这里就停止
 							if(timer!=null){
 								timer.cancel();
 								timer.purge();
 								timer = null;
 							}
+							return;
 						}
+						
+						Bitmap bitmp = bitmapFactory.getBitmapByValue(
+								currentValue++, false);
+						BitmapUtil.recycleBitmap(imgColor);
+						imgColor.setImageBitmap(bitmp);
 
 					}
 

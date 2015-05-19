@@ -16,6 +16,7 @@ import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -110,6 +111,7 @@ public class DialView extends FrameLayout {
 
 	// 設置一個值，出現動畫滾動到該值
 	public void startAnimation(int value, Handler handler) {
+		Log.i("DialView", "startAnimation:"+value);
 		imgCusor.setImageResource(R.drawable.circle_cursor);
 		init = false;
 		stopAnimation();
@@ -155,21 +157,25 @@ public class DialView extends FrameLayout {
 							Message msg = new Message();
 							msg.what = Msg.Dial_Refresh_Value;
 							msg.arg1 = currentValue;
+							Log.i("DialView", "currentValue:"+currentValue);
 							handler.sendMessage(msg);
 						}
-						Bitmap bitmp = bitmapFactory.getBitmapByValue(
-								currentValue--, false);
-						BitmapUtil.recycleBitmap(imgColor);
-						imgColor.setImageBitmap(bitmp);
-
-						if (currentValue < value) {
+						if (currentValue <= value) {
+							Log.i("DialView", "动画运动到这里就停止 &currentValue:"+currentValue);
 							// 动画运动到这里就停止
 							if(timer!=null){
 								timer.cancel();
 								timer.purge();
 								timer = null;
 							}
+							return;
 						}
+						
+						Log.i("DialView", "setImageBitmap:"+currentValue);
+						Bitmap bitmp = bitmapFactory.getBitmapByValue(
+								currentValue--, false);
+						BitmapUtil.recycleBitmap(imgColor);
+						imgColor.setImageBitmap(bitmp);
 
 					}
 
