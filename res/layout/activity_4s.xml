@@ -23,12 +23,7 @@
         
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="@dimen/title_hight"
-            android:layout_height="@dimen/title_hight"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/margins"
-            android:padding="@dimen/margins"
-            android:src="@drawable/nav_back" />
+           style="@style/title_back_style"/>
     </RelativeLayout>
     <RelativeLayout 
         android:layout_width="fill_parent"

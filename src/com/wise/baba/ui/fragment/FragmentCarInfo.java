@@ -660,12 +660,12 @@ public class FragmentCarInfo extends Fragment {
 		try {
 			CarView carView = carViews.get(index);
 			if (result == null || result.equals("")) {
-				carView.getTv_xx().setText("不限");
+				//carView.getTv_xx().setText("不限");
 				app.carDatas.get(index).setLimit("不限");
 			} else {
 				JSONObject jsonObject = new JSONObject(result);
 				String limit = jsonObject.getString("limit");
-				carView.getTv_xx().setText(limit);
+				//carView.getTv_xx().setText(limit);
 				app.carDatas.get(index).setLimit(limit);
 			}
 		} catch (Exception e) {

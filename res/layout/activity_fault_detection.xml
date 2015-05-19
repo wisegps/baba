@@ -22,12 +22,8 @@
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="@dimen/title_hight"
-            android:layout_height="@dimen/title_hight"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/margins"
-            android:padding="@dimen/margins"
-            android:src="@drawable/nav_back" />
+            style="@style/title_back_style"
+            />
     </RelativeLayout>
 
     <RelativeLayout
@@ -51,25 +47,26 @@
           android:listSelector="@android:color/transparent"   
                  >
             </ListView>
-
+			
+            <View android:layout_width="fill_parent" 
+                
+                android:layout_height="1px"
+                android:background="#bbbbbb"
+                />
             <LinearLayout
                 android:id="@+id/ll_bottom"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
                 android:orientation="horizontal" >
 
                 <TextView
                     android:id="@+id/rescue"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_yellow"
-                    android:gravity="center_horizontal"
-                    android:paddingBottom="@dimen/margins"
-                    android:paddingTop="@dimen/margins"
-                    android:text="救援"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/title" />
+                    style="@style/bottom_text_nav_style"
+                    android:text=" 救援"
+                    android:drawableStart="@drawable/ico_car_help"
+                     />
 
                 <View
                     android:layout_width="0.5dp"
@@ -78,16 +75,10 @@
 
                 <TextView
                     android:id="@+id/risk"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_yellow"
-                    android:gravity="center_horizontal"
-                    android:paddingBottom="@dimen/margins"
-                    android:paddingTop="@dimen/margins"
-                    android:text="报险"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/title" />
+                    style="@style/bottom_text_nav_style"
+                    android:text=" 报险"
+                     android:drawableLeft="@drawable/ico_car_insurance"
+                    />
 
                 <View
                     android:layout_width="0.5dp"
@@ -96,30 +87,17 @@
 
                 <TextView
                     android:id="@+id/ask"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    style="@style/bottom_text_nav_style"
                     android:layout_weight="1"
-                    android:background="@drawable/bg_yellow"
-                    android:gravity="center_horizontal"
-                    android:paddingBottom="@dimen/margins"
-                    android:paddingTop="@dimen/margins"
-                    android:text="问一下"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/title"
+                    android:text=" 问一下"
                     android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/mechanics"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_yellow"
-                    android:gravity="center_horizontal"
-                    android:paddingBottom="@dimen/margins"
-                    android:paddingTop="@dimen/margins"
-                    android:text="找汽修"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/title" />
+                    style="@style/bottom_text_nav_style"
+                    android:text=" 找汽修"
+                     android:drawableLeft="@drawable/ico_car_find_service"
+                    />
 
                 <View
                     android:layout_width="0.5dp"
@@ -128,16 +106,10 @@
 
                 <TextView
                     android:id="@+id/tv_ask_expert"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_yellow"
-                    android:gravity="center_horizontal"
-                    android:paddingBottom="@dimen/margins"
-                    android:paddingTop="@dimen/margins"
-                    android:text="问专家"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/title" />
+                    style="@style/bottom_text_nav_style"
+                    android:text=" 问专家"
+                     android:drawableLeft="@drawable/ico_car_ask"
+                    />
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

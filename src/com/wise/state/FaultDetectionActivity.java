@@ -101,21 +101,22 @@ public class FaultDetectionActivity extends Activity {
 	AppApplication app;
 	List<CarData> carDatas;
 
+	private boolean isCreate = false;// 界面第一次进入
+	public long peroidRefersh = 1;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fault_detection);
+		isCreate = true;
 		app = (AppApplication) getApplication();
 		index = app.currentCarIndex;
-		Log.i("FaultDetectionActivity", "当前车辆位置"+index);
+		Log.i("FaultDetectionActivity", "当前车辆位置" + index);
 		carDatas = app.carDatas;
 		initView();
 		initDataView();
-
 	}
-	
-
 
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
@@ -184,45 +185,43 @@ public class FaultDetectionActivity extends Activity {
 			case Msg.Dial_Refresh_Value:
 				int value = msg.arg1;
 				carViews.get(index).getTv_score().setText("" + value);
-				int peroid = mTotalProgress / Point;
-				int j = 0;
-				if (value == 100) {
-					j = 1;
-				} else if (value == 100 - peroid) {
-					j = 2;
-				} else if (value == 100 - peroid * 2) {
-					j = 3;
-				} else if (value == 100 - peroid * 3) {
-					j = 4;
-				} else if (value == 100 - peroid * 4) {
-					j = 5;
-				} else if (value == 100 - peroid * 5) {
-					j = 6;
-				} else if (value == mTotalProgress) {
-					Log.i("FaultDetectionActivity", "inProgress = false");
-					inProgress = false;
-				}
-				Message message1 = new Message();
-				message1.what = refresh;
-				message1.arg1 = j;
-				handler.sendMessage(message1);
+				// int peroid = mTotalProgress / Point;
+				// int j = 0;
+				// if (value == 100) {
+				// j = 1;
+				// } else if (value == 100 - peroid) {
+				// j = 2;
+				// } else if (value == 100 - peroid * 2) {
+				// j = 3;
+				// } else if (value == 100 - peroid * 3) {
+				// j = 4;
+				// } else if (value == 100 - peroid * 4) {
+				// j = 5;
+				// } else if (value == 100 - peroid * 5) {
+				// j = 6;
+				// } else if (value == mTotalProgress) {
+				// Log.i("FaultDetectionActivity", "inProgress = false");
+				// inProgress = false;
+				// }
+				// Message message1 = new Message();
+				// message1.what = refresh;
+				// message1.arg1 = j;
+				// handler.sendMessage(message1);
 				break;
 			case getData:
+				Log.i("FaultDetectionActivity", "getData");
 				result = msg.obj.toString();
 				jsonHealth(msg.obj.toString());
 				// 体检
-				carViews.get(index).getDialHealthScore()
-						.startAnimation(mTotalProgress, handler);
-				
-//				result = msg.obj.toString();
-//				// 体检
-//				mTotalProgress = 50;
-//				carViews.get(index).getDialHealthScore()
-//						.startAnimation(50, handler);
-				
+				DialView view = carViews.get(index).getDialHealthScore();
+				view.startAnimation(mTotalProgress, handler);
+				peroidRefersh = (view.getDuration(mTotalProgress)) / 6 + 1;
+				Log.i("FaultDetectionActivity", "peroidRefersh："
+						+ peroidRefersh);
+				refreshHealth(1);
 				break;
 			case refresh:
-				refreshHealth(msg.arg1);
+				// refreshHealth(msg.arg1);
 				break;
 			case getFault:
 				fault_content = msg.obj.toString();
@@ -260,7 +259,6 @@ public class FaultDetectionActivity extends Activity {
 			View v = LayoutInflater.from(this).inflate(
 					R.layout.item_fault_detection, null);
 			hs_car.addView(v);
-			
 
 			DialView dialHealthScore = (DialView) v
 					.findViewById(R.id.dialHealthScore);
@@ -300,6 +298,8 @@ public class FaultDetectionActivity extends Activity {
 
 	/** 获取历史消息 **/
 	private void getSpHistoryData(int index) {
+
+		Log.i("FaultDetectionActivity", "getSpHistoryData");
 		if (carDatas == null || carDatas.size() == 0) {
 			return;
 		}
@@ -317,7 +317,7 @@ public class FaultDetectionActivity extends Activity {
 			result = preferences.getString(Constant.sp_health_score
 					+ carDatas.get(index).getObj_id(), "");
 			if (result.equals("")) {// 未体检过
-				
+
 				Log.i("FaultDetectionActivity", "未体检过");
 				carViews.get(index).getDialHealthScore()
 						.initValue(100, handler);
@@ -326,7 +326,7 @@ public class FaultDetectionActivity extends Activity {
 
 			} else {
 				try {
-					Log.i("FaultDetectionActivity", "有历史体检数据"+result);
+					Log.i("FaultDetectionActivity", "有历史体检数据" + result);
 					JSONObject jsonObject = new JSONObject(result);
 					// 健康指数
 					int health_score = jsonObject.getInt("health_score");
@@ -429,22 +429,20 @@ public class FaultDetectionActivity extends Activity {
 		// carViews.get(index).getTv_detection_status().setText("体检中");
 		Log.i("FaultDetectionActivity", "体检中 初始化数据 ");
 		// 始化数据
-		notifyListView(Const.DETECT_IN_PROGRESS,new int[]{-1,-1,-1,-1,-1,-1});
+		notifyListView(Const.DETECT_IN_PROGRESS, new int[] { -1, -1, -1, -1,
+				-1, -1 });
 	}
-	
-	public void notifyListView(final int flag ,final int[] faults){
-		handler.post(new Runnable(){
+
+	public void notifyListView(final int flag, final int[] faults) {
+		handler.post(new Runnable() {
 			@Override
 			public void run() {
-				adapter.change(flag,faults);
+				adapter.change(flag, faults);
 				adapter.notifyDataSetChanged();
 			}
-			
+
 		});
 	}
-	
-	
-	
 
 	private void initView() {
 		ll_fault = (LinearLayout) findViewById(R.id.ll_fault);
@@ -618,101 +616,68 @@ public class FaultDetectionActivity extends Activity {
 		@Override
 		public void run() {
 			try {
-				
-				String Device_id = carDatas.get(index).getDevice_id();
-				// 获取车的最新信息
-				String gpsUrl = GetUrl.getCarGpsData(Device_id, app.auth_code);
-				String gpsResult = GetDataFromUrl.getData(gpsUrl);
-				// 解析gps数据
-				Gson gson = new Gson();
-				// 获取所有gps数据
-				ActiveGpsData activeGpsData = gson.fromJson(gpsResult,
-						ActiveGpsData.class);
-				if (activeGpsData == null
-						|| activeGpsData.getActive_gps_data() == null
-						|| activeGpsData.getActive_gps_data().equals("")) {
-					// 没有定位信息
-					Log.i("FaultDetectionActivity", "没有定位信息");
-					Message message = new Message();
-					message.what = CAR_TYPE_ONLINE;
-					handler.sendMessage(message);
-					return;
-				}
-				// 解析gps数据
-				GpsData gpsData = activeGpsData.getActive_gps_data();
-				// 先判断离线
-				if (gpsData == null
-						|| gpsData.getRcv_time() == null
-						|| (GetSystem.spacingNowTime(GetSystem
-								.ChangeTimeZone(gpsData.getRcv_time()
-										.substring(0, 19).replace("T", " "))) / 60) > 10) {
-					// 提示离线
-					Message message = new Message();
-					message.what = CAR_TYPE_ONLINE;
-					handler.sendMessage(message);
-					return;
-				}
-				boolean isStop = true;
-				for (int i = 0; i < gpsData.getUni_status().size(); i++) {
-					if (gpsData.getUni_status().get(i) == Info.CarStartStatus) {
-						isStop = false;
-						break;
-					}
-				}
-				if (isStop) {
-					// 提示车辆未启动
-					Log.i("FaultDetectionActivity", "提示车辆未启动");
-					Message message = new Message();
-					message.what = CAR_TYPE_STOP;
-					handler.sendMessage(message);
-					return;
-				}
-				
-				carDatas.get(index).setStop(isStop); // 几下车辆启动状态
-				
-				
-				
-				// 初始化状态
+				Log.i("FaultDetectionActivity", "开启线程获取gps信息和车辆健康信息");
+
+				/*
+				 * String Device_id = carDatas.get(index).getDevice_id(); //
+				 * 获取车的最新信息 String gpsUrl = GetUrl.getCarGpsData(Device_id,
+				 * app.auth_code); String gpsResult =
+				 * GetDataFromUrl.getData(gpsUrl); // 解析gps数据 Gson gson = new
+				 * Gson(); // 获取所有gps数据 ActiveGpsData activeGpsData =
+				 * gson.fromJson(gpsResult, ActiveGpsData.class); if
+				 * (activeGpsData == null || activeGpsData.getActive_gps_data()
+				 * == null || activeGpsData.getActive_gps_data().equals("")) {
+				 * // 没有定位信息 Log.i("FaultDetectionActivity", "没有定位信息"); Message
+				 * message = new Message(); message.what = CAR_TYPE_ONLINE;
+				 * handler.sendMessage(message); return; } // 解析gps数据 GpsData
+				 * gpsData = activeGpsData.getActive_gps_data(); // 先判断离线 if
+				 * (gpsData == null || gpsData.getRcv_time() == null ||
+				 * (GetSystem.spacingNowTime(GetSystem
+				 * .ChangeTimeZone(gpsData.getRcv_time() .substring(0,
+				 * 19).replace("T", " "))) / 60) > 10) { // 提示离线 Message message
+				 * = new Message(); message.what = CAR_TYPE_ONLINE;
+				 * handler.sendMessage(message); return; } boolean isStop =
+				 * true; for (int i = 0; i < gpsData.getUni_status().size();
+				 * i++) { if (gpsData.getUni_status().get(i) ==
+				 * Info.CarStartStatus) { isStop = false; break; } } if (isStop)
+				 * { // 提示车辆未启动 Log.i("FaultDetectionActivity", "提示车辆未启动");
+				 * Message message = new Message(); message.what =
+				 * CAR_TYPE_STOP; handler.sendMessage(message); return; }
+				 * 
+				 * carDatas.get(index).setStop(isStop); // 几下车辆启动状态
+				 * 
+				 * 
+				 * // 初始化状态 Message message = new Message(); message.what =
+				 * INIT_STATUS; handler.sendMessage(message); // 获取体检数据
+				 * Log.i("FaultDetectionActivity", "获取体检数据"); String healthUrl =
+				 * GetUrl.getHealthData(Device_id, app.auth_code,
+				 * carDatas.get(index).getCar_brand()); String healthResult =
+				 * GetDataFromUrl.getData(healthUrl);
+				 * 
+				 * message.what = getData; message.obj = healthResult;
+				 * handler.sendMessage(message);
+				 */
+
 				Message message = new Message();
 				message.what = INIT_STATUS;
-				handler.sendMessage(message);
-				// 获取体检数据
-				Log.i("FaultDetectionActivity", "获取体检数据");
-				String healthUrl = GetUrl.getHealthData(Device_id,
-						app.auth_code, carDatas.get(index).getCar_brand());
-				String healthResult = GetDataFromUrl.getData(healthUrl);
-				
-				message.what = getData;
-				message.obj = healthResult;
 				handler.sendMessage(message);
 
-				
-				/*
-				Message message = new Message();
-				message.what = INIT_STATUS;
-				handler.sendMessage(message);
-				
-				
 				SharedPreferences preferences = getSharedPreferences(
 						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 				result = preferences.getString(Constant.sp_health_score
 						+ carDatas.get(index).getObj_id(), "");
-				
-				
-				 message = new Message();
+
+				message = new Message();
 				message.what = getData;
 				message.obj = result;
 				handler.sendMessage(message);
-				
-				*/
-				
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		}
-		
+
 	}
 
 	/** 提示车辆离线 **/
@@ -724,7 +689,7 @@ public class FaultDetectionActivity extends Activity {
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				
+
 			}
 		}).show();
 	}
@@ -734,7 +699,7 @@ public class FaultDetectionActivity extends Activity {
 		AlertDialog.Builder builder = new AlertDialog.Builder(
 				FaultDetectionActivity.this);
 		builder.setTitle("提示");
-		builder.setMessage("终端未启动，您可以点击查看历史平均数据。");
+		builder.setMessage("车辆未启动，您可以点击查看历史平均数据。");
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -747,17 +712,16 @@ public class FaultDetectionActivity extends Activity {
 	String dpdy_content, jqmkd_content, fdjzs_content, sw_content,
 			chqwd_content;
 
-	private void refreshHealth(int r) {
-		
-			if (r== 0){
-				return;
-			}
-			
+	private void refreshHealth(final int r) {
+
+		if (r == 0) {
+			return;
+		}
+		Log.i("FaultDetectionActivity", "refreshHealth" + r);
 		try {
 			JSONObject jsonObject = new JSONObject(result);
-			switch(r){
+			switch (r) {
 			case 1:
-				
 				JSONArray jsonErrArray = jsonObject
 						.getJSONArray("active_obd_err");
 				if (jsonErrArray.length() > 0) {
@@ -798,7 +762,7 @@ public class FaultDetectionActivity extends Activity {
 				break;
 			case 4:
 				// 怠速控制系统
-				
+
 				boolean if_fdjzs_err = !jsonObject.getBoolean("if_fdjzs_err");
 				fdjzs_content = jsonObject.getString("fdjzs_content");
 				if (if_fdjzs_err) {
@@ -831,18 +795,32 @@ public class FaultDetectionActivity extends Activity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+
+		if (r == 6) {
+			inProgress = false;
+			return;
+		}
+
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+
+				int next = r + 1;
+				refreshHealth(next);
+			}
+		}, peroidRefersh);
 		
 	}
-	
-	public void changeItem(final int flag ,final int faultCode){
-		handler.post(new Runnable(){
+
+	public void changeItem(final int flag, final int faultCode) {
+		handler.post(new Runnable() {
 			@Override
 			public void run() {
 				Log.i("FaultDetectionActivity", "改变一个");
-				adapter.changeItem(flag,faultCode);
+				adapter.changeItem(flag, faultCode);
 				adapter.notifyDataSetChanged();
 			}
-			
+
 		});
 	}
 
@@ -884,6 +862,11 @@ public class FaultDetectionActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		MobclickAgent.onResume(this);
+
+		if (!isCreate) {
+			// 若果不是第一次创建就返回
+			return;
+		}
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -892,6 +875,8 @@ public class FaultDetectionActivity extends Activity {
 				clickHealth();
 			}
 		}, 50);
+		isCreate = false;
+
 	}
 
 	@Override

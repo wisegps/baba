@@ -89,6 +89,8 @@ public class DialView extends FrameLayout {
 		this.addView(imgCover);
 	}
 
+	
+	
 	// 初始化一个固定值
 	public void initValue(final int value,Handler handler) {
 		this.handler = handler;
@@ -115,7 +117,11 @@ public class DialView extends FrameLayout {
 		this.handler = handler;
 		currentValue = 100;
 		startColorAnimation();
-		rolateCursor(value, period * (100 - value));
+		rolateCursor(value, getDuration(value));
+	}
+	
+	public long getDuration(int value){
+		return period * (100 - value);
 	}
 
 	public void stopAnimation() {

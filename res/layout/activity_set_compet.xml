@@ -32,13 +32,9 @@
 	        android:src="@drawable/nav_ok"/>
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="@dimen/title_hight"
-            android:layout_height="@dimen/title_hight"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/margins"
-            android:padding="@dimen/margins"
+           style="@style/title_back_style"
             android:onClick="onClick"
-            android:src="@drawable/nav_back" />
+           />
     </RelativeLayout>
     <ScrollView 
         android:id="@+id/sv_compet"

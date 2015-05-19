@@ -55,10 +55,10 @@ public class DriveActivity extends Activity {
 		setContentView(R.layout.activity_drive);
 		app = (AppApplication) getApplication();
 		dialDriveScore = (DialView) findViewById(R.id.dialDriveScore);
-		Button bt_drive_rank = (Button) findViewById(R.id.bt_drive_rank);
-		bt_drive_rank.setOnClickListener(onClickListener);
-		Button bt_drive_travel = (Button) findViewById(R.id.bt_drive_travel);
-		bt_drive_travel.setOnClickListener(onClickListener);
+		TextView tv_drive_rank = (TextView) findViewById(R.id.tv_drive_rank);
+		tv_drive_rank.setOnClickListener(onClickListener);
+		TextView tv_drive_travel = (TextView) findViewById(R.id.tv_drive_travel);
+		tv_drive_travel.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		ImageView iv_left = (ImageView) findViewById(R.id.iv_left);
@@ -141,12 +141,12 @@ public class DriveActivity extends Activity {
 					iv_right.setVisibility(View.GONE);
 				}
 				break;
-			case R.id.bt_drive_rank:
+			case R.id.tv_drive_rank:
 				// TODO 驾驶排行
 				startActivity(new Intent(DriveActivity.this,
 						DriveRankActivity.class));
 				break;
-			case R.id.bt_drive_travel:
+			case R.id.tv_drive_travel:
 				Intent intent = new Intent(DriveActivity.this,
 						TravelActivity.class);
 				intent.putExtra("device_id", Device_id);

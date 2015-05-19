@@ -28,12 +28,7 @@
 	        android:src="@drawable/nav_ok"/>
 		<ImageView 
             android:id="@+id/iv_back"
-	        android:layout_width="@dimen/title_hight"
-	        android:layout_height="@dimen/title_hight"
-	        android:layout_marginLeft="@dimen/margins"
-	        android:padding="@dimen/margins"
-	        android:layout_centerVertical="true"
-	        android:src="@drawable/nav_back"/>
+	      style="@style/title_back_style"/>
 	</RelativeLayout>
 	<Button
         android:id="@+id/bt_jump"

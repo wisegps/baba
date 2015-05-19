@@ -24,53 +24,75 @@
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="@dimen/title_hight"
-            android:layout_height="@dimen/title_hight"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/margins"
-            android:padding="@dimen/margins"
-            android:src="@drawable/nav_back" />
+            style="@style/title_back_style" />
     </RelativeLayout>
-
+  <View
+        android:id="@+id/lineView"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_above="@id/ll_bottom"
+        android:background="#bbbbbb" />
+  
     <LinearLayout
         android:id="@+id/ll_bottom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/white"
         android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/bt_drive_rank"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/bg_green"
-            android:padding="@dimen/margins"
-            android:text="驾驶排行"
-            android:textColor="@color/white"
-            android:textSize="@dimen/bt" />
+            android:gravity="center" >
+
+            <TextView
+                android:id="@+id/tv_drive_rank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.8"
+                android:drawableLeft="@drawable/ico_drive_index"
+                android:gravity="center"
+                android:paddingBottom="14dp"
+                android:paddingTop="14dp"
+                android:text=" 驾驶排行"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/navy_blue" />
+        </LinearLayout>
 
         <View
             android:layout_width="0.5dp"
             android:layout_height="fill_parent"
             android:background="@color/white" />
 
-        <Button
-            android:id="@+id/bt_drive_travel"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/bg_green"
-            android:padding="@dimen/margins"
-            android:text="行程明细"
-            android:textColor="@color/white"
-            android:textSize="@dimen/bt" />
+            android:gravity="center" >
+
+            <TextView
+                android:id="@+id/tv_drive_travel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.8"
+                android:drawableLeft="@drawable/ico_travel_details"
+                android:gravity="center"
+                android:paddingBottom="14dp"
+                android:paddingTop="14dp"
+                android:text=" 行程明细"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/navy_blue" />
+        </LinearLayout>
     </LinearLayout>
+
+  
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/ll_bottom"
+        android:layout_above="@id/lineView"
         android:layout_below="@id/ll_top"
         android:scrollbars="none" >
 
@@ -87,7 +109,7 @@
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/margins" >
 
-                <include layout="@layout/include_drive_location"/>
+                <include layout="@layout/include_drive_location" />
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
