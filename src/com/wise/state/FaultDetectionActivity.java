@@ -618,46 +618,77 @@ public class FaultDetectionActivity extends Activity {
 			try {
 				Log.i("FaultDetectionActivity", "开启线程获取gps信息和车辆健康信息");
 
+				String Device_id = carDatas.get(index).getDevice_id();
+				// 获取车的最新信息
+				String gpsUrl = GetUrl.getCarGpsData(Device_id, app.auth_code);
+				String gpsResult = GetDataFromUrl.getData(gpsUrl);
+				// 解析gps数据
+				Gson gson = new Gson();
+				// 获取所有gps数据
+				ActiveGpsData activeGpsData = gson.fromJson(gpsResult,
+						ActiveGpsData.class);
+				if (activeGpsData == null
+						|| activeGpsData.getActive_gps_data() == null
+						|| activeGpsData.getActive_gps_data().equals("")) {
+					// 没有定位信息
+					Log.i("FaultDetectionActivity", "没有定位信息");
+					Message message = new Message();
+					message.what = CAR_TYPE_ONLINE;
+					handler.sendMessage(message);
+					return;
+				}
+				// 解析gps数据
+				GpsData gpsData = activeGpsData.getActive_gps_data();
+				// 先判断离线
+				if (gpsData == null
+						|| gpsData.getRcv_time() == null
+						|| (GetSystem.spacingNowTime(GetSystem
+								.ChangeTimeZone(gpsData.getRcv_time()
+										.substring(0, 19).replace("T", " "))) / 60) > 10) {
+					// 提示离线
+					Message message = new Message();
+					message.what = CAR_TYPE_ONLINE;
+					handler.sendMessage(message);
+					return;
+				}
+				boolean isStop = true;
+				for (int i = 0; i < gpsData.getUni_status().size(); i++) {
+					if (gpsData.getUni_status().get(i) == Info.CarStartStatus) {
+						isStop = false;
+						break;
+					}
+				}
+				
+				if (isStop) {
+					// 提示车辆未启动
+					Log.i("FaultDetectionActivity", "提示车辆未启动");
+					Message message = new Message();
+					message.what = CAR_TYPE_STOP;
+					handler.sendMessage(message);
+					return;
+				}
+				
+				carDatas.get(index).setStop(isStop); // 几下车辆启动状态
+				
+				Log.i("FaultDetectionActivity", " 初始化状态");
+				
+				// 初始化状态
+				Message msgInit = new Message();
+				msgInit.what = INIT_STATUS;
+				handler.sendMessage(msgInit);
+				// 获取体检数据
+				Log.i("FaultDetectionActivity", "获取体检数据");
+				String healthUrl = GetUrl.getHealthData(Device_id,
+						app.auth_code, carDatas.get(index).getCar_brand());
+				String healthResult = GetDataFromUrl.getData(healthUrl);
+				
+				Message msgGetData = new Message();
+				msgGetData.what = getData;
+				msgGetData.obj = healthResult;
+				handler.sendMessage(msgGetData);
+				 
+				
 				/*
-				 * String Device_id = carDatas.get(index).getDevice_id(); //
-				 * 获取车的最新信息 String gpsUrl = GetUrl.getCarGpsData(Device_id,
-				 * app.auth_code); String gpsResult =
-				 * GetDataFromUrl.getData(gpsUrl); // 解析gps数据 Gson gson = new
-				 * Gson(); // 获取所有gps数据 ActiveGpsData activeGpsData =
-				 * gson.fromJson(gpsResult, ActiveGpsData.class); if
-				 * (activeGpsData == null || activeGpsData.getActive_gps_data()
-				 * == null || activeGpsData.getActive_gps_data().equals("")) {
-				 * // 没有定位信息 Log.i("FaultDetectionActivity", "没有定位信息"); Message
-				 * message = new Message(); message.what = CAR_TYPE_ONLINE;
-				 * handler.sendMessage(message); return; } // 解析gps数据 GpsData
-				 * gpsData = activeGpsData.getActive_gps_data(); // 先判断离线 if
-				 * (gpsData == null || gpsData.getRcv_time() == null ||
-				 * (GetSystem.spacingNowTime(GetSystem
-				 * .ChangeTimeZone(gpsData.getRcv_time() .substring(0,
-				 * 19).replace("T", " "))) / 60) > 10) { // 提示离线 Message message
-				 * = new Message(); message.what = CAR_TYPE_ONLINE;
-				 * handler.sendMessage(message); return; } boolean isStop =
-				 * true; for (int i = 0; i < gpsData.getUni_status().size();
-				 * i++) { if (gpsData.getUni_status().get(i) ==
-				 * Info.CarStartStatus) { isStop = false; break; } } if (isStop)
-				 * { // 提示车辆未启动 Log.i("FaultDetectionActivity", "提示车辆未启动");
-				 * Message message = new Message(); message.what =
-				 * CAR_TYPE_STOP; handler.sendMessage(message); return; }
-				 * 
-				 * carDatas.get(index).setStop(isStop); // 几下车辆启动状态
-				 * 
-				 * 
-				 * // 初始化状态 Message message = new Message(); message.what =
-				 * INIT_STATUS; handler.sendMessage(message); // 获取体检数据
-				 * Log.i("FaultDetectionActivity", "获取体检数据"); String healthUrl =
-				 * GetUrl.getHealthData(Device_id, app.auth_code,
-				 * carDatas.get(index).getCar_brand()); String healthResult =
-				 * GetDataFromUrl.getData(healthUrl);
-				 * 
-				 * message.what = getData; message.obj = healthResult;
-				 * handler.sendMessage(message);
-				 */
-
 				Message message = new Message();
 				message.what = INIT_STATUS;
 				handler.sendMessage(message);
@@ -672,6 +703,7 @@ public class FaultDetectionActivity extends Activity {
 				message.obj = result;
 				handler.sendMessage(message);
 
+*/
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -790,6 +822,7 @@ public class FaultDetectionActivity extends Activity {
 				} else {
 					changeItem(5, 1);
 				}
+				inProgress = false;
 				break;
 			}
 		} catch (JSONException e) {
@@ -820,7 +853,6 @@ public class FaultDetectionActivity extends Activity {
 				adapter.changeItem(flag, faultCode);
 				adapter.notifyDataSetChanged();
 			}
-
 		});
 	}
 
