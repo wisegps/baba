@@ -53,7 +53,7 @@ public class CarRemindUpdateActivity extends Activity {
 	EditText et_mileage, et_content;
 	RemindData remindData;
 	AppApplication app;
-	List<CarData> carDatas ;
+	List<CarData> carDatas = new ArrayList<CarData>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

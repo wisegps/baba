@@ -25,6 +25,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -136,6 +137,7 @@ public class RemindActivity extends Activity {
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
+				Log.i("RemindActivity", "编辑");
 				Intent intent = new Intent(RemindActivity.this,
 						CarRemindUpdateActivity.class);
 				intent.putExtra("remindData", remindData);
