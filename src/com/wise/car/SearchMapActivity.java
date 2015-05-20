@@ -51,6 +51,7 @@ import com.baidu.mapapi.search.poi.PoiDetailResult;
 import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
+import com.baidu.mapapi.search.poi.PoiSortType;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
@@ -124,10 +125,11 @@ public class SearchMapActivity extends Activity {
 				e.printStackTrace();
 			}
 		} else {
+			
 			// 搜索关键字
 			mPoiSearch.searchNearby((new PoiNearbySearchOption()).keyword(key)
 					.location(new LatLng(carData.getLat(), carData.getLon()))
-					.radius(5000));
+					.radius(5000).sortType(PoiSortType.distance_from_near_to_far));
 		}
 
 		lv_activity_search_map = (ListView) findViewById(R.id.lv_activity_search_map);

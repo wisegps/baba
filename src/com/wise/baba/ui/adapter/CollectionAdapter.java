@@ -4,7 +4,6 @@ import java.util.List;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
-import com.baidu.mapapi.navi.NaviPara;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.biz.GetSystem;
