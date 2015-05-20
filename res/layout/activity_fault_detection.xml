@@ -49,68 +49,10 @@
             </ListView>
 			
             <View android:layout_width="fill_parent" 
-                
                 android:layout_height="1px"
                 android:background="#bbbbbb"
                 />
-            <LinearLayout
-                android:id="@+id/ll_bottom"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/rescue"
-                    style="@style/bottom_text_nav_style"
-                    android:text=" 救援"
-                    android:drawableStart="@drawable/ico_car_help"
-                     />
-
-                <View
-                    android:layout_width="0.5dp"
-                    android:layout_height="fill_parent"
-                    android:background="@color/white" />
-
-                <TextView
-                    android:id="@+id/risk"
-                    style="@style/bottom_text_nav_style"
-                    android:text=" 报险"
-                     android:drawableLeft="@drawable/ico_car_insurance"
-                    />
-
-                <View
-                    android:layout_width="0.5dp"
-                    android:layout_height="fill_parent"
-                    android:background="@color/white" />
-
-                <TextView
-                    android:id="@+id/ask"
-                    style="@style/bottom_text_nav_style"
-                    android:layout_weight="1"
-                    android:text=" 问一下"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/mechanics"
-                    style="@style/bottom_text_nav_style"
-                    android:text=" 找汽修"
-                     android:drawableLeft="@drawable/ico_car_find_service"
-                    />
-
-                <View
-                    android:layout_width="0.5dp"
-                    android:layout_height="fill_parent"
-                    android:background="@color/white" />
-
-                <TextView
-                    android:id="@+id/tv_ask_expert"
-                    style="@style/bottom_text_nav_style"
-                    android:text=" 问专家"
-                     android:drawableLeft="@drawable/ico_car_ask"
-                    />
-            </LinearLayout>
+            <include layout="@layout/include_fault_detection"/>
         </LinearLayout>
     </RelativeLayout>
 

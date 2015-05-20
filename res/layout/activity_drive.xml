@@ -26,13 +26,14 @@
             android:id="@+id/iv_back"
             style="@style/title_back_style" />
     </RelativeLayout>
-  <View
+
+    <View
         android:id="@+id/lineView"
         android:layout_width="fill_parent"
         android:layout_height="1px"
         android:layout_above="@id/ll_bottom"
         android:background="#bbbbbb" />
-  
+
     <LinearLayout
         android:id="@+id/ll_bottom"
         android:layout_width="fill_parent"
@@ -51,14 +52,14 @@
                 android:id="@+id/tv_drive_rank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.8"
                 android:drawableLeft="@drawable/ico_drive_index"
+                android:fontFamily="sans-serif-light"
                 android:gravity="center"
-                android:paddingBottom="14dp"
-                android:paddingTop="14dp"
+                android:paddingBottom="13dp"
+                android:paddingTop="13dp"
                 android:text=" 驾驶排行"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/navy_blue" />
+                android:textColor="#50b7de" />
         </LinearLayout>
 
         <View
@@ -76,18 +77,16 @@
                 android:id="@+id/tv_drive_travel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.8"
                 android:drawableLeft="@drawable/ico_travel_details"
+                android:fontFamily="sans-serif-light"
                 android:gravity="center"
-                android:paddingBottom="14dp"
-                android:paddingTop="14dp"
+                android:paddingBottom="13dp"
+                android:paddingTop="13dp"
                 android:text=" 行程明细"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/navy_blue" />
+                android:textColor="#50b7de" />
         </LinearLayout>
     </LinearLayout>
-
-  
 
     <ScrollView
         android:layout_width="fill_parent"

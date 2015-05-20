@@ -105,9 +105,7 @@ public class FragmentHome extends Fragment {
 			Intent intent = new Intent(getActivity(), LoginActivity.class);
 			startActivity(intent);
 		}
-
 		getCards();
-
 	}
 
 	FragmentTransaction transaction;
@@ -122,7 +120,6 @@ public class FragmentHome extends Fragment {
 		isChange = false;
 		cards.clear();
 		Log.i("fragment", "设置卡片布局");
-
 		// // 可选布局
 
 		String sharedCards[] = cardsSharePreferences.get();

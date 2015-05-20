@@ -62,7 +62,8 @@ public class DialView extends FrameLayout {
 		initChildView();
 
 	}
-
+	
+	
 	/**
 	 * 初始化子控件（图层）
 	 */
@@ -108,8 +109,32 @@ public class DialView extends FrameLayout {
 	
 	}
 	
+	/**
+	 * 设置转动时间间隔
+	 */
+	public void setPeriod(long duration){
+		this.period = duration;
+	}
+	
+	/**
+	 * 
+	 * @param value
+	 * @param handler
+	 * @param totalTime
+	 */
+		public void startAnimation(int value, Handler handler,long totalTime) {
+			// 根据总耗时计算 转动刷新时间间隔
+			if(value!=100){
+				this.period = totalTime/(100-value);
+			}
+			startAnimation(value,handler);
+		}
 
-	// 設置一個值，出現動畫滾動到該值
+	/**
+	 *  設置一個值，出現動畫滾動到該值
+	 * @param value
+	 * @param handler
+	 */
 	public void startAnimation(int value, Handler handler) {
 		Log.i("DialView", "startAnimation:"+value);
 		imgCusor.setImageResource(R.drawable.circle_cursor);

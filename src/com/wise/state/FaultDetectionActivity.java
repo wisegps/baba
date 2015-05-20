@@ -64,7 +64,7 @@ import android.widget.Toast;
  * @author honesty
  * 
  */
-public class FaultDetectionActivity extends Activity {
+public class FaultDetectionActivity extends Activity implements OnClickListener{
 	private static final int getData = 1;
 	private static final int refresh = 2;
 	private static final int getFault = 3;
@@ -102,7 +102,8 @@ public class FaultDetectionActivity extends Activity {
 	List<CarData> carDatas;
 
 	private boolean isCreate = false;// 界面第一次进入
-	public long peroidRefersh = 1;
+	//public long peroidRefersh = 1;
+	public long duration = 300;//单项体检耗时
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -117,66 +118,9 @@ public class FaultDetectionActivity extends Activity {
 		initView();
 		initDataView();
 	}
+	
+	
 
-	OnClickListener onClickListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			switch (v.getId()) {
-			case R.id.dialHealthScore: // 点击体检
-				clickHealth();
-				break;
-			case R.id.iv_back:
-				Back();
-				finish();
-				break;
-			case R.id.tv_ask_expert:
-				Intent intent = new Intent(FaultDetectionActivity.this,
-						LetterActivity.class);
-				intent.putExtra("cust_id", "12");
-				intent.putExtra("cust_name", "专家");
-				startActivity(intent);
-				break;
-			// 救援
-			case R.id.risk:
-				try {// 平板没有电话模块异常
-					String phone = carDatas.get(index).getInsurance_tel();
-					Intent in_1 = new Intent(Intent.ACTION_DIAL,
-							Uri.parse("tel:" + (phone != null ? phone : "")));
-					startActivity(in_1);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				break;
-			// 报险
-			case R.id.rescue:
-				try {// 平板没有电话模块异常
-					String tel = carDatas.get(index).getMaintain_tel();
-					Intent in_2 = new Intent(Intent.ACTION_DIAL,
-							Uri.parse("tel:" + (tel != null ? tel : "")));
-					startActivity(in_2);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				break;
-			// 问一下
-			case R.id.ask:
-				Toast.makeText(FaultDetectionActivity.this, "更新中.....",
-						Toast.LENGTH_SHORT).show();
-				break;
-			// 找气修
-			case R.id.mechanics:
-				Intent in = new Intent(FaultDetectionActivity.this,
-						SearchMapActivity.class);
-				in.putExtra("index", index);
-				in.putExtra("keyWord", "维修店");
-				in.putExtra("key", "汽车维修");
-				in.putExtra("latitude", 0);
-				in.putExtra("longitude", 0);
-				startActivity(in);
-				break;
-			}
-		}
-	};
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -214,10 +158,8 @@ public class FaultDetectionActivity extends Activity {
 				jsonHealth(msg.obj.toString());
 				// 体检
 				DialView view = carViews.get(index).getDialHealthScore();
-				view.startAnimation(mTotalProgress, handler);
-				peroidRefersh = (view.getDuration(mTotalProgress)) / 6 + 1;
-				Log.i("FaultDetectionActivity", "peroidRefersh："
-						+ peroidRefersh);
+				long totalTime = duration*Point;
+				view.startAnimation(mTotalProgress, handler,totalTime);
 				refreshHealth(1);
 				break;
 			case refresh:
@@ -250,6 +192,8 @@ public class FaultDetectionActivity extends Activity {
 	};
 	List<CarView> carViews = new ArrayList<CarView>();
 
+	
+	
 	/** 滑动车辆布局 **/
 	private void initDataView() {
 		SharedPreferences preferences = getSharedPreferences(
@@ -262,7 +206,7 @@ public class FaultDetectionActivity extends Activity {
 
 			DialView dialHealthScore = (DialView) v
 					.findViewById(R.id.dialHealthScore);
-			dialHealthScore.setOnClickListener(onClickListener);
+			dialHealthScore.setOnClickListener(this);
 			TextView tv_score = (TextView) v.findViewById(R.id.tv_score);
 			TextView tv_title = (TextView) v.findViewById(R.id.tv_title);
 			CarView carView = new CarView();
@@ -456,14 +400,9 @@ public class FaultDetectionActivity extends Activity {
 			}
 		});
 
-		findViewById(R.id.rescue).setOnClickListener(onClickListener);
-		findViewById(R.id.risk).setOnClickListener(onClickListener);
-		findViewById(R.id.ask).setOnClickListener(onClickListener);
-		findViewById(R.id.mechanics).setOnClickListener(onClickListener);
-		findViewById(R.id.tv_ask_expert).setOnClickListener(onClickListener);
 
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
-		iv_back.setOnClickListener(onClickListener);
+		iv_back.setOnClickListener(this);
 		tv_name = (TextView) findViewById(R.id.tv_name);
 		listDetection = (ListView) findViewById(R.id.listDetection);
 		adapter = new ListDetectAdapter(this);
@@ -841,7 +780,7 @@ public class FaultDetectionActivity extends Activity {
 				int next = r + 1;
 				refreshHealth(next);
 			}
-		}, peroidRefersh);
+		}, duration);
 		
 	}
 
@@ -930,5 +869,68 @@ public class FaultDetectionActivity extends Activity {
 				}
 			}, 50);
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see android.view.View.OnClickListener#onClick(android.view.View)
+	 */
+	@Override
+	public void onClick(View v) {
+
+		switch (v.getId()) {
+		case R.id.dialHealthScore: // 点击体检
+			clickHealth();
+			break;
+		case R.id.iv_back:
+			Back();
+			finish();
+			break;
+		case R.id.llytExpert:
+			Intent intent = new Intent(FaultDetectionActivity.this,
+					LetterActivity.class);
+			intent.putExtra("cust_id", "12");
+			intent.putExtra("cust_name", "专家");
+			startActivity(intent);
+			break;
+		// 救援
+		case R.id.llytRescue:
+			try {// 平板没有电话模块异常
+				String phone = carDatas.get(index).getInsurance_tel();
+				Intent in_1 = new Intent(Intent.ACTION_DIAL,
+						Uri.parse("tel:" + (phone != null ? phone : "")));
+				startActivity(in_1);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
+		// 报险
+		case R.id.llytInsurance:
+			try {// 平板没有电话模块异常
+				String tel = carDatas.get(index).getMaintain_tel();
+				Intent in_2 = new Intent(Intent.ACTION_DIAL,
+						Uri.parse("tel:" + (tel != null ? tel : "")));
+				startActivity(in_2);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
+		// 问一下
+		case R.id.llytAsk:
+			Toast.makeText(FaultDetectionActivity.this, "更新中.....",
+					Toast.LENGTH_SHORT).show();
+			break;
+		// 找气修
+		case R.id.llytRepair:
+			Intent in = new Intent(FaultDetectionActivity.this,
+					SearchMapActivity.class);
+			in.putExtra("index", index);
+			in.putExtra("keyWord", "维修店");
+			in.putExtra("key", "汽车维修");
+			in.putExtra("latitude", 0);
+			in.putExtra("longitude", 0);
+			startActivity(in);
+			break;
+		}
+	
 	}
 }

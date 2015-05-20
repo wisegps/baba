@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_bottom"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="13dp"
+    android:paddingBottom="13dp"
+    android:orientation="horizontal" >
+
+    <!-- 救援 -->
+
+    <LinearLayout
+        android:id="@+id/llytRescue"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:onClick="onClick"
+         >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ico_car_rescue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text=" 救援"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#50b7de" />
+    </LinearLayout>
+    <!-- 报险 -->
+ <LinearLayout
+        android:id="@+id/llytInsurance"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:onClick="onClick"
+        android:orientation="horizontal" >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ico_car_insurance" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text=" 报险"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#50b7de" />
+    </LinearLayout>
+    <!-- 问一下 -->
+
+    <LinearLayout
+        android:id="@+id/llytAsk"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:visibility="gone"
+        android:onClick="onClick"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ico_car_rescue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text=" 问一下"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#50b7de" />
+    </LinearLayout>
+    <!-- 找汽修 -->
+
+   <LinearLayout
+        android:id="@+id/llytRepair "
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:onClick="onClick"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ico_car_repair" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text=" 汽修"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#50b7de" />
+    </LinearLayout>
+    <!-- 问专家 -->
+
+    <LinearLayout
+        android:id="@+id/llytExpert"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:onClick="onClick"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ico_car_expert" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text=" 专家"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#50b7de" />
+    </LinearLayout>
+
+</LinearLayout>
