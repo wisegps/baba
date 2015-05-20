@@ -42,7 +42,7 @@
 		        android:scaleType="matrix"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"/>		    
-		        <com.wise.baba.ui.widget.TimTextVieww
+		        <com.wise.baba.ui.widget.TimTextView
 		        android:id="@+id/tv_send_in"
 		        android:visibility="gone"
 		        android:layout_width="wrap_content"
