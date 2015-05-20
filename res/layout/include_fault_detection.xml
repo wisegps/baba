@@ -3,8 +3,6 @@
     android:id="@+id/ll_bottom"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="13dp"
-    android:paddingBottom="13dp"
     android:orientation="horizontal" >
 
     <!-- 救援 -->
@@ -15,9 +13,10 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:orientation="horizontal"
         android:onClick="onClick"
-         >
+        android:orientation="horizontal"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp" >
 
         <ImageView
             android:layout_width="wrap_content"
@@ -29,18 +28,22 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
             android:text=" 救援"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="16sp"
             android:textColor="#50b7de" />
     </LinearLayout>
     <!-- 报险 -->
- <LinearLayout
+
+    <LinearLayout
         android:id="@+id/llytInsurance"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
         android:onClick="onClick"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp" >
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +54,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
             android:text=" 报险"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="16sp"
             android:textColor="#50b7de" />
     </LinearLayout>
     <!-- 问一下 -->
@@ -62,9 +65,11 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:visibility="gone"
         android:onClick="onClick"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:visibility="gone" >
 
         <ImageView
             android:layout_width="wrap_content"
@@ -76,19 +81,21 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
             android:text=" 问一下"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="16sp"
             android:textColor="#50b7de" />
     </LinearLayout>
     <!-- 找汽修 -->
 
-   <LinearLayout
+    <LinearLayout
         android:id="@+id/llytRepair "
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
         android:onClick="onClick"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp" >
 
         <ImageView
             android:layout_width="wrap_content"
@@ -100,7 +107,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
             android:text=" 汽修"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="16sp"
             android:textColor="#50b7de" />
     </LinearLayout>
     <!-- 问专家 -->
@@ -112,7 +119,9 @@
         android:layout_weight="1"
         android:gravity="center"
         android:onClick="onClick"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp" >
 
         <ImageView
             android:layout_width="wrap_content"
@@ -124,7 +133,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
             android:text=" 专家"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="16sp"
             android:textColor="#50b7de" />
     </LinearLayout>
 
