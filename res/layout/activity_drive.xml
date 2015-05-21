@@ -158,28 +158,6 @@
                                 android:textColor="@color/navy_blue" />
                         </LinearLayout>
                     </LinearLayout>
-
-                    <ImageView
-                        android:id="@+id/iv_left"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/double_margins"
-                        android:background="@drawable/bg_common"
-                        android:padding="@dimen/double_margins"
-                        android:src="@drawable/btn_jiantou_lvse_you" />
-
-                    <ImageView
-                        android:id="@+id/iv_right"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/double_margins"
-                        android:background="@drawable/bg_common"
-                        android:padding="@dimen/double_margins"
-                        android:src="@drawable/btn_jiantou_lvse_zuo"
-                        android:visibility="gone" />
                 </RelativeLayout>
             </LinearLayout>
 

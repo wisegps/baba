@@ -11,6 +11,7 @@ import com.wise.baba.biz.GetUrl;
 import com.wise.baba.entity.CarData;
 import com.wise.baba.net.NetThread;
 import com.wise.baba.ui.widget.DialView;
+import com.wise.baba.util.DateUtil;
 import com.wise.baba.util.DialBitmapFactory;
 import com.wise.car.CarLocationActivity;
 import com.wise.car.TravelActivity;
@@ -46,13 +47,14 @@ public class DriveActivity extends Activity {
 	boolean isNearData = false;
 	CarData carData;
 	AppApplication app;
-	
+	DateUtil dateUtil;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_drive);
+		dateUtil = new DateUtil();
 		app = (AppApplication) getApplication();
 		dialDriveScore = (DialView) findViewById(R.id.dialDriveScore);
 		TextView tv_drive_rank = (TextView) findViewById(R.id.tv_drive_rank);
@@ -65,6 +67,7 @@ public class DriveActivity extends Activity {
 		iv_left.setOnClickListener(onClickListener);
 		iv_right = (ImageView) findViewById(R.id.iv_right);
 		iv_right.setOnClickListener(onClickListener);
+		iv_right.setEnabled(false);
 		tv_advice = (TextView) findViewById(R.id.tv_advice);
 		tv_safe = (TextView) findViewById(R.id.tv_safe);
 		tv_eco = (TextView) findViewById(R.id.tv_eco);
@@ -101,6 +104,11 @@ public class DriveActivity extends Activity {
 			iv_location.setTag(is_online);
 			tv_location.setTextColor(Color.parseColor("#50b7de"));
 			tv_location.setAlpha(0.6f);
+			
+			
+			tv_date.setTextColor(Color.parseColor("#50b7de"));
+			tv_date.setAlpha(0.6f);
+			
 			//imgOnLine.setImageResource(R.drawable.ico_key);
 		}else{
 			//imgOnLine.setImageResource(R.drawable.ico_key_close);
@@ -108,13 +116,18 @@ public class DriveActivity extends Activity {
 			iv_location.setTag(is_online);
 			tv_location.setTextColor(Color.BLACK);
 			tv_location.setAlpha(0.3f);
+			tv_date.setTextColor(Color.BLACK);
+			tv_date.setAlpha(0.3f);
+			
 		}
 		
 		
 		
 		Device_id = carData.getDevice_id();
 		Date = GetSystem.GetNowMonth().getDay();
-		tv_date.setText(Date);
+		
+		
+		tv_date.setText(dateUtil.toChineseDate(Date));
 		getDriveData();
 	}
 
@@ -127,18 +140,18 @@ public class DriveActivity extends Activity {
 				break;
 			case R.id.iv_left:
 				Date = GetSystem.GetNextData(Date, -1);
-				tv_date.setText(Date);
+				tv_date.setText(dateUtil.toChineseDate(Date));
 				getDriveData();
-				iv_right.setVisibility(View.VISIBLE);
+				iv_right.setEnabled(true);
 				break;
 			case R.id.iv_right:
 				Date = GetSystem.GetNextData(Date, 1);
-				tv_date.setText(Date);
+				tv_date.setText(dateUtil.toChineseDate(Date));
 				getDriveData();
 				boolean isMax = GetSystem.maxTime(Date + " 00:00:00", GetSystem
 						.GetNowMonth().getDay() + " 00:00:00");
 				if (isMax) {
-					iv_right.setVisibility(View.GONE);
+					iv_right.setEnabled(false);
 				}
 				break;
 			case R.id.tv_drive_rank:
@@ -146,6 +159,7 @@ public class DriveActivity extends Activity {
 				startActivity(new Intent(DriveActivity.this,
 						DriveRankActivity.class));
 				break;
+				
 			case R.id.tv_drive_travel:
 				Intent intent = new Intent(DriveActivity.this,
 						TravelActivity.class);
@@ -198,12 +212,9 @@ public class DriveActivity extends Activity {
 					+ "&city=" + URLEncoder.encode(app.City, "UTF-8")
 					+ "&gas_no=" + Gas_no;
 			new NetThread.GetDataThread(handler, url, getData).start();
-			
-			
 			// 获取gps信息
 			String gpsUrl = GetUrl.getCarGpsData(Device_id, app.auth_code);
 			new NetThread.GetDataThread(handler, gpsUrl, getGps, app.currentCarIndex).start();
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -240,6 +251,8 @@ public class DriveActivity extends Activity {
 		int drive_score = 0;
 		try {
 			JSONObject jsonObject = new JSONObject(Data);
+			
+			Log.i("DriveActivity", Data);
 			drive_score = jsonObject.getInt("drive_score");
 			int safe_score = jsonObject.getInt("safe_score");
 			int eco_score = jsonObject.getInt("eco_score");
@@ -263,8 +276,6 @@ public class DriveActivity extends Activity {
 			tv_fuel.setText(total_fuel);
 			tv_avg_fuel.setText(avg_fuel.equals("null") ? "0" : avg_fuel);
 			tv_drive.setText("" + drive_score);
-			
-			
 			
 			tv_spd_up.setText("" + quick_accel);;
 			tv_spd_down.setText("" + quick_break);;
