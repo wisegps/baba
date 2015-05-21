@@ -44,7 +44,6 @@ import android.widget.AdapterView.OnItemClickListener;
 public class SmsActivity extends Activity implements IXListViewListener{
 	
 	private static final String TAG = "SmsActivity";
-	
 	private final int frist_sms = 1;
 	private final int GET_SMS = 2;
 	private final int GET_NEXT_SMS = 3;

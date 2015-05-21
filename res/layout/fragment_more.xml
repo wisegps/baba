@@ -20,6 +20,7 @@
 	         android:textColor="@color/white" />
         <ImageView 
             android:id="@+id/iv_back"
+            android:visibility="gone"
 	       style="@style/title_back_style"/>
 	</RelativeLayout>
 	<ScrollView 
