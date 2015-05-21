@@ -108,7 +108,9 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		});
 		isService = getIntent().getBooleanExtra("isService", false);
 		if(isService){
+			
 			carDatas = ManageActivity.carDatas;
+			//index_car = this.getIntent().getIntExtra("index", 0);
 		}else{
 			carDatas = (List<CarData>) this.getIntent().getSerializableExtra("carDatas");
 		}

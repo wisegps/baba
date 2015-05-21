@@ -69,6 +69,13 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_friend_location);
+		
+		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				FriendLocationActivity.this.finish();
+			}
+		});
 		app = (AppApplication) getApplication();
 		mMapView = (MapView) findViewById(R.id.mv_friend);
 		mBaiduMap = mMapView.getMap();
