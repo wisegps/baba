@@ -1,5 +1,6 @@
 package com.wise.state;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
@@ -112,9 +113,12 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 		setContentView(R.layout.activity_fault_detection);
 		isCreate = true;
 		app = (AppApplication) getApplication();
-		index = app.currentCarIndex;
+		index = this.getIntent().getIntExtra("index", 0);
 		Log.i("FaultDetectionActivity", "当前车辆位置" + index);
-		carDatas = app.carDatas;
+		carDatas = (List<CarData>) this.getIntent().getSerializableExtra("carDatas");
+		if(carDatas == null ){
+			carDatas = new ArrayList<CarData>();
+		}
 		initView();
 		initDataView();
 	}

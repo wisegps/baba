@@ -58,8 +58,8 @@ public class RemindListActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_car_remind);
         app = (AppApplication)getApplication();
-        cust_id = app.cust_id;
-        carDatas = app.carDatas;
+        cust_id = this.getIntent().getStringExtra("cust_id");
+        carDatas = carDatas = (List<CarData>) this.getIntent().getSerializableExtra("carDatas");
         rl_Note = (RelativeLayout)findViewById(R.id.rl_Note);
         ll_frist = (LinearLayout)findViewById(R.id.ll_frist);
         ll_frist.setOnClickListener(onClickListener);

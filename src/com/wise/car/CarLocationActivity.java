@@ -130,12 +130,18 @@ public class CarLocationActivity extends Activity {
 		iv_traffic = (ImageView) findViewById(R.id.iv_traffic);
 		iv_traffic.setOnClickListener(onClickListener);
 		TextView tv_car_name = (TextView) findViewById(R.id.tv_car_name);
-		index = app.currentCarIndex;
+		
+		
+		index = this.getIntent().getIntExtra("index", 0);
+		List<CarData> carDatas = (List<CarData>) this.getIntent().getSerializableExtra("carDatas");
+		if(carDatas == null ){
+			carDatas = new ArrayList<CarData>();
+		}
 		isHotLocation = getIntent().getBooleanExtra("isHotLocation", false);
-		if (app.carDatas == null || index >= app.carDatas.size()) {
+		if (carDatas == null || index >= carDatas.size()) {
 
 		} else {
-			carData = app.carDatas.get(index);
+			carData = carDatas.get(index);
 			tv_car_name.setText(carData.getNick_name());
 		}
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);

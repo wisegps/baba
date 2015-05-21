@@ -137,7 +137,7 @@ public class FuelActivity extends Activity {
 		ecv_fuel.setViewWidth(dm.widthPixels, true);
 		carData = (CarData)getIntent().getSerializableExtra("carData");
 		if(carData == null && app.carDatas.size()>0){
-			carData = app.carDatas.get(0);
+			carData = app.carDatas.get(app.currentCarIndex);
 		}
 		
 		// 获取显示页面类型

@@ -1,5 +1,6 @@
 package com.wise.baba.ui.fragment;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -123,6 +124,8 @@ public class FragmentHomeNavigation extends Fragment implements
 			}
 			Intent intentLocation = new Intent(getActivity(), CarLocationActivity.class);
 			intentLocation.putExtra("isHotLocation", true);
+			intentLocation.putExtra("carDatas", (Serializable)app.carDatas);
+			intentLocation.putExtra("index", app.currentCarIndex);
 			startActivity(intentLocation);
 			return;
 		case 1:// 车辆行程
@@ -137,8 +140,14 @@ public class FragmentHomeNavigation extends Fragment implements
 			startActivity(intentTravel);
 			return;
 		case 2:// 车辆体检
-			toActivity = FaultDetectionActivity.class;
-			break;
+			
+			Intent intentDetection = new Intent(this.getActivity(),
+					FaultDetectionActivity.class);
+			intentDetection.putExtra("carDatas", (Serializable)app.carDatas);
+			intentDetection.putExtra("index", app.currentCarIndex);
+			startActivity(intentDetection);
+			return;
+			
 		case 3:// 驾驶得分
 			toActivity = DriveActivity.class;
 			break;
@@ -164,8 +173,11 @@ public class FragmentHomeNavigation extends Fragment implements
 		case 7:// 车务提醒
 
 			if (Judge.isLogin(app)) {
-				startActivity(new Intent(getActivity(),
-						RemindListActivity.class));
+				Intent intentRemind = new Intent(getActivity(),RemindListActivity.class);
+				intentRemind.putExtra("carDatas", (Serializable)app.carDatas);
+				intentRemind.putExtra("cust_id", app.cust_id);
+				startActivity(intentRemind);
+				
 			} else {
 				Intent intent = new Intent(getActivity(), LoginActivity.class);
 				intent.putExtra("ActivityState", 4);
@@ -176,9 +188,10 @@ public class FragmentHomeNavigation extends Fragment implements
 
 			if (Judge.isLogin(app)) {
 				app.vio_count = 0;
-				Intent intent = new Intent(getActivity(), TrafficActivity.class);
-				intent.putExtra("isService", false);
-				startActivity(intent);
+				Intent intentTraffic = new Intent(getActivity(), TrafficActivity.class);
+				intentTraffic.putExtra("carDatas", (Serializable)app.carDatas);
+				intentTraffic.putExtra("isService", false);
+				startActivity(intentTraffic);
 			} else {
 				Intent intent = new Intent(getActivity(), LoginActivity.class);
 				intent.putExtra("ActivityState", 3);
