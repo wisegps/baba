@@ -105,9 +105,8 @@ public class DriveActivity extends Activity {
 			tv_location.setTextColor(Color.parseColor("#50b7de"));
 			tv_location.setAlpha(0.6f);
 			
-			
 			tv_date.setTextColor(Color.parseColor("#50b7de"));
-			tv_date.setAlpha(0.6f);
+			tv_date.setAlpha(1.0f);
 			
 			//imgOnLine.setImageResource(R.drawable.ico_key);
 		}else{
@@ -116,6 +115,7 @@ public class DriveActivity extends Activity {
 			iv_location.setTag(is_online);
 			tv_location.setTextColor(Color.BLACK);
 			tv_location.setAlpha(0.3f);
+			
 			tv_date.setTextColor(Color.BLACK);
 			tv_date.setAlpha(0.3f);
 			

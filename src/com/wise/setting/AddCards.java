@@ -138,7 +138,7 @@ public class AddCards extends Activity {
 				isResume = false;
 				
 				
-				Toast.makeText(AddCards.this, "上下拖动可以调整卡片顺序哦!", Toast.LENGTH_SHORT).show();
+				Toast.makeText(AddCards.this, "上下拖动可以调整首页卡片顺序哦!", Toast.LENGTH_SHORT).show();
 			}
 			
 		}, 200);

@@ -61,6 +61,13 @@ public class CarRemindUpdateActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_remind_add);
 		app = (AppApplication) getApplication();
+		
+		carDatas = (List<CarData>) getIntent().getSerializableExtra("carDatas");
+		remindData = (RemindData) getIntent()
+				.getSerializableExtra("remindData");
+		GetSystem.myLog(TAG, remindData.toString());
+		
+		
 		ll_car = (LinearLayout) findViewById(R.id.ll_car);
 		ll_mileage = (LinearLayout) findViewById(R.id.ll_mileage);
 		ll_content = (LinearLayout) findViewById(R.id.ll_content);
@@ -106,10 +113,7 @@ public class CarRemindUpdateActivity extends Activity {
 				android.R.layout.simple_spinner_item, Constant.items_note_mode);
 		mode.setDropDownViewResource(R.layout.drop_down_item);
 		s_mode.setAdapter(mode);
-		carDatas = (List<CarData>) getIntent().getSerializableExtra("carDatas");
-		remindData = (RemindData) getIntent()
-				.getSerializableExtra("remindData");
-		GetSystem.myLog(TAG, remindData.toString());
+		
 		s_type.setSelection(remindData.getRemind_type());
 		s_car.setSelection(getSelectedItemPosition(remindData.getObj_id()));
 		s_mode.setSelection(remindData.getRepeat_type());
