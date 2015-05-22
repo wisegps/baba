@@ -3,8 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_white"
-    android:padding ="@dimen/margins" >
-    
+     >
      <com.wise.baba.ui.widget.CustomGridView
         android:id="@+id/gv_compet"
         android:background="#bcbcbc"

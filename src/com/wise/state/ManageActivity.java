@@ -9,7 +9,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -261,14 +263,15 @@ public class ManageActivity extends Activity {
 					R.layout.item_child_cars, null);
 			GridView gv_compet = (GridView) viewChild
 					.findViewById(R.id.gv_compet);
-			System.out.println("details.get(groupPosition).size() = "
-					+ details.get(groupPosition).size());
-			int px = (int) TypedValue.applyDimension(
-					TypedValue.COMPLEX_UNIT_DIP, 40, getResources()
-							.getDisplayMetrics());
-			LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT,
-					myMathCeil(details.get(groupPosition).size(), 4) * px);
-			gv_compet.setLayoutParams(params);
+			gv_compet.setSelector(new ColorDrawable(Color.TRANSPARENT));// 取消GridView中Item选中时默认的背景色
+//			System.out.println("details.get(groupPosition).size() = "
+//					+ details.get(groupPosition).size());
+//			int px = (int) TypedValue.applyDimension(
+//					TypedValue.COMPLEX_UNIT_DIP, 40, getResources()
+//							.getDisplayMetrics());
+//			LayoutParams params = new LayoutParams(LayoutParams.FILL_PARENT,
+//					myMathCeil(details.get(groupPosition).size(), 4) * px);
+//			gv_compet.setLayoutParams(params);
 			gv_compet.setAdapter(new CompetAdapter(details.get(groupPosition)));
 			gv_compet.setOnItemClickListener(onItemClickListener);
 			return viewChild;
@@ -276,6 +279,8 @@ public class ManageActivity extends Activity {
 
 		private View getGroupview(int groupPosition) {
 			Log.i("ManageActivity", " Adapter getGroupview 刷新界面");
+			
+			
 			View viewChild = LayoutInflater.from(ManageActivity.this).inflate(
 					R.layout.item_group_cars, null);
 			TextView tv_serial = (TextView) viewChild
@@ -300,7 +305,7 @@ public class ManageActivity extends Activity {
 			ImageView iv_indicate = (ImageView) viewChild
 					.findViewById(R.id.iv_indicate);
 			iv_indicate.setImageResource(R.drawable.ico_right);
-			if(index == groupPosition){
+			if(index == groupPosition && elv_cars.isGroupExpanded(groupPosition)){
 				RotateAnimation animation = new RotateAnimation(0f, 90f,
 						Animation.RELATIVE_TO_SELF, 0.5f,
 						Animation.RELATIVE_TO_SELF, 0.5f);
@@ -329,6 +334,9 @@ public class ManageActivity extends Activity {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			System.out.println("position = " + position);
+			if(position>=details.get(groupIndex).size()){
+				return;
+			}
 			// groupIndex 对应的那个车 , position ，对应的车里的某个权限
 			CarData carData = carDatas.get(groupIndex);
 
@@ -428,12 +436,17 @@ public class ManageActivity extends Activity {
 
 		@Override
 		public int getCount() {
-			return compets.size();
+			return 8;
 		}
 
 		@Override
 		public Object getItem(int position) {
-			return compets.get(position);
+			if(position<compets.size()){
+				return compets.get(position);
+			}else{
+				return null;
+			}
+			
 		}
 
 		@Override
@@ -448,7 +461,14 @@ public class ManageActivity extends Activity {
 			}
 			TextView tv_item_manage = (TextView) convertView
 					.findViewById(R.id.tv_item_manage);
-			tv_item_manage.setText(compets.get(position));
+			
+			if(position<compets.size()){
+				tv_item_manage.setText(compets.get(position));
+			}else{
+				tv_item_manage.setText(" ");
+			}
+			
+			
 			return convertView;
 		}
 	}

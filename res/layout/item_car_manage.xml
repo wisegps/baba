@@ -1,14 +1,16 @@
-<LinearLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="@color/white"
+    android:padding ="14dp"
+    android:orientation="vertical" >
     <TextView
-        android:id="@+id/tv_item_manage" 
-        android:layout_width="fill_parent"
+        android:id="@+id/tv_item_manage"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/margins"
-        android:gravity="center"
-        android:text="车务"
-        android:textColor="@color/blue_general"/>
+        android:alpha="0.9"
+         android:textColor="@color/blue_general"
+        android:text="车务" />
 </LinearLayout>
