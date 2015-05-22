@@ -30,6 +30,8 @@
     <color name="blue_account">#618290</color>
     <!-- 蓝色，通知 -->
     <color name="blue_noti">#60808F</color>
+     <!-- 蓝色，通用 -->
+    <color name="blue_general">#50b7de</color>
     <!-- 时间，消息，吐槽 -->
     <color name="blue_sms">#9BB6BD</color>
     <!-- 分割线 -->

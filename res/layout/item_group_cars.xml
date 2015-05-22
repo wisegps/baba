@@ -50,8 +50,16 @@
             android:layout_marginRight="@dimen/margins"
             android:layout_marginTop="@dimen/margins"
             android:text="粤B12345"
-            android:textColor="@color/navy"
+            android:textColor="#bcbcbc"
             android:textSize="@dimen/content" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_indicate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ico_right" />
 
 </RelativeLayout>

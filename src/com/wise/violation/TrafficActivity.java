@@ -113,6 +113,9 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			//index_car = this.getIntent().getIntExtra("index", 0);
 		}else{
 			carDatas = (List<CarData>) this.getIntent().getSerializableExtra("carDatas");
+			if(carDatas == null ){
+				carDatas = app.carDatas;
+			}
 		}
 		getTraffic();
 		if (carDatas != null && carDatas.size() > 0) {

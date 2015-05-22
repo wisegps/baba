@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -262,6 +263,8 @@ public class TravelActivity extends Activity {
 		try {
 			url = Constant.BaseUrl + "device/" + device_id + "/trip?auth_code=" + app.auth_code + "&day=" + Date + "&city="
 					+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no=" + Gas_no;
+			
+			Log.i("TravelActivity", url);
 			new Thread(new NetThread.GetDataThread(handler, url, get_data)).start();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();

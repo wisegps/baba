@@ -135,7 +135,8 @@ public class CarLocationActivity extends Activity {
 		index = this.getIntent().getIntExtra("index", 0);
 		List<CarData> carDatas = (List<CarData>) this.getIntent().getSerializableExtra("carDatas");
 		if(carDatas == null ){
-			carDatas = new ArrayList<CarData>();
+			carDatas = app.carDatas;
+			index = app.currentCarIndex;
 		}
 		isHotLocation = getIntent().getBooleanExtra("isHotLocation", false);
 		if (carDatas == null || index >= carDatas.size()) {
@@ -287,7 +288,6 @@ public class CarLocationActivity extends Activity {
 							TravelActivity.class);
 					i.putExtra("device_id", carData.getDevice_id());
 					String Gas_no = "93#(92#)";
-					;
 					if (carData.getGas_no() != null) {
 						Gas_no = carData.getGas_no();
 					}

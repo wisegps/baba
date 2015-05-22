@@ -4,12 +4,17 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_white"
     android:padding ="@dimen/margins" >
-	<GridView 
+    
+     <com.wise.baba.ui.widget.CustomGridView
         android:id="@+id/gv_compet"
-        android:layout_width="fill_parent"
+        android:background="#bcbcbc"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:numColumns="4"
-        android:listSelector="@drawable/bg_item_selector"
+        android:horizontalSpacing="1px"
+        android:verticalSpacing="1px"
+        android:gravity="center"
         android:stretchMode="columnWidth"
-        android:horizontalSpacing="10dp"/>
+        android:numColumns="4"
+      >
+    </com.wise.baba.ui.widget.CustomGridView>
 </LinearLayout>

@@ -117,14 +117,13 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 		Log.i("FaultDetectionActivity", "当前车辆位置" + index);
 		carDatas = (List<CarData>) this.getIntent().getSerializableExtra("carDatas");
 		if(carDatas == null ){
-			carDatas = new ArrayList<CarData>();
+			carDatas = app.carDatas;
+			index = app.currentCarIndex;
 		}
 		initView();
 		initDataView();
 	}
 	
-	
-
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {

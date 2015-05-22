@@ -165,7 +165,7 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 				// 构建MarkerOption，用于在地图上添加Marker
 				Bundle bundle = new Bundle();
 				bundle.putString("device_id", carData.getDevice_id());
-				bundle.putString("Gas_no", carData.getDevice_id());
+				bundle.putString("Gas_no", carData.getGas_no());
 				OverlayOptions option = new MarkerOptions().extraInfo(bundle).title(carData.getNick_name()).anchor(0.5f, 1.0f)
 						.position(latLng).icon(bitmap);
 				mBaiduMap.addOverlay(option);
