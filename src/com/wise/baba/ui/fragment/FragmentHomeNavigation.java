@@ -140,7 +140,6 @@ public class FragmentHomeNavigation extends Fragment implements
 			startActivity(intentTravel);
 			return;
 		case 2:// 车辆体检
-			
 			Intent intentDetection = new Intent(this.getActivity(),
 					FaultDetectionActivity.class);
 			intentDetection.putExtra("carDatas", (Serializable)app.carDatas);
