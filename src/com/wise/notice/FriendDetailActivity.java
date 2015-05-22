@@ -208,7 +208,6 @@ public class FriendDetailActivity extends Activity implements OnClickListener,Ca
 			this.finish();
 			break;
 		case R.id.bt_add_friend:
-			
 			addFriend();
 			break;
 

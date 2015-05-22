@@ -202,6 +202,7 @@ public class SureFriendActivity extends Activity {
 	}
 	/**确认添加结果**/
 	private void jsonAddFriend(String result,int position){
+		isChange = true;
 		if(myDialog != null){
 			myDialog.dismiss();
 		}
@@ -217,6 +218,7 @@ public class SureFriendActivity extends Activity {
 			e.printStackTrace();
 			Toast.makeText(SureFriendActivity.this, "添加好友失败，请重试", Toast.LENGTH_SHORT).show();
 		}
+		
 	}
 	/** 我发起添加的好友 **/
 	private void getILaunch() {

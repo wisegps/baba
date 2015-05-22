@@ -84,6 +84,7 @@ public class FriendAddActivity extends Activity implements Callback {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == 1 && resultCode == 2) {
 			// TODO 添加好友返回
+			setResult(2);
 			finish();
 		}
 	}

@@ -138,9 +138,17 @@ public class FragmentFriend extends Fragment {
 				showMenu();
 				break;
 			case R.id.tv_add_friend:
-				startActivity(new Intent(getActivity(), FriendAddActivity.class));
+				if(mPopupWindow!=null && mPopupWindow.isShowing()){
+					mPopupWindow.dismiss();
+				}
+				
+				startActivityForResult(new Intent(getActivity(), FriendAddActivity.class), 2);
 				break;
 			case R.id.tv_camera:
+				if(mPopupWindow!=null && mPopupWindow.isShowing()){
+					mPopupWindow.dismiss();
+				}
+				
 				Intent add = new Intent(getActivity(),
 						BarcodeActivity.class);
 				add.putExtra("desc", "friend");
@@ -485,6 +493,7 @@ public class FragmentFriend extends Fragment {
 			return;
 		} else if (requestCode == 2 && resultCode == 2) {
 			// TODO 添加朋友返回
+			getFriendData();
 		} else if (requestCode == 3 && resultCode == 2) {
 			// 确认接受朋友返回，刷新数据
 			getFriendData();
