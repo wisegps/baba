@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -129,6 +130,17 @@ public class FragmentFriend extends Fragment {
 		});
 
 	}
+	
+	
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		Log.i("FragmentFriend", "进入界面刷新");
+		getFriendData();
+	}
+
+
 
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override

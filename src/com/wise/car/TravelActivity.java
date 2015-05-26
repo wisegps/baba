@@ -103,6 +103,9 @@ public class TravelActivity extends Activity {
 
 		device_id = getIntent().getStringExtra("device_id");
 		Gas_no = getIntent().getStringExtra("Gas_no");
+		if(Gas_no == null){
+			Gas_no = "93#(92#)";
+		}
 		String iDate = getIntent().getStringExtra("Date");
 		if (iDate != null) {
 			Date = iDate;

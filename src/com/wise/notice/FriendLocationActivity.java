@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,6 +34,7 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.overlayutil.OverlayManager;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Constant;
@@ -43,13 +45,13 @@ import com.wise.baba.net.NetThread;
 import com.wise.car.CarLocationActivity;
 import com.wise.car.TravelActivity;
 
-
 /**
  * 查看好友的位置信息
  * 
  * @author honesty
  **/
-public class FriendLocationActivity extends Activity implements OnMarkerClickListener {
+public class FriendLocationActivity extends Activity implements
+		OnMarkerClickListener {
 	private static final int getAllCarData = 1;
 	private static final int getGpsData = 2;
 
@@ -59,7 +61,7 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 	AppApplication app;
 	/** 好友id **/
 	private int friendId;
-	private  LatLng carLatlng;//点击marker 获取 该车辆位置
+	private LatLng carLatlng;// 点击marker 获取 该车辆位置
 	private LocationClient locatinClient;
 	/** 好友下的车辆信息 **/
 	List<CarData> carDatas = new ArrayList<CarData>();
@@ -69,7 +71,7 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_friend_location);
-		
+
 		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -107,11 +109,13 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 	private void getAllCarData() {
 		String url = Constant.BaseUrl + "customer/" + friendId
 				+ "/vehicle?auth_code=" + app.auth_code;
+		Log.i("FriendLocationActivity", url);
 		new NetThread.GetDataThread(handler, url, getAllCarData).start();
 	}
 
 	private void jsonAllCarData(String result) {
 		carDatas.addAll(JsonData.jsonCarInfo(result));
+		Log.i("FriendLocationActivity", "这个朋友拥有" + carDatas.size() + "辆车");
 		getGpsData();
 	}
 
@@ -153,10 +157,21 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 
 	/** 在地图上显示所有车辆信息 **/
 	private void showCarInMap() {
-		System.out.println("showCarInMap");
+
+		 final List<OverlayOptions> overlayOptions = new ArrayList<OverlayOptions>();
+		OverlayManager overlayManager = new OverlayManager(mBaiduMap) {
+			@Override
+			public boolean onMarkerClick(Marker marker) {
+				return true;
+			}
+			@Override
+			public List<OverlayOptions> getOverlayOptions() {
+				return overlayOptions;
+			}
+		};
+
 		for (CarData carData : carDatas) {
-			
-			System.out.println("cardata");
+			Log.i("FriendLocationActivity", "在地图上显示车辆");
 			if (carData.getLat() != 0 || carData.getLon() != 0) {
 				LatLng latLng = new LatLng(carData.getLat(), carData.getLon());
 				// 构建Marker图标
@@ -166,67 +181,61 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 				Bundle bundle = new Bundle();
 				bundle.putString("device_id", carData.getDevice_id());
 				bundle.putString("Gas_no", carData.getGas_no());
-				OverlayOptions option = new MarkerOptions().extraInfo(bundle).title(carData.getNick_name()).anchor(0.5f, 1.0f)
+				OverlayOptions option = new MarkerOptions().extraInfo(bundle)
+						.title(carData.getNick_name()).anchor(0.5f, 1.0f)
 						.position(latLng).icon(bitmap);
-				mBaiduMap.addOverlay(option);
-				if (isFrist) {// 第一次移动车的位置到地图中间
-					isFrist = false;
-					MapStatus mapStatus = new MapStatus.Builder()
-							.target(latLng).build();
-					MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
-							.newMapStatus(mapStatus);
-					mBaiduMap.setMapStatus(mapStatusUpdate);
-				}
+				overlayOptions.add(option);
 			}
 		}
+		overlayManager.addToMap();
+		overlayManager.zoomToSpan();
+
 	}
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
-		
-		View view = LayoutInflater.from(getApplicationContext())
-				.inflate(R.layout.item_map_popup, null);
-		TextView tv_adress = (TextView) view
-				.findViewById(R.id.tv_adress);
-		
-		TextView tv_navi = (TextView) view
-				.findViewById(R.id.tv_navi);
-		TextView tv_travel = (TextView) view
-				.findViewById(R.id.tv_travel);
-		
+
+		View view = LayoutInflater.from(getApplicationContext()).inflate(
+				R.layout.item_map_popup, null);
+		TextView tv_adress = (TextView) view.findViewById(R.id.tv_adress);
+
+		TextView tv_navi = (TextView) view.findViewById(R.id.tv_navi);
+		TextView tv_travel = (TextView) view.findViewById(R.id.tv_travel);
+
 		Bundle bundle = marker.getExtraInfo();
 		final String device_id = bundle.getString("device_id");
 		final String Gas_no = bundle.getString("Gas_no");
 		carLatlng = marker.getPosition();
 		InfoWindow mInfoWindow = new InfoWindow(view, marker.getPosition(), -45);
-		tv_navi.setOnClickListener(new OnClickListener(){
+		tv_navi.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				mBaiduMap.hideInfoWindow();
 				openLocation();
 			}
 		});
-		
-		tv_travel.setOnClickListener(new OnClickListener(){
+
+		tv_travel.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				mBaiduMap.hideInfoWindow();
-				Intent i = new Intent(FriendLocationActivity.this, TravelActivity.class);
+				Intent i = new Intent(FriendLocationActivity.this,
+						TravelActivity.class);
 				i.putExtra("device_id", device_id);
 				i.putExtra("Gas_no", Gas_no);
 				startActivity(i);
 			}
 		});
 		tv_adress.setText(marker.getTitle());
-		
+
 		mBaiduMap.showInfoWindow(mInfoWindow);
 		return true;
 	}
-	
+
 	/**
 	 * 开启定位服务
 	 */
-	public void openLocation(){
+	public void openLocation() {
 		locatinClient = new LocationClient(this);
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);
@@ -235,15 +244,18 @@ public class FriendLocationActivity extends Activity implements OnMarkerClickLis
 		locatinClient.setLocOption(option);
 		locatinClient.registerLocationListener(new LocationListener());
 		locatinClient.start();
-		
+
 	}
-	class LocationListener implements BDLocationListener{
+
+	class LocationListener implements BDLocationListener {
 		@Override
 		public void onReceiveLocation(BDLocation bdLocation) {
-			LatLng dirLocation = new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
+			LatLng dirLocation = new LatLng(bdLocation.getLatitude(),
+					bdLocation.getLongitude());
 			locatinClient.stop();
-			GetSystem.FindCar(FriendLocationActivity.this,carLatlng ,dirLocation, "", "");
+			GetSystem.FindCar(FriendLocationActivity.this, carLatlng,
+					dirLocation, "", "");
 		}
 	}
-	
+
 }
