@@ -37,6 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
 import com.wise.baba.app.Constant;
@@ -53,12 +54,15 @@ public class AddCards extends Activity {
 			 Const.TAG_NEWS ,Const.TAG_WEATHER,Const.TAG_SERVICE,Const.TAG_NAV};
 	private ShareCards cardsSharePreferences;
 	private boolean isResume = true;
+	private int custType = 1;//是服务商2  个人1
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_info);
+		AppApplication app = (AppApplication) getApplication();
+		custType = app.cust_type;
 		cardsSharePreferences = new ShareCards(this);
 		setCardsDataList();
 		infoListView = (DragListView) findViewById(R.id.info_add);
@@ -151,6 +155,11 @@ public class AddCards extends Activity {
 		if (sharedCards != null) {
 			for (int i = 0; i < sharedCards.length; i++) {
 				String cardName = sharedCards[i];
+				if(cardName.equals(Const.TAG_SERVICE) && custType ==1){
+					//个人
+					continue;
+				}
+				
 				for (int j = 0; j < cards.length; j++) {
 					if (cardName.equals(cards[j])) {
 						CardsData cardsData = new CardsData();

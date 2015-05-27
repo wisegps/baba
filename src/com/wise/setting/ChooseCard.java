@@ -19,13 +19,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
 import com.wise.baba.app.Constant;
 import com.wise.baba.db.ShareCards;
 import com.wise.baba.entity.CardsData;
 import com.wise.baba.ui.fragment.FragmentHome;
-
 
 public class ChooseCard extends Activity {
 	ListView card_choose;
@@ -38,36 +38,43 @@ public class ChooseCard extends Activity {
 			Const.TAG_NEWS, Const.TAG_WEATHER, Const.TAG_SERVICE, Const.TAG_NAV };
 	private ShareCards cardsSharePreferences;
 	private String[] sharedCards = null;
+	private int custType = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_choose_info_card);
-
+		AppApplication app = (AppApplication) getApplication();
+		custType = app.cust_type;
 		cardsSharePreferences = new ShareCards(this);
 		sharedCards = cardsSharePreferences.get();
 
-		
-		if (sharedCards != null && sharedCards.length > 0) {
-			for (int j = 0; j < cards.length; j++) {
-				
-				boolean have = false;
+		for (int j = 0; j < cards.length; j++) {
+
+			if (cards[j].equals(Const.TAG_SERVICE) && (custType == 1)) {
+				// 个人不要服务商卡片
+				continue;
+			}
+
+			boolean isExist = false;
+
+			if (sharedCards != null) {
 				for (int i = 0; i < sharedCards.length; i++) {
 					if (sharedCards[i].equals(cards[j])) {
-						have = true;
+						isExist = true;
 						break;
 					}
 				}
-				
-				if(have==false){
-					CardsData inItem = new CardsData();
-					inItem.setIcon(Constant.picture[j]);
-					inItem.setTitle(Constant.title[j]);
-					inItem.setContent(Constant.content[j]);
-					inItem.setCardName(cards[j]);
-					list.add(inItem);
-				}
+			}
+
+			if (isExist == false) {
+				CardsData inItem = new CardsData();
+				inItem.setIcon(Constant.picture[j]);
+				inItem.setTitle(Constant.title[j]);
+				inItem.setContent(Constant.content[j]);
+				inItem.setCardName(cards[j]);
+				list.add(inItem);
 			}
 		}
 
@@ -172,8 +179,7 @@ public class ChooseCard extends Activity {
 			mHolder.item_add.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					
-					
+
 					// mHolder.item_add.setText("已添加");
 					// mHolder.item_add.setEnabled(false);
 				}

@@ -16,6 +16,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Window;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
@@ -173,6 +174,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 	/** 获取用户信息 **/
 	private void GetCustomer() {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id + "?auth_code=" + app.auth_code;
+		Log.i("WelcomeActivity", url);
 		new NetThread.GetDataThread(handler, url, get_customer).start();
 	}
 
