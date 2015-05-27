@@ -60,6 +60,13 @@ public class RemindListActivity extends Activity {
         app = (AppApplication)getApplication();
         cust_id = this.getIntent().getStringExtra("cust_id");
         carDatas = (List<CarData>) this.getIntent().getSerializableExtra("carDatas");
+        if(cust_id == null){
+        	cust_id= app.cust_id;
+        }
+        if(carDatas == null){
+        	carDatas = app.carDatas;
+        }
+        
         rl_Note = (RelativeLayout)findViewById(R.id.rl_Note);
         ll_frist = (LinearLayout)findViewById(R.id.ll_frist);
         ll_frist.setOnClickListener(onClickListener);

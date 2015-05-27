@@ -75,6 +75,9 @@ public class RemindActivity extends Activity {
 		Intent intent = getIntent();
 		boolean isNeedGetData = intent.getBooleanExtra("isNeedGetData", true);
 		carDatas = (List<CarData>) intent.getSerializableExtra("carDatas");
+		if(carDatas == null){
+			carDatas = app.carDatas;
+		}
 		if (isNeedGetData) {
 			// 从服务器读取数据
 			int reminder_id = intent.getIntExtra("reminder_id", 0);
