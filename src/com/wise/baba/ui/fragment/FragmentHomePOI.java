@@ -127,6 +127,7 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,
 			} else {
 				Intent intent = new Intent(this.getActivity(),
 						CarLocationActivity.class);
+				intent.putExtra("isHotLocation", true);
 				intent.putExtra("POI_FLAG", "home");
 				startActivity(intent);
 			}
@@ -144,6 +145,7 @@ public class FragmentHomePOI extends Fragment implements OnItemClickListener,
 			} else {
 				Intent intent = new Intent(this.getActivity(),
 						CarLocationActivity.class);
+				intent.putExtra("isHotLocation", true);
 				intent.putExtra("POI_FLAG", "company");
 				startActivity(intent);
 			}

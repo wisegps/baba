@@ -112,6 +112,7 @@ public class CarLocationActivity extends Activity {
 
 
 	private View home, company;
+	private Intent intent = null; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +120,7 @@ public class CarLocationActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_car_location);
 		app = (AppApplication) getApplication();
+		intent = this.getIntent();
 		ImageView iv_more = (ImageView) findViewById(R.id.iv_more);
 		iv_more.setOnClickListener(onClickListener);
 		ImageView iv_maplayers = (ImageView) findViewById(R.id.iv_maplayers);
@@ -132,13 +134,13 @@ public class CarLocationActivity extends Activity {
 		TextView tv_car_name = (TextView) findViewById(R.id.tv_car_name);
 		
 		
-		index = this.getIntent().getIntExtra("index", 0);
-		List<CarData> carDatas = (List<CarData>) this.getIntent().getSerializableExtra("carDatas");
+		index = intent.getIntExtra("index", 0);
+		List<CarData> carDatas = (List<CarData>) intent.getSerializableExtra("carDatas");
 		if(carDatas == null ){
 			carDatas = app.carDatas;
 			index = app.currentCarIndex;
 		}
-		isHotLocation = getIntent().getBooleanExtra("isHotLocation", false);
+		isHotLocation = intent.getBooleanExtra("isHotLocation", false);
 		if (carDatas == null || index >= carDatas.size()) {
 
 		} else {
@@ -223,13 +225,10 @@ public class CarLocationActivity extends Activity {
 	public void searchLocationByKeywords(){
 		
 		
-		Intent intent = this.getIntent();
+		
 		final String re_name = intent.getStringExtra("re_name");
-		Log.i("CarLocationActivity","re_name" + re_name);
 		final Double lat = intent.getDoubleExtra("history_lat", 0);
-		Log.i("CarLocationActivity","lat" + lat);
 		final Double lon = intent.getDoubleExtra("history_lon", 0);
-		Log.i("CarLocationActivity","lon" + lon);
 			if (re_name != null && !re_name.equals("")) {
 				Log.i("CarLocationActivity","go...");
 				
@@ -602,7 +601,7 @@ public class CarLocationActivity extends Activity {
 
 	
 	public void toSearchPOI() {
-		POI_FLAG = this.getIntent().getStringExtra("POI_FLAG");
+		POI_FLAG = intent.getStringExtra("POI_FLAG");
 		if(POI_FLAG == null || POI_FLAG.equals("")){
 			return;
 		}
