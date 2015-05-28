@@ -2,6 +2,7 @@ package xlist;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.wise.baba.R;
+import com.wise.baba.app.App;
 
 public class DragListView extends ListView {
 	private DragListener mDragListener; // 拖动监听，监听位置变动
@@ -34,21 +36,33 @@ public class DragListView extends ListView {
 	private int current_Step;// 当前步伐.
 
 	private int temChangId;// 临时交换id
+	
+	private int unTouchLeft = 1000;
 
 	public DragListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-
+		
+		Bitmap manage = BitmapFactory.decodeResource(context.getResources(), R.drawable.ico_card_manage);
+		
+		unTouchLeft = App.screenWidth -  manage.getWidth()*2;
+		System.out.println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwunTouchLeft"+unTouchLeft);
 	}
-
+	
 	/***
 	 * touch事件拦截 在这里我进行相应拦截，
 	 */
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
+		
+		
+		
 		// 按下
 		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
 			int x = (int) ev.getX();// 获取相对与ListView的x坐标
 			int y = (int) ev.getY();// 获取相应与ListView的y坐标
+			if(x>unTouchLeft){
+				return false;
+			}
 			temChangId = dragPosition = pointToPosition(x, y);
 			// 无效不进行处理
 			if (dragPosition == AdapterView.INVALID_POSITION) {

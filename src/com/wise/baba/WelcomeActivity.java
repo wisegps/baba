@@ -16,6 +16,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Window;
 import cn.jpush.android.api.JPushInterface;
@@ -24,6 +25,7 @@ import cn.sharesdk.framework.ShareSDK;
 
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
+import com.wise.baba.app.App;
 import com.wise.baba.app.Constant;
 import com.wise.baba.biz.GetSystem;
 import com.wise.baba.biz.JsonData;
@@ -31,7 +33,6 @@ import com.wise.baba.net.NetThread;
 import com.wise.baba.ui.widget.WaitLinearLayout;
 import com.wise.baba.ui.widget.WaitLinearLayout.OnFinishListener;
 import com.wise.state.MainActivity;
-
 
 public class WelcomeActivity extends Activity implements TagAliasCallback {
 	private static final String TAG = "WelcomeActivity";
@@ -65,6 +66,11 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 		ShareSDK.initSDK(this);
 		setContentView(R.layout.activity_welcome);
 		app = (AppApplication) getApplication();
+		DisplayMetrics dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		App.screenHeight = dm.heightPixels;
+
+		App.screenWidth = dm.widthPixels;
 
 		clearData();
 		Intent intent = getIntent();
@@ -80,15 +86,18 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 		if (GetSystem.isNetworkAvailable(WelcomeActivity.this)) {
 			getLogin();
 		} else {
-			AlertDialog.Builder dialog = new AlertDialog.Builder(WelcomeActivity.this);
+			AlertDialog.Builder dialog = new AlertDialog.Builder(
+					WelcomeActivity.this);
 			dialog.setTitle("提示");
 			dialog.setMessage("当前网络未连接");
-			dialog.setPositiveButton("去打开", new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					startActivity(new Intent("android.settings.WIFI_SETTINGS"));
-				}
-			});
+			dialog.setPositiveButton("去打开",
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							startActivity(new Intent(
+									"android.settings.WIFI_SETTINGS"));
+						}
+					});
 			dialog.setNegativeButton("取消", null);
 			dialog.show();
 		}
@@ -113,7 +122,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 			case get_data:
 				isLoging = true;
 				strData = msg.obj.toString();
-				GetSystem.myLog(TAG, "get_Data ,app.carDatas = " + app.carDatas.size());
+				GetSystem.myLog(TAG,
+						"get_Data ,app.carDatas = " + app.carDatas.size());
 				TurnActivity();
 				break;
 			case get_customer:
@@ -127,7 +137,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 	 * 判断登录
 	 */
 	private void getLogin() {
-		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		SharedPreferences preferences = getSharedPreferences(
+				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		String sp_account = preferences.getString(Constant.sp_account, "");
 		String sp_pwd = preferences.getString(Constant.sp_pwd, "");
 		new WaitThread().start();
@@ -135,7 +146,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 			JPushInterface.stopPush(getApplicationContext());
 			isLogin = false;
 		} else {// 登录
-			String url = Constant.BaseUrl + "user_login?account=" + sp_account + "&password=" + sp_pwd;
+			String url = Constant.BaseUrl + "user_login?account=" + sp_account
+					+ "&password=" + sp_pwd;
 			new NetThread.GetDataThread(handler, url, login_account).start();
 		}
 	}
@@ -145,7 +157,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 		if (str.equals("")) {
 			JPushInterface.stopPush(getApplicationContext());
 			GetSystem.myLog(TAG, "网络连接异常");
-			GetSystem.myLog(TAG, "clearData,Variable.carDatas = " + app.carDatas.size());
+			GetSystem.myLog(TAG, "clearData,Variable.carDatas = "
+					+ app.carDatas.size());
 			isException = true;
 			TurnActivity();
 		} else {
@@ -160,7 +173,9 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 				} else {
 					JPushInterface.stopPush(getApplicationContext());
 					isLogin = false;
-					GetSystem.myLog(TAG, "jsonLogin status_code ,Variable.carDatas = " + app.carDatas.size());
+					GetSystem.myLog(TAG,
+							"jsonLogin status_code ,Variable.carDatas = "
+									+ app.carDatas.size());
 					TurnActivity();
 				}
 			} catch (JSONException e) {
@@ -173,14 +188,16 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 
 	/** 获取用户信息 **/
 	private void GetCustomer() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id + "?auth_code=" + app.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "?auth_code=" + app.auth_code;
 		Log.i("WelcomeActivity", url);
 		new NetThread.GetDataThread(handler, url, get_customer).start();
 	}
 
 	/** 解析用户信息 **/
 	private void jsonCustomer(String str) {
-		SharedPreferences preferences1 = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		SharedPreferences preferences1 = getSharedPreferences(
+				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		Editor editor1 = preferences1.edit();
 		editor1.putString(Constant.sp_customer + app.cust_id, str);
 		editor1.commit();
@@ -197,7 +214,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 
 	/** 获取车辆数据 **/
 	private void getCarData() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/vehicle?auth_code=" + app.auth_code;
+		String url = Constant.BaseUrl + "customer/" + app.cust_id
+				+ "/vehicle?auth_code=" + app.auth_code;
 		new NetThread.GetDataThread(handler, url, get_data).start();
 	}
 
@@ -248,7 +266,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 		Set<String> tagSet = new LinkedHashSet<String>();
 		tagSet.add(app.cust_id);
 		// 调用JPush API设置Tag
-		JPushInterface.setAliasAndTags(getApplicationContext(), null, tagSet, this);
+		JPushInterface.setAliasAndTags(getApplicationContext(), null, tagSet,
+				this);
 	}
 
 	OnFinishListener onFinishListener = new OnFinishListener() {
@@ -260,39 +279,48 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 			}
 			GetSystem.myLog(TAG, "runFast OnFinish");
 			// 未登录跳转
-			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+			SharedPreferences preferences = getSharedPreferences(
+					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 			app.City = preferences.getString(Constant.sp_city, "");
 			if (!isLogin) {
 				// 是否需要选择城市
 				if (app.City.equals("")) {
-					GetSystem.myLog(TAG, "未登录选择城市,Variable.carDatas = " + app.carDatas.size());
-					Intent intent = new Intent(WelcomeActivity.this, SelectCityActivity.class);
+					GetSystem.myLog(TAG, "未登录选择城市,Variable.carDatas = "
+							+ app.carDatas.size());
+					Intent intent = new Intent(WelcomeActivity.this,
+							SelectCityActivity.class);
 					intent.putExtra("Welcome", true);
 					startActivity(intent);
 					finish();
 				} else {
-					GetSystem.myLog(TAG, "未登录跳转,Variable.carDatas = " + app.carDatas.size());
-					Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+					GetSystem.myLog(TAG, "未登录跳转,Variable.carDatas = "
+							+ app.carDatas.size());
+					Intent intent = new Intent(WelcomeActivity.this,
+							MainActivity.class);
 					startActivity(intent);
 					finish();
 				}
 			} else {
 				if (isException) {// 程序异常
 					GetSystem.myLog(TAG, "runFast isException");
-					Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-					GetSystem.myLog(TAG, "程序异常,Variable.carDatas = " + app.carDatas.size());
+					Intent intent = new Intent(WelcomeActivity.this,
+							MainActivity.class);
+					GetSystem.myLog(TAG, "程序异常,Variable.carDatas = "
+							+ app.carDatas.size());
 					startActivity(intent);
 					finish();
 				} else if (isLoging) {// 登录流程走完
 					GetSystem.myLog(TAG, "runFast isLoging");
 					app.carDatas.clear();
 					app.carDatas.addAll(JsonData.jsonCarInfo(strData));
-					Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+					Intent intent = new Intent(WelcomeActivity.this,
+							MainActivity.class);
 					if (isSpecify) {
 						intent.putExtra("isSpecify", isSpecify);
 						intent.putExtras(bundle);
 					}
-					GetSystem.myLog(TAG, "登录流程走完,Variable.carDatas = " + app.carDatas.size());
+					GetSystem.myLog(TAG, "登录流程走完,Variable.carDatas = "
+							+ app.carDatas.size());
 					startActivity(intent);
 					finish();
 				}

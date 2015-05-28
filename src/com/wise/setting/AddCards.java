@@ -3,37 +3,27 @@ package com.wise.setting;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-
 import xlist.DragListView;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.animation.Animation;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,21 +45,24 @@ public class AddCards extends Activity {
 	private ShareCards cardsSharePreferences;
 	private boolean isResume = true;
 	private int custType = 1;//是服务商2  个人1
+	
+	private View parent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_info);
+		parent = findViewById(R.id.llytParent);
 		AppApplication app = (AppApplication) getApplication();
 		custType = app.cust_type;
 		cardsSharePreferences = new ShareCards(this);
 		setCardsDataList();
 		infoListView = (DragListView) findViewById(R.id.info_add);
+		TextView tvAdd = (TextView) findViewById(R.id.tv_info_add);
 		adapter = new InforAdapter();
 		infoListView.setAdapter(adapter);
 		infoListView.setDragListener(mDrapListener);
-
 		findViewById(R.id.tv_info_add).setOnClickListener(
 				new OnClickListener() {
 					@Override
@@ -219,6 +212,28 @@ public class AddCards extends Activity {
 		cardsSharePreferences.put(cardNames);
 		FragmentHome.isChange = true;
 	}
+	
+//	public void popupWindow(final View v){
+//		new Handler().postDelayed(new Runnable(){
+//			@Override
+//			public void run() {
+//				   // 一个自定义的布局，作为显示的内容
+//		        View contentView = LayoutInflater.from(AddCards.this).inflate(
+//		        		R.layout.item_card_delete_popup, null);
+//				  PopupWindow popupWindow = new PopupWindow(contentView,
+//			                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+//				  popupWindow.setBackgroundDrawable(new BitmapDrawable());
+//				  popupWindow.setOutsideTouchable(true);
+//				  
+//				  final int[] location = new int[2];   
+//				  v.getLocationOnScreen(location);  
+//				  popupWindow.showAtLocation(parent, Gravity.TOP, location[0], location[1]-15);
+//				  infoListView.setEnabled(true);
+//			}
+//		}, 100);
+//		
+//		
+//	}
 
 	class InforAdapter extends BaseAdapter {
 
@@ -260,6 +275,8 @@ public class AddCards extends Activity {
 					.findViewById(R.id.tv_info_title);
 			mHolder.tv_info_content = (TextView) convertView
 					.findViewById(R.id.tv_info_content);
+			mHolder.iv_manage = (ImageView) convertView
+					.findViewById(R.id.iv_manage);
 			mHolder.iv_delete = (ImageView) convertView
 					.findViewById(R.id.iv_delete);
 			
@@ -301,32 +318,28 @@ public class AddCards extends Activity {
 //					return true;
 //				}
 //			});
-//			mHolder.iv_delete.setOnClickListener(new OnClickListener() {
-//				
-//				@Override
-//				public void onClick(View v) {
-//					mHolder.iv_delete.setEnabled(false);
-//					if(mHolder.item_add.getVisibility() == View.GONE){
-//						mHolder.item_add.setEnabled(false);
-//						mHolder.item_add.setVisibility(View.VISIBLE);
-//					}else{
-//						mHolder.item_add.setVisibility(View.GONE);
-//					}
-//					
-//					
-//					new Handler().postDelayed(new Runnable(){
-//
-//						@Override
-//						public void run() {
-//							mHolder.iv_delete.setEnabled(true);
-//							mHolder.item_add.setEnabled(true);
-//						}
-//						
-//					}, 20);
-//					
-//					
-//				}
-//			});
+			
+			mHolder.iv_manage.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					int visble = mHolder.iv_delete.getVisibility();
+					if(visble == View.VISIBLE){
+						mHolder.iv_delete.setVisibility(View.GONE);
+					}else{
+						mHolder.iv_delete.setVisibility(View.VISIBLE);
+					}
+				}
+			});
+			
+			mHolder.iv_delete.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					infoListView.stopDrag();
+					list.remove(position);
+					adapter.notifyDataSetChanged();
+					putJson();
+				}
+			});
 			
 			mHolder.info_icon.setImageResource(list.get(position).getIcon());
 			mHolder.tv_info_title.setText(list.get(position).getTitle());
@@ -350,7 +363,7 @@ public class AddCards extends Activity {
 		}
 
 		class Holder {
-			ImageView info_icon,iv_delete;
+			ImageView info_icon,iv_delete,iv_manage;
 			TextView tv_info_title, tv_info_content;
 			TextView item_add;
 			
