@@ -493,15 +493,15 @@ public class FragmentCarInfo extends Fragment {
 			String Device_id = app.carDatas.get(i).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
 				
-				dialHealthScore.initValue(100,handler);
+				dialHealthScore.initValue(0,handler);
 				tv_score.setText("0");
 				tv_title.setText("未绑定终端");
-				dialDriveScore.initValue(100,handler);
+				dialDriveScore.initValue(0,handler);
 				tv_drive.setText("0");
 			} else {
 				String result = preferences.getString(Constant.sp_health_score + app.carDatas.get(i).getObj_id(), "");
 				if (result.equals("")) {// 未体检过
-					dialHealthScore.initValue(100,handler);
+					dialHealthScore.initValue(0,handler);
 					tv_score.setText("0");
 					tv_title.setText("未体检过");
 				} else {
@@ -519,7 +519,7 @@ public class FragmentCarInfo extends Fragment {
 				/** 驾驶信息 **/
 				String drive = preferences.getString(Constant.sp_drive_score + app.carDatas.get(i).getObj_id(), "");
 				if (drive.equals("")) {
-					dialHealthScore.initValue(100,handler);
+					dialHealthScore.initValue(0,handler);
 					tv_drive.setText("0");
 				} else {
 					try {
@@ -555,7 +555,7 @@ public class FragmentCarInfo extends Fragment {
 		
 		
 		DialView dialHealthScore = (DialView) v.findViewById(R.id.dialHealthScore);
-		dialHealthScore.initValue(100,handler);
+		dialHealthScore.initValue(0,handler);
 		
 		dialHealthScore.setOnClickListener(new OnClickListener() {
 			@Override
@@ -761,16 +761,6 @@ public class FragmentCarInfo extends Fragment {
 
 	@Override
 	public void onDestroy() {
-//		for(int i =0;i<carViews.size();i++){
-//			DialView dialScroe1 = carViews.get(i).getDialHealthScore();
-//			dialScroe1.freeMemory();
-//			dialScroe1 = null;
-//			DialView dialDriveScore = carViews.get(i).getDialDriveScore();
-//			dialDriveScore.freeMemory();
-//			dialDriveScore = null;
-//		}
-//		carViews.clear();
-//		carViews = null;
 		super.onDestroy();
 		isDestroy = true;
 		isGetAllData = false;
@@ -809,38 +799,6 @@ public class FragmentCarInfo extends Fragment {
 		if (resultCode == 3) {
 			// 修改车辆信息
 			initDataView();
-			// if (app.carDatas.size() == 0) {
-			// rl_ad = (RelativeLayout) getActivity().findViewById(R.id.rl_ad);
-			// rl_ad.setVisibility(View.VISIBLE);
-			// tv_content = (TextView)
-			// getActivity().findViewById(R.id.tv_content);
-			// tv_content.setOnClickListener(onClickListener);
-			// ll_image = (LinearLayout)
-			// getActivity().findViewById(R.id.ll_image);
-			// hs_photo = (HScrollLayout)
-			// getActivity().findViewById(R.id.hs_photo);
-			// getAD();
-			// hs_photo.setOnViewChangeListener(new OnViewChangeListener() {
-			// @Override
-			// public void OnViewChange(int view) {
-			// image_position = view;
-			// tv_content.setText(adDatas.get(view).getContent());
-			// changeImage(view);
-			// }
-			//
-			// @Override
-			// public void OnLastView() {
-			// }
-			//
-			// @Override
-			// public void OnFinish(int index) {
-			// }
-			// });
-			// } else {
-			// if (rl_ad != null) {
-			// rl_ad.setVisibility(View.GONE);
-			// }
-			// }
 		} else if (requestCode == 1) {
 			// requestCode = 1, resultCode = 2
 			// 体检返回重新布局

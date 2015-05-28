@@ -135,6 +135,7 @@ public class CarLocationActivity extends Activity {
 		
 		
 		index = intent.getIntExtra("index", 0);
+		@SuppressWarnings("unchecked")
 		List<CarData> carDatas = (List<CarData>) intent.getSerializableExtra("carDatas");
 		if(carDatas == null ){
 			carDatas = app.carDatas;
