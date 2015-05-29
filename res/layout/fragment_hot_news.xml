@@ -46,7 +46,7 @@
             android:id="@+id/tv_title0"
             style="@style/home_news_title_style"
             android:layout_marginTop="12dp"
-            android:text="新闻0"
+            android:text="暂无车讯"
             android:textColor="#70b3ce" />
 
         <LinearLayout
@@ -71,7 +71,7 @@
                 android:layout_weight="3"
                 android:lines="3"
 				android:ellipsize="end"
-                android:text="abcdefghijklmnopqrstuvwxyz know you see i can say my abc safdasdfasdfsdfgdfgh"
+                android:text="欢迎使用叭叭，请先登录，谢谢"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#c9c9c9" />
         </LinearLayout>
@@ -82,21 +82,21 @@
     <TextView
         android:id="@+id/tv_title1"
         style="@style/home_news_title_style"
-        android:text="新闻1" />
+        android:text="暂无车讯" />
 
     <View style="@style/home_news_line_style" />
 
     <TextView
         android:id="@+id/tv_title2"
         style="@style/home_news_title_style"
-        android:text="新闻二" />
+        android:text="暂无车讯" />
 
     <View style="@style/home_news_line_style" />
 
     <TextView
         android:id="@+id/tv_title3"
         style="@style/home_news_title_style"
-        android:text="新闻三" />
+        android:text="暂无车讯" />
 
   
     <View style="@style/home_news_line_style" />

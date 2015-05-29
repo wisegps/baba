@@ -152,7 +152,7 @@
                     android:layout_centerVertical="true"
                     android:background="@drawable/bg_white"
                     android:gravity="right"
-                    android:text="123"
+                    android:text=""
                     android:textColor="@color/color_blue"
                     android:textSize="@dimen/content" />
 
@@ -183,7 +183,7 @@
                     android:layout_centerVertical="true"
                     android:background="@drawable/bg_white"
                     android:gravity="right"
-                    android:text="error"
+                    android:text=""
                     android:textColor="@color/color_blue"
                     android:textSize="@dimen/content" />
 
