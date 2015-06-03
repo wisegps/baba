@@ -132,8 +132,6 @@ public class CarLocationActivity extends Activity {
 		iv_traffic = (ImageView) findViewById(R.id.iv_traffic);
 		iv_traffic.setOnClickListener(onClickListener);
 		TextView tv_car_name = (TextView) findViewById(R.id.tv_car_name);
-		
-		
 		index = intent.getIntExtra("index", 0);
 		@SuppressWarnings("unchecked")
 		List<CarData> carDatas = (List<CarData>) intent.getSerializableExtra("carDatas");

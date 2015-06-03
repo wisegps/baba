@@ -5,7 +5,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,6 +25,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -65,7 +65,6 @@ import com.wise.state.DriveActivity;
 import com.wise.state.FaultDetectionActivity;
 import com.wise.state.FuelActivity;
 
-
 /**
  * 车辆信息卡片
  * 
@@ -83,14 +82,14 @@ public class FragmentCarInfo extends Fragment {
 	private static final int get_drive = 12;
 	/** 获取gps信息 **/
 	private static final int get_gps = 10;
-	
+
 	/** 获取Device信息 **/
 	private static final int get_device = 13;
 
 	HScrollLayout hs_car;
 	AppApplication app;
 	/** 当前车在列表中位置 **/
-	public  int index = 0;
+	public int index = 0;
 	/** 获取油耗数据开始时间 **/
 	String startMonth;
 	/** 获取油耗数据结束时间 **/
@@ -98,13 +97,15 @@ public class FragmentCarInfo extends Fragment {
 	/** 仪表盘的间距 **/
 	int completed;
 	private GeoCoder mGeoCoder = null;
-	
-	private final int Stealth_Mode_True= 1,Stealth_Mode_False = 0;//是否隐身 1：隐身  0：不隐身
+
+	private final int Stealth_Mode_True = 1, Stealth_Mode_False = 0;// 是否隐身 1：隐身
+																	// 0：不隐身
 	private HttpCarInfo http;
 	private OnCardMenuListener onCardMenuListener;
-	
+
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_car_info, container, false);
 	}
 
@@ -112,7 +113,7 @@ public class FragmentCarInfo extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
-		
+
 		String Month = GetSystem.GetNowMonth().getMonth();
 		startMonth = Month + "-01";
 		endMonth = GetSystem.getMonthLastDay(Month);
@@ -120,24 +121,25 @@ public class FragmentCarInfo extends Fragment {
 		DisplayMetrics dm = new DisplayMetrics();
 		getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
 		int width = dm.widthPixels;
-		int twoCompleted = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 280, getResources().getDisplayMetrics());
+		int twoCompleted = (int) TypedValue.applyDimension(
+				TypedValue.COMPLEX_UNIT_DIP, 280, getResources()
+						.getDisplayMetrics());
 		completed = (width - twoCompleted) / 3;
 
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
-		
-		
+
 		hs_car = (HScrollLayout) getActivity().findViewById(R.id.hs_car);
 		initDataView();
 		hs_car.setOnViewChangeListener(new OnViewChangeListener() {
 			@Override
 			public void OnViewChange(int view, int duration) {
-				if(index != view){
+				if (index != view) {
 					index = view;
 					app.currentCarIndex = view;
-					//Log.i("FragmentCarInfo", "当前车辆"+app.currentCarIndex);
-					//等待滚动完毕后查询数据
-					handler.postDelayed(new Runnable() {						
+					// Log.i("FragmentCarInfo", "当前车辆"+app.currentCarIndex);
+					// 等待滚动完毕后查询数据
+					handler.postDelayed(new Runnable() {
 						@Override
 						public void run() {
 							getTotalData();
@@ -146,11 +148,11 @@ public class FragmentCarInfo extends Fragment {
 				}
 			}
 		});
-		
-		http = new HttpCarInfo(this.getActivity(),handler);
+
+		http = new HttpCarInfo(this.getActivity(), handler);
 	}
 
-	public void initTotalData(){
+	public void initTotalData() {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -161,62 +163,117 @@ public class FragmentCarInfo extends Fragment {
 			}
 		}).start();
 	}
-	public void initLoaction(){
+
+	public void initLoaction() {
 		// 30秒定位，显示当前位子
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						while (!isDestroy) {
-							if (isResume) {
-								if (app.carDatas == null || app.carDatas.size() == 0) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (!isDestroy) {
+					if (isResume) {
+						if (app.carDatas == null || app.carDatas.size() == 0) {
+
+						} else {
+							// 防止删除车辆后数组越界
+							if (index < app.carDatas.size()) {
+								CarData carData = app.carDatas.get(index);
+								String device_id = carData.getDevice_id();
+								if (device_id == null || device_id.equals("")) {
 
 								} else {
-									// 防止删除车辆后数组越界
-									if (index < app.carDatas.size()) {
-										CarData carData = app.carDatas.get(index);
-										String device_id = carData.getDevice_id();
-										if (device_id == null || device_id.equals("")) {
-											
-										} else {
-											// 获取gps信息
-											String gpsUrl = GetUrl.getCarGpsData(device_id, app.auth_code);
-											new NetThread.GetDataThread(handler, gpsUrl, get_gps, index).start();
-										}
-									} else {
-										Log.d(TAG, "刷新位置数组越界");
-									}
+									// 获取gps信息
+									String gpsUrl = GetUrl.getCarGpsData(
+											device_id, app.auth_code);
+									new NetThread.GetDataThread(handler,
+											gpsUrl, get_gps, index).start();
 								}
+							} else {
+								Log.d(TAG, "刷新位置数组越界");
 							}
-							SystemClock.sleep(30000);
 						}
 					}
-				}).start();
-		
+					SystemClock.sleep(30000);
+				}
+			}
+		}).start();
+
 	}
-	
 
 	public void setOnCardMenuListener(OnCardMenuListener onCardMenuListener) {
 		this.onCardMenuListener = onCardMenuListener;
 	}
-	
-	
+
+	OnLongClickListener onLongClickListener = new OnLongClickListener() {
+		@Override
+		public boolean onLongClick(View v) {
+
+			switch (v.getId()) {
+			case R.id.imgSingal:
+
+				// 信号强度 0 离线(灰色)，1 差(蓝色1格)，2中(蓝色2格)，3优(蓝色3格)
+
+				int singal = (Integer) v.getTag();
+				String tip = "";
+				if (singal == 0) {
+					tip = "终端已离线";
+				} else if (singal == 1) {
+					tip = "终端信号较差";
+				} else if (singal == 2) {
+					tip = "终端信号强度一般";
+				} else if (singal == 3) {
+					tip = "终端信号非常好";
+				}
+
+				Toast.makeText(getActivity(), tip, Toast.LENGTH_SHORT).show();
+				break;
+			case R.id.imgState:
+
+				// 车辆状态 0: 静止 1：运行 2：设防 3：报警
+
+				int state = (Integer) v.getTag();
+				String strState = "";
+				if (state == 0) {
+					strState = "车辆已停止运行";
+				} else if (state == 1) {
+					strState = "车辆运行中";
+				} else if (state == 2) {
+					strState = "车辆设防状态";
+				} else if (state == 3) {
+					strState = "车辆报警状态";
+				}
+
+				Toast.makeText(getActivity(), strState, Toast.LENGTH_SHORT)
+						.show();
+				break;
+			}
+			return false;
+
+		}
+	};
+
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.dialHealthScore:
-				GetSystem.myLog(TAG, "dialHealthScore : app.carDatas.size() = " + app.carDatas.size());
+				GetSystem.myLog(TAG, "dialHealthScore : app.carDatas.size() = "
+						+ app.carDatas.size());
 				if (app.carDatas != null && app.carDatas.size() != 0) {
 					String Device_id = app.carDatas.get(index).getDevice_id();
 					if (Device_id == null || Device_id.equals("")) {
-						Intent intent = new Intent(getActivity(), DevicesAddActivity.class);
-						intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
-						intent.putExtra("car_series_id", app.carDatas.get(index).getCar_series_id());
-						intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
+						Intent intent = new Intent(getActivity(),
+								DevicesAddActivity.class);
+						intent.putExtra("car_id", app.carDatas.get(index)
+								.getObj_id());
+						intent.putExtra("car_series_id", app.carDatas
+								.get(index).getCar_series_id());
+						intent.putExtra("car_series", app.carDatas.get(index)
+								.getCar_series());
 						startActivityForResult(intent, 2);
 					} else {
-						Intent intent = new Intent(getActivity(), FaultDetectionActivity.class);
-						intent.putExtra("carDatas", (Serializable)app.carDatas);
+						Intent intent = new Intent(getActivity(),
+								FaultDetectionActivity.class);
+						intent.putExtra("carDatas", (Serializable) app.carDatas);
 						intent.putExtra("index", index);
 						startActivityForResult(intent, 1);
 					}
@@ -226,16 +283,23 @@ public class FragmentCarInfo extends Fragment {
 				if (app.carDatas != null && app.carDatas.size() != 0) {
 					String Device_id = app.carDatas.get(index).getDevice_id();
 					if (Device_id == null || Device_id.equals("")) {
-						Intent intent = new Intent(getActivity(), DevicesAddActivity.class);
-						intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
-						intent.putExtra("car_series_id", app.carDatas.get(index).getCar_series_id());
-						intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
+						Intent intent = new Intent(getActivity(),
+								DevicesAddActivity.class);
+						intent.putExtra("car_id", app.carDatas.get(index)
+								.getObj_id());
+						intent.putExtra("car_series_id", app.carDatas
+								.get(index).getCar_series_id());
+						intent.putExtra("car_series", app.carDatas.get(index)
+								.getCar_series());
 						startActivityForResult(intent, 2);
 					} else {
-						Intent intent = new Intent(getActivity(), DriveActivity.class);
+						Intent intent = new Intent(getActivity(),
+								DriveActivity.class);
 						intent.putExtra("carData", app.carDatas.get(index));
-						ViewGroup carLayout = (ViewGroup) hs_car.getChildAt(index);
-						Boolean is_online = (Boolean) carLayout.findViewById(R.id.imgLocation).getTag();
+						ViewGroup carLayout = (ViewGroup) hs_car
+								.getChildAt(index);
+						Boolean is_online = (Boolean) carLayout.findViewById(
+								R.id.imgLocation).getTag();
 						intent.putExtra("is_online", is_online);
 						startActivityForResult(intent, 2);
 					}
@@ -244,9 +308,11 @@ public class FragmentCarInfo extends Fragment {
 			case R.id.iv_update_oil:
 				String device_id = app.carDatas.get(index).getDevice_id();
 				if (device_id == null || device_id.equals("")) {
-					Toast.makeText(getActivity(), "您的车没有绑定终端，不能进行油耗修正", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getActivity(), "您的车没有绑定终端，不能进行油耗修正",
+							Toast.LENGTH_SHORT).show();
 				} else {
-					Intent intent_oil = new Intent(getActivity(), OilUpdateActivity.class);
+					Intent intent_oil = new Intent(getActivity(),
+							OilUpdateActivity.class);
 					intent_oil.putExtra("index", index);
 					startActivity(intent_oil);
 				}
@@ -262,24 +328,30 @@ public class FragmentCarInfo extends Fragment {
 				getDataOne(FEE);
 				break;
 			case R.id.ll_adress:
-				Intent intent = new Intent(getActivity(), CarLocationActivity.class);
+				Intent intent = new Intent(getActivity(),
+						CarLocationActivity.class);
 				intent.putExtra("index", index);
 				intent.putExtra("isHotLocation", true);
 				startActivity(intent);
 				break;
 			case R.id.imgStealth:
-				if(v.getTag().equals(Stealth_Mode_True)){//当前隐身模式，切换到非隐身模式
-					((ImageView)v).setImageResource(R.drawable.ico_key);
+				if (v.getTag().equals(Stealth_Mode_True)) {// 当前隐身模式，切换到非隐身模式
+					((ImageView) v).setImageResource(R.drawable.ico_key);
 					v.setTag(Stealth_Mode_False);
 					http.putStealthMode(Stealth_Mode_False);
-				}else{
-					((ImageView)v).setImageResource(R.drawable.ico_key_close);
+					Toast.makeText(getActivity(), "开启在线模式", Toast.LENGTH_SHORT)
+							.show();
+				} else {
+					((ImageView) v).setImageResource(R.drawable.ico_key_close);
 					v.setTag(Stealth_Mode_True);
 					http.putStealthMode(Stealth_Mode_True);
+
+					Toast.makeText(getActivity(), "开启隐身模式", Toast.LENGTH_SHORT)
+							.show();
 				}
-				
-				break;	
-				
+
+				break;
+
 			case R.id.iv_drive_menu:
 				if (onCardMenuListener != null) {
 					onCardMenuListener.showCarMenu(Const.TAG_CAR);
@@ -296,9 +368,9 @@ public class FragmentCarInfo extends Fragment {
 			}
 			super.handleMessage(msg);
 			switch (msg.what) {
-			
+
 			case get_device:
-				jsonDevice(msg.obj.toString(),msg.arg1);
+				jsonDevice(msg.obj.toString(), msg.arg1);
 				break;
 			case getData:
 				jsonData(msg.obj.toString(), msg.arg1);
@@ -315,28 +387,43 @@ public class FragmentCarInfo extends Fragment {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
 					// 健康指数
 					int health_score = jsonObject.getInt("health_score");
-					carViews.get(msg.arg1).getDialHealthScore().initValue(health_score,handler);
-					carViews.get(msg.arg1).getTv_score().setText(String.valueOf(health_score));
+					carViews.get(msg.arg1).getDialHealthScore()
+							.initValue(health_score, handler);
+					carViews.get(msg.arg1).getTv_score()
+							.setText(String.valueOf(health_score));
 					carViews.get(msg.arg1).getTv_title().setText("健康指数");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				SharedPreferences preferences = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+				SharedPreferences preferences = getActivity()
+						.getSharedPreferences(Constant.sharedPreferencesName,
+								Context.MODE_PRIVATE);
 				Editor editor = preferences.edit();
-				editor.putString(Constant.sp_health_score + app.carDatas.get(msg.arg1).getObj_id(), msg.obj.toString());
+				editor.putString(
+						Constant.sp_health_score
+								+ app.carDatas.get(msg.arg1).getObj_id(),
+						msg.obj.toString());
 				editor.commit();
 				break;
 			case get_drive:
 				try {
 					JSONObject jsonObject = new JSONObject(msg.obj.toString());
-					Log.i("FragmentCarInfo", "drive result"+msg.obj.toString());
+					Log.i("FragmentCarInfo",
+							"drive result" + msg.obj.toString());
 					int drive_score = jsonObject.getInt("drive_score");
-					carViews.get(msg.arg1).getDialDriveScore().initValue(drive_score,handler);
-					carViews.get(msg.arg1).getTv_drive().setText(String.valueOf(drive_score));
+					carViews.get(msg.arg1).getDialDriveScore()
+							.initValue(drive_score, handler);
+					carViews.get(msg.arg1).getTv_drive()
+							.setText(String.valueOf(drive_score));
 					// 存在本地
-					SharedPreferences preferences1 = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+					SharedPreferences preferences1 = getActivity()
+							.getSharedPreferences(
+									Constant.sharedPreferencesName,
+									Context.MODE_PRIVATE);
 					Editor editor1 = preferences1.edit();
-					editor1.putString(Constant.sp_drive_score + app.carDatas.get(msg.arg1).getObj_id(), msg.obj.toString());
+					editor1.putString(Constant.sp_drive_score
+							+ app.carDatas.get(msg.arg1).getObj_id(),
+							msg.obj.toString());
 					editor1.commit();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -346,80 +433,91 @@ public class FragmentCarInfo extends Fragment {
 			}
 		}
 	};
-	
-	@SuppressLint("ResourceAsColor")
-	public void jsonDevice(String json,int childIndex){
-			try {
-				//Log.i("FragmentCarInfo", json);
-				JSONObject jsonObject = new JSONObject(json);
-				//SIM卡总流量，单位M
-				Double total_traffic = jsonObject.getDouble("total_traffic");
-				//SIM卡剩余流量，单位M
-				Double remain_traffic = jsonObject.getDouble("remain_traffic");	
-				//车辆状态 0: 静止  1：运行  2：设防  3：报警
-				int device_flag = jsonObject.getInt("device_flag");
 
-				//信号强度 0 离线(灰色)，1 差(蓝色1格)，2中(蓝色2格)，3优(蓝色3格)
-				int signal_level = jsonObject.getInt("signal_level");
-				//是否在线
-				boolean is_online = jsonObject.getBoolean("is_online");
-				//是否隐身 1：隐身  0：不隐身
-				int stealthMode = jsonObject.getInt("stealth_mode"); 
-				
-				
-				ViewGroup carLayout = (ViewGroup) hs_car.getChildAt(childIndex);
-				
-				
-				ImageView imgLocation = (ImageView) carLayout.findViewById(R.id.imgLocation);
-				TextView textAddress = (TextView) carLayout.findViewById(R.id.textLocation);
-				
-				TextView textSIM = (TextView) carLayout.findViewById(R.id.textSIM);
-				ImageView imgState = (ImageView) carLayout.findViewById(R.id.imgState);
-				ImageView imgSingal = (ImageView) carLayout.findViewById(R.id.imgSingal);
-				ImageView imgStealth = (ImageView) carLayout.findViewById(R.id.imgStealth);
-				
-				String simValue = "SIM:  "+remain_traffic.intValue()+"M/"+total_traffic.intValue()+"M";
-				textSIM.setText(simValue);
-				
-				int[] stateDrawable = {R.drawable.ico_state_0,R.drawable.ico_state_1,R.drawable.ico_state_2,R.drawable.ico_state_3};
-				imgState.setImageResource(stateDrawable[device_flag]);
-				
-				int[] signalDrawable = {R.drawable.ico_wifi_0,R.drawable.ico_wifi_1,R.drawable.ico_wifi_2,R.drawable.ico_wifi_3};
-				imgSingal.setImageResource(signalDrawable[signal_level]);
-				
-				
-				if(is_online){
-					imgLocation.setImageResource(R.drawable.ico_location_on);
-					imgLocation.setTag(is_online);
-					textAddress.setTextColor(Color.parseColor("#50b7de"));
-					textAddress.setAlpha(0.6f);
-					//imgOnLine.setImageResource(R.drawable.ico_key);
-				}else{
-					//imgOnLine.setImageResource(R.drawable.ico_key_close);
-					imgLocation.setImageResource(R.drawable.ico_location_off);
-					imgLocation.setTag(is_online);
-					textAddress.setTextColor(Color.BLACK);
-					textAddress.setAlpha(0.3f);
-				}
-				
-				
-				//隐身的
-				if(stealthMode == Stealth_Mode_True){
-					imgStealth.setImageResource(R.drawable.ico_key_close);
-					imgStealth.setTag(stealthMode);
-				}else{
-					//在线的
-					imgStealth.setImageResource(R.drawable.ico_key);
-					imgStealth.setTag(Stealth_Mode_False);
-				}
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			//int drive_score = jsonObject.getInt("drive_score");
+	@SuppressLint("ResourceAsColor")
+	public void jsonDevice(String json, int childIndex) {
+		try {
+			// Log.i("FragmentCarInfo", json);
+			JSONObject jsonObject = new JSONObject(json);
+			// SIM卡总流量，单位M
+			Double total_traffic = jsonObject.getDouble("total_traffic");
+			// SIM卡剩余流量，单位M
+			Double remain_traffic = jsonObject.getDouble("remain_traffic");
+			// 车辆状态 0: 静止 1：运行 2：设防 3：报警
+			int device_flag = jsonObject.getInt("device_flag");
+
+			// 信号强度 0 离线(灰色)，1 差(蓝色1格)，2中(蓝色2格)，3优(蓝色3格)
+			int signal_level = jsonObject.getInt("signal_level");
+			// 是否在线
+			boolean is_online = jsonObject.getBoolean("is_online");
+			// 是否隐身 1：隐身 0：不隐身
+			int stealthMode = jsonObject.getInt("stealth_mode");
+
+			ViewGroup carLayout = (ViewGroup) hs_car.getChildAt(childIndex);
+
+			ImageView imgLocation = (ImageView) carLayout
+					.findViewById(R.id.imgLocation);
+			TextView textAddress = (TextView) carLayout
+					.findViewById(R.id.textLocation);
+
+			TextView textSIM = (TextView) carLayout.findViewById(R.id.textSIM);
+			ImageView imgState = (ImageView) carLayout
+					.findViewById(R.id.imgState);
+			ImageView imgSingal = (ImageView) carLayout
+					.findViewById(R.id.imgSingal);
+			ImageView imgStealth = (ImageView) carLayout
+					.findViewById(R.id.imgStealth);
+
+			imgState.setOnLongClickListener(onLongClickListener);
 			
+			imgSingal.setOnLongClickListener(onLongClickListener);
+
+			String simValue = "SIM:  " + remain_traffic.intValue() + "M/"
+					+ total_traffic.intValue() + "M";
+			textSIM.setText(simValue);
+
+			int[] stateDrawable = { R.drawable.ico_state_0,
+					R.drawable.ico_state_1, R.drawable.ico_state_2,
+					R.drawable.ico_state_3 };
+			imgState.setTag(device_flag);
+			imgState.setImageResource(stateDrawable[device_flag]);
+
+			int[] signalDrawable = { R.drawable.ico_wifi_0,
+					R.drawable.ico_wifi_1, R.drawable.ico_wifi_2,
+					R.drawable.ico_wifi_3 };
+			imgSingal.setImageResource(signalDrawable[signal_level]);
+			imgSingal.setTag(signal_level);
+
+			if (is_online) {
+				imgLocation.setImageResource(R.drawable.ico_location_on);
+				imgLocation.setTag(is_online);
+				textAddress.setTextColor(Color.parseColor("#50b7de"));
+				textAddress.setAlpha(0.6f);
+				// imgOnLine.setImageResource(R.drawable.ico_key);
+			} else {
+				// imgOnLine.setImageResource(R.drawable.ico_key_close);
+				imgLocation.setImageResource(R.drawable.ico_location_off);
+				imgLocation.setTag(is_online);
+				textAddress.setTextColor(Color.BLACK);
+				textAddress.setAlpha(0.3f);
+			}
+
+			// 隐身的
+			if (stealthMode == Stealth_Mode_True) {
+				imgStealth.setImageResource(R.drawable.ico_key_close);
+				imgStealth.setTag(stealthMode);
+			} else {
+				// 在线的
+				imgStealth.setImageResource(R.drawable.ico_key);
+				imgStealth.setTag(Stealth_Mode_False);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		// int drive_score = jsonObject.getInt("drive_score");
+
 	}
-	
 
 	/** 滑动车辆布局 **/
 	public void initDataView() {// 布局
@@ -429,50 +527,62 @@ public class FragmentCarInfo extends Fragment {
 		} else {
 			index = 0;
 		}
-		SharedPreferences preferences = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		SharedPreferences preferences = getActivity().getSharedPreferences(
+				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		hs_car.removeAllViews();
 		carViews.clear();
 		for (int i = 0; i < app.carDatas.size(); i++) {
-			View v = LayoutInflater.from(getActivity()).inflate(R.layout.item_fault, null);
-			
+			View v = LayoutInflater.from(getActivity()).inflate(
+					R.layout.item_fault, null);
+
 			hs_car.addView(v);
-			
+
 			ImageView imgSwitch = (ImageView) v.findViewById(R.id.imgStealth);
 			imgSwitch.setOnClickListener(onClickListener);
-			
+
 			ImageView ivDriveMenu = (ImageView) getActivity().findViewById(
 					R.id.iv_drive_menu);
 			ivDriveMenu.setOnClickListener(onClickListener);
-			
-			ImageView iv_update_oil = (ImageView) v.findViewById(R.id.iv_update_oil);
+
+			ImageView iv_update_oil = (ImageView) v
+					.findViewById(R.id.iv_update_oil);
 			iv_update_oil.setOnClickListener(onClickListener);
-			RelativeLayout rl_left_complete = (RelativeLayout) v.findViewById(R.id.rl_left_complete);
-			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+			RelativeLayout rl_left_complete = (RelativeLayout) v
+					.findViewById(R.id.rl_left_complete);
+			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT);
 			lp.setMargins(0, 0, completed, 0);
 			rl_left_complete.setLayoutParams(lp);
 
-			LinearLayout ll_adress = (LinearLayout) v.findViewById(R.id.ll_adress);
+			LinearLayout ll_adress = (LinearLayout) v
+					.findViewById(R.id.ll_adress);
 			ll_adress.setOnClickListener(onClickListener);
 			TextView tv_score = (TextView) v.findViewById(R.id.tv_score);
 			TextView tv_title = (TextView) v.findViewById(R.id.tv_title);
 			// 当前里程数
-			TextView tv_current_distance = (TextView) v.findViewById(R.id.tv_current_distance);
+			TextView tv_current_distance = (TextView) v
+					.findViewById(R.id.tv_current_distance);
 
 			TextView tv_distance = (TextView) v.findViewById(R.id.tv_distance);
 			TextView tv_fee = (TextView) v.findViewById(R.id.tv_fee);
 			TextView tv_fuel = (TextView) v.findViewById(R.id.tv_fuel);
 			TextView tv_name = (TextView) v.findViewById(R.id.tv_name);
-			TextView textLocation = (TextView) v.findViewById(R.id.textLocation);
+			TextView textLocation = (TextView) v
+					.findViewById(R.id.textLocation);
 
-			v.findViewById(R.id.Liner_distance).setOnClickListener(onClickListener);
+			v.findViewById(R.id.Liner_distance).setOnClickListener(
+					onClickListener);
 			v.findViewById(R.id.Liner_fuel).setOnClickListener(onClickListener);
 			v.findViewById(R.id.Liner_fee).setOnClickListener(onClickListener);
 
 			TextView tv_drive = (TextView) v.findViewById(R.id.tv_drive);
-			DialView dialHealthScore = (DialView) v.findViewById(R.id.dialHealthScore);
-			
-			DialView dialDriveScore = (DialView) v.findViewById(R.id.dialDriveScore);
-			
+			DialView dialHealthScore = (DialView) v
+					.findViewById(R.id.dialHealthScore);
+
+			DialView dialDriveScore = (DialView) v
+					.findViewById(R.id.dialDriveScore);
+
 			dialHealthScore.setOnClickListener(onClickListener);
 			dialDriveScore.setOnClickListener(onClickListener);
 			CarView carView = new CarView();
@@ -492,16 +602,17 @@ public class FragmentCarInfo extends Fragment {
 			tv_name.setText(app.carDatas.get(i).getNick_name());
 			String Device_id = app.carDatas.get(i).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
-				
-				dialHealthScore.initValue(0,handler);
+
+				dialHealthScore.initValue(0, handler);
 				tv_score.setText("0");
 				tv_title.setText("未绑定终端");
-				dialDriveScore.initValue(0,handler);
+				dialDriveScore.initValue(0, handler);
 				tv_drive.setText("0");
 			} else {
-				String result = preferences.getString(Constant.sp_health_score + app.carDatas.get(i).getObj_id(), "");
+				String result = preferences.getString(Constant.sp_health_score
+						+ app.carDatas.get(i).getObj_id(), "");
 				if (result.equals("")) {// 未体检过
-					dialHealthScore.initValue(0,handler);
+					dialHealthScore.initValue(0, handler);
 					tv_score.setText("0");
 					tv_title.setText("未体检过");
 				} else {
@@ -509,7 +620,7 @@ public class FragmentCarInfo extends Fragment {
 						JSONObject jsonObject = new JSONObject(result);
 						// 健康指数
 						int health_score = jsonObject.getInt("health_score");
-						dialHealthScore.initValue(health_score,handler);
+						dialHealthScore.initValue(health_score, handler);
 						tv_score.setText(String.valueOf(health_score));
 						tv_title.setText("健康指数");
 					} catch (Exception e) {
@@ -517,15 +628,16 @@ public class FragmentCarInfo extends Fragment {
 					}
 				}
 				/** 驾驶信息 **/
-				String drive = preferences.getString(Constant.sp_drive_score + app.carDatas.get(i).getObj_id(), "");
+				String drive = preferences.getString(Constant.sp_drive_score
+						+ app.carDatas.get(i).getObj_id(), "");
 				if (drive.equals("")) {
-					dialHealthScore.initValue(0,handler);
+					dialHealthScore.initValue(0, handler);
 					tv_drive.setText("0");
 				} else {
 					try {
 						JSONObject jsonObject = new JSONObject(drive);
 						int drive_score = jsonObject.getInt("drive_score");
-						dialHealthScore.initValue(drive_score,handler);
+						dialHealthScore.initValue(drive_score, handler);
 						tv_drive.setText(String.valueOf(drive_score));
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -537,14 +649,17 @@ public class FragmentCarInfo extends Fragment {
 		getTotalData();
 	}
 
-	
 	/** 未登录显示 **/
 	public void setLoginView() {
 		hs_car.removeAllViews();
-		View v = LayoutInflater.from(getActivity()).inflate(R.layout.item_fault, null);
+		View v = LayoutInflater.from(getActivity()).inflate(
+				R.layout.item_fault, null);
 		hs_car.addView(v);
-		RelativeLayout rl_left_complete = (RelativeLayout) v.findViewById(R.id.rl_left_complete);
-		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		RelativeLayout rl_left_complete = (RelativeLayout) v
+				.findViewById(R.id.rl_left_complete);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.WRAP_CONTENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT);
 		lp.setMargins(0, 0, completed, 0);
 		rl_left_complete.setLayoutParams(lp);
 
@@ -552,11 +667,11 @@ public class FragmentCarInfo extends Fragment {
 		TextView tv_title = (TextView) v.findViewById(R.id.tv_title);
 		tv_score.setText("0");
 		tv_title.setText("未体检过");
-		
-		
-		DialView dialHealthScore = (DialView) v.findViewById(R.id.dialHealthScore);
-		dialHealthScore.initValue(0,handler);
-		
+
+		DialView dialHealthScore = (DialView) v
+				.findViewById(R.id.dialHealthScore);
+		dialHealthScore.initValue(0, handler);
+
 		dialHealthScore.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -581,43 +696,74 @@ public class FragmentCarInfo extends Fragment {
 
 				} else {
 					String Gas_no = "";
-					if (carData.getGas_no() == null || carData.getGas_no().equals("")) {
+					if (carData.getGas_no() == null
+							|| carData.getGas_no().equals("")) {
 						Gas_no = "93#(92#)";
 					} else {
 						Gas_no = carData.getGas_no();
 					}
 					// 获取设备信息
-					String deviceUrl = Constant.BaseUrl + "device/" + device_id + "?auth_code=" + app.auth_code + "&brand="
-							+ URLEncoder.encode(carData.getCar_brand(), "UTF-8");
-					new NetThread.GetDataThread(handler, deviceUrl, get_device, index).start();
-					
-									// 获取当前月的数据
-					String url = Constant.BaseUrl + "device/" + device_id + "/total?auth_code=" + app.auth_code + "&start_day=" + startMonth + "&end_day="
-							+ endMonth + "&city=" + URLEncoder.encode(app.City, "UTF-8") + "&gas_no=" + Gas_no;
-					new NetThread.GetDataThread(handler, url, getData, index).start();
+					String deviceUrl = Constant.BaseUrl
+							+ "device/"
+							+ device_id
+							+ "?auth_code="
+							+ app.auth_code
+							+ "&brand="
+							+ URLEncoder
+									.encode(carData.getCar_brand(), "UTF-8");
+					new NetThread.GetDataThread(handler, deviceUrl, get_device,
+							index).start();
+
+					// 获取当前月的数据
+					String url = Constant.BaseUrl + "device/" + device_id
+							+ "/total?auth_code=" + app.auth_code
+							+ "&start_day=" + startMonth + "&end_day="
+							+ endMonth + "&city="
+							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
+							+ Gas_no;
+					new NetThread.GetDataThread(handler, url, getData, index)
+							.start();
 					// 获取gps信息
-					String gpsUrl = GetUrl.getCarGpsData(device_id, app.auth_code);
-					new NetThread.GetDataThread(handler, gpsUrl, get_gps, index).start();
+					String gpsUrl = GetUrl.getCarGpsData(device_id,
+							app.auth_code);
+					new NetThread.GetDataThread(handler, gpsUrl, get_gps, index)
+							.start();
 
 					// 从服务器获取体检信息
-					String url1 = Constant.BaseUrl + "device/" + device_id + "/health_exam?auth_code=" + app.auth_code + "&brand="
-							+ URLEncoder.encode(carData.getCar_brand(), "UTF-8");
-					
-					System.out.println("从服务器获取体检信息 url1 "+url1);
-					new NetThread.GetDataThread(handler, url1, get_health, index).start();
+					String url1 = Constant.BaseUrl
+							+ "device/"
+							+ device_id
+							+ "/health_exam?auth_code="
+							+ app.auth_code
+							+ "&brand="
+							+ URLEncoder
+									.encode(carData.getCar_brand(), "UTF-8");
+
+					System.out.println("从服务器获取体检信息 url1 " + url1);
+					new NetThread.GetDataThread(handler, url1, get_health,
+							index).start();
 					// 获取驾驶信息
-					String url2 = Constant.BaseUrl + "device/" + device_id + "/day_drive?auth_code=" + app.auth_code + "&day="
-							+ GetSystem.GetNowMonth().getDay() + "&city=" + URLEncoder.encode(app.City, "UTF-8") + "&gas_no=" + Gas_no;
-					System.out.println("从服务器获取体检信息 url2 "+url2);
-					new NetThread.GetDataThread(handler, url2, get_drive, index).start();
+					String url2 = Constant.BaseUrl + "device/" + device_id
+							+ "/day_drive?auth_code=" + app.auth_code + "&day="
+							+ GetSystem.GetNowMonth().getDay() + "&city="
+							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
+							+ Gas_no;
+					System.out.println("从服务器获取体检信息 url2 " + url2);
+					new NetThread.GetDataThread(handler, url2, get_drive, index)
+							.start();
 				}
 				// 获取限行信息
-				if (app.City == null || carData.getObj_name() == null || app.City.equals("") || carData.getObj_name().equals("")) {
+				if (app.City == null || carData.getObj_name() == null
+						|| app.City.equals("")
+						|| carData.getObj_name().equals("")) {
 
 				} else {
-					String url = Constant.BaseUrl + "base/ban?city=" + URLEncoder.encode(app.City, "UTF-8") + "&obj_name="
+					String url = Constant.BaseUrl + "base/ban?city="
+							+ URLEncoder.encode(app.City, "UTF-8")
+							+ "&obj_name="
 							+ URLEncoder.encode(carData.getObj_name(), "UTF-8");
-					new NetThread.GetDataThread(handler, url, Get_carLimit, index).start();
+					new NetThread.GetDataThread(handler, url, Get_carLimit,
+							index).start();
 				}
 			}
 		} catch (Exception e) {
@@ -629,22 +775,33 @@ public class FragmentCarInfo extends Fragment {
 	private void jsonData(String str, int index) {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
-			if (jsonObject.toString() == null || jsonObject.toString().equals("")) {
+			if (jsonObject.toString() == null
+					|| jsonObject.toString().equals("")) {
 				return;
 			}
 			if (index < carViews.size()) {
 				CarView carView = carViews.get(index);
-				carView.getTv_fee().setText(String.format("%.1f", jsonObject.getDouble("total_fee")));// 花费
-				carView.getTv_fuel().setText(String.format("%.1f", jsonObject.getDouble("total_fuel")));// 油耗
+				carView.getTv_fee()
+						.setText(
+								String.format("%.1f",
+										jsonObject.getDouble("total_fee")));// 花费
+				carView.getTv_fuel().setText(
+						String.format("%.1f",
+								jsonObject.getDouble("total_fuel")));// 油耗
 				// 剩余里程显示
 				if ((jsonObject.getString("left_distance")).equals("null")) {
-					carView.getTv_distance().setText(String.format("%.0f", 0.0));
+					carView.getTv_distance()
+							.setText(String.format("%.0f", 0.0));
 				} else if (jsonObject.getDouble("left_distance") == 0) {
-					carView.getTv_distance().setText(String.format("%.1f", jsonObject.getDouble("total_distance")));// 里程
+					carView.getTv_distance().setText(
+							String.format("%.1f",
+									jsonObject.getDouble("total_distance")));// 里程
 				} else {
 					carView.getTv_current_distance().setText("剩余里程");
 					try {
-						carView.getTv_distance().setText(String.format("%.1f", jsonObject.getDouble("left_distance")));// 里程
+						carView.getTv_distance().setText(
+								String.format("%.1f",
+										jsonObject.getDouble("left_distance")));// 里程
 					} catch (Exception e) {
 						carView.getTv_distance().setText(String.format("0"));// 里程
 					}
@@ -660,12 +817,12 @@ public class FragmentCarInfo extends Fragment {
 		try {
 			CarView carView = carViews.get(index);
 			if (result == null || result.equals("")) {
-				//carView.getTv_xx().setText("不限");
+				// carView.getTv_xx().setText("不限");
 				app.carDatas.get(index).setLimit("不限");
 			} else {
 				JSONObject jsonObject = new JSONObject(result);
 				String limit = jsonObject.getString("limit");
-				//carView.getTv_xx().setText(limit);
+				// carView.getTv_xx().setText(limit);
 				app.carDatas.get(index).setLimit(limit);
 			}
 		} catch (Exception e) {
@@ -678,21 +835,27 @@ public class FragmentCarInfo extends Fragment {
 		try {
 			if (index < app.carDatas.size()) {
 				Gson gson = new Gson();
-				ActiveGpsData activeGpsData = gson.fromJson(str, ActiveGpsData.class);
-				if(activeGpsData == null){
+				ActiveGpsData activeGpsData = gson.fromJson(str,
+						ActiveGpsData.class);
+				if (activeGpsData == null) {
 					return;
 				}
 				GpsData gpsData = activeGpsData.getActive_gps_data();
-				if(gpsData != null){
-					LatLng latLng = new LatLng(gpsData.getLat(), gpsData.getLon());
+				if (gpsData != null) {
+					LatLng latLng = new LatLng(gpsData.getLat(),
+							gpsData.getLon());
 					app.carDatas.get(index).setLat(gpsData.getLat());
 					app.carDatas.get(index).setLon(gpsData.getLon());
-					app.carDatas.get(index).setRcv_time(GetSystem.ChangeTimeZone(gpsData.getRcv_time().substring(0, 19).replace("T", " ")));
-					mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));	
+					app.carDatas.get(index).setRcv_time(
+							GetSystem.ChangeTimeZone(gpsData.getRcv_time()
+									.substring(0, 19).replace("T", " ")));
+					mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
+							.location(latLng));
 				}
-				if(activeGpsData.getParams() != null){
-					app.carDatas.get(index).setSensitivity(activeGpsData.getParams().getSensitivity());	
-				}		
+				if (activeGpsData.getParams() != null) {
+					app.carDatas.get(index).setSensitivity(
+							activeGpsData.getParams().getSensitivity());
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -715,16 +878,20 @@ public class FragmentCarInfo extends Fragment {
 					String showTime = "";
 					if (gpsData.equals(nowData)) {
 						showTime = rcv_time.substring(11, 16);
-					} else if (gpsData.equals(GetSystem.GetNextData(nowData, -1))) {
+					} else if (gpsData.equals(GetSystem
+							.GetNextData(nowData, -1))) {
 						showTime = "昨天" + rcv_time.substring(11, 16);
-					} else if (gpsData.equals(GetSystem.GetNextData(nowData, -2))) {
+					} else if (gpsData.equals(GetSystem
+							.GetNextData(nowData, -2))) {
 						showTime = "前天" + rcv_time.substring(11, 16);
 					} else {
 						showTime = rcv_time.substring(5, 16);
 					}
 					// 显示时间
-					carViews.get(index).getLl_adress().setVisibility(View.VISIBLE);
-					carViews.get(index).getTv_location().setText(adress + "  " + showTime);
+					carViews.get(index).getLl_adress()
+							.setVisibility(View.VISIBLE);
+					carViews.get(index).getTv_location()
+							.setText(adress + "  " + showTime);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -739,7 +906,6 @@ public class FragmentCarInfo extends Fragment {
 
 	List<CarView> carViews = new ArrayList<CarView>();
 
-
 	boolean isDestroy = false;
 	boolean isGetAllData = true;
 	boolean isResume = true;
@@ -750,7 +916,7 @@ public class FragmentCarInfo extends Fragment {
 		isResume = true;
 		initLoaction();
 		initTotalData();
-		
+
 	}
 
 	@Override
@@ -764,8 +930,7 @@ public class FragmentCarInfo extends Fragment {
 		super.onDestroy();
 		isDestroy = true;
 		isGetAllData = false;
-		
-		
+
 	}
 
 	// 跳转类型
@@ -778,10 +943,13 @@ public class FragmentCarInfo extends Fragment {
 		if (app.carDatas != null && app.carDatas.size() != 0) {
 			String Device_id = app.carDatas.get(index).getDevice_id();
 			if (Device_id == null || Device_id.equals("")) {
-				Intent intent = new Intent(getActivity(), DevicesAddActivity.class);
+				Intent intent = new Intent(getActivity(),
+						DevicesAddActivity.class);
 				intent.putExtra("car_id", app.carDatas.get(index).getObj_id());
-				intent.putExtra("car_series_id", app.carDatas.get(index).getCar_series_id());
-				intent.putExtra("car_series", app.carDatas.get(index).getCar_series());
+				intent.putExtra("car_series_id", app.carDatas.get(index)
+						.getCar_series_id());
+				intent.putExtra("car_series", app.carDatas.get(index)
+						.getCar_series());
 				startActivityForResult(intent, 2);
 			} else {
 				Intent intent = new Intent(getActivity(), FuelActivity.class);
@@ -807,16 +975,20 @@ public class FragmentCarInfo extends Fragment {
 			// requestCode = 2, resultCode = 0
 			// 驾驶习惯返回
 			/** 驾驶信息 **/
-			SharedPreferences preferences = getActivity().getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-			String drive = preferences.getString(Constant.sp_drive_score + app.carDatas.get(index).getObj_id(), "");
+			SharedPreferences preferences = getActivity().getSharedPreferences(
+					Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+			String drive = preferences.getString(Constant.sp_drive_score
+					+ app.carDatas.get(index).getObj_id(), "");
 			if (drive.equals("")) {
 
 			} else {
 				try {
 					JSONObject jsonObject = new JSONObject(drive);
 					int drive_score = jsonObject.getInt("drive_score");
-					carViews.get(index).getDialDriveScore().initValue(drive_score,handler);
-					carViews.get(index).getTv_drive().setText(String.valueOf(drive_score));
+					carViews.get(index).getDialDriveScore()
+							.initValue(drive_score, handler);
+					carViews.get(index).getTv_drive()
+							.setText(String.valueOf(drive_score));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
