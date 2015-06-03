@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -204,7 +205,8 @@ public class FriendInfoActivity extends Activity implements Callback {
 	public void getAuthorization(String id, String friendId) {
 
 		String url = "http://api.bibibaba.cn/customer/" + id + "/friend/" + friendId + "/rights?auth_code=" + app.auth_code;
-
+		Log.i("FriendInfoActivity", "获取有哪些权限 url "+ url);
+		
 		httpFriend.getAuthCode(url);
 
 	}

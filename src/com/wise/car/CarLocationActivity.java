@@ -41,6 +41,7 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMap.OnMapStatusChangeListener;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.Circle;
@@ -113,7 +114,12 @@ public class CarLocationActivity extends Activity {
 
 	private View home, company;
 	private Intent intent = null; 
+	
+	
 
+	private WalkingRoutePlanOption walkOption = null;
+	
+	private  DrivingRoutePlanOption  driveOption = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -151,6 +157,7 @@ public class CarLocationActivity extends Activity {
 		mMapView = (MapView) findViewById(R.id.mv_car_location);
 		mBaiduMap = mMapView.getMap();
 		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
+		
 		UiSettings mUiSettings = mBaiduMap.getUiSettings();
 		mUiSettings.setCompassEnabled(true);
 		// 开启定位图层
@@ -221,6 +228,7 @@ public class CarLocationActivity extends Activity {
 
 	
 	
+	
 	public void searchLocationByKeywords(){
 		
 		
@@ -239,7 +247,7 @@ public class CarLocationActivity extends Activity {
 						LatLng llg = new LatLng(lat,lon);
 						MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
 						mBaiduMap.setMapStatus(u);
-						setTransitRoute(ll, llg);
+						setTransitRoute(myLatLng, llg);
 						
 					}
 
@@ -269,13 +277,14 @@ public class CarLocationActivity extends Activity {
 				break;
 			case R.id.bt_location_findCar:// 寻车,客户端导航
 				if (isHotLocation) {
+					
 					LatLng carLocat = new LatLng(carData.getLat(),
 							carData.getLon());
 					// 定位以车辆为中心
 					MapStatusUpdate u = MapStatusUpdateFactory
 							.newLatLng(carLocat);
 					mBaiduMap.animateMapStatus(u);
-					setTransitRoute(ll, circle);
+					setTransitRoute(myLatLng, carLatLng);
 				} else {
 					showHotDialog();
 				}
@@ -411,7 +420,7 @@ public class CarLocationActivity extends Activity {
 					MapStatusUpdate mu = MapStatusUpdateFactory
 							.newLatLng(homeLocat);
 					mBaiduMap.animateMapStatus(mu);
-					setTransitRoute(ll, homeLocat);
+					setTransitRoute(myLatLng, homeLocat);
 				}
 				break;
 			case R.id.iv_conpany:
@@ -432,7 +441,7 @@ public class CarLocationActivity extends Activity {
 					MapStatusUpdate mu = MapStatusUpdateFactory
 							.newLatLng(companyLocat);
 					mBaiduMap.animateMapStatus(mu);
-					setTransitRoute(ll, companyLocat);
+					setTransitRoute(myLatLng, companyLocat);
 				}
 				break;
 			case R.id.iv_satellite:
@@ -569,8 +578,11 @@ public class CarLocationActivity extends Activity {
 	}
 
 	// driving,walking
-	private void showDrivingOrWalking(final LatLng startLatLng,
+	private void showDrivingOrWalking(LatLng startLatLng,
 			final LatLng stopLatLng) {
+		Log.i("CarLocationActivity", "startLatLng"+ startLatLng.longitude +" "+ startLatLng.latitude);
+		Log.i("CarLocationActivity", "stopLatLng"+ stopLatLng.longitude +" "+ stopLatLng.latitude);
+		
 		final PlanNode stNode = PlanNode.withLocation(startLatLng);
 		final PlanNode edNode = PlanNode.withLocation(stopLatLng);
 		AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -582,8 +594,8 @@ public class CarLocationActivity extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						Toast.makeText(CarLocationActivity.this, "驾车规划中...",
 								Toast.LENGTH_SHORT).show();
-						 mSearch.drivingSearch(new
-						 DrivingRoutePlanOption().from(stNode).to(edNode));
+						driveOption = new DrivingRoutePlanOption().from(stNode).to(edNode);
+						 mSearch.drivingSearch(driveOption);
 					}
 				});
 		builder.setNegativeButton("步行规划",
@@ -592,7 +604,8 @@ public class CarLocationActivity extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						Toast.makeText(CarLocationActivity.this, "步行规划中...",
 								Toast.LENGTH_SHORT).show();
-						 mSearch.walkingSearch(new WalkingRoutePlanOption().from(stNode).to(edNode));
+						 walkOption = new WalkingRoutePlanOption().from(stNode).to(edNode);
+						 mSearch.walkingSearch(walkOption);
 					}
 				});
 		builder.create().show();
@@ -814,7 +827,7 @@ public class CarLocationActivity extends Activity {
 		}
 	}
 
-	LatLng circle;
+	LatLng carLatLng;
 	Marker carMarker = null;
 	boolean isFristCarLocation = true;
 
@@ -824,7 +837,7 @@ public class CarLocationActivity extends Activity {
 			if (!isHotLocation) {
 				return;
 			}
-			circle = new LatLng(carData.getLat(), carData.getLon());
+			carLatLng = new LatLng(carData.getLat(), carData.getLon());
 			if (carMarker != null) {
 				carMarker.remove();
 			}
@@ -834,12 +847,12 @@ public class CarLocationActivity extends Activity {
 					.fromResource(R.drawable.body_icon_location2);
 			// 构建MarkerOption，用于在地图上添加Marker
 			OverlayOptions option = new MarkerOptions().anchor(0.5f, 1.0f)
-					.position(circle).icon(bitmap);
+					.position(carLatLng).icon(bitmap);
 			// 在地图上添加Marker，并显示
 			carMarker = (Marker) (mBaiduMap.addOverlay(option));
 			if (isFristCarLocation) {// 第一次移动车的位置到地图中间
 				isFristCarLocation = false;
-				MapStatus mapStatus = new MapStatus.Builder().target(circle)
+				MapStatus mapStatus = new MapStatus.Builder().target(carLatLng)
 						.build();
 				MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 						.newMapStatus(mapStatus);
@@ -847,7 +860,7 @@ public class CarLocationActivity extends Activity {
 			} else {
 				if (isTracking) {
 					MapStatus mapStatus = new MapStatus.Builder()
-							.target(circle).build();
+							.target(carLatLng).build();
 					MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 							.newMapStatus(mapStatus);
 					mBaiduMap.setMapStatus(mapStatusUpdate);
@@ -1112,7 +1125,7 @@ public class CarLocationActivity extends Activity {
 	}
 
 	boolean isFirstLoc = true;
-	LatLng ll;
+	LatLng myLatLng;
 
 	private class MyLocationListenner implements BDLocationListener {
 		@Override
@@ -1128,7 +1141,7 @@ public class CarLocationActivity extends Activity {
 			drawPhoneLocation(latitude, longitude);
 			if (isFirstLoc) {
 				isFirstLoc = false;
-				ll = new LatLng(location.getLatitude(), location.getLongitude());
+				myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 				if (isHotLocation) {
 					LatLng carLocat = new LatLng(carData.getLat(),
 							carData.getLon());
@@ -1197,6 +1210,7 @@ public class CarLocationActivity extends Activity {
 					mBaiduMap.setOnMarkerClickListener(wkOverlay);
 					wkOverlay.setData(result.getRouteLines().get(0));
 					wkOverlay.addToMap();
+					wkOverlay.zoomToSpan();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1230,6 +1244,7 @@ public class CarLocationActivity extends Activity {
 					mBaiduMap.setOnMarkerClickListener(drOverlay);
 					drOverlay.setData(result.getRouteLines().get(0));
 					drOverlay.addToMap();
+					drOverlay.zoomToSpan();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

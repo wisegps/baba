@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,6 +105,7 @@ public class ServiceListActivity extends Activity{
 	/** 获取服务商数据 **/
 	public void getFriendData() {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/get_friends?auth_code=" + app.auth_code +"&friend_type=2";
+		Log.i("ServiceListActivity", "获取服务商数据url "+url);
 		new NetThread.GetDataThread(handler, url, get_all_friend).start();
 	}
 	private void jsonFriendData(String result) {
