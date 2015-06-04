@@ -2,103 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ebedf0"
     android:orientation="vertical" >
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="45dip"
-        android:background="@color/white"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:padding="5dip" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fafcff"
+        android:gravity="center"
+        android:orientation="horizontal" >
 
         <ImageView
-            android:id="@+id/iv_back"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_centerVertical="true"
-            android:padding="@dimen/margins"
-            android:src="@drawable/body_icon_arrow_contrary" />
+            android:layout_height="wrap_content"
+            android:src="@drawable/common_icon_back_btn_normal" />
 
         <EditText
-            android:id="@+id/ed_search"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_toRightOf="@id/iv_back"
-            android:background="@drawable/bg_adress"
-            android:drawableLeft="@drawable/toolbar_icon_search"
-            android:gravity="center_vertical"
-            android:hint="搜索" />
-    </RelativeLayout>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/bg_border_rect"
+            android:drawableLeft="@drawable/common_icon_searchbox_magnifier_2"
+            android:hint=" 搜索" />
+    </LinearLayout>
 
     <View
-        android:layout_width="fill_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginBottom="3dip"
-        android:background="@color/gay_line" />
-
-    <LinearLayout
-        android:id="@+id/ll_oftenAddress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:background="@drawable/bg_adress_map"
-        android:orientation="vertical"
-        android:padding="3dip" >
+        android:layout_height="1px"
+        android:background="#bdbfc1" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dip"
-            android:gravity="center"
-            android:text="常用地址"
-            android:textSize="@dimen/main" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#d3d5d8" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/gay_line" />
 
         <ListView
-            android:id="@+id/list_often_adres"
+            android:id="@+id/lv_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:cacheColorHint="#00000000"
-            android:divider="@color/gay_line"
-            android:dividerHeight="0.5dp"
-            android:listSelector="@color/transparent" >
+            android:layout_margin="8dp"
+            android:background="@drawable/bg_rect_list_search"
+            android:divider="@null"
+            android:scrollbars="none" >
         </ListView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dip"
-        android:background="@drawable/bg_adress_map"
-        android:orientation="vertical"
-        android:padding="0.5dip" >
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dip"
-            android:gravity="center"
-            android:text="搜索地址"
-            android:textSize="@dimen/main" />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/gay_line" />
-
-        <ListView
-            android:id="@+id/search_history"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:cacheColorHint="#00000000"
-            android:divider="@color/gay_line"
-            android:dividerHeight="0.5dp"
-            android:listSelector="@color/transparent" />
-    </LinearLayout>
 
 </LinearLayout>
