@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,27 +36,43 @@ import com.baidu.mapapi.search.sug.SuggestionSearch;
 import com.baidu.mapapi.search.sug.SuggestionSearchOption;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
-import com.wise.baba.entity.Suggestion;
+import com.wise.baba.app.Const;
+import com.wise.baba.db.dao.DaoMaster;
+import com.wise.baba.db.dao.DaoMaster.DevOpenHelper;
+import com.wise.baba.db.dao.DaoSession;
+import com.wise.baba.db.dao.Suggestion;
+import com.wise.baba.db.dao.SuggestionDao;
+import com.wise.baba.db.dao.SuggestionDao.Properties;
 import com.wise.baba.ui.adapter.ListSearchAdapter;
 
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * 
- *
+ * 
  * @author c
- * @desc   百度地图搜索
- * @date   2015-6-4
- *
+ * @desc 百度地图搜索
+ * @date 2015-6-4
+ * 
  */
-public class SearchLocationActivity extends Activity implements TextWatcher, OnGetPoiSearchResultListener, OnGetSuggestionResultListener, OnItemClickListener {
+public class SearchLocationActivity extends Activity implements TextWatcher,
+		OnGetPoiSearchResultListener, OnGetSuggestionResultListener,
+		OnItemClickListener {
 	private AppApplication app;
 	private PoiSearch mPoiSearch = null;
 	private SuggestionSearch sugSearch = null;
 	private ListView lvSearch;
 	private ListSearchAdapter listSearchAdapter;
 	private EditText etSearch = null;
-	
+
 	private List<Suggestion> searchList = null;
+
+	private DevOpenHelper helper = null;
+	private SQLiteDatabase db = null;
+	private DaoMaster daoMaster = null;
+	
+	private DaoSession daoSession = null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,12 +81,11 @@ public class SearchLocationActivity extends Activity implements TextWatcher, OnG
 		app = (AppApplication) getApplication();
 		init();
 	}
-	
-	
+
 	/**
 	 * 初始化
 	 */
-	public void init(){
+	public void init() {
 		/*
 		 * 先初始化百度搜索
 		 */
@@ -77,7 +93,14 @@ public class SearchLocationActivity extends Activity implements TextWatcher, OnG
 		sugSearch = SuggestionSearch.newInstance();
 		mPoiSearch.setOnGetPoiSearchResultListener(this);
 		sugSearch.setOnGetSuggestionResultListener(this);
-		
+
+		/*
+		 * 初始化数据库
+		 */
+		helper = new DaoMaster.DevOpenHelper(this, "history-db", null);
+		db = helper.getWritableDatabase();
+		daoMaster = new DaoMaster(db);
+		daoSession = daoMaster.newSession();
 		
 		/*
 		 * 再初始化界面控件
@@ -86,34 +109,37 @@ public class SearchLocationActivity extends Activity implements TextWatcher, OnG
 		lvSearch = (ListView) findViewById(R.id.lv_search);
 		etSearch = (EditText) findViewById(R.id.et_search);
 		
-		etSearch.addTextChangedListener(this);
-		
-		listSearchAdapter= new ListSearchAdapter(this);
+		/*
+		 * 列表加载历史数据
+		 */
+		listSearchAdapter = new ListSearchAdapter(this);
 		lvSearch.setAdapter(listSearchAdapter);
 		listSearchAdapter.notifyDataSetChanged();
+		loadHistory();
+		//设监听
+		etSearch.addTextChangedListener(this);
 		lvSearch.setOnItemClickListener(this);
-		
-		
+
 		findViewById(R.id.iv_back).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				SearchLocationActivity.this.finish();
 			}
 		});
+
 		
 	}
-	
-	
+
 	/**
 	 * 
 	 */
-	public void notifyDataSetChanged(){
+	public void notifyDataSetChanged() {
 		listSearchAdapter.setData(searchList);
 		listSearchAdapter.notifyDataSetChanged();
 	}
-	
+
 	/**
-	 * @desc  跳到地图界面，显示兴趣点
+	 * @desc 跳到地图界面，显示兴趣点
 	 * @param history_lat
 	 * @param history_lon
 	 * @param re_name
@@ -129,7 +155,6 @@ public class SearchLocationActivity extends Activity implements TextWatcher, OnG
 		this.finish();
 	}
 
-	
 	/**
 	 * 文本框监听
 	 */
@@ -137,74 +162,75 @@ public class SearchLocationActivity extends Activity implements TextWatcher, OnG
 	public void beforeTextChanged(CharSequence s, int start, int count,
 			int after) {
 	}
+
 	@Override
 	public void onTextChanged(CharSequence s, int start, int before, int count) {
 	}
+
 	@Override
 	public void afterTextChanged(Editable s) {
 		String text = s.toString();
+		//为空就加载历史
+		if(text == null || text.length() <=0){
+			loadHistory();
+			return;
+		}
+		
 		SuggestionSearchOption sugOption = new SuggestionSearchOption();
 		sugOption.keyword(text);
 		sugOption.city(app.City);
 		sugSearch.requestSuggestion(sugOption);
-		
+
 	}
-	
 
 	/**
 	 * POI搜索返回
 	 */
 	@Override
 	public void onGetPoiDetailResult(PoiDetailResult poiDetailResult) {
-		
+
 	}
 
 	@Override
 	public void onGetPoiResult(PoiResult poiResult) {
-		
-		List<PoiInfo> poiList =  poiResult.getAllPoi();
-		if(poiList == null || poiList.size()==0){
+
+		List<PoiInfo> poiList = poiResult.getAllPoi();
+		if (poiList == null || poiList.size() == 0) {
 			Toast.makeText(this, "找不到结果", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		
-		PoiInfo poi =  poiList.get(0);
-		intentToMap(poi.location.latitude,poi.location.longitude,poi.name);
-		
+
+		PoiInfo poi = poiList.get(0);
+		intentToMap(poi.location.latitude, poi.location.longitude, poi.name);
+
 	}
 
-	
-
-	
-	
 	/**
 	 * 搜索返回建议
 	 */
 	@Override
 	public void onGetSuggestionResult(SuggestionResult suggestionResult) {
-		List<SuggestionInfo> allSuggestions = suggestionResult.getAllSuggestions();
-		if(allSuggestions == null || allSuggestions.size()==0){
+		List<SuggestionInfo> allSuggestions = suggestionResult
+				.getAllSuggestions();
+		if (allSuggestions == null || allSuggestions.size() == 0) {
 			Toast.makeText(this, "找不到结果", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		
+
 		this.searchList.clear();
 		Iterator it = allSuggestions.iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			SuggestionInfo info = (SuggestionInfo) it.next();
 			Suggestion suggestion = new Suggestion();
-			suggestion.setType(Suggestion.Type_Suggestion);
+			suggestion.setType(Const.Type_Suggestion);
 			suggestion.setKey(info.key);
 			suggestion.setCity(info.city);
 			suggestion.setDistrict(info.district);
-			
-			
 			searchList.add(suggestion);
 		}
 		notifyDataSetChanged();
-		
-	}
 
+	}
 
 	/**
 	 * 点击搜索列表
@@ -212,31 +238,83 @@ public class SearchLocationActivity extends Activity implements TextWatcher, OnG
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		Suggestion suggestion = (Suggestion) listSearchAdapter.getItem(position);
 		
+		Suggestion suggestion = (Suggestion) listSearchAdapter
+				.getItem(position);
+
+		if(suggestion.getType() == Const.Type_Clear_History){
+			clearHistory();
+			return;
+		}
 		String city = suggestion.getCity();
 		
 		
-		//去别的城市搜索
-		if(city != null && !city.equals("") && !city.equals(app.City)){
-			PoiCitySearchOption  poiOption  = new PoiCitySearchOption();
+		//先保存道数据库
+		
+		save2db(suggestion);
+		
+		
+		// 去别的城市搜索
+		if (city != null && !city.equals("") && !city.equals(app.City)) {
+			PoiCitySearchOption poiOption = new PoiCitySearchOption();
 			poiOption.keyword(suggestion.getKey());
 			poiOption.city(city);
 			poiOption.pageNum(0);
 			mPoiSearch.searchInCity(poiOption);
 			return;
 		}
-		
-		
-		
-		//调用附近搜索
+
+		// 调用附近搜索
 		PoiNearbySearchOption nearByOption = new PoiNearbySearchOption();
 		nearByOption.keyword(suggestion.getKey());
-		nearByOption.location(new LatLng(app.Lat,app.Lon));
+		nearByOption.location(new LatLng(app.Lat, app.Lon));
 		nearByOption.sortType(PoiSortType.distance_from_near_to_far);
 		nearByOption.radius(1000000000);
 		mPoiSearch.searchNearby(nearByOption);
 	}
 
+	/**
+	 * 清空历史记录
+	 */
+	private void clearHistory() {
+		SuggestionDao suggestionDao = daoSession.getSuggestionDao();
+		suggestionDao.deleteAll();
+		loadHistory();
+	}
+
+	/**
+	 * 历史搜索记录存进数据库
+	 */
+	public void save2db(Suggestion suggestion) {
+		suggestion.setType(Const.Type_History);
+		SuggestionDao suggestionDao = daoSession.getSuggestionDao();
+		QueryBuilder<Suggestion> qb = suggestionDao.queryBuilder();
+		qb.where(Properties.Key.eq(suggestion.getKey()),Properties.City.eq(suggestion.getCity()),Properties.District.eq(suggestion.getDistrict()));
+		
+		if(qb.list().size()<=0){
+			suggestionDao.insert(suggestion);
+		}
+		
+		
+	}
+	
+	/**
+	 * 加载数据库中的内容
+	 */
+	public void loadHistory() {
+		SuggestionDao suggestionDao = daoSession.getSuggestionDao();
+		List<Suggestion>  suggestionList = suggestionDao.loadAll();
+		//最后加上清空历史记录
+		if(suggestionList.size()>0){
+			Suggestion clearSuggestion = new Suggestion();
+			clearSuggestion.setType(Const.Type_Clear_History);
+			suggestionList.add(clearSuggestion);
+		}
+		listSearchAdapter.setData(suggestionList);
+		listSearchAdapter.notifyDataSetChanged();
+	}
+	
+	
+	
 
 }

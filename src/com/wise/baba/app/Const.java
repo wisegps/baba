@@ -47,7 +47,10 @@ public class Const {
 	public static final int DETECT_HISTORY = 2;
 	public static final int DETECT_RESULT = 3;
 	
-	
+	//搜索建议类型
+	public static final int Type_History = 0;
+	public static final int Type_Suggestion = 1;
+	public static final int Type_Clear_History = 2;
 	
 	
 	
