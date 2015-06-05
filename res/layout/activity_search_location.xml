@@ -13,17 +13,19 @@
         android:orientation="horizontal" >
 
         <ImageView
+            android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/common_icon_back_btn_normal" />
 
         <EditText
+            android:id="@+id/et_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:background="@drawable/bg_border_rect"
             android:drawableLeft="@drawable/common_icon_searchbox_magnifier_2"
-            android:hint=" 搜索" />
+            android:hint=" 在附近搜索" />
     </LinearLayout>
 
     <View

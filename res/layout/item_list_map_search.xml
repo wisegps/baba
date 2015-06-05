@@ -21,13 +21,13 @@
             android:src="@drawable/icon_poi_history" />
 
         <LinearLayout
+            android:id="@+id/llytInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
             android:layout_toLeftOf="@+id/iv_retrieval"
             android:layout_toRightOf="@+id/iv_search"
-            android:layout_weight="1"
             android:orientation="vertical" >
 
             <TextView
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="深圳宝安机场"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#9a9a9a" />
 
@@ -46,9 +46,22 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="深圳宝安"
+                android:text=""
                 android:textColor="#9a9a9a" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_one_line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@+id/iv_retrieval"
+            android:layout_toRightOf="@+id/iv_search"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#9a9a9a" />
 
         <ImageView
             android:id="@+id/iv_retrieval"
