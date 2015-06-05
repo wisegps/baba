@@ -27,6 +27,7 @@ public class SuggestionDao extends AbstractDao<Suggestion, Void> {
         public final static Property Key = new Property(1, String.class, "key", false, "KEY");
         public final static Property City = new Property(2, String.class, "city", false, "CITY");
         public final static Property District = new Property(3, String.class, "district", false, "DISTRICT");
+        public final static Property Date = new Property(4, java.util.Date.class, "date", false, "DATE");
     };
 
 
@@ -45,7 +46,8 @@ public class SuggestionDao extends AbstractDao<Suggestion, Void> {
                 "'TYPE' INTEGER," + // 0: type
                 "'KEY' TEXT," + // 1: key
                 "'CITY' TEXT," + // 2: city
-                "'DISTRICT' TEXT);"); // 3: district
+                "'DISTRICT' TEXT," + // 3: district
+                "'DATE' INTEGER);"); // 4: date
     }
 
     /** Drops the underlying database table. */
@@ -78,6 +80,11 @@ public class SuggestionDao extends AbstractDao<Suggestion, Void> {
         if (district != null) {
             stmt.bindString(4, district);
         }
+ 
+        java.util.Date date = entity.getDate();
+        if (date != null) {
+            stmt.bindLong(5, date.getTime());
+        }
     }
 
     /** @inheritdoc */
@@ -93,7 +100,8 @@ public class SuggestionDao extends AbstractDao<Suggestion, Void> {
             cursor.isNull(offset + 0) ? null : cursor.getInt(offset + 0), // type
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // key
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // city
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // district
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // district
+            cursor.isNull(offset + 4) ? null : new java.util.Date(cursor.getLong(offset + 4)) // date
         );
         return entity;
     }
@@ -105,6 +113,7 @@ public class SuggestionDao extends AbstractDao<Suggestion, Void> {
         entity.setKey(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setCity(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setDistrict(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setDate(cursor.isNull(offset + 4) ? null : new java.util.Date(cursor.getLong(offset + 4)));
      }
     
     /** @inheritdoc */

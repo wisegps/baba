@@ -10,15 +10,17 @@ public class Suggestion {
     private String key;
     private String city;
     private String district;
+    private java.util.Date date;
 
     public Suggestion() {
     }
 
-    public Suggestion(Integer type, String key, String city, String district) {
+    public Suggestion(Integer type, String key, String city, String district, java.util.Date date) {
         this.type = type;
         this.key = key;
         this.city = city;
         this.district = district;
+        this.date = date;
     }
 
     public Integer getType() {
@@ -51,6 +53,14 @@ public class Suggestion {
 
     public void setDistrict(String district) {
         this.district = district;
+    }
+
+    public java.util.Date getDate() {
+        return date;
+    }
+
+    public void setDate(java.util.Date date) {
+        this.date = date;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.wise.car;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +46,8 @@ import com.wise.baba.db.dao.SuggestionDao;
 import com.wise.baba.db.dao.SuggestionDao.Properties;
 import com.wise.baba.ui.adapter.ListSearchAdapter;
 
+import de.greenrobot.dao.Property;
+import de.greenrobot.dao.query.DeleteQuery;
 import de.greenrobot.dao.query.QueryBuilder;
 
 /**
@@ -70,7 +73,7 @@ public class SearchLocationActivity extends Activity implements TextWatcher,
 	private DevOpenHelper helper = null;
 	private SQLiteDatabase db = null;
 	private DaoMaster daoMaster = null;
-	
+
 	private DaoSession daoSession = null;
 
 	@Override
@@ -101,14 +104,14 @@ public class SearchLocationActivity extends Activity implements TextWatcher,
 		db = helper.getWritableDatabase();
 		daoMaster = new DaoMaster(db);
 		daoSession = daoMaster.newSession();
-		
+
 		/*
 		 * 再初始化界面控件
 		 */
 		searchList = new ArrayList<Suggestion>();
 		lvSearch = (ListView) findViewById(R.id.lv_search);
 		etSearch = (EditText) findViewById(R.id.et_search);
-		
+
 		/*
 		 * 列表加载历史数据
 		 */
@@ -116,7 +119,7 @@ public class SearchLocationActivity extends Activity implements TextWatcher,
 		lvSearch.setAdapter(listSearchAdapter);
 		listSearchAdapter.notifyDataSetChanged();
 		loadHistory();
-		//设监听
+		// 设监听
 		etSearch.addTextChangedListener(this);
 		lvSearch.setOnItemClickListener(this);
 
@@ -127,7 +130,6 @@ public class SearchLocationActivity extends Activity implements TextWatcher,
 			}
 		});
 
-		
 	}
 
 	/**
@@ -170,12 +172,12 @@ public class SearchLocationActivity extends Activity implements TextWatcher,
 	@Override
 	public void afterTextChanged(Editable s) {
 		String text = s.toString();
-		//为空就加载历史
-		if(text == null || text.length() <=0){
+		// 为空就加载历史
+		if (text == null || text.length() <= 0) {
 			loadHistory();
 			return;
 		}
-		
+
 		SuggestionSearchOption sugOption = new SuggestionSearchOption();
 		sugOption.keyword(text);
 		sugOption.city(app.City);
@@ -238,22 +240,20 @@ public class SearchLocationActivity extends Activity implements TextWatcher,
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		
+
 		Suggestion suggestion = (Suggestion) listSearchAdapter
 				.getItem(position);
 
-		if(suggestion.getType() == Const.Type_Clear_History){
+		if (suggestion.getType() == Const.Type_Clear_History) {
 			clearHistory();
 			return;
 		}
 		String city = suggestion.getCity();
-		
-		
-		//先保存道数据库
-		
+
+		// 先保存道数据库
+
 		save2db(suggestion);
-		
-		
+
 		// 去别的城市搜索
 		if (city != null && !city.equals("") && !city.equals(app.City)) {
 			PoiCitySearchOption poiOption = new PoiCitySearchOption();
@@ -289,32 +289,33 @@ public class SearchLocationActivity extends Activity implements TextWatcher,
 		suggestion.setType(Const.Type_History);
 		SuggestionDao suggestionDao = daoSession.getSuggestionDao();
 		QueryBuilder<Suggestion> qb = suggestionDao.queryBuilder();
-		qb.where(Properties.Key.eq(suggestion.getKey()),Properties.City.eq(suggestion.getCity()),Properties.District.eq(suggestion.getDistrict()));
-		
-		if(qb.list().size()<=0){
-			suggestionDao.insert(suggestion);
+		qb.where(Properties.Key.eq(suggestion.getKey()),
+				Properties.City.eq(suggestion.getCity()),
+				Properties.District.eq(suggestion.getDistrict()));
+		if (qb.list().size() > 0) {
+			// 已经存在就删除
+			DeleteQuery<Suggestion> bd = qb.buildDelete();
+			bd.executeDeleteWithoutDetachingEntities();
 		}
-		
-		
+		suggestion.setDate(new Date(System.currentTimeMillis()));
+		suggestionDao.insert(suggestion);
 	}
-	
+
 	/**
 	 * 加载数据库中的内容
 	 */
 	public void loadHistory() {
 		SuggestionDao suggestionDao = daoSession.getSuggestionDao();
-		List<Suggestion>  suggestionList = suggestionDao.loadAll();
-		//最后加上清空历史记录
-		if(suggestionList.size()>0){
+		List<Suggestion> suggestionList = suggestionDao.queryBuilder()
+				.orderDesc(Properties.Date).list();
+		// 最后加上清空历史记录
+		if (suggestionList.size() > 0) {
 			Suggestion clearSuggestion = new Suggestion();
 			clearSuggestion.setType(Const.Type_Clear_History);
 			suggestionList.add(clearSuggestion);
 		}
-		listSearchAdapter.setData(suggestionList);
+		listSearchAdapter.setHistory(suggestionList);
 		listSearchAdapter.notifyDataSetChanged();
 	}
-	
-	
-	
 
 }

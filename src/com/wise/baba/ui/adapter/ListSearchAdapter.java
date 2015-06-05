@@ -11,6 +11,7 @@ import com.wise.baba.app.Const;
 import com.wise.baba.db.dao.Suggestion;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,8 @@ public class ListSearchAdapter extends BaseAdapter {
 
 	private Context context;
 	private List<Suggestion> searchList = new ArrayList<Suggestion>();
-
+	private boolean isHistory = true;
+	
 	public ListSearchAdapter(Context context) {
 		super();
 		this.context = context;
@@ -67,7 +69,11 @@ public class ListSearchAdapter extends BaseAdapter {
 			holder = (Holder) convertView.getTag();
 		}
 
-		resetItem(holder);
+		if(isHistory){
+			resetHistory(holder);
+		}else{
+			resetSuggestion(holder);
+		}
 
 		Suggestion suggestion = searchList.get(position);
 
@@ -80,10 +86,8 @@ public class ListSearchAdapter extends BaseAdapter {
 					+ suggestion.getDistrict());
 		}
 
-		// 历史搜索还是清空理历史
-		if (suggestion.getType() == Const.Type_History) {
-			holder.ivSearch.setImageResource(R.drawable.icon_poi_history);
-		} else if (suggestion.getType() == Const.Type_Clear_History) {
+		// 清空历史
+		if(suggestion.getType() == Const.Type_Clear_History) {
 			holder.ivSearch.setVisibility(View.INVISIBLE);
 			holder.ivRetrieval.setVisibility(View.INVISIBLE);
 			holder.tvClearHistory.setText("清空历史记录      ");
@@ -117,11 +121,12 @@ public class ListSearchAdapter extends BaseAdapter {
 	}
 
 	/**
-	 * 重置内容显示
+	 * 重置搜索建议内容显示格式
 	 */
-	public void resetItem(Holder holder) {
+	public void resetSuggestion(Holder holder) {
 		holder.ivSearch.setVisibility(View.VISIBLE);
-		holder.ivSearch.setImageResource(R.drawable.icon_search);
+		holder.ivSearch.setImageResource(R.drawable.nearby_icon_search);
+		holder.tvKey.setTextColor(Color.parseColor("#9a9a9a"));
 		holder.tvKey.setText("");
 		holder.tvCity.setText("");
 		holder.tvOneLine.setText("");
@@ -129,11 +134,38 @@ public class ListSearchAdapter extends BaseAdapter {
 		holder.ivRetrieval.setVisibility(View.VISIBLE);
 
 	}
+	
+	/**
+	 * 重置历史记录内容显示格式
+	 */
+	public void resetHistory(Holder holder){
+		holder.ivSearch.setVisibility(View.VISIBLE);
+		holder.ivSearch.setImageResource(R.drawable.icon_poi_history);
+		holder.tvKey.setTextColor(Color.parseColor("#333333"));
+		holder.tvKey.setText("");
+		holder.tvCity.setText("");
+		holder.tvOneLine.setText("");
+		holder.tvClearHistory.setText("");
+		holder.ivRetrieval.setVisibility(View.VISIBLE);
+		
+		
+		
+		
+	}
 
 	/**
 	 * @param searchList
 	 */
 	public void setData(List<Suggestion> searchList) {
+		this.isHistory = false;
+		this.searchList = searchList;
+	}
+	
+	/**
+	 * @param searchList
+	 */
+	public void setHistory(List<Suggestion> searchList) {
+		this.isHistory = true;
 		this.searchList = searchList;
 	}
 
