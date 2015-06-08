@@ -86,10 +86,11 @@
                 android:textSize="@dimen/content" />
         </RelativeLayout>
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray_lights" />
+         <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:alpha="0.5"
+            android:background="#bbbbbb" />
 
         <TextView
             android:id="@+id/tv_item_travel_spacingDistance"
@@ -204,6 +205,6 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="@dimen/margins"
-        android:background="@color/gray"/>
+        android:background="@color/cards_bg"/>
 
 </LinearLayout>

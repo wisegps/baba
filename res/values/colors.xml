@@ -129,6 +129,11 @@
     <color name="txt_item_title_black">#262533</color>
     
     
+    <!-- 日期  前一天，后一天 -->
+    
+    <color name="txt_date_blue">#50b7de</color>
+   
+    
     <!-- 最外层圆环颜色 -->
     <color name="ring_color">#50B7DE</color>
     <color name="ring_bg_color">#76e6f4f5</color>
