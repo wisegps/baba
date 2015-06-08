@@ -6,6 +6,7 @@ package com.wise.baba.biz;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +30,7 @@ import com.google.gson.JsonObject;
 import com.wise.baba.AppApplication;
 import com.wise.baba.app.Constant;
 import com.wise.baba.app.Msg;
+import com.wise.baba.entity.Info;
 import com.wise.baba.ui.fragment.FragmentCarInfo;
 
 
@@ -81,6 +83,8 @@ public class HttpGetObdData {
 
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
+				
+				Log.i("HttpGetData", "response " + response);
 				Message msg = new Message();
 				msg.what = Msg.Get_OBD_Data;
 				Bundle bundle = parse(response);
@@ -102,6 +106,7 @@ public class HttpGetObdData {
 		mQueue.start();
 	}
 
+	
 	/**
 	 * 
 	 * 解析返回字符串
@@ -112,9 +117,23 @@ public class HttpGetObdData {
 	public Bundle parse(String response) {
 		Bundle budle = new Bundle();
 		try {
+			
+			Boolean isStart = false;
+			JSONObject gpsData = new JSONObject(response)
+			.getJSONObject("active_gps_data");
+			JSONArray uni_status = gpsData.getJSONArray("uni_status");
+			for (int i = 0; i < uni_status.length(); i++) {
+				if (((Integer)uni_status.get(i)) == Info.CarStartStatus) {
+					isStart = true;
+					break;
+				}
+			}
+			
 			JSONObject jsonObject = new JSONObject(response)
 					.getJSONObject("active_obd_data");
-
+			
+			
+			
 			int ss = $(jsonObject, "ss");
 			int fdjfz = $(jsonObject, "fdjfz");
 			int dpdy = $(jsonObject, "dpdy");
@@ -128,7 +147,9 @@ public class HttpGetObdData {
 			budle.putInt("sw", sw);
 			budle.putInt("jqmkd", jqmkd);
 			budle.putInt("syyl", syyl);
-
+			budle.putBoolean("isStart", isStart);
+			
+			
 		} catch (JSONException e) {
 			Log.i("HttpGetData", "exception " + e.getMessage());
 			e.printStackTrace();

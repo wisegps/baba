@@ -559,7 +559,7 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 		public void run() {
 			try {
 				Log.i("FaultDetectionActivity", "开启线程获取gps信息和车辆健康信息");
-
+				
 				String Device_id = carDatas.get(index).getDevice_id();
 				// 获取车的最新信息
 				String gpsUrl = GetUrl.getCarGpsData(Device_id, app.auth_code);

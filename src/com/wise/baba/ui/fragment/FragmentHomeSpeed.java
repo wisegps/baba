@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
@@ -40,6 +41,8 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	private DialView dialSpeed;
 	private int index = 0;
 	private Timer timer;
+	
+	private Boolean isStart = false;
 	
 	/**
 	 * 0，速度 1，转速 2，电源电压 3，水温 4 ，负荷 5，节气门 ，6，剩余油量
@@ -124,6 +127,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 		if(timer!=null){
 			timer.cancel();
 			timer.purge();
+			timer = null;
 		}
 	}
 
@@ -136,15 +140,26 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	public boolean handleMessage(Message msg) {
 		
 		if (msg.what == Msg.Get_OBD_Data) {
+			
+			
+			
 			Log.i("FragmentHomeSpeed", "Get_OBD_Data");
 			Bundle bundle = msg.getData();
-			value[0] = bundle.getInt("ss");
-			value[1] = bundle.getInt("fdjfz");
-			value[2] = bundle.getInt("dpdy");
-			value[3] = bundle.getInt("sw");
-			value[4] = 0;
-			value[5] = bundle.getInt("jqmkd");
-			value[6] = bundle.getInt("syyl");
+			
+			isStart = bundle.getBoolean("isStart");
+			
+			if(isStart){
+				value[0] = bundle.getInt("ss");
+				value[1] = bundle.getInt("fdjfz");
+				value[2] = bundle.getInt("dpdy");
+				value[3] = bundle.getInt("sw");
+				value[4] = 0;
+				value[5] = bundle.getInt("jqmkd");
+				value[6] = bundle.getInt("syyl");
+			}else{
+				value = new int[]{0,0,0,0,0,0,0};
+			}
+			
 
 			for (int i = 0; i < 7; i++) {
 				((TextView) view.findViewById(textId[i]))
@@ -176,6 +191,11 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 			if (onCardMenuListener != null) {
 				onCardMenuListener.showCarMenu(Const.TAG_SPEED);
 			}
+			return;
+		}
+		
+		if(isStart == false){
+			Toast.makeText(FragmentHomeSpeed.this.getActivity(), "车辆未启动", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		

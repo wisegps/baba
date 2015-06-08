@@ -288,6 +288,7 @@ public class SearchLocationActivity extends Activity implements TextWatcher,
 	public void save2db(Suggestion suggestion) {
 		suggestion.setType(Const.Type_History);
 		SuggestionDao suggestionDao = daoSession.getSuggestionDao();
+		
 		QueryBuilder<Suggestion> qb = suggestionDao.queryBuilder();
 		qb.where(Properties.Key.eq(suggestion.getKey()),
 				Properties.City.eq(suggestion.getCity()),
