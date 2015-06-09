@@ -68,7 +68,7 @@ public class MainActivity extends FragmentActivity implements
 		showFragment("home");
 		registerReceiver();
 		checkIndication();
-
+		
 		
 	}
 	

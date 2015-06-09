@@ -80,7 +80,6 @@ public class FragmentNotice extends Fragment implements IXListViewListener {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
-
 		lv_notice = (XListView) getActivity().findViewById(R.id.lv_notice);
 		lv_notice.setOnFinishListener(onFinishListener);
 		lv_notice.setPullLoadEnable(false);

@@ -14,6 +14,7 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.CollectionActivity;
 import com.wise.baba.R;
 import com.wise.baba.biz.Judge;
+import com.wise.baba.entity.Info;
 import com.wise.baba.ui.adapter.OnFinishListener;
 import com.wise.notice.NoticeActivity;
 import com.wise.remind.RemindListActivity;
@@ -117,7 +118,12 @@ public class FragmentMore extends Fragment {
 				if(Judge.isLogin(app)){
 					app.vio_count = 0;
 					Intent intent = new Intent(getActivity(), TrafficActivity.class);
-					intent.putExtra("isService", false);
+					if(app.cust_type == Info.ServiceProvider){
+						intent.putExtra("isService", true);
+					}else{
+						intent.putExtra("isService", false);
+					}
+					
 					startActivity(intent);
 				}else{
 					Intent intent = new Intent(getActivity(), LoginActivity.class);

@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -108,12 +109,11 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		});
 		isService = getIntent().getBooleanExtra("isService", false);
 		if(isService){
-			
 			carDatas = ManageActivity.carDatas;
 			//index_car = this.getIntent().getIntExtra("index", 0);
 		}else{
 			carDatas = (List<CarData>) this.getIntent().getSerializableExtra("carDatas");
-			if(carDatas == null ){
+			if(carDatas == null || carDatas.size() == 0){
 				carDatas = app.carDatas;
 			}
 		}
@@ -1047,6 +1047,8 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		trafficViews.get(index_car).getLl_wait().startWheel(index_car);
 		try {
 			String url = Constant.BaseUrl + "vehicle/" + carDatas.get(index_car).getObj_id() + "/violation?auth_code=" + app.auth_code;
+			
+			Log.i("TrafficActivity", "url" + url);
 			new NetThread.GetDataThread(handler, url, frist_traffic, index_car).start();
 		} catch (Exception e) {
 			e.printStackTrace();
