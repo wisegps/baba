@@ -27,7 +27,7 @@
 
         <ImageView
             android:id="@+id/iv_speed_menu"
-           style="@style/home_card_img_down_style"/>
+            style="@style/home_card_img_down_style" />
     </RelativeLayout>
 
     <View
@@ -42,12 +42,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/double_margins" >
-
-        <com.wise.baba.ui.widget.DialView
-            android:id="@+id/dialSpeed"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_centerInParent="true" />
 
         <TextView
             android:id="@+id/tv_score"
@@ -71,7 +65,13 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/navy_blue" />
 
+        <com.wise.baba.ui.widget.DialView
+            android:id="@+id/dialSpeed"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_centerInParent="true" />
     </RelativeLayout>
-	<include layout="@layout/include_home_speed"/>
+
+    <include layout="@layout/include_home_speed" />
 
 </LinearLayout>

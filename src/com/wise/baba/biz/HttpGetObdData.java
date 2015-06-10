@@ -134,19 +134,22 @@ public class HttpGetObdData {
 			
 			
 			
-			int ss = $(jsonObject, "ss");
-			int fdjfz = $(jsonObject, "fdjfz");
-			int dpdy = $(jsonObject, "dpdy");
-			int sw = $(jsonObject, "sw");
-			int jqmkd = $(jsonObject, "jqmkd");
-			int syyl = $(jsonObject, "syyl");
+			String ss = $(jsonObject, "ss");
+			String fdjzs = $(jsonObject, "fdjzs");
+			String dpdy = $(jsonObject, "dpdy");
+			String sw = $(jsonObject, "sw");
+			String fdjfz = $(jsonObject, "fdjfz");
+			String jqmkd = $(jsonObject, "jqmkd");
+			String syyl = $(jsonObject, "syyl");
 
-			budle.putInt("ss", ss);
-			budle.putInt("fdjfz", fdjfz);
-			budle.putInt("dpdy", dpdy);
-			budle.putInt("sw", sw);
-			budle.putInt("jqmkd", jqmkd);
-			budle.putInt("syyl", syyl);
+			budle.putString("ss", ss);
+			budle.putString("fdjzs", fdjzs);
+			budle.putString("dpdy", dpdy);
+			budle.putString("sw", sw);
+			budle.putString("fdjfz", fdjfz);
+			budle.putString("jqmkd", jqmkd);
+			budle.putString("syyl", syyl);
+			
 			budle.putBoolean("isStart", isStart);
 			
 			
@@ -160,20 +163,21 @@ public class HttpGetObdData {
 	}
 
 	// 把json对象为空判断 转化为int
-	public int $(JSONObject json, String key) {
+	public String $(JSONObject json, String key) {
 
 		Object obj = null;
 		try {
 			obj = json.get(key);
 		} catch (JSONException e) {
 			e.printStackTrace();
+			return "--";
 		}
 
 		if (obj.equals(null)) {
-			return 0;
+			return "--";
 		} else {
 			Double value = Double.parseDouble(obj.toString());
-			return value.intValue();
+			return value.intValue()+"";
 		}
 	}
 

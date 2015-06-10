@@ -69,8 +69,8 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	//各项单位
 	private String[] unit = {"km","rpm","v","℃","%","%", "L"};
 	
-	private int value[] = new int[7];
-	private int maxValue[] = {120,1000,15,112,100,17,70};
+	private String value[] = new String[7];
+	private int maxValue[] = {120,1000,15,112,100,100,70};
 	private TextView tvCardTitle, textScore, textUnit;
 	private ImageView ivCardIcon;
 
@@ -131,6 +131,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 		}
 	}
 
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -148,24 +149,28 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 			
 			isStart = bundle.getBoolean("isStart");
 			
+			
+			
 			if(isStart){
-				value[0] = bundle.getInt("ss");
-				value[1] = bundle.getInt("fdjfz");
-				value[2] = bundle.getInt("dpdy");
-				value[3] = bundle.getInt("sw");
-				value[4] = 0;
-				value[5] = bundle.getInt("jqmkd");
-				value[6] = bundle.getInt("syyl");
+				
+				value[0] = bundle.getString("ss");
+				value[1] = bundle.getString("fdjzs");
+				value[2] = bundle.getString("dpdy");
+				value[3] = bundle.getString("sw");
+				value[4] = bundle.getString("fdjfz");
+				value[5] = bundle.getString("jqmkd");
+				value[6] = bundle.getString("syyl");
+				
 			}else{
-				value = new int[]{0,0,0,0,0,0,0};
+				value = new String[]{"--","--","--","--","--","--","--"};
 			}
 			
 
 			for (int i = 0; i < 7; i++) {
 				((TextView) view.findViewById(textId[i]))
-						.setText(value[i] + "");
+						.setText(value[i]);
 			}
-			textScore.setText(value[index] + "");
+			textScore.setText(toNumber(value[index]));
 			dialSpeed.initValue(caclPercent(index), handler);
 		} else if (msg.what == Msg.Dial_Refresh_Value) {
 //			/Log.i("FragmentHomeSpeed", "Dial_Refresh_Value");
@@ -175,6 +180,13 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 		}
 
 		return false;
+	}
+	
+	public String toNumber(String value){
+		if(value.equals("--")){
+			return "0";
+		}
+		return value;
 	}
 
 	/*
@@ -213,11 +225,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 				textUnit.setText(unit[i]);
 				
 				//中间分值设置
-				textScore.setText(value[i] + "");
-				                                        
-				
-				
-				
+				textScore.setText(toNumber(value[i]));
 			
 				break;
 			}
@@ -238,9 +246,18 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	 * @return
 	 */
 	public int caclPercent(int index){
+		
+		//把值转变为数值
+		String strValue = value[index];
+		float v = 0;
+		if(strValue.equals("--")){
+			v = 0;
+		}else{
+			v = Float.parseFloat(strValue);
+		}
+		
 		int percent = 100;
 		//数值过大，比值设为100
-		float v = value[index];
 		float mv = maxValue[index];
 		Log.i("FragmentHomeSpeed", "value "+value[index]);
 		Log.i("FragmentHomeSpeed", "maxValue "+maxValue[index]);
