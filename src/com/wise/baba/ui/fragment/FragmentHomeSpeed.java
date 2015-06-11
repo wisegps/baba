@@ -73,6 +73,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 	private int maxValue[] = {120,1000,15,112,100,100,70};
 	private TextView tvCardTitle, textScore, textUnit;
 	private ImageView ivCardIcon;
+	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -207,7 +208,9 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 		}
 		
 		if(isStart == false){
-			Toast.makeText(FragmentHomeSpeed.this.getActivity(), "车辆未启动", Toast.LENGTH_SHORT).show();
+			Toast toast = Toast.makeText(FragmentHomeSpeed.this.getActivity(), "车辆未启动", Toast.LENGTH_SHORT);
+			toast.setDuration(50);
+			toast.show();
 			return;
 		}
 		

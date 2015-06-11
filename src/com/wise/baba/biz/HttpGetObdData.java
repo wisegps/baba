@@ -169,6 +169,7 @@ public class HttpGetObdData {
 		try {
 			obj = json.get(key);
 		} catch (JSONException e) {
+			Log.i("HttpGetData", "exception1 " + e.getMessage());
 			e.printStackTrace();
 			return "--";
 		}
@@ -177,6 +178,8 @@ public class HttpGetObdData {
 			return "--";
 		} else {
 			Double value = Double.parseDouble(obj.toString());
+			int i = value.intValue();
+			Log.i("HttpGetData", "intValue "+key+" :" +i);
 			return value.intValue()+"";
 		}
 	}
