@@ -163,7 +163,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 				value[6] = bundle.getString("syyl");
 				
 			}else{
-				value = new String[]{"--","--","--","--","--","--","--"};
+				value = new String[]{"--","--",bundle.getString("dpdy"),"--","--","--","--"};
 			}
 			
 
@@ -207,7 +207,7 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 			return;
 		}
 		
-		if(isStart == false){
+		if(isStart == false && id != llytId[2]){
 			Toast toast = Toast.makeText(FragmentHomeSpeed.this.getActivity(), "车辆未启动", Toast.LENGTH_SHORT);
 			toast.setDuration(50);
 			toast.show();
