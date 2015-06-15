@@ -41,6 +41,7 @@ import android.graphics.Bitmap.Config;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -122,6 +123,9 @@ public class TravelMapActivity extends Activity {
 					+ "/gps_data?auth_code=" + app.auth_code + "&start_time="
 					+ URLEncoder.encode(StartTime, "UTF-8") + "&end_time="
 					+ URLEncoder.encode(StopTime, "UTF-8");
+			Log.i("TravelMapActivity", StartTime);
+			Log.i("TravelMapActivity", StopTime);
+			Log.i("TravelMapActivity", url);
 			new NetThread.GetDataThread(handler, url, get_data).start();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -203,6 +207,8 @@ public class TravelMapActivity extends Activity {
 			if (jsonArray.length() == 0) {
 				return;
 			}
+			
+			Log.i("TravelMapActivity", result);
 			LatLngBounds.Builder builder = new Builder();
 			// 添加折线
 			List<LatLng> points = new ArrayList<LatLng>();
