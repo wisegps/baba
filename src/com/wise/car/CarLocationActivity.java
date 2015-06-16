@@ -52,6 +52,9 @@ import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
+import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.Stroke;
@@ -78,6 +81,8 @@ import com.wise.baba.biz.GetUrl;
 import com.wise.baba.entity.ActiveGpsData;
 import com.wise.baba.entity.CarData;
 import com.wise.baba.net.NetThread;
+import com.wise.baba.ui.adapter.MyOrientationListener;
+import com.wise.baba.ui.adapter.MyOrientationListener.OnOrientationListener;
 
 
 public class CarLocationActivity extends Activity {
@@ -114,6 +119,24 @@ public class CarLocationActivity extends Activity {
 
 	private View home, company;
 	private Intent intent = null; 
+	
+	
+	
+
+	/**
+	 * 当前的精度
+	 */
+	private float mCurrentAccracy;
+	
+	/**
+	 * 方向传感器的监听器
+	 */
+	private MyOrientationListener myOrientationListener;
+	/**
+	 * 方向传感器X方向的值
+	 */
+	private int mXDirection;
+
 	
 	
 
@@ -162,6 +185,7 @@ public class CarLocationActivity extends Activity {
 		mUiSettings.setCompassEnabled(true);
 		// 开启定位图层
 		mBaiduMap.setMyLocationEnabled(true);
+		
 		// 定位初始化
 		mLocClient = new LocationClient(getApplicationContext());
 		mLocClient.registerLocationListener(myListener);
@@ -222,9 +246,44 @@ public class CarLocationActivity extends Activity {
 		}
 		
 		
+		initOritationListener();
+		
 		
 	}
 	
+	/**
+	 * 初始化方向传感器
+	 */
+	private void initOritationListener()
+	{
+		myOrientationListener = new MyOrientationListener(
+				getApplicationContext());
+		myOrientationListener.setOnOrientationListener(new OnOrientationListener()
+				{
+					@Override
+					public void onOrientationChanged(float x)
+					{
+						mXDirection = (int) x;
+
+						// 构造定位数据
+						MyLocationData locData = new MyLocationData.Builder()
+								.accuracy(mCurrentAccracy)
+								// 此处设置开发者获取到的方向信息，顺时针0-360
+								.direction(mXDirection)
+								.latitude(latitude)
+								.longitude(longitude).build();
+						// 设置定位数据
+						mBaiduMap.setMyLocationData(locData);
+						// 设置自定义图标
+						BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
+								.fromResource(R.drawable.ico_map_orient);
+						MyLocationConfiguration config = new MyLocationConfiguration(
+								LocationMode.NORMAL, true, mCurrentMarker);
+						mBaiduMap.setMyLocationConfigeration(config);
+
+					}
+				});
+	}
 
 	
 	
@@ -1133,10 +1192,35 @@ public class CarLocationActivity extends Activity {
 			// map view 销毁后不在处理新接收的位置
 			if (location == null || mMapView == null)
 				return;
+			
 			latitude = location.getLatitude();
 			longitude = location.getLongitude();
 			app.Lat = latitude;
 			app.Lon = longitude;
+			
+			
+			// 构造定位数据
+			MyLocationData locData = new MyLocationData.Builder()
+					.accuracy(location.getRadius())
+					// 此处设置开发者获取到的方向信息，顺时针0-360
+					.direction(mXDirection).latitude(latitude)
+					.longitude(longitude).build();
+			mCurrentAccracy = location.getRadius();
+			// 设置定位数据
+			mBaiduMap.setMyLocationData(locData);
+			
+			// 设置自定义图标
+			BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
+					.fromResource(R.drawable.ico_map_orient);
+			MyLocationConfiguration config = new MyLocationConfiguration(
+					LocationMode.NORMAL, true, mCurrentMarker);
+			mBaiduMap.setMyLocationConfigeration(config);
+			
+			
+			
+			
+			
+		
 
 			drawPhoneLocation(latitude, longitude);
 			if (isFirstLoc) {
@@ -1274,6 +1358,7 @@ public class CarLocationActivity extends Activity {
 		super.onResume();
 		mMapView.onResume();
 		mLocClient.start();
+		myOrientationListener.start();
 		toSearchPOI();
 		searchLocationByKeywords();
 	}
@@ -1319,6 +1404,7 @@ public class CarLocationActivity extends Activity {
 		super.onPause();
 		mMapView.onPause();
 		mLocClient.stop();
+		myOrientationListener.start();
 	}
 
 }

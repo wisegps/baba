@@ -47,6 +47,9 @@
 
     <uses-permission android:name="android.permission.FLASHLIGHT" />
 
+    
+    
+    
     <application
         android:name="com.wise.baba.AppApplication"
         android:allowBackup="true"
@@ -628,11 +631,11 @@
         <!--
 		debug：ENAit7WmjvYO0DmxKMOU4CLx
 		正     式1：DhT4kz88wR3r5yCl6tQCpaNW
-		本机：ENAit7WmjvYO0DmxKMOU4CLx
+		本机：R2uGIgDsgGGie9T4HFmgCYsG
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="ENAit7WmjvYO0DmxKMOU4CLx" />
+            android:value="R2uGIgDsgGGie9T4HFmgCYsG" />
     </application>
 
 </manifest>
