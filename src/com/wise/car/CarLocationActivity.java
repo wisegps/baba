@@ -84,7 +84,6 @@ import com.wise.baba.net.NetThread;
 import com.wise.baba.ui.adapter.MyOrientationListener;
 import com.wise.baba.ui.adapter.MyOrientationListener.OnOrientationListener;
 
-
 public class CarLocationActivity extends Activity {
 	MapView mMapView = null;
 	LinearLayout ll_location_bottom;
@@ -116,18 +115,14 @@ public class CarLocationActivity extends Activity {
 	/** 实时路口 **/
 	boolean isTraffic = false;
 
-
 	private View home, company;
-	private Intent intent = null; 
-	
-	
-	
+	private Intent intent = null;
 
 	/**
 	 * 当前的精度
 	 */
 	private float mCurrentAccracy;
-	
+
 	/**
 	 * 方向传感器的监听器
 	 */
@@ -137,12 +132,10 @@ public class CarLocationActivity extends Activity {
 	 */
 	private int mXDirection;
 
-	
-	
-
 	private WalkingRoutePlanOption walkOption = null;
-	
-	private  DrivingRoutePlanOption  driveOption = null;
+
+	private DrivingRoutePlanOption driveOption = null;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -163,8 +156,9 @@ public class CarLocationActivity extends Activity {
 		TextView tv_car_name = (TextView) findViewById(R.id.tv_car_name);
 		index = intent.getIntExtra("index", 0);
 		@SuppressWarnings("unchecked")
-		List<CarData> carDatas = (List<CarData>) intent.getSerializableExtra("carDatas");
-		if(carDatas == null ){
+		List<CarData> carDatas = (List<CarData>) intent
+				.getSerializableExtra("carDatas");
+		if (carDatas == null) {
 			carDatas = app.carDatas;
 			index = app.currentCarIndex;
 		}
@@ -180,12 +174,12 @@ public class CarLocationActivity extends Activity {
 		mMapView = (MapView) findViewById(R.id.mv_car_location);
 		mBaiduMap = mMapView.getMap();
 		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
-		
+
 		UiSettings mUiSettings = mBaiduMap.getUiSettings();
 		mUiSettings.setCompassEnabled(true);
 		// 开启定位图层
 		mBaiduMap.setMyLocationEnabled(true);
-		
+
 		// 定位初始化
 		mLocClient = new LocationClient(getApplicationContext());
 		mLocClient.registerLocationListener(myListener);
@@ -244,79 +238,77 @@ public class CarLocationActivity extends Activity {
 				}
 			}).start();
 		}
-		
-		
+
 		initOritationListener();
-		
-		
+
 	}
-	
+
 	/**
 	 * 初始化方向传感器
 	 */
-	private void initOritationListener()
-	{
+	private void initOritationListener() {
 		myOrientationListener = new MyOrientationListener(
 				getApplicationContext());
-		myOrientationListener.setOnOrientationListener(new OnOrientationListener()
-				{
+		myOrientationListener
+				.setOnOrientationListener(new OnOrientationListener() {
 					@Override
-					public void onOrientationChanged(float x)
-					{
+					public void onOrientationChanged(float x) {
 						mXDirection = (int) x;
-
-						// 构造定位数据
-						MyLocationData locData = new MyLocationData.Builder()
-								.accuracy(mCurrentAccracy)
-								// 此处设置开发者获取到的方向信息，顺时针0-360
-								.direction(mXDirection)
-								.latitude(latitude)
-								.longitude(longitude).build();
-						// 设置定位数据
-						mBaiduMap.setMyLocationData(locData);
-						// 设置自定义图标
-						BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
-								.fromResource(R.drawable.ico_map_orient);
-						MyLocationConfiguration config = new MyLocationConfiguration(
-								LocationMode.NORMAL, true, mCurrentMarker);
-						mBaiduMap.setMyLocationConfigeration(config);
+						setMyLocation();
 
 					}
 				});
 	}
 
-	
-	
-	
-	public void searchLocationByKeywords(){
+	public void setMyLocation() {
+
+		if (driveOption == null && walkOption == null) {
+			return;
+		}
+
+		// 构造定位数据
+		MyLocationData locData = new MyLocationData.Builder()
+				.accuracy(mCurrentAccracy)
+				// 此处设置开发者获取到的方向信息，顺时针0-360
+				.direction(mXDirection).latitude(latitude).longitude(longitude)
+				.build();
+		// 设置定位数据
+		mBaiduMap.setMyLocationData(locData);
+		// 设置自定义图标
+		BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
+				.fromResource(R.drawable.ico_map_orient);
+		MyLocationConfiguration config = new MyLocationConfiguration(
+				LocationMode.NORMAL, true, mCurrentMarker);
+		mBaiduMap.setMyLocationConfigeration(config);
 		
-		
-		
+	}
+
+	public void searchLocationByKeywords() {
+
 		final String re_name = intent.getStringExtra("re_name");
 		final Double lat = intent.getDoubleExtra("history_lat", 0);
 		final Double lon = intent.getDoubleExtra("history_lon", 0);
-			if (re_name != null && !re_name.equals("")) {
-				Log.i("CarLocationActivity","go...");
-				
-				new Handler().postDelayed(new Runnable() {
+		if (re_name != null && !re_name.equals("")) {
+			Log.i("CarLocationActivity", "go...");
 
-					@Override
-					public void run() {
-						searchAddress.setText(re_name);
-						LatLng llg = new LatLng(lat,lon);
-						MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
-						mBaiduMap.setMapStatus(u);
-						setTransitRoute(myLatLng, llg);
-						
-					}
+			new Handler().postDelayed(new Runnable() {
 
-				}, 500);
-				
-				
-				
-			}
-		
+				@Override
+				public void run() {
+					searchAddress.setText(re_name);
+					LatLng llg = new LatLng(lat, lon);
+					MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(llg);
+					mBaiduMap.setMapStatus(u);
+					setTransitRoute(myLatLng, llg);
+
+				}
+
+			}, 500);
+
+		}
+
 	}
+
 	/** 页面destory时改为false **/
 	boolean isStop = true;
 	private static final int SEARCH_CODE = 8;
@@ -336,7 +328,7 @@ public class CarLocationActivity extends Activity {
 				break;
 			case R.id.bt_location_findCar:// 寻车,客户端导航
 				if (isHotLocation) {
-					
+
 					LatLng carLocat = new LatLng(carData.getLat(),
 							carData.getLon());
 					// 定位以车辆为中心
@@ -605,7 +597,6 @@ public class CarLocationActivity extends Activity {
 		}).setNegativeButton("取消", null).show();
 	}
 
-
 	private void setMapLayers() {
 		iv_satellite
 				.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
@@ -639,9 +630,11 @@ public class CarLocationActivity extends Activity {
 	// driving,walking
 	private void showDrivingOrWalking(LatLng startLatLng,
 			final LatLng stopLatLng) {
-		Log.i("CarLocationActivity", "startLatLng"+ startLatLng.longitude +" "+ startLatLng.latitude);
-		Log.i("CarLocationActivity", "stopLatLng"+ stopLatLng.longitude +" "+ stopLatLng.latitude);
-		
+		Log.i("CarLocationActivity", "startLatLng" + startLatLng.longitude
+				+ " " + startLatLng.latitude);
+		Log.i("CarLocationActivity", "stopLatLng" + stopLatLng.longitude + " "
+				+ stopLatLng.latitude);
+
 		final PlanNode stNode = PlanNode.withLocation(startLatLng);
 		final PlanNode edNode = PlanNode.withLocation(stopLatLng);
 		AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -653,8 +646,10 @@ public class CarLocationActivity extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						Toast.makeText(CarLocationActivity.this, "驾车规划中...",
 								Toast.LENGTH_SHORT).show();
-						driveOption = new DrivingRoutePlanOption().from(stNode).to(edNode);
-						 mSearch.drivingSearch(driveOption);
+						driveOption = new DrivingRoutePlanOption().from(stNode)
+								.to(edNode);
+						mSearch.drivingSearch(driveOption);
+						setMyLocation();
 					}
 				});
 		builder.setNegativeButton("步行规划",
@@ -663,17 +658,18 @@ public class CarLocationActivity extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						Toast.makeText(CarLocationActivity.this, "步行规划中...",
 								Toast.LENGTH_SHORT).show();
-						 walkOption = new WalkingRoutePlanOption().from(stNode).to(edNode);
-						 mSearch.walkingSearch(walkOption);
+						walkOption = new WalkingRoutePlanOption().from(stNode)
+								.to(edNode);
+						mSearch.walkingSearch(walkOption);
+						setMyLocation();
 					}
 				});
 		builder.create().show();
 	}
 
-	
 	public void toSearchPOI() {
 		POI_FLAG = intent.getStringExtra("POI_FLAG");
-		if(POI_FLAG == null || POI_FLAG.equals("")){
+		if (POI_FLAG == null || POI_FLAG.equals("")) {
 			return;
 		}
 		new Handler().postDelayed(new Runnable() {
@@ -685,9 +681,9 @@ public class CarLocationActivity extends Activity {
 					home.performClick();
 				} else if (POI_FLAG.equals("company")) {
 					company.performClick();
-					
+
 					System.out.println("company.....................");
-				}else if (POI_FLAG.equals("address")) {
+				} else if (POI_FLAG.equals("address")) {
 					searchAddress.performClick();
 				}
 				POI_FLAG = null;
@@ -918,15 +914,14 @@ public class CarLocationActivity extends Activity {
 				mBaiduMap.setMapStatus(mapStatusUpdate);
 			} else {
 				if (isTracking) {
-					MapStatus mapStatus = new MapStatus.Builder()
-							.target(carLatLng).build();
+					MapStatus mapStatus = new MapStatus.Builder().target(
+							carLatLng).build();
 					MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory
 							.newMapStatus(mapStatus);
 					mBaiduMap.setMapStatus(mapStatusUpdate);
 				}
 			}
-			
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1192,40 +1187,19 @@ public class CarLocationActivity extends Activity {
 			// map view 销毁后不在处理新接收的位置
 			if (location == null || mMapView == null)
 				return;
-			
+
 			latitude = location.getLatitude();
 			longitude = location.getLongitude();
 			app.Lat = latitude;
 			app.Lon = longitude;
-			
-			
-			// 构造定位数据
-			MyLocationData locData = new MyLocationData.Builder()
-					.accuracy(location.getRadius())
-					// 此处设置开发者获取到的方向信息，顺时针0-360
-					.direction(mXDirection).latitude(latitude)
-					.longitude(longitude).build();
 			mCurrentAccracy = location.getRadius();
-			// 设置定位数据
-			mBaiduMap.setMyLocationData(locData);
-			
-			// 设置自定义图标
-			BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
-					.fromResource(R.drawable.ico_map_orient);
-			MyLocationConfiguration config = new MyLocationConfiguration(
-					LocationMode.NORMAL, true, mCurrentMarker);
-			mBaiduMap.setMyLocationConfigeration(config);
-			
-			
-			
-			
-			
-		
+			setMyLocation();
 
 			drawPhoneLocation(latitude, longitude);
 			if (isFirstLoc) {
 				isFirstLoc = false;
-				myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+				myLatLng = new LatLng(location.getLatitude(),
+						location.getLongitude());
 				if (isHotLocation) {
 					LatLng carLocat = new LatLng(carData.getLat(),
 							carData.getLon());
@@ -1267,7 +1241,7 @@ public class CarLocationActivity extends Activity {
 		if (startLatLng == null || stopLatLng == null) {
 			return;
 		}
-		
+
 		Log.i("CarLocationActivity", "画出2点之间的驾车轨迹");
 		showDialog(startLatLng, stopLatLng);// driving,walking
 	}
@@ -1367,37 +1341,35 @@ public class CarLocationActivity extends Activity {
 	public void onWindowFocusChanged(boolean hasFocus) {
 		// TODO Auto-generated method stub
 		super.onWindowFocusChanged(hasFocus);
-		
-		
-		
+
 	}
 
-//	public void toSearchPOI() {
-//		
-//		if(POI_FLAG == null || POI_FLAG.equals("")){
-//			POI_FLAG = null;
-//			return;
-//			
-//		}
-//		System.out.println("search poi");
-//		new Handler().postDelayed(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				System.out.println(POI_FLAG);
-//				if (POI_FLAG.equals("home")) {
-//					home.performClick();
-//				} else if (POI_FLAG.equals("company")) {
-//					company.performClick();
-//				}else if (POI_FLAG.equals("address")) {
-//					searchAddress.performClick();
-//				}
-//				POI_FLAG = null;
-//			}
-//
-//		}, 500);
-//
-//	}
+	// public void toSearchPOI() {
+	//
+	// if(POI_FLAG == null || POI_FLAG.equals("")){
+	// POI_FLAG = null;
+	// return;
+	//
+	// }
+	// System.out.println("search poi");
+	// new Handler().postDelayed(new Runnable() {
+	//
+	// @Override
+	// public void run() {
+	// System.out.println(POI_FLAG);
+	// if (POI_FLAG.equals("home")) {
+	// home.performClick();
+	// } else if (POI_FLAG.equals("company")) {
+	// company.performClick();
+	// }else if (POI_FLAG.equals("address")) {
+	// searchAddress.performClick();
+	// }
+	// POI_FLAG = null;
+	// }
+	//
+	// }, 500);
+	//
+	// }
 
 	@Override
 	protected void onPause() {
