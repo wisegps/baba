@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llytFragmentNav"
     style="@style/home_card_style"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/rlytNavTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:layout_marginTop="15dp" >
+
         <TextView
             android:id="@+id/textNearby"
             style="@style/home_card_title_style"
-            android:text="快速导航"
-            />
+            android:text="快速导航" />
 
         <ImageView
             android:id="@+id/imgCar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/textNearby"
             android:src="@drawable/ico_nav" />
 
         <ImageView
             android:id="@+id/imgDown"
-            style="@style/home_card_img_down_style"/>
+            style="@style/home_card_img_down_style" />
     </RelativeLayout>
 
     <View
+        android:id="@+id/viewLine"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#bbbbbb"
@@ -38,18 +41,16 @@
         android:focusableInTouchMode="true" >
     </View>
 
-
     <com.wise.baba.ui.widget.CustomGridView
         android:id="@+id/gridNav"
-        android:background="#bcbcbc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:horizontalSpacing="1px"
-        android:verticalSpacing="1px"
+        android:background="#bcbcbc"
         android:gravity="center"
-        android:stretchMode="columnWidth"
+        android:horizontalSpacing="1px"
         android:numColumns="3"
-      >
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="1px" >
     </com.wise.baba.ui.widget.CustomGridView>
 
 </LinearLayout>

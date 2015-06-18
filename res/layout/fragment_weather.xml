@@ -1,10 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/home_card_style"
     android:focusable="true"
+    android:id="@+id/llytFragmentWeather"
     android:focusableInTouchMode="true"
     android:orientation="vertical" >
 
     <RelativeLayout
+         android:id="@+id/rlytWeatherTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
@@ -39,6 +41,7 @@
     </RelativeLayout>
 
     <View
+        android:id="@+id/viewline"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#bbbbbb"
@@ -47,6 +50,7 @@
     </View>
 
     <LinearLayout
+        android:id="@+id/llytContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
@@ -60,6 +64,7 @@
             android:src="@drawable/weather0" />
 
         <LinearLayout
+             android:id="@+id/llytTemperature"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

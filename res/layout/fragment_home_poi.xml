@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llytHomePoi"
     style="@style/home_card_style"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/rlytTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
@@ -31,6 +33,7 @@
     </RelativeLayout>
 
     <View
+        android:id="@+id/lineTitle"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#bbbbbb"
@@ -59,25 +62,25 @@
         android:fadingEdge="none" />
 
     <LinearLayout
+        android:id="@+id/llyt_circle_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_gravity="center_horizontal" >
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="15dp" >
 
         <ImageView
             android:id="@+id/iv_circle_page_0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:src="@drawable/img_circle_dot_blue" 
-            />
+            android:src="@drawable/img_circle_dot_blue" />
 
         <ImageView
             android:id="@+id/iv_circle_page_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-             android:layout_margin="5dp"
-            android:src="@drawable/img_circle_dot_blue_light"  />
+            android:layout_margin="5dp"
+            android:src="@drawable/img_circle_dot_blue_light" />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tlytSpeed"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-   >
+    android:layout_height="wrap_content" >
 
     <!-- 第一行 -->
+
     <TableRow
+        android:id="@+id/tr1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content" >
 
         <!-- 第一行,速度 -->
 
@@ -23,6 +24,7 @@
             <!-- 第一行,速度,上边内容布局 -->
 
             <RelativeLayout
+                android:id="@+id/rlytContent10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical" >
@@ -84,20 +86,22 @@
                 android:background="#fd7102" />
         </LinearLayout>
 
-        
-         <!-- 第一行,转速 -->
+        <!-- 第一行,转速 -->
 
         <LinearLayout
-             android:id="@+id/llytRotary"
+            android:id="@+id/llytRotary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
             android:padding="10dp" >
+
             <RelativeLayout
+                android:id="@+id/rlytContent11"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical" >
+
                 <ImageView
                     android:id="@+id/imgRotary"
                     android:layout_width="wrap_content"
@@ -146,12 +150,13 @@
                 android:background="#00bceb" />
         </LinearLayout>
     </TableRow>
-    
-        <!-- 第二行 -->
+
+    <!-- 第二行 -->
+
     <TableRow
+        android:id="@+id/tr2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content" >
 
         <!-- 第二行,电瓶电压 -->
 
@@ -162,10 +167,13 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:padding="10dp" >
+
             <RelativeLayout
+                android:id="@+id/rlytContent20"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical" >
+
                 <ImageView
                     android:id="@+id/imgVoltage"
                     android:layout_width="wrap_content"
@@ -173,6 +181,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/ico_home_speed_voltage" />
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -215,8 +224,7 @@
                 android:background="#68be51" />
         </LinearLayout>
 
-        
-         <!-- 第二行,水温-->
+        <!-- 第二行,水温 -->
 
         <LinearLayout
             android:id="@+id/llytTemperature"
@@ -225,10 +233,13 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:padding="10dp" >
+
             <RelativeLayout
+                android:id="@+id/rlytContent21"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical" >
+
                 <ImageView
                     android:id="@+id/imgTemperature"
                     android:layout_width="wrap_content"
@@ -277,12 +288,13 @@
                 android:background="#ff6d00" />
         </LinearLayout>
     </TableRow>
-    
-        <!-- 第三行 -->
+
+    <!-- 第三行 -->
+
     <TableRow
+        android:id="@+id/tr3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content" >
 
         <LinearLayout
             android:id="@+id/llytLoad"
@@ -293,9 +305,11 @@
             android:padding="10dp" >
 
             <RelativeLayout
+                android:id="@+id/rlytContent30"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical" >
+
                 <ImageView
                     android:id="@+id/imgLoad"
                     android:layout_width="wrap_content"
@@ -342,14 +356,11 @@
                     android:textAppearance="?android:attr/textAppearanceLarge" />
             </RelativeLayout>
 
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:background="#03b8ed" />
         </LinearLayout>
-
-        
 
         <LinearLayout
             android:id="@+id/llytThrottle"
@@ -358,10 +369,13 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:padding="10dp" >
+
             <RelativeLayout
+                android:id="@+id/rlytContent31"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical" >
+
                 <ImageView
                     android:id="@+id/imgThrottle"
                     android:layout_width="wrap_content"
@@ -410,14 +424,13 @@
                 android:background="#ffc803" />
         </LinearLayout>
     </TableRow>
-    
-    
-        <!-- 第四行 -->
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
 
+    <!-- 第四行 -->
+
+    <TableRow
+        android:id="@+id/tr4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
         <LinearLayout
             android:id="@+id/llytOil"
@@ -428,6 +441,7 @@
             android:padding="10dp" >
 
             <RelativeLayout
+                 android:id="@+id/rlytContent40"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical" >
@@ -465,7 +479,6 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-
                 <TextView
                     android:id="@+id/textOil"
                     android:layout_width="wrap_content"
@@ -477,16 +490,14 @@
                     android:textAppearance="?android:attr/textAppearanceLarge" />
             </RelativeLayout>
 
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:background="#face00" />
         </LinearLayout>
 
-        
-
         <LinearLayout
+             android:id="@+id/lltyBlank"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

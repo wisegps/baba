@@ -1,10 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/home_card_style"
+    android:id="@+id/llytFragmentNews"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/rlytNewsTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
@@ -30,6 +32,7 @@
     </RelativeLayout>
 
     <View
+        android:id="@+id/viewline"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#bbbbbb"
@@ -38,6 +41,7 @@
     </View>
 
     <LinearLayout
+       android:id="@+id/llytContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
@@ -102,6 +106,7 @@
     <View style="@style/home_news_line_style" />
 
     <LinearLayout
+        android:id="@+id/llytMore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"

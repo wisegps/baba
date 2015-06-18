@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/home_card_style"
+     android:id="@+id/llytSpeed"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical" >
 
     <RelativeLayout
+        android:id="@+id/rlytSpeedTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
@@ -31,6 +33,7 @@
     </RelativeLayout>
 
     <View
+        android:id="@+id/viewLine"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#bbbbbb"
@@ -39,6 +42,7 @@
     </View>
 
     <RelativeLayout
+         android:id="@+id/rlytScore"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/double_margins" >
