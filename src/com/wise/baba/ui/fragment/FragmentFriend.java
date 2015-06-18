@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import xlist.XListView;
+import xlist.XListView.IXListViewListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -45,6 +46,7 @@ import com.wise.baba.entity.FriendSearch;
 import com.wise.baba.entity.Info;
 import com.wise.baba.net.NetThread;
 import com.wise.baba.ui.widget.CircleImageView;
+import com.wise.baba.ui.widget.WaitLinearLayout.OnFinishListener;
 import com.wise.car.BarcodeActivity;
 import com.wise.car.SideBar;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;
@@ -60,7 +62,7 @@ import com.wise.notice.SureFriendActivity;
  * 
  * @author honesty
  **/
-public class FragmentFriend extends Fragment {
+public class FragmentFriend extends Fragment implements IXListViewListener {
 
 	private final static int get_all_friend = 4;
 	private final static int getFriendImage = 5;
@@ -104,8 +106,10 @@ public class FragmentFriend extends Fragment {
 		lv_friend = (XListView) getActivity().findViewById(R.id.lv_friend);
 		friendAdapter = new FriendAdapter();
 		lv_friend.setAdapter(friendAdapter);
+		lv_friend.setOnFinishListener(onFinishListener);
 		lv_friend.setPullLoadEnable(false);
-		lv_friend.setPullRefreshEnable(false);
+		lv_friend.setPullRefreshEnable(true);
+		lv_friend.setXListViewListener(this);
 		lv_friend.setOnItemClickListener(onItemClickListener);
 		lv_friend.setOnScrollListener(onScrollListener);
 		getFriendData();
@@ -139,6 +143,22 @@ public class FragmentFriend extends Fragment {
 		getFriendData();
 	}
 
+	OnFinishListener onFinishListener = new OnFinishListener() {
+		@Override
+		public void OnFinish(int index) {
+			friendAdapter.notifyDataSetChanged();
+			onLoadOver();
+		}
+
+		private void onLoadOver() {
+			lv_friend.refreshHeaderView();
+			lv_friend.refreshBottomView();
+			lv_friend.stopRefresh();
+			lv_friend.stopLoadMore();
+			lv_friend.setRefreshTime(GetSystem.GetNowTime());
+			
+		}
+	};
 
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -179,6 +199,7 @@ public class FragmentFriend extends Fragment {
 				friendAdapter.notifyDataSetChanged();
 				break;
 			case get_all_friend:
+				lv_friend.runFast(0);
 				jsonFriendData(msg.obj.toString());
 				break;
 			case searchById:
@@ -363,6 +384,8 @@ public class FragmentFriend extends Fragment {
 	public void getFriendData() {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id
 				+ "/get_friends?auth_code=" + app.auth_code + "&friend_type=1";
+		
+		Log.i("FragmentFriend", "获取好友数据 "+url);
 		new NetThread.GetDataThread(handler, url, get_all_friend).start();
 	}
 
@@ -542,6 +565,16 @@ public class FragmentFriend extends Fragment {
 			String name2 = characterParser.getSelling(o2.getFriend_name());
 			return name1.compareTo(name2);
 		}
+	}
+
+	@Override
+	public void onRefresh() {
+		getFriendData();
+	}
+
+	@Override
+	public void onLoadMore() {
+		
 	}
 
 }
