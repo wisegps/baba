@@ -1,7 +1,6 @@
 package com.wise.notice;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,19 +13,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,10 +36,8 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Constant;
 import com.wise.baba.biz.GetSystem;
-import com.wise.baba.entity.FriendData;
+import com.wise.baba.db.dao.FriendData;
 import com.wise.baba.entity.FriendSearch;
-import com.wise.baba.entity.Info;
-import com.wise.baba.entity.Info.FriendStatus;
 import com.wise.baba.net.NetThread;
 
 

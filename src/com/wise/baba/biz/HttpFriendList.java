@@ -1,6 +1,7 @@
 package com.wise.baba.biz;
 import java.util.LinkedList;
 import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -10,9 +11,9 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
@@ -20,7 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import com.wise.baba.AppApplication;
 import com.wise.baba.app.Constant;
 import com.wise.baba.app.Msg;
-import com.wise.baba.db.dao.FriendList;
+import com.wise.baba.db.dao.FriendData;
 
 /**
  * 
@@ -82,15 +83,15 @@ public class HttpFriendList {
 	 */
 	public List parseJsonString(String strJson) {
 		Log.i("HttpFriendList",strJson);
-		List<FriendList> friends = new LinkedList<FriendList>();
+		List<FriendData> friends = new LinkedList<FriendData>();
 		Gson gson = new Gson();
 		if (strJson.startsWith("[]")) {
 		} else if (strJson.startsWith("{")) {// 只有一条数据
-			FriendList friend = gson.fromJson(strJson, FriendList.class);
+			FriendData friend = gson.fromJson(strJson, FriendData.class);
 			friends.add(friend);
 		} else {// 搜索到多个好友
 			friends = gson.fromJson(strJson,
-					new TypeToken<List<FriendList>>() {
+					new TypeToken<List<FriendData>>() {
 					}.getType());
 		}
 

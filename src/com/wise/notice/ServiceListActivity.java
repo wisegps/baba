@@ -3,16 +3,9 @@ package com.wise.notice;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
-import com.wise.baba.AppApplication;
-import com.wise.baba.R;
-import com.wise.baba.app.Constant;
-import com.wise.baba.biz.GetSystem;
-import com.wise.baba.entity.FriendData;
-import com.wise.baba.entity.Info;
-import com.wise.baba.net.NetThread;
-import com.wise.baba.ui.widget.CircleImageView;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,17 +17,25 @@ import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.View.OnClickListener;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.wise.baba.AppApplication;
+import com.wise.baba.R;
+import com.wise.baba.app.Constant;
+import com.wise.baba.biz.GetSystem;
+import com.wise.baba.db.dao.FriendData;
+import com.wise.baba.net.NetThread;
+import com.wise.baba.ui.widget.CircleImageView;
 
 /**
  * 服务商列表

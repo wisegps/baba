@@ -6,12 +6,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -42,9 +41,12 @@ import com.wise.baba.app.Msg;
 import com.wise.baba.biz.GetSystem;
 import com.wise.baba.biz.HttpFriend;
 import com.wise.baba.biz.HttpFriendList;
-import com.wise.baba.db.dao.FriendList;
+import com.wise.baba.db.dao.DaoMaster;
+import com.wise.baba.db.dao.DaoSession;
+import com.wise.baba.db.dao.DaoMaster.DevOpenHelper;
+import com.wise.baba.db.dao.FriendData;
+import com.wise.baba.db.dao.FriendDataDao;
 import com.wise.baba.entity.CharacterParser;
-import com.wise.baba.entity.FriendData;
 import com.wise.baba.entity.FriendSearch;
 import com.wise.baba.entity.Info;
 import com.wise.baba.net.NetThread;
@@ -83,6 +85,13 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 	private View rootView;
 	
 	public HttpFriendList httpFriendList = null;
+	
+	private DevOpenHelper helper = null;
+	private SQLiteDatabase db = null;
+	private DaoMaster daoMaster = null;
+
+	private DaoSession daoSession = null;
+	private FriendDataDao friendDataDao = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,6 +109,18 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 		return rootView;
 	}
 
+	
+	public void initDB(){
+		/*
+		 * 初始化数据库
+		 */
+		helper = new DaoMaster.DevOpenHelper(this.getActivity(), "FriendData-db", null);
+		db = helper.getWritableDatabase();
+		daoMaster = new DaoMaster(db);
+		daoSession = daoMaster.newSession();
+		friendDataDao = daoSession.getFriendDataDao();
+		
+	}
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -117,10 +138,9 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 		lv_friend.setXListViewListener(this);
 		lv_friend.setOnItemClickListener(onItemClickListener);
 		lv_friend.setOnScrollListener(onScrollListener);
+		initDB();
 		httpFriendList = new HttpFriendList(this.getActivity(), handler);
-		httpFriendList.request();
-		getFriendData();
-
+		
 		letterIndex = (TextView) getActivity().findViewById(R.id.dialog);
 		sideBar = (SideBar) getActivity().findViewById(R.id.sidrbar);
 		sideBar.setTextView(letterIndex); // 选中某个拼音索引 提示框显示
@@ -147,13 +167,14 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 	public void onResume() {
 		super.onResume();
 		Log.i("FragmentFriend", "进入界面刷新");
-		getFriendData();
+		notifyFriendList();
+		httpFriendList.request();
 	}
 
 	OnFinishListener onFinishListener = new OnFinishListener() {
 		@Override
 		public void OnFinish(int index) {
-			friendAdapter.notifyDataSetChanged();
+			//notifyFriendList();
 			onLoadOver();
 		}
 
@@ -205,10 +226,6 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 				removeFriendThreadMark(msg.arg1);
 				friendAdapter.notifyDataSetChanged();
 				break;
-			case get_all_friend:
-				lv_friend.runFast(0);
-				jsonFriendData(msg.obj.toString());
-				break;
 			case searchById:
 				System.out.println("searchById");
 				List<FriendSearch> friends = (List<FriendSearch>) msg.obj;
@@ -225,15 +242,11 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 				startActivityForResult(intent, 2);
 				break;
 			case Msg.GetFriendList:
-				List<FriendList> friendList = (List<FriendList>) msg.obj;
-				for(int i=0;i<friendList.size();i++){
-					FriendList f = friendList.get(i);
-					Log.i("FragmentFriend",f.getCreate_time() );
-					Log.i("FragmentFriend",f.getFriend_name());
-					Log.i("FragmentFriend",f.getFriend_relat_id()+"");
-					Log.i("FragmentFriend",f.getLogo());
-				}
-				
+				List<FriendData> friendList = (List<FriendData>) msg.obj;
+				friendDataDao.deleteAll();
+				friendDataDao.insertInTx(friendList);
+				notifyFriendList();
+				lv_friend.runFast(0);
 				break;
 			}
 		}
@@ -397,63 +410,94 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 			handler.sendMessage(message);
 		}
 	}
+//
+//	/** 获取好友数据 **/
+//	public void getFriendData() {
+//		String url = Constant.BaseUrl + "customer/" + app.cust_id
+//				+ "/get_friends?auth_code=" + app.auth_code + "&friend_type=1";
+//		
+//		Log.i("FragmentFriend", "获取好友数据 "+url);
+//		new NetThread.GetDataThread(handler, url, get_all_friend).start();
+//	}
 
-	/** 获取好友数据 **/
-	public void getFriendData() {
-		String url = Constant.BaseUrl + "customer/" + app.cust_id
-				+ "/get_friends?auth_code=" + app.auth_code + "&friend_type=1";
-		
-		Log.i("FragmentFriend", "获取好友数据 "+url);
-		new NetThread.GetDataThread(handler, url, get_all_friend).start();
-	}
-
-	private void jsonFriendData(String result) {
-		try {
-
-			List<FriendData> jsonList = new ArrayList<FriendData>();
-			JSONArray jsonArray = new JSONArray(result);
-
-			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				FriendData friendData = new FriendData();
-				friendData.setSex(jsonObject.getInt("sex"));
-				friendData.setLogo(jsonObject.getString("logo"));
-				friendData.setFriend_name(jsonObject.getString("friend_name"));
-				friendData.setFriend_type(jsonObject.getInt("friend_type"));
-				friendData.setFriend_id(jsonObject.getInt("friend_id"));
-				friendData.setUser_id(jsonObject.getInt("user_id"));
-				friendData.setFriend_relat_id(jsonObject
-						.getInt("friend_relat_id"));
-				jsonList.add(friendData);
-			}
-
-			Collections.sort(jsonList, comparator);
-
-			String Letter = "";
-			for (int i = 0; i < jsonList.size(); i++) {
-				String name = jsonList.get(i).getFriend_name();
-				String firstLetter = GetFristLetter(name);
-				if (!Letter.equals(firstLetter)) {
-					// 增加分组标题
-					Letter = firstLetter;
-					FriendData title = new FriendData();
-					title.setGroup_letter(Letter);
-					jsonList.add(i, title);
-				}
-			}
-			app.friendDatas.clear();
-			FriendData fData = new FriendData();
-			fData.setFriend_name("新的朋友");
-			jsonList.add(0, fData);
-			FriendData fData1 = new FriendData();
-			fData1.setFriend_name("服务商");
-			jsonList.add(1, fData1);
-			app.friendDatas = jsonList;
-			friendAdapter.notifyDataSetChanged();
-			getFriendLogo();
-		} catch (Exception e) {
-			e.printStackTrace();
+//	private void jsonFriendData(String result) {
+//		try {
+//
+//			List<FriendData> jsonList = new ArrayList<FriendData>();
+//			JSONArray jsonArray = new JSONArray(result);
+//
+//			for (int i = 0; i < jsonArray.length(); i++) {
+//				JSONObject jsonObject = jsonArray.getJSONObject(i);
+//				FriendData friendData = new FriendData();
+//				friendData.setSex(jsonObject.getInt("sex"));
+//				friendData.setLogo(jsonObject.getString("logo"));
+//				friendData.setFriend_name(jsonObject.getString("friend_name"));
+//				friendData.setFriend_type(jsonObject.getInt("friend_type"));
+//				friendData.setFriend_id(jsonObject.getInt("friend_id"));
+//				friendData.setUser_id(jsonObject.getInt("user_id"));
+//				friendData.setFriend_relat_id(jsonObject
+//						.getInt("friend_relat_id"));
+//				jsonList.add(friendData);
+//			}
+//
+//			Collections.sort(jsonList, comparator);
+//
+//			String Letter = "";
+//			for (int i = 0; i < jsonList.size(); i++) {
+//				String name = jsonList.get(i).getFriend_name();
+//				String firstLetter = GetFristLetter(name);
+//				if (!Letter.equals(firstLetter)) {
+//					// 增加分组标题
+//					Letter = firstLetter;
+//					FriendData title = new FriendData();
+//					title.setGroup_letter(Letter);
+//					jsonList.add(i, title);
+//				}
+//			}
+//			app.friendDatas.clear();
+//			FriendData fData = new FriendData();
+//			fData.setFriend_name("新的朋友");
+//			jsonList.add(0, fData);
+//			FriendData fData1 = new FriendData();
+//			fData1.setFriend_name("服务商");
+//			jsonList.add(1, fData1);
+//			app.friendDatas = jsonList;
+//			friendAdapter.notifyDataSetChanged();
+//			getFriendLogo();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
+	
+	public void notifyFriendList(){
+		List<FriendData> friendList = friendDataDao.loadAll();
+		if(friendList == null || friendList.size()==0){
+			friendList = new ArrayList<FriendData>();
 		}
+		Collections.sort(friendList, comparator);
+		String Letter = "";
+		for (int i = 0; i < friendList.size(); i++) {
+			String name = friendList.get(i).getFriend_name();
+			String firstLetter = GetFristLetter(name);
+			if (!Letter.equals(firstLetter)) {
+				// 增加分组标题
+				Letter = firstLetter;
+				FriendData title = new FriendData();
+				title.setGroup_letter(Letter);
+				friendList.add(i, title);
+			}
+		}
+		app.friendDatas.clear();
+		FriendData fData = new FriendData();
+		fData.setFriend_name("新的朋友");
+		friendList.add(0, fData);
+		FriendData fData1 = new FriendData();
+		fData1.setFriend_name("服务商");
+		friendList.add(1, fData1);
+		app.friendDatas = friendList;
+		friendAdapter.notifyDataSetChanged();
+		getFriendLogo();
 	}
 
 	class FriendAdapter extends BaseAdapter {
@@ -545,10 +589,10 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 			return;
 		} else if (requestCode == 2 && resultCode == 2) {
 			// TODO 添加朋友返回
-			getFriendData();
+			httpFriendList.request();
 		} else if (requestCode == 3 && resultCode == 2) {
 			// 确认接受朋友返回，刷新数据
-			getFriendData();
+			httpFriendList.request();
 		} else if (requestCode == 4 && resultCode == 2) {
 			// 删除好友返回
 			int deleteFriendId = data.getIntExtra("FriendId", 0);
@@ -561,7 +605,7 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 			}
 			friendAdapter.notifyDataSetChanged();// 刷新本地数据
 			// 重新获取服务器数据，确保一致
-			getFriendData();
+			httpFriendList.request();
 		}
 	}
 
@@ -587,7 +631,7 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 
 	@Override
 	public void onRefresh() {
-		getFriendData();
+		httpFriendList.request();
 	}
 
 	@Override

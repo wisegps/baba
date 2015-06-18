@@ -8,8 +8,8 @@ import org.litepal.LitePalApplication;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.wise.baba.biz.GetSystem;
+import com.wise.baba.db.dao.FriendData;
 import com.wise.baba.entity.CarData;
-import com.wise.baba.entity.FriendData;
 
 
 /**

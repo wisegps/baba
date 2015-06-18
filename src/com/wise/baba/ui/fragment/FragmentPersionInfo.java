@@ -36,7 +36,7 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Constant;
 import com.wise.baba.biz.GetSystem;
-import com.wise.baba.entity.FriendData;
+import com.wise.baba.db.dao.FriendData;
 import com.wise.baba.net.NetThread;
 import com.wise.notice.LetterActivity;
 import com.wise.notice.SetCompetActivity;

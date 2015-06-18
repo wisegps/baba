@@ -17,7 +17,6 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Constant;
 import com.wise.baba.biz.GetSystem;
-import com.wise.baba.entity.FriendData;
 import com.wise.baba.entity.Info;
 import com.wise.baba.entity.Info.FriendStatus;
 import com.wise.baba.net.NetThread;

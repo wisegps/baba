@@ -243,7 +243,7 @@ public class MainActivity extends FragmentActivity implements
 					fragmentNotice.ResetNotice();// 重置消息
 				}
 				if (fragmentFriend != null) {
-					fragmentFriend.getFriendData();// 获取好友
+					fragmentFriend.httpFriendList.request();// 获取好友
 				}
 			} else if (action.equals(Constant.A_LoginOut)) {// 注销账号
 				if (fragmentHome != null) {
