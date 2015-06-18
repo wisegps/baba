@@ -37,4 +37,11 @@ public class Msg {
 	 */
 	
 	public static final int Get_Customer_Total = 9;
+	
+	
+	/**
+	 * FragmentFriendList
+	 */
+	
+	public static final int GetFriendList = 10;
 }

@@ -38,8 +38,11 @@ import android.widget.Toast;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Constant;
+import com.wise.baba.app.Msg;
 import com.wise.baba.biz.GetSystem;
 import com.wise.baba.biz.HttpFriend;
+import com.wise.baba.biz.HttpFriendList;
+import com.wise.baba.db.dao.FriendList;
 import com.wise.baba.entity.CharacterParser;
 import com.wise.baba.entity.FriendData;
 import com.wise.baba.entity.FriendSearch;
@@ -78,6 +81,8 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 	CharacterParser characterParser = new CharacterParser().getInstance(); // 将汉字转成拼音
 
 	private View rootView;
+	
+	public HttpFriendList httpFriendList = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -112,6 +117,8 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 		lv_friend.setXListViewListener(this);
 		lv_friend.setOnItemClickListener(onItemClickListener);
 		lv_friend.setOnScrollListener(onScrollListener);
+		httpFriendList = new HttpFriendList(this.getActivity(), handler);
+		httpFriendList.request();
 		getFriendData();
 
 		letterIndex = (TextView) getActivity().findViewById(R.id.dialog);
@@ -216,6 +223,17 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 						Info.FriendStatus.FriendAddFromId);
 				intent.putExtra("friend", friends.get(0));
 				startActivityForResult(intent, 2);
+				break;
+			case Msg.GetFriendList:
+				List<FriendList> friendList = (List<FriendList>) msg.obj;
+				for(int i=0;i<friendList.size();i++){
+					FriendList f = friendList.get(i);
+					Log.i("FragmentFriend",f.getCreate_time() );
+					Log.i("FragmentFriend",f.getFriend_name());
+					Log.i("FragmentFriend",f.getFriend_relat_id()+"");
+					Log.i("FragmentFriend",f.getLogo());
+				}
+				
 				break;
 			}
 		}
