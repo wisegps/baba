@@ -21,9 +21,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -56,20 +56,29 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.biz.GetSystem;
 import com.wise.baba.biz.HttpFriend;
+import com.wise.baba.db.dao.DaoMaster;
+import com.wise.baba.db.dao.DaoSession;
+import com.wise.baba.db.dao.FriendAuth;
+import com.wise.baba.db.dao.FriendAuthDao;
+import com.wise.baba.db.dao.DaoMaster.DevOpenHelper;
+import com.wise.baba.db.dao.FriendAuthDao.Properties;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * 设置好友权限
  * 
  * @author honesty
  **/
-public class SetCompetActivity extends Activity implements OnClickListener,Callback {
+public class SetCompetActivity extends Activity implements OnClickListener,
+		Callback {
 
 	private int friendId;
 	private boolean isService;
 	private CheckBox chkOBDStandard, chkOBDFault, chkNotice, chkViolation,
 			chkLocation, chkTrip, chkFuel, chkDriving;
 	private LinearLayout llytList;
-	private ImageView btnSave;//保存权限图标
+	private ImageView btnSave;// 保存权限图标
 	private int RIGHT_OBD_DATA = 0x6001; // 访问OBD标准数据（服务商）
 	private int RIGHT_ODB_ERR = 0x6002; // 访问OBD故障码数据（服务商）
 	private int RIGHT_EVENT = 0x6003; // 访问车务提醒（服务商）
@@ -81,7 +90,15 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 	private AppApplication app;
 	private RequestQueue mQueue;
 	private Handler handler;
-	
+
+	private DevOpenHelper helper = null;
+	private SQLiteDatabase db = null;
+	private DaoMaster daoMaster = null;
+
+	private DaoSession daoSession = null;
+	private FriendAuthDao friendAuthDao = null;
+
+	int[] authToMe = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +111,62 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 		friendId = intent.getIntExtra("friendId", 0);
 		isService = intent.getBooleanExtra("isService", false);
 		handler = new Handler(this);
+		initDB();
 		initView();
+		getAuthorization();
+		
+		
+	}
+
+	public void initDB() {
+		/*
+		 * 初始化数据库
+		 */
+		helper = new DaoMaster.DevOpenHelper(this, "FriendAuth-db", null);
+		db = helper.getWritableDatabase();
+		daoMaster = new DaoMaster(db);
+		daoSession = daoMaster.newSession();
+		friendAuthDao = daoSession.getFriendAuthDao();
+	}
+	
+public void saveAuthCode(int[] authToMe){
+		
+		//先删除已经存在的
+		QueryBuilder<FriendAuth> builder = friendAuthDao.queryBuilder();
+		builder.where(Properties.Id.eq(app.cust_id),Properties.FriendId.eq(friendId+""));
+		builder.buildDelete().executeDeleteWithoutDetachingEntities();
+		Log.i("SetCompetActivity", "删除");
+		
+		for(int i=0 ;i<authToMe.length;i++){
+			FriendAuth auth = new FriendAuth();
+			auth.setAuthCode(authToMe[i]);
+			auth.setId(app.cust_id);
+			auth.setFriendId(friendId+"");
+			friendAuthDao.insert(auth);
+			
+			Log.i("SetCompetActivity", "刚刚保存的权限 "+ authToMe[i]);
+		}
+		
+		List<FriendAuth> authList =friendAuthDao.loadAll();
+		for(FriendAuth auth : authList){
+			Log.i("SetCompetActivity", "数据库全部权限 "+ auth.getId()+" "+auth.getFriendId()+" "+auth.getAuthCode());
+		}
+	}
+
+	public void queryDBAuthCode() {
+
+		QueryBuilder<FriendAuth> builder = friendAuthDao.queryBuilder();
+		builder.where(Properties.Id.eq(app.cust_id),
+				Properties.FriendId.eq(friendId));
+		List<FriendAuth> authList = builder.list();
+		if (authList != null && authList.size() > 0) {
+			authToMe = new int[authList.size()];
+		}
+		for (int i = 0; i < authList.size(); i++) {
+			authToMe[i] = authList.get(i).getAuthCode();
+			Log.i("SetCompetActivity", "数据库中存的权限 " + authToMe[i]);
+		}
+		
 	}
 
 	/**
@@ -110,11 +182,8 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 		chkTrip = (CheckBox) findViewById(R.id.chkTrip);
 		chkFuel = (CheckBox) findViewById(R.id.chkFuel);
 		chkDriving = (CheckBox) findViewById(R.id.chkDriving);
-
-		
 		btnSave = (ImageView) findViewById(R.id.iv_add);
 		setServiceMode(isService);
-		getAuthorization();
 	}
 
 	public void get(String url) {
@@ -123,27 +192,17 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 				try {
 					JSONObject jsonObject = new JSONObject(response);
 					JSONArray values = jsonObject.getJSONArray("rights");
-					int code[] = {RIGHT_OBD_DATA,RIGHT_ODB_ERR,RIGHT_EVENT,RIGHT_VIOLATION,RIGHT_LOCATION,RIGHT_TRIP,RIGHT_FUEL,RIGHT_DRIVESTAT};
-					final CheckBox[] cb = {chkOBDStandard,chkOBDFault,chkNotice,chkViolation,chkLocation,chkTrip,chkFuel,chkDriving};
-					for(int i =0;i<values.length();i++){
+					authToMe = new int[values.length()];
+					for (int i = 0; i < values.length(); i++) {
 						int authCode = values.getInt(i);
-						for(int j=0;j<code.length;j++){
-							if(authCode == code[j]){
-								final int z = j;
-								handler.post(new Runnable(){
-									@Override
-									public void run() {
-										cb[z].setChecked(true);
-									}
-								});
-								
-							}
-						}
+						authToMe[i] = authCode;
 					}
+					saveAuthCode(authToMe);
+					setAuthVisable();
 					
 				} catch (JSONException e) {
 					e.printStackTrace();
-				}			
+				}
 				System.out.println("url request " + response);
 			}
 		};
@@ -158,6 +217,29 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 		mQueue.start();
 	}
 
+	/**
+	 * 根据授权设置显示
+	 */
+	public void setAuthVisable(){
+		if(authToMe == null){
+			return;
+		}
+		int code[] = { RIGHT_OBD_DATA, RIGHT_ODB_ERR, RIGHT_EVENT,
+				RIGHT_VIOLATION, RIGHT_LOCATION, RIGHT_TRIP,
+				RIGHT_FUEL, RIGHT_DRIVESTAT };
+		final CheckBox[] cb = { chkOBDStandard, chkOBDFault,
+				chkNotice, chkViolation, chkLocation, chkTrip,
+				chkFuel, chkDriving };
+		for (int i = 0; i < authToMe.length; i++) {
+			int authCode = authToMe[i];
+			for (int j = 0; j < code.length; j++) {
+				if (authCode == code[j]) {
+					cb[j].setChecked(true);
+				}
+			}
+		}
+		
+	}
 	public void post(String url, Map map) {
 		Listener listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
@@ -193,10 +275,11 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 	 * 设置有哪些权限
 	 */
 	public void getAuthorization() {
-			
-			String url = "http://api.bibibaba.cn/customer/" + friendId + "/friend/"
-					+ app.cust_id  + "/rights?auth_code=" + app.auth_code;
-			get(url);
+		queryDBAuthCode();
+		setAuthVisable();
+		String url = "http://api.bibibaba.cn/customer/" + friendId + "/friend/"
+				+ app.cust_id + "/rights?auth_code=" + app.auth_code;
+		get(url);
 	}
 
 	/**
@@ -206,27 +289,30 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 		String id = app.cust_id;
 		final String url = "http://api.bibibaba.cn/customer/" + id + "/friend/"
 				+ friendId + "/rights?auth_code=" + app.auth_code;
-		
-		
-		StringBuilder  authBuilder = new StringBuilder("[");
-		
-		int code[] = {RIGHT_OBD_DATA,RIGHT_ODB_ERR,RIGHT_EVENT,RIGHT_VIOLATION,RIGHT_LOCATION,RIGHT_TRIP,RIGHT_FUEL,RIGHT_DRIVESTAT};
-		CheckBox[] cb = {chkOBDStandard,chkOBDFault,chkNotice,chkViolation,chkLocation,chkTrip,chkFuel,chkDriving};
-		for(int i =0 ;i<cb.length;i++){
-			if(cb[i].isChecked()){
+
+		StringBuilder authBuilder = new StringBuilder("[");
+
+		int code[] = { RIGHT_OBD_DATA, RIGHT_ODB_ERR, RIGHT_EVENT,
+				RIGHT_VIOLATION, RIGHT_LOCATION, RIGHT_TRIP, RIGHT_FUEL,
+				RIGHT_DRIVESTAT };
+		CheckBox[] cb = { chkOBDStandard, chkOBDFault, chkNotice, chkViolation,
+				chkLocation, chkTrip, chkFuel, chkDriving };
+		for (int i = 0; i < cb.length; i++) {
+			if (cb[i].isChecked()) {
 				authBuilder.append(code[i]);
 				authBuilder.append(",");
 			}
 		}
 		authBuilder.append("]");
-		
+
 		String authString = authBuilder.toString();
-		if(authString.lastIndexOf(",") == authString.length()-2){
-			
+		if (authString.lastIndexOf(",") == authString.length() - 2) {
+
 		}
 		authString = authString.replace(",]", "]");
 		System.out.println(authString);
-		put(url,authString);
+		put(url, authString);
+		
 
 	}
 
@@ -252,22 +338,23 @@ public class SetCompetActivity extends Activity implements OnClickListener,Callb
 
 	}
 
-	public void put(String url,String authCode) {
+	public void put(String url, String authCode) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("rights", authCode);
-		JSONObject	jsonObject = new JSONObject(params);
-		JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(
-				Method.PUT, url, jsonObject,
-				new Response.Listener<JSONObject>() {
+		JSONObject jsonObject = new JSONObject(params);
+		JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Method.PUT,
+				url, jsonObject, new Response.Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject response) {
-						System.out.println("volley response " + response + "");
+						String url = "http://api.bibibaba.cn/customer/" + friendId + "/friend/"
+								+ app.cust_id + "/rights?auth_code=" + app.auth_code;
+						get(url);
 					}
 				}, new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						System.out.println("error response " + error.getMessage()
-								+ "");
+						System.out.println("error response "
+								+ error.getMessage() + "");
 					}
 				}) {
 			@Override

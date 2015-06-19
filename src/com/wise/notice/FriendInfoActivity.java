@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -39,10 +40,19 @@ import com.wise.baba.R;
 import com.wise.baba.app.Constant;
 import com.wise.baba.biz.GetSystem;
 import com.wise.baba.biz.HttpFriend;
+import com.wise.baba.db.dao.DaoMaster;
+import com.wise.baba.db.dao.DaoSession;
+import com.wise.baba.db.dao.FriendAuth;
+import com.wise.baba.db.dao.FriendAuthDao;
+import com.wise.baba.db.dao.FriendAuthDao.Properties;
+import com.wise.baba.db.dao.FriendDataDao;
+import com.wise.baba.db.dao.DaoMaster.DevOpenHelper;
 import com.wise.baba.entity.Info;
 import com.wise.baba.entity.Info.FriendStatus;
 import com.wise.baba.net.NetThread;
 import com.wise.state.ManageActivity;
+
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * 个人信息界面
@@ -71,6 +81,14 @@ public class FriendInfoActivity extends Activity implements Callback {
 	enum abc {
 		a, b
 	};
+	
+	
+	private DevOpenHelper helper = null;
+	private SQLiteDatabase db = null;
+	private DaoMaster daoMaster = null;
+
+	private DaoSession daoSession = null;
+	private FriendAuthDao friendAuthDao = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +99,7 @@ public class FriendInfoActivity extends Activity implements Callback {
 		mQueue = Volley.newRequestQueue(this);
 		handler = new Handler(this);
 		httpFriend = new HttpFriend(this, handler);
+		initDB();
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		iv_menu = (ImageView) findViewById(R.id.iv_menu);
@@ -113,7 +132,32 @@ public class FriendInfoActivity extends Activity implements Callback {
 			getAuthorization(app.cust_id, FriendId + "");
 		}
 	}
+	
+	public void initDB(){
+		/*
+		 * 初始化数据库
+		 */
+		helper = new DaoMaster.DevOpenHelper(this, "FriendAuth-db", null);
+		db = helper.getWritableDatabase();
+		daoMaster = new DaoMaster(db);
+		daoSession = daoMaster.newSession();
+		friendAuthDao = daoSession.getFriendAuthDao();
+	}
 
+	
+	public void queryDBAuthCode(){
+		
+		QueryBuilder<FriendAuth> builder = friendAuthDao.queryBuilder();
+		builder.where(Properties.Id.eq(app.cust_id),Properties.FriendId.eq(FriendId));
+		List<FriendAuth> authList = builder.list();
+		if(authList!=null&&authList.size()>0){
+			authToMe = new int[authList.size()];
+		}
+		for(int i =0; i<authList.size();i++){
+			authToMe[i] =authList.get(i).getAuthCode();
+			Log.i("FriendInfoActivity", "数据库中存的权限 "+ authToMe[i]);
+		}
+	}
 	@Override
 	public boolean handleMessage(Message msg) {
 		switch (msg.what) {
@@ -122,6 +166,7 @@ public class FriendInfoActivity extends Activity implements Callback {
 			break;
 		case get_authToMe:
 			authToMe = (int[]) msg.obj;
+			saveAuthCode(authToMe);
 			showViewByAuthCode();
 			break;
 		case delete_friend:
@@ -131,6 +176,29 @@ public class FriendInfoActivity extends Activity implements Callback {
 		return false;
 	}
 
+	public void saveAuthCode(int[] authToMe){
+		
+		//先删除已经存在的
+		QueryBuilder<FriendAuth> builder = friendAuthDao.queryBuilder();
+		builder.where(Properties.Id.eq(app.cust_id),Properties.FriendId.eq(FriendId+""));
+		builder.buildDelete().executeDeleteWithoutDetachingEntities();
+		Log.i("FriendInfoActivity", "删除");
+		
+		for(int i=0 ;i<authToMe.length;i++){
+			FriendAuth auth = new FriendAuth();
+			auth.setAuthCode(authToMe[i]);
+			auth.setId(app.cust_id);
+			auth.setFriendId(FriendId+"");
+			friendAuthDao.insert(auth);
+			
+			Log.i("FriendInfoActivity", "刚刚保存的权限 "+ authToMe[i]);
+		}
+		
+		List<FriendAuth> authList =friendAuthDao.loadAll();
+		for(FriendAuth auth : authList){
+			Log.i("FriendInfoActivity", "数据库全部权限 "+ auth.getId()+" "+auth.getFriendId()+" "+auth.getAuthCode());
+		}
+	}
 	/**
 	 * 根据权限设置一些按钮是否可见
 	 */
@@ -203,11 +271,26 @@ public class FriendInfoActivity extends Activity implements Callback {
 	 * 
 	 */
 	public void getAuthorization(String id, String friendId) {
-
+		/*
+		 * 先从数据库中获取
+		 */
+		queryDBAuthCode();
+		/*
+		 * 根据权限界面上调整控件显示
+		 */
+		showViewByAuthCode();
+		
+		/*
+		 * 再从网络获取
+		 */
 		String url = "http://api.bibibaba.cn/customer/" + id + "/friend/" + friendId + "/rights?auth_code=" + app.auth_code;
 		Log.i("FriendInfoActivity", "获取有哪些权限 url "+ url);
 		
 		httpFriend.getAuthCode(url);
+		
+		/*
+		 * 网络获取之后再调整控件
+		 */
 
 	}
 
@@ -238,6 +321,8 @@ public class FriendInfoActivity extends Activity implements Callback {
 	/** 通过id获取要添加的好友信息 **/
 	private void getFriendInfoId() {
 		String url = Constant.BaseUrl + "customer/" + FriendId + "?auth_code=" + app.auth_code;
+		
+		Log.i("FriendInfoActivity", url);
 		new NetThread.GetDataThread(handler, url, get_customer).start();
 	}
 

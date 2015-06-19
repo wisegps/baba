@@ -297,8 +297,7 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 				// 去介绍界面
 				Intent intent = new Intent(getActivity(),
 						FriendInfoActivity.class);
-				intent.putExtra("FriendId",
-						String.valueOf(friendData.getFriend_id()));
+				intent.putExtra("FriendId",String.valueOf(friendData.getFriend_id()));
 				intent.putExtra("name", friendData.getFriend_name());
 				intent.putExtra("cust_type", 1);
 				startActivityForResult(intent, 4);
@@ -410,65 +409,6 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 			handler.sendMessage(message);
 		}
 	}
-//
-//	/** 获取好友数据 **/
-//	public void getFriendData() {
-//		String url = Constant.BaseUrl + "customer/" + app.cust_id
-//				+ "/get_friends?auth_code=" + app.auth_code + "&friend_type=1";
-//		
-//		Log.i("FragmentFriend", "获取好友数据 "+url);
-//		new NetThread.GetDataThread(handler, url, get_all_friend).start();
-//	}
-
-//	private void jsonFriendData(String result) {
-//		try {
-//
-//			List<FriendData> jsonList = new ArrayList<FriendData>();
-//			JSONArray jsonArray = new JSONArray(result);
-//
-//			for (int i = 0; i < jsonArray.length(); i++) {
-//				JSONObject jsonObject = jsonArray.getJSONObject(i);
-//				FriendData friendData = new FriendData();
-//				friendData.setSex(jsonObject.getInt("sex"));
-//				friendData.setLogo(jsonObject.getString("logo"));
-//				friendData.setFriend_name(jsonObject.getString("friend_name"));
-//				friendData.setFriend_type(jsonObject.getInt("friend_type"));
-//				friendData.setFriend_id(jsonObject.getInt("friend_id"));
-//				friendData.setUser_id(jsonObject.getInt("user_id"));
-//				friendData.setFriend_relat_id(jsonObject
-//						.getInt("friend_relat_id"));
-//				jsonList.add(friendData);
-//			}
-//
-//			Collections.sort(jsonList, comparator);
-//
-//			String Letter = "";
-//			for (int i = 0; i < jsonList.size(); i++) {
-//				String name = jsonList.get(i).getFriend_name();
-//				String firstLetter = GetFristLetter(name);
-//				if (!Letter.equals(firstLetter)) {
-//					// 增加分组标题
-//					Letter = firstLetter;
-//					FriendData title = new FriendData();
-//					title.setGroup_letter(Letter);
-//					jsonList.add(i, title);
-//				}
-//			}
-//			app.friendDatas.clear();
-//			FriendData fData = new FriendData();
-//			fData.setFriend_name("新的朋友");
-//			jsonList.add(0, fData);
-//			FriendData fData1 = new FriendData();
-//			fData1.setFriend_name("服务商");
-//			jsonList.add(1, fData1);
-//			app.friendDatas = jsonList;
-//			friendAdapter.notifyDataSetChanged();
-//			getFriendLogo();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
 	
 	public void notifyFriendList(){
 		List<FriendData> friendList = friendDataDao.loadAll();

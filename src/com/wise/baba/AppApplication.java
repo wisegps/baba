@@ -6,8 +6,14 @@ import java.util.List;
 import org.litepal.LitePalApplication;
 
 
+import android.content.Context;
+
 import com.baidu.mapapi.SDKInitializer;
+import com.wise.baba.app.App;
 import com.wise.baba.biz.GetSystem;
+import com.wise.baba.db.dao.DaoMaster;
+import com.wise.baba.db.dao.DaoMaster.OpenHelper;
+import com.wise.baba.db.dao.DaoSession;
 import com.wise.baba.db.dao.FriendData;
 import com.wise.baba.entity.CarData;
 
@@ -60,6 +66,9 @@ public class AppApplication extends LitePalApplication {
 	/** 好友信息 **/
 	public List<FriendData> friendDatas = new ArrayList<FriendData>();
 
+	private static DaoMaster daoMaster;
+	private static DaoSession daoSession;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -69,4 +78,39 @@ public class AppApplication extends LitePalApplication {
 		CrashHandler crashHandler = CrashHandler.getInstance();
 		crashHandler.init(getApplicationContext());
 	}
+	
+	/**
+	 * 取得DaoMaster
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static DaoMaster getDaoMaster(Context context)
+	{
+	    if (daoMaster == null)
+	    {
+	        OpenHelper helper = new DaoMaster.DevOpenHelper(context, App.DATABASE_NAME, null);
+	        daoMaster = new DaoMaster(helper.getWritableDatabase());
+	    }
+	    return daoMaster;
+	}
+	/**
+	 * 取得DaoSession
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static DaoSession getDaoSession(Context context)
+	{
+	    if (daoSession == null)
+	    {
+	        if (daoMaster == null)
+	        {
+	            daoMaster = getDaoMaster(context);
+	        }
+	        daoSession = daoMaster.newSession();
+	    }
+	    return daoSession;
+	}
+	
 }
