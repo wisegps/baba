@@ -182,7 +182,8 @@ public class FriendDetailActivity extends Activity implements OnClickListener,Ca
 			return;
 		}
 		for (FriendData friendData : app.friendDatas) {
-			if (friendData.getFriend_id() == id) {
+			
+			if (friendData.getFriend_id()!=null &&  friendData.getFriend_id() == id) {
 				// 好友已存在
 				btnAddFriend.setVisibility(View.GONE);
 				return;

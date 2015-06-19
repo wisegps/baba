@@ -92,12 +92,10 @@ public class SetCompetActivity extends Activity implements OnClickListener,
 	private RequestQueue mQueue;
 	private Handler handler;
 
-
-	private DaoSession daoSession = null;
-	private FriendAuthDao friendAuthDao = null;
-
 	int[] authToMe = null;
+	
 	private DBFriendAuth friendAuthDB = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -146,7 +144,7 @@ public class SetCompetActivity extends Activity implements OnClickListener,
 						int authCode = values.getInt(i);
 						authToMe[i] = authCode;
 					}
-					friendAuthDB.saveAuthCode(authToMe, app.cust_id, friendId+"");
+					friendAuthDB.saveAuthCode(authToMe, friendId+"", app.cust_id);
 					
 					setAuthVisable();
 					
@@ -172,7 +170,7 @@ public class SetCompetActivity extends Activity implements OnClickListener,
 	 */
 	public void setAuthVisable(){
 		if(authToMe == null){
-			return;
+			authToMe = new int[0];
 		}
 		int code[] = { RIGHT_OBD_DATA, RIGHT_ODB_ERR, RIGHT_EVENT,
 				RIGHT_VIOLATION, RIGHT_LOCATION, RIGHT_TRIP,
@@ -222,10 +220,17 @@ public class SetCompetActivity extends Activity implements OnClickListener,
 	}
 
 	/**
-	 * 设置有哪些权限
+	 * 有哪些权限
 	 */
 	public void getAuthorization() {
-		authToMe = friendAuthDB.queryAuthCode(app.cust_id, friendId+"");
+		authToMe = friendAuthDB.queryAuthCode(friendId+"",app.cust_id);
+		if(authToMe!=null){
+			for(int i=0;i<authToMe.length;i++){
+				Log.i("SetCompetActivity", "数据库中哪些权限 "+ authToMe[i]+"");
+			}
+		}
+		
+		
 		setAuthVisable();
 		String url = "http://api.bibibaba.cn/customer/" + friendId + "/friend/"
 				+ app.cust_id + "/rights?auth_code=" + app.auth_code;

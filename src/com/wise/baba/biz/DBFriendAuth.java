@@ -1,6 +1,9 @@
 package com.wise.baba.biz;
+
 import java.util.List;
 import android.content.Context;
+import android.util.Log;
+
 import com.wise.baba.AppApplication;
 import com.wise.baba.db.dao.DaoSession;
 import com.wise.baba.db.dao.FriendAuth;
@@ -25,6 +28,7 @@ public class DBFriendAuth {
 	 * @return 获取授权码
 	 */
 	public int[] queryAuthCode(String id, String friendId) {
+		Log.i("DBFriendAuth", "获取授权码");
 		QueryBuilder<FriendAuth> builder = friendAuthDao.queryBuilder();
 		builder.where(Properties.Id.eq(id), Properties.FriendId.eq(friendId));
 		List<FriendAuth> authList = builder.list();
@@ -34,29 +38,35 @@ public class DBFriendAuth {
 		}
 		for (int i = 0; i < authList.size(); i++) {
 			authToMe[i] = authList.get(i).getAuthCode();
+			Log.i("DBFriendAuth", "查询id " + id + "朋友id " + friendId + "权限 "
+					+ authToMe[i]);
 		}
 		return authToMe;
 	}
-	
+
 	/**
 	 * 设置授权码
+	 * 
 	 * @param authToMe
 	 */
-	public void saveAuthCode(int[] authToMe,String id, String friendId){
-		
-		//先删除已经存在的
+	public void saveAuthCode(int[] authToMe, String id, String friendId) {
+		Log.i("DBFriendAuth", "删除"+ id+" "+friendId);
+		// 先删除已经存在的
 		QueryBuilder<FriendAuth> builder = friendAuthDao.queryBuilder();
-		builder.where(Properties.Id.eq(id),Properties.FriendId.eq(friendId));
+		builder.where(Properties.Id.eq(id), Properties.FriendId.eq(friendId));
 		builder.buildDelete().executeDeleteWithoutDetachingEntities();
-		
-		for(int i=0 ;i<authToMe.length;i++){
+		if (authToMe == null || authToMe.length==0) {
+			return;
+		}
+		for (int i = 0; i < authToMe.length; i++) {
 			FriendAuth auth = new FriendAuth();
 			auth.setAuthCode(authToMe[i]);
 			auth.setId(id);
 			auth.setFriendId(friendId);
 			friendAuthDao.insert(auth);
+			
+			Log.i("DBFriendAuth", "设置授权码"+ auth.getAuthCode());
 		}
-		
-	}
 
+	}
 }
