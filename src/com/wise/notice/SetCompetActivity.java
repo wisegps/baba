@@ -54,6 +54,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
+import com.wise.baba.biz.DBFriendAuth;
 import com.wise.baba.biz.GetSystem;
 import com.wise.baba.biz.HttpFriend;
 import com.wise.baba.db.dao.DaoMaster;
@@ -91,15 +92,12 @@ public class SetCompetActivity extends Activity implements OnClickListener,
 	private RequestQueue mQueue;
 	private Handler handler;
 
-	private DevOpenHelper helper = null;
-	private SQLiteDatabase db = null;
-	private DaoMaster daoMaster = null;
 
 	private DaoSession daoSession = null;
 	private FriendAuthDao friendAuthDao = null;
 
 	int[] authToMe = null;
-
+	private DBFriendAuth friendAuthDB = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -111,63 +109,14 @@ public class SetCompetActivity extends Activity implements OnClickListener,
 		friendId = intent.getIntExtra("friendId", 0);
 		isService = intent.getBooleanExtra("isService", false);
 		handler = new Handler(this);
-		initDB();
+		friendAuthDB = new DBFriendAuth(this);
 		initView();
 		getAuthorization();
 		
 		
 	}
 
-	public void initDB() {
-		/*
-		 * 初始化数据库
-		 */
-		helper = new DaoMaster.DevOpenHelper(this, "FriendAuth-db", null);
-		db = helper.getWritableDatabase();
-		daoMaster = new DaoMaster(db);
-		daoSession = daoMaster.newSession();
-		friendAuthDao = daoSession.getFriendAuthDao();
-	}
 	
-public void saveAuthCode(int[] authToMe){
-		
-		//先删除已经存在的
-		QueryBuilder<FriendAuth> builder = friendAuthDao.queryBuilder();
-		builder.where(Properties.Id.eq(app.cust_id),Properties.FriendId.eq(friendId+""));
-		builder.buildDelete().executeDeleteWithoutDetachingEntities();
-		Log.i("SetCompetActivity", "删除");
-		
-		for(int i=0 ;i<authToMe.length;i++){
-			FriendAuth auth = new FriendAuth();
-			auth.setAuthCode(authToMe[i]);
-			auth.setId(app.cust_id);
-			auth.setFriendId(friendId+"");
-			friendAuthDao.insert(auth);
-			
-			Log.i("SetCompetActivity", "刚刚保存的权限 "+ authToMe[i]);
-		}
-		
-		List<FriendAuth> authList =friendAuthDao.loadAll();
-		for(FriendAuth auth : authList){
-			Log.i("SetCompetActivity", "数据库全部权限 "+ auth.getId()+" "+auth.getFriendId()+" "+auth.getAuthCode());
-		}
-	}
-
-	public void queryDBAuthCode() {
-
-		QueryBuilder<FriendAuth> builder = friendAuthDao.queryBuilder();
-		builder.where(Properties.Id.eq(app.cust_id),
-				Properties.FriendId.eq(friendId));
-		List<FriendAuth> authList = builder.list();
-		if (authList != null && authList.size() > 0) {
-			authToMe = new int[authList.size()];
-		}
-		for (int i = 0; i < authList.size(); i++) {
-			authToMe[i] = authList.get(i).getAuthCode();
-			Log.i("SetCompetActivity", "数据库中存的权限 " + authToMe[i]);
-		}
-		
-	}
 
 	/**
 	 * 初始化界面
@@ -197,7 +146,8 @@ public void saveAuthCode(int[] authToMe){
 						int authCode = values.getInt(i);
 						authToMe[i] = authCode;
 					}
-					saveAuthCode(authToMe);
+					friendAuthDB.saveAuthCode(authToMe, app.cust_id, friendId+"");
+					
 					setAuthVisable();
 					
 				} catch (JSONException e) {
@@ -275,7 +225,7 @@ public void saveAuthCode(int[] authToMe){
 	 * 设置有哪些权限
 	 */
 	public void getAuthorization() {
-		queryDBAuthCode();
+		authToMe = friendAuthDB.queryAuthCode(app.cust_id, friendId+"");
 		setAuthVisable();
 		String url = "http://api.bibibaba.cn/customer/" + friendId + "/friend/"
 				+ app.cust_id + "/rights?auth_code=" + app.auth_code;

@@ -38,6 +38,7 @@ import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Constant;
+import com.wise.baba.biz.DBFriendAuth;
 import com.wise.baba.biz.GetSystem;
 import com.wise.baba.biz.HttpFriend;
 import com.wise.baba.db.dao.DaoMaster;
@@ -83,13 +84,8 @@ public class FriendInfoActivity extends Activity implements Callback {
 	};
 	
 	
-	private DevOpenHelper helper = null;
-	private SQLiteDatabase db = null;
-	private DaoMaster daoMaster = null;
 
-	private DaoSession daoSession = null;
-	private FriendAuthDao friendAuthDao = null;
-
+	private DBFriendAuth friendAuthDB = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -99,7 +95,7 @@ public class FriendInfoActivity extends Activity implements Callback {
 		mQueue = Volley.newRequestQueue(this);
 		handler = new Handler(this);
 		httpFriend = new HttpFriend(this, handler);
-		initDB();
+		friendAuthDB = new DBFriendAuth(this);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		iv_menu = (ImageView) findViewById(R.id.iv_menu);
@@ -133,31 +129,6 @@ public class FriendInfoActivity extends Activity implements Callback {
 		}
 	}
 	
-	public void initDB(){
-		/*
-		 * 初始化数据库
-		 */
-		helper = new DaoMaster.DevOpenHelper(this, "FriendAuth-db", null);
-		db = helper.getWritableDatabase();
-		daoMaster = new DaoMaster(db);
-		daoSession = daoMaster.newSession();
-		friendAuthDao = daoSession.getFriendAuthDao();
-	}
-
-	
-	public void queryDBAuthCode(){
-		
-		QueryBuilder<FriendAuth> builder = friendAuthDao.queryBuilder();
-		builder.where(Properties.Id.eq(app.cust_id),Properties.FriendId.eq(FriendId));
-		List<FriendAuth> authList = builder.list();
-		if(authList!=null&&authList.size()>0){
-			authToMe = new int[authList.size()];
-		}
-		for(int i =0; i<authList.size();i++){
-			authToMe[i] =authList.get(i).getAuthCode();
-			Log.i("FriendInfoActivity", "数据库中存的权限 "+ authToMe[i]);
-		}
-	}
 	@Override
 	public boolean handleMessage(Message msg) {
 		switch (msg.what) {
@@ -166,7 +137,7 @@ public class FriendInfoActivity extends Activity implements Callback {
 			break;
 		case get_authToMe:
 			authToMe = (int[]) msg.obj;
-			saveAuthCode(authToMe);
+			friendAuthDB.saveAuthCode(authToMe, app.cust_id, FriendId+"");
 			showViewByAuthCode();
 			break;
 		case delete_friend:
@@ -176,29 +147,6 @@ public class FriendInfoActivity extends Activity implements Callback {
 		return false;
 	}
 
-	public void saveAuthCode(int[] authToMe){
-		
-		//先删除已经存在的
-		QueryBuilder<FriendAuth> builder = friendAuthDao.queryBuilder();
-		builder.where(Properties.Id.eq(app.cust_id),Properties.FriendId.eq(FriendId+""));
-		builder.buildDelete().executeDeleteWithoutDetachingEntities();
-		Log.i("FriendInfoActivity", "删除");
-		
-		for(int i=0 ;i<authToMe.length;i++){
-			FriendAuth auth = new FriendAuth();
-			auth.setAuthCode(authToMe[i]);
-			auth.setId(app.cust_id);
-			auth.setFriendId(FriendId+"");
-			friendAuthDao.insert(auth);
-			
-			Log.i("FriendInfoActivity", "刚刚保存的权限 "+ authToMe[i]);
-		}
-		
-		List<FriendAuth> authList =friendAuthDao.loadAll();
-		for(FriendAuth auth : authList){
-			Log.i("FriendInfoActivity", "数据库全部权限 "+ auth.getId()+" "+auth.getFriendId()+" "+auth.getAuthCode());
-		}
-	}
 	/**
 	 * 根据权限设置一些按钮是否可见
 	 */
@@ -274,7 +222,7 @@ public class FriendInfoActivity extends Activity implements Callback {
 		/*
 		 * 先从数据库中获取
 		 */
-		queryDBAuthCode();
+		authToMe =  friendAuthDB.queryAuthCode(id, friendId);
 		/*
 		 * 根据权限界面上调整控件显示
 		 */

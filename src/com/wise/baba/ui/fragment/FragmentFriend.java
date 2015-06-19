@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-
 import xlist.XListView;
 import xlist.XListView.IXListViewListener;
 import android.content.Intent;
@@ -61,7 +60,6 @@ import com.wise.notice.FriendInfoActivity;
 import com.wise.notice.ServiceListActivity;
 import com.wise.notice.SureFriendActivity;
 
-
 /**
  * 好友列表
  * 
@@ -83,12 +81,8 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 	CharacterParser characterParser = new CharacterParser().getInstance(); // 将汉字转成拼音
 
 	private View rootView;
-	
+
 	public HttpFriendList httpFriendList = null;
-	
-	private DevOpenHelper helper = null;
-	private SQLiteDatabase db = null;
-	private DaoMaster daoMaster = null;
 
 	private DaoSession daoSession = null;
 	private FriendDataDao friendDataDao = null;
@@ -109,18 +103,15 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 		return rootView;
 	}
 
-	
-	public void initDB(){
+	public void initDB() {
 		/*
 		 * 初始化数据库
 		 */
-		helper = new DaoMaster.DevOpenHelper(this.getActivity(), "FriendData-db", null);
-		db = helper.getWritableDatabase();
-		daoMaster = new DaoMaster(db);
-		daoSession = daoMaster.newSession();
+		daoSession = AppApplication.getDaoSession(this.getActivity());
 		friendDataDao = daoSession.getFriendDataDao();
-		
+
 	}
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -140,7 +131,7 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 		lv_friend.setOnScrollListener(onScrollListener);
 		initDB();
 		httpFriendList = new HttpFriendList(this.getActivity(), handler);
-		
+
 		letterIndex = (TextView) getActivity().findViewById(R.id.dialog);
 		sideBar = (SideBar) getActivity().findViewById(R.id.sidrbar);
 		sideBar.setTextView(letterIndex); // 选中某个拼音索引 提示框显示
@@ -160,8 +151,6 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 		});
 
 	}
-	
-	
 
 	@Override
 	public void onResume() {
@@ -174,7 +163,7 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 	OnFinishListener onFinishListener = new OnFinishListener() {
 		@Override
 		public void OnFinish(int index) {
-			//notifyFriendList();
+			// notifyFriendList();
 			onLoadOver();
 		}
 
@@ -184,10 +173,9 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 			lv_friend.stopRefresh();
 			lv_friend.stopLoadMore();
 			lv_friend.setRefreshTime(GetSystem.GetNowTime());
-			
+
 		}
 	};
-
 
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
@@ -197,19 +185,19 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 				showMenu();
 				break;
 			case R.id.tv_add_friend:
-				if(mPopupWindow!=null && mPopupWindow.isShowing()){
+				if (mPopupWindow != null && mPopupWindow.isShowing()) {
 					mPopupWindow.dismiss();
 				}
-				
-				startActivityForResult(new Intent(getActivity(), FriendAddActivity.class), 2);
+
+				startActivityForResult(new Intent(getActivity(),
+						FriendAddActivity.class), 2);
 				break;
 			case R.id.tv_camera:
-				if(mPopupWindow!=null && mPopupWindow.isShowing()){
+				if (mPopupWindow != null && mPopupWindow.isShowing()) {
 					mPopupWindow.dismiss();
 				}
-				
-				Intent add = new Intent(getActivity(),
-						BarcodeActivity.class);
+
+				Intent add = new Intent(getActivity(), BarcodeActivity.class);
 				add.putExtra("desc", "friend");
 				startActivityForResult(add, 1);
 				break;
@@ -297,7 +285,8 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 				// 去介绍界面
 				Intent intent = new Intent(getActivity(),
 						FriendInfoActivity.class);
-				intent.putExtra("FriendId",String.valueOf(friendData.getFriend_id()));
+				intent.putExtra("FriendId",
+						String.valueOf(friendData.getFriend_id()));
 				intent.putExtra("name", friendData.getFriend_name());
 				intent.putExtra("cust_type", 1);
 				startActivityForResult(intent, 4);
@@ -409,10 +398,10 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 			handler.sendMessage(message);
 		}
 	}
-	
-	public void notifyFriendList(){
+
+	public void notifyFriendList() {
 		List<FriendData> friendList = friendDataDao.loadAll();
-		if(friendList == null || friendList.size()==0){
+		if (friendList == null || friendList.size() == 0) {
 			friendList = new ArrayList<FriendData>();
 		}
 		Collections.sort(friendList, comparator);
@@ -576,7 +565,7 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 
 	@Override
 	public void onLoadMore() {
-		
+
 	}
 
 }
