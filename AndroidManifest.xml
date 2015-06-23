@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wise.baba"
-    android:versionCode="36"
-    android:versionName="2.13" >
+    android:versionCode="33"
+    android:versionName="2.14" >
 
+    <!-- 37 -->
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -47,9 +48,6 @@
 
     <uses-permission android:name="android.permission.FLASHLIGHT" />
 
-    
-    
-    
     <application
         android:name="com.wise.baba.AppApplication"
         android:allowBackup="true"
@@ -169,8 +167,8 @@
         <activity
             android:name="com.wise.state.MainActivity"
             android:launchMode="singleTask"
-			android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name="com.wise.state.ServiceManageActivity"
@@ -224,7 +222,6 @@
             android:name="com.wise.notice.FriendAddActivity"
             android:screenOrientation="portrait" >
         </activity>
-        
         <activity
             android:name="com.wise.notice.FriendListActivity"
             android:screenOrientation="portrait" >
@@ -635,7 +632,7 @@
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="DhT4kz88wR3r5yCl6tQCpaNW" />
+            android:value="R2uGIgDsgGGie9T4HFmgCYsG" />
     </application>
 
 </manifest>

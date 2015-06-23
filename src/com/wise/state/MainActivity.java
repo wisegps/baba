@@ -68,8 +68,7 @@ public class MainActivity extends FragmentActivity implements
 		showFragment("home");
 		registerReceiver();
 		checkIndication();
-		
-		
+		UmengUpdateAgent.update(MainActivity.this);
 	}
 	
 	@Override
@@ -78,7 +77,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onResume();
 		/** 定位 **/
 		new GetLocation(this);
-		UmengUpdateAgent.update(MainActivity.this);
+		
 		// 初始化导航，必须
 		BaiduNaviManager.getInstance().initEngine(this, getSdcardDir(),
 				mNaviEngineInitListener, new LBSAuthManagerListener() {
