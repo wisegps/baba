@@ -39,6 +39,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Constant;
+import com.wise.baba.biz.FileVoilation;
 import com.wise.baba.biz.GetSystem;
 import com.wise.baba.entity.BaseData;
 import com.wise.baba.entity.CarData;
@@ -86,12 +87,15 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 	/** 所有违章数据 **/
 	JSONObject jsonTraffic;
 
+	FileVoilation fileVoilation = null;//文件存数违章数据
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_traffic);
 		app = (AppApplication) getApplication();
+		fileVoilation = new FileVoilation(TrafficActivity.this);
 		ImageView iv_update_car = (ImageView) findViewById(R.id.iv_update_car);
 		iv_update_car.setOnClickListener(onClickListener);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
@@ -230,10 +234,16 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 			case frist_traffic:
 				trafficViews.get(msg.arg1).getLl_wait().runFast();
 				trafficViews.get(msg.arg1).setTrafficDatas(jsonTrafficData(msg.obj.toString()));
+				int id = carDatas.get(index_car).getObj_id();
+				fileVoilation.putVoilation(id, msg.obj.toString());
+				Log.i("TrafficActivity", "native json save"+msg.obj.toString());
 				break;
 			case refresh_traffic:
 				trafficViews.get(msg.arg1).getxListView().runFast(msg.arg1);
 				trafficViews.get(msg.arg1).setTrafficDatas(jsonTrafficData(msg.obj.toString()));
+				id = carDatas.get(index_car).getObj_id();
+				fileVoilation.putVoilation(id, msg.obj.toString());
+				Log.i("TrafficActivity", "native json save"+msg.obj.toString());
 				break;
 			case update_city:
 				GetSystem.myLog(TAG, msg.obj.toString());
@@ -453,6 +463,7 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		return Datas;
 	}
 
@@ -737,6 +748,8 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		int status;
 		int vio_total;
 		int total_complain;
+		
+		
 
 		public String getObj_id() {
 			return obj_id;
@@ -1046,10 +1059,16 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		trafficViews.get(index_car).getLl_wait_show().setVisibility(View.VISIBLE);
 		trafficViews.get(index_car).getLl_wait().startWheel(index_car);
 		try {
-			String url = Constant.BaseUrl + "vehicle/" + carDatas.get(index_car).getObj_id() + "/violation?auth_code=" + app.auth_code;
-			
-			Log.i("TrafficActivity", "url" + url);
+			int id = carDatas.get(index_car).getObj_id();
+			String url = Constant.BaseUrl + "vehicle/" + id + "/violation?auth_code=" + app.auth_code;
+			String json = fileVoilation.getVoilation(id);
+			if(json!= null && !json.equals("")){
+				trafficViews.get(index_car).getLl_wait().runFast();
+				trafficViews.get(index_car).setTrafficDatas(jsonTrafficData(json));
+			}
 			new NetThread.GetDataThread(handler, url, frist_traffic, index_car).start();
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
