@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,6 +42,7 @@ import com.wise.baba.biz.Judge;
 import com.wise.baba.db.ShareCards;
 import com.wise.baba.entity.Info;
 import com.wise.baba.net.NetThread;
+import com.wise.baba.ui.adapter.FragmentHelper;
 import com.wise.baba.ui.adapter.OnCardMenuListener;
 import com.wise.car.CarLocationActivity;
 import com.wise.setting.LoginActivity;
@@ -65,6 +68,8 @@ public class FragmentHome extends Fragment {
 
 	private boolean isLoaded = false;
 
+	FragmentHelper fragmentHelper = null;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -106,6 +111,8 @@ public class FragmentHome extends Fragment {
 			startActivity(intent);
 		}
 		getCards();
+		
+		
 	}
 
 	FragmentTransaction transaction;
@@ -121,9 +128,7 @@ public class FragmentHome extends Fragment {
 		cards.clear();
 		Log.i("fragment", "设置卡片布局");
 		// // 可选布局
-
 		String sharedCards[] = cardsSharePreferences.get();
-
 		for (int i = 0; i < sharedCards.length; i++) {
 			String cardName = sharedCards[i];
 			Log.i("fragment", "get " + i + " " + cardName);
@@ -206,7 +211,7 @@ public class FragmentHome extends Fragment {
 				break;
 			case R.id.ll_adress:
 				goCarMap(true);
-				break;
+				break; 
 			}
 		}
 	};
@@ -223,7 +228,9 @@ public class FragmentHome extends Fragment {
 		}
 	};
 
-	// 跳转到地图界面
+	/**
+	 *  跳转到地图界面
+	 */
 	private void goCarMap(boolean b) {
 		int index = 0;
 		FragmentCarInfo fragmentCarInfo = (FragmentCarInfo) cards
@@ -392,44 +399,8 @@ public class FragmentHome extends Fragment {
 				public void onClick(View v) {
 					Log.i("fragment", "置顶 " + CardName);
 					
-					//建立一个新数组
-//					Map    newCards = new LinkedHashMap<String, Fragment>();
-//					Iterator<String> keys = cards.keySet().iterator();
-//					String cardNames[] = cards.keySet().toArray(new String[0]);
-//					newCards.put(CardName, cards.get(CardName));
-//					for (int i = 0; i < cardNames.length; i++) {
-//						if(!cardNames[i].equals(CardName)){
-//							newCards.put(cardNames[i], cards.get(cardNames[i]));
-//						}
-//					}
-//					
-//					
-//					cards = newCards;
-//					removeAllFragment();
-//					
-//					
-//					keys = cards.keySet().iterator();
-//					cardNames = cards.keySet().toArray(new String[0]);
-//					for (int i = 0; i < cardNames.length; i++) {
-//						transaction = fragmentManager.beginTransaction();
-//						transaction.add(R.id.ll_cards, cards.get(cardNames[i]),
-//								cardNames[i]).commit();
-//					}
-//					
 					setCardsInSharedPreferences(CardName);
-					getCards();
-					System.gc();
-					new Handler().post(new Runnable(){
-
-						@Override
-						public void run() {
-							ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView);
-							scrollView.smoothScrollTo(0, 0);
-						}
-						
-					});
-					
-					
+					topAnimation(CardName);
 					mPopupWindow.dismiss();
 				}
 			});
@@ -467,6 +438,51 @@ public class FragmentHome extends Fragment {
 		}
 	};
 
+	
+	/**
+	 * 置顶动画
+	 */
+	public void topAnimation(final String cardName){
+		
+		ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView);
+		Fragment fragment = fragmentManager.findFragmentByTag(cardName);
+		View view = fragment.getView();
+		fragmentHelper = new FragmentHelper(handler, scrollView, ll_cards);
+				
+		fragmentHelper.top(view)	;
+//		final Animation animation=new TranslateAnimation(0,0,0,-1000);
+//		animation.setDuration(3000);
+//		new Handler().post(new Runnable(){
+//			@Override
+//			public void run() {
+//				Fragment fragment = fragmentManager.findFragmentByTag(cardName);
+//				fragment.getView().startAnimation(animation);
+//				ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView);
+//				scrollView.smoothScrollTo(0, 0);
+//			}
+//		});
+		
+		handler.postDelayed(new Runnable(){
+
+			@Override
+			public void run() {
+				getCards();
+			}
+			
+		}, FragmentHelper.duration);
+		//getCards();
+//		System.gc();
+//		new Handler().post(new Runnable(){
+//
+//			@Override
+//			public void run() {
+//				ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView);
+//				scrollView.smoothScrollTo(0, 0);
+//			}
+//			
+//		});
+		
+	}
 	/** 删除卡片后保存最新的数据在本地 **/
 	private void setCardsInSharedPreferences() {
 		Iterator<String> keys = cards.keySet().iterator();

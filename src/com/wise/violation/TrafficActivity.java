@@ -236,14 +236,14 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 				trafficViews.get(msg.arg1).setTrafficDatas(jsonTrafficData(msg.obj.toString()));
 				int id = carDatas.get(index_car).getObj_id();
 				fileVoilation.putVoilation(id, msg.obj.toString());
-				Log.i("TrafficActivity", "native json save"+msg.obj.toString());
+				Log.i("TrafficActivity", "frist_traffic native json save"+msg.obj.toString());
 				break;
 			case refresh_traffic:
 				trafficViews.get(msg.arg1).getxListView().runFast(msg.arg1);
 				trafficViews.get(msg.arg1).setTrafficDatas(jsonTrafficData(msg.obj.toString()));
 				id = carDatas.get(index_car).getObj_id();
 				fileVoilation.putVoilation(id, msg.obj.toString());
-				Log.i("TrafficActivity", "native json save"+msg.obj.toString());
+				Log.i("TrafficActivity", "refresh_traffic native json save"+msg.obj.toString());
 				break;
 			case update_city:
 				GetSystem.myLog(TAG, msg.obj.toString());
@@ -559,7 +559,6 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 					intent.putExtra("index", position);
 					intent.putExtra("Location", trafficData.getLocation());
 					intent.putExtra("total_vio", trafficData.getVio_total());
-					intent.putExtra("total_complain", trafficData.getTotal_complain());
 					startActivityForResult(intent, 1);
 				}
 			});
@@ -1061,13 +1060,16 @@ public class TrafficActivity extends Activity implements IXListViewListener {
 		try {
 			int id = carDatas.get(index_car).getObj_id();
 			String url = Constant.BaseUrl + "vehicle/" + id + "/violation?auth_code=" + app.auth_code;
+			Log.i("TrafficActivity", "getFristTraffic url "+url);
+			
 			String json = fileVoilation.getVoilation(id);
+			
+			Log.i("TrafficActivity", "getJson json " + json);
 			if(json!= null && !json.equals("")){
 				trafficViews.get(index_car).getLl_wait().runFast();
 				trafficViews.get(index_car).setTrafficDatas(jsonTrafficData(json));
 			}
 			new NetThread.GetDataThread(handler, url, frist_traffic, index_car).start();
-			
 			
 		} catch (Exception e) {
 			e.printStackTrace();

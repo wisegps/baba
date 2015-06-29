@@ -53,9 +53,6 @@ public class DragListView extends ListView {
 	 */
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		
-		
-		
 		// 按下
 		if (ev.getAction() == MotionEvent.ACTION_DOWN) {
 			int x = (int) ev.getX();// 获取相对与ListView的x坐标

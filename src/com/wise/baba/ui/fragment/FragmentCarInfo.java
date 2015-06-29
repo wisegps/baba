@@ -721,6 +721,7 @@ public class FragmentCarInfo extends Fragment {
 							+ endMonth + "&city="
 							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
 							+ Gas_no;
+					System.out.println("从服务器获取体检信息 url0 " + url);
 					new NetThread.GetDataThread(handler, url, getData, index)
 							.start();
 					// 获取gps信息
