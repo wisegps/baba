@@ -3,11 +3,11 @@ package com.wise.baba.ui.fragment;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.json.JSONObject;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -23,8 +23,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -447,7 +445,7 @@ public class FragmentHome extends Fragment {
 		ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView);
 		Fragment fragment = fragmentManager.findFragmentByTag(cardName);
 		View view = fragment.getView();
-		fragmentHelper = new FragmentHelper(handler, scrollView, ll_cards);
+		fragmentHelper = new FragmentHelper(handler,scrollView, ll_cards);
 				
 		fragmentHelper.top(view)	;
 //		final Animation animation=new TranslateAnimation(0,0,0,-1000);
@@ -462,14 +460,38 @@ public class FragmentHome extends Fragment {
 //			}
 //		});
 		
-		handler.postDelayed(new Runnable(){
+		new Handler().postDelayed(new Runnable(){
 
 			@Override
 			public void run() {
+				fragmentHelper = null;
+				System.gc();
+				Log.i("FragmentHelper", "getCards");
 				getCards();
 			}
 			
-		}, FragmentHelper.duration);
+		}, (long) (FragmentHelper.duration));
+		
+//		   Timer timer = new Timer();
+//		    TimerTask task = new TimerTask() {
+//
+//		        @Override
+//		        public void run() {
+//		            // 需要做的事:发送消息
+//		        	handler.post(new Runnable(){
+//
+//						@Override
+//						public void run() {
+//							getCards();
+//							
+//						}
+//		        		
+//		        	});
+//		        	
+//		        }
+//		    };
+//		    
+//		    timer.schedule(task, 0,(long) (FragmentHelper.duration*0.8)); // 1s后执行task,经过1s再次执行
 		//getCards();
 //		System.gc();
 //		new Handler().post(new Runnable(){

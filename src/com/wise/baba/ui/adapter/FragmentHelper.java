@@ -15,10 +15,10 @@ public class FragmentHelper {
 	int i = 0;
 	int height = 0;
 	int scrollY = 0;
-	public static int duration = 8000;
+	public static int duration = 2000;
 	int durScroll = 0;
 	
-	int scrollSpeed = 7;
+	int scrollSpeed = 30;
 	
 	int currentY = 0;
 	private View currentView;
