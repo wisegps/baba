@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -55,7 +56,9 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.MyLocationConfiguration.LocationMode;
+import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.Polyline;
 import com.baidu.mapapi.map.PolylineOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.UiSettings;
@@ -94,6 +97,9 @@ public class CarLocationActivity extends Activity {
 	int index;
 	// 当前位置
 	double latitude, longitude;
+	
+	
+	private static final double minDistance = 50;//路径规划  距离小于50米，划线
 	// 定位相关
 	LocationClient mLocClient;
 	public MyLocationListenner myListener = new MyLocationListenner();
@@ -102,6 +108,9 @@ public class CarLocationActivity extends Activity {
 	/** 获取gps信息 **/
 	private static final int get_gps = 1;
 	private static final int set_vibrate = 2;
+	
+	
+	
 
 	AppApplication app;
 
@@ -135,6 +144,10 @@ public class CarLocationActivity extends Activity {
 	private WalkingRoutePlanOption walkOption = null;
 
 	private DrivingRoutePlanOption driveOption = null;
+	
+	private PolylineOptions polyOptions = null;
+	
+	private Overlay planLineMarker = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -184,10 +197,12 @@ public class CarLocationActivity extends Activity {
 		mLocClient = new LocationClient(getApplicationContext());
 		mLocClient.registerLocationListener(myListener);
 		LocationClientOption option = new LocationClientOption();
+		option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+		option.setNeedDeviceDirect(true);
 		option.setOpenGps(true);// 打开gps
 		option.setIsNeedAddress(true);
 		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(30000);
+		option.setScanSpan(1000);
 		mLocClient.setLocOption(option);
 		mLocClient.start();
 		getCarLocation();
@@ -262,9 +277,9 @@ public class CarLocationActivity extends Activity {
 
 	public void setMyLocation() {
 
-		if (driveOption == null && walkOption == null) {
-			return;
-		}
+//		if (driveOption == null && walkOption == null) {
+//			return;
+//		}
 
 		// 构造定位数据
 		MyLocationData locData = new MyLocationData.Builder()
@@ -292,7 +307,6 @@ public class CarLocationActivity extends Activity {
 			Log.i("CarLocationActivity", "go...");
 
 			new Handler().postDelayed(new Runnable() {
-
 				@Override
 				public void run() {
 					searchAddress.setText(re_name);
@@ -523,14 +537,11 @@ public class CarLocationActivity extends Activity {
 			case R.id.iv_traffic:
 				if (isTraffic) {
 					isTraffic = false;
-					iv_traffic
-							.setImageResource(R.drawable.main_icon_roadcondition_off);
-					Toast.makeText(CarLocationActivity.this, "实时路况已关闭",
-							Toast.LENGTH_SHORT).show();
+					iv_traffic.setImageResource(R.drawable.main_icon_roadcondition_off);
+					Toast.makeText(CarLocationActivity.this, "实时路况已关闭",Toast.LENGTH_SHORT).show();
 				} else {
 					isTraffic = true;
-					iv_traffic
-							.setImageResource(R.drawable.main_icon_roadcondition_on);
+					iv_traffic.setImageResource(R.drawable.main_icon_roadcondition_on);
 					Toast.makeText(CarLocationActivity.this, "实时路况已打开",
 							Toast.LENGTH_SHORT).show();
 				}
@@ -562,13 +573,13 @@ public class CarLocationActivity extends Activity {
 								Toast.LENGTH_SHORT).show();
 					} else {
 						iv_tracking.setImageResource(R.drawable.car_track);
-						Toast.makeText(CarLocationActivity.this, "取消跟踪",
-								Toast.LENGTH_SHORT).show();
+						Toast.makeText(CarLocationActivity.this, "取消跟踪",Toast.LENGTH_SHORT).show();
 					}
 					if (!isTracking) {
 						mBaiduMap.clear();
 						getCarLocation();
-						drawPhoneLocation(latitude, longitude);
+						setMyLocation();
+						//drawPhoneLocation(latitude, longitude);
 					}
 				} else {
 					showHotDialog();
@@ -598,8 +609,7 @@ public class CarLocationActivity extends Activity {
 	}
 
 	private void setMapLayers() {
-		iv_satellite
-				.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
+		iv_satellite.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
 		iv_plain.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
 		iv_3d.setBackgroundResource(R.drawable.bd_wallet_blue_color_bg_selector);
 	}
@@ -630,11 +640,19 @@ public class CarLocationActivity extends Activity {
 	// driving,walking
 	private void showDrivingOrWalking(LatLng startLatLng,
 			final LatLng stopLatLng) {
-		Log.i("CarLocationActivity", "startLatLng" + startLatLng.longitude
-				+ " " + startLatLng.latitude);
-		Log.i("CarLocationActivity", "stopLatLng" + stopLatLng.longitude + " "
-				+ stopLatLng.latitude);
-
+//		Log.i("CarLocationActivity", "startLatLng" + startLatLng.longitude
+//				+ " " + startLatLng.latitude);
+//		Log.i("CarLocationActivity", "stopLatLng" + stopLatLng.longitude + " "
+//				+ stopLatLng.latitude);
+		DistanceUtil distanceUtil  = new DistanceUtil();
+		double mi = distanceUtil.getDistance(startLatLng, stopLatLng);
+		
+		if(mi<minDistance){
+			drawPlan(startLatLng,stopLatLng);
+			return;
+		}
+		Log.i("CarLocationActivity", "mi" +mi);
+		
 		final PlanNode stNode = PlanNode.withLocation(startLatLng);
 		final PlanNode edNode = PlanNode.withLocation(stopLatLng);
 		AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -665,6 +683,24 @@ public class CarLocationActivity extends Activity {
 					}
 				});
 		builder.create().show();
+	}
+	
+	
+	public void drawPlan(LatLng startLatLng,LatLng stopLatLng){
+		if(planLineMarker !=null){
+			planLineMarker.remove();
+		}
+		startLatLng = new LatLng(latitude, longitude);
+		PolylineOptions polyOptions = new PolylineOptions();
+		polyOptions.color(Color.RED);
+		polyOptions.width(4);
+		polyOptions.dottedLine(true);
+		List list = new ArrayList();
+		list.add(startLatLng);
+		list.add(stopLatLng);
+		polyOptions.points(list);
+		planLineMarker = mBaiduMap.addOverlay(polyOptions);
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(20));
 	}
 
 	public void toSearchPOI() {
@@ -1193,9 +1229,12 @@ public class CarLocationActivity extends Activity {
 			app.Lat = latitude;
 			app.Lon = longitude;
 			mCurrentAccracy = location.getRadius();
+			
+			
+			//Log.i("CarLocationActivity", "定位定位"+latitude+ " "+longitude);
 			setMyLocation();
 
-			drawPhoneLocation(latitude, longitude);
+			//drawPhoneLocation(latitude, longitude);
 			if (isFirstLoc) {
 				isFirstLoc = false;
 				myLatLng = new LatLng(location.getLatitude(),
@@ -1219,7 +1258,7 @@ public class CarLocationActivity extends Activity {
 
 	Marker phoneMark;
 
-	/** 在地图上标记当前位置 **/
+	/** 在地图上标记当前位置
 	private void drawPhoneLocation(double latitude, double longitude) {
 		// 如果有当前位置，则先删除
 		if (phoneMark != null) {
@@ -1235,7 +1274,7 @@ public class CarLocationActivity extends Activity {
 		// 在地图上添加Marker，并显示
 		phoneMark = (Marker) (mBaiduMap.addOverlay(option));
 	}
-
+ **/
 	/** 画出2点之间的驾车轨迹 **/
 	private void setTransitRoute(LatLng startLatLng, LatLng stopLatLng) {
 		if (startLatLng == null || stopLatLng == null) {
