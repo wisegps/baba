@@ -638,19 +638,15 @@ public class CarLocationActivity extends Activity {
 	}
 
 	// driving,walking
-	private void showDrivingOrWalking(LatLng startLatLng,
+	private void showDrivingOrWalking(final LatLng startLatLng,
 			final LatLng stopLatLng) {
 //		Log.i("CarLocationActivity", "startLatLng" + startLatLng.longitude
 //				+ " " + startLatLng.latitude);
 //		Log.i("CarLocationActivity", "stopLatLng" + stopLatLng.longitude + " "
 //				+ stopLatLng.latitude);
 		DistanceUtil distanceUtil  = new DistanceUtil();
-		double mi = distanceUtil.getDistance(startLatLng, stopLatLng);
+		final double mi = distanceUtil.getDistance(startLatLng, stopLatLng);
 		
-		if(mi<minDistance){
-			drawPlan(startLatLng,stopLatLng);
-			return;
-		}
 		Log.i("CarLocationActivity", "mi" +mi);
 		
 		final PlanNode stNode = PlanNode.withLocation(startLatLng);
@@ -664,9 +660,17 @@ public class CarLocationActivity extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						Toast.makeText(CarLocationActivity.this, "驾车规划中...",
 								Toast.LENGTH_SHORT).show();
-						driveOption = new DrivingRoutePlanOption().from(stNode)
-								.to(edNode);
-						mSearch.drivingSearch(driveOption);
+						
+
+						if(mi<minDistance){
+							drawPlan(startLatLng,stopLatLng);
+							
+						}else{
+							driveOption = new DrivingRoutePlanOption().from(stNode)
+									.to(edNode);
+							mSearch.drivingSearch(driveOption);
+						}
+						
 						setMyLocation();
 					}
 				});
@@ -676,9 +680,17 @@ public class CarLocationActivity extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						Toast.makeText(CarLocationActivity.this, "步行规划中...",
 								Toast.LENGTH_SHORT).show();
-						walkOption = new WalkingRoutePlanOption().from(stNode)
-								.to(edNode);
-						mSearch.walkingSearch(walkOption);
+
+						if(mi<minDistance){
+							drawPlan(startLatLng,stopLatLng);
+							
+						}else{
+							walkOption = new WalkingRoutePlanOption().from(stNode)
+									.to(edNode);
+							mSearch.walkingSearch(walkOption);
+						}
+						
+						
 						setMyLocation();
 					}
 				});
@@ -692,7 +704,7 @@ public class CarLocationActivity extends Activity {
 		}
 		startLatLng = new LatLng(latitude, longitude);
 		PolylineOptions polyOptions = new PolylineOptions();
-		polyOptions.color(Color.RED);
+		polyOptions.color(Color.BLUE);
 		polyOptions.width(4);
 		polyOptions.dottedLine(true);
 		List list = new ArrayList();
