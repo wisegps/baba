@@ -82,5 +82,4 @@
             android:layout_margin="5dp"
             android:src="@drawable/img_circle_dot_blue_light" />
     </LinearLayout>
-
 </LinearLayout>

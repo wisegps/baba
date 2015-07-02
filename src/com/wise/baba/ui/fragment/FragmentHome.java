@@ -8,6 +8,7 @@ import java.util.TimerTask;
 
 import org.json.JSONObject;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -23,6 +24,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,6 +46,7 @@ import com.wise.baba.entity.Info;
 import com.wise.baba.net.NetThread;
 import com.wise.baba.ui.adapter.FragmentHelper;
 import com.wise.baba.ui.adapter.OnCardMenuListener;
+import com.wise.baba.util.DensityUtil;
 import com.wise.car.CarLocationActivity;
 import com.wise.setting.LoginActivity;
 import com.wise.show.ShowActivity;
@@ -442,73 +447,42 @@ public class FragmentHome extends Fragment {
 	 */
 	public void topAnimation(final String cardName){
 		
-		ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView);
 		Fragment fragment = fragmentManager.findFragmentByTag(cardName);
 		View view = fragment.getView();
-		fragmentHelper = new FragmentHelper(handler,scrollView, ll_cards);
-				
-		fragmentHelper.top(view)	;
-//		final Animation animation=new TranslateAnimation(0,0,0,-1000);
-//		animation.setDuration(3000);
-//		new Handler().post(new Runnable(){
-//			@Override
-//			public void run() {
-//				Fragment fragment = fragmentManager.findFragmentByTag(cardName);
-//				fragment.getView().startAnimation(animation);
-//				ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView);
-//				scrollView.smoothScrollTo(0, 0);
-//			}
-//		});
+		float y = view.getY();
+		int height = view.getHeight();
 		
-		new Handler().postDelayed(new Runnable(){
-
-			@Override
-			public void run() {
-				fragmentHelper = null;
-				System.gc();
-				Log.i("FragmentHelper", "getCards");
-				getCards();
+		Log.i("top", "当前卡片的顶部坐标:"+y);
+		
+		Log.i("top", "当前卡片高度:"+height);
+		
+		Iterator it = cards.keySet().iterator();
+		
+		float margin =  DensityUtil.dip2px(this.getActivity(), 10);
+		float base =  DensityUtil.dip2px(this.getActivity(), 10);
+		
+		while(it.hasNext()){
+			String key = (String) it.next();
+			Fragment fg = fragmentManager.findFragmentByTag(key);
+			View otherView = fg.getView();
+			float otherY = otherView.getY();
+			if (otherY < y) {
+				ObjectAnimator otherAnimator = ObjectAnimator.ofFloat(
+						otherView, "y", otherY, otherY + height+margin);
+				otherAnimator.setDuration(1000);
+				otherAnimator.start();
 			}
-			
-		}, (long) (FragmentHelper.duration));
-		
-//		   Timer timer = new Timer();
-//		    TimerTask task = new TimerTask() {
-//
-//		        @Override
-//		        public void run() {
-//		            // 需要做的事:发送消息
-//		        	handler.post(new Runnable(){
-//
-//						@Override
-//						public void run() {
-//							getCards();
-//							
-//						}
-//		        		
-//		        	});
-//		        	
-//		        }
-//		    };
-//		    
-//		    timer.schedule(task, 0,(long) (FragmentHelper.duration*0.8)); // 1s后执行task,经过1s再次执行
-		//getCards();
-//		System.gc();
-//		new Handler().post(new Runnable(){
-//
-//			@Override
-//			public void run() {
-//				ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView);
-//				scrollView.smoothScrollTo(0, 0);
-//			}
-//			
-//		});
+		}
+		ObjectAnimator bbjectAnimator = ObjectAnimator.ofFloat(view, "y", y, base);
+
+		bbjectAnimator.setDuration(1000);
+
+		bbjectAnimator.start();
 		
 	}
 	/** 删除卡片后保存最新的数据在本地 **/
 	private void setCardsInSharedPreferences() {
-		Iterator<String> keys = cards.keySet().iterator();
-		String cardNames[] = cards.keySet().toArray(new String[0]);
+		String cardNames[] = cardsSharePreferences.get();
 		for (int i = 0; i < cardNames.length; i++) {
 			Log.i("fragment", "保存 " + i + " " + cardNames[i]);
 		}
@@ -517,8 +491,7 @@ public class FragmentHome extends Fragment {
 	
 	/**置顶后保存最新的数据在本地 **/
 	private void setCardsInSharedPreferences(String topCardName) {
-		Iterator<String> keys = cards.keySet().iterator();
-		String cardNames[] = cards.keySet().toArray(new String[0]);
+		String cardNames[] = cardsSharePreferences.get();
 		cardsSharePreferences.clear();
 		cardsSharePreferences.put(topCardName);
 		for (int i = 0; i < cardNames.length; i++) {
@@ -530,5 +503,9 @@ public class FragmentHome extends Fragment {
 		}
 		
 	}
+	
+	
+	
+	
 
 }

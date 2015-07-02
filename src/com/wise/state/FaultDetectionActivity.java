@@ -622,6 +622,7 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 				Log.i("FaultDetectionActivity", "获取体检数据");
 				String healthUrl = GetUrl.getHealthData(Device_id,
 						app.auth_code, carDatas.get(index).getCar_brand());
+				Log.i("FaultDetectionActivity", "healthUrl "+healthUrl);
 				String healthResult = GetDataFromUrl.getData(healthUrl);
 				
 				Message msgGetData = new Message();
