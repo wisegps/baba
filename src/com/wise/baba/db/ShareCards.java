@@ -73,6 +73,13 @@ public class ShareCards {
 	
 	/**
 	 * 
+	 * @param 删除
+	 */
+	public void delete(String cardNames) {
+	}
+	
+	/**
+	 * 
 	 * @param 清空
 	 */
 	public void clear(){

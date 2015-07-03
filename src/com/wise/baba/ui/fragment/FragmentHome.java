@@ -72,7 +72,7 @@ public class FragmentHome extends Fragment {
 	private boolean isLoaded = false;
 
 	FragmentHelper fragmentHelper = null;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -114,8 +114,7 @@ public class FragmentHome extends Fragment {
 			startActivity(intent);
 		}
 		getCards();
-		
-		
+
 	}
 
 	FragmentTransaction transaction;
@@ -162,7 +161,7 @@ public class FragmentHome extends Fragment {
 				transaction.add(R.id.ll_cards, fragmenSpeed, Const.TAG_SPEED);
 				transaction.commit();
 				cards.put(Const.TAG_SPEED, fragmenSpeed);
-			}else if (cardName.equals(Const.TAG_NEWS)) {
+			} else if (cardName.equals(Const.TAG_NEWS)) {
 				Log.i("fragment", "设置新闻卡片布局2");
 				removeFragment(Const.TAG_NEWS);
 				transaction = fragmentManager.beginTransaction();
@@ -198,10 +197,11 @@ public class FragmentHome extends Fragment {
 				transaction = fragmentManager.beginTransaction();
 				FragmentHomeNavigation fragmenNavigation = new FragmentHomeNavigation();
 				fragmenNavigation.setOnCardMenuListener(onCardMenuListener);
-				transaction.add(R.id.ll_cards, fragmenNavigation, Const.TAG_NAV);
+				transaction
+						.add(R.id.ll_cards, fragmenNavigation, Const.TAG_NAV);
 				transaction.commit();
 				cards.put(Const.TAG_NAV, fragmenNavigation);
-			} 
+			}
 		}
 	}
 
@@ -214,7 +214,7 @@ public class FragmentHome extends Fragment {
 				break;
 			case R.id.ll_adress:
 				goCarMap(true);
-				break; 
+				break;
 			}
 		}
 	};
@@ -232,7 +232,7 @@ public class FragmentHome extends Fragment {
 	};
 
 	/**
-	 *  跳转到地图界面
+	 * 跳转到地图界面
 	 */
 	private void goCarMap(boolean b) {
 		int index = 0;
@@ -401,7 +401,7 @@ public class FragmentHome extends Fragment {
 				@Override
 				public void onClick(View v) {
 					Log.i("fragment", "置顶 " + CardName);
-					
+
 					setCardsInSharedPreferences(CardName);
 					topAnimation(CardName);
 					mPopupWindow.dismiss();
@@ -414,10 +414,15 @@ public class FragmentHome extends Fragment {
 				@Override
 				public void onClick(View v) {
 					Log.i("fragment", "delete card name " + CardName);
-					removeFragment(CardName);
-					cards.remove(CardName);
-					setCardsInSharedPreferences();
-					mPopupWindow.dismiss();
+					new Handler().post(new Runnable() {
+						@Override
+						public void run() {
+							cards.remove(CardName);
+							removeFragment(CardName);
+							deleteCardsInSharedPreferences(CardName);
+							mPopupWindow.dismiss();
+						}
+					});
 
 				}
 			});
@@ -441,61 +446,52 @@ public class FragmentHome extends Fragment {
 		}
 	};
 
-	
 	/**
 	 * 置顶动画
 	 */
-	public void topAnimation(final String cardName){
-		
+	public void topAnimation(final String cardName) {
+
 		Fragment fragment = fragmentManager.findFragmentByTag(cardName);
 		View view = fragment.getView();
 		float y = view.getY();
 		int height = view.getHeight();
-		
-		Log.i("top", "当前卡片的顶部坐标:"+y);
-		
-		Log.i("top", "当前卡片高度:"+height);
-		
+
+		Log.i("top", "当前卡片的顶部坐标:" + y);
+
+		Log.i("top", "当前卡片高度:" + height);
+
 		Iterator it = cards.keySet().iterator();
-		
-		float margin =  DensityUtil.dip2px(this.getActivity(), 10);
-		float base =  DensityUtil.dip2px(this.getActivity(), 10);
-		
-		while(it.hasNext()){
+
+		float margin = DensityUtil.dip2px(this.getActivity(), 10);
+		float base = DensityUtil.dip2px(this.getActivity(), 10);
+
+		while (it.hasNext()) {
 			String key = (String) it.next();
 			Fragment fg = fragmentManager.findFragmentByTag(key);
 			View otherView = fg.getView();
 			float otherY = otherView.getY();
 			if (otherY < y) {
 				ObjectAnimator otherAnimator = ObjectAnimator.ofFloat(
-						otherView, "y", otherY, otherY + height+margin);
+						otherView, "y", otherY, otherY + height + margin);
 				otherAnimator.setDuration(1000);
 				otherAnimator.start();
 			}
 		}
-		ObjectAnimator bbjectAnimator = ObjectAnimator.ofFloat(view, "y", y, base);
+		ObjectAnimator bbjectAnimator = ObjectAnimator.ofFloat(view, "y", y,
+				base);
 
 		bbjectAnimator.setDuration(1000);
 
 		bbjectAnimator.start();
-		
+
 	}
+
 	/** 删除卡片后保存最新的数据在本地 **/
-	private void setCardsInSharedPreferences() {
-		String cardNames[] = cardsSharePreferences.get();
-		for (int i = 0; i < cardNames.length; i++) {
-			Log.i("fragment", "保存 " + i + " " + cardNames[i]);
-		}
-		cardsSharePreferences.put(cardNames);
-	}
-	
-	/**置顶后保存最新的数据在本地 **/
-	private void setCardsInSharedPreferences(String topCardName) {
+	private void deleteCardsInSharedPreferences(String cardName) {
 		String cardNames[] = cardsSharePreferences.get();
 		cardsSharePreferences.clear();
-		cardsSharePreferences.put(topCardName);
 		for (int i = 0; i < cardNames.length; i++) {
-			if(!cardNames[i].equals(topCardName)){
+			if(!cardNames[i].equals(cardName)){
 				cardsSharePreferences.put(cardNames[i]);
 				Log.i("fragment", "保存 " + i + " " + cardNames[i]);
 			}
@@ -503,9 +499,20 @@ public class FragmentHome extends Fragment {
 		}
 		
 	}
-	
-	
-	
-	
+
+	/** 置顶后保存最新的数据在本地 **/
+	private void setCardsInSharedPreferences(String topCardName) {
+		String cardNames[] = cardsSharePreferences.get();
+		cardsSharePreferences.clear();
+		cardsSharePreferences.put(topCardName);
+		for (int i = 0; i < cardNames.length; i++) {
+			if (!cardNames[i].equals(topCardName)) {
+				cardsSharePreferences.put(cardNames[i]);
+				Log.i("fragment", "保存 " + i + " " + cardNames[i]);
+			}
+
+		}
+
+	}
 
 }
