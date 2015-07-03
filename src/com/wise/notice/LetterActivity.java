@@ -1480,6 +1480,11 @@ public class LetterActivity extends Activity implements IXListViewListener {
 		letterData.setSendIn(true);
 		letterData.setLat(lat);
 		letterData.setLon(lon);
+
+		Log.i("LetterActivity", lat+"");
+		
+		Log.i("LetterActivity", lon+"");
+		
 		letterData.setAdress(address);
 		letterDatas.add(letterData);
 		letterAdapter.notifyDataSetChanged();

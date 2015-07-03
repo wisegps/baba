@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -74,8 +76,8 @@ public class LetterSendMapActivity extends Activity {
 		tv_send.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_search_map);
 		mBaiduMap = mMapView.getMap();
-		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
 		mBaiduMap.setOnMapStatusChangeListener(onMapStatusChangeListener);
+		mBaiduMap.setMapStatus(MapStatusUpdateFactory.zoomTo(16));
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
 		tv_adress = (TextView) findViewById(R.id.tv_adress);
@@ -98,7 +100,7 @@ public class LetterSendMapActivity extends Activity {
 		LocationClientOption option = new LocationClientOption();
 		option.setOpenGps(true);// 打开gps
 		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(30000);
+		option.setScanSpan(5000);
 		mLocClient.setLocOption(option);
 		mLocClient.start();
 	}
@@ -108,7 +110,13 @@ public class LetterSendMapActivity extends Activity {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.tv_send:
+				if(latitude == 0 && longitude == 0){
+					Toast.makeText(LetterSendMapActivity.this, "定位失败，请重试", Toast.LENGTH_SHORT).show();
+					return;
+				}
 				send();
+				
+				
 				break;
 			}
 		}
@@ -134,6 +142,8 @@ public class LetterSendMapActivity extends Activity {
 										out.flush();
 										out.close();
 									}
+									
+									
 									Intent intent = new Intent();
 									intent.putExtra("adress", adress);
 									intent.putExtra("latitude", latitude);
@@ -181,6 +191,11 @@ public class LetterSendMapActivity extends Activity {
 			phoneMark = (Marker) (mBaiduMap.addOverlay(option));
 			if (isFirstLoc) {
 				isFirstLoc = false;
+				if(latitude == 0 && longitude == 0){
+					latitude =location.getLatitude();
+					longitude =location.getLongitude();
+				}
+				
 				MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
 				mBaiduMap.setMapStatus(mapStatusUpdate);
 				mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(new LatLng(location.getLatitude(), location.getLongitude())));
@@ -192,7 +207,7 @@ public class LetterSendMapActivity extends Activity {
 	OnMapStatusChangeListener onMapStatusChangeListener = new OnMapStatusChangeListener() {
 		@Override
 		public void onMapStatusChangeStart(MapStatus arg0) {
-			System.out.println("onMapStatusChangeStart");
+			Log.i("LetterSendMapActivity", "onMapStatusChangeStart");
 			if (mark != null) {
 				mark.remove();
 			}
@@ -201,9 +216,15 @@ public class LetterSendMapActivity extends Activity {
 		@Override
 		public void onMapStatusChangeFinish(MapStatus arg0) {
 			// 移动完毕，获取地图中心位置
+			
+			
+			Log.i("LetterSendMapActivity", "移动完毕，获取地图中心位置");
+			
 			mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(arg0.target));
 			latitude = arg0.target.latitude;
 			longitude = arg0.target.longitude;
+			
+			Log.i("LetterSendMapActivity", "移动完毕，获取地图中心位置"+latitude);
 		}
 
 		@Override

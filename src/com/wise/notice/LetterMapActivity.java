@@ -3,6 +3,7 @@ package com.wise.notice;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,6 +59,10 @@ public class LetterMapActivity extends Activity {
 		double latitude = intent.getDoubleExtra("latitude", 0);
 		double longitude = intent.getDoubleExtra("longitude", 0);
 
+		Log.i("LetterMapActivity", latitude+"");
+		
+		Log.i("LetterMapActivity", longitude+"");
+		
 		TextView tv_send = (TextView) findViewById(R.id.tv_send);
 		tv_send.setOnClickListener(onClickListener);
 		mMapView = (MapView) findViewById(R.id.mv_search_map);
@@ -80,6 +85,11 @@ public class LetterMapActivity extends Activity {
 				R.layout.item_map_popup, null);
 		TextView tv_adress = (TextView) view.findViewById(R.id.tv_adress);
 		tv_adress.setText(adress);
+		
+		TextView tv_travel = (TextView) view.findViewById(R.id.tv_travel);
+		tv_travel.setText("");
+		
+		
 		LinearLayout ll_adress = (LinearLayout) view
 				.findViewById(R.id.ll_adress);
 		ll_adress.setOnClickListener(onClickListener);
