@@ -35,7 +35,9 @@
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+         >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -579,4 +581,62 @@
         </LinearLayout>
     </ScrollView>
 
+    
+    
+    
+     <LinearLayout
+        android:id="@+id/llytBottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btnUnbind"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_yellow"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margins"
+            android:paddingTop="@dimen/margins"
+            android:text="解除绑定"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="fill_parent"
+            android:background="@color/white" />
+
+        <Button
+            android:id="@+id/btnUpdate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_yellow"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margins"
+            android:paddingTop="@dimen/margins"
+            android:text="修改终端"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="fill_parent"
+            android:background="@color/white" />
+
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_yellow"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margins"
+            android:paddingTop="@dimen/margins"
+            android:text="删除车辆"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title" />
+    </LinearLayout>
 </LinearLayout>

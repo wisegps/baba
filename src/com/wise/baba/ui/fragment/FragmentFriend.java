@@ -403,11 +403,14 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 		List<FriendData> friendList = friendDataDao.loadAll();
 		if (friendList == null || friendList.size() == 0) {
 			friendList = new ArrayList<FriendData>();
+		}else{
+			Collections.sort(friendList, comparator);
 		}
-		Collections.sort(friendList, comparator);
+		
 		String Letter = "";
 		for (int i = 0; i < friendList.size(); i++) {
 			String name = friendList.get(i).getFriend_name();
+			Log.i("FragmentFriend", "name"+name);
 			String firstLetter = GetFristLetter(name);
 			if (!Letter.equals(firstLetter)) {
 				// 增加分组标题

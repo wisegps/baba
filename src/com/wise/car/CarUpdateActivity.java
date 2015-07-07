@@ -24,6 +24,8 @@ import com.wise.baba.ui.adapter.OpenDateDialogListener;
 import com.wise.state.ManageActivity;
 import com.wise.violation.ShortProvincesActivity;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -36,6 +38,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -58,6 +61,8 @@ public class CarUpdateActivity extends Activity {
 	private final int update = 4;
 	private final int get_traffic = 5;
 	private static final int getFuelPrice = 6;
+	
+	private static final int delete_car = 7;
 
 	LinearLayout ll_engine, ll_frame;
 	EditText et_nick_name, et_obj_name, et_engine_no, et_frame_no,
@@ -66,7 +71,7 @@ public class CarUpdateActivity extends Activity {
 	TextView tv_models, tv_gas_no, tv_city, tv_insurance_company,
 			tv_insurance_date, tv_maintain_company, tv_buy_date, tv_year_check;
 	int index = 0;
-	/**true服务商跳转，false用户自己跳转**/
+	/** true服务商跳转，false用户自己跳转 **/
 	boolean isService = false;
 	CarData carData;
 	CarData carNewData = new CarData();
@@ -89,9 +94,9 @@ public class CarUpdateActivity extends Activity {
 		app = (AppApplication) getApplication();
 		index = getIntent().getIntExtra("index", 0);
 		isService = getIntent().getBooleanExtra("isService", false);
-		if(isService){
+		if (isService) {
 			carData = ManageActivity.carDatas.get(index);
-		}else{
+		} else {
 			carData = app.carDatas.get(index);
 		}
 		carNewData = carData;
@@ -162,10 +167,39 @@ public class CarUpdateActivity extends Activity {
 			case R.id.image_help_2:
 				helpPopView();
 				break;
+			case R.id.btnUnbind:
+				break;
+			case R.id.btnUpdate:
+				break;
+			case R.id.btnDelete:
+				if (app.isTest) {
+					Toast.makeText(CarUpdateActivity.this, "演示账号不支持该功能",
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+				deleteCar();
+				break;
 			}
+
 		}
 	};
 
+	
+	/**删除车辆确认**/
+	private void deleteCar() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(CarUpdateActivity.this);
+		builder.setTitle("提示");
+		builder.setMessage("确定删除该车辆？");
+		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String url = Constant.BaseUrl + "vehicle/" + carNewData.getObj_id() + "?auth_code=" + app.auth_code;
+				new Thread(new NetThread.DeleteThread(handler, url, delete_car)).start();
+			}
+		}).setNegativeButton("否", null);
+		builder.setNegativeButton("取消", null);
+		builder.show();
+	}
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -180,26 +214,46 @@ public class CarUpdateActivity extends Activity {
 			case getFuelPrice:
 				jsonFuelPrice(msg.obj.toString());
 				break;
+			case delete_car:
+				jsonDelete(msg.obj.toString());
+				break;
 			}
 		}
 	};
-	/**获取油价**/
-	private void getFuelPrice(){
+	
+	private void jsonDelete(String str) {
 		try {
-			String url = Constant.BaseUrl + "base/city/" + URLEncoder.encode(app.City, "UTF-8");
+			JSONObject jsonObject = new JSONObject(str);
+			if (jsonObject.getString("status_code").equals("0")) {
+				Toast.makeText(CarUpdateActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+				app.carDatas.remove(index);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/** 获取油价 **/
+	private void getFuelPrice() {
+		try {
+			String url = Constant.BaseUrl + "base/city/"
+					+ URLEncoder.encode(app.City, "UTF-8");
 			new NetThread.GetDataThread(handler, url, getFuelPrice).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
 	String fuel90 = "0";
 	String fuel93 = "0";
 	String fuel97 = "0";
 	String fuel0 = "0";
-	/**解析油价**/
-	private void jsonFuelPrice(String result){
+
+	/** 解析油价 **/
+	private void jsonFuelPrice(String result) {
 		try {
-			JSONObject jsonObject = new JSONObject(result).getJSONObject("fuel_price");
+			JSONObject jsonObject = new JSONObject(result)
+					.getJSONObject("fuel_price");
 			fuel90 = jsonObject.getString("fuel90");
 			fuel93 = jsonObject.getString("fuel93");
 			fuel97 = jsonObject.getString("fuel97");
@@ -239,9 +293,9 @@ public class CarUpdateActivity extends Activity {
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			if (jsonObject.getInt("status_code") == 0) {
-				if(isService){
+				if (isService) {
 					ManageActivity.carDatas.set(index, carNewData);
-				}else{
+				} else {
 					app.carDatas.set(index, carNewData);
 				}
 				setResult(3);
@@ -385,8 +439,8 @@ public class CarUpdateActivity extends Activity {
 
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
 				+ "?auth_code=" + app.auth_code;
-		
-		Log.i("CarUpdateActivity", "carData.getObj_id "+ carData.getObj_id() );
+
+		Log.i("CarUpdateActivity", "carData.getObj_id " + carData.getObj_id());
 		new NetThread.putDataThread(handler, url, params, update).start();
 	}
 
@@ -443,7 +497,7 @@ public class CarUpdateActivity extends Activity {
 			et_engine_no.setText(carData.getEngine_no());
 			et_frame_no.setText(carData.getFrame_no());
 		}
-		et_oil_price.setText(""+carData.getFuel_price());
+		et_oil_price.setText("" + carData.getFuel_price());
 		tv_insurance_company.setText(carData.getInsurance_company());
 		et_insurance_tel.setText(carData.getInsurance_tel());
 		tv_insurance_date.setText(carData.getInsurance_date());
@@ -476,6 +530,8 @@ public class CarUpdateActivity extends Activity {
 	ImageButton btn_help_1, btn_help_2;
 	TextView choose_car_province;
 	LinearLayout choose_province;
+
+	Button btnUnbind, btnUpdate, btnDelete;
 
 	private void init() {
 		ll_engine = (LinearLayout) findViewById(R.id.ll_engine);
@@ -520,6 +576,21 @@ public class CarUpdateActivity extends Activity {
 		btn_help_1.setOnClickListener(onClickListener);
 		btn_help_2.setOnClickListener(onClickListener);
 
+		if (carNewData.getDevice_id() == null
+				|| carNewData.getDevice_id().equals("")
+				|| carNewData.getDevice_id().equals("0")) {
+
+			findViewById(R.id.llytBottom).setVisibility(View.GONE);
+
+			btnUnbind = (Button) findViewById(R.id.btnUnbind);
+			btnUpdate = (Button) findViewById(R.id.btnUpdate);
+			btnDelete = (Button) findViewById(R.id.btnDelete);
+
+			btnUnbind.setOnClickListener(onClickListener);
+			btnUpdate.setOnClickListener(onClickListener);
+			btnDelete.setOnClickListener(onClickListener);
+
+		}
 	}
 
 	private String jsonList(List<CityData> chooseCityDatas) {
@@ -568,7 +639,7 @@ public class CarUpdateActivity extends Activity {
 			setNote();
 		} else if (resultCode == 3) {// 汽油标号返回
 			tv_gas_no.setText(data.getStringExtra("result"));
-			//0#,90#,93#,97#
+			// 0#,90#,93#,97#
 			int position = data.getIntExtra("position", 0);
 			switch (position) {
 			case 0:
