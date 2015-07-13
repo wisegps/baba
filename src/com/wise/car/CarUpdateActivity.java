@@ -15,6 +15,8 @@ import com.umeng.analytics.MobclickAgent;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Constant;
+import com.wise.baba.app.Msg;
+import com.wise.baba.biz.CarManage;
 import com.wise.baba.entity.BaseData;
 import com.wise.baba.entity.CarData;
 import com.wise.baba.entity.CityData;
@@ -62,8 +64,7 @@ public class CarUpdateActivity extends Activity {
 	private final int get_traffic = 5;
 	private static final int getFuelPrice = 6;
 	
-	private static final int delete_car = 7;
-
+	
 	LinearLayout ll_engine, ll_frame;
 	EditText et_nick_name, et_obj_name, et_engine_no, et_frame_no,
 			et_insurance_tel, et_insurance_no, et_maintain_tel;
@@ -85,6 +86,7 @@ public class CarUpdateActivity extends Activity {
 	String car_type = "";
 	String car_type_id = "";
 	AppApplication app;
+	CarManage carManage = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +102,7 @@ public class CarUpdateActivity extends Activity {
 			carData = app.carDatas.get(index);
 		}
 		carNewData = carData;
+		carManage = new CarManage(this,app,handler);
 		init();
 		setData();
 		setTime();
@@ -177,7 +180,7 @@ public class CarUpdateActivity extends Activity {
 							Toast.LENGTH_SHORT).show();
 					return;
 				}
-				deleteCar();
+				carManage.delete(index);
 				break;
 			}
 
@@ -185,21 +188,6 @@ public class CarUpdateActivity extends Activity {
 	};
 
 	
-	/**删除车辆确认**/
-	private void deleteCar() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(CarUpdateActivity.this);
-		builder.setTitle("提示");
-		builder.setMessage("确定删除该车辆？");
-		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				String url = Constant.BaseUrl + "vehicle/" + carNewData.getObj_id() + "?auth_code=" + app.auth_code;
-				new Thread(new NetThread.DeleteThread(handler, url, delete_car)).start();
-			}
-		}).setNegativeButton("否", null);
-		builder.setNegativeButton("取消", null);
-		builder.show();
-	}
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -214,24 +202,16 @@ public class CarUpdateActivity extends Activity {
 			case getFuelPrice:
 				jsonFuelPrice(msg.obj.toString());
 				break;
-			case delete_car:
-				jsonDelete(msg.obj.toString());
+			case Msg.Delete_Car_Success:
+				app.carDatas.remove(index);
+				CarUpdateActivity.this.finish();
 				break;
+			
 			}
 		}
 	};
 	
-	private void jsonDelete(String str) {
-		try {
-			JSONObject jsonObject = new JSONObject(str);
-			if (jsonObject.getString("status_code").equals("0")) {
-				Toast.makeText(CarUpdateActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
-				app.carDatas.remove(index);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	
 
 	/** 获取油价 **/
 	private void getFuelPrice() {
@@ -576,20 +556,20 @@ public class CarUpdateActivity extends Activity {
 		btn_help_1.setOnClickListener(onClickListener);
 		btn_help_2.setOnClickListener(onClickListener);
 
+
+		btnUnbind = (Button) findViewById(R.id.btnUnbind);
+		btnUpdate = (Button) findViewById(R.id.btnUpdate);
+		btnDelete = (Button) findViewById(R.id.btnDelete);
+
+		btnUnbind.setOnClickListener(onClickListener);
+		btnUpdate.setOnClickListener(onClickListener);
+		btnDelete.setOnClickListener(onClickListener);
+		
 		if (carNewData.getDevice_id() == null
 				|| carNewData.getDevice_id().equals("")
 				|| carNewData.getDevice_id().equals("0")) {
 
 			findViewById(R.id.llytBottom).setVisibility(View.GONE);
-
-			btnUnbind = (Button) findViewById(R.id.btnUnbind);
-			btnUpdate = (Button) findViewById(R.id.btnUpdate);
-			btnDelete = (Button) findViewById(R.id.btnDelete);
-
-			btnUnbind.setOnClickListener(onClickListener);
-			btnUpdate.setOnClickListener(onClickListener);
-			btnDelete.setOnClickListener(onClickListener);
-
 		}
 	}
 

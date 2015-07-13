@@ -44,4 +44,10 @@ public class Msg {
 	 */
 	
 	public static final int GetFriendList = 10;
+	
+	/**
+	 * CarManage
+	 */
+	public static final int Delete_Car = 11;
+	public static final int Delete_Car_Success = 12;
 }

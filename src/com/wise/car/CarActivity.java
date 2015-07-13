@@ -63,7 +63,6 @@ public class CarActivity extends Activity {
 	private static final int remove_cust = 5;
 	ListView lv_cars;
 	CarAdapter carAdapter;
-
 	boolean isRefresh = false;
 	AppApplication app;
 	String sp_account;
@@ -395,11 +394,12 @@ public class CarActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		MobclickAgent.onResume(this);
+		carAdapter.notifyDataSetChanged();
 	}
 
 	@Override
 	protected void onPause() {
-		super.onPause();
+		super.onPause(); 
 		MobclickAgent.onPause(this);
 	}
 
