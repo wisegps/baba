@@ -23,12 +23,15 @@ import com.wise.baba.entity.CityData;
 import com.wise.baba.net.NetThread;
 import com.wise.baba.ui.adapter.OpenDateDialog;
 import com.wise.baba.ui.adapter.OpenDateDialogListener;
+import com.wise.setting.RegisterActivity;
 import com.wise.state.ManageActivity;
 import com.wise.violation.ShortProvincesActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -171,8 +174,10 @@ public class CarUpdateActivity extends Activity {
 				helpPopView();
 				break;
 			case R.id.btnUnbind:
+				intentToRegister();
 				break;
 			case R.id.btnUpdate:
+				
 				break;
 			case R.id.btnDelete:
 				if (app.isTest) {
@@ -187,6 +192,21 @@ public class CarUpdateActivity extends Activity {
 		}
 	};
 
+	
+	private static final int REMOVE = 5;
+	public void intentToRegister(){
+		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		String sp_account = preferences.getString(Constant.sp_account, "");
+		if (app.isTest) {
+			Toast.makeText(CarUpdateActivity.this, "演示账号不支持该功能", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		Intent intent = new Intent(CarUpdateActivity.this, RegisterActivity.class);
+		intent.putExtra("mark", 1);
+		intent.putExtra("remove", true);
+		intent.putExtra("account", sp_account);
+		startActivityForResult(intent, REMOVE);
+	}
 	
 	Handler handler = new Handler() {
 		@Override
@@ -600,6 +620,17 @@ public class CarUpdateActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		/*解除绑定*/
+		if (requestCode == REMOVE && resultCode == 6) {// 删除终端
+			carManage.unbind(index);
+			return;
+			
+		}
+		
+		
+		
+		
+		
 		if (resultCode == 1) {// 汽车型号
 			car_brand = data.getStringExtra("brank");
 			car_brand_id = data.getStringExtra("brankId");

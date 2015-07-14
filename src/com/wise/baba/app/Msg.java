@@ -50,4 +50,6 @@ public class Msg {
 	 */
 	public static final int Delete_Car = 11;
 	public static final int Delete_Car_Success = 12;
+	public static final int Unbind = 13;
+	public static final int Unbind_Clear_Data = 14;
 }
