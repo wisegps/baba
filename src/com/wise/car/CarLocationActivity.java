@@ -683,13 +683,11 @@ public class CarLocationActivity extends Activity {
 
 						if(mi<minDistance){
 							drawPlan(startLatLng,stopLatLng);
-							
 						}else{
 							walkOption = new WalkingRoutePlanOption().from(stNode)
 									.to(edNode);
 							mSearch.walkingSearch(walkOption);
 						}
-						
 						
 						setMyLocation();
 					}
@@ -873,6 +871,9 @@ public class CarLocationActivity extends Activity {
 		params.add(new BasicNameValuePair("geo", geo));
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
 				+ "/geofence" + "?auth_code=" + app.auth_code;
+		
+		Log.i("CarLocationActivity", geo);
+		Log.i("CarLocationActivity", url);
 		new NetThread.putDataThread(handler, url, params, GETDATE).start();
 	}
 
