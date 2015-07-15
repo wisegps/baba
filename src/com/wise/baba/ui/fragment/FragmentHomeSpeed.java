@@ -214,8 +214,12 @@ public class FragmentHomeSpeed extends Fragment implements Callback,
 			return;
 		}
 		
+		
 		for(int i =0;i<llytId.length;i++){
 			if(id == llytId[i]){
+				
+				
+				
 				this.index = i;
 				//圆环刻度设置
 				dialSpeed.initValue(caclPercent(i), handler);

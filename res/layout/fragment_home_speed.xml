@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/home_card_style"
-     android:id="@+id/llytSpeed"
+     android:id="@+id/llytHomeSpeed"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical" >
@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:layout_marginTop="15dp" >
+        android:layout_marginTop="15dp"
+         >
 
         <TextView
             android:id="@+id/tv_card_title"
