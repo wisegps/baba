@@ -174,10 +174,10 @@ public class CarUpdateActivity extends Activity {
 				helpPopView();
 				break;
 			case R.id.btnUnbind:
-				intentToRegister();
+				intentToRegister(REMOVE);
 				break;
 			case R.id.btnUpdate:
-				
+				intentToRegister(UPDATE);
 				break;
 			case R.id.btnDelete:
 				if (app.isTest) {
@@ -194,7 +194,8 @@ public class CarUpdateActivity extends Activity {
 
 	
 	private static final int REMOVE = 5;
-	public void intentToRegister(){
+	private static final int UPDATE = 7;
+	public void intentToRegister(int request){
 		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		String sp_account = preferences.getString(Constant.sp_account, "");
 		if (app.isTest) {
@@ -203,9 +204,14 @@ public class CarUpdateActivity extends Activity {
 		}
 		Intent intent = new Intent(CarUpdateActivity.this, RegisterActivity.class);
 		intent.putExtra("mark", 1);
-		intent.putExtra("remove", true);
+		if(request == REMOVE){
+			intent.putExtra("remove", true);
+		}else if(request == UPDATE){
+			intent.putExtra("device_update", true);
+		}
+		
 		intent.putExtra("account", sp_account);
-		startActivityForResult(intent, REMOVE);
+		startActivityForResult(intent, request);
 	}
 	
 	Handler handler = new Handler() {
@@ -627,8 +633,20 @@ public class CarUpdateActivity extends Activity {
 			
 		}
 		
+		/*修改终端*/
+		if (requestCode == UPDATE && resultCode == 8) {// 修改终端
+			carManage.updateDevice(index);
+			return;
+			
+		}
 		
-		
+
+		/*成功修改终端*/
+		if (requestCode == 2 && resultCode == 1) {// 修改终端成功
+			this.finish();
+			return;
+			
+		}
 		
 		
 		if (resultCode == 1) {// 汽车型号

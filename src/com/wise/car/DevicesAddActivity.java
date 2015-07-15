@@ -10,7 +10,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
 import com.aliyun.android.oss.model.OSSObject;
 import com.aliyun.android.oss.task.GetObjectTask;
 import com.umeng.analytics.MobclickAgent;
@@ -81,7 +80,7 @@ public class DevicesAddActivity extends Activity {
 
 	// 近景远景图
 	ImageView car_icon_near, car_icon_far;
-	TextView tv_pic_share, tv_near, tv_far,tv_prompt;
+	TextView tv_pic_share, tv_near, tv_far, tv_prompt;
 	TextView car_name;
 
 	int car_id;
@@ -115,8 +114,9 @@ public class DevicesAddActivity extends Activity {
 		iv_back.setOnClickListener(onClickListener);
 		iv_add = (ImageView) findViewById(R.id.iv_add);
 		iv_add.setOnClickListener(onClickListener);
-		tv_prompt = (TextView)findViewById(R.id.tv_prompt);
-		SpannableString sp = new SpannableString("请扫描终端的二维码或者输入对应的序列号进行绑定(常用OBD安装位置)");
+		tv_prompt = (TextView) findViewById(R.id.tv_prompt);
+		SpannableString sp = new SpannableString(
+				"请扫描终端的二维码或者输入对应的序列号进行绑定(常用OBD安装位置)");
 		sp.setSpan(new URLSpan("http://api.bibibaba.cn/help/obd"), 24, 33,
 				Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		tv_prompt.setText(sp);
@@ -384,8 +384,8 @@ public class DevicesAddActivity extends Activity {
 							.getString("status_code");
 					if (status_code.equals("0")) {
 						// 绑定车辆
-						String url = Constant.BaseUrl + "vehicle/" + car_id
-								+ "/device?auth_code=" + app.auth_code;
+						final String url = Constant.BaseUrl + "vehicle/"
+								+ car_id + "/device?auth_code=" + app.auth_code;
 						final List<NameValuePair> params = new ArrayList<NameValuePair>();
 						params.add(new BasicNameValuePair("device_id",
 								device_id));
@@ -403,12 +403,27 @@ public class DevicesAddActivity extends Activity {
 														int which) {
 													params.add(new BasicNameValuePair(
 															"deal_data", "1"));
+													new NetThread.putDataThread(
+															handler, url,
+															params, update_car)
+															.start();
 												}
-											}).setNegativeButton("否", null)
-									.show();
+											})
+									.setNegativeButton(
+											"否",
+											new DialogInterface.OnClickListener() {
+												@Override
+												public void onClick(
+														DialogInterface dialog,
+														int which) {
+													new NetThread.putDataThread(
+															handler, url,
+															params, update_car)
+															.start();
+												}
+											}).show();
 						}
-						new NetThread.putDataThread(handler, url, params,
-								update_car).start();
+
 					} else {
 						SaveDataOver();
 						showToast();
@@ -703,7 +718,7 @@ public class DevicesAddActivity extends Activity {
 			} else {
 				JSONObject jsonObject = new JSONObject(result);
 				int custID = jsonObject.getInt("cust_id");
-				if(custID == Integer.valueOf(app.cust_id) || custID == 0){
+				if (custID == Integer.valueOf(app.cust_id) || custID == 0) {
 					String sim = et_sim.getText().toString().trim();
 					device_id = jsonObject.getString("device_id");
 					String url = Constant.BaseUrl + "device/" + device_id
@@ -712,7 +727,7 @@ public class DevicesAddActivity extends Activity {
 					params.add(new BasicNameValuePair("sim", sim));
 					new Thread(new NetThread.putDataThread(handler, url,
 							params, update_sim)).start();
-				}else{
+				} else {
 					Toast.makeText(DevicesAddActivity.this,
 							"该终端已被其他用户绑定，无法再次绑定", Toast.LENGTH_LONG).show();
 					SaveDataOver();

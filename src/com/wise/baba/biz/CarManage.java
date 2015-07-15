@@ -13,6 +13,8 @@ import com.wise.baba.app.Msg;
 import com.wise.baba.entity.CarData;
 import com.wise.baba.net.NetThread;
 import com.wise.car.CarActivity;
+import com.wise.car.CarUpdateActivity;
+import com.wise.car.DevicesAddActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -42,6 +44,7 @@ public class CarManage implements Callback {
 
 	private int unbindIndex;
 	private int deleteIndex;
+	private int updateIndex;
 
 	public CarManage(Context context, AppApplication app, Handler handler) {
 		super();
@@ -107,8 +110,17 @@ public class CarManage implements Callback {
 	/**
 	 * 修改终端
 	 */
-	public void updateDevice() {
-
+	public void updateDevice(int index) {
+		this.updateIndex = index;
+		CarData carData = app.carDatas.get(index);
+		Intent intent = new Intent(context, DevicesAddActivity.class);
+		intent.putExtra("car_id", carData.getObj_id());
+		intent.putExtra("isBind", false);
+		intent.putExtra("car_series_id", carData.getCar_series_id());
+		intent.putExtra("car_series", carData.getCar_series());
+		// 传以前终端的值
+		intent.putExtra("old_device_id", carData.getDevice_id());
+		((Activity) context).startActivityForResult(intent, 2);
 	}
 
 	/**
