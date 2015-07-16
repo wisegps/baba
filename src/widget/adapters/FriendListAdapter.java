@@ -74,7 +74,9 @@ public class FriendListAdapter extends BaseAdapter {
 		textName.setText(friend.getCust_name());
 		final String logoUrl = friend.getLogo();
 		final int friendId = friend.getCust_id();
-		
+		if(logoUrl == null || friendId == 0){
+			return convertView;
+		}
 		//先查看本地有没有图片
 		Bitmap bitmap = BitmapFactory.decodeFile(Constant.userIconPath
 				+ friendId + ".png");
