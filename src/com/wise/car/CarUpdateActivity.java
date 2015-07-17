@@ -174,10 +174,15 @@ public class CarUpdateActivity extends Activity {
 				helpPopView();
 				break;
 			case R.id.btnUnbind:
-				intentToRegister(REMOVE);
+				if(hasDeviceId()){
+					intentToRegister(REMOVE);
+				}
 				break;
 			case R.id.btnUpdate:
-				intentToRegister(UPDATE);
+				if(hasDeviceId()){
+					intentToRegister(UPDATE);
+				}
+				
 				break;
 			case R.id.btnDelete:
 				if (app.isTest) {
@@ -193,6 +198,16 @@ public class CarUpdateActivity extends Activity {
 	};
 
 	
+	public boolean hasDeviceId(){
+		boolean b = true;
+		if (carNewData.getDevice_id() == null
+				|| carNewData.getDevice_id().equals("")
+				|| carNewData.getDevice_id().equals("0")) {
+			b= false;
+			Toast.makeText(this, "未绑定智能终端", Toast.LENGTH_SHORT).show();
+		}
+		return b;
+	}
 	private static final int REMOVE = 5;
 	private static final int UPDATE = 7;
 	public void intentToRegister(int request){
@@ -591,12 +606,7 @@ public class CarUpdateActivity extends Activity {
 		btnUpdate.setOnClickListener(onClickListener);
 		btnDelete.setOnClickListener(onClickListener);
 		
-		if (carNewData.getDevice_id() == null
-				|| carNewData.getDevice_id().equals("")
-				|| carNewData.getDevice_id().equals("0")) {
-
-			findViewById(R.id.llytBottom).setVisibility(View.GONE);
-		}
+	
 	}
 
 	private String jsonList(List<CityData> chooseCityDatas) {

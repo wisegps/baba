@@ -280,19 +280,24 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 				// TODO 服务商
 				startActivityForResult(new Intent(getActivity(),
 						ServiceListActivity.class), 3);
-			}else if (arg2 == 3) {
-				// TODO 特别关心
-				List<FriendSearch> friends = new ArrayList();
-				FriendSearch  f0 = new FriendSearch();
-				f0.setCust_name("aaaa");
-				FriendSearch  f1 = new FriendSearch();
-				f1.setCust_name("bbb");
-				friends.add(f0);
-				friends.add(f1);
-				Intent intent = new Intent(getActivity(),FriendListActivity.class);
-				intent.putExtra("friends", (Serializable)friends);
-				startActivity(intent);
-			} else {
+			}
+			
+//			else if (arg2 == 3) {
+//				// TODO 特别关心
+//				List<FriendSearch> friends = new ArrayList();
+//				FriendSearch  f0 = new FriendSearch();
+//				f0.setCust_name("aaaa");
+//				FriendSearch  f1 = new FriendSearch();
+//				f1.setCust_name("bbb");
+//				friends.add(f0);
+//				friends.add(f1);
+//				Intent intent = new Intent(getActivity(),FriendListActivity.class);
+//				intent.putExtra("friends", (Serializable)friends);
+//				startActivity(intent);
+//			} 
+			
+			
+			else {
 				// 判断是否是标题行
 				FriendData friendData = app.friendDatas.get(arg2 - 1);
 				String letter = friendData.getGroup_letter();
@@ -444,9 +449,9 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 		FriendData fData1 = new FriendData();
 		fData1.setFriend_name("服务商");
 		friendList.add(1, fData1);
-		FriendData fData2 = new FriendData();
-		fData2.setFriend_name("特别关心");
-		friendList.add(2, fData2);
+//		FriendData fData2 = new FriendData();
+//		fData2.setFriend_name("特别关心");
+//		friendList.add(2, fData2);
 		
 		app.friendDatas = friendList;
 		friendAdapter.notifyDataSetChanged();
@@ -508,10 +513,14 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 			} else if (position == 1) {
 				// 第二项是服务商
 				holder.iv_image.setImageResource(R.drawable.ico_friend_service);
-			} else if (position == 2) {
-				// 第三项目是特别关心
-				holder.iv_image.setImageResource(R.drawable.ico_friend_care);
-			}else {
+			}
+			
+//			else if (position == 2) {
+//				// 第三项目是特别关心
+//				holder.iv_image.setImageResource(R.drawable.ico_friend_care);
+//			}
+			
+			else {
 				if (new File(Constant.userIconPath
 						+ GetSystem.getM5DEndo(friendData.getLogo()) + ".png")
 						.exists()) {

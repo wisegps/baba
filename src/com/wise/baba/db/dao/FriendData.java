@@ -6,12 +6,11 @@ import java.io.Serializable;
 /**
  * Entity mapped to table FRIEND_DATA.
  */
-public class FriendData implements Serializable {
+public class FriendData {
 
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
 	private String create_time;
     private Integer sex;
     private String logo;
