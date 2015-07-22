@@ -38,6 +38,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -356,6 +357,8 @@ public class DevicesAddActivity extends Activity {
 				break;
 			case update_sim:
 				try {
+					
+					Log.i("DevicesAddActivity", msg.obj.toString());
 					String status_code = new JSONObject(msg.obj.toString())
 							.getString("status_code");
 					if (status_code.equals("0")) {
@@ -380,6 +383,7 @@ public class DevicesAddActivity extends Activity {
 				break;
 			case update_user:
 				try {
+					Log.i("DevicesAddActivity", "update_user"+msg.obj.toString());
 					String status_code = new JSONObject(msg.obj.toString())
 							.getString("status_code");
 					if (status_code.equals("0")) {
@@ -389,6 +393,7 @@ public class DevicesAddActivity extends Activity {
 						final List<NameValuePair> params = new ArrayList<NameValuePair>();
 						params.add(new BasicNameValuePair("device_id",
 								device_id));
+						Log.i("DevicesAddActivity", isBind+"");
 						if (!isBind) {
 							AlertDialog.Builder builder = new AlertDialog.Builder(
 									DevicesAddActivity.this);
@@ -422,9 +427,17 @@ public class DevicesAddActivity extends Activity {
 															.start();
 												}
 											}).show();
+						}else {
+							
+							new NetThread.putDataThread(
+									handler, url,
+									params, update_car)
+									.start();
 						}
 
 					} else {
+						
+						Log.i("DevicesAddActivity", "update_user"+"SaveDataOver");
 						SaveDataOver();
 						showToast();
 					}
@@ -705,12 +718,17 @@ public class DevicesAddActivity extends Activity {
 			ll_wait.startWheel();
 			String url = Constant.BaseUrl + "device/serial/" + serial
 					+ "?auth_code=" + app.auth_code;
+			
+			Log.i("DevicesAddActivity", url);
 			new NetThread.GetDataThread(handler, url, add_serial).start();
 			SaveDataIn();
 		}
 	}
 
 	private void jsonAddSerial(String result) {
+		
+		
+		
 		try {
 			if (result.equals("")) {
 				et_serial.setError("序列号不存在");

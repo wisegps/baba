@@ -56,6 +56,7 @@ import com.wise.car.BarcodeActivity;
 import com.wise.car.SideBar;
 import com.wise.car.SideBar.OnTouchingLetterChangedListener;
 import com.wise.notice.FriendAddActivity;
+import com.wise.notice.FriendCareListActivity;
 import com.wise.notice.FriendDetailActivity;
 import com.wise.notice.FriendInfoActivity;
 import com.wise.notice.FriendListActivity;
@@ -111,12 +112,11 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 		 */
 		daoSession = AppApplication.getDaoSession(this.getActivity());
 		friendDataDao = daoSession.getFriendDataDao();
-
+		
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 
 		app = (AppApplication) getActivity().getApplication();
@@ -282,19 +282,17 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 						ServiceListActivity.class), 3);
 			}
 			
-//			else if (arg2 == 3) {
-//				// TODO 特别关心
-//				List<FriendSearch> friends = new ArrayList();
-//				FriendSearch  f0 = new FriendSearch();
-//				f0.setCust_name("aaaa");
-//				FriendSearch  f1 = new FriendSearch();
-//				f1.setCust_name("bbb");
-//				friends.add(f0);
-//				friends.add(f1);
-//				Intent intent = new Intent(getActivity(),FriendListActivity.class);
-//				intent.putExtra("friends", (Serializable)friends);
-//				startActivity(intent);
-//			} 
+			else if (arg2 == 3) {
+				// TODO 特别关心
+				List<FriendData> friends = new ArrayList<FriendData>();
+				int count = app.friendDatas.size()-1;
+				for(int i =3 ;i<=count;i++){
+					friends.add(app.friendDatas.get(i));
+				}
+				Intent intent = new Intent(getActivity(),FriendCareListActivity.class);
+				intent.putExtra("friends", (Serializable)friends);
+				startActivity(intent);
+			} 
 			
 			
 			else {
@@ -449,9 +447,9 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 		FriendData fData1 = new FriendData();
 		fData1.setFriend_name("服务商");
 		friendList.add(1, fData1);
-//		FriendData fData2 = new FriendData();
-//		fData2.setFriend_name("特别关心");
-//		friendList.add(2, fData2);
+		FriendData fData2 = new FriendData();
+		fData2.setFriend_name("特别关心");
+		friendList.add(2, fData2);
 		
 		app.friendDatas = friendList;
 		friendAdapter.notifyDataSetChanged();
@@ -515,10 +513,10 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 				holder.iv_image.setImageResource(R.drawable.ico_friend_service);
 			}
 			
-//			else if (position == 2) {
-//				// 第三项目是特别关心
-//				holder.iv_image.setImageResource(R.drawable.ico_friend_care);
-//			}
+			else if (position == 2) {
+				// 第三项目是特别关心
+				holder.iv_image.setImageResource(R.drawable.ico_friend_care);
+			}
 			
 			else {
 				if (new File(Constant.userIconPath

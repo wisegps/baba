@@ -455,6 +455,21 @@
             android:name="com.wise.remind.RemindListActivity"
             android:screenOrientation="portrait" >
         </activity>
+        
+        
+        <activity
+            android:name="com.wise.notice.FriendCareListActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.wise.notice.FriendCarListActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+           <activity
+            android:name="com.wise.notice.FriendListPopActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        
 
         <service android:name=".LocationService" >
         </service>
@@ -632,7 +647,7 @@
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="DhT4kz88wR3r5yCl6tQCpaNW" />
+            android:value="R2uGIgDsgGGie9T4HFmgCYsG" />
     </application>
 
 </manifest>

@@ -6,9 +6,10 @@ import java.io.Serializable;
 /**
  * Entity mapped to table FRIEND_DATA.
  */
-public class FriendData {
+public class FriendData implements Serializable{
 
-    /**
+	private static final long serialVersionUID = 1L;
+	/**
 	 * 
 	 */
 	private String create_time;
@@ -24,6 +25,7 @@ public class FriendData {
     public FriendData() {
     }
 
+    
     public FriendData(String create_time, Integer sex, String logo, String friend_name, Integer friend_type, Integer friend_id, Integer user_id, Integer friend_relat_id, String Group_letter) {
         this.create_time = create_time;
         this.sex = sex;

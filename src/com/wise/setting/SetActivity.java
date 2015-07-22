@@ -23,6 +23,8 @@ import com.wise.baba.app.Constant;
 import com.wise.baba.biz.GetSystem;
 import com.wise.baba.biz.Judge;
 import com.wise.baba.biz.ShowErWeiMa;
+import com.wise.baba.db.dao.DaoSession;
+import com.wise.baba.db.dao.FriendDataDao;
 import com.wise.baba.net.NetThread;
 import com.wise.car.CarActivity;
 import com.wise.car.OfflineActivity;
@@ -137,6 +139,10 @@ public class SetActivity extends Activity implements TagAliasCallback {
 				}
 				break;
 			case R.id.bt_login_out:
+				DaoSession daoSession = AppApplication.getDaoSession(SetActivity.this);
+				FriendDataDao friendDataDao = daoSession.getFriendDataDao();
+				friendDataDao.deleteAll();
+				
 				SharedPreferences preferences = getSharedPreferences(
 						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 				Editor editor = preferences.edit();
