@@ -282,19 +282,21 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 						ServiceListActivity.class), 3);
 			}
 			
-			else if (arg2 == 3) {
-				// TODO 特别关心
-				List<FriendData> friends = new ArrayList<FriendData>();
-				int count = app.friendDatas.size()-1;
-				for(int i =3 ;i<=count;i++){
-					friends.add(app.friendDatas.get(i));
-				}
-				Intent intent = new Intent(getActivity(),FriendCareListActivity.class);
-				intent.putExtra("friends", (Serializable)friends);
-				startActivity(intent);
-			} 
 			
+			/*** 特别关心功能屏蔽***************/
+//			else if (arg2 == 3) {
+//				// TODO 特别关心
+//				List<FriendData> friends = new ArrayList<FriendData>();
+//				int count = app.friendDatas.size()-1;
+//				for(int i =3 ;i<=count;i++){
+//					friends.add(app.friendDatas.get(i));
+//				}
+//				Intent intent = new Intent(getActivity(),FriendCareListActivity.class);
+//				intent.putExtra("friends", (Serializable)friends);
+//				startActivity(intent);
+//			} 
 			
+			/*** 特别关心功能屏蔽***************/
 			else {
 				// 判断是否是标题行
 				FriendData friendData = app.friendDatas.get(arg2 - 1);
@@ -449,9 +451,13 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 		FriendData fData1 = new FriendData();
 		fData1.setFriend_name("服务商");
 		friendList.add(1, fData1);
-		FriendData fData2 = new FriendData();
-		fData2.setFriend_name("特别关心");
-		friendList.add(2, fData2);
+		
+		/*** 特别关心功能屏蔽***************/
+//		FriendData fData2 = new FriendData();
+//		fData2.setFriend_name("特别关心");
+//		friendList.add(2, fData2);
+		
+		/*** 特别关心功能屏蔽***************/
 		
 		app.friendDatas = friendList;
 		friendAdapter.notifyDataSetChanged();
@@ -515,10 +521,13 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 				holder.iv_image.setImageResource(R.drawable.ico_friend_service);
 			}
 			
+			/*** 特别关心功能屏蔽***************/
 			else if (position == 2) {
 				// 第三项目是特别关心
 				holder.iv_image.setImageResource(R.drawable.ico_friend_care);
 			}
+		/************************************/
+			
 			
 			else {
 				if (new File(Constant.userIconPath
