@@ -421,12 +421,14 @@ public class FragmentFriend extends Fragment implements IXListViewListener {
 
 	public void notifyFriendList() {
 		List<FriendData> friendList = friendDataDao.loadAll();
+		Log.i("FragmentFriend", "friendList"+friendList.size());
+		
 		if (friendList == null || friendList.size() == 0) {
 			friendList = new ArrayList<FriendData>();
 		}else{
 			Collections.sort(friendList, comparator);
 		}
-		
+		Log.i("FragmentFriend", "sort"+friendList.size());
 		String Letter = "";
 		for (int i = 0; i < friendList.size(); i++) {
 			String name = friendList.get(i).getFriend_name();

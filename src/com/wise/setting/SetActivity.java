@@ -139,31 +139,43 @@ public class SetActivity extends Activity implements TagAliasCallback {
 				}
 				break;
 			case R.id.bt_login_out:
-				DaoSession daoSession = AppApplication.getDaoSession(SetActivity.this);
-				FriendDataDao friendDataDao = daoSession.getFriendDataDao();
-				friendDataDao.deleteAll();
-				
-				SharedPreferences preferences = getSharedPreferences(
-						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-				Editor editor = preferences.edit();
-				editor.putString(Constant.sp_pwd, "");
-				editor.putString(Constant.sp_account, "");
-				editor.commit();
-				app.cust_id = null;
-				app.auth_code = null;
-				app.carDatas.clear();
-				Intent intent = new Intent(Constant.A_LoginOut);
-				sendBroadcast(intent);
-				iv_eweima.setVisibility(View.GONE);
-				bt_login_out.setVisibility(View.GONE);
-				tv_login.setText("登录/注册");
-				tv_balance.setVisibility(View.GONE);
-				iv_sex.setVisibility(View.GONE);
-				iv_service.setVisibility(View.GONE);
-				iv_logo.setImageResource(R.drawable.icon_add);
-				platformQQ.removeAccount();
-				platformSina.removeAccount();
-				JPushInterface.stopPush(getApplicationContext());
+				handler.post(new Runnable(){
+
+					@Override
+					public void run() {
+						DaoSession daoSession = AppApplication.getDaoSession(SetActivity.this);
+						FriendDataDao friendDataDao = daoSession.getFriendDataDao();
+						friendDataDao.deleteAll();
+						
+						SharedPreferences preferences = getSharedPreferences(
+								Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+						Editor editor = preferences.edit();
+						editor.putString(Constant.sp_pwd, "");
+						editor.putString(Constant.sp_account, "");
+						editor.commit();
+						
+						app.cust_id = null;
+						app.auth_code = null;
+						app.friendDatas.clear();;
+						app.carDatas.clear();
+						Intent intent = new Intent(Constant.A_LoginOut);
+						sendBroadcast(intent);
+						iv_eweima.setVisibility(View.GONE);
+						bt_login_out.setVisibility(View.GONE);
+						tv_login.setText("登录/注册");
+						tv_balance.setVisibility(View.GONE);
+						iv_sex.setVisibility(View.GONE);
+						iv_service.setVisibility(View.GONE);
+						iv_logo.setImageResource(R.drawable.icon_add);
+						platformQQ.removeAccount();
+						platformSina.removeAccount();
+						JPushInterface.stopPush(getApplicationContext());
+						
+					}
+					
+				});
+			
+			
 				break;
 			case R.id.tv_info:
 				startActivity(new Intent(SetActivity.this,
