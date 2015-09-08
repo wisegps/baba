@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/llytPageAir"
+        style="@style/home_card_style"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/rlytAirTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp" >
+
+            <TextView
+                android:id="@+id/tv_card_title"
+                style="@style/home_card_title_style"
+                android:text="空气质量" />
+
+            <ImageView
+                android:id="@+id/iv_card_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/tv_card_title"
+                android:src="@drawable/ico_air" />
+
+            <ImageView
+                android:id="@+id/iv_air_menu"
+                style="@style/home_card_img_down_style" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/viewLine"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#bbbbbb"
+            android:focusable="true"
+            android:focusableInTouchMode="true" >
+        </View>
+
+        <RelativeLayout
+            android:id="@+id/rlytAirScore"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/double_margins" >
+
+            <TextView
+                android:id="@+id/tvAirscore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:alpha="0.8"
+                android:fontFamily="sans-serif-light"
+                android:text="0"
+                android:textColor="@color/navy_blue"
+                android:textSize="@dimen/score_number" />
+
+            <com.wise.baba.ui.widget.DialView
+                android:id="@+id/dialAir"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/viewAirChat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>

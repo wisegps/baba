@@ -643,11 +643,11 @@
         <!--
 		debug：ENAit7WmjvYO0DmxKMOU4CLx
 		正     式1：DhT4kz88wR3r5yCl6tQCpaNW
-		本机：R2uGIgDsgGGie9T4HFmgCYsG
+		本机：YTcG12ht0N8FaxI6rbBd4onM
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="DhT4kz88wR3r5yCl6tQCpaNW" />
+            android:value="YTcG12ht0N8FaxI6rbBd4onM" />
     </application>
 
 </manifest>

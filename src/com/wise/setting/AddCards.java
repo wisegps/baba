@@ -41,7 +41,7 @@ public class AddCards extends Activity {
 	List<CardsData> list = new ArrayList<CardsData>();
 	InforAdapter adapter;
 	private String[] cards = { Const.TAG_POI,Const.TAG_CAR,Const.TAG_SPEED,
-			 Const.TAG_NEWS ,Const.TAG_WEATHER,Const.TAG_SERVICE,Const.TAG_NAV};
+			 Const.TAG_NEWS ,Const.TAG_WEATHER,Const.TAG_SERVICE,Const.TAG_NAV,Const.TAG_AIR};
 	private ShareCards cardsSharePreferences;
 	private boolean isResume = true;
 	private int custType = 1;//是服务商2  个人1

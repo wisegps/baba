@@ -180,7 +180,6 @@ public class FragmentHome extends Fragment {
 						Const.TAG_WEATHER);
 				transaction.commit();
 				cards.put(Const.TAG_WEATHER, fragmentWeather);
-
 			} else if (cardName.equals(Const.TAG_SERVICE)
 					&& app.cust_type == Info.ServiceProvider) {
 				Log.i("fragment", "设置服务商卡片布局");
@@ -201,6 +200,16 @@ public class FragmentHome extends Fragment {
 						.add(R.id.ll_cards, fragmenNavigation, Const.TAG_NAV);
 				transaction.commit();
 				cards.put(Const.TAG_NAV, fragmenNavigation);
+			} else if (cardName.equals(Const.TAG_AIR)) {
+				Log.i("fragment", "设置净化器卡片布局");
+				removeFragment(Const.TAG_AIR);
+				transaction = fragmentManager.beginTransaction();
+				FragmentHomeAir fragmentHomeAir = new FragmentHomeAir();
+				fragmentHomeAir.setOnCardMenuListener(onCardMenuListener);
+				transaction
+						.add(R.id.ll_cards, fragmentHomeAir, Const.TAG_AIR);
+				transaction.commit();
+				cards.put(Const.TAG_AIR, fragmentHomeAir);
 			}
 		}
 	}

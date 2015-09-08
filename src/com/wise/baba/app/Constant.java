@@ -158,8 +158,8 @@ public class Constant {
 	//卡片管理
 
 	public static int[] picture = { R.drawable.ico_small_poi,R.drawable.ico_small_car,
-			R.drawable.ico_small_speed , R.drawable.ico_small_news, R.drawable.ico_small_weather,R.drawable.ico_small_shop,R.drawable.ico_small_nav};
-	public static String[] title = { "周边","车况","仪表盘", "本地资讯","天气","我的店铺","快速导航" };
-	public static String[] content = { "周边","查看体检信息，驾驶指数","获取终端obd信息", "最新新闻更新和内容" ,"今天天气概况","服务商专用","导航到其他常用操作"};
+			R.drawable.ico_small_speed , R.drawable.ico_small_news, R.drawable.ico_small_weather,R.drawable.ico_small_shop,R.drawable.ico_small_nav,R.drawable.ico_small_air};
+	public static String[] title = { "周边","车况","仪表盘", "本地资讯","天气","我的店铺","快速导航","空气质量" };
+	public static String[] content = { "周边","查看体检信息，驾驶指数","获取终端obd信息", "最新新闻更新和内容" ,"今天天气概况","服务商专用","导航到其他常用操作","空气净化器"};
 	//public static String[] cards = { "service","weather", "hotNews" };
 }
