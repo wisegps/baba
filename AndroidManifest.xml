@@ -455,8 +455,6 @@
             android:name="com.wise.remind.RemindListActivity"
             android:screenOrientation="portrait" >
         </activity>
-        
-        
         <activity
             android:name="com.wise.notice.FriendCareListActivity"
             android:screenOrientation="portrait" >
@@ -465,11 +463,14 @@
             android:name="com.wise.notice.FriendCarListActivity"
             android:screenOrientation="portrait" >
         </activity>
-           <activity
+        <activity
             android:name="com.wise.notice.FriendListPopActivity"
             android:screenOrientation="portrait" >
         </activity>
-        
+        <activity
+            android:name=".AirSettingActivity"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <service android:name=".LocationService" >
         </service>

@@ -4,7 +4,6 @@
     android:layout_height="match_parent" >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/llytPageAir"
         style="@style/home_card_style"
         android:focusable="true"
@@ -46,29 +45,147 @@
             android:focusableInTouchMode="true" >
         </View>
 
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margins"
+            android:gravity="center"
+             android:textColor="#bfbfbf" 
+            android:text="自动模式转低速" />
+
         <RelativeLayout
             android:id="@+id/rlytAirScore"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/double_margins" >
+            android:layout_marginTop="@dimen/margins" >
 
-            <TextView
-                android:id="@+id/tvAirscore"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:alpha="0.8"
-                android:fontFamily="sans-serif-light"
-                android:text="0"
-                android:textColor="@color/navy_blue"
-                android:textSize="@dimen/score_number" />
+                android:layout_centerInParent="true" 
+                android:gravity="center"
+                android:orientation="vertical"
+                >
 
-            <com.wise.baba.ui.widget.DialView
-                android:id="@+id/dialAir"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:layout_centerInParent="true" />
+                <TextView
+                    android:id="@+id/tvAirscore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.8"
+                    android:fontFamily="sans-serif-light"
+                    android:text="0"
+                    android:textColor="@color/navy_blue"
+                    android:textSize="@dimen/score_number" />
+                
+                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#aaaaaa"
+                    android:text="车内空气优"
+                     />
+                
+                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="滤芯还剩下98%"
+                    android:textColor="#bfbfbf" />
+            </LinearLayout>
+
+            <FrameLayout 
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:layout_centerInParent="true"
+                >
+                 <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="3dp"
+                android:src="@drawable/ico_circle_color" />
+                  <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/circle_cursor" />
+            </FrameLayout>
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="@dimen/double_margins"
+            android:alpha="0.8"
+            android:background="#bbbbbb" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="严重污染"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#bfbfbf" 
+                    android:text="武汉" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="495"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:alpha="0.8"
+            android:background="#bbbbbb" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margins"
+            android:layout_marginTop="@dimen/double_margins"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ico_air_power_off" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ico_air_auto_on" />
+
+            <ImageView
+                android:id="@+id/iv_air_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ico_air_setting_on" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/ico_air_level_off" />
+        </LinearLayout>
     </LinearLayout>
 
     <View

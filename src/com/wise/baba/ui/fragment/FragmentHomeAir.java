@@ -1,5 +1,6 @@
 package com.wise.baba.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
@@ -7,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.wise.baba.AirSettingActivity;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
@@ -63,6 +66,14 @@ public class FragmentHomeAir extends Fragment {
 				if (onCardMenuListener != null) {
 					onCardMenuListener.showCarMenu(Const.TAG_AIR);
 				}
+				break;
+			case R.id.iv_air_setting:
+				Intent intent = new Intent();
+				intent.setClass(FragmentHomeAir.this.getActivity(), AirSettingActivity.class);
+				FragmentHomeAir.this.getActivity().startActivity(intent);
+				
+				break;
+			
 			}
 		}
 	};
@@ -78,11 +89,17 @@ public class FragmentHomeAir extends Fragment {
 		for (int i = 0; i < app.carDatas.size(); i++) {
 			View v = LayoutInflater.from(getActivity()).inflate(
 					R.layout.page_air, null);
-
+			
+			ImageView ivAirSettting = (ImageView) v.findViewById(R.id.iv_air_setting);
+			ivAirSettting.setOnClickListener(onClickListener);
+			
+			
 			hs_air.addView(v);
 
 		}
 		hs_air.snapToScreen(index);
 	}
+	
+	
 
 }
