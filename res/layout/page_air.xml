@@ -78,6 +78,7 @@
                     android:textSize="@dimen/score_number" />
                 
                  <TextView
+                      android:id="@+id/tvAirDesc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#aaaaaa"
@@ -161,26 +162,29 @@
             android:layout_marginTop="@dimen/double_margins"
             android:orientation="horizontal" >
 
-            <ImageView
+            <com.wise.baba.ui.widget.SwitchImageView
+                android:id="@+id/iv_air_power"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:src="@drawable/ico_air_power_off" />
 
-            <ImageView
+            <com.wise.baba.ui.widget.SwitchImageView
+                android:id="@+id/iv_air_auto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/ico_air_auto_on" />
+                android:src="@drawable/ico_air_auto_off" />
 
-            <ImageView
+            <com.wise.baba.ui.widget.SwitchImageView
                 android:id="@+id/iv_air_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:src="@drawable/ico_air_setting_on" />
+                android:src="@drawable/ico_air_setting_off" />
 
-            <ImageView
+            <com.wise.baba.ui.widget.SwitchImageView
+                 android:id="@+id/iv_air_level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

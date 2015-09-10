@@ -33,7 +33,6 @@ import com.wise.baba.app.Msg;
 import com.wise.baba.entity.Info;
 import com.wise.baba.ui.fragment.FragmentCarInfo;
 
-
 /**
  * 
  * @author c
@@ -64,13 +63,22 @@ public class HttpGetObdData {
 	 * @param url
 	 */
 	public void request() {
-		//cancle();
+		request(app.currentCarIndex);
+	}
+
+	/**
+	 * 根据url发送get请求 返回json字符串,并解析
+	 * 
+	 * @param url
+	 */
+	public void request(int index) {
+		// cancle();
 		if (app.carDatas.size() < 1) {
 			return;
 		}
 
-		deviceId = app.carDatas.get(app.currentCarIndex).getDevice_id();
-		brand = app.carDatas.get(app.currentCarIndex).getCar_brand();
+		deviceId = app.carDatas.get(index).getDevice_id();
+		brand = app.carDatas.get(index).getCar_brand();
 		try {
 			brand = URLEncoder.encode(brand, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -83,7 +91,7 @@ public class HttpGetObdData {
 
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
-				
+
 				Log.i("HttpGetData", "response " + response);
 				Message msg = new Message();
 				msg.what = Msg.Get_OBD_Data;
@@ -105,8 +113,14 @@ public class HttpGetObdData {
 		mQueue.add(request);
 		mQueue.start();
 	}
-
 	
+	/**
+	 * 查询空气净化信息
+	 * @param index
+	 */
+	public void requestAir(int index){
+		request(index);
+	}
 	/**
 	 * 
 	 * 解析返回字符串
@@ -117,42 +131,61 @@ public class HttpGetObdData {
 	public Bundle parse(String response) {
 		Bundle budle = new Bundle();
 		try {
-			
+
 			Boolean isStart = false;
 			JSONObject gpsData = new JSONObject(response)
-			.getJSONObject("active_gps_data");
+					.getJSONObject("active_gps_data");
 			JSONArray uni_status = gpsData.getJSONArray("uni_status");
 			for (int i = 0; i < uni_status.length(); i++) {
-				if (((Integer)uni_status.get(i)) == Info.CarStartStatus) {
+				if (((Integer) uni_status.get(i)) == Info.CarStartStatus) {
 					isStart = true;
 					break;
 				}
 			}
-			
-			JSONObject jsonObject = new JSONObject(response)
-					.getJSONObject("active_obd_data");
-			
-			
-			
-			String ss = $(jsonObject, "ss");
-			String fdjzs = $(jsonObject, "fdjzs");
-			String dpdy = $(jsonObject, "dpdy");
-			String sw = $(jsonObject, "sw");
-			String fdjfz = $(jsonObject, "fdjfz");
-			String jqmkd = $(jsonObject, "jqmkd");
-			String syyl = $(jsonObject, "syyl");
 
-			budle.putString("ss", ss);
-			budle.putString("fdjzs", fdjzs);
-			budle.putString("dpdy", dpdy);
-			budle.putString("sw", sw);
-			budle.putString("fdjfz", fdjfz);
-			budle.putString("jqmkd", jqmkd);
-			budle.putString("syyl", syyl);
+			JSONObject jsonObject = new JSONObject(response)
+					.optJSONObject("active_obd_data");
+
+			if(jsonObject != null){
+				
+				/*
+				 * 速度卡片相关信息
+				 */
+				String ss = $(jsonObject, "ss");
+				String fdjzs = $(jsonObject, "fdjzs");
+				String dpdy = $(jsonObject, "dpdy");
+				String sw = $(jsonObject, "sw");
+				String fdjfz = $(jsonObject, "fdjfz");
+				String jqmkd = $(jsonObject, "jqmkd");
+				String syyl = $(jsonObject, "syyl");
+
+				budle.putString("ss", ss);
+				budle.putString("fdjzs", fdjzs);
+				budle.putString("dpdy", dpdy);
+				budle.putString("sw", sw);
+				budle.putString("fdjfz", fdjfz);
+				budle.putString("jqmkd", jqmkd);
+				budle.putString("syyl", syyl);
+				budle.putBoolean("isStart", isStart);
+				
+			}
 			
-			budle.putBoolean("isStart", isStart);
-			
-			
+
+			/*
+			 * 空气净化
+			 */
+
+			int air = gpsData.optInt("air");
+
+			budle.putInt("air", air);
+
+			JSONObject jsonParams = new JSONObject(response)
+					.getJSONObject("params");
+
+			String strSwitch =jsonParams.getString("switch");
+
+			budle.putString("switch", strSwitch);
+			Log.i("HttpAir", "strSwitch "+strSwitch);
 		} catch (JSONException e) {
 			Log.i("HttpGetData", "exception " + e.getMessage());
 			e.printStackTrace();
@@ -179,10 +212,13 @@ public class HttpGetObdData {
 		} else {
 			Double value = Double.parseDouble(obj.toString());
 			int i = value.intValue();
-			Log.i("HttpGetData", "intValue "+key+" :" +i);
-			return value.intValue()+"";
+			Log.i("HttpGetData", "intValue " + key + " :" + i);
+			return value.intValue() + "";
 		}
 	}
+	
+	
+	
 
 	public void cancle() {
 		if (mQueue != null) {

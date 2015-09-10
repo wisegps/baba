@@ -45,6 +45,9 @@ public class Msg {
 	
 	public static final int GetFriendList = 10;
 	
+	
+	
+	
 	/**
 	 * CarManage
 	 */
@@ -52,4 +55,11 @@ public class Msg {
 	public static final int Delete_Car_Success = 12;
 	public static final int Unbind = 13;
 	public static final int Unbind_Clear_Data = 14;
+	
+	
+	/**
+	 * FragmentHomeAir
+	 */
+	
+	public static final int Get_OBD_AIR = 15;
 }

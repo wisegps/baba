@@ -54,6 +54,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+       <uses-library android:name="android.test.runner"/> 
         <activity
             android:name=".WelcomeActivity"
             android:label="@string/app_name"
@@ -649,6 +650,8 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="YTcG12ht0N8FaxI6rbBd4onM" />
+        
+         
     </application>
-
+<instrumentation android:name="android.test.instrumentationTestRunner" android:targetPackage="com.wise.baba.test" android:label="Tests"/> 
 </manifest>

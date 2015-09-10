@@ -312,6 +312,8 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 				} else if (isLoging) {// 登录流程走完
 					GetSystem.myLog(TAG, "runFast isLoging");
 					app.carDatas.clear();
+					
+					Log.i("WelcomeActivity", strData);
 					app.carDatas.addAll(JsonData.jsonCarInfo(strData));
 					Intent intent = new Intent(WelcomeActivity.this,
 							MainActivity.class);
