@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,6 +45,9 @@ public class FragmentHomeAir extends Fragment {
 	
 	private OnCardMenuListener onCardMenuListener;
 	private List<View>  views = new ArrayList<View>();
+	
+	public final static int POWER_ON = 1;
+	public final static int POWER_OFF = 0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,7 +90,10 @@ public class FragmentHomeAir extends Fragment {
 				break;
 			case R.id.iv_air_power:
 				SwitchImageView ivPower = (SwitchImageView) v;
-				ivPower.setChecked(!ivPower.isChecked());
+				boolean isChecked = ivPower.isChecked();
+				ivPower.setChecked(!isChecked);
+				httpAir.setPower(app.carDatas.get(index).getDevice_id(), !isChecked);
+				Log.i("FragmentHomeAir", "点击电源: ");
 				break;
 			case R.id.iv_air_auto:
 				SwitchImageView ivAuto = (SwitchImageView) v;
@@ -124,17 +131,23 @@ public class FragmentHomeAir extends Fragment {
 					R.layout.page_air, null);
 			
 			TextView tvCardTitle = (TextView) v.findViewById(R.id.tv_card_title);
-			ImageView ivAirSettting = (ImageView) v.findViewById(R.id.iv_air_setting);
-			v.findViewById(R.id.iv_air_power).setOnClickListener(onClickListener);
-			v.findViewById(R.id.iv_air_auto).setOnClickListener(onClickListener);
-			v.findViewById(R.id.iv_air_level).setOnClickListener(onClickListener);
+			SwitchImageView ivAirSettting = (SwitchImageView) v.findViewById(R.id.iv_air_setting);
+			SwitchImageView ivAirPower = (SwitchImageView) v.findViewById(R.id.iv_air_power);
+			SwitchImageView ivAirAuto = (SwitchImageView) v.findViewById(R.id.iv_air_auto);
+			SwitchImageView ivAirLevel = (SwitchImageView) v.findViewById(R.id.iv_air_level);
+			
+			
 			
 			ImageView ivAirMenu = (ImageView) v.findViewById(R.id.iv_air_menu);
 			
 			CarData carData = carDataList.get(i);
 			
 			tvCardTitle.setText(carData.getNick_name());
+			
 			ivAirSettting.setOnClickListener(onClickListener);
+			ivAirPower.setOnClickListener(onClickListener);
+			ivAirAuto.setOnClickListener(onClickListener);
+			ivAirLevel.setOnClickListener(onClickListener);
 			ivAirMenu.setOnClickListener(onClickListener);
 			
 			
@@ -153,12 +166,27 @@ public class FragmentHomeAir extends Fragment {
 		TextView tvAirscore = (TextView) view.findViewById(R.id.tvAirscore);
 		TextView tvAirDesc = (TextView) view.findViewById(R.id.tvAirDesc);
 		
+		SwitchImageView ivAirPower = (SwitchImageView) view.findViewById(R.id.iv_air_power);
+		SwitchImageView ivAirAuto = (SwitchImageView) view.findViewById(R.id.iv_air_auto);
+		SwitchImageView ivAirLevel = (SwitchImageView) view.findViewById(R.id.iv_air_level);
+		
+		/*
+		 *空气质量指数 
+		 */
 		int air = bundle.getInt("air");
 		String desc = getAirDesc(air);
-		
 		tvAirDesc.setText(desc);
 		tvAirscore.setText(air+"");
-		httpAir.request(app.carDatas.get(index).getDevice_id(), HttpAir.COMMAND_SWITCH,  "{switch: 1}");
+		
+		
+		/*
+		 * 开关控制
+		 */
+		int vSwitch = bundle.getInt("switch");
+		boolean isChecked = (vSwitch == POWER_ON) ? true:false;
+		Log.i("FragmentHomeAir", "开关控制: "+isChecked);
+		ivAirPower.setChecked(isChecked);
+		
 		
 		
 		
@@ -175,7 +203,9 @@ public class FragmentHomeAir extends Fragment {
 			case Msg.Get_OBD_Data:
 				initValue(msg.getData());
 				break;
-			
+			case Msg.Set_Air_Response:
+				http.requestAir(index);
+				break;
 			}
 		}
 		

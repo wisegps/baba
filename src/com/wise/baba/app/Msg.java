@@ -62,4 +62,10 @@ public class Msg {
 	 */
 	
 	public static final int Get_OBD_AIR = 15;
+	
+	public static final int Set_Air_Response = 20;
+	public static final int Set_Air_Power_Fail = 16;
+	public static final int Set_Air_Auto_Fail = 17;
+	public static final int Set_Air_Setting_Fail = 18;
+	public static final int Set_Air_Level_Fail = 19;
 }

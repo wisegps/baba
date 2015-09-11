@@ -156,6 +156,8 @@ public class FragmentWeather extends Fragment {
 			String wind = jsonObject.getJSONObject("today").getString("wind");
 			String quality = jsonObject.getString("quality");
 			
+			
+			
 			tvTemperature.setText(temperature);
 			tvWeather.setText(weather +"  "+wind);
 			tvAirQuality.setText(getAirQuality(quality));

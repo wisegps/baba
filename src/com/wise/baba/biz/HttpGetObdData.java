@@ -182,10 +182,10 @@ public class HttpGetObdData {
 			JSONObject jsonParams = new JSONObject(response)
 					.getJSONObject("params");
 
-			String strSwitch =jsonParams.getString("switch");
+			int vSwitch =jsonParams.optInt("switch");
 
-			budle.putString("switch", strSwitch);
-			Log.i("HttpAir", "strSwitch "+strSwitch);
+			budle.putInt("switch", vSwitch);
+			Log.i("HttpAir", "strSwitch "+vSwitch);
 		} catch (JSONException e) {
 			Log.i("HttpGetData", "exception " + e.getMessage());
 			e.printStackTrace();
