@@ -80,6 +80,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <Switch
+                android:id="@+id/switchTimer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:switchMinWidth="40dp"

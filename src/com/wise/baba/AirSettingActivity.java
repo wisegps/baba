@@ -4,10 +4,17 @@ import java.util.Calendar;
 
 import javax.crypto.spec.IvParameterSpec;
 
+import com.wise.baba.app.Msg;
+import com.wise.baba.biz.HttpAir;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,15 +26,17 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
+import android.widget.Toast;
 
 public class AirSettingActivity extends Activity {
 
 	private TextView tvDuration, tv_air_timer;
 	private LinearLayout llytSetDuration, llytDuration, llytTimer;
-
+	private Switch switchMode, switchTimer;
 	private RelativeLayout rlyt_air_timer;
 	private ImageView imgDuration[] = new ImageView[5];
 	private String time = "00:00";
@@ -35,12 +44,20 @@ public class AirSettingActivity extends Activity {
 	private int imgDurationId[] = new int[] { R.id.iv_duration_30,
 			R.id.iv_duration_60, R.id.iv_duration_90, R.id.iv_duration_100,
 			R.id.iv_duration_120 };
+	public HttpAir httpAir;
+
+	private String deviceId = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_air_setting);
+		deviceId = getIntent().getStringExtra("deviceId");
+		Log.i("AirSettingActivity", deviceId);
+		httpAir = new HttpAir(this, handler);
+		switchMode = (Switch) findViewById(R.id.switchMode);
+		switchTimer = (Switch) findViewById(R.id.switchTimer);
 		findViewById(R.id.iv_back).setOnClickListener(onClickListener);
 		llytSetDuration = (LinearLayout) findViewById(R.id.llytSetDuration);
 		llytDuration = (LinearLayout) findViewById(R.id.llytDuration);
@@ -59,6 +76,21 @@ public class AirSettingActivity extends Activity {
 			imgDuration[i].setOnTouchListener(onTouchListner);
 		}
 	}
+
+	public Handler handler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case Msg.Set_Air_Response:
+				// Toast.makeText(AirSettingActivity.this, "设置成功",
+				// Toast.LENGTH_SHORT).show();
+				break;
+			}
+
+		}
+
+	};
 
 	@Override
 	public void onWindowFocusChanged(boolean hasFocus) {
@@ -161,8 +193,8 @@ public class AirSettingActivity extends Activity {
 			@Override
 			public void onTimeChanged(TimePicker timer, int arg1, int arg2) {
 				time = timer.getCurrentHour() + ":" + timer.getCurrentMinute();
-				if(time.length()<5){
-					time = "0"+time;
+				if (time.length() < 5) {
+					time = "0" + time;
 				}
 			}
 		});
@@ -179,6 +211,15 @@ public class AirSettingActivity extends Activity {
 						tv_air_timer.setText("00:00");
 					}
 				}).show();
+
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		int mode = switchMode.isChecked() ? 1 : 0;
+		int duration = Integer.parseInt(tvDuration.getText().toString());
+		httpAir.setMode(deviceId, mode, time, duration);
 
 	}
 

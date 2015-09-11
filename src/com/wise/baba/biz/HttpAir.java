@@ -45,6 +45,7 @@ public class HttpAir {
 	
 	public final int POWER_ON = 1;
 	public final int POWER_OFF = 0;
+	
 
 	public HttpAir(Context context, Handler handler) {
 		super();
@@ -125,6 +126,17 @@ public class HttpAir {
 		String params = "{switch: "+value+"}";
 		request(deviceId, command, params);
 	}
+	
+	public void setMode(String deviceId,int mode,String time,int duration){
+		int command = COMMAND_AIR_MODE;
+		String params = "{air_mode: "+mode+ "}";
+		
+		if(mode == 0){
+			params = "{air_mode: "+mode+ ",air_time:'"+ time +"',air_duration:"+duration+"}";
+		}
+		request(deviceId, command, params);
+	}
+	
 
 	public void cancle() {
 		if (mQueue != null) {

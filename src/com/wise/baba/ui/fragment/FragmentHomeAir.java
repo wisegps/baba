@@ -48,6 +48,9 @@ public class FragmentHomeAir extends Fragment {
 	
 	public final static int POWER_ON = 1;
 	public final static int POWER_OFF = 0;
+	
+	public final static int MODE_AUTO = 1;
+	public final static int MODE_MAN = 0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,6 +109,7 @@ public class FragmentHomeAir extends Fragment {
 			case R.id.iv_air_setting:
 				Intent intent = new Intent();
 				intent.setClass(FragmentHomeAir.this.getActivity(), AirSettingActivity.class);
+				intent.putExtra("deviceId", app.carDatas.get(index).getDevice_id());
 				FragmentHomeAir.this.getActivity().startActivity(intent);
 				
 				break;
