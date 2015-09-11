@@ -116,6 +116,7 @@
                     android:background="#bbbbbb" />
 
                 <RelativeLayout
+                    android:id="@+id/rlyt_air_timer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -124,7 +125,7 @@
                     android:paddingTop="10dp" >
 
                     <TextView
-                        android:id="@+id/tv_air_timer"
+                        android:id="@+id/tv_air_timer_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -133,12 +134,13 @@
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <TextView
+                        android:id="@+id/tv_air_timer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_toRightOf="@id/tv_air_timer"
+                        android:layout_toRightOf="@id/tv_air_timer_label"
                         android:alpha="0.8"
-                        android:text="12:60"
+                        android:text="00:00"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/navy_blue" />
 
@@ -201,7 +203,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_toRightOf="@id/tv_air_timer_duration"
                         android:alpha="0.8"
-                        android:text="30:60"
+                        android:text="30"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/navy_blue" />
 

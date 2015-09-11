@@ -1,8 +1,12 @@
 package com.wise.baba;
 
+import java.util.Calendar;
+
 import javax.crypto.spec.IvParameterSpec;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,14 +18,19 @@ import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.TimePicker.OnTimeChangedListener;
 
 public class AirSettingActivity extends Activity {
 
-	private TextView tvDuration;
+	private TextView tvDuration, tv_air_timer;
 	private LinearLayout llytSetDuration, llytDuration, llytTimer;
-	private ImageView imgDuration[] = new ImageView[5];
 
+	private RelativeLayout rlyt_air_timer;
+	private ImageView imgDuration[] = new ImageView[5];
+	private String time = "00:00";
 	private ImageView imgRight;
 	private int imgDurationId[] = new int[] { R.id.iv_duration_30,
 			R.id.iv_duration_60, R.id.iv_duration_90, R.id.iv_duration_100,
@@ -40,9 +49,10 @@ public class AirSettingActivity extends Activity {
 		llytDuration.setOnClickListener(onClickListener);
 		llytTimer.setOnClickListener(onClickListener);
 		tvDuration = (TextView) findViewById(R.id.tv_duration);
-
+		tv_air_timer = (TextView) findViewById(R.id.tv_air_timer);
 		imgRight = (ImageView) findViewById(R.id.imgRight);
-
+		rlyt_air_timer = (RelativeLayout) findViewById(R.id.rlyt_air_timer);
+		rlyt_air_timer.setOnClickListener(onClickListener);
 		for (int i = 0; i < 5; i++) {
 			int id = imgDurationId[i];
 			imgDuration[i] = (ImageView) findViewById(id);
@@ -56,9 +66,9 @@ public class AirSettingActivity extends Activity {
 		super.onWindowFocusChanged(hasFocus);
 
 		if (hasFocus) {
-			
+
 			View viewLine = findViewById(R.id.viewAirLine);
-			
+
 			int width = viewLine.getMeasuredWidth() / 5 * 4;
 			FrameLayout.LayoutParams params = (LayoutParams) viewLine
 					.getLayoutParams();
@@ -113,7 +123,9 @@ public class AirSettingActivity extends Activity {
 				}
 
 				break;
-
+			case R.id.rlyt_air_timer:
+				showTimeDialog();
+				break;
 			}
 		}
 	};
@@ -133,6 +145,40 @@ public class AirSettingActivity extends Activity {
 		}
 
 		tvDuration.setText(values[index] + "");
+
+	}
+
+	public void showTimeDialog() {
+
+		final TimePicker timePicker = new TimePicker(this);
+		Calendar calendar = Calendar.getInstance();
+		timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
+		timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
+		timePicker.setIs24HourView(true);
+
+		timePicker.setOnTimeChangedListener(new OnTimeChangedListener() {
+
+			@Override
+			public void onTimeChanged(TimePicker timer, int arg1, int arg2) {
+				time = timer.getCurrentHour() + ":" + timer.getCurrentMinute();
+				if(time.length()<5){
+					time = "0"+time;
+				}
+			}
+		});
+		AlertDialog ad = new AlertDialog.Builder(this)
+				.setTitle("定时")
+				.setView(timePicker)
+				.setPositiveButton("设置", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						tv_air_timer.setText(time);
+					}
+				})
+				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						tv_air_timer.setText("00:00");
+					}
+				}).show();
 
 	}
 
