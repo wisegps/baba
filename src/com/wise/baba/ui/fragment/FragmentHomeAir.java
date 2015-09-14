@@ -14,6 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -51,6 +54,8 @@ public class FragmentHomeAir extends Fragment {
 	
 	public final static int MODE_AUTO = 1;
 	public final static int MODE_MAN = 0;
+	
+	public RotateAnimation rolateAnimation = new RotateAnimation(0, 360,  Animation.RELATIVE_TO_SELF,0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,6 +68,8 @@ public class FragmentHomeAir extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
 		hs_air = (HScrollLayout) getActivity().findViewById(R.id.hs_air);
+		
+	
 		http = new HttpGetObdData(this.getActivity(), handler);
 		httpAir = new HttpAir(this.getActivity(), handler);
 		initDataView();
@@ -97,6 +104,7 @@ public class FragmentHomeAir extends Fragment {
 				ivPower.setChecked(!isChecked);
 				httpAir.setPower(app.carDatas.get(index).getDevice_id(), !isChecked);
 				Log.i("FragmentHomeAir", "点击电源: ");
+				startAirAnimation(!isChecked);
 				break;
 			case R.id.iv_air_auto:
 				SwitchImageView ivAuto = (SwitchImageView) v;
@@ -111,13 +119,32 @@ public class FragmentHomeAir extends Fragment {
 				intent.setClass(FragmentHomeAir.this.getActivity(), AirSettingActivity.class);
 				intent.putExtra("deviceId", app.carDatas.get(index).getDevice_id());
 				FragmentHomeAir.this.getActivity().startActivity(intent);
-				
 				break;
 			
 			}
 		}
 	};
 
+	
+	public void startAirAnimation(boolean isChecked){
+		rolateAnimation.cancel();
+		
+		if(isChecked == false){
+			return;
+		}
+		new Handler().post(new Runnable(){
+			@Override
+			public void run() {
+				View imgCursor = views.get(index).findViewById(R.id.iv_page_air_circle_cursor);
+				rolateAnimation.setInterpolator(new LinearInterpolator());
+				rolateAnimation.setDuration(1500);
+				rolateAnimation.setRepeatCount(Animation.INFINITE);
+				imgCursor.startAnimation(rolateAnimation);
+			}
+			
+		});
+		
+	}
 	/** 滑动车辆布局 **/
 	public void initDataView() {// 布局
 		// 删除车辆后重新布局，如果删除的是最后一个车辆，则重置为第一个车
