@@ -472,6 +472,12 @@
             android:name=".AirSettingActivity"
             android:screenOrientation="portrait" >
         </activity>
+          <activity
+            android:name=".AirQualityIndexActivity"
+            android:theme="@style/Transparent"  
+            android:screenOrientation="portrait" >
+        </activity>
+        
 
         <service android:name=".LocationService" >
         </service>

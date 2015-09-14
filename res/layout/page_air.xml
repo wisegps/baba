@@ -91,8 +91,10 @@
             </LinearLayout>
 
             <FrameLayout
+                android:id="@+id/flytAirDialView"
                 android:layout_width="180dp"
                 android:layout_height="180dp"
+                
                 android:layout_centerInParent="true" >
 
                 <ImageView

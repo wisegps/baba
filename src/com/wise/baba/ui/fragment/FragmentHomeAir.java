@@ -20,6 +20,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wise.baba.AirQualityIndexActivity;
 import com.wise.baba.AirSettingActivity;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
@@ -120,6 +121,12 @@ public class FragmentHomeAir extends Fragment {
 				intent.putExtra("deviceId", app.carDatas.get(index).getDevice_id());
 				FragmentHomeAir.this.getActivity().startActivity(intent);
 				break;
+			case R.id.flytAirDialView:
+				intent = new Intent();
+				intent.setClass(FragmentHomeAir.this.getActivity(), AirQualityIndexActivity.class);
+				intent.putExtra("deviceId", app.carDatas.get(index).getDevice_id());
+				FragmentHomeAir.this.getActivity().startActivity(intent);
+				break;
 			
 			}
 		}
@@ -156,8 +163,6 @@ public class FragmentHomeAir extends Fragment {
 		
 		List<CarData> carDataList = app.carDatas;
 		for (int i = 0; i < carDataList.size(); i++) {
-			
-			
 			View v = LayoutInflater.from(getActivity()).inflate(
 					R.layout.page_air, null);
 			
@@ -167,7 +172,7 @@ public class FragmentHomeAir extends Fragment {
 			SwitchImageView ivAirAuto = (SwitchImageView) v.findViewById(R.id.iv_air_auto);
 			SwitchImageView ivAirLevel = (SwitchImageView) v.findViewById(R.id.iv_air_level);
 			
-			
+			View flytAirDialView =  v.findViewById(R.id.flytAirDialView);
 			
 			ImageView ivAirMenu = (ImageView) v.findViewById(R.id.iv_air_menu);
 			
@@ -180,6 +185,8 @@ public class FragmentHomeAir extends Fragment {
 			ivAirAuto.setOnClickListener(onClickListener);
 			ivAirLevel.setOnClickListener(onClickListener);
 			ivAirMenu.setOnClickListener(onClickListener);
+			
+			flytAirDialView.setOnClickListener(onClickListener);
 			
 			
 			views.add(v);

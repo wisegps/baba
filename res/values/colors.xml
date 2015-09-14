@@ -145,4 +145,6 @@
     <color name="viewfinder_laser">#ffff0000</color>
     <color name="possible_result_points">#c0ffff00</color>
 
+    
+    <color name="transparent1">#e0000000</color>  
 </resources>

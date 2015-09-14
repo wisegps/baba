@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp" >
+
+    <ImageView
+        android:id="@+id/iv_air_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/ico_down" />
+
+    <TextView
+        android:id="@+id/tv_air_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_air_down"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:text="空气质量指数" />
+
+    <LinearLayout
+        android:id="@+id/llytAirChat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_air_title"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/llytAirChatRow0"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/air_chat_row_height"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="@dimen/air_chat_text_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top"
+                android:gravity="center_horizontal|top"
+                android:text="5000" />
+
+            <View
+                android:layout_width="@dimen/air_chat_color_width"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/air_chat_color_margin_left"
+                android:background="#ab33b8" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom|right"
+                android:gravity="center_horizontal|bottom|right"
+                android:text="差"
+                android:textColor="@color/Green" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llytAirChatRow1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/air_chat_row_height"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="@dimen/air_chat_text_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top"
+                android:gravity="center_horizontal|top"
+                android:text="2000" />
+
+            <View
+                android:layout_width="@dimen/air_chat_color_width"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/air_chat_color_margin_left"
+                android:background="#f33e1f" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom|right"
+                android:gravity="center_horizontal|bottom|right"
+                android:text="中"
+                android:textColor="@color/Green" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llytAirChatRow2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/air_chat_row_height"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="@dimen/air_chat_text_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top"
+                android:gravity="center_horizontal|top"
+                android:text="1500" />
+
+            <View
+                android:layout_width="@dimen/air_chat_color_width"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/air_chat_color_margin_left"
+                android:background="#b9c815" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom|right"
+                android:gravity="center_horizontal|bottom|right"
+                android:text="良"
+                android:textColor="@color/Green" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llytAirChatRow3"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/air_chat_row_height"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/air_chat_row_height"
+                android:layout_gravity="center_horizontal|top"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="@dimen/air_chat_text_width"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|top"
+                    android:gravity="center_horizontal|top"
+                    android:text="1300" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal|bottom|right"
+                    android:gravity="center_horizontal|bottom|right"
+                    android:text="0" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/v_you"
+                android:layout_width="@dimen/air_chat_color_width"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/air_chat_color_margin_left"
+                android:background="#38c753" />
+
+            <TextView
+                android:id="@+id/tv_you"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom|right"
+                android:gravity="center_horizontal|bottom|right"
+                android:text="优"
+                android:textColor="@color/Green" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llytAirChatRow4"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/air_chat_row_last_height"
+            android:orientation="horizontal" >
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/flytAirChat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@id/llytAirChat"
+        android:layout_alignRight="@id/llytAirChat"
+        android:layout_alignTop="@id/llytAirChat"
+        android:layout_marginLeft="@dimen/air_chat_margin_left" >
+    </FrameLayout>
+
+</RelativeLayout>

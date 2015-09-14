@@ -1,4 +1,5 @@
 <resources>
+
     <dimen name="bt">20dp</dimen>
     <!-- 头部高度 -->
     <dimen name="title_hight">50dp</dimen>
@@ -15,13 +16,28 @@
     <dimen name="big_number">24sp</dimen>
     <!-- 头部字体 -->
     <dimen name="head">22sp</dimen>
-	<!-- 标题文字 -->
+    <!-- 标题文字 -->
     <dimen name="title">20sp</dimen>
     <!-- 辅助字体，按钮 -->
     <dimen name="main">18sp</dimen>
     <!-- 内容文字大小 -->
     <dimen name="content">16sp</dimen>
     <dimen name="small">14sp</dimen>
-    
     <dimen name="score_number">50sp</dimen>
+
+    
+    
+    
+    <!-- 空气质量 布局每行高度 -->
+    <dimen name="air_chat_row_height">60dp</dimen>
+    <!-- 空气质量 1500 字体宽度 -->
+    <dimen name="air_chat_text_width">40dp</dimen>
+    <!-- 空气质量 彩色 宽度 -->
+    <dimen name="air_chat_color_width">5dp</dimen>
+    <dimen name="air_chat_color_margin_left">2dp</dimen>
+    <!-- 空气质量 应该左边距 -->
+    <dimen name="air_chat_margin_left">47dp</dimen>
+    <!-- 空气质量 应该下面距离-->
+    <dimen name="air_chat_row_last_height">20dp</dimen>
+
 </resources>
