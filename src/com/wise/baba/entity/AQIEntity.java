@@ -1,16 +1,25 @@
 package com.wise.baba.entity;
 
+import java.io.Serializable;
+
 /**
  * 空气质量指数实体类
  * @author c
  *
  */
-public class AQIEntity {
+public class AQIEntity implements Serializable{
+	
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String id; //id
 	
 	private String time;//接收时间
 	
-	private String air;//空气质量指数
+	private int air;//空气质量指数
 
 	public String getId() {
 		return id;
@@ -28,12 +37,16 @@ public class AQIEntity {
 		this.time = time;
 	}
 
-	public String getAir() {
+	public int getAir() {
 		return air;
 	}
 
-	public void setAir(String air) {
+	public void setAir(int air) {
 		this.air = air;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	
 	

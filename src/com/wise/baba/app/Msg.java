@@ -68,4 +68,7 @@ public class Msg {
 	public static final int Set_Air_Auto_Fail = 17;
 	public static final int Set_Air_Setting_Fail = 18;
 	public static final int Set_Air_Level_Fail = 19;
+	
+	
+	public static final int Get_Air_AQI = 21;
 }

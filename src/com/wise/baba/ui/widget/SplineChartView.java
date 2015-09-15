@@ -37,6 +37,8 @@ public class SplineChartView extends ChartView {
 
 	private Paint mPaintTooltips = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+	private List<AQIEntity> listAQI = new ArrayList<AQIEntity>();
+
 	public SplineChartView(Context context) {
 		super(context);
 		initView();
@@ -60,31 +62,22 @@ public class SplineChartView extends ChartView {
 
 		List<AQIEntity> listAQI = new ArrayList<AQIEntity>();
 		AQIEntity a = new AQIEntity();
-		
+
 		// 綁定手势滑动事件
 		// this.bindTouch(this,chart);
 	}
 
-	
-	public void setDataSet(List<AQIEntity> listAQI){
+	public void setDataSet(List<AQIEntity> listAQI) {
+		labels.clear();
 		chartData.clear();
-		List<PointD> linePoint = new ArrayList<PointD>();
-		
-		
-		
-		for(AQIEntity a : listAQI){
-			
-			linePoint.add(new PointD(40d, 50d));
-		}
-
-		SplineData dataSeries2 = new SplineData("线二", linePoint, Color.rgb(40,
-				129, 138));
-		dataSeries2.setDotStyle(XEnum.DotStyle.RING);
-		chartData.add(dataSeries2);
+		this.listAQI = listAQI;
+		chartLabels();
+		chartDataSet();
+		chartRender();
 	}
+
 	
-	
-	
+
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
@@ -122,6 +115,10 @@ public class SplineChartView extends ChartView {
 			chart.setCategoryAxisMax(100);
 			// 标签轴最小值
 			chart.setCategoryAxisMin(0);
+
+			if (listAQI.size() > 0) {
+				chart.setCategoryAxisMax(listAQI.size());
+			}
 
 			// 调轴线与网络线风格
 
@@ -180,8 +177,28 @@ public class SplineChartView extends ChartView {
 		}
 	}
 
+	
+	/**
+	 * 把空气值，转变为Y轴值
+	 */
+	public void toYValue(int value) {
+
+	}
+
 	private void chartDataSet() {
 
+		
+		for (int i = 0; i < listAQI.size(); i++) {
+			String time = listAQI.get(i).getTime();
+			time = time.substring(11, 16);
+			if(i%5 == 0){
+				labels.add(time);
+			}else{
+				labels.add("");
+			}
+		}
+
+		
 		// 线2的数据集
 		List<PointD> linePoint2 = new ArrayList<PointD>();
 		linePoint2.add(new PointD(40d, 50d));
@@ -196,18 +213,32 @@ public class SplineChartView extends ChartView {
 		SplineData dataSeries2 = new SplineData("线二", linePoint2, Color.rgb(40,
 				129, 138));
 
-		dataSeries2.setDotStyle(XEnum.DotStyle.RING);
+		//dataSeries2.setDotStyle(XEnum.DotStyle.RING);
 		chartData.add(dataSeries2);
 	}
 
 	private void chartLabels() {
-		labels.add("08时");
-		labels.add("10时");
-		labels.add("12时");
-		labels.add("14时");
-		labels.add("16时");
-		labels.add("18时");
-		labels.add("20时");
+
+		if (listAQI.size() < 0) {
+			labels.add("10:00");
+			labels.add("10:10");
+			labels.add("10:20");
+			labels.add("10:30");
+			labels.add("10:40");
+			labels.add("10:50");
+			return;
+		}
+
+		for (int i = 0; i < listAQI.size(); i++) {
+			String time = listAQI.get(i).getTime();
+			time = time.substring(11, 16);
+			if(i%5 == 0){
+				labels.add(time);
+			}else{
+				labels.add("");
+			}
+		}
+
 	}
 
 	@Override
