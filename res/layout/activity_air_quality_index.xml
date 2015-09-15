@@ -54,6 +54,7 @@
                 android:layout_gravity="center_horizontal|bottom|right"
                 android:gravity="center_horizontal|bottom|right"
                 android:text="差"
+                android:paddingRight="20dp"
                 android:textColor="@color/Green" />
         </LinearLayout>
 
@@ -82,6 +83,7 @@
                 android:layout_gravity="center_horizontal|bottom|right"
                 android:gravity="center_horizontal|bottom|right"
                 android:text="中"
+                android:paddingRight="20dp"
                 android:textColor="@color/Green" />
         </LinearLayout>
 
@@ -110,6 +112,7 @@
                 android:layout_gravity="center_horizontal|bottom|right"
                 android:gravity="center_horizontal|bottom|right"
                 android:text="良"
+                android:paddingRight="20dp"
                 android:textColor="@color/Green" />
         </LinearLayout>
 
@@ -154,6 +157,7 @@
                 android:layout_gravity="center_horizontal|bottom|right"
                 android:gravity="center_horizontal|bottom|right"
                 android:text="优"
+                android:paddingRight="20dp"
                 android:textColor="@color/Green" />
         </LinearLayout>
 
@@ -172,7 +176,8 @@
         android:layout_alignBottom="@id/llytAirChat"
         android:layout_alignRight="@id/llytAirChat"
         android:layout_alignTop="@id/llytAirChat"
-        android:layout_marginLeft="@dimen/air_chat_margin_left" >
+        android:layout_alignLeft="@id/llytAirChat"
+       >
     </FrameLayout>
 
 </RelativeLayout>

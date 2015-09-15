@@ -45,8 +45,9 @@ public class HttpAir {
 	
 	public final int POWER_ON = 1;
 	public final int POWER_OFF = 0;
-	
 
+	
+	
 	public HttpAir(Context context, Handler handler) {
 		super();
 		this.context = context;
