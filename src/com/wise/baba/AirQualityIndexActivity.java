@@ -54,9 +54,9 @@ public class AirQualityIndexActivity extends Activity {
 			if(msg.what == Msg.Get_Air_AQI){
 				ArrayList<AQIEntity> list = (ArrayList<AQIEntity>) msg.obj;
 				myChatView.setDataSet(list);
+				myChatView.invalidate();
 			}
 		}
-		
 	};
 
 	/**

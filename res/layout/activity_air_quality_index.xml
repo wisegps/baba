@@ -20,7 +20,7 @@
         android:layout_below="@id/iv_air_down"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:text="空气质量指数" />
+        android:text="车内空气质量指数" />
 
     <LinearLayout
         android:id="@+id/llytAirChat"
@@ -53,9 +53,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom|right"
                 android:gravity="center_horizontal|bottom|right"
-                android:text="差"
                 android:paddingRight="20dp"
-                android:textColor="@color/Green" />
+                android:text="差"
+                 />
         </LinearLayout>
 
         <LinearLayout
@@ -82,9 +82,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom|right"
                 android:gravity="center_horizontal|bottom|right"
-                android:text="中"
                 android:paddingRight="20dp"
-                android:textColor="@color/Green" />
+                android:text="中"
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -111,9 +111,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom|right"
                 android:gravity="center_horizontal|bottom|right"
-                android:text="良"
                 android:paddingRight="20dp"
-                android:textColor="@color/Green" />
+                android:text="良"
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -156,9 +156,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom|right"
                 android:gravity="center_horizontal|bottom|right"
-                android:text="优"
                 android:paddingRight="20dp"
-                android:textColor="@color/Green" />
+                android:text="优"
+                />
         </LinearLayout>
 
         <LinearLayout
@@ -174,10 +174,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignBottom="@id/llytAirChat"
-        android:layout_alignRight="@id/llytAirChat"
-        android:layout_alignTop="@id/llytAirChat"
         android:layout_alignLeft="@id/llytAirChat"
-       >
+        android:layout_alignRight="@id/llytAirChat"
+        android:layout_alignTop="@id/llytAirChat" >
     </FrameLayout>
 
 </RelativeLayout>
