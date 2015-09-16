@@ -132,12 +132,14 @@
                 android:orientation="vertical" >
 
                 <TextView
+                    android:id="@+id/tvQuality"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="严重污染"
+                    android:text="优"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                <TextView
+                <TextView 
+                    android:id="@+id/tvCity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="武汉"
@@ -145,10 +147,11 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tvCityAQI"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="495"
+                android:text=""
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
 

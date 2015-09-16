@@ -28,11 +28,14 @@ import com.wise.baba.app.Const;
 import com.wise.baba.app.Msg;
 import com.wise.baba.biz.HttpAir;
 import com.wise.baba.biz.HttpGetObdData;
+import com.wise.baba.biz.HttpWeather;
 import com.wise.baba.entity.CarData;
+import com.wise.baba.entity.Weather;
 import com.wise.baba.ui.adapter.OnCardMenuListener;
 import com.wise.baba.ui.widget.HScrollLayout;
 import com.wise.baba.ui.widget.OnViewChangeListener;
 import com.wise.baba.ui.widget.SwitchImageView;
+import com.wise.baba.util.ColorText;
 
 /**
  * 空气质量
@@ -47,6 +50,7 @@ public class FragmentHomeAir extends Fragment {
 	public int pageIndex = 0;
 	public HttpGetObdData http;
 	public HttpAir httpAir;
+	private HttpWeather httpWeather = null;
 
 	private OnCardMenuListener onCardMenuListener;
 	private List<View> views = new ArrayList<View>();
@@ -74,6 +78,8 @@ public class FragmentHomeAir extends Fragment {
 
 		http = new HttpGetObdData(this.getActivity(), handler);
 		httpAir = new HttpAir(this.getActivity(), handler);
+		
+		httpWeather = new HttpWeather(this.getActivity(), handler);
 		initDataView();
 		hs_air.setOnViewChangeListener(new OnViewChangeListener() {
 			@Override
@@ -132,7 +138,7 @@ public class FragmentHomeAir extends Fragment {
 						AirQualityIndexActivity.class);
 				intent.putExtra("deviceId", app.carDatas.get(carIndex)
 						.getDevice_id());
-				FragmentHomeAir.this.getActivity().startActivity(intent);
+				FragmentHomeAir.this.startActivity(intent);
 				break;
 			}
 		}
@@ -213,9 +219,30 @@ public class FragmentHomeAir extends Fragment {
 		hs_air.snapToScreen(pageIndex);
 
 		http.requestAir(carIndex);
+		
+		httpWeather.requestWeather();
 
 	}
 
+	
+	/**
+	 * 设置车外天气信息
+	 * @param weather  车外天气预报
+	 */
+	public void setWeather(Weather weather){
+		View view = views.get(pageIndex);
+		TextView tvQuality = (TextView) view.findViewById(R.id.tvQuality);
+		TextView tvCity = (TextView) view.findViewById(R.id.tvCity);
+		TextView tvCityAQI = (TextView) view.findViewById(R.id.tvCityAQI);
+		String quality = weather.getQuality();
+		tvQuality.setText(ColorText.getAirQuality(quality));
+		tvCity.setText(weather.getCity());
+	}
+	
+	/**
+	 * 设置空气质量信息
+	 * @param bundle
+	 */
 	public void initValue(Bundle bundle) {
 		View view = views.get(pageIndex);
 		TextView tvAirscore = (TextView) view.findViewById(R.id.tvAirscore);
@@ -256,6 +283,9 @@ public class FragmentHomeAir extends Fragment {
 				break;
 			case Msg.Set_Air_Response:
 				http.requestAir(carIndex);
+				break;
+			case Msg.Get_Weather:
+				setWeather((Weather) msg.obj);
 				break;
 			}
 		}

@@ -4,22 +4,27 @@ import java.util.Calendar;
 
 import javax.crypto.spec.IvParameterSpec;
 
+import org.xclcharts.common.DensityUtil;
+
 import com.wise.baba.app.Msg;
 import com.wise.baba.biz.HttpAir;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
@@ -75,6 +80,30 @@ public class AirSettingActivity extends Activity {
 			imgDuration[i] = (ImageView) findViewById(id);
 			imgDuration[i].setOnTouchListener(onTouchListner);
 		}
+
+		initDurationLayout();
+	}
+
+	/**
+	 * 设置下面时间设置布局，
+	 */
+	public void initDurationLayout() {
+		DisplayMetrics dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		int mScreenWidth = dm.widthPixels;// 获取屏幕分辨率宽度
+		int padding = DensityUtil.dip2px(this, 20); // llytDuration padding*2
+
+		View viewLine = findViewById(R.id.viewAirLine);
+
+		int width = (mScreenWidth - padding) / 5 * 4;
+		FrameLayout.LayoutParams params = (LayoutParams) viewLine
+				.getLayoutParams();
+		params.width = width;
+		viewLine.setLayoutParams(params);
+		viewLine.invalidate();
+		llytDuration.setVisibility(View.INVISIBLE);
+		llytDuration.setVisibility(View.GONE);
+
 	}
 
 	public Handler handler = new Handler() {
@@ -99,16 +128,6 @@ public class AirSettingActivity extends Activity {
 
 		if (hasFocus) {
 
-			View viewLine = findViewById(R.id.viewAirLine);
-
-			int width = viewLine.getMeasuredWidth() / 5 * 4;
-			FrameLayout.LayoutParams params = (LayoutParams) viewLine
-					.getLayoutParams();
-			params.width = width;
-			viewLine.setLayoutParams(params);
-			viewLine.invalidate();
-			llytDuration.setVisibility(View.INVISIBLE);
-			llytDuration.setVisibility(View.GONE);
 		}
 
 	}

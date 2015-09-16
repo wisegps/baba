@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.wise.baba.app.Msg;
 import com.wise.baba.biz.HttpAir;
+import com.wise.baba.biz.HttpWeather;
 import com.wise.baba.entity.AQIEntity;
 import com.wise.baba.ui.widget.SplineChartView;
 
@@ -14,7 +15,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
@@ -29,8 +32,10 @@ import android.widget.RelativeLayout;
 public class AirQualityIndexActivity extends Activity {
 
 	private String deviceId = "";
-	private HttpAir  httpAir = null;
-	private SplineChartView myChatView ;
+	private HttpAir httpAir = null;
+	
+	private SplineChartView myChatView;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -41,17 +46,15 @@ public class AirQualityIndexActivity extends Activity {
 		httpAir.requestAQI(deviceId);
 		initView();
 	}
-	
-	
-	
+
 	/**
 	 * 异步网络请求，消息处理
 	 */
-	public Handler handler = new Handler(){
+	public Handler handler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
-			if(msg.what == Msg.Get_Air_AQI){
+			if (msg.what == Msg.Get_Air_AQI) {
 				ArrayList<AQIEntity> list = (ArrayList<AQIEntity>) msg.obj;
 				myChatView.setDataSet(list);
 				myChatView.invalidate();
@@ -63,6 +66,15 @@ public class AirQualityIndexActivity extends Activity {
 	 * 初始化页面
 	 */
 	public void initView() {
+
+		findViewById(R.id.iv_air_down).setOnClickListener(
+				new OnClickListener() {
+
+					@Override
+					public void onClick(View view) {
+						AirQualityIndexActivity.this.finish();
+					}
+				});
 		FrameLayout layout = (FrameLayout) findViewById(R.id.flytAirChat);
 		DisplayMetrics dm = getResources().getDisplayMetrics();
 		int scrWidth = (int) (dm.widthPixels * 0.9);
@@ -96,6 +108,13 @@ public class AirQualityIndexActivity extends Activity {
 	 */
 	public void close() {
 
+	}
+
+	@Override
+	public void finish() {
+		// TODO Auto-generated method stub
+		super.finish();
+		this.overridePendingTransition(R.anim.push_buttom_out, 0);
 	}
 
 }

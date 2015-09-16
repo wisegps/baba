@@ -71,4 +71,5 @@ public class Msg {
 	
 	
 	public static final int Get_Air_AQI = 21;
+	public static final int Get_Weather = 22;
 }
