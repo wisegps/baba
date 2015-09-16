@@ -87,6 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="滤芯还剩下98%"
+                    android:visibility="invisible"
                     android:textColor="#bfbfbf" />
             </LinearLayout>
 

@@ -43,20 +43,22 @@ public class FragmentHomeAir extends Fragment {
 	private static final String TAG = "FragmentHomeAir";
 	HScrollLayout hs_air;
 	AppApplication app;
-	public int index = 0;
+	public int carIndex = 0;
+	public int pageIndex = 0;
 	public HttpGetObdData http;
 	public HttpAir httpAir;
-	
+
 	private OnCardMenuListener onCardMenuListener;
-	private List<View>  views = new ArrayList<View>();
-	
+	private List<View> views = new ArrayList<View>();
+
 	public final static int POWER_ON = 1;
 	public final static int POWER_OFF = 0;
-	
+
 	public final static int MODE_AUTO = 1;
 	public final static int MODE_MAN = 0;
-	
-	public RotateAnimation rolateAnimation = new RotateAnimation(0, 360,  Animation.RELATIVE_TO_SELF,0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+
+	public RotateAnimation rolateAnimation = new RotateAnimation(0, 360,
+			Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,17 +71,17 @@ public class FragmentHomeAir extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
 		hs_air = (HScrollLayout) getActivity().findViewById(R.id.hs_air);
-		
-	
+
 		http = new HttpGetObdData(this.getActivity(), handler);
 		httpAir = new HttpAir(this.getActivity(), handler);
 		initDataView();
 		hs_air.setOnViewChangeListener(new OnViewChangeListener() {
 			@Override
 			public void OnViewChange(int view, int duration) {
-				if (index != view) {
-					index = view;
-					http.requestAir(index);
+				carIndex = (Integer) hs_air.getChildAt(view).getTag();
+				if (view != pageIndex) {
+					pageIndex = view;
+					http.requestAir(carIndex);
 				}
 			}
 		});
@@ -103,7 +105,8 @@ public class FragmentHomeAir extends Fragment {
 				SwitchImageView ivPower = (SwitchImageView) v;
 				boolean isChecked = ivPower.isChecked();
 				ivPower.setChecked(!isChecked);
-				httpAir.setPower(app.carDatas.get(index).getDevice_id(), !isChecked);
+				httpAir.setPower(app.carDatas.get(carIndex).getDevice_id(),
+						!isChecked);
 				Log.i("FragmentHomeAir", "点击电源: ");
 				startAirAnimation(!isChecked);
 				break;
@@ -117,155 +120,162 @@ public class FragmentHomeAir extends Fragment {
 				break;
 			case R.id.iv_air_setting:
 				Intent intent = new Intent();
-				intent.setClass(FragmentHomeAir.this.getActivity(), AirSettingActivity.class);
-				intent.putExtra("deviceId", app.carDatas.get(index).getDevice_id());
+				intent.setClass(FragmentHomeAir.this.getActivity(),
+						AirSettingActivity.class);
+				intent.putExtra("deviceId", app.carDatas.get(carIndex)
+						.getDevice_id());
 				FragmentHomeAir.this.getActivity().startActivity(intent);
 				break;
 			case R.id.flytAirDialView:
 				intent = new Intent();
-				intent.setClass(FragmentHomeAir.this.getActivity(), AirQualityIndexActivity.class);
-				intent.putExtra("deviceId", app.carDatas.get(index).getDevice_id());
+				intent.setClass(FragmentHomeAir.this.getActivity(),
+						AirQualityIndexActivity.class);
+				intent.putExtra("deviceId", app.carDatas.get(carIndex)
+						.getDevice_id());
 				FragmentHomeAir.this.getActivity().startActivity(intent);
 				break;
-			
 			}
 		}
 	};
 
-	
-	public void startAirAnimation(boolean isChecked){
+	public void startAirAnimation(boolean isChecked) {
 		rolateAnimation.cancel();
-		
-		if(isChecked == false){
+
+		if (isChecked == false) {
 			return;
 		}
-		new Handler().post(new Runnable(){
+		new Handler().post(new Runnable() {
 			@Override
 			public void run() {
-				View imgCursor = views.get(index).findViewById(R.id.iv_page_air_circle_cursor);
+				View imgCursor = views.get(pageIndex).findViewById(
+						R.id.iv_page_air_circle_cursor);
 				rolateAnimation.setInterpolator(new LinearInterpolator());
 				rolateAnimation.setDuration(1500);
 				rolateAnimation.setRepeatCount(Animation.INFINITE);
 				imgCursor.startAnimation(rolateAnimation);
 			}
-			
 		});
-		
+
 	}
+
 	/** 滑动车辆布局 **/
 	public void initDataView() {// 布局
 		// 删除车辆后重新布局，如果删除的是最后一个车辆，则重置为第一个车
-		if (index < app.carDatas.size()) {
+		if (carIndex < app.carDatas.size()) {
 		} else {
-			index = 0;
+			carIndex = 0;
+			pageIndex = 0;
 		}
 		hs_air.removeAllViews();
-		
+
 		List<CarData> carDataList = app.carDatas;
 		for (int i = 0; i < carDataList.size(); i++) {
+
+			if (carDataList.get(i).isIfAir() == false) {
+				continue;
+			}
 			View v = LayoutInflater.from(getActivity()).inflate(
 					R.layout.page_air, null);
-			
-			TextView tvCardTitle = (TextView) v.findViewById(R.id.tv_card_title);
-			SwitchImageView ivAirSettting = (SwitchImageView) v.findViewById(R.id.iv_air_setting);
-			SwitchImageView ivAirPower = (SwitchImageView) v.findViewById(R.id.iv_air_power);
-			SwitchImageView ivAirAuto = (SwitchImageView) v.findViewById(R.id.iv_air_auto);
-			SwitchImageView ivAirLevel = (SwitchImageView) v.findViewById(R.id.iv_air_level);
-			
-			View flytAirDialView =  v.findViewById(R.id.flytAirDialView);
-			
+			v.setTag(i);
+			TextView tvCardTitle = (TextView) v
+					.findViewById(R.id.tv_card_title);
+			SwitchImageView ivAirSettting = (SwitchImageView) v
+					.findViewById(R.id.iv_air_setting);
+			SwitchImageView ivAirPower = (SwitchImageView) v
+					.findViewById(R.id.iv_air_power);
+			SwitchImageView ivAirAuto = (SwitchImageView) v
+					.findViewById(R.id.iv_air_auto);
+			SwitchImageView ivAirLevel = (SwitchImageView) v
+					.findViewById(R.id.iv_air_level);
+
+			View flytAirDialView = v.findViewById(R.id.flytAirDialView);
+
 			ImageView ivAirMenu = (ImageView) v.findViewById(R.id.iv_air_menu);
-			
+
 			CarData carData = carDataList.get(i);
-			
+
 			tvCardTitle.setText(carData.getNick_name());
-			
+
 			ivAirSettting.setOnClickListener(onClickListener);
 			ivAirPower.setOnClickListener(onClickListener);
 			ivAirAuto.setOnClickListener(onClickListener);
 			ivAirLevel.setOnClickListener(onClickListener);
 			ivAirMenu.setOnClickListener(onClickListener);
-			
+
 			flytAirDialView.setOnClickListener(onClickListener);
-			
-			
+
 			views.add(v);
 			hs_air.addView(v);
 
 		}
-		hs_air.snapToScreen(index);
 		
-		http.requestAir(index);
-		
+		carIndex = (Integer) hs_air.getChildAt(pageIndex).getTag();
+		hs_air.snapToScreen(pageIndex);
+
+		http.requestAir(carIndex);
+
 	}
-	
-	public void initValue(Bundle bundle){
-		View view = views.get(index);
+
+	public void initValue(Bundle bundle) {
+		View view = views.get(pageIndex);
 		TextView tvAirscore = (TextView) view.findViewById(R.id.tvAirscore);
 		TextView tvAirDesc = (TextView) view.findViewById(R.id.tvAirDesc);
-		
-		SwitchImageView ivAirPower = (SwitchImageView) view.findViewById(R.id.iv_air_power);
-		SwitchImageView ivAirAuto = (SwitchImageView) view.findViewById(R.id.iv_air_auto);
-		SwitchImageView ivAirLevel = (SwitchImageView) view.findViewById(R.id.iv_air_level);
-		
+
+		SwitchImageView ivAirPower = (SwitchImageView) view
+				.findViewById(R.id.iv_air_power);
+		SwitchImageView ivAirAuto = (SwitchImageView) view
+				.findViewById(R.id.iv_air_auto);
+		SwitchImageView ivAirLevel = (SwitchImageView) view
+				.findViewById(R.id.iv_air_level);
+
 		/*
-		 *空气质量指数 
+		 * 空气质量指数
 		 */
 		int air = bundle.getInt("air");
 		String desc = getAirDesc(air);
 		tvAirDesc.setText(desc);
-		tvAirscore.setText(air+"");
-		
-		
+		tvAirscore.setText(air + "");
+
 		/*
 		 * 开关控制
 		 */
 		int vSwitch = bundle.getInt("switch");
-		boolean isChecked = (vSwitch == POWER_ON) ? true:false;
-		Log.i("FragmentHomeAir", "开关控制: "+isChecked);
+		boolean isChecked = (vSwitch == POWER_ON) ? true : false;
+		Log.i("FragmentHomeAir", "开关控制: " + isChecked);
 		ivAirPower.setChecked(isChecked);
-		
-		
-		
-		
-		
-		
+
 	}
-	
-	
-	public Handler handler = new Handler(){
+
+	public Handler handler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
-			switch(msg.what){
+			switch (msg.what) {
 			case Msg.Get_OBD_Data:
 				initValue(msg.getData());
 				break;
 			case Msg.Set_Air_Response:
-				http.requestAir(index);
+				http.requestAir(carIndex);
 				break;
 			}
 		}
-		
-		
-	};
-	
-	public String getAirDesc(int air){
-		 String air_desc = "优";
-	      if(air <= 1300){
-	        air_desc = "优";
-	      }else if(air > 1300 && air <= 1500){
-	        air_desc = "良";
-	      }else if(air > 1500 && air <= 2000){
-	        air_desc = "中";
-	      }else{
-	        air_desc = "差";
-	      }
 
-		return   "车内空气"+air_desc;
-		
+	};
+
+	public String getAirDesc(int air) {
+		String air_desc = "优";
+		if (air <= 1300) {
+			air_desc = "优";
+		} else if (air > 1300 && air <= 1500) {
+			air_desc = "良";
+		} else if (air > 1500 && air <= 2000) {
+			air_desc = "中";
+		} else {
+			air_desc = "差";
+		}
+
+		return "车内空气" + air_desc;
+
 	}
-	
-	
 
 }

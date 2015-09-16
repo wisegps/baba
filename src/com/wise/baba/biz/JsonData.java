@@ -12,6 +12,8 @@ import com.wise.baba.entity.CarData;
 
 public class JsonData {
 	public static List<CarData> jsonCarInfo(String str) {
+		
+		
 		List<CarData> carDatas = new ArrayList<CarData>();
 		try {
 			JSONArray jsonArray = new JSONArray(str);
@@ -98,6 +100,12 @@ public class JsonData {
 				} else {
 					carData.setFuel_price(0);
 				}
+				if (jsonObject.opt("if_air") != null) {
+					carData.setIfAir(jsonObject.getBoolean("if_air"));
+				} else {
+					carData.setIfAir(false);
+				}
+				
 				JSONArray jsonArray2 = new JSONArray(
 						jsonObject.getString("vio_citys"));
 				ArrayList<String> vio_citys = new ArrayList<String>();

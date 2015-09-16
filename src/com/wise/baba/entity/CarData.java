@@ -77,7 +77,7 @@ public class CarData implements Serializable{
 
 	private boolean isStop;// 是否启动状态
 
-	
+	private boolean ifAir;//是否有空气净化器
 
 	public boolean isStop() {
 		return isStop;
@@ -407,6 +407,14 @@ public class CarData implements Serializable{
 
 	public void setGeofence(String geofence) {
 		this.geofence = geofence;
+	}
+
+	public boolean isIfAir() {
+		return ifAir;
+	}
+
+	public void setIfAir(boolean ifAir) {
+		this.ifAir = ifAir;
 	}
 
 	@Override

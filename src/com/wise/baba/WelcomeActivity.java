@@ -216,6 +216,7 @@ public class WelcomeActivity extends Activity implements TagAliasCallback {
 	private void getCarData() {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id
 				+ "/vehicle?auth_code=" + app.auth_code;
+		Log.i("Welcome", url);
 		new NetThread.GetDataThread(handler, url, get_data).start();
 	}
 
