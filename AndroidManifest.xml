@@ -54,7 +54,8 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-       <uses-library android:name="android.test.runner"/> 
+        <uses-library android:name="android.test.runner" />
+
         <activity
             android:name=".WelcomeActivity"
             android:label="@string/app_name"
@@ -472,12 +473,11 @@
             android:name=".AirSettingActivity"
             android:screenOrientation="portrait" >
         </activity>
-          <activity
+        <activity
             android:name=".AirQualityIndexActivity"
-            android:theme="@style/PopupActivity"  
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/PopupActivity" >
         </activity>
-        
 
         <service android:name=".LocationService" >
         </service>
@@ -656,8 +656,11 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="DhT4kz88wR3r5yCl6tQCpaNW" />
-        
-         
     </application>
-<instrumentation android:name="android.test.instrumentationTestRunner" android:targetPackage="com.wise.baba.test" android:label="Tests"/> 
+
+    <instrumentation
+        android:name="android.test.instrumentationTestRunner"
+        android:label="Tests"
+        android:targetPackage="com.wise.baba.test" />
+
 </manifest>

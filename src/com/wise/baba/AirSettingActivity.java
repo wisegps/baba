@@ -207,21 +207,39 @@ public class AirSettingActivity extends Activity {
 		timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
 		timePicker.setIs24HourView(true);
 
-		timePicker.setOnTimeChangedListener(new OnTimeChangedListener() {
-
-			@Override
-			public void onTimeChanged(TimePicker timer, int arg1, int arg2) {
-				time = timer.getCurrentHour() + ":" + timer.getCurrentMinute();
-				if (time.length() < 5) {
-					time = "0" + time;
-				}
-			}
-		});
+//		timePicker.setOnTimeChangedListener(new OnTimeChangedListener() {
+//
+//			@Override
+//			public void onTimeChanged(TimePicker timer, int arg1, int arg2) {
+//				
+//				int hour = timer.getCurrentHour();
+//				int minute = timer.getCurrentMinute();
+//				if(){}
+//				
+//				time = timer.getCurrentHour() + ":" + timer.getCurrentMinute();
+//				if (time.length() < 5) {
+//					time = "0" + time;
+//				}
+//			}
+//		});
 		AlertDialog ad = new AlertDialog.Builder(this)
 				.setTitle("定时")
 				.setView(timePicker)
 				.setPositiveButton("设置", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
+						
+						String hour = timePicker.getCurrentHour()+"";
+						
+						String minute = timePicker.getCurrentMinute()+"";
+						
+						if(hour.length()<2){
+							hour = "0"+hour;
+						}
+						
+						if(minute.length() <2){
+							minute = "0"+minute;
+						}
+						time = hour + ":" +minute;
 						tv_air_timer.setText(time);
 					}
 				})
