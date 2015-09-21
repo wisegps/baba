@@ -38,7 +38,7 @@ import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.Toast;
 
 public class AirSettingActivity extends Activity {
-
+    
 	private TextView tvDuration, tv_air_timer;
 	private LinearLayout llytSetDuration, llytDuration, llytTimer;
 	private Switch switchMode, switchTimer;
@@ -46,13 +46,16 @@ public class AirSettingActivity extends Activity {
 	private ImageView imgDuration[] = new ImageView[5];
 	private String time = "00:00";
 	private ImageView imgRight;
+	
 	private int imgDurationId[] = new int[] { R.id.iv_duration_30,
 			R.id.iv_duration_60, R.id.iv_duration_90, R.id.iv_duration_100,
 			R.id.iv_duration_120 };
 	public HttpAir httpAir;
 
+	
 	private String deviceId = "";
 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
