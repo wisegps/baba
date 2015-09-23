@@ -112,9 +112,7 @@ public class HttpAir {
 	public void requestAQI(String deviceId) {
 
 		String startTime = DateUtil.getCurrentTime(1);
-		Log.i("HttpAir", "startTime: " + startTime);
 		String endTime = DateUtil.getCurrentTime(0);
-		Log.i("HttpAir", "endTime: " + endTime);
 		try {
 			startTime = URLEncoder.encode(startTime, "gbk");
 			endTime = URLEncoder.encode(endTime, "gbk");
@@ -126,7 +124,6 @@ public class HttpAir {
 		String url = Constant.BaseUrl + "device/" + deviceId
 				+ "/air_data?auth_code=" + app.auth_code + "&start_time="
 				+ startTime + "&end_time=" + endTime;
-		Log.i("HttpAir", "air_data url: " + url);
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
 
@@ -149,6 +146,45 @@ public class HttpAir {
 		mQueue.start();
 
 	}
+	/**
+	 * 请求空气质量指数
+	 */
+	public void requestAir(int  index) {
+		deviceId = app.carDatas.get(index).getDevice_id();
+		String url = Constant.BaseUrl + "device/" + deviceId
+				+ "/active_gps_data?auth_code=" + app.auth_code;
+		Listener<String> listener = new Response.Listener<String>() {
+			public void onResponse(String response) {
+				Message msg = new Message();
+				msg.what = Msg.Get_Air_Value;
+				int value = 0;
+				try {
+					JSONObject obj = new JSONObject(response);
+					JSONObject data = obj.optJSONObject("active_gps_data");
+					value = data.optInt("air");
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+				Log.i("HttpAir", "刷新值 " + value);
+				msg.obj = value;
+				handler.sendMessage(msg);
+			}
+		};
+
+		ErrorListener errorListener = new ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+
+			}
+		};
+		Request request = new StringRequest(url, listener, errorListener);
+		request.setShouldCache(false);
+		mQueue.add(request);
+		mQueue.start();
+
+	}
+	
 
 	public List parseAQI(String response){
 		List<AQIEntity> list = new ArrayList<AQIEntity>();

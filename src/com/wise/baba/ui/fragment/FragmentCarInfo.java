@@ -148,7 +148,6 @@ public class FragmentCarInfo extends Fragment {
 				}
 			}
 		});
-
 		http = new HttpCarInfo(this.getActivity(), handler);
 	}
 
@@ -775,17 +774,17 @@ public class FragmentCarInfo extends Fragment {
 	/** 解析本月油价 **/
 	private void jsonData(String str, int index) {
 		try {
+			
 			JSONObject jsonObject = new JSONObject(str);
 			if (jsonObject.toString() == null
 					|| jsonObject.toString().equals("")) {
 				return;
 			}
+			
 			if (index < carViews.size()) {
 				CarView carView = carViews.get(index);
 				carView.getTv_fee()
-						.setText(
-								String.format("%.1f",
-										jsonObject.getDouble("total_fee")));// 花费
+						.setText(String.format("%.1f",jsonObject.getDouble("total_fee")));// 花费
 				carView.getTv_fuel().setText(
 						String.format("%.1f",
 								jsonObject.getDouble("total_fuel")));// 油耗

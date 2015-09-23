@@ -71,10 +71,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:alpha="0.8"
-                    android:fontFamily="sans-serif-light"
                     android:text="0"
                     android:textColor="@color/navy_blue"
-                    android:textSize="@dimen/score_number" />
+                    android:textSize="40sp" />
 
                 <TextView
                     android:id="@+id/tvAirDesc"

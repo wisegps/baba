@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -45,6 +46,7 @@ import com.wise.baba.util.ColorText;
 public class FragmentHomeAir extends Fragment {
 	private static final String TAG = "FragmentHomeAir";
 	HScrollLayout hs_air;
+	private TextView tvAirValue;
 	AppApplication app;
 	public int carIndex = 0;
 	public int pageIndex = 0;
@@ -64,6 +66,8 @@ public class FragmentHomeAir extends Fragment {
 	public RotateAnimation rolateAnimation = new RotateAnimation(0, 360,
 			Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 
+	public int PageStatus = 0;// 页面出现0，页面销毁1
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -78,7 +82,7 @@ public class FragmentHomeAir extends Fragment {
 
 		http = new HttpGetObdData(this.getActivity(), handler);
 		httpAir = new HttpAir(this.getActivity(), handler);
-		
+
 		httpWeather = new HttpWeather(this.getActivity(), handler);
 		initDataView();
 		hs_air.setOnViewChangeListener(new OnViewChangeListener() {
@@ -91,6 +95,7 @@ public class FragmentHomeAir extends Fragment {
 				}
 			}
 		});
+		
 
 	}
 
@@ -150,11 +155,13 @@ public class FragmentHomeAir extends Fragment {
 		if (isChecked == false) {
 			return;
 		}
+
 		new Handler().post(new Runnable() {
 			@Override
 			public void run() {
 				View imgCursor = views.get(pageIndex).findViewById(
 						R.id.iv_page_air_circle_cursor);
+				imgCursor.clearAnimation();
 				rolateAnimation.setInterpolator(new LinearInterpolator());
 				rolateAnimation.setDuration(1500);
 				rolateAnimation.setRepeatCount(Animation.INFINITE);
@@ -162,6 +169,19 @@ public class FragmentHomeAir extends Fragment {
 			}
 		});
 
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		PageStatus = 1;
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		PageStatus = 0;
+		refreshAir();
 	}
 
 	/** 滑动车辆布局 **/
@@ -214,22 +234,39 @@ public class FragmentHomeAir extends Fragment {
 			hs_air.addView(v);
 
 		}
-		
+
 		carIndex = (Integer) hs_air.getChildAt(pageIndex).getTag();
 		hs_air.snapToScreen(pageIndex);
 
 		http.requestAir(carIndex);
-		
+
 		httpWeather.requestWeather();
 
 	}
 
-	
+	/**
+	 * 刷新数据 requestAir
+	 */
+	public void refreshAir() {
+
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if (PageStatus == 0) {
+					refreshAir();
+				}
+			}
+		}, 30000);
+		httpAir.requestAir(carIndex);
+	}
+
 	/**
 	 * 设置车外天气信息
-	 * @param weather  车外天气预报
+	 * 
+	 * @param weather
+	 *            车外天气预报
 	 */
-	public void setWeather(Weather weather){
+	public void setWeather(Weather weather) {
 		View view = views.get(pageIndex);
 		TextView tvQuality = (TextView) view.findViewById(R.id.tvQuality);
 		TextView tvCity = (TextView) view.findViewById(R.id.tvCity);
@@ -238,14 +275,15 @@ public class FragmentHomeAir extends Fragment {
 		tvQuality.setText(ColorText.getAirQuality(quality));
 		tvCity.setText(weather.getCity());
 	}
-	
+
 	/**
 	 * 设置空气质量信息
+	 * 
 	 * @param bundle
 	 */
 	public void initValue(Bundle bundle) {
 		View view = views.get(pageIndex);
-		TextView tvAirscore = (TextView) view.findViewById(R.id.tvAirscore);
+		tvAirValue = (TextView) view.findViewById(R.id.tvAirscore);
 		TextView tvAirDesc = (TextView) view.findViewById(R.id.tvAirDesc);
 
 		SwitchImageView ivAirPower = (SwitchImageView) view
@@ -261,7 +299,7 @@ public class FragmentHomeAir extends Fragment {
 		int air = bundle.getInt("air");
 		String desc = getAirDesc(air);
 		tvAirDesc.setText(desc);
-		tvAirscore.setText(air + "");
+		tvAirValue.setText(air + "");
 
 		/*
 		 * 开关控制
@@ -273,6 +311,21 @@ public class FragmentHomeAir extends Fragment {
 
 	}
 
+	/**
+	 * 只刷新空气质量数值
+	 * 
+	 * @param value
+	 *            空气指数
+	 */
+	public void refreshValue(int value) {
+		if (tvAirValue != null) {
+
+			Log.i("FragmentHomeAir", "refreshValue: " + value);
+			tvAirValue.setText(value + "");
+		}
+
+	}
+
 	public Handler handler = new Handler() {
 
 		@Override
@@ -280,6 +333,9 @@ public class FragmentHomeAir extends Fragment {
 			switch (msg.what) {
 			case Msg.Get_OBD_Data:
 				initValue(msg.getData());
+				break;
+			case Msg.Get_Air_Value:
+				refreshValue((Integer) msg.obj);
 				break;
 			case Msg.Set_Air_Response:
 				http.requestAir(carIndex);
