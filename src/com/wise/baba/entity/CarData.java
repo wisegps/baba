@@ -9,6 +9,18 @@ import java.util.ArrayList;
  * @author keven.cheng
  */
 public class CarData implements Serializable{
+	
+	
+	private String car_city;
+	
+	public String getCar_city() {
+		return car_city;
+	}
+
+	public void setCar_city(String car_city) {
+		this.car_city = car_city;
+	}
+
 	private int obj_id;
 	/** 品牌 **/
 	private String car_brand;

@@ -651,7 +651,9 @@
         <!--
 		debug：ENAit7WmjvYO0DmxKMOU4CLx
 		正     式1：DhT4kz88wR3r5yCl6tQCpaNW
-		本机：YTcG12ht0N8FaxI6rbBd4onM
+		本机1：YTcG12ht0N8FaxI6rbBd4onM
+		
+		本机2：v2Nqgx5IjHzNw2osna9SHhGH
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

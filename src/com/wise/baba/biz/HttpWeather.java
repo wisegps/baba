@@ -46,12 +46,12 @@ public class HttpWeather {
 	/**
 	 * 请求天气信息
 	 */
-	public void requestWeather() {
+	public void requestWeather(String city) {
 
 		String url = "";
 		try {
 			url = Constant.BaseUrl + "base/weather2?city="
-					+ URLEncoder.encode(app.City, "UTF-8");
+					+ URLEncoder.encode(city, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
