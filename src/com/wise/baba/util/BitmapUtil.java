@@ -31,6 +31,7 @@ public class BitmapUtil {
 		// 第一次解析将inJustDecodeBounds设置为true，来获取图片大小
 	    final BitmapFactory.Options options = new BitmapFactory.Options();
 	    options.inJustDecodeBounds = true;
+	    options.inPurgeable= true;
 	    BitmapFactory.decodeResource(res, resId, options);
 	    // 调用上面定义的方法计算inSampleSize值
 	    options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);

@@ -521,6 +521,12 @@ public class FragmentCarInfo extends Fragment {
 	/** 滑动车辆布局 **/
 	public void initDataView() {// 布局
 		// 删除车辆后重新布局，如果删除的是最后一个车辆，则重置为第一个车
+		
+		if( app.carDatas == null || index >= app.carDatas.size()){
+			index = 0;
+			return;
+		}
+		
 		if (index < app.carDatas.size()) {
 
 		} else {

@@ -72,8 +72,7 @@ public class HttpGetObdData {
 	 * @param url
 	 */
 	public void request(int index) {
-		// cancle();
-		if (app.carDatas.size() < 1) {
+		if( app.carDatas == null || index >= app.carDatas.size()){
 			return;
 		}
 

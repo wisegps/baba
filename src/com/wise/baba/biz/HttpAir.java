@@ -70,7 +70,6 @@ public class HttpAir {
 
 	/**
 	 * 发送postt请求 返回json字符串,并解析
-	 * 
 	 * @param url
 	 */
 	public void request(String deviceId, final int command, String params) {
@@ -79,7 +78,6 @@ public class HttpAir {
 
 		String data = "{device_id:" + deviceId + ",cmd_type:" + command
 				+ ",params:" + params + "}";
-		Log.i("HttpAir", data);
 		JSONObject jsonObject = null;
 		try {
 			jsonObject = new JSONObject(data);
@@ -128,7 +126,6 @@ public class HttpAir {
 				+ "/air_data?auth_code=" + app.auth_code + "&start_time="
 				+ startTime + "&end_time=" + endTime;
 		
-		Log.i("HttpAir", url);
 		
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
@@ -157,7 +154,11 @@ public class HttpAir {
 	 * 请求空气质量指数
 	 */
 	public void requestAir(int  index) {
+		if( app.carDatas == null || index >= app.carDatas.size()){
+			return;
+		}
 		deviceId = app.carDatas.get(index).getDevice_id();
+		
 		String url = Constant.BaseUrl + "device/" + deviceId
 				+ "/active_gps_data?auth_code=" + app.auth_code;
 		

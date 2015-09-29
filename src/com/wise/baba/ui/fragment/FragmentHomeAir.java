@@ -134,9 +134,6 @@ public class FragmentHomeAir extends Fragment {
 					http.requestAir(carIndex);
 					// getWeather();
 
-					Log.e("百度地图反解析", " " + carIndex + "--->"
-							+ app.carDatas.get(carIndex).getCar_city());
-
 					// httpWeather.requestWeather(app.carDatas.get(carIndex).getCar_city());
 
 				}
@@ -362,6 +359,12 @@ public class FragmentHomeAir extends Fragment {
 	/** 滑动车辆布局 **/
 	public void initDataView() {// 布局
 		// 删除车辆后重新布局，如果删除的是最后一个车辆，则重置为第一个车
+		if( app.carDatas == null || carIndex >= app.carDatas.size()){
+			carIndex = 0;
+			pageIndex = 0;
+			return;
+		}
+		
 		if (carIndex < app.carDatas.size()) {
 		} else {
 			carIndex = 0;

@@ -71,7 +71,7 @@ public class DialBitmapFactory {
 	public Bitmap getBitmapByValue(final float value,final boolean hasCursor) {
 		
 				Log.i("DialBitmapFactory", "DialBitmapFactory1");
-				mBitmap = Bitmap.createBitmap(width, width, Config.ARGB_8888);
+				mBitmap = Bitmap.createBitmap(width, width, Config.ARGB_4444);
 				mCanvas = new Canvas(mBitmap);
 				mCanvas.save();
 				// 第一层，画彩色刻度
@@ -103,7 +103,7 @@ public class DialBitmapFactory {
 	 */
 	public Bitmap getGray(Bitmap src, float value) {
 		// 1,先建立一个原图的副本
-		Bitmap newBitmap = Bitmap.createBitmap(width, width, Config.ARGB_8888);
+		Bitmap newBitmap = Bitmap.createBitmap(width, width, Config.ARGB_4444);
 		Canvas canvas = new Canvas(newBitmap);
 		canvas.save();
 		canvas.drawBitmap(src, 0, 0, null);
@@ -125,7 +125,7 @@ public class DialBitmapFactory {
 	public Bitmap sector(Bitmap src, float value) {
 
 		// 1,先建立一个原图的副本
-		Bitmap newBitmap = Bitmap.createBitmap(width, width, Config.ARGB_8888);
+		Bitmap newBitmap = Bitmap.createBitmap(width, width, Config.ARGB_4444);
 		Canvas canvas = new Canvas(newBitmap);
 		canvas.save();
 

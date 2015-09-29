@@ -191,7 +191,7 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 				}
 			}
 			bt_login.setEnabled(false);
-			bt_login.setText("登录中");
+			bt_login.setText("登录中...");
 			String url = Constant.BaseUrl + "user_login?account=" + account + "&password=" + GetSystem.getM5DEndo(pwd);
 			new NetThread.GetDataThread(handler, url, accountLogin).start();
 		} else {
@@ -211,8 +211,7 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 
 	/** 解析登录结果 **/
 	private void jsonAccountLogin(String str) {
-		bt_login.setText("登录");
-		bt_login.setEnabled(true);
+		
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			if (jsonObject.getString("status_code").equals("0")) {
@@ -276,10 +275,21 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 		sendBroadcast(intent);
 		// 判断进入那个页面
 		getActivityState(LoginActivity.this.getIntent());
-
 		setResult(1);
 		finish();
 	}
+	
+	
+	
+	
+	
+	@Override
+	public void finish() {
+		super.finish();
+//		bt_login.setText("登录");
+//		bt_login.setEnabled(true);
+	}
+
 	public static final int SMS = 1;// 传递信息页面跳转类型
 	public static final int COLLCETION = 2;// 收藏
 	public static final int TRAFFIC = 3;// 违章
