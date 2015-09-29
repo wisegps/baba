@@ -46,6 +46,43 @@ public class HttpWeather {
 	/**
 	 * 请求天气信息
 	 */
+	public void requestWeather() {
+
+		String url = "";
+		try {
+			url = Constant.BaseUrl + "base/weather2?city="
+					+ URLEncoder.encode(app.City, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		Log.i("HttpWeather", url);
+		Listener<String> listener = new Response.Listener<String>() {
+			public void onResponse(String response) {
+
+				Message msg = new Message();
+				msg.what = Msg.Get_Weather;
+				msg.obj = jsonWeather(response);
+				handler.sendMessage(msg);
+			}
+		};
+
+		ErrorListener errorListener = new ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+
+			}
+		};
+		Request request = new StringRequest(url, listener, errorListener);
+		request.setShouldCache(false);
+		mQueue.add(request);
+		mQueue.start();
+
+	}
+	
+	/**
+	 * 请求天气信息
+	 */
 	public void requestWeather(String city) {
 
 		String url = "";
@@ -79,6 +116,7 @@ public class HttpWeather {
 		mQueue.start();
 
 	}
+	
 
 	private Weather jsonWeather(String str) {
 		JSONObject obj = null;

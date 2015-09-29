@@ -31,6 +31,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
+import com.wise.baba.app.Const;
 import com.wise.baba.app.Constant;
 import com.wise.baba.app.Msg;
 import com.wise.baba.entity.AQIEntity;
@@ -76,9 +77,9 @@ public class HttpAir {
 
 		String url = Constant.BaseUrl + "command?auth_code=" + app.auth_code;
 
-		String data = "{device_id:" + deviceId + ",cmd_type:" + COMMAND_SWITCH
+		String data = "{device_id:" + deviceId + ",cmd_type:" + command
 				+ ",params:" + params + "}";
-
+		Log.i("HttpAir", data);
 		JSONObject jsonObject = null;
 		try {
 			jsonObject = new JSONObject(data);
@@ -91,6 +92,8 @@ public class HttpAir {
 					@Override
 					public void onResponse(JSONObject response) {
 						handler.sendEmptyMessage(Msg.Set_Air_Response);
+						Log.i("HttpAir", "response " + response.toString());
+						
 					}
 				}, new Response.ErrorListener() {
 
@@ -111,7 +114,7 @@ public class HttpAir {
 	 */
 	public void requestAQI(String deviceId) {
 
-		String startTime = DateUtil.getCurrentTime(1);
+		String startTime = DateUtil.getCurrentTime(3);
 		String endTime = DateUtil.getCurrentTime(0);
 		try {
 			startTime = URLEncoder.encode(startTime, "gbk");
@@ -124,9 +127,13 @@ public class HttpAir {
 		String url = Constant.BaseUrl + "device/" + deviceId
 				+ "/air_data?auth_code=" + app.auth_code + "&start_time="
 				+ startTime + "&end_time=" + endTime;
+		
+		Log.i("HttpAir", url);
+		
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
 
+				Log.i("HttpAir", response);
 				Message msg = new Message();
 				msg.what = Msg.Get_Air_AQI;
 				msg.obj = parseAQI(response);
@@ -153,9 +160,13 @@ public class HttpAir {
 		deviceId = app.carDatas.get(index).getDevice_id();
 		String url = Constant.BaseUrl + "device/" + deviceId
 				+ "/active_gps_data?auth_code=" + app.auth_code;
+		
+		Log.i("HttpAir", url.toString());
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
 				Message msg = new Message();
+				Log.i("HttpAir", response.toString());
+				
 				msg.what = Msg.Get_Air_Value;
 				int value = 0;
 				try {
@@ -166,7 +177,6 @@ public class HttpAir {
 					e.printStackTrace();
 				}
 				
-				Log.i("HttpAir", "刷新值 " + value);
 				msg.obj = value;
 				handler.sendMessage(msg);
 			}
@@ -211,6 +221,7 @@ public class HttpAir {
 	public void setPower(String deviceId, boolean power) {
 		int command = COMMAND_SWITCH;
 		int value = power ? 1 : 0;
+		//value = 1;
 		String params = "{switch: " + value + "}";
 		request(deviceId, command, params);
 	}
@@ -218,8 +229,7 @@ public class HttpAir {
 	public void setMode(String deviceId, int mode, String time, int duration) {
 		int command = COMMAND_AIR_MODE;
 		String params = "{air_mode: " + mode + "}";
-
-		if (mode == 0) {
+		if (mode == Const.AIR_MODE_TIMER) {
 			params = "{air_mode: " + mode + ",air_time:'" + time
 					+ "',air_duration:" + duration + "}";
 		}

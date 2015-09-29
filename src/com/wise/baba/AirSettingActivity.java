@@ -6,6 +6,7 @@ import javax.crypto.spec.IvParameterSpec;
 
 import org.xclcharts.common.DensityUtil;
 
+import com.wise.baba.app.Const;
 import com.wise.baba.app.Msg;
 import com.wise.baba.biz.HttpAir;
 
@@ -19,6 +20,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,7 +40,7 @@ import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.Toast;
 
 public class AirSettingActivity extends Activity {
-    
+
 	private TextView tvDuration, tv_air_timer;
 	private LinearLayout llytSetDuration, llytDuration, llytTimer;
 	private Switch switchMode, switchTimer;
@@ -46,16 +48,14 @@ public class AirSettingActivity extends Activity {
 	private ImageView imgDuration[] = new ImageView[5];
 	private String time = "00:00";
 	private ImageView imgRight;
-	
+
 	private int imgDurationId[] = new int[] { R.id.iv_duration_30,
 			R.id.iv_duration_60, R.id.iv_duration_90, R.id.iv_duration_100,
 			R.id.iv_duration_120 };
 	public HttpAir httpAir;
 
-	
 	private String deviceId = "";
 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -66,6 +66,10 @@ public class AirSettingActivity extends Activity {
 		httpAir = new HttpAir(this, handler);
 		switchMode = (Switch) findViewById(R.id.switchMode);
 		switchTimer = (Switch) findViewById(R.id.switchTimer);
+		
+		switchMode.setOnTouchListener(onTouchListner);
+		switchTimer.setOnTouchListener(onTouchListner);
+		
 		findViewById(R.id.iv_back).setOnClickListener(onClickListener);
 		llytSetDuration = (LinearLayout) findViewById(R.id.llytSetDuration);
 		llytDuration = (LinearLayout) findViewById(R.id.llytDuration);
@@ -138,7 +142,10 @@ public class AirSettingActivity extends Activity {
 	public OnTouchListener onTouchListner = new OnTouchListener() {
 
 		@Override
-		public boolean onTouch(View view, MotionEvent arg1) {
+		public boolean onTouch(View view, MotionEvent event) {
+			
+			
+			
 
 			switch (view.getId()) {
 			case R.id.iv_duration_30:
@@ -148,7 +155,18 @@ public class AirSettingActivity extends Activity {
 			case R.id.iv_duration_120:
 				onChange(view.getId());
 				break;
+			case R.id.switchMode:
+				if(event.getAction() == MotionEvent.ACTION_DOWN){
+					switchTimer.setChecked(false);
+				}
+				break;
+			case R.id.switchTimer:
+				if(event.getAction() == MotionEvent.ACTION_DOWN){
+					switchMode.setChecked(false);
+				}
+				break;
 			}
+			
 			return false;
 		}
 	};
@@ -210,39 +228,39 @@ public class AirSettingActivity extends Activity {
 		timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
 		timePicker.setIs24HourView(true);
 
-//		timePicker.setOnTimeChangedListener(new OnTimeChangedListener() {
-//
-//			@Override
-//			public void onTimeChanged(TimePicker timer, int arg1, int arg2) {
-//				
-//				int hour = timer.getCurrentHour();
-//				int minute = timer.getCurrentMinute();
-//				if(){}
-//				
-//				time = timer.getCurrentHour() + ":" + timer.getCurrentMinute();
-//				if (time.length() < 5) {
-//					time = "0" + time;
-//				}
-//			}
-//		});
+		// timePicker.setOnTimeChangedListener(new OnTimeChangedListener() {
+		//
+		// @Override
+		// public void onTimeChanged(TimePicker timer, int arg1, int arg2) {
+		//
+		// int hour = timer.getCurrentHour();
+		// int minute = timer.getCurrentMinute();
+		// if(){}
+		//
+		// time = timer.getCurrentHour() + ":" + timer.getCurrentMinute();
+		// if (time.length() < 5) {
+		// time = "0" + time;
+		// }
+		// }
+		// });
 		AlertDialog ad = new AlertDialog.Builder(this)
 				.setTitle("定时")
 				.setView(timePicker)
 				.setPositiveButton("设置", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						
-						String hour = timePicker.getCurrentHour()+"";
-						
-						String minute = timePicker.getCurrentMinute()+"";
-						
-						if(hour.length()<2){
-							hour = "0"+hour;
+
+						String hour = timePicker.getCurrentHour() + "";
+
+						String minute = timePicker.getCurrentMinute() + "";
+
+						if (hour.length() < 2) {
+							hour = "0" + hour;
 						}
-						
-						if(minute.length() <2){
-							minute = "0"+minute;
+
+						if (minute.length() < 2) {
+							minute = "0" + minute;
 						}
-						time = hour + ":" +minute;
+						time = hour + ":" + minute;
 						tv_air_timer.setText(time);
 					}
 				})
@@ -254,13 +272,28 @@ public class AirSettingActivity extends Activity {
 
 	}
 
+	
+
 	@Override
-	protected void onStop() {
-		super.onStop();
-		int mode = switchMode.isChecked() ? 1 : 0;
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			setMode();
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	public void setMode() {
+		int mode = Const.AIR_MODE_MANUL;
+		if (switchMode.isChecked()) {
+			mode = Const.AIR_MODE_SMART;
+		}
+
+		if (switchTimer.isChecked()) {
+			mode = Const.AIR_MODE_TIMER;
+		}
+
 		int duration = Integer.parseInt(tvDuration.getText().toString());
 		httpAir.setMode(deviceId, mode, time, duration);
-
 	}
 
 }

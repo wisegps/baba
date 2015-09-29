@@ -88,7 +88,7 @@ public class HttpGetObdData {
 		String url = Constant.BaseUrl + "device/" + deviceId + "?auth_code="
 				+ app.auth_code + "&brand" + brand;
 		Log.i("HttpGetData", "aaa " + url);
-
+		
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
 
@@ -178,6 +178,10 @@ public class HttpGetObdData {
 			int air = gpsData.optInt("air");
 
 			budle.putInt("air", air);
+			
+//			double battery = gpsData.optDouble("battery");
+//
+//			budle.putDouble("battery", battery);
 
 			JSONObject jsonParams = new JSONObject(response)
 					.getJSONObject("params");
@@ -185,7 +189,7 @@ public class HttpGetObdData {
 			int vSwitch =jsonParams.optInt("switch");
 
 			budle.putInt("switch", vSwitch);
-			Log.i("HttpAir", "strSwitch "+vSwitch);
+			Log.i("HttpGetData", "strSwitch "+vSwitch);
 		} catch (JSONException e) {
 			Log.i("HttpGetData", "exception " + e.getMessage());
 			e.printStackTrace();

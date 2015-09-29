@@ -46,6 +46,7 @@
         </View>
 
         <TextView
+            android:id="@+id/tv_mode_desc"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margins"
@@ -141,7 +142,7 @@
                     android:id="@+id/tvCity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="武汉"
+                    android:text="城市"
                     android:textColor="#bfbfbf" />
             </LinearLayout>
 

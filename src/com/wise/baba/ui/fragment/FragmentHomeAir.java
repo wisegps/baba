@@ -64,13 +64,11 @@ import com.wise.baba.util.ColorText;
  * @author cyy
  **/
 public class FragmentHomeAir extends Fragment {
-	
-	
+
 	private static final String TAG = "FragmentHomeAir";
-	
+
 	private GeoCoder mGeoCoder = null;
-	
-	
+
 	HScrollLayout hs_air;
 	private TextView tvAirValue;
 	AppApplication app;
@@ -87,26 +85,23 @@ public class FragmentHomeAir extends Fragment {
 	public final static int POWER_OFF = 0;
 	/** 获取gps信息 **/
 	private static final int get_gps = 10;
-	
-	public final static int MODE_AUTO = 1;
-	public final static int MODE_MAN = 0;
 
 	public RotateAnimation rolateAnimation = new RotateAnimation(0, 360,
 			Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+	public int PageStatus = 0;// 页面出现0，页面销毁1'
 
-	public int PageStatus = 0;// 页面出现0，页面销毁1
-	
 	boolean isDestroy = false;
 	boolean isResume = false;
-	
+
+	public float dpdy = 0;// 电瓶电压
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
+
 		isDestroy = false;
 		isResume = true;
-		
+
 		return inflater.inflate(R.layout.fragment_home_air, container, false);
 	}
 
@@ -118,42 +113,44 @@ public class FragmentHomeAir extends Fragment {
 
 		http = new HttpGetObdData(this.getActivity(), handler);
 		httpAir = new HttpAir(this.getActivity(), handler);
-		
-		
+
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
-		
-		
-		
+
 		httpWeather = new HttpWeather(this.getActivity(), handler);
-		
+
 		initDataView();
-		
-		
+
 		hs_air.setOnViewChangeListener(new OnViewChangeListener() {
 			@Override
 			public void OnViewChange(int view, int duration) {
 				carIndex = (Integer) hs_air.getChildAt(view).getTag();
-				
-				if (view != pageIndex) {	
+
+				if (view != pageIndex) {
 					pageIndex = view;
 
 					initLoaction(carIndex);
-					
+
 					http.requestAir(carIndex);
-					
-					
-					Log.e("百度地图反解析"," " + carIndex + "--->" + app.carDatas.get(carIndex).getCar_city());
-					
-					
-//					httpWeather.requestWeather(app.carDatas.get(carIndex).getCar_city());
-					
-					
+					// getWeather();
+
+					Log.e("百度地图反解析", " " + carIndex + "--->"
+							+ app.carDatas.get(carIndex).getCar_city());
+
+					// httpWeather.requestWeather(app.carDatas.get(carIndex).getCar_city());
+
 				}
 			}
 		});
+
 	}
-	
+
+	/**
+	 * 获取室外天气信息 getWeather
+	 */
+	public void getWeather() {
+		httpWeather.requestWeather();
+	}
 
 	/** 获取GPS信息 **/
 	private void jsonGps(String str, int index) {
@@ -185,23 +182,24 @@ public class FragmentHomeAir extends Fragment {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}	
-	
+	}
+
 	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
 		@Override
 		public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
 			if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
 			} else {
 				try {
-					String adress = result.getAddress();			
+					String adress = result.getAddress();
 					int startIndex = adress.indexOf("省") + 1;
 					int endIndex = adress.indexOf("市");
-					adress = adress.substring(startIndex, endIndex);				
+					adress = adress.substring(startIndex, endIndex);
 					app.carDatas.get(carIndex).setCar_city(adress);
-					
-					httpWeather.requestWeather(adress);			
-//					Log.e("百度地图反解析"," " + carIndex + "--->" + app.carDatas.get(carIndex).getCar_city());
-	
+
+					httpWeather.requestWeather(adress);
+					// Log.e("百度地图反解析"," " + carIndex + "--->" +
+					// app.carDatas.get(carIndex).getCar_city());
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -213,9 +211,7 @@ public class FragmentHomeAir extends Fragment {
 
 		}
 	};
-	
-	
-	
+
 	public void initLoaction(final int index) {
 		// 30秒定位，显示当前位子
 		new Thread(new Runnable() {
@@ -226,7 +222,7 @@ public class FragmentHomeAir extends Fragment {
 						if (app.carDatas == null || app.carDatas.size() == 0) {
 
 						} else {
-							// 防止删除车辆后数组越界				
+							// 防止删除车辆后数组越界
 							if (index < app.carDatas.size()) {
 								CarData carData = app.carDatas.get(index);
 								String device_id = carData.getDevice_id();
@@ -248,8 +244,7 @@ public class FragmentHomeAir extends Fragment {
 			}
 		}).start();
 	}
-	
-	
+
 	public void setOnCardMenuListener(OnCardMenuListener onCardMenuListener) {
 		this.onCardMenuListener = onCardMenuListener;
 	}
@@ -264,6 +259,14 @@ public class FragmentHomeAir extends Fragment {
 				}
 				break;
 			case R.id.iv_air_power:
+				if (dpdy < 12) {
+					String msg = getResources()
+							.getString(R.string.air_low_dpdy);
+					Toast.makeText(FragmentHomeAir.this.getActivity(), msg,
+							Toast.LENGTH_SHORT).show();
+					return;
+				}
+
 				SwitchImageView ivPower = (SwitchImageView) v;
 				boolean isChecked = ivPower.isChecked();
 				ivPower.setChecked(!isChecked);
@@ -271,10 +274,18 @@ public class FragmentHomeAir extends Fragment {
 						!isChecked);
 				Log.i("FragmentHomeAir", "点击电源: ");
 				startAirAnimation(!isChecked);
+
 				break;
 			case R.id.iv_air_auto:
 				SwitchImageView ivAuto = (SwitchImageView) v;
 				ivAuto.setChecked(!ivAuto.isChecked());
+				int mode = Const.AIR_MODE_MANUL;
+				if (ivAuto.isChecked()) {
+					mode = Const.AIR_MODE_SMART;
+				}
+
+				String deviceId = app.carDatas.get(carIndex).getDevice_id();
+				httpAir.setMode(deviceId, mode, "", 0);
 				break;
 			case R.id.iv_air_level:
 				SwitchImageView ivLevel = (SwitchImageView) v;
@@ -321,13 +332,6 @@ public class FragmentHomeAir extends Fragment {
 		});
 
 	}
-	
-	
-	
-	
-
-
-
 
 	@Override
 	public void onPause() {
@@ -340,7 +344,6 @@ public class FragmentHomeAir extends Fragment {
 		super.onDestroy();
 		isDestroy = true;
 	}
-	
 
 	@Override
 	public void onStop() {
@@ -434,6 +437,7 @@ public class FragmentHomeAir extends Fragment {
 
 	/**
 	 * 设置车外天气信息
+	 * 
 	 * @param weather
 	 *            车外天气预报
 	 */
@@ -453,9 +457,11 @@ public class FragmentHomeAir extends Fragment {
 	 * @param bundle
 	 */
 	public void initValue(Bundle bundle) {
+
 		View view = views.get(pageIndex);
 		tvAirValue = (TextView) view.findViewById(R.id.tvAirscore);
 		TextView tvAirDesc = (TextView) view.findViewById(R.id.tvAirDesc);
+		TextView tvModeDesc = (TextView) view.findViewById(R.id.tv_mode_desc);
 
 		SwitchImageView ivAirPower = (SwitchImageView) view
 				.findViewById(R.id.iv_air_power);
@@ -464,9 +470,16 @@ public class FragmentHomeAir extends Fragment {
 		SwitchImageView ivAirLevel = (SwitchImageView) view
 				.findViewById(R.id.iv_air_level);
 
+		// battery = bundle.getDouble("battery");
 		/*
 		 * 空气质量指数
 		 */
+		String strDpdy = bundle.getString("dpdy");
+		try {
+			this.dpdy = Float.parseFloat(strDpdy);
+		} catch (Exception e) {
+			this.dpdy = 0;
+		}
 		int air = bundle.getInt("air");
 		String desc = getAirDesc(air);
 		tvAirDesc.setText(desc);
@@ -479,6 +492,13 @@ public class FragmentHomeAir extends Fragment {
 		boolean isChecked = (vSwitch == POWER_ON) ? true : false;
 		Log.i("FragmentHomeAir", "开关控制: " + isChecked);
 		ivAirPower.setChecked(isChecked);
+
+		if (isChecked) {
+			tvModeDesc.setVisibility(View.VISIBLE);
+		} else {
+			tvModeDesc.setVisibility(View.INVISIBLE);
+			rolateAnimation.cancel();
+		}
 
 	}
 
@@ -509,16 +529,19 @@ public class FragmentHomeAir extends Fragment {
 				refreshValue((Integer) msg.obj);
 				break;
 			case Msg.Set_Air_Response:
+
 				http.requestAir(carIndex);
+
 				break;
 			case Msg.Get_Weather:
+
 				setWeather((Weather) msg.obj);
+
 				break;
 			case get_gps:
 				jsonGps(msg.obj.toString(), msg.arg1);
 				break;
-				
-				
+
 			}
 		}
 

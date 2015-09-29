@@ -17,6 +17,7 @@ import org.xclcharts.view.ChartView;
 
 import com.wise.baba.R;
 import com.wise.baba.entity.AQIEntity;
+import com.wise.baba.util.DateUtil;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -196,19 +197,31 @@ public class SplineChartView extends ChartView {
 	private void chartLabels() {
 
 		if (listAQI.size() <= 0) {
-			labels.add("10:00");
-			labels.add("10:10");
-			labels.add("10:20");
-			labels.add("10:30");
-			labels.add("10:40");
-			labels.add("10:50");
+			
+			String time0 =  DateUtil.getCurrentTime(3).substring(11, 16);
+			String time1 =  DateUtil.getCurrentTime(2.5f).substring(11, 16);
+			String time2 =  DateUtil.getCurrentTime(2).substring(11, 16);
+			String time3 =  DateUtil.getCurrentTime(1.5f).substring(11, 16);
+			String time4 =  DateUtil.getCurrentTime(1).substring(11, 16);
+			String time5 =  DateUtil.getCurrentTime(0.5f).substring(11, 16);
+			String time6 =  DateUtil.getCurrentTime(0).substring(11, 16);
+			labels.add(time0);
+			labels.add(time1);
+			labels.add(time2);
+			labels.add(time3);
+			labels.add(time4);
+			labels.add(time5);
+			labels.add(time6);
+			
 			return;
 		}
 
 		for (int i = 0; i < listAQI.size(); i++) {
 			String time = listAQI.get(i).getTime();
 			time = time.substring(11, 16);
-			if (i % 10 == 0) {
+			
+			
+			if (i % 30 == 0) {
 				labels.add(time);
 			} else {
 				labels.add("");

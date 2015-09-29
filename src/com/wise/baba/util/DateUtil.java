@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.util.Log;
+
 /**
  * 
  * @author c
@@ -60,15 +62,16 @@ public class DateUtil {
 	 * 获取当前时间
 	 * @param  hour 几小时前
 	 */
-	public static String getCurrentTime(int hour) {
+	public static String getCurrentTime(float hour) {
 		long cur = System.currentTimeMillis() ;
-		long dur = hour * 60 * 60 *1000;
+		long dur = (long) (hour * 60 * 60 *1000);
 		SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date = new Date(cur - dur);
 		String paramDate = mFormat.format(date);
-		System.out.println(paramDate);
+		Log.i("DateUtil", paramDate);
 		return paramDate;
 	}
+	
 	
 	
 	/**

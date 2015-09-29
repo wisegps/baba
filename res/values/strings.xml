@@ -41,4 +41,6 @@
     <string name="choice_type">选择车款</string>
     <string name="dialog_title">数据加载</string>
     <string name="dialog_message">加载中...</string>
+    
+      <string name="air_low_dpdy">电瓶电压较低，不能远程开启净化器</string>
 </resources>
