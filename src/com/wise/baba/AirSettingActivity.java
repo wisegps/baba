@@ -124,6 +124,7 @@ public class AirSettingActivity extends Activity {
 			mapDurationId.put(120, R.id.iv_duration_120);
 
 			int duration = air.getAirDuration();
+			Log.i("AirSettingActivity", duration+"");
 			int id = mapDurationId.get(duration);
 			onChange(id);
 			llytDuration.setVisibility(View.VISIBLE);

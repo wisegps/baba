@@ -191,7 +191,7 @@ public class HttpGetObdData {
 
 			budle.putInt("air_mode", air_mode);
 			
-			int airDuration = jsonParams.optInt("airDuration");
+			int airDuration = jsonParams.optInt("air_duration");
 
 			budle.putInt("airDuration", airDuration);
 			

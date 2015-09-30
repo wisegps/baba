@@ -189,7 +189,7 @@ public class HttpAir {
 					airSwitch = params.optInt("switch");
 					airMode = params.optInt("air_mode");
 					airTime = params.optString("air_time");
-					airDuration = params.optInt("airDuration");
+					airDuration = params.optInt("air_duration");
 					
 				} catch (JSONException e) {
 					e.printStackTrace();
