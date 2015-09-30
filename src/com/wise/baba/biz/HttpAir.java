@@ -35,6 +35,7 @@ import com.wise.baba.app.Const;
 import com.wise.baba.app.Constant;
 import com.wise.baba.app.Msg;
 import com.wise.baba.entity.AQIEntity;
+import com.wise.baba.entity.Air;
 import com.wise.baba.util.DateUtil;
 
 /**
@@ -78,6 +79,8 @@ public class HttpAir {
 
 		String data = "{device_id:" + deviceId + ",cmd_type:" + command
 				+ ",params:" + params + "}";
+		
+		Log.i("HttpAir", data);
 		JSONObject jsonObject = null;
 		try {
 			jsonObject = new JSONObject(data);
@@ -166,19 +169,39 @@ public class HttpAir {
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
 				Message msg = new Message();
-				Log.i("HttpAir", response.toString());
 				
 				msg.what = Msg.Get_Air_Value;
-				int value = 0;
+				
+				Air mAir = new Air();
+				
+				
+				
+				int airValue = 0;
+				int airSwitch = 0,airDuration = 0,airMode = 0;
+				String airTime = "";
+				
+				
 				try {
 					JSONObject obj = new JSONObject(response);
 					JSONObject data = obj.optJSONObject("active_gps_data");
-					value = data.optInt("air");
+					JSONObject params = obj.optJSONObject("params");
+					airValue = data.optInt("air");
+					airSwitch = params.optInt("switch");
+					airMode = params.optInt("air_mode");
+					airTime = params.optString("air_time");
+					airDuration = params.optInt("airDuration");
+					
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 				
-				msg.obj = value;
+				mAir.setAir(airValue);
+				mAir.setAirSwitch(airSwitch);
+				mAir.setAirMode(airMode);
+				mAir.setAirDuration(airDuration);
+				mAir.setAirTime(airTime);
+				
+				msg.obj = mAir;
 				handler.sendMessage(msg);
 			}
 		};

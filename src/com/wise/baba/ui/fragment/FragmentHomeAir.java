@@ -48,6 +48,7 @@ import com.wise.baba.biz.HttpAir;
 import com.wise.baba.biz.HttpGetObdData;
 import com.wise.baba.biz.HttpWeather;
 import com.wise.baba.entity.ActiveGpsData;
+import com.wise.baba.entity.Air;
 import com.wise.baba.entity.CarData;
 import com.wise.baba.entity.GpsData;
 import com.wise.baba.entity.Weather;
@@ -86,8 +87,7 @@ public class FragmentHomeAir extends Fragment {
 	/** 获取gps信息 **/
 	private static final int get_gps = 10;
 
-	public RotateAnimation rolateAnimation = new RotateAnimation(0, 360,
-			Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+	public RotateAnimation rolateAnimation = null;
 	public int PageStatus = 0;// 页面出现0，页面销毁1'
 
 	boolean isDestroy = false;
@@ -309,18 +309,23 @@ public class FragmentHomeAir extends Fragment {
 	};
 
 	public void startAirAnimation(boolean isChecked) {
-		rolateAnimation.cancel();
-
+		if(rolateAnimation!=null){
+			rolateAnimation.cancel();
+			rolateAnimation = null;
+		}
 		if (isChecked == false) {
 			return;
 		}
-
 		new Handler().post(new Runnable() {
 			@Override
 			public void run() {
+				
 				View imgCursor = views.get(pageIndex).findViewById(
 						R.id.iv_page_air_circle_cursor);
 				imgCursor.clearAnimation();
+				
+				rolateAnimation = new RotateAnimation(0, 360,
+						Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 				rolateAnimation.setInterpolator(new LinearInterpolator());
 				rolateAnimation.setDuration(1500);
 				rolateAnimation.setRepeatCount(Animation.INFINITE);
@@ -359,12 +364,12 @@ public class FragmentHomeAir extends Fragment {
 	/** 滑动车辆布局 **/
 	public void initDataView() {// 布局
 		// 删除车辆后重新布局，如果删除的是最后一个车辆，则重置为第一个车
-		if( app.carDatas == null || carIndex >= app.carDatas.size()){
+		if (app.carDatas == null || carIndex >= app.carDatas.size()) {
 			carIndex = 0;
 			pageIndex = 0;
 			return;
 		}
-		
+
 		if (carIndex < app.carDatas.size()) {
 		} else {
 			carIndex = 0;
@@ -461,6 +466,38 @@ public class FragmentHomeAir extends Fragment {
 	 */
 	public void initValue(Bundle bundle) {
 
+		/*
+		 * 空气质量指数
+		 */
+		String strDpdy = bundle.getString("dpdy");
+		try {
+			this.dpdy = Float.parseFloat(strDpdy);
+		} catch (Exception e) {
+			this.dpdy = 0;
+		}
+		
+		Air mAir = new Air();
+		int airValue = bundle.getInt("air");
+		int airSwitch = bundle.getInt("switch");
+		int airMode = bundle.getInt("air_mode");
+		String airTime = bundle.getString("air_time");
+		int airDuration =bundle.getInt("airDuration");
+		mAir.setAir(airValue);
+		mAir.setAirSwitch(airSwitch);
+		mAir.setAirMode(airMode);
+		mAir.setAirDuration(airDuration);
+		mAir.setAirTime(airTime);
+		
+		refreshValue(mAir);
+	}
+
+	/**
+	 * 刷新空气质量信息
+	 * 
+	 * @param bundle
+	 */
+	public void refreshValue(Air air) {
+
 		View view = views.get(pageIndex);
 		tvAirValue = (TextView) view.findViewById(R.id.tvAirscore);
 		TextView tvAirDesc = (TextView) view.findViewById(R.id.tvAirDesc);
@@ -472,52 +509,56 @@ public class FragmentHomeAir extends Fragment {
 				.findViewById(R.id.iv_air_auto);
 		SwitchImageView ivAirLevel = (SwitchImageView) view
 				.findViewById(R.id.iv_air_level);
-
-		// battery = bundle.getDouble("battery");
-		/*
-		 * 空气质量指数
-		 */
-		String strDpdy = bundle.getString("dpdy");
-		try {
-			this.dpdy = Float.parseFloat(strDpdy);
-		} catch (Exception e) {
-			this.dpdy = 0;
-		}
-		int air = bundle.getInt("air");
-		String desc = getAirDesc(air);
+		SwitchImageView ivAirSetting = (SwitchImageView) view
+				.findViewById(R.id.iv_air_setting);
+		String desc = getAirDesc(air.getAir());
 		tvAirDesc.setText(desc);
-		tvAirValue.setText(air + "");
+		tvAirValue.setText(air.getAir() + "");
 
 		/*
 		 * 开关控制
 		 */
-		int vSwitch = bundle.getInt("switch");
+		int vSwitch = air.getAirSwitch();
 		boolean isChecked = (vSwitch == POWER_ON) ? true : false;
 		Log.i("FragmentHomeAir", "开关控制: " + isChecked);
 		ivAirPower.setChecked(isChecked);
-
+		String modeDesc = getModeDesc(air.getAirMode());
+		tvModeDesc.setText(modeDesc);
 		if (isChecked) {
 			tvModeDesc.setVisibility(View.VISIBLE);
+			if(rolateAnimation == null){//为空已经停止了，需要重新启动
+				startAirAnimation(isChecked);
+			}
 		} else {
 			tvModeDesc.setVisibility(View.INVISIBLE);
-			rolateAnimation.cancel();
+			if(rolateAnimation!=null){
+				rolateAnimation.cancel();
+				rolateAnimation = null;
+			}
 		}
+
+		int vAirMode = air.airMode;
+		isChecked = (vAirMode == Const.AIR_MODE_MANUL) ? false : true;
+		ivAirAuto.setChecked(isChecked);
+		ivAirSetting.setChecked(isChecked);
 
 	}
 
+	
 	/**
-	 * 只刷新空气质量数值
-	 * 
-	 * @param value
-	 *            空气指数
+	 * @param mode
+	 * @return
 	 */
-	public void refreshValue(int value) {
-		if (tvAirValue != null) {
-
-			Log.i("FragmentHomeAir", "refreshValue: " + value);
-			tvAirValue.setText(value + "");
+	public String getModeDesc(int mode) {
+		String desc = "自动模式";
+		if (mode == Const.AIR_MODE_MANUL) {
+			desc = "手动模式";
+		} else if (mode == Const.AIR_MODE_SMART) {
+			desc = "自动模式";
+		} else if (mode == Const.AIR_MODE_TIMER) {
+			desc = "定时模式";
 		}
-
+		return desc;
 	}
 
 	public Handler handler = new Handler() {
@@ -529,17 +570,13 @@ public class FragmentHomeAir extends Fragment {
 				initValue(msg.getData());
 				break;
 			case Msg.Get_Air_Value:
-				refreshValue((Integer) msg.obj);
+				refreshValue((Air) msg.obj);
 				break;
 			case Msg.Set_Air_Response:
-
 				http.requestAir(carIndex);
-
 				break;
 			case Msg.Get_Weather:
-
 				setWeather((Weather) msg.obj);
-
 				break;
 			case get_gps:
 				jsonGps(msg.obj.toString(), msg.arg1);

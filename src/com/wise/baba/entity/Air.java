@@ -4,6 +4,12 @@ import java.io.Serializable;
 
 public class Air implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * 空气质量指数
+	 */
+	public int air;
+	
 	/**
 	 * 开关
 	 */
@@ -20,6 +26,14 @@ public class Air implements Serializable {
 	 * 定时时长
 	 */
 	public int airDuration;
+
+	public int getAir() {
+		return air;
+	}
+
+	public void setAir(int air) {
+		this.air = air;
+	}
 
 	public int getAirSwitch() {
 		return airSwitch;

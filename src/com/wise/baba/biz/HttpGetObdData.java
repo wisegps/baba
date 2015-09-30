@@ -178,9 +178,6 @@ public class HttpGetObdData {
 
 			budle.putInt("air", air);
 			
-//			double battery = gpsData.optDouble("battery");
-//
-//			budle.putDouble("battery", battery);
 
 			JSONObject jsonParams = new JSONObject(response)
 					.getJSONObject("params");
@@ -188,6 +185,21 @@ public class HttpGetObdData {
 			int vSwitch =jsonParams.optInt("switch");
 
 			budle.putInt("switch", vSwitch);
+			
+			
+			int air_mode = jsonParams.optInt("air_mode");
+
+			budle.putInt("air_mode", air_mode);
+			
+			int airDuration = jsonParams.optInt("airDuration");
+
+			budle.putInt("airDuration", airDuration);
+			
+			String air_time = jsonParams.optString("air_time");
+
+			budle.putString("air_time", air_time);
+			
+			
 			Log.i("HttpGetData", "strSwitch "+vSwitch);
 		} catch (JSONException e) {
 			Log.i("HttpGetData", "exception " + e.getMessage());
