@@ -1,6 +1,8 @@
 package com.wise.baba;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 
 import javax.crypto.spec.IvParameterSpec;
 
@@ -9,6 +11,8 @@ import org.xclcharts.common.DensityUtil;
 import com.wise.baba.app.Const;
 import com.wise.baba.app.Msg;
 import com.wise.baba.biz.HttpAir;
+import com.wise.baba.entity.Air;
+import com.wise.baba.util.DateUtil;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -36,8 +40,6 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.TimePicker.OnTimeChangedListener;
-import android.widget.Toast;
 
 public class AirSettingActivity extends Activity {
 
@@ -52,7 +54,12 @@ public class AirSettingActivity extends Activity {
 	private int imgDurationId[] = new int[] { R.id.iv_duration_30,
 			R.id.iv_duration_60, R.id.iv_duration_90, R.id.iv_duration_100,
 			R.id.iv_duration_120 };
+
+	private HashMap<Integer, Integer> mapDurationId = new HashMap<Integer, Integer>();
+
 	public HttpAir httpAir;
+
+	private int carIndex = 0;
 
 	private String deviceId = "";
 
@@ -61,15 +68,18 @@ public class AirSettingActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_air_setting);
+
+		carIndex = getIntent().getIntExtra("carIndex", 0);
 		deviceId = getIntent().getStringExtra("deviceId");
-		Log.i("AirSettingActivity", deviceId);
+
 		httpAir = new HttpAir(this, handler);
+		httpAir.requestAir(carIndex);
 		switchMode = (Switch) findViewById(R.id.switchMode);
 		switchTimer = (Switch) findViewById(R.id.switchTimer);
-		
+
 		switchMode.setOnTouchListener(onTouchListner);
 		switchTimer.setOnTouchListener(onTouchListner);
-		
+
 		findViewById(R.id.iv_back).setOnClickListener(onClickListener);
 		llytSetDuration = (LinearLayout) findViewById(R.id.llytSetDuration);
 		llytDuration = (LinearLayout) findViewById(R.id.llytDuration);
@@ -82,6 +92,7 @@ public class AirSettingActivity extends Activity {
 		imgRight = (ImageView) findViewById(R.id.imgRight);
 		rlyt_air_timer = (RelativeLayout) findViewById(R.id.rlyt_air_timer);
 		rlyt_air_timer.setOnClickListener(onClickListener);
+
 		for (int i = 0; i < 5; i++) {
 			int id = imgDurationId[i];
 			imgDuration[i] = (ImageView) findViewById(id);
@@ -89,6 +100,36 @@ public class AirSettingActivity extends Activity {
 		}
 
 		initDurationLayout();
+	}
+
+	/**
+	 * 初始化界面
+	 * 
+	 * @param air
+	 */
+	public void initValue(Air air) {
+		int mode = air.getAirMode();
+		switchMode.setChecked(false);
+		switchTimer.setChecked(false);
+		if (mode == Const.AIR_MODE_SMART) {
+			switchMode.setChecked(true);
+		} else if (mode == Const.AIR_MODE_TIMER) {
+			switchTimer.setChecked(true);
+			tv_air_timer.setText(air.getAirTime());
+			mapDurationId.put(0, R.id.iv_duration_30);
+			mapDurationId.put(30, R.id.iv_duration_30);
+			mapDurationId.put(60, R.id.iv_duration_60);
+			mapDurationId.put(90, R.id.iv_duration_90);
+			mapDurationId.put(100, R.id.iv_duration_100);
+			mapDurationId.put(120, R.id.iv_duration_120);
+
+			int duration = air.getAirDuration();
+			int id = mapDurationId.get(duration);
+			onChange(id);
+			llytDuration.setVisibility(View.VISIBLE);
+
+		}
+
 	}
 
 	/**
@@ -122,6 +163,10 @@ public class AirSettingActivity extends Activity {
 				// Toast.makeText(AirSettingActivity.this, "设置成功",
 				// Toast.LENGTH_SHORT).show();
 				break;
+
+			case Msg.Get_Air_Value:
+				initValue((Air) msg.obj);
+				break;
 			}
 
 		}
@@ -143,9 +188,6 @@ public class AirSettingActivity extends Activity {
 
 		@Override
 		public boolean onTouch(View view, MotionEvent event) {
-			
-			
-			
 
 			switch (view.getId()) {
 			case R.id.iv_duration_30:
@@ -156,17 +198,23 @@ public class AirSettingActivity extends Activity {
 				onChange(view.getId());
 				break;
 			case R.id.switchMode:
-				if(event.getAction() == MotionEvent.ACTION_DOWN){
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					switchTimer.setChecked(false);
+					llytDuration.setVisibility(View.GONE);
 				}
 				break;
 			case R.id.switchTimer:
-				if(event.getAction() == MotionEvent.ACTION_DOWN){
+				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					switchMode.setChecked(false);
+					if (switchTimer.isChecked()) {
+						llytDuration.setVisibility(View.GONE);
+					} else {
+						llytDuration.setVisibility(View.VISIBLE);
+					}
 				}
 				break;
 			}
-			
+
 			return false;
 		}
 	};
@@ -222,10 +270,12 @@ public class AirSettingActivity extends Activity {
 
 	public void showTimeDialog() {
 
+		String current = tv_air_timer.getText().toString().trim();
+
 		final TimePicker timePicker = new TimePicker(this);
-		Calendar calendar = Calendar.getInstance();
-		timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
-		timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
+		Date date = DateUtil.getDialogTime(current);
+		timePicker.setCurrentHour(date.getHours());
+		timePicker.setCurrentMinute(date.getMinutes());
 		timePicker.setIs24HourView(true);
 
 		// timePicker.setOnTimeChangedListener(new OnTimeChangedListener() {
@@ -266,17 +316,15 @@ public class AirSettingActivity extends Activity {
 				})
 				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						tv_air_timer.setText("00:00");
+						// tv_air_timer.setText("00:00");
 					}
 				}).show();
 
 	}
 
-	
-
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if(keyCode == KeyEvent.KEYCODE_BACK){
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			setMode();
 		}
 		return super.onKeyDown(keyCode, event);

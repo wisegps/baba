@@ -94,6 +94,7 @@ public class FragmentHomeAir extends Fragment {
 	boolean isResume = false;
 
 	public float dpdy = 0;// 电瓶电压
+	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -292,6 +293,7 @@ public class FragmentHomeAir extends Fragment {
 				Intent intent = new Intent();
 				intent.setClass(FragmentHomeAir.this.getActivity(),
 						AirSettingActivity.class);
+				intent.putExtra("carIndex", carIndex);
 				intent.putExtra("deviceId", app.carDatas.get(carIndex)
 						.getDevice_id());
 				FragmentHomeAir.this.getActivity().startActivity(intent);
@@ -497,7 +499,6 @@ public class FragmentHomeAir extends Fragment {
 	 * @param bundle
 	 */
 	public void refreshValue(Air air) {
-
 		View view = views.get(pageIndex);
 		tvAirValue = (TextView) view.findViewById(R.id.tvAirscore);
 		TextView tvAirDesc = (TextView) view.findViewById(R.id.tvAirDesc);

@@ -72,7 +72,20 @@ public class DateUtil {
 		return paramDate;
 	}
 	
-	
+	/**
+	 * 字符串转换成时间
+	 * @param  hour 几小时前
+	 */
+	public static Date getDialogTime(String time) {
+		SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
+		try {
+			return mFormat.parse(time);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return new Date();
+	}
 	
 	/**
 	 * 转换时间格式
