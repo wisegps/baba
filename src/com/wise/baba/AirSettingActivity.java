@@ -115,6 +115,7 @@ public class AirSettingActivity extends Activity {
 			switchMode.setChecked(true);
 		} else if (mode == Const.AIR_MODE_TIMER) {
 			switchTimer.setChecked(true);
+			time = air.getAirTime();
 			tv_air_timer.setText(air.getAirTime());
 			mapDurationId.put(0, R.id.iv_duration_30);
 			mapDurationId.put(30, R.id.iv_duration_30);
@@ -128,9 +129,8 @@ public class AirSettingActivity extends Activity {
 			int id = mapDurationId.get(duration);
 			onChange(id);
 			llytDuration.setVisibility(View.VISIBLE);
-
+			
 		}
-
 	}
 
 	/**
@@ -226,6 +226,7 @@ public class AirSettingActivity extends Activity {
 		public void onClick(View view) {
 			switch (view.getId()) {
 			case R.id.iv_back:
+				setMode();
 				finish();
 				break;
 			case R.id.llytSetDuration:
@@ -317,7 +318,7 @@ public class AirSettingActivity extends Activity {
 				})
 				.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						// tv_air_timer.setText("00:00");
+						tv_air_timer.setText(time);
 					}
 				}).show();
 
