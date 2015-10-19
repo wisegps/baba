@@ -12,6 +12,7 @@ import com.wise.baba.ui.widget.SplineChartView;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -36,12 +37,18 @@ public class AirQualityIndexActivity extends Activity {
 	
 	private SplineChartView myChatView;
 
+	private HandlerThread handlerThread = null;
+	private Handler handler = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_air_quality_index);
 		deviceId = getIntent().getStringExtra("deviceId");
+		handlerThread = new HandlerThread("AirQualityIndexActivity");
+		handlerThread.start();
+
+		handler = new Handler(handlerThread.getLooper(), handleCallBack);
 		httpAir = new HttpAir(this, handler);
 		httpAir.requestAQI(deviceId);
 		initView();
@@ -50,15 +57,16 @@ public class AirQualityIndexActivity extends Activity {
 	/**
 	 * 异步网络请求，消息处理
 	 */
-	public Handler handler = new Handler() {
+	public Handler.Callback handleCallBack = new Handler.Callback() {
 
 		@Override
-		public void handleMessage(Message msg) {
+		public boolean handleMessage(Message msg) {
 			if (msg.what == Msg.Get_Air_AQI) {
 				ArrayList<AQIEntity> list = (ArrayList<AQIEntity>) msg.obj;
 				myChatView.setDataSet(list);
 				myChatView.invalidate();
 			}
+			return false;
 		}
 	};
 
@@ -115,6 +123,8 @@ public class AirQualityIndexActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.finish();
 		this.overridePendingTransition(R.anim.push_buttom_out, 0);
+		
+		handlerThread.interrupt();
 	}
 
 }

@@ -21,6 +21,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -62,6 +63,10 @@ public class AirSettingActivity extends Activity {
 	private int carIndex = 0;
 
 	private String deviceId = "";
+	
+
+	private HandlerThread handlerThread = null;
+	private Handler handler = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,11 @@ public class AirSettingActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_air_setting);
 
+		handlerThread = new HandlerThread("AirSettingActivity");
+		handlerThread.start();
+
+		handler = new Handler(handlerThread.getLooper(), handleCallBack);
+		
 		carIndex = getIntent().getIntExtra("carIndex", 0);
 		deviceId = getIntent().getStringExtra("deviceId");
 
@@ -155,10 +165,10 @@ public class AirSettingActivity extends Activity {
 
 	}
 
-	public Handler handler = new Handler() {
+	public Handler.Callback handleCallBack = new Handler.Callback() {
 
 		@Override
-		public void handleMessage(Message msg) {
+		public boolean handleMessage(Message msg) {
 			switch (msg.what) {
 			case Msg.Set_Air_Response:
 				// Toast.makeText(AirSettingActivity.this, "设置成功",
@@ -169,7 +179,7 @@ public class AirSettingActivity extends Activity {
 				initValue((Air) msg.obj);
 				break;
 			}
-
+			return false;
 		}
 
 	};
@@ -329,6 +339,7 @@ public class AirSettingActivity extends Activity {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			setMode();
 		}
+		
 		return super.onKeyDown(keyCode, event);
 	}
 
@@ -344,6 +355,7 @@ public class AirSettingActivity extends Activity {
 
 		int duration = Integer.parseInt(tvDuration.getText().toString());
 		httpAir.setMode(deviceId, mode, time, duration);
+		handlerThread.interrupt();
 	}
 
 }

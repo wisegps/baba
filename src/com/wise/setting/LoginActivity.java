@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -193,6 +194,7 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 			bt_login.setEnabled(false);
 			bt_login.setText("登录中...");
 			String url = Constant.BaseUrl + "user_login?account=" + account + "&password=" + GetSystem.getM5DEndo(pwd);
+			Log.i("LoginActivity", url);
 			new NetThread.GetDataThread(handler, url, accountLogin).start();
 		} else {
 			AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
@@ -229,6 +231,8 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 				getCustomer();
 			} else {
 				tv_note.setVisibility(View.VISIBLE);
+				bt_login.setEnabled(true);
+				bt_login.setText("登录");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

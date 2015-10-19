@@ -66,7 +66,7 @@ public class HttpAir {
 		this.context = context;
 		this.handler = handler;
 		app = (AppApplication) ((Activity) context).getApplication();
-		mQueue = Volley.newRequestQueue(context);
+		mQueue = HttpUtil.getRequestQueue(context);
 	}
 
 	/**
@@ -150,7 +150,6 @@ public class HttpAir {
 		Request request = new StringRequest(url, listener, errorListener);
 		request.setShouldCache(false);
 		mQueue.add(request);
-		mQueue.start();
 
 	}
 	/**
@@ -215,7 +214,6 @@ public class HttpAir {
 		Request request = new StringRequest(url, listener, errorListener);
 		request.setShouldCache(false);
 		mQueue.add(request);
-		mQueue.start();
 
 	}
 	
@@ -260,10 +258,5 @@ public class HttpAir {
 		request(deviceId, command, params);
 	}
 
-	public void cancle() {
-		if (mQueue != null) {
-			mQueue.cancelAll(context);
-		}
-	}
 
 }

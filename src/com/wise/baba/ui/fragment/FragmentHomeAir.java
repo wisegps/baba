@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
@@ -94,7 +95,9 @@ public class FragmentHomeAir extends Fragment {
 	boolean isResume = false;
 
 	public float dpdy = 0;// 电瓶电压
-	
+
+	private HandlerThread handlerThread = null;
+	private Handler handler = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -110,6 +113,10 @@ public class FragmentHomeAir extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
+		handlerThread = new HandlerThread("FragmentHomeAir");
+		handlerThread.start();
+
+		handler = new Handler(handlerThread.getLooper(), handleCallBack);
 		hs_air = (HScrollLayout) getActivity().findViewById(R.id.hs_air);
 
 		http = new HttpGetObdData(this.getActivity(), handler);
@@ -311,29 +318,31 @@ public class FragmentHomeAir extends Fragment {
 	};
 
 	public void startAirAnimation(boolean isChecked) {
-		if(rolateAnimation!=null){
+		if (rolateAnimation != null) {
 			rolateAnimation.cancel();
 			rolateAnimation = null;
 		}
 		if (isChecked == false) {
 			return;
 		}
-		new Handler().post(new Runnable() {
+		new Thread((new Runnable() {
+
 			@Override
 			public void run() {
-				
 				View imgCursor = views.get(pageIndex).findViewById(
 						R.id.iv_page_air_circle_cursor);
 				imgCursor.clearAnimation();
-				
+
 				rolateAnimation = new RotateAnimation(0, 360,
-						Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+						Animation.RELATIVE_TO_SELF, 0.5f,
+						Animation.RELATIVE_TO_SELF, 0.5f);
 				rolateAnimation.setInterpolator(new LinearInterpolator());
 				rolateAnimation.setDuration(1500);
 				rolateAnimation.setRepeatCount(Animation.INFINITE);
 				imgCursor.startAnimation(rolateAnimation);
+
 			}
-		});
+		})).start();
 
 	}
 
@@ -346,6 +355,7 @@ public class FragmentHomeAir extends Fragment {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		handlerThread.interrupt();
 		isDestroy = true;
 	}
 
@@ -477,19 +487,19 @@ public class FragmentHomeAir extends Fragment {
 		} catch (Exception e) {
 			this.dpdy = 0;
 		}
-		
+
 		Air mAir = new Air();
 		int airValue = bundle.getInt("air");
 		int airSwitch = bundle.getInt("switch");
 		int airMode = bundle.getInt("air_mode");
 		String airTime = bundle.getString("air_time");
-		int airDuration =bundle.getInt("airDuration");
+		int airDuration = bundle.getInt("airDuration");
 		mAir.setAir(airValue);
 		mAir.setAirSwitch(airSwitch);
 		mAir.setAirMode(airMode);
 		mAir.setAirDuration(airDuration);
 		mAir.setAirTime(airTime);
-		
+
 		refreshValue(mAir);
 	}
 
@@ -527,12 +537,12 @@ public class FragmentHomeAir extends Fragment {
 		tvModeDesc.setText(modeDesc);
 		if (isChecked) {
 			tvModeDesc.setVisibility(View.VISIBLE);
-			if(rolateAnimation == null){//为空已经停止了，需要重新启动
+			if (rolateAnimation == null) {// 为空已经停止了，需要重新启动
 				startAirAnimation(isChecked);
 			}
 		} else {
 			tvModeDesc.setVisibility(View.INVISIBLE);
-			if(rolateAnimation!=null){
+			if (rolateAnimation != null) {
 				rolateAnimation.cancel();
 				rolateAnimation = null;
 			}
@@ -545,7 +555,6 @@ public class FragmentHomeAir extends Fragment {
 
 	}
 
-	
 	/**
 	 * @param mode
 	 * @return
@@ -562,10 +571,10 @@ public class FragmentHomeAir extends Fragment {
 		return desc;
 	}
 
-	public Handler handler = new Handler() {
+	public Handler.Callback handleCallBack = new Handler.Callback() {
 
 		@Override
-		public void handleMessage(Message msg) {
+		public boolean handleMessage(Message msg) {
 			switch (msg.what) {
 			case Msg.Get_OBD_Data:
 				initValue(msg.getData());
@@ -584,8 +593,8 @@ public class FragmentHomeAir extends Fragment {
 				break;
 
 			}
+			return true;
 		}
-
 	};
 
 	public String getAirDesc(int air) {
