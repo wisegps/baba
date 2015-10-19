@@ -2,6 +2,7 @@ package com.wise.baba.biz;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +11,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
@@ -24,6 +27,8 @@ import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
 import com.wise.baba.app.Constant;
 import com.wise.baba.app.Msg;
+import com.wise.baba.entity.AQIEntity;
+import com.wise.baba.entity.Air;
 import com.wise.baba.entity.Weather;
 import com.wise.baba.net.NetThread;
 import com.wise.baba.util.DateUtil;
@@ -31,18 +36,45 @@ import com.wise.baba.util.DateUtil;
 public class HttpWeather {
 
 	private Context context;
-	private Handler handler;
+	private Handler uiHandler;
+	private Handler workHandler;
+	private HandlerThread handlerThread = null;
 	private RequestQueue mQueue;
 	private AppApplication app;
 
-	public HttpWeather(Context context, Handler handler) {
+	public HttpWeather(Context context, Handler uiHandler) {
 		super();
 		this.context = context;
-		this.handler = handler;
-		mQueue = Volley.newRequestQueue(context);
+		this.uiHandler = uiHandler;
+		mQueue = HttpUtil.getRequestQueue(context);
 		app = (AppApplication) ((Activity) context).getApplication();
+		handlerThread = new HandlerThread("HttpWeather");
+		handlerThread.start();
+
+		Looper looper = handlerThread.getLooper();
+		workHandler = new Handler(looper, handleCallBack);
 	}
 
+	/**
+	 * 工作子线程回调函数：
+	 * 主线程把网络请求数据发送到该工作子线程，子线程解析完毕，发送通知到ui主线程跟新界面
+	 */
+	public Handler.Callback handleCallBack = new Handler.Callback() {
+
+		@Override
+		public boolean handleMessage(Message msg) {
+			switch (msg.what) {
+			case Msg.Get_Weather:
+				// 解析后提交ui线程更新数据
+				Weather weather = jsonWeather(msg.obj.toString());
+				msg.obj = weather;
+				uiHandler.sendMessage(msg);
+				break;
+			}
+			return false;
+		}
+
+	};
 	/**
 	 * 请求天气信息
 	 */
@@ -62,8 +94,8 @@ public class HttpWeather {
 
 				Message msg = new Message();
 				msg.what = Msg.Get_Weather;
-				msg.obj = jsonWeather(response);
-				handler.sendMessage(msg);
+				msg.obj = response;
+				workHandler.sendMessage(msg);
 			}
 		};
 
@@ -100,7 +132,7 @@ public class HttpWeather {
 				Message msg = new Message();
 				msg.what = Msg.Get_Weather;
 				msg.obj = jsonWeather(response);
-				handler.sendMessage(msg);
+				workHandler.sendMessage(msg);
 			}
 		};
 
@@ -113,8 +145,6 @@ public class HttpWeather {
 		Request request = new StringRequest(url, listener, errorListener);
 		request.setShouldCache(false);
 		mQueue.add(request);
-		mQueue.start();
-
 	}
 	
 

@@ -11,7 +11,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -19,11 +18,8 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.wise.baba.AppApplication;
 import com.wise.baba.app.Constant;
-import com.wise.baba.ui.fragment.FragmentCarInfo;
-
 
 /**
  * 
@@ -44,20 +40,20 @@ public class HttpCarInfo {
 		this.context = context;
 		this.handler = handler;
 		app = (AppApplication) ((Activity) context).getApplication();
-		mQueue = Volley.newRequestQueue(context);
+		mQueue = HttpUtil.getRequestQueue(context);
 	}
 
 	public void putStealthMode(int mode) {
-		
-		if (app.carDatas.size() < 1 ) {
-			return ;
+
+		if (app.carDatas.size() < 1) {
+			return;
 		}
-		
-		Log.i("HttpCarInfo", "carrent car index "+app.currentCarIndex);
+
+		Log.i("HttpCarInfo", "carrent car index " + app.currentCarIndex);
 		deviceId = app.carDatas.get(app.currentCarIndex).getDevice_id();
-		String url = Constant.BaseUrl + "device/" + deviceId + "/stealth_mode?auth_code="
-				+ app.auth_code;
-		Log.i("HttpCarInfo",url);
+		String url = Constant.BaseUrl + "device/" + deviceId
+				+ "/stealth_mode?auth_code=" + app.auth_code;
+		Log.i("HttpCarInfo", url);
 		JSONObject json = new JSONObject();
 		try {
 			json.put("stealth_mode", mode);
@@ -78,10 +74,9 @@ public class HttpCarInfo {
 				Log.i("HttpCarInfo", error.toString());
 			}
 		};
-		JsonObjectRequest request = new JsonObjectRequest(Method.PUT, url, json,
-				listener, errorListener);
+		JsonObjectRequest request = new JsonObjectRequest(Method.PUT, url,
+				json, listener, errorListener);
 		mQueue.add(request);
-		mQueue.start();
 	}
 
 }
