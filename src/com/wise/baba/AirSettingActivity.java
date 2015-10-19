@@ -1,10 +1,7 @@
 package com.wise.baba;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-
-import javax.crypto.spec.IvParameterSpec;
 
 import org.xclcharts.common.DensityUtil;
 
@@ -16,9 +13,7 @@ import com.wise.baba.util.DateUtil;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -65,8 +60,7 @@ public class AirSettingActivity extends Activity {
 	private String deviceId = "";
 	
 
-	private HandlerThread handlerThread = null;
-	private Handler handler = null;
+	private Handler uiHandler = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,15 +68,12 @@ public class AirSettingActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_air_setting);
 
-		handlerThread = new HandlerThread("AirSettingActivity");
-		handlerThread.start();
-
-		handler = new Handler(handlerThread.getLooper(), handleCallBack);
+		uiHandler = new Handler( handleCallBack);
 		
 		carIndex = getIntent().getIntExtra("carIndex", 0);
 		deviceId = getIntent().getStringExtra("deviceId");
 
-		httpAir = new HttpAir(this, handler);
+		httpAir = new HttpAir(this, uiHandler);
 		httpAir.requestAir(carIndex);
 		switchMode = (Switch) findViewById(R.id.switchMode);
 		switchTimer = (Switch) findViewById(R.id.switchTimer);
@@ -355,7 +346,6 @@ public class AirSettingActivity extends Activity {
 
 		int duration = Integer.parseInt(tvDuration.getText().toString());
 		httpAir.setMode(deviceId, mode, time, duration);
-		handlerThread.interrupt();
 	}
 
 }

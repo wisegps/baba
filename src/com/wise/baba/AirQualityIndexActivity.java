@@ -47,7 +47,7 @@ public class AirQualityIndexActivity extends Activity {
 		deviceId = getIntent().getStringExtra("deviceId");
 		handlerThread = new HandlerThread("AirQualityIndexActivity");
 		handlerThread.start();
-
+		Log.i("AirQualityIndexActivity", "ID: "+Thread.currentThread().getId());
 		handler = new Handler(handlerThread.getLooper(), handleCallBack);
 		httpAir = new HttpAir(this, handler);
 		httpAir.requestAQI(deviceId);

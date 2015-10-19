@@ -96,16 +96,13 @@ public class FragmentHomeAir extends Fragment {
 
 	public float dpdy = 0;// 电瓶电压
 
-	private HandlerThread handlerThread = null;
-	private Handler handler = null;
+	private Handler uiHander = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
 		isDestroy = false;
 		isResume = true;
-
 		return inflater.inflate(R.layout.fragment_home_air, container, false);
 	}
 
@@ -113,19 +110,16 @@ public class FragmentHomeAir extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
-		handlerThread = new HandlerThread("FragmentHomeAir");
-		handlerThread.start();
-
-		handler = new Handler(handlerThread.getLooper(), handleCallBack);
+		uiHander = new Handler(handleCallBack);
 		hs_air = (HScrollLayout) getActivity().findViewById(R.id.hs_air);
 
-		http = new HttpGetObdData(this.getActivity(), handler);
-		httpAir = new HttpAir(this.getActivity(), handler);
+		http = new HttpGetObdData(this.getActivity(), uiHander);
+		httpAir = new HttpAir(this.getActivity(), uiHander);
 
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
 
-		httpWeather = new HttpWeather(this.getActivity(), handler);
+		httpWeather = new HttpWeather(this.getActivity(), uiHander);
 
 		initDataView();
 
@@ -236,7 +230,7 @@ public class FragmentHomeAir extends Fragment {
 									// 获取gps信息
 									String gpsUrl = GetUrl.getCarGpsData(
 											device_id, app.auth_code);
-									new NetThread.GetDataThread(handler,
+									new NetThread.GetDataThread(uiHander,
 											gpsUrl, get_gps, index).start();
 								}
 							} else {
@@ -355,7 +349,6 @@ public class FragmentHomeAir extends Fragment {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		handlerThread.interrupt();
 		isDestroy = true;
 	}
 

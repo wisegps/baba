@@ -16,6 +16,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
@@ -48,7 +51,10 @@ import com.wise.baba.util.DateUtil;
 public class HttpAir {
 
 	private Context context;
-	private Handler handler;
+	private Handler uiHandler;
+	private Handler workHandler;
+	private HandlerThread handlerThread = null;
+
 	private RequestQueue mQueue;
 	private AppApplication app;
 	private String deviceId;
@@ -61,16 +67,50 @@ public class HttpAir {
 	public final int POWER_ON = 1;
 	public final int POWER_OFF = 0;
 
-	public HttpAir(Context context, Handler handler) {
+	public HttpAir(Context context, Handler uiHandler) {
 		super();
 		this.context = context;
-		this.handler = handler;
+		this.uiHandler = uiHandler;
 		app = (AppApplication) ((Activity) context).getApplication();
 		mQueue = HttpUtil.getRequestQueue(context);
+
+		handlerThread = new HandlerThread("HttpAir");
+		handlerThread.start();
+
+		Looper looper = handlerThread.getLooper();
+		workHandler = new Handler(looper, handleCallBack);
+
 	}
 
 	/**
+	 * 工作子线程回调函数：
+	 * 主线程把网络请求数据发送到该工作子线程，子线程解析完毕，发送通知到ui主线程跟新界面
+	 */
+	public Handler.Callback handleCallBack = new Handler.Callback() {
+
+		@Override
+		public boolean handleMessage(Message msg) {
+			switch (msg.what) {
+			case Msg.Get_Air_Value:
+				// 解析后提交ui线程更新数据
+				Air air = paseAir(msg.obj.toString());
+				msg.obj = air;
+				uiHandler.sendMessage(msg);
+				break;
+			case Msg.Get_Air_AQI:
+				List<AQIEntity> list = parseAQI(msg.obj.toString());
+				msg.obj = list;
+				uiHandler.sendMessage(msg);
+				break;
+			}
+			return false;
+		}
+
+	};
+
+	/**
 	 * 发送postt请求 返回json字符串,并解析
+	 * 
 	 * @param url
 	 */
 	public void request(String deviceId, final int command, String params) {
@@ -79,9 +119,11 @@ public class HttpAir {
 
 		String data = "{device_id:" + deviceId + ",cmd_type:" + command
 				+ ",params:" + params + "}";
-		
+
 		Log.i("HttpAir", data);
+
 		JSONObject jsonObject = null;
+
 		try {
 			jsonObject = new JSONObject(data);
 		} catch (JSONException e) {
@@ -92,16 +134,13 @@ public class HttpAir {
 				new Response.Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject response) {
-						handler.sendEmptyMessage(Msg.Set_Air_Response);
+						uiHandler.sendEmptyMessage(Msg.Set_Air_Response);
 						Log.i("HttpAir", "response " + response.toString());
-						
 					}
 				}, new Response.ErrorListener() {
-
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						handler.sendEmptyMessage(Msg.Set_Air_Response);
-
+						uiHandler.sendEmptyMessage(Msg.Set_Air_Response);
 					}
 				});
 
@@ -128,16 +167,15 @@ public class HttpAir {
 		String url = Constant.BaseUrl + "device/" + deviceId
 				+ "/air_data?auth_code=" + app.auth_code + "&start_time="
 				+ startTime + "&end_time=" + endTime;
-		
-		
+
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
-
+				//返回数据，发送到工作子线程去解析
 				Log.i("HttpAir", response);
 				Message msg = new Message();
 				msg.what = Msg.Get_Air_AQI;
-				msg.obj = parseAQI(response);
-				handler.sendMessage(msg);
+				msg.obj = response;
+				workHandler.sendMessage(msg);
 			}
 		};
 
@@ -152,56 +190,27 @@ public class HttpAir {
 		mQueue.add(request);
 
 	}
+
 	/**
-	 * 请求空气质量指数
+	 * 请求空气质量指数,提交工作线程解析
 	 */
-	public void requestAir(int  index) {
-		if( app.carDatas == null || index >= app.carDatas.size()){
+	public void requestAir(int index) {
+		if (app.carDatas == null || index >= app.carDatas.size()) {
 			return;
 		}
 		deviceId = app.carDatas.get(index).getDevice_id();
-		
+
 		String url = Constant.BaseUrl + "device/" + deviceId
 				+ "/active_gps_data?auth_code=" + app.auth_code;
-		
+
 		Log.i("HttpAir", url.toString());
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
+				//返回数据，发送到工作子线程去解析
 				Message msg = new Message();
-				
 				msg.what = Msg.Get_Air_Value;
-				
-				Air mAir = new Air();
-				
-				
-				
-				int airValue = 0;
-				int airSwitch = 0,airDuration = 0,airMode = 0;
-				String airTime = "";
-				
-				
-				try {
-					JSONObject obj = new JSONObject(response);
-					JSONObject data = obj.optJSONObject("active_gps_data");
-					JSONObject params = obj.optJSONObject("params");
-					airValue = data.optInt("air");
-					airSwitch = params.optInt("switch");
-					airMode = params.optInt("air_mode");
-					airTime = params.optString("air_time");
-					airDuration = params.optInt("air_duration");
-					
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				
-				mAir.setAir(airValue);
-				mAir.setAirSwitch(airSwitch);
-				mAir.setAirMode(airMode);
-				mAir.setAirDuration(airDuration);
-				mAir.setAirTime(airTime);
-				
-				msg.obj = mAir;
-				handler.sendMessage(msg);
+				msg.obj = response;
+				workHandler.sendMessage(msg);
 			}
 		};
 
@@ -211,19 +220,52 @@ public class HttpAir {
 
 			}
 		};
+
 		Request request = new StringRequest(url, listener, errorListener);
 		request.setShouldCache(false);
 		mQueue.add(request);
 
 	}
-	
 
-	public List parseAQI(String response){
+	private Air paseAir(String response) {
+		Air mAir = new Air();
+
+		int airValue = 0;
+		int airSwitch = 0, airDuration = 0, airMode = 0;
+		String airTime = "";
+
+		try {
+			JSONObject obj = new JSONObject(response);
+			JSONObject data = obj.optJSONObject("active_gps_data");
+			JSONObject params = obj.optJSONObject("params");
+			airValue = data.optInt("air");
+			airSwitch = params.optInt("switch");
+			airMode = params.optInt("air_mode");
+			airTime = params.optString("air_time");
+			airDuration = params.optInt("air_duration");
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		mAir.setAir(airValue);
+		mAir.setAirSwitch(airSwitch);
+		mAir.setAirMode(airMode);
+		mAir.setAirDuration(airDuration);
+		mAir.setAirTime(airTime);
+		return mAir;
+
+	}
+
+	private List<AQIEntity> parseAQI(String response) {
+
+		Log.i("AirQualityIndexActivity", "parseAQI ID: "
+				+ Thread.currentThread().getId());
 		List<AQIEntity> list = new ArrayList<AQIEntity>();
 		try {
 			JSONArray jsonArray = new JSONArray(response);
-			for(int i =0 ;i<jsonArray.length();i++){
-				JSONObject  obj = jsonArray.getJSONObject(i);
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject obj = jsonArray.getJSONObject(i);
 				String time = obj.getString("rcv_time");
 				time = DateUtil.getTime(time);
 				int air = obj.getInt("air");
@@ -235,15 +277,14 @@ public class HttpAir {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+
 		return list;
 	}
-	
-	
+
 	public void setPower(String deviceId, boolean power) {
 		int command = COMMAND_SWITCH;
 		int value = power ? 1 : 0;
-		//value = 1;
+		// value = 1;
 		String params = "{switch: " + value + "}";
 		request(deviceId, command, params);
 	}
@@ -257,6 +298,5 @@ public class HttpAir {
 		}
 		request(deviceId, command, params);
 	}
-
 
 }
