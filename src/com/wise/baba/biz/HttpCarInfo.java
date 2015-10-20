@@ -44,7 +44,9 @@ public class HttpCarInfo {
 	private RequestQueue mQueue;
 	private AppApplication app;
 	private String deviceId;
-
+	private String TAG = "HttpCarInfo";
+	
+	
 	public HttpCarInfo(Context context, Handler uiHandler) {
 		super();
 		this.uiHandler = uiHandler;
@@ -55,6 +57,8 @@ public class HttpCarInfo {
 		app = (AppApplication) ((Activity) context).getApplication();
 		mQueue = HttpUtil.getRequestQueue(context);
 	}
+	
+	
 
 	/**
 	 * 工作子线程回调函数： 主线程把网络请求数据发送到该工作子线程，子线程解析完毕，发送通知到ui主线程跟新界面
@@ -181,6 +185,7 @@ public class HttpCarInfo {
 			}
 		};
 		Request request = new StringRequest(deviceUrl, listener, null);
+		request.setTag("HttpCarInfo");
 		mQueue.add(request);
 	}
 

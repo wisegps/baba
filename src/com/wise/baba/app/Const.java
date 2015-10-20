@@ -27,6 +27,7 @@ public class Const {
 	
 	public static final String TAG_AIR = "fragmentHomeAir";//空气质量
 	
+	
 	/**
 	 * 速度卡片，各参数类型
 	 */
