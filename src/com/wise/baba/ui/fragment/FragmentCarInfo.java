@@ -45,6 +45,7 @@ import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Const;
 import com.wise.baba.app.Constant;
+import com.wise.baba.app.Msg;
 import com.wise.baba.biz.GetSystem;
 import com.wise.baba.biz.GetUrl;
 import com.wise.baba.biz.HttpCarInfo;
@@ -72,36 +73,21 @@ import com.wise.state.FuelActivity;
  **/
 public class FragmentCarInfo extends Fragment {
 	private static final String TAG = "FragmentCarInfo";
-	/** 获取油耗信息 **/
-	private static final int getData = 1;
-	/** 获取限行 **/
-	private static final int Get_carLimit = 7;
-	/** 获取健康体检信息 **/
-	private static final int get_health = 11;
-	/** 获取驾驶指数 **/
-	private static final int get_drive = 12;
-	/** 获取gps信息 **/
-	private static final int get_gps = 10;
-
-	/** 获取Device信息 **/
-	private static final int get_device = 13;
-
 	HScrollLayout hs_car;
 	AppApplication app;
 	/** 当前车在列表中位置 **/
 	public int index = 0;
-	/** 获取油耗数据开始时间 **/
-	String startMonth;
-	/** 获取油耗数据结束时间 **/
-	String endMonth;
 	/** 仪表盘的间距 **/
 	int completed;
 	private GeoCoder mGeoCoder = null;
 
 	private final int Stealth_Mode_True = 1, Stealth_Mode_False = 0;// 是否隐身 1：隐身
 																	// 0：不隐身
-	private HttpCarInfo http;
+	private HttpCarInfo httpCarInfo;
 	private OnCardMenuListener onCardMenuListener;
+
+	private Thread refreshThread = null;// 刷新车辆信息的线程
+	private Thread locationThread = null;// 定位的线程
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -113,10 +99,6 @@ public class FragmentCarInfo extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
-
-		String Month = GetSystem.GetNowMonth().getMonth();
-		startMonth = Month + "-01";
-		endMonth = GetSystem.getMonthLastDay(Month);
 
 		DisplayMetrics dm = new DisplayMetrics();
 		getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -133,68 +115,83 @@ public class FragmentCarInfo extends Fragment {
 		initDataView();
 		hs_car.setOnViewChangeListener(new OnViewChangeListener() {
 			@Override
-			public void OnViewChange(int view, int duration) {
-				if (index != view) {
-					index = view;
-					app.currentCarIndex = view;
-					// Log.i("FragmentCarInfo", "当前车辆"+app.currentCarIndex);
-					// 等待滚动完毕后查询数据
-					handler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							getTotalData();
-						}
-					}, duration);
+			public void OnViewChange(int changedIndex, int duration) {
+				if (index == changedIndex) {
+					return;
+				}
+				index = changedIndex;
+				app.currentCarIndex = changedIndex;
+				// Log.i("FragmentCarInfo", "当前车辆"+app.currentCarIndex);
+				// 等待滚动完毕后查询数据
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						httpCarInfo.requestAllData();
+					}
+				}, duration);
+			}
+		});
+		httpCarInfo = new HttpCarInfo(this.getActivity(), handler);
+	}
+
+	/**
+	 * 获取车辆信息 refreshAllData
+	 */
+	public void refreshAllData() {
+		// 如果运行就停掉
+		if (refreshThread != null && !refreshThread.isInterrupted()) {
+			refreshThread.interrupt();
+		}
+
+		refreshThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					SystemClock.sleep(5 * 60000);
+					httpCarInfo.requestAllData();
 				}
 			}
 		});
-		http = new HttpCarInfo(this.getActivity(), handler);
+		refreshThread.start();
 	}
 
-	public void initTotalData() {
-		new Thread(new Runnable() {
+	/**
+	 * 开启更新位置线程 refreshLoaction
+	 */
+	public void refreshLoaction() {
+		// 如果运行就停掉
+		if (locationThread != null && !locationThread.isInterrupted()) {
+			locationThread.interrupt();
+		}
+
+		Runnable runnable = new Runnable() {
+
 			@Override
 			public void run() {
-				while (isGetAllData) {
-					SystemClock.sleep(5 * 60000);
-					getTotalData();
-				}
-			}
-		}).start();
-	}
-
-	public void initLoaction() {
-		// 30秒定位，显示当前位子
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (!isDestroy) {
-					if (isResume) {
-						if (app.carDatas == null || app.carDatas.size() == 0) {
-
-						} else {
-							// 防止删除车辆后数组越界
-							if (index < app.carDatas.size()) {
-								CarData carData = app.carDatas.get(index);
-								String device_id = carData.getDevice_id();
-								if (device_id == null || device_id.equals("")) {
-
-								} else {
-									// 获取gps信息
-									String gpsUrl = GetUrl.getCarGpsData(
-											device_id, app.auth_code);
-									new NetThread.GetDataThread(handler,
-											gpsUrl, get_gps, index).start();
-								}
-							} else {
-								Log.d(TAG, "刷新位置数组越界");
-							}
-						}
+				while (true) {
+					if (app.carDatas == null || app.carDatas.size() == 0) {
+						continue;
 					}
+
+					if (index >= app.carDatas.size()) {
+						continue;
+					}
+					CarData carData = app.carDatas.get(index);
+					String device_id = carData.getDevice_id();
+					if (device_id == null || device_id.equals("")) {
+						continue;
+					}
+					httpCarInfo.requestGps(device_id);
 					SystemClock.sleep(30000);
 				}
+
 			}
-		}).start();
+
+		};
+		// 30秒定位，显示当前位子
+		locationThread = new Thread(runnable);
+
+		locationThread.start();
 
 	}
 
@@ -337,13 +334,13 @@ public class FragmentCarInfo extends Fragment {
 				if (v.getTag().equals(Stealth_Mode_True)) {// 当前隐身模式，切换到非隐身模式
 					((ImageView) v).setImageResource(R.drawable.ico_key);
 					v.setTag(Stealth_Mode_False);
-					http.putStealthMode(Stealth_Mode_False);
+					httpCarInfo.putStealthMode(Stealth_Mode_False);
 					Toast.makeText(getActivity(), "开启在线模式", Toast.LENGTH_SHORT)
 							.show();
 				} else {
 					((ImageView) v).setImageResource(R.drawable.ico_key_close);
 					v.setTag(Stealth_Mode_True);
-					http.putStealthMode(Stealth_Mode_True);
+					httpCarInfo.putStealthMode(Stealth_Mode_True);
 
 					Toast.makeText(getActivity(), "开启隐身模式", Toast.LENGTH_SHORT)
 							.show();
@@ -366,167 +363,113 @@ public class FragmentCarInfo extends Fragment {
 				return;
 			}
 			super.handleMessage(msg);
+			Bundle bundle = msg.getData();
 			switch (msg.what) {
-
-			case get_device:
-				jsonDevice(msg.obj.toString(), msg.arg1);
+			case Msg.Get_Car_Device:
+				setDevice(bundle);
 				break;
-			case getData:
-				jsonData(msg.obj.toString(), msg.arg1);
+			case Msg.Get_Car_Month_Data:
+				setMonthData(bundle);
 				break;
-			case Get_carLimit:
-				jsonCarLinit(msg.obj.toString(), msg.arg1);
+			case Msg.Get_Car_Limit:
+				setCarLimit(bundle);
 				break;
-			case get_gps:
-				jsonGps(msg.obj.toString(), msg.arg1);
+			case Msg.Get_Car_GPS:
+				setGps(bundle);
 				break;
-			case get_health:
-				// 显示体检信息
-				try {
-					JSONObject jsonObject = new JSONObject(msg.obj.toString());
-					// 健康指数
-					int health_score = jsonObject.getInt("health_score");
-					carViews.get(msg.arg1).getDialHealthScore()
-							.initValue(health_score, handler);
-					carViews.get(msg.arg1).getTv_score()
-							.setText(String.valueOf(health_score));
-					carViews.get(msg.arg1).getTv_title().setText("健康指数");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				SharedPreferences preferences = getActivity()
-						.getSharedPreferences(Constant.sharedPreferencesName,
-								Context.MODE_PRIVATE);
-				Editor editor = preferences.edit();
-				editor.putString(
-						Constant.sp_health_score
-								+ app.carDatas.get(msg.arg1).getObj_id(),
-						msg.obj.toString());
-				editor.commit();
+			case Msg.Get_Car_Health:
+				setCarHealth(bundle);
 				break;
-			case get_drive:
-				try {
-					JSONObject jsonObject = new JSONObject(msg.obj.toString());
-					Log.i("FragmentCarInfo",
-							"drive result" + msg.obj.toString());
-					int drive_score = jsonObject.getInt("drive_score");
-					carViews.get(msg.arg1).getDialDriveScore()
-							.initValue(drive_score, handler);
-					carViews.get(msg.arg1).getTv_drive()
-							.setText(String.valueOf(drive_score));
-					// 存在本地
-					SharedPreferences preferences1 = getActivity()
-							.getSharedPreferences(
-									Constant.sharedPreferencesName,
-									Context.MODE_PRIVATE);
-					Editor editor1 = preferences1.edit();
-					editor1.putString(Constant.sp_drive_score
-							+ app.carDatas.get(msg.arg1).getObj_id(),
-							msg.obj.toString());
-					editor1.commit();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
+			case Msg.Get_Car_Drive:
+				setCarDrive(bundle);
 				break;
 			}
 		}
 	};
 
-	@SuppressLint("ResourceAsColor")
-	public void jsonDevice(String json, int childIndex) {
-		try {
-			// Log.i("FragmentCarInfo", json);
-			JSONObject jsonObject = new JSONObject(json);
-			// SIM卡总流量，单位M
-			Double total_traffic = jsonObject.getDouble("total_traffic");
-			// SIM卡剩余流量，单位M
-			Double remain_traffic = jsonObject.getDouble("remain_traffic");
-			// 车辆状态 0: 静止 1：运行 2：设防 3：报警
-			int device_flag = jsonObject.getInt("device_flag");
+	public void setDevice(Bundle bundle) {
+		// SIM卡总流量，单位M
+		Double total_traffic = bundle.getDouble("total_traffic");
+		// SIM卡剩余流量，单位M
+		Double remain_traffic = bundle.getDouble("remain_traffic");
 
-			// 信号强度 0 离线(灰色)，1 差(蓝色1格)，2中(蓝色2格)，3优(蓝色3格)
-			int signal_level = jsonObject.getInt("signal_level");
-			// 是否在线
-			boolean is_online = jsonObject.getBoolean("is_online");
-			// 是否隐身 1：隐身 0：不隐身
-			int stealthMode = jsonObject.getInt("stealth_mode");
+		// 车辆状态 0: 静止 1：运行 2：设防 3：报警
+		int device_flag = bundle.getInt("device_flag");
 
-			ViewGroup carLayout = (ViewGroup) hs_car.getChildAt(childIndex);
+		// 信号强度 0 离线(灰色)，1 差(蓝色1格)，2中(蓝色2格)，3优(蓝色3格)
+		int signal_level = bundle.getInt("signal_level");
+		// 是否在线
+		boolean is_online = bundle.getBoolean("is_online");
 
-			ImageView imgLocation = (ImageView) carLayout
-					.findViewById(R.id.imgLocation);
-			TextView textAddress = (TextView) carLayout
-					.findViewById(R.id.textLocation);
+		// 是否隐身 1：隐身 0：不隐身
+		int stealthMode = bundle.getInt("stealth_mode");
 
-			TextView textSIM = (TextView) carLayout.findViewById(R.id.textSIM);
-			ImageView imgState = (ImageView) carLayout
-					.findViewById(R.id.imgState);
-			ImageView imgSingal = (ImageView) carLayout
-					.findViewById(R.id.imgSingal);
-			ImageView imgStealth = (ImageView) carLayout
-					.findViewById(R.id.imgStealth);
+		ViewGroup carLayout = (ViewGroup) hs_car
+				.getChildAt(app.currentCarIndex);
 
-			imgState.setOnLongClickListener(onLongClickListener);
-			
-			imgSingal.setOnLongClickListener(onLongClickListener);
+		ImageView imgLocation = (ImageView) carLayout
+				.findViewById(R.id.imgLocation);
+		TextView textAddress = (TextView) carLayout
+				.findViewById(R.id.textLocation);
 
-			String simValue = "SIM:  " + remain_traffic.intValue() + "M/"
-					+ total_traffic.intValue() + "M";
-			textSIM.setText(simValue);
+		TextView textSIM = (TextView) carLayout.findViewById(R.id.textSIM);
+		ImageView imgState = (ImageView) carLayout.findViewById(R.id.imgState);
+		ImageView imgSingal = (ImageView) carLayout
+				.findViewById(R.id.imgSingal);
+		ImageView imgStealth = (ImageView) carLayout
+				.findViewById(R.id.imgStealth);
 
-			int[] stateDrawable = { R.drawable.ico_state_0,
-					R.drawable.ico_state_1, R.drawable.ico_state_2,
-					R.drawable.ico_state_3 };
-			imgState.setTag(device_flag);
-			imgState.setImageResource(stateDrawable[device_flag]);
+		imgState.setOnLongClickListener(onLongClickListener);
 
-			int[] signalDrawable = { R.drawable.ico_wifi_0,
-					R.drawable.ico_wifi_1, R.drawable.ico_wifi_2,
-					R.drawable.ico_wifi_3 };
-			imgSingal.setImageResource(signalDrawable[signal_level]);
-			imgSingal.setTag(signal_level);
+		imgSingal.setOnLongClickListener(onLongClickListener);
 
-			if (is_online) {
-				imgLocation.setImageResource(R.drawable.ico_location_on);
-				imgLocation.setTag(is_online);
-				textAddress.setTextColor(Color.parseColor("#50b7de"));
-				textAddress.setAlpha(0.6f);
-				// imgOnLine.setImageResource(R.drawable.ico_key);
-			} else {
-				// imgOnLine.setImageResource(R.drawable.ico_key_close);
-				imgLocation.setImageResource(R.drawable.ico_location_off);
-				imgLocation.setTag(is_online);
-				textAddress.setTextColor(Color.BLACK);
-				textAddress.setAlpha(0.3f);
-			}
+		String simValue = "SIM:  " + remain_traffic.intValue() + "M/"
+				+ total_traffic.intValue() + "M";
+		textSIM.setText(simValue);
 
-			// 隐身的
-			if (stealthMode == Stealth_Mode_True) {
-				imgStealth.setImageResource(R.drawable.ico_key_close);
-				imgStealth.setTag(stealthMode);
-			} else {
-				// 在线的
-				imgStealth.setImageResource(R.drawable.ico_key);
-				imgStealth.setTag(Stealth_Mode_False);
-			}
+		int[] stateDrawable = { R.drawable.ico_state_0, R.drawable.ico_state_1,
+				R.drawable.ico_state_2, R.drawable.ico_state_3 };
+		imgState.setTag(device_flag);
+		imgState.setImageResource(stateDrawable[device_flag]);
 
-		} catch (JSONException e) {
-			e.printStackTrace();
+		int[] signalDrawable = { R.drawable.ico_wifi_0, R.drawable.ico_wifi_1,
+				R.drawable.ico_wifi_2, R.drawable.ico_wifi_3 };
+		imgSingal.setImageResource(signalDrawable[signal_level]);
+		imgSingal.setTag(signal_level);
+
+		if (is_online) {
+			imgLocation.setImageResource(R.drawable.ico_location_on);
+			imgLocation.setTag(is_online);
+			textAddress.setTextColor(Color.parseColor("#50b7de"));
+			textAddress.setAlpha(0.6f);
+		} else {
+			imgLocation.setImageResource(R.drawable.ico_location_off);
+			imgLocation.setTag(is_online);
+			textAddress.setTextColor(Color.BLACK);
+			textAddress.setAlpha(0.3f);
 		}
-		// int drive_score = jsonObject.getInt("drive_score");
+
+		// 隐身的
+		if (stealthMode == Stealth_Mode_True) {
+			imgStealth.setImageResource(R.drawable.ico_key_close);
+			imgStealth.setTag(stealthMode);
+		} else {
+			// 在线的
+			imgStealth.setImageResource(R.drawable.ico_key);
+			imgStealth.setTag(Stealth_Mode_False);
+		}
 
 	}
 
 	/** 滑动车辆布局 **/
 	public void initDataView() {// 布局
 		// 删除车辆后重新布局，如果删除的是最后一个车辆，则重置为第一个车
-		
-		if( app.carDatas == null || index >= app.carDatas.size()){
+
+		if (app.carDatas == null || index >= app.carDatas.size()) {
 			index = 0;
 			return;
 		}
-		
+
 		if (index < app.carDatas.size()) {
 
 		} else {
@@ -651,7 +594,7 @@ public class FragmentCarInfo extends Fragment {
 			}
 		}
 		hs_car.snapToScreen(index);
-		getTotalData();
+		httpCarInfo.requestAllData();
 	}
 
 	/** 未登录显示 **/
@@ -687,185 +630,64 @@ public class FragmentCarInfo extends Fragment {
 		tv_name.setText("绑定叭叭车载智能配件");
 	}
 
-	/** 获取当前车辆需要显示的所有数据 **/
-	private void getTotalData() {
-		try {
-			if (app.carDatas == null || app.carDatas.size() == 0) {
-				return;
-			}
-			// 防止删除车辆后数组越界
-			if (index < app.carDatas.size()) {
-				CarData carData = app.carDatas.get(index);
-				String device_id = carData.getDevice_id();
-				if (device_id == null || device_id.equals("")) {
+	/** 设置本月油耗等信息 **/
+	private void setMonthData(Bundle bundle) {
 
-				} else {
-					String Gas_no = "";
-					if (carData.getGas_no() == null
-							|| carData.getGas_no().equals("")) {
-						Gas_no = "93#(92#)";
-					} else {
-						Gas_no = carData.getGas_no();
-					}
-					// 获取设备信息
-					String deviceUrl = Constant.BaseUrl
-							+ "device/"
-							+ device_id
-							+ "?auth_code="
-							+ app.auth_code
-							+ "&brand="
-							+ URLEncoder
-									.encode(carData.getCar_brand(), "UTF-8");
-					new NetThread.GetDataThread(handler, deviceUrl, get_device,
-							index).start();
-
-					// 获取当前月的数据
-					String url = Constant.BaseUrl + "device/" + device_id
-							+ "/total?auth_code=" + app.auth_code
-							+ "&start_day=" + startMonth + "&end_day="
-							+ endMonth + "&city="
-							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
-							+ Gas_no;
-					System.out.println("从服务器获取体检信息 url0 " + url);
-					new NetThread.GetDataThread(handler, url, getData, index)
-							.start();
-					// 获取gps信息
-					String gpsUrl = GetUrl.getCarGpsData(device_id,
-							app.auth_code);
-					new NetThread.GetDataThread(handler, gpsUrl, get_gps, index)
-							.start();
-
-					// 从服务器获取体检信息
-					String url1 = Constant.BaseUrl
-							+ "device/"
-							+ device_id
-							+ "/health_exam?auth_code="
-							+ app.auth_code
-							+ "&brand="
-							+ URLEncoder
-									.encode(carData.getCar_brand(), "UTF-8");
-
-					System.out.println("从服务器获取体检信息 url1 " + url1);
-					new NetThread.GetDataThread(handler, url1, get_health,
-							index).start();
-					// 获取驾驶信息
-					String url2 = Constant.BaseUrl + "device/" + device_id
-							+ "/day_drive?auth_code=" + app.auth_code + "&day="
-							+ GetSystem.GetNowMonth().getDay() + "&city="
-							+ URLEncoder.encode(app.City, "UTF-8") + "&gas_no="
-							+ Gas_no;
-					System.out.println("从服务器获取体检信息 url2 " + url2);
-					new NetThread.GetDataThread(handler, url2, get_drive, index)
-							.start();
-				}
-				// 获取限行信息
-				if (app.City == null || carData.getObj_name() == null
-						|| app.City.equals("")
-						|| carData.getObj_name().equals("")) {
-
-				} else {
-					String url = Constant.BaseUrl + "base/ban?city="
-							+ URLEncoder.encode(app.City, "UTF-8")
-							+ "&obj_name="
-							+ URLEncoder.encode(carData.getObj_name(), "UTF-8");
-					new NetThread.GetDataThread(handler, url, Get_carLimit,
-							index).start();
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (bundle == null) {
+			return;
 		}
-	}
-
-	/** 解析本月油价 **/
-	private void jsonData(String str, int index) {
-		try {
-			
-			JSONObject jsonObject = new JSONObject(str);
-			if (jsonObject.toString() == null
-					|| jsonObject.toString().equals("")) {
-				return;
-			}
-			
-			if (index < carViews.size()) {
-				CarView carView = carViews.get(index);
-				carView.getTv_fee()
-						.setText(String.format("%.1f",jsonObject.getDouble("total_fee")));// 花费
-				carView.getTv_fuel().setText(
-						String.format("%.1f",
-								jsonObject.getDouble("total_fuel")));// 油耗
-				// 剩余里程显示
-				if ((jsonObject.getString("left_distance")).equals("null")) {
-					carView.getTv_distance()
-							.setText(String.format("%.0f", 0.0));
-				} else if (jsonObject.getDouble("left_distance") == 0) {
-					carView.getTv_distance().setText(
-							String.format("%.1f",
-									jsonObject.getDouble("total_distance")));// 里程
-				} else {
-					carView.getTv_current_distance().setText("剩余里程");
-					try {
-						carView.getTv_distance().setText(
-								String.format("%.1f",
-										jsonObject.getDouble("left_distance")));// 里程
-					} catch (Exception e) {
-						carView.getTv_distance().setText(String.format("0"));// 里程
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/** 解析车辆限行 **/
-	private void jsonCarLinit(String result, int index) {
-		try {
+		if (index < carViews.size()) {
 			CarView carView = carViews.get(index);
-			if (result == null || result.equals("")) {
-				// carView.getTv_xx().setText("不限");
-				app.carDatas.get(index).setLimit("不限");
-			} else {
-				JSONObject jsonObject = new JSONObject(result);
-				String limit = jsonObject.getString("limit");
-				// carView.getTv_xx().setText(limit);
-				app.carDatas.get(index).setLimit(limit);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			String total_fee = bundle.getString("total_fee");
+			carView.getTv_fee().setText(total_fee);// 花费
+			String total_fuel = bundle.getString("total_fuel");
+			carView.getTv_fuel().setText(total_fuel);// 油耗
+			// 剩余里程显示
+			String left_distance = bundle.getString("left_distance");
+			carView.getTv_distance().setText(left_distance);
 		}
+
 	}
 
-	/** 获取GPS信息 **/
-	private void jsonGps(String str, int index) {
-		try {
-			if (index < app.carDatas.size()) {
-				Gson gson = new Gson();
-				ActiveGpsData activeGpsData = gson.fromJson(str,
-						ActiveGpsData.class);
-				if (activeGpsData == null) {
-					return;
-				}
-				GpsData gpsData = activeGpsData.getActive_gps_data();
-				if (gpsData != null) {
-					LatLng latLng = new LatLng(gpsData.getLat(),
-							gpsData.getLon());
-					app.carDatas.get(index).setLat(gpsData.getLat());
-					app.carDatas.get(index).setLon(gpsData.getLon());
-					app.carDatas.get(index).setRcv_time(
-							GetSystem.ChangeTimeZone(gpsData.getRcv_time()
-									.substring(0, 19).replace("T", " ")));
-					mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
-							.location(latLng));
-				}
-				if (activeGpsData.getParams() != null) {
-					app.carDatas.get(index).setSensitivity(
-							activeGpsData.getParams().getSensitivity());
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+	/** 设置车辆限行 **/
+	private void setCarLimit(Bundle bundle) {
+		// CarView carView = carViews.get(index);
+		String limit = bundle.getString("limit");
+		app.carDatas.get(index).setLimit(limit);
+	}
+
+	/** 设置GPS信息 **/
+	private void setGps(Bundle bundle) {
+		if (bundle == null) {
+			return;
 		}
+		Double lat = bundle.getDouble("lat");
+		Double lon = bundle.getDouble("lon");
+		String rcv_time = bundle.getString("rcv_time");
+		int sensitivity = bundle.getInt("sensitivity", 0);
+		LatLng latLng = new LatLng(lat, lon);
+		app.carDatas.get(index).setLat(lat);
+		app.carDatas.get(index).setLon(lon);
+		app.carDatas.get(index).setRcv_time(rcv_time);
+		mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
+		app.carDatas.get(index).setSensitivity(sensitivity);
+	}
+
+	/** 设置体检信息 **/
+	public void setCarHealth(Bundle bundle) {
+		int health_score = bundle.getInt("health_score");
+		carViews.get(index).getDialHealthScore()
+				.initValue(health_score, handler);
+		carViews.get(index).getTv_score().setText(String.valueOf(health_score));
+		carViews.get(index).getTv_title().setText("健康指数");
+	}
+
+	/** 设置驾驶信息 **/
+	public void setCarDrive(Bundle bundle) {
+		int drive_score = bundle.getInt("drive_score");
+		carViews.get(index).getDialDriveScore().initValue(drive_score, handler);
+		carViews.get(index).getTv_drive().setText(String.valueOf(drive_score));
+
 	}
 
 	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
@@ -913,30 +735,39 @@ public class FragmentCarInfo extends Fragment {
 	List<CarView> carViews = new ArrayList<CarView>();
 
 	boolean isDestroy = false;
-	boolean isGetAllData = true;
-	boolean isResume = true;
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		isResume = true;
-		initLoaction();
-		initTotalData();
+		// 更新车辆位置
+		refreshLoaction();
+		// 刷新车辆信息
+		refreshAllData();
 
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		isResume = false;
+		/*
+		 * 关闭刷新车辆信息线程
+		 */
+		if (refreshThread != null && !refreshThread.isInterrupted()) {
+			refreshThread.interrupt();
+		}
+
+		/*
+		 * 关闭更新车辆位置线程
+		 */
+		if (locationThread != null && !locationThread.isInterrupted()) {
+			locationThread.interrupt();
+		}
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		isDestroy = true;
-		isGetAllData = false;
-
 	}
 
 	// 跳转类型

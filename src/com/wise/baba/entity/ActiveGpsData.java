@@ -1,9 +1,16 @@
 package com.wise.baba.entity;
+
+import java.io.Serializable;
+
 /**
  * gps所有数据
  *@author honesty
  **/
-public class ActiveGpsData {
+public class ActiveGpsData implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String serial;
 	private GpsData active_gps_data;
 	private Params params;

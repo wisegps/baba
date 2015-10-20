@@ -176,7 +176,7 @@ public class HttpAir {
 			public void onResponse(String response) {
 				//返回数据，发送到工作子线程去解析
 				Log.i("HttpAir", response);
-				Message msg = new Message();
+				Message msg = workHandler.obtainMessage();
 				msg.what = Msg.Get_Air_AQI;
 				msg.obj = response;
 				workHandler.sendMessage(msg);
@@ -211,7 +211,7 @@ public class HttpAir {
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
 				//返回数据，发送到工作子线程去解析
-				Message msg = new Message();
+				Message msg = workHandler.obtainMessage();
 				msg.what = Msg.Get_Air_Value;
 				msg.obj = response;
 				workHandler.sendMessage(msg);

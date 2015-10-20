@@ -1,5 +1,6 @@
 package com.wise.baba.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.wise.baba.biz.GetSystem;
@@ -8,7 +9,11 @@ import com.wise.baba.biz.GetSystem;
 /**
  *@author honesty
  **/
-public class GpsData {
+public class GpsData implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private double lat;
 	private double lon;
 	private String rcv_time;
