@@ -86,8 +86,6 @@ public class FragmentCarInfo extends Fragment {
 	private HttpCarInfo httpCarInfo;
 	private OnCardMenuListener onCardMenuListener;
 
-	private Thread refreshThread = null;// 刷新车辆信息的线程
-	private Thread locationThread = null;// 定位的线程
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,7 +97,6 @@ public class FragmentCarInfo extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
-
 		DisplayMetrics dm = new DisplayMetrics();
 		getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
 		int width = dm.widthPixels;
@@ -107,10 +104,9 @@ public class FragmentCarInfo extends Fragment {
 				TypedValue.COMPLEX_UNIT_DIP, 280, getResources()
 						.getDisplayMetrics());
 		completed = (width - twoCompleted) / 3;
-
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
-
+		httpCarInfo = new HttpCarInfo(this.getActivity(), handler);
 		hs_car = (HScrollLayout) getActivity().findViewById(R.id.hs_car);
 		initDataView();
 		hs_car.setOnViewChangeListener(new OnViewChangeListener() {
@@ -121,7 +117,7 @@ public class FragmentCarInfo extends Fragment {
 				}
 				index = changedIndex;
 				app.currentCarIndex = changedIndex;
-				// Log.i("FragmentCarInfo", "当前车辆"+app.currentCarIndex);
+				Log.i("FragmentCarInfo", "当前车辆"+app.currentCarIndex);
 				// 等待滚动完毕后查询数据
 				handler.postDelayed(new Runnable() {
 					@Override
@@ -131,27 +127,27 @@ public class FragmentCarInfo extends Fragment {
 				}, duration);
 			}
 		});
-		httpCarInfo = new HttpCarInfo(this.getActivity(), handler);
+
 	}
 
 	/**
 	 * 获取车辆信息 refreshAllData
 	 */
 	public void refreshAllData() {
-		// 如果运行就停掉
-		if (refreshThread != null && !refreshThread.isInterrupted()) {
-			refreshThread.interrupt();
-		}
 
-		refreshThread = new Thread(new Runnable() {
+		// 刷新车辆信息的线程
+		Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				while (true) {
+				while (resumed) {
 					SystemClock.sleep(5 * 60000);
+					//SystemClock.sleep(5000);
 					httpCarInfo.requestAllData();
+					Log.i("ThreadTest", "refreshAllData");
 				}
 			}
-		});
+		};
+		Thread refreshThread = new Thread(runnable);
 		refreshThread.start();
 	}
 
@@ -159,20 +155,15 @@ public class FragmentCarInfo extends Fragment {
 	 * 开启更新位置线程 refreshLoaction
 	 */
 	public void refreshLoaction() {
-		// 如果运行就停掉
-		if (locationThread != null && !locationThread.isInterrupted()) {
-			locationThread.interrupt();
-		}
-
+		Thread locationThread = null;// 定位的线程
 		Runnable runnable = new Runnable() {
 
 			@Override
 			public void run() {
-				while (true) {
+				while (resumed) {
 					if (app.carDatas == null || app.carDatas.size() == 0) {
 						continue;
 					}
-
 					if (index >= app.carDatas.size()) {
 						continue;
 					}
@@ -252,8 +243,6 @@ public class FragmentCarInfo extends Fragment {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.dialHealthScore:
-				GetSystem.myLog(TAG, "dialHealthScore : app.carDatas.size() = "
-						+ app.carDatas.size());
 				if (app.carDatas != null && app.carDatas.size() != 0) {
 					String Device_id = app.carDatas.get(index).getDevice_id();
 					if (Device_id == null || Device_id.equals("")) {
@@ -359,7 +348,7 @@ public class FragmentCarInfo extends Fragment {
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			if (isDestroy) {// 关闭后直接跳出
+			if (!resumed) {// 关闭后直接跳出
 				return;
 			}
 			super.handleMessage(msg);
@@ -388,6 +377,7 @@ public class FragmentCarInfo extends Fragment {
 	};
 
 	public void setDevice(Bundle bundle) {
+		Log.i("FragmentCarInfo", "设置设备信息");
 		// SIM卡总流量，单位M
 		Double total_traffic = bundle.getDouble("total_traffic");
 		// SIM卡剩余流量，单位M
@@ -734,11 +724,11 @@ public class FragmentCarInfo extends Fragment {
 
 	List<CarView> carViews = new ArrayList<CarView>();
 
-	boolean isDestroy = false;
-
+	boolean resumed = false;
 	@Override
 	public void onResume() {
 		super.onResume();
+		resumed =true;
 		// 更新车辆位置
 		refreshLoaction();
 		// 刷新车辆信息
@@ -749,25 +739,12 @@ public class FragmentCarInfo extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		/*
-		 * 关闭刷新车辆信息线程
-		 */
-		if (refreshThread != null && !refreshThread.isInterrupted()) {
-			refreshThread.interrupt();
-		}
-
-		/*
-		 * 关闭更新车辆位置线程
-		 */
-		if (locationThread != null && !locationThread.isInterrupted()) {
-			locationThread.interrupt();
-		}
+		resumed = false;
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		isDestroy = true;
 	}
 
 	// 跳转类型

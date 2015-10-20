@@ -86,15 +86,13 @@ public class HttpCarInfo {
 				data = parseCarLimit(response);
 				break;
 			default:
-				//通知ui线程更新数据
-				Message m = uiHandler.obtainMessage();
-				m.what = msg.what;
-				m.setData(data);
-				uiHandler.sendMessage(m);
 				break;
-
 			}
-
+			//通知ui线程更新数据
+			Message m = uiHandler.obtainMessage();
+			m.what = msg.what;
+			m.setData(data);
+			uiHandler.sendMessage(m);
 			return false;
 		}
 
@@ -104,7 +102,7 @@ public class HttpCarInfo {
 	 * 获取车辆数据 requestAllData
 	 */
 	public void requestAllData() {
-
+		Log.i("HttpCarInfo", "获取车辆数据");
 		// 1,车辆不能为空
 		if (app.carDatas == null || app.carDatas.size() == 0) {
 			return;
@@ -166,6 +164,7 @@ public class HttpCarInfo {
 	 * 获取设备信息 requestDevice
 	 */
 	public void requestDevice(String device_id, String brand) {
+		//Log.i("HttpCarInfo", "获取设备信息");
 		// 获取设备信息
 		String deviceUrl = "";
 		try {
@@ -185,7 +184,6 @@ public class HttpCarInfo {
 			}
 		};
 		Request request = new StringRequest(deviceUrl, listener, null);
-		request.setTag("HttpCarInfo");
 		mQueue.add(request);
 	}
 
@@ -193,6 +191,7 @@ public class HttpCarInfo {
 	 * 解析设备信息
 	 */
 	private Bundle parseDevice(String response) {
+		//Log.i("HttpCarInfo", " 解析设备信息");
 		try {
 			// Log.i("FragmentCarInfo", json);
 			JSONObject jsonObject = new JSONObject(response);
@@ -230,7 +229,7 @@ public class HttpCarInfo {
 	 * 获取当月数据 requestMonthData
 	 */
 	public void requestMonthData(String device_id, String gasNo) {
-
+		//Log.i("HttpCarInfo", "获取当月数据");
 		String Month = GetSystem.GetNowMonth().getMonth();
 		String startMonth = Month + "-01";
 		String endMonth = GetSystem.getMonthLastDay(Month);
@@ -515,7 +514,7 @@ public class HttpCarInfo {
 			return;
 		}
 
-		Log.i("HttpCarInfo", "carrent car index " + app.currentCarIndex);
+		//Log.i("HttpCarInfo", "carrent car index " + app.currentCarIndex);
 		deviceId = app.carDatas.get(app.currentCarIndex).getDevice_id();
 		String url = Constant.BaseUrl + "device/" + deviceId
 				+ "/stealth_mode?auth_code=" + app.auth_code;

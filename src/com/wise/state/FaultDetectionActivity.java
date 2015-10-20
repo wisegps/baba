@@ -65,7 +65,7 @@ import android.widget.Toast;
  * @author honesty
  * 
  */
-public class FaultDetectionActivity extends Activity implements OnClickListener{
+public class FaultDetectionActivity extends Activity implements OnClickListener {
 	private static final int getData = 1;
 	private static final int refresh = 2;
 	private static final int getFault = 3;
@@ -101,10 +101,10 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 	FaultDeletionView hs_car;
 	AppApplication app;
 	List<CarData> carDatas;
-
+	List<CarView> carViews = new ArrayList<CarView>();
 	private boolean isCreate = false;// 界面第一次进入
-	//public long peroidRefersh = 1;
-	public long duration = 300;//单项体检耗时
+	// public long peroidRefersh = 1;
+	public long duration = 300;// 单项体检耗时
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -115,15 +115,18 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 		app = (AppApplication) getApplication();
 		index = this.getIntent().getIntExtra("index", 0);
 		Log.i("FaultDetectionActivity", "当前车辆位置" + index);
-		carDatas = (List<CarData>) this.getIntent().getSerializableExtra("carDatas");
-		if(carDatas == null ){
+		carDatas = (List<CarData>) this.getIntent().getSerializableExtra(
+				"carDatas");
+		if (carDatas == null) {
 			carDatas = app.carDatas;
 			index = app.currentCarIndex;
 		}
+		
+		Log.i("FaultDetectionActivity", "carDatas: " + carDatas.size());
 		initView();
 		initDataView();
 	}
-	
+
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -161,8 +164,8 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 				jsonHealth(msg.obj.toString());
 				// 体检
 				DialView view = carViews.get(index).getDialHealthScore();
-				long totalTime = duration*Point;
-				view.startAnimation(mTotalProgress, handler,totalTime);
+				long totalTime = duration * Point;
+				view.startAnimation(mTotalProgress, handler, totalTime);
 				refreshHealth(1);
 				break;
 			case refresh:
@@ -193,15 +196,13 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 			}
 		}
 	};
-	List<CarView> carViews = new ArrayList<CarView>();
 
-	
-	
 	/** 滑动车辆布局 **/
 	private void initDataView() {
 		SharedPreferences preferences = getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		hs_car.removeAllViews();
+		carViews = new ArrayList<CarView>();
 		for (int i = 0; i < carDatas.size(); i++) {
 			View v = LayoutInflater.from(this).inflate(
 					R.layout.item_fault_detection, null);
@@ -223,7 +224,7 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 			String result = preferences.getString(Constant.sp_health_score
 					+ carDatas.get(i).getObj_id(), "");
 			if (result.equals("")) {// 未体检过
-				carViews.get(index).getDialHealthScore()
+				carViews.get(i).getDialHealthScore()
 						.initValue(100, handler);
 				tv_score.setText("0");
 				tv_title.setText("未体检过");
@@ -232,7 +233,7 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 					JSONObject jsonObject = new JSONObject(result);
 					// 健康指数
 					int health_score = jsonObject.getInt("health_score");
-					carViews.get(index).getDialHealthScore()
+					carViews.get(i).getDialHealthScore()
 							.initValue(health_score, handler);
 					tv_score.setText(String.valueOf(health_score));
 					tv_title.setText("健康指数");
@@ -403,7 +404,6 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 			}
 		});
 
-
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(this);
 		tv_name = (TextView) findViewById(R.id.tv_name);
@@ -559,7 +559,7 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 		public void run() {
 			try {
 				Log.i("FaultDetectionActivity", "开启线程获取gps信息和车辆健康信息");
-				
+
 				String Device_id = carDatas.get(index).getDevice_id();
 				// 获取车的最新信息
 				String gpsUrl = GetUrl.getCarGpsData(Device_id, app.auth_code);
@@ -600,7 +600,7 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 						break;
 					}
 				}
-				
+
 				if (isStop) {
 					// 提示车辆未启动
 					Log.i("FaultDetectionActivity", "提示车辆未启动");
@@ -609,11 +609,11 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 					handler.sendMessage(message);
 					return;
 				}
-				
+
 				carDatas.get(index).setStop(isStop); // 几下车辆启动状态
-				
+
 				Log.i("FaultDetectionActivity", " 初始化状态");
-				
+
 				// 初始化状态
 				Message msgInit = new Message();
 				msgInit.what = INIT_STATUS;
@@ -622,31 +622,26 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 				Log.i("FaultDetectionActivity", "获取体检数据");
 				String healthUrl = GetUrl.getHealthData(Device_id,
 						app.auth_code, carDatas.get(index).getCar_brand());
-				Log.i("FaultDetectionActivity", "healthUrl "+healthUrl);
+				Log.i("FaultDetectionActivity", "healthUrl " + healthUrl);
 				String healthResult = GetDataFromUrl.getData(healthUrl);
-				
+
 				Message msgGetData = new Message();
 				msgGetData.what = getData;
 				msgGetData.obj = healthResult;
 				handler.sendMessage(msgGetData);
-				 
-				
+
 				/*
-				Message message = new Message();
-				message.what = INIT_STATUS;
-				handler.sendMessage(message);
-
-				SharedPreferences preferences = getSharedPreferences(
-						Constant.sharedPreferencesName, Context.MODE_PRIVATE);
-				result = preferences.getString(Constant.sp_health_score
-						+ carDatas.get(index).getObj_id(), "");
-
-				message = new Message();
-				message.what = getData;
-				message.obj = result;
-				handler.sendMessage(message);
-
-*/
+				 * Message message = new Message(); message.what = INIT_STATUS;
+				 * handler.sendMessage(message);
+				 * 
+				 * SharedPreferences preferences = getSharedPreferences(
+				 * Constant.sharedPreferencesName, Context.MODE_PRIVATE); result
+				 * = preferences.getString(Constant.sp_health_score +
+				 * carDatas.get(index).getObj_id(), "");
+				 * 
+				 * message = new Message(); message.what = getData; message.obj
+				 * = result; handler.sendMessage(message);
+				 */
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -785,7 +780,7 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 				refreshHealth(next);
 			}
 		}, duration);
-		
+
 	}
 
 	public void changeItem(final int flag, final int faultCode) {
@@ -875,7 +870,9 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see android.view.View.OnClickListener#onClick(android.view.View)
 	 */
 	@Override
@@ -900,8 +897,8 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 		case R.id.llytRescue:
 			try {// 平板没有电话模块异常
 				String phone = carDatas.get(index).getInsurance_tel();
-				Intent in_1 = new Intent(Intent.ACTION_DIAL,
-						Uri.parse("tel:" + (phone != null ? phone : "")));
+				Intent in_1 = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"
+						+ (phone != null ? phone : "")));
 				startActivity(in_1);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -911,8 +908,8 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 		case R.id.llytInsurance:
 			try {// 平板没有电话模块异常
 				String tel = carDatas.get(index).getMaintain_tel();
-				Intent in_2 = new Intent(Intent.ACTION_DIAL,
-						Uri.parse("tel:" + (tel != null ? tel : "")));
+				Intent in_2 = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"
+						+ (tel != null ? tel : "")));
 				startActivity(in_2);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -935,6 +932,6 @@ public class FaultDetectionActivity extends Activity implements OnClickListener{
 			startActivity(in);
 			break;
 		}
-	
+
 	}
 }
