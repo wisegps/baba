@@ -67,8 +67,10 @@ public class HttpWeather {
 			case Msg.Get_Weather:
 				// 解析后提交ui线程更新数据
 				Weather weather = jsonWeather(msg.obj.toString());
-				msg.obj = weather;
-				uiHandler.sendMessage(msg);
+				Message m = uiHandler.obtainMessage();
+				m.what = msg.what;
+				m.obj = weather;
+				uiHandler.sendMessage(m);
 				break;
 			}
 			return false;
@@ -131,7 +133,7 @@ public class HttpWeather {
 
 				Message msg = new Message();
 				msg.what = Msg.Get_Weather;
-				msg.obj = jsonWeather(response);
+				msg.obj = response;
 				workHandler.sendMessage(msg);
 			}
 		};

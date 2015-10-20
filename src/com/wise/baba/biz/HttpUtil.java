@@ -2,6 +2,7 @@ package com.wise.baba.biz;
 
 import android.content.Context;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
@@ -25,6 +26,9 @@ public class HttpUtil {
 			rquestQueue = Volley.newRequestQueue(ctx.getApplicationContext());
 		}
 		return rquestQueue;
+	}
+	
+	public static void destoryVolley(){
 	}
 
 }

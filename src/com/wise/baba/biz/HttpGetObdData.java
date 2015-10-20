@@ -85,8 +85,10 @@ public class HttpGetObdData {
 			case Msg.Get_OBD_Data:
 				// 解析后提交ui线程更新数据
 				Bundle bundle = parse(msg.obj.toString());
-				msg.setData(bundle);
-				uiHandler.sendMessage(msg);
+				Message m = uiHandler.obtainMessage();
+				m.what = msg.what;
+				m.setData(bundle);
+				uiHandler.sendMessage(m);
 				break;
 			}
 			return false;

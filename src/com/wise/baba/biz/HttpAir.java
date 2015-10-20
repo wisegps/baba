@@ -94,13 +94,17 @@ public class HttpAir {
 			case Msg.Get_Air_Value:
 				// 解析后提交ui线程更新数据
 				Air air = paseAir(msg.obj.toString());
-				msg.obj = air;
-				uiHandler.sendMessage(msg);
+				Message m = uiHandler.obtainMessage();
+				m.what = msg.what;
+				m.obj = air;
+				uiHandler.sendMessage(m);
 				break;
 			case Msg.Get_Air_AQI:
 				List<AQIEntity> list = parseAQI(msg.obj.toString());
-				msg.obj = list;
-				uiHandler.sendMessage(msg);
+				m = uiHandler.obtainMessage();
+				m.what = msg.what;
+				m.obj = list;
+				uiHandler.sendMessage(m);
 				break;
 			}
 			return false;
