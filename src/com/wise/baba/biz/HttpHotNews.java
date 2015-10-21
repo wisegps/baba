@@ -10,7 +10,10 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
@@ -29,7 +32,6 @@ import com.wise.baba.app.Constant;
 import com.wise.baba.app.Msg;
 import com.wise.baba.entity.News;
 
-
 /**
  * 
  * @author c
@@ -38,40 +40,70 @@ import com.wise.baba.entity.News;
  * 
  */
 public class HttpHotNews {
-	private Handler handler;
+	private Handler uiHandler;
+	private Handler workHandler;
+	private HandlerThread handlerThread = null;
 	private RequestQueue mQueue;
 	private AppApplication app;
 	private Context context;
 
-	public HttpHotNews(Context context, Handler handler) {
+	public HttpHotNews(Context context, Handler uiHandler) {
 		super();
 		this.context = context;
-		this.handler = handler;
+		this.uiHandler = uiHandler;
 		app = (AppApplication) ((Activity) context).getApplication();
-	
-		mQueue = Volley.newRequestQueue(context);
+		mQueue = HttpUtil.getRequestQueue(context);
+
+		handlerThread = new HandlerThread("HttpGetObdData");
+		handlerThread.start();
+
+		Looper looper = handlerThread.getLooper();
+		workHandler = new Handler(looper, handleCallBack);
 	}
 
-	public void request() {
-		
-		if (app.carDatas.size() < 1 ) {
-			return ;
+	/**
+	 * 工作子线程回调函数：
+	 * 主线程把网络请求数据发送到该工作子线程，子线程解析完毕，发送通知到ui主线程跟新界面
+	 */
+	public Handler.Callback handleCallBack = new Handler.Callback() {
+
+		@Override
+		public boolean handleMessage(Message msg) {
+			switch (msg.what) {
+			case Msg.Get_News_List:
+				// 解析后提交ui线程更新数据
+				Message m = uiHandler.obtainMessage();
+				m.what = msg.what;
+				m.obj = parseJsonString(msg.obj.toString());
+				uiHandler.sendMessage(m);
+				break;
+			}
+			return false;
 		}
-		String city  = "";
+
+	};
+
+	
+	public void request() {
+
+		if (app.carDatas.size() < 1) {
+			return;
+		}
+		String city = "";
 		try {
 			city = URLEncoder.encode(app.City, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		String url = Constant.BaseUrl + "base/hot_news/5?auth_code="+app.auth_code+"&city=" +city;
+		String url = Constant.BaseUrl + "base/hot_news/5?auth_code="
+				+ app.auth_code + "&city=" + city;
 		Log.i("HttpHotNews", url);
 		Listener listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
-				Message msg = new Message();
+				Message msg = workHandler.obtainMessage();
 				msg.what = Msg.Get_News_List;
-				List<News> newsList = parseJsonString(response);
-				msg.obj = newsList;
-				handler.sendMessage(msg);
+				msg.obj = response;
+				workHandler.sendMessage(msg);
 			}
 		};
 
@@ -83,9 +115,8 @@ public class HttpHotNews {
 		};
 		Request request = new StringRequest(url, listener, errorListener);
 		mQueue.add(request);
-		mQueue.start();
 	}
-	
+
 	/**
 	 * 
 	 * @param strJson
@@ -99,19 +130,11 @@ public class HttpHotNews {
 			News news = gson.fromJson(strJson, News.class);
 			newsList.add(news);
 		} else {// 搜索到多个好友
-			newsList = gson.fromJson(strJson,
-					new TypeToken<List<News>>() {
-					}.getType());
+			newsList = gson.fromJson(strJson, new TypeToken<List<News>>() {
+			}.getType());
 		}
 
 		return newsList;
 	}
-	
-	public void cancle() {
-		if (mQueue != null) {
-			mQueue.cancelAll(context);
-		}
-	}
-
 
 }

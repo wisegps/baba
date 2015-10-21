@@ -345,6 +345,9 @@ public class FragmentCarInfo extends Fragment {
 			}
 		}
 	};
+	
+	
+	
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {

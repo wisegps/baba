@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RequestQueue.RequestFilter;
 import com.android.volley.toolbox.Volley;
 
 /**
@@ -29,6 +30,12 @@ public class HttpUtil {
 	}
 	
 	public static void destoryVolley(){
+		rquestQueue.cancelAll(new RequestFilter(){
+			@Override
+			public boolean apply(Request<?> request) {
+				return true;
+			}
+		});
 	}
 
 }

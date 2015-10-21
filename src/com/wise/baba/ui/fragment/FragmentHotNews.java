@@ -158,11 +158,6 @@ public class FragmentHotNews extends Fragment implements Callback {
 		return str.trim();
 	}
 
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		http.cancle();
-	}
+	
 
 }

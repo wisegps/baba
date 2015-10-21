@@ -2,6 +2,7 @@
  * 
  */
 package com.wise.baba.biz;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import org.json.JSONException;
@@ -19,10 +20,13 @@ import com.android.volley.Request.Method;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.wise.baba.AppApplication;
 import com.wise.baba.app.Constant;
 import com.wise.baba.app.Msg;
@@ -45,8 +49,7 @@ public class HttpCarInfo {
 	private AppApplication app;
 	private String deviceId;
 	private String TAG = "HttpCarInfo";
-	
-	
+
 	public HttpCarInfo(Context context, Handler uiHandler) {
 		super();
 		this.uiHandler = uiHandler;
@@ -57,8 +60,6 @@ public class HttpCarInfo {
 		app = (AppApplication) ((Activity) context).getApplication();
 		mQueue = HttpUtil.getRequestQueue(context);
 	}
-	
-	
 
 	/**
 	 * 工作子线程回调函数： 主线程把网络请求数据发送到该工作子线程，子线程解析完毕，发送通知到ui主线程跟新界面
@@ -88,7 +89,7 @@ public class HttpCarInfo {
 			default:
 				break;
 			}
-			//通知ui线程更新数据
+			// 通知ui线程更新数据
 			Message m = uiHandler.obtainMessage();
 			m.what = msg.what;
 			m.setData(data);
@@ -96,6 +97,12 @@ public class HttpCarInfo {
 			return false;
 		}
 
+	};
+	
+	private ErrorListener errorListener = new ErrorListener() {
+		@Override
+		public void onErrorResponse(VolleyError error) {
+		}
 	};
 
 	/**
@@ -164,7 +171,7 @@ public class HttpCarInfo {
 	 * 获取设备信息 requestDevice
 	 */
 	public void requestDevice(String device_id, String brand) {
-		//Log.i("HttpCarInfo", "获取设备信息");
+		// Log.i("HttpCarInfo", "获取设备信息");
 		// 获取设备信息
 		String deviceUrl = "";
 		try {
@@ -183,7 +190,8 @@ public class HttpCarInfo {
 				workHandler.sendMessage(msg);
 			}
 		};
-		Request request = new StringRequest(deviceUrl, listener, null);
+		
+		Request request = new StringRequest(deviceUrl, listener, errorListener);
 		mQueue.add(request);
 	}
 
@@ -191,7 +199,7 @@ public class HttpCarInfo {
 	 * 解析设备信息
 	 */
 	private Bundle parseDevice(String response) {
-		//Log.i("HttpCarInfo", " 解析设备信息");
+		// Log.i("HttpCarInfo", " 解析设备信息");
 		try {
 			// Log.i("FragmentCarInfo", json);
 			JSONObject jsonObject = new JSONObject(response);
@@ -229,7 +237,7 @@ public class HttpCarInfo {
 	 * 获取当月数据 requestMonthData
 	 */
 	public void requestMonthData(String device_id, String gasNo) {
-		//Log.i("HttpCarInfo", "获取当月数据");
+		// Log.i("HttpCarInfo", "获取当月数据");
 		String Month = GetSystem.GetNowMonth().getMonth();
 		String startMonth = Month + "-01";
 		String endMonth = GetSystem.getMonthLastDay(Month);
@@ -253,7 +261,7 @@ public class HttpCarInfo {
 				workHandler.sendMessage(msg);
 			}
 		};
-		Request request = new StringRequest(url, listener, null);
+		Request request = new StringRequest(url, listener, errorListener);
 		mQueue.add(request);
 
 	}
@@ -315,8 +323,7 @@ public class HttpCarInfo {
 				workHandler.sendMessage(msg);
 			}
 		};
-
-		Request request = new StringRequest(gpsUrl, listener, null);
+		Request request = new StringRequest(gpsUrl, listener, errorListener);
 		mQueue.add(request);
 
 	}
@@ -378,8 +385,7 @@ public class HttpCarInfo {
 				workHandler.sendMessage(msg);
 			}
 		};
-
-		Request request = new StringRequest(url, listener, null);
+		Request request = new StringRequest(url, listener, errorListener);
 		mQueue.add(request);
 
 	}
@@ -393,6 +399,7 @@ public class HttpCarInfo {
 			Bundle bundle = new Bundle();
 
 			JSONObject jsonObject = new JSONObject(response);
+			
 			// 健康指数
 			int health_score = jsonObject.getInt("health_score");
 			bundle.putInt("health_score", health_score);
@@ -427,7 +434,7 @@ public class HttpCarInfo {
 			}
 		};
 
-		Request request = new StringRequest(url, listener, null);
+		Request request = new StringRequest(url, listener, errorListener);
 		mQueue.add(request);
 
 	}
@@ -437,14 +444,12 @@ public class HttpCarInfo {
 	 */
 	private Bundle parseDrive(String response) {
 		try {
-
 			Bundle bundle = new Bundle();
 			JSONObject jsonObject = new JSONObject(response);
 			int drive_score = jsonObject.getInt("drive_score");
 			bundle.putInt("drive_score", drive_score);
 			return bundle;
 		} catch (Exception e) {
-
 		}
 		return null;
 	}
@@ -477,7 +482,7 @@ public class HttpCarInfo {
 			}
 		};
 
-		Request request = new StringRequest(url, listener, null);
+		Request request = new StringRequest(url, listener, errorListener);
 		mQueue.add(request);
 
 	}
@@ -514,7 +519,7 @@ public class HttpCarInfo {
 			return;
 		}
 
-		//Log.i("HttpCarInfo", "carrent car index " + app.currentCarIndex);
+		// Log.i("HttpCarInfo", "carrent car index " + app.currentCarIndex);
 		deviceId = app.carDatas.get(app.currentCarIndex).getDevice_id();
 		String url = Constant.BaseUrl + "device/" + deviceId
 				+ "/stealth_mode?auth_code=" + app.auth_code;
@@ -525,8 +530,14 @@ public class HttpCarInfo {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+
+		Listener listener = new Response.Listener<JSONObject>() {
+			@Override
+			public void onResponse(JSONObject response) {
+			}
+		};
 		JsonObjectRequest request = new JsonObjectRequest(Method.PUT, url,
-				json, null, null);
+				json, listener, errorListener);
 		mQueue.add(request);
 	}
 
