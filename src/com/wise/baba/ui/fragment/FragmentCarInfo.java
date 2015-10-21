@@ -152,18 +152,18 @@ public class FragmentCarInfo extends Fragment {
 	 * 开启更新位置线程 refreshLoaction
 	 */
 	public void refreshLoaction() {
-		Thread locationThread = null;// 定位的线程
 		Runnable runnable = new Runnable() {
-
 			@Override
 			public void run() {
 				while (resumed) {
 					if (app.carDatas == null || app.carDatas.size() == 0) {
 						continue;
 					}
+					
 					if (index >= app.carDatas.size()) {
 						continue;
 					}
+					
 					CarData carData = app.carDatas.get(index);
 					String device_id = carData.getDevice_id();
 					if (device_id == null || device_id.equals("")) {
@@ -177,9 +177,7 @@ public class FragmentCarInfo extends Fragment {
 
 		};
 		// 30秒定位，显示当前位子
-		locationThread = new Thread(runnable);
-
-		locationThread.start();
+		new Thread(runnable).start();
 
 	}
 
@@ -348,7 +346,7 @@ public class FragmentCarInfo extends Fragment {
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			if (!resumed) {// 关闭后直接跳出
+			if (!resumed  || carViews.size() ==0) {// 关闭后直接跳出
 				return;
 			}
 			super.handleMessage(msg);
@@ -455,16 +453,13 @@ public class FragmentCarInfo extends Fragment {
 	public void initDataView() {// 布局
 		// 删除车辆后重新布局，如果删除的是最后一个车辆，则重置为第一个车
 
-		if (app.carDatas == null || index >= app.carDatas.size()) {
-			index = 0;
+		if (app.carDatas == null || app.carDatas.size()==0) {
 			return;
 		}
-
-		if (index < app.carDatas.size()) {
-
-		} else {
+		if (index >= app.carDatas.size()) {
 			index = 0;
 		}
+		
 		SharedPreferences preferences = getActivity().getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		hs_car.removeAllViews();

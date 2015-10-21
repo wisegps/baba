@@ -130,7 +130,7 @@ public class HttpGetObdData {
 			public void onResponse(String response) {
 
 				Log.i("HttpGetData", "response " + response);
-				Message msg = new Message();
+				Message msg = workHandler.obtainMessage();
 				msg.what = Msg.Get_OBD_Data;
 				msg.obj = response;
 				workHandler.sendMessage(msg);

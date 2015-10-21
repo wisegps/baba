@@ -46,6 +46,7 @@ import com.wise.baba.app.Msg;
 import com.wise.baba.biz.GetSystem;
 import com.wise.baba.biz.GetUrl;
 import com.wise.baba.biz.HttpAir;
+import com.wise.baba.biz.HttpCarInfo;
 import com.wise.baba.biz.HttpGetObdData;
 import com.wise.baba.biz.HttpWeather;
 import com.wise.baba.entity.ActiveGpsData;
@@ -79,30 +80,23 @@ public class FragmentHomeAir extends Fragment {
 	public HttpGetObdData http;
 	public HttpAir httpAir;
 	private HttpWeather httpWeather = null;
-
+	private HttpCarInfo httpCarInfo;
 	private OnCardMenuListener onCardMenuListener;
-	private List<View> views = new ArrayList<View>();
-
+	private List<View> views = new ArrayList<View>();;
 	public final static int POWER_ON = 1;
 	public final static int POWER_OFF = 0;
 	/** 获取gps信息 **/
 	private static final int get_gps = 10;
-
 	public RotateAnimation rolateAnimation = null;
-	public int PageStatus = 0;// 页面出现0，页面销毁1'
-
 	boolean isDestroy = false;
-	boolean isResume = false;
-
+	boolean isResumed = false;
 	public float dpdy = 0;// 电瓶电压
-
 	private Handler uiHander = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		isDestroy = false;
-		isResume = true;
+		Log.i("FragmentHomeAir", "onCreateView");
 		return inflater.inflate(R.layout.fragment_home_air, container, false);
 	}
 
@@ -111,18 +105,14 @@ public class FragmentHomeAir extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 		app = (AppApplication) getActivity().getApplication();
 		uiHander = new Handler(handleCallBack);
-		hs_air = (HScrollLayout) getActivity().findViewById(R.id.hs_air);
-
+		httpCarInfo = new HttpCarInfo(this.getActivity(), uiHander);
 		http = new HttpGetObdData(this.getActivity(), uiHander);
 		httpAir = new HttpAir(this.getActivity(), uiHander);
-
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
-
 		httpWeather = new HttpWeather(this.getActivity(), uiHander);
-
+		hs_air = (HScrollLayout) getActivity().findViewById(R.id.hs_air);
 		initDataView();
-
 		hs_air.setOnViewChangeListener(new OnViewChangeListener() {
 			@Override
 			public void OnViewChange(int view, int duration) {
@@ -134,6 +124,8 @@ public class FragmentHomeAir extends Fragment {
 					initLoaction(carIndex);
 
 					http.requestAir(carIndex);
+
+					httpWeather.requestWeather(app.City);
 					// getWeather();
 
 					// httpWeather.requestWeather(app.carDatas.get(carIndex).getCar_city());
@@ -151,36 +143,21 @@ public class FragmentHomeAir extends Fragment {
 		httpWeather.requestWeather();
 	}
 
-	/** 获取GPS信息 **/
-	private void jsonGps(String str, int index) {
-		try {
-			if (index < app.carDatas.size()) {
-				Gson gson = new Gson();
-				ActiveGpsData activeGpsData = gson.fromJson(str,
-						ActiveGpsData.class);
-				if (activeGpsData == null) {
-					return;
-				}
-				GpsData gpsData = activeGpsData.getActive_gps_data();
-				if (gpsData != null) {
-					LatLng latLng = new LatLng(gpsData.getLat(),
-							gpsData.getLon());
-					app.carDatas.get(index).setLat(gpsData.getLat());
-					app.carDatas.get(index).setLon(gpsData.getLon());
-					app.carDatas.get(index).setRcv_time(
-							GetSystem.ChangeTimeZone(gpsData.getRcv_time()
-									.substring(0, 19).replace("T", " ")));
-					mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption()
-							.location(latLng));
-				}
-				if (activeGpsData.getParams() != null) {
-					app.carDatas.get(index).setSensitivity(
-							activeGpsData.getParams().getSensitivity());
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+	/** 设置GPS信息 **/
+	private void setGps(Bundle bundle) {
+		if (bundle == null) {
+			return;
 		}
+		Double lat = bundle.getDouble("lat");
+		Double lon = bundle.getDouble("lon");
+		String rcv_time = bundle.getString("rcv_time");
+		int sensitivity = bundle.getInt("sensitivity", 0);
+		LatLng latLng = new LatLng(lat, lon);
+		app.carDatas.get(carIndex).setLat(lat);
+		app.carDatas.get(carIndex).setLon(lon);
+		app.carDatas.get(carIndex).setRcv_time(rcv_time);
+		mGeoCoder.reverseGeoCode(new ReverseGeoCodeOption().location(latLng));
+		app.carDatas.get(carIndex).setSensitivity(sensitivity);
 	}
 
 	OnGetGeoCoderResultListener listener = new OnGetGeoCoderResultListener() {
@@ -216,30 +193,24 @@ public class FragmentHomeAir extends Fragment {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (!isDestroy) {
-					if (isResume) {
-						if (app.carDatas == null || app.carDatas.size() == 0) {
-
-						} else {
-							// 防止删除车辆后数组越界
-							if (index < app.carDatas.size()) {
-								CarData carData = app.carDatas.get(index);
-								String device_id = carData.getDevice_id();
-								if (device_id == null || device_id.equals("")) {
-								} else {
-									// 获取gps信息
-									String gpsUrl = GetUrl.getCarGpsData(
-											device_id, app.auth_code);
-									new NetThread.GetDataThread(uiHander,
-											gpsUrl, get_gps, index).start();
-								}
-							} else {
-								Log.d(TAG, "刷新位置数组越界");
-							}
-						}
+				while (isResumed) {
+					if (app.carDatas == null || app.carDatas.size() == 0) {
+						continue;
 					}
+					// 防止删除车辆后数组越界
+					if (index >= app.carDatas.size()) {
+						continue;
+					}
+
+					CarData carData = app.carDatas.get(index);
+					String device_id = carData.getDevice_id();
+					if (device_id == null || device_id.equals("")) {
+						continue;
+					}
+					httpCarInfo.requestGps(device_id);
 					SystemClock.sleep(30000);
 				}
+
 			}
 		}).start();
 	}
@@ -343,7 +314,7 @@ public class FragmentHomeAir extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		isResume = false;
+		isResumed = false;
 	}
 
 	@Override
@@ -355,42 +326,44 @@ public class FragmentHomeAir extends Fragment {
 	@Override
 	public void onStop() {
 		super.onStop();
-		PageStatus = 1;
+
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		isResume = true;
-		PageStatus = 0;
+		isResumed = true;
 		refreshAir();
 	}
 
 	/** 滑动车辆布局 **/
 	public void initDataView() {// 布局
+		List<CarData> carDataList = app.carDatas;
 		// 删除车辆后重新布局，如果删除的是最后一个车辆，则重置为第一个车
-		if (app.carDatas == null || carIndex >= app.carDatas.size()) {
-			carIndex = 0;
-			pageIndex = 0;
+		if (carDataList == null || carDataList.size() == 0) {
+			Log.i("FragmentHomeAir", "initDataView");
 			return;
 		}
 
-		if (carIndex < app.carDatas.size()) {
-		} else {
+		if (carIndex >= carDataList.size()) {
+			
 			carIndex = 0;
 			pageIndex = 0;
 		}
 		hs_air.removeAllViews();
-
-		List<CarData> carDataList = app.carDatas;
+		views.clear();
+		
 		for (int i = 0; i < carDataList.size(); i++) {
 
 			if (carDataList.get(i).isIfAir() == false) {
+				Log.i("FragmentHomeAir", "isIfAir");
 				continue;
 			}
+			
 			View v = LayoutInflater.from(getActivity()).inflate(
 					R.layout.page_air, null);
 			v.setTag(i);
+			Log.i("FragmentHomeAir", "initDataView"+i);
 			TextView tvCardTitle = (TextView) v
 					.findViewById(R.id.tv_card_title);
 			SwitchImageView ivAirSettting = (SwitchImageView) v
@@ -423,12 +396,7 @@ public class FragmentHomeAir extends Fragment {
 
 		}
 
-		carIndex = (Integer) hs_air.getChildAt(pageIndex).getTag();
 		hs_air.snapToScreen(pageIndex);
-
-		http.requestAir(carIndex);
-
-		httpWeather.requestWeather(app.City);
 
 	}
 
@@ -437,15 +405,15 @@ public class FragmentHomeAir extends Fragment {
 	 */
 	public void refreshAir() {
 
-		new Handler().postDelayed(new Runnable() {
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				if (PageStatus == 0) {
-					refreshAir();
+				while (isResumed) {
+					httpAir.requestAir(carIndex);
+					SystemClock.sleep(30000);
 				}
 			}
-		}, 30000);
-		httpAir.requestAir(carIndex);
+		}).start();
 	}
 
 	/**
@@ -568,7 +536,11 @@ public class FragmentHomeAir extends Fragment {
 
 		@Override
 		public boolean handleMessage(Message msg) {
+			if (!isResumed || views.size() == 0) {
+				return true;
+			}
 			switch (msg.what) {
+
 			case Msg.Get_OBD_Data:
 				initValue(msg.getData());
 				break;
@@ -581,8 +553,8 @@ public class FragmentHomeAir extends Fragment {
 			case Msg.Get_Weather:
 				setWeather((Weather) msg.obj);
 				break;
-			case get_gps:
-				jsonGps(msg.obj.toString(), msg.arg1);
+			case Msg.Get_Car_GPS:
+				setGps(msg.getData());
 				break;
 
 			}
