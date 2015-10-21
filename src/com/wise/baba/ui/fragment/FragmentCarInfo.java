@@ -80,12 +80,9 @@ public class FragmentCarInfo extends Fragment {
 	/** 仪表盘的间距 **/
 	int completed;
 	private GeoCoder mGeoCoder = null;
-
 	private final int Stealth_Mode_True = 1, Stealth_Mode_False = 0;// 是否隐身 1：隐身
-																	// 0：不隐身
 	private HttpCarInfo httpCarInfo;
 	private OnCardMenuListener onCardMenuListener;
-
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

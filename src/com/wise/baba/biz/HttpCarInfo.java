@@ -83,6 +83,9 @@ public class HttpCarInfo {
 			case Msg.Get_Car_Health:
 				data = parseHealth(response);
 				break;
+			case Msg.Get_Car_Drive:
+				data = parseDrive(response);
+				break;
 			case Msg.Get_Car_Limit:
 				data = parseCarLimit(response);
 				break;

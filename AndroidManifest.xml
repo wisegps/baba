@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wise.baba"
-    android:versionCode="47"
+    android:versionCode="48"
     android:versionName="2.2" >
 
     <!-- 37 -->
@@ -657,7 +657,7 @@
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="YTcG12ht0N8FaxI6rbBd4onM" />
+            android:value="DhT4kz88wR3r5yCl6tQCpaNW" />
     </application>
 
     <instrumentation
