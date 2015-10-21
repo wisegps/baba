@@ -224,9 +224,7 @@ public class HttpAir {
 
 			}
 		};
-
 		Request request = new StringRequest(url, listener, errorListener);
-		request.setShouldCache(false);
 		mQueue.add(request);
 
 	}

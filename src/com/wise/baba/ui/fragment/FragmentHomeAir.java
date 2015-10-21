@@ -77,7 +77,7 @@ public class FragmentHomeAir extends Fragment {
 	AppApplication app;
 	public int carIndex = 0;
 	public int pageIndex = 0;
-	public HttpGetObdData http;
+	public HttpGetObdData httpObd;
 	public HttpAir httpAir;
 	private HttpWeather httpWeather = null;
 	private HttpCarInfo httpCarInfo;
@@ -106,7 +106,7 @@ public class FragmentHomeAir extends Fragment {
 		app = (AppApplication) getActivity().getApplication();
 		uiHander = new Handler(handleCallBack);
 		httpCarInfo = new HttpCarInfo(this.getActivity(), uiHander);
-		http = new HttpGetObdData(this.getActivity(), uiHander);
+		httpObd = new HttpGetObdData(this.getActivity(), uiHander);
 		httpAir = new HttpAir(this.getActivity(), uiHander);
 		mGeoCoder = GeoCoder.newInstance();
 		mGeoCoder.setOnGetGeoCodeResultListener(listener);
@@ -117,15 +117,15 @@ public class FragmentHomeAir extends Fragment {
 			@Override
 			public void OnViewChange(int view, int duration) {
 				carIndex = (Integer) hs_air.getChildAt(view).getTag();
-
+				Log.i("FragmentHomeAir", "OnViewChange: "+carIndex);
 				if (view != pageIndex) {
 					pageIndex = view;
 
 					initLoaction(carIndex);
 
-					http.requestAir(carIndex);
+					httpObd.requestAir(carIndex);
 
-					httpWeather.requestWeather(app.City);
+					//httpWeather.requestWeather(app.City);
 					// getWeather();
 
 					// httpWeather.requestWeather(app.carDatas.get(carIndex).getCar_city());
@@ -313,8 +313,9 @@ public class FragmentHomeAir extends Fragment {
 
 	@Override
 	public void onPause() {
-		super.onPause();
 		isResumed = false;
+		super.onPause();
+		
 	}
 
 	@Override
@@ -331,8 +332,8 @@ public class FragmentHomeAir extends Fragment {
 
 	@Override
 	public void onResume() {
-		super.onResume();
 		isResumed = true;
+		super.onResume();
 		refreshAir();
 	}
 
@@ -357,6 +358,7 @@ public class FragmentHomeAir extends Fragment {
 
 			if (carDataList.get(i).isIfAir() == false) {
 				Log.i("FragmentHomeAir", "isIfAir");
+				Log.i("FragmentHomeAir", carDataList.get(i).getDevice_id());
 				continue;
 			}
 			
@@ -395,8 +397,12 @@ public class FragmentHomeAir extends Fragment {
 			hs_air.addView(v);
 
 		}
-
-		hs_air.snapToScreen(pageIndex);
+		//有空气净化设备
+		if(views.size()>0){
+			carIndex = (Integer) hs_air.getChildAt(pageIndex).getTag();
+			hs_air.snapToScreen(pageIndex);
+		}
+		
 
 	}
 
@@ -410,7 +416,9 @@ public class FragmentHomeAir extends Fragment {
 			public void run() {
 				while (isResumed) {
 					httpAir.requestAir(carIndex);
+					Log.i("FragmentHomeAir", "carIndex: "+carIndex);
 					SystemClock.sleep(30000);
+					//SystemClock.sleep(10000);
 				}
 			}
 		}).start();
@@ -470,6 +478,8 @@ public class FragmentHomeAir extends Fragment {
 	 * @param bundle
 	 */
 	public void refreshValue(Air air) {
+		
+		Log.i("FragmentHomeAir", "refreshValue");
 		View view = views.get(pageIndex);
 		tvAirValue = (TextView) view.findViewById(R.id.tvAirscore);
 		TextView tvAirDesc = (TextView) view.findViewById(R.id.tvAirDesc);
@@ -536,6 +546,8 @@ public class FragmentHomeAir extends Fragment {
 
 		@Override
 		public boolean handleMessage(Message msg) {
+			
+			Log.i("FragmentHomeAir", "handleMessage" + isResumed);
 			if (!isResumed || views.size() == 0) {
 				return true;
 			}
@@ -548,7 +560,7 @@ public class FragmentHomeAir extends Fragment {
 				refreshValue((Air) msg.obj);
 				break;
 			case Msg.Set_Air_Response:
-				http.requestAir(carIndex);
+				httpObd.requestAir(carIndex);
 				break;
 			case Msg.Get_Weather:
 				setWeather((Weather) msg.obj);

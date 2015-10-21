@@ -578,6 +578,7 @@ public class FragmentCarInfo extends Fragment {
 				}
 			}
 		}
+		
 		hs_car.snapToScreen(index);
 		httpCarInfo.requestAllData();
 	}
