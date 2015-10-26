@@ -76,5 +76,11 @@ public class Msg {
 	public static final int Get_Air_AQI = 21;
 	public static final int Get_Weather = 22;
 	public static final int Get_Air_Value = 23;
+	
+	/**
+	 * 获取所有车辆信息
+	 */
+
+	public static final int Get_Car_Info_List = 40;
 
 }

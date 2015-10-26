@@ -73,7 +73,7 @@ public class DevicesAddActivity extends Activity {
 	private static final int REQUEST_FAR = 11;
 	ImageView iv_serial;
 	ImageView iv_add;
-	EditText et_serial, et_sim;
+	EditText et_serial, et_sim,et_hardware_version,et_software_version,et_end_time;
 	TextView tv_note;
 	Button tv_jump;
 	RelativeLayout rl_wait;
@@ -87,7 +87,7 @@ public class DevicesAddActivity extends Activity {
 	int car_id;
 	/** true绑定终端，false修改终端 **/
 	boolean isBind;
-	String device_id, car_series_id, car_series;
+	String old_device_id, device_id, car_series_id, car_series;
 	/** 快速注册 **/
 	boolean fastTrack = false;
 	AppApplication app;
@@ -99,6 +99,8 @@ public class DevicesAddActivity extends Activity {
 		ManageActivity.getActivityInstance().addActivity(this);
 		setContentView(R.layout.activity_devices_add);
 		app = (AppApplication) getApplication();
+		old_device_id = getIntent().getStringExtra("old_device_id");
+
 		ll_wait = (WaitLinearLayout) findViewById(R.id.ll_wait);
 		ll_wait.setOnFinishListener(onFinishListener);
 		tv_note = (TextView) findViewById(R.id.tv_note);
@@ -111,6 +113,15 @@ public class DevicesAddActivity extends Activity {
 		et_sim.setOnFocusChangeListener(onFocusChangeListener);
 		iv_serial = (ImageView) findViewById(R.id.iv_serial);
 		iv_serial.setOnClickListener(onClickListener);
+		
+		et_hardware_version = (EditText) findViewById(R.id.et_hardware_version);
+		et_software_version = (EditText) findViewById(R.id.et_software_version);
+		et_end_time = (EditText) findViewById(R.id.et_end_time);
+		et_hardware_version.setEnabled(false);
+		et_software_version.setEnabled(false);
+		et_end_time.setEnabled(false);
+		
+		
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		iv_add = (ImageView) findViewById(R.id.iv_add);
@@ -122,6 +133,19 @@ public class DevicesAddActivity extends Activity {
 				Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		tv_prompt.setText(sp);
 		tv_prompt.setMovementMethod(LinkMovementMethod.getInstance());
+
+		
+		//显示续费链接
+		if(old_device_id!=null && old_device_id.length()>0){
+			TextView tv_recharge = (TextView) findViewById(R.id.tv_recharge);
+			tv_recharge.setVisibility(View.VISIBLE);
+			SpannableString spRecharge = new SpannableString("续费");
+			String urlRecharge = "http://api.bibibaba.cn/device/" + old_device_id + "/html";
+			spRecharge.setSpan(new URLSpan(urlRecharge), 0, 2,
+					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			tv_recharge.setText(spRecharge);
+			tv_recharge.setOnClickListener(onClickListener);
+		}
 
 		// 近景远景图
 		car_icon_near = (ImageView) findViewById(R.id.car_icon_near);
@@ -150,9 +174,9 @@ public class DevicesAddActivity extends Activity {
 		}
 		if (!isBind) {
 			// 接收并现实以前的终端值
-			String old_device_id = intent.getStringExtra("old_device_id");
 			String url = Constant.BaseUrl + "/device/" + old_device_id
 					+ "?auth_code=" + app.auth_code;
+			Log.i("DevicesAddActivity", url);
 			new NetThread.GetDataThread(handler, url, update_serial).start();
 		} else {
 			startActivityForResult(new Intent(DevicesAddActivity.this,
@@ -213,6 +237,15 @@ public class DevicesAddActivity extends Activity {
 				in.putExtra("isNeedType", false);
 				startActivityForResult(in, 2);
 				break;
+			case R.id.tv_recharge:
+				Intent web = new Intent(DevicesAddActivity.this,
+						WebActivity.class);
+				String sim =et_sim.getText().toString().trim();
+				String urlRecharge = "http://api.bibibaba.cn/device/pay?sim="+sim+"&cust_id="+app.cust_id;
+				web.putExtra("webUrl", urlRecharge);
+				startActivity(web);
+				break;
+				
 			}
 		}
 	};
@@ -357,7 +390,7 @@ public class DevicesAddActivity extends Activity {
 				break;
 			case update_sim:
 				try {
-					
+
 					Log.i("DevicesAddActivity", msg.obj.toString());
 					String status_code = new JSONObject(msg.obj.toString())
 							.getString("status_code");
@@ -383,7 +416,8 @@ public class DevicesAddActivity extends Activity {
 				break;
 			case update_user:
 				try {
-					Log.i("DevicesAddActivity", "update_user"+msg.obj.toString());
+					Log.i("DevicesAddActivity",
+							"update_user" + msg.obj.toString());
 					String status_code = new JSONObject(msg.obj.toString())
 							.getString("status_code");
 					if (status_code.equals("0")) {
@@ -393,7 +427,7 @@ public class DevicesAddActivity extends Activity {
 						final List<NameValuePair> params = new ArrayList<NameValuePair>();
 						params.add(new BasicNameValuePair("device_id",
 								device_id));
-						Log.i("DevicesAddActivity", isBind+"");
+						Log.i("DevicesAddActivity", isBind + "");
 						if (!isBind) {
 							AlertDialog.Builder builder = new AlertDialog.Builder(
 									DevicesAddActivity.this);
@@ -427,17 +461,16 @@ public class DevicesAddActivity extends Activity {
 															.start();
 												}
 											}).show();
-						}else {
-							
-							new NetThread.putDataThread(
-									handler, url,
-									params, update_car)
-									.start();
+						} else {
+
+							new NetThread.putDataThread(handler, url, params,
+									update_car).start();
 						}
 
 					} else {
-						
-						Log.i("DevicesAddActivity", "update_user"+"SaveDataOver");
+
+						Log.i("DevicesAddActivity", "update_user"
+								+ "SaveDataOver");
 						SaveDataOver();
 						showToast();
 					}
@@ -461,10 +494,19 @@ public class DevicesAddActivity extends Activity {
 			case update_serial:
 				try {
 					JSONObject json = new JSONObject(msg.obj.toString());
+					
 					String sim_card = json.getString("sim");
 					String old_serial = json.getString("serial");
+					String hardwareVersion = json.getString("hardware_version");
+					String softwareVersion = json.getString("software_version");
+					String endTime = json.optString("end_time","");
+					
 					et_serial.setText(old_serial);
 					et_sim.setText(sim_card);
+					et_hardware_version.setText(hardwareVersion);
+					et_software_version.setText(softwareVersion);
+					et_end_time.setText(endTime);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -718,7 +760,7 @@ public class DevicesAddActivity extends Activity {
 			ll_wait.startWheel();
 			String url = Constant.BaseUrl + "device/serial/" + serial
 					+ "?auth_code=" + app.auth_code;
-			
+
 			Log.i("DevicesAddActivity", url);
 			new NetThread.GetDataThread(handler, url, add_serial).start();
 			SaveDataIn();
@@ -726,9 +768,7 @@ public class DevicesAddActivity extends Activity {
 	}
 
 	private void jsonAddSerial(String result) {
-		
-		
-		
+
 		try {
 			if (result.equals("")) {
 				et_serial.setError("序列号不存在");

@@ -67,7 +67,6 @@ public class CarUpdateActivity extends Activity {
 	private final int get_traffic = 5;
 	private static final int getFuelPrice = 6;
 	
-	
 	LinearLayout ll_engine, ll_frame;
 	EditText et_nick_name, et_obj_name, et_engine_no, et_frame_no,
 			et_insurance_tel, et_insurance_no, et_maintain_tel;
@@ -111,6 +110,7 @@ public class CarUpdateActivity extends Activity {
 		setTime();
 		getTraffic();
 		getFuelPrice();
+		
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -311,6 +311,7 @@ public class CarUpdateActivity extends Activity {
 	}
 
 	private void jsonSave(String str) {
+		Log.i("CarUpdateActivity", "jsonSave " + str);
 		try {
 			JSONObject jsonObject = new JSONObject(str);
 			if (jsonObject.getInt("status_code") == 0) {
@@ -347,7 +348,7 @@ public class CarUpdateActivity extends Activity {
 		for (CityData cityData : chooseCityDatas) {
 			// 发动机号
 			if (cityData.getEngine() == 0) {
-
+				
 			} else {
 				if (cityData.getEngineno() == 1) {// 全部
 					if (engine_no.length() == 0) {
@@ -429,7 +430,11 @@ public class CarUpdateActivity extends Activity {
 		carNewData.setCar_brand_id(car_brand_id);
 		carNewData.setCar_series_id(car_series_id);
 		carNewData.setCar_type_id(car_type_id);
-		carNewData.setFuel_price(Double.valueOf(fuel_price));
+		
+		if(fuel_price.length()>0){
+			carNewData.setFuel_price(Double.valueOf(fuel_price));
+		}
+		
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("obj_name", obj_name));
@@ -462,6 +467,7 @@ public class CarUpdateActivity extends Activity {
 				+ "?auth_code=" + app.auth_code;
 
 		Log.i("CarUpdateActivity", "carData.getObj_id " + carData.getObj_id());
+		Log.i("CarUpdateActivity", "insurance_company " + insurance_company);
 		new NetThread.putDataThread(handler, url, params, update).start();
 	}
 

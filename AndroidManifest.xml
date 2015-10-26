@@ -478,7 +478,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/PopupActivity" >
         </activity>
+        
+         <activity
+            android:name="com.wise.car.WebActivity"
+            android:screenOrientation="portrait" >
+        </activity>
 
+        
+        
         <service android:name=".LocationService" >
         </service>
 

@@ -33,6 +33,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -183,6 +184,7 @@ public class CarActivity extends Activity {
 
 	private void getData() {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/vehicle?auth_code=" + app.auth_code;
+		Log.i("CarUpdateActivity", url);
 		new NetThread.GetDataThread(handler, url, get_data).start();
 	}
 	/**删除车辆确认**/
