@@ -49,6 +49,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.wise.baba.util.DateUtil;
 
 /**
  * 添加绑定终端
@@ -73,7 +74,8 @@ public class DevicesAddActivity extends Activity {
 	private static final int REQUEST_FAR = 11;
 	ImageView iv_serial;
 	ImageView iv_add;
-	EditText et_serial, et_sim,et_hardware_version,et_software_version,et_end_time;
+	EditText et_serial, et_sim, et_hardware_version, et_software_version,
+			et_end_time;
 	TextView tv_note;
 	Button tv_jump;
 	RelativeLayout rl_wait;
@@ -113,15 +115,14 @@ public class DevicesAddActivity extends Activity {
 		et_sim.setOnFocusChangeListener(onFocusChangeListener);
 		iv_serial = (ImageView) findViewById(R.id.iv_serial);
 		iv_serial.setOnClickListener(onClickListener);
-		
+
 		et_hardware_version = (EditText) findViewById(R.id.et_hardware_version);
 		et_software_version = (EditText) findViewById(R.id.et_software_version);
 		et_end_time = (EditText) findViewById(R.id.et_end_time);
 		et_hardware_version.setEnabled(false);
 		et_software_version.setEnabled(false);
 		et_end_time.setEnabled(false);
-		
-		
+
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
 		iv_add = (ImageView) findViewById(R.id.iv_add);
@@ -134,13 +135,13 @@ public class DevicesAddActivity extends Activity {
 		tv_prompt.setText(sp);
 		tv_prompt.setMovementMethod(LinkMovementMethod.getInstance());
 
-		
-		//显示续费链接
-		if(old_device_id!=null && old_device_id.length()>0){
+		// 显示续费链接
+		if (old_device_id != null && old_device_id.length() > 0) {
 			TextView tv_recharge = (TextView) findViewById(R.id.tv_recharge);
 			tv_recharge.setVisibility(View.VISIBLE);
 			SpannableString spRecharge = new SpannableString("续费");
-			String urlRecharge = "http://api.bibibaba.cn/device/" + old_device_id + "/html";
+			String urlRecharge = "http://api.bibibaba.cn/device/"
+					+ old_device_id + "/html";
 			spRecharge.setSpan(new URLSpan(urlRecharge), 0, 2,
 					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 			tv_recharge.setText(spRecharge);
@@ -240,12 +241,13 @@ public class DevicesAddActivity extends Activity {
 			case R.id.tv_recharge:
 				Intent web = new Intent(DevicesAddActivity.this,
 						WebActivity.class);
-				String sim =et_sim.getText().toString().trim();
-				String urlRecharge = "http://api.bibibaba.cn/device/pay?sim="+sim+"&cust_id="+app.cust_id;
+				String sim = et_sim.getText().toString().trim();
+				String urlRecharge = "http://api.bibibaba.cn/device/pay?sim="
+						+ sim + "&cust_id=" + app.cust_id;
 				web.putExtra("webUrl", urlRecharge);
 				startActivityForResult(web, 10);
 				break;
-				
+
 			}
 		}
 	};
@@ -494,21 +496,20 @@ public class DevicesAddActivity extends Activity {
 			case update_serial:
 				try {
 					JSONObject json = new JSONObject(msg.obj.toString());
-					
+
 					String sim_card = json.getString("sim");
 					String old_serial = json.getString("serial");
 					String hardwareVersion = json.getString("hardware_version");
 					String softwareVersion = json.getString("software_version");
-					String endTime = json.optString("end_time","");
-					if(endTime!=null && endTime.length()>=10){
-						endTime = endTime.substring(0,10);
-					}
+					String endTime = json.optString("end_time", "");
+					endTime = DateUtil.getEndTime(endTime);
+
 					et_serial.setText(old_serial);
 					et_sim.setText(sim_card);
 					et_hardware_version.setText(hardwareVersion);
 					et_software_version.setText(softwareVersion);
 					et_end_time.setText(endTime);
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -891,13 +892,13 @@ public class DevicesAddActivity extends Activity {
 			et_serial.setText(result);
 			checkSerial();
 		}
-		
+
 		if (requestCode == 10 && resultCode == 10) {
-			
+
 			Log.i("DevicesAddActivity", "resultCode  = 10");
 			finish();
 		}
-		
+
 		if (resultCode == PictureChoose.Pictrue) {
 			int type = data.getIntExtra("type", 0);
 			if (type == PictureChoose.PIC_NEAR) {
