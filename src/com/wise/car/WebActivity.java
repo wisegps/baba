@@ -42,4 +42,14 @@ public class WebActivity extends Activity {
 	}
 
 	
+	//改写物理按键——返回的逻辑
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // TODO Auto-generated method stub
+        if(keyCode==KeyEvent.KEYCODE_BACK)
+        {
+          setResult(10);
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

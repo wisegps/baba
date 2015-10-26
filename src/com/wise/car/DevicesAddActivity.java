@@ -243,7 +243,7 @@ public class DevicesAddActivity extends Activity {
 				String sim =et_sim.getText().toString().trim();
 				String urlRecharge = "http://api.bibibaba.cn/device/pay?sim="+sim+"&cust_id="+app.cust_id;
 				web.putExtra("webUrl", urlRecharge);
-				startActivity(web);
+				startActivityForResult(web, 10);
 				break;
 				
 			}
@@ -500,7 +500,9 @@ public class DevicesAddActivity extends Activity {
 					String hardwareVersion = json.getString("hardware_version");
 					String softwareVersion = json.getString("software_version");
 					String endTime = json.optString("end_time","");
-					
+					if(endTime!=null && endTime.length()>=10){
+						endTime = endTime.substring(0,10);
+					}
 					et_serial.setText(old_serial);
 					et_sim.setText(sim_card);
 					et_hardware_version.setText(hardwareVersion);
@@ -889,6 +891,13 @@ public class DevicesAddActivity extends Activity {
 			et_serial.setText(result);
 			checkSerial();
 		}
+		
+		if (requestCode == 10 && resultCode == 10) {
+			
+			Log.i("DevicesAddActivity", "resultCode  = 10");
+			finish();
+		}
+		
 		if (resultCode == PictureChoose.Pictrue) {
 			int type = data.getIntExtra("type", 0);
 			if (type == PictureChoose.PIC_NEAR) {
