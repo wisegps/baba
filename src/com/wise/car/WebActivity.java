@@ -16,15 +16,15 @@ import android.webkit.WebViewClient;
  */
 public class WebActivity extends Activity {
 
-	WebView webview;
+	private WebView webview;
+	private String url  = "";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		 webview = new WebView(this);
 		setContentView(webview);
-		String url = getIntent().getStringExtra("webUrl");
-		webview.loadUrl(url);
+		url = getIntent().getStringExtra("webUrl");
 		// 覆盖WebView默认使用第三方或系统默认浏览器打开网页的行为，使网页用WebView打开
 		webview.setWebViewClient(new WebViewClient() {
 			@Override
@@ -42,6 +42,13 @@ public class WebActivity extends Activity {
 	}
 
 	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		webview.loadUrl(url);
+	}
+
+
 	//改写物理按键——返回的逻辑
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

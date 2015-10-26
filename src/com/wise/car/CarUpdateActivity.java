@@ -180,6 +180,10 @@ public class CarUpdateActivity extends Activity {
 				break;
 			case R.id.btnUpdate:
 				if(hasDeviceId()){
+					
+					//carManage.updateDevice(index);//测试用
+					
+					
 					intentToRegister(UPDATE);
 				}
 				

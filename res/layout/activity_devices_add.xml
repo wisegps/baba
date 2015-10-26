@@ -236,7 +236,7 @@
                 android:paddingTop="14dp" >
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="服务截止日期:"
@@ -245,26 +245,14 @@
 
                 <EditText
                     android:id="@+id/et_end_time"
-                    android:layout_width="0dp"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:background="@null"
                     android:inputType="phone"
                     android:maxLength="11"
                     android:text=""
                     android:textColor="@color/navy" />
-                
-                   <TextView
-                       android:id="@+id/tv_recharge"
-                       android:layout_width="0dp"
-                       android:layout_height="wrap_content"
-                       android:layout_weight="1"
-                       android:text="@string/recharge"
-                       android:textColor="@color/blue_press"
-                       android:textSize="@dimen/content"
-                       android:visibility="invisible"
-                        />
-                
             </LinearLayout>
 
             <View
@@ -272,10 +260,64 @@
                 android:layout_height="0.5dp"
                 android:background="@color/line" />
 
+            <!-- 续费 -->
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingBottom="14dp"
+                android:paddingLeft="@dimen/margins"
+                android:paddingRight="@dimen/margins"
+                android:paddingTop="14dp" >
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="选择续费时长:"
+                    android:textColor="@color/navy"
+                    android:textSize="@dimen/content" />
+
+                <Spinner
+                    android:id="@+id/spinnerCharge"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:entries="@array/recharge_array" />
+
+            </LinearLayout>
+
             <View
                 android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:background="@drawable/body_line" />
+                android:layout_height="0.5dp"
+                android:background="@color/line" />
+
+            <!-- 立即续费 -->
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingBottom="14dp"
+                android:paddingLeft="@dimen/margins"
+                android:paddingRight="@dimen/margins"
+                android:paddingTop="14dp" >
+
+                <Button
+                    android:id="@+id/btn_recharge"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_green"
+                    android:padding="@dimen/margins"
+                    android:text="立即续费"
+                    android:visibility="gone"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/bt" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

@@ -137,15 +137,9 @@ public class DevicesAddActivity extends Activity {
 
 		// 显示续费链接
 		if (old_device_id != null && old_device_id.length() > 0) {
-			TextView tv_recharge = (TextView) findViewById(R.id.tv_recharge);
-			tv_recharge.setVisibility(View.VISIBLE);
-			SpannableString spRecharge = new SpannableString("续费");
-			String urlRecharge = "http://api.bibibaba.cn/device/"
-					+ old_device_id + "/html";
-			spRecharge.setSpan(new URLSpan(urlRecharge), 0, 2,
-					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-			tv_recharge.setText(spRecharge);
-			tv_recharge.setOnClickListener(onClickListener);
+			Button btnRecharge = (Button) findViewById(R.id.btn_recharge);
+			btnRecharge.setVisibility(View.VISIBLE);
+			btnRecharge.setOnClickListener(onClickListener);
 		}
 
 		// 近景远景图
@@ -238,7 +232,7 @@ public class DevicesAddActivity extends Activity {
 				in.putExtra("isNeedType", false);
 				startActivityForResult(in, 2);
 				break;
-			case R.id.tv_recharge:
+			case R.id.btn_recharge:
 				Intent web = new Intent(DevicesAddActivity.this,
 						WebActivity.class);
 				String sim = et_sim.getText().toString().trim();
@@ -894,9 +888,10 @@ public class DevicesAddActivity extends Activity {
 		}
 
 		if (requestCode == 10 && resultCode == 10) {
-
-			Log.i("DevicesAddActivity", "resultCode  = 10");
-			finish();
+			// 接收并现实以前的终端值
+			String url = Constant.BaseUrl + "/device/" + old_device_id
+					+ "?auth_code=" + app.auth_code;
+			new NetThread.GetDataThread(handler, url, update_serial).start();
 		}
 
 		if (resultCode == PictureChoose.Pictrue) {

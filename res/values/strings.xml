@@ -4,8 +4,8 @@
     <string name="app_name">叭叭</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-	<string name="cancle">取消</string>
-	<string name="comments">评论</string>
+    <string name="cancle">取消</string>
+    <string name="comments">评论</string>
     <string name="image_position">Image position</string>
     <!-- 车务提醒 -->
     <string name="car_remind">车务提醒</string>
@@ -27,22 +27,23 @@
     <string name="replacement">驾照换证提醒</string>
     <string name="replacement_title">驾照换证</string>
     <string name="replacement_content">(需于%s前换证)</string>
-    
+
     <!-- 车辆违章 -->
     <string name="total_score">累计扣分: %s分</string>
     <string name="total_fine">累计罚款: %s元</string>
-    
     <string name="border_top">Border Top</string>
     <string name="border_bottom">Border Bottom</string>
     <string name="image_url">Image Url</string>
-    
     <string name="choice_brank">选择品牌</string>
     <string name="choice_series">选择车型</string>
     <string name="choice_type">选择车款</string>
     <string name="dialog_title">数据加载</string>
     <string name="dialog_message">加载中...</string>
-    
-      <string name="air_low_dpdy">电瓶电压较低，不能远程开启净化器</string>
-      
-      <string name="recharge"><u>续费</u></string>
+    <string name="air_low_dpdy">电瓶电压较低，不能远程开启净化器</string>
+    <string name="recharge">立即续费</string>
+
+    <string-array name="recharge_array">
+        <item>一年服务费(50元)</item>
+    </string-array>
+
 </resources>
