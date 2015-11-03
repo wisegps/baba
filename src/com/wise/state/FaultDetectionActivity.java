@@ -102,7 +102,7 @@ public class FaultDetectionActivity extends Activity implements OnClickListener 
 	AppApplication app;
 	List<CarData> carDatas;
 	List<CarView> carViews = new ArrayList<CarView>();
-	private boolean isCreate = false;// 界面第一次进入
+	private boolean isFirstCreated = false;// 界面第一次进入
 	// public long peroidRefersh = 1;
 	public long duration = 300;// 单项体检耗时
 
@@ -111,7 +111,7 @@ public class FaultDetectionActivity extends Activity implements OnClickListener 
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_fault_detection);
-		isCreate = true;
+		isFirstCreated = true;
 		app = (AppApplication) getApplication();
 		index = this.getIntent().getIntExtra("index", 0);
 		Log.i("FaultDetectionActivity", "当前车辆位置" + index);
@@ -242,6 +242,7 @@ public class FaultDetectionActivity extends Activity implements OnClickListener 
 				}
 			}
 		}
+		
 	}
 
 	/** 获取历史消息 **/
@@ -833,7 +834,7 @@ public class FaultDetectionActivity extends Activity implements OnClickListener 
 		super.onResume();
 		MobclickAgent.onResume(this);
 
-		if (!isCreate) {
+		if (isFirstCreated == false) {
 			// 若果不是第一次创建就返回
 			return;
 		}
@@ -845,7 +846,7 @@ public class FaultDetectionActivity extends Activity implements OnClickListener 
 				clickHealth();
 			}
 		}, 50);
-		isCreate = false;
+		isFirstCreated = false;
 
 	}
 

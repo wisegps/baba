@@ -242,6 +242,7 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 	/** 获取用户信息 **/
 	private void getCustomer() {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id + "?auth_code=" + app.auth_code;
+		
 		new NetThread.GetDataThread(handler, url, getCustomer).start();
 	}
 
@@ -267,6 +268,7 @@ public class LoginActivity extends Activity implements PlatformActionListener, T
 	/** 获取车辆信息 **/
 	private void getCarData() {
 		String url = Constant.BaseUrl + "customer/" + app.cust_id + "/vehicle?auth_code=" + app.auth_code;
+		Log.i("LoginActivity", " 获取车辆信息: "+url);
 		new Thread(new NetThread.GetDataThread(handler, url, getCarData)).start();
 	}
 

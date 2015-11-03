@@ -114,7 +114,7 @@ public class FragmentCarInfo extends Fragment {
 				}
 				index = changedIndex;
 				app.currentCarIndex = changedIndex;
-				Log.i("FragmentCarInfo", "当前车辆"+app.currentCarIndex);
+				Log.i("FragmentCarInfo", "当前车辆" + app.currentCarIndex);
 				// 等待滚动完毕后查询数据
 				handler.postDelayed(new Runnable() {
 					@Override
@@ -138,7 +138,7 @@ public class FragmentCarInfo extends Fragment {
 			public void run() {
 				while (resumed) {
 					SystemClock.sleep(5 * 60000);
-					//SystemClock.sleep(5000);
+					// SystemClock.sleep(5000);
 					httpCarInfo.requestAllData();
 					Log.i("ThreadTest", "refreshAllData");
 				}
@@ -159,11 +159,11 @@ public class FragmentCarInfo extends Fragment {
 					if (app.carDatas == null || app.carDatas.size() == 0) {
 						continue;
 					}
-					
+
 					if (index >= app.carDatas.size()) {
 						continue;
 					}
-					
+
 					CarData carData = app.carDatas.get(index);
 					String device_id = carData.getDevice_id();
 					if (device_id == null || device_id.equals("")) {
@@ -340,13 +340,11 @@ public class FragmentCarInfo extends Fragment {
 			}
 		}
 	};
-	
-	
-	
+
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			if (!resumed  || carViews.size() ==0) {// 关闭后直接跳出
+			if (!resumed || carViews.size() == 0) {// 关闭后直接跳出
 				return;
 			}
 			super.handleMessage(msg);
@@ -453,13 +451,13 @@ public class FragmentCarInfo extends Fragment {
 	public void initDataView() {// 布局
 		// 删除车辆后重新布局，如果删除的是最后一个车辆，则重置为第一个车
 
-		if (app.carDatas == null || app.carDatas.size()==0) {
+		if (app.carDatas == null || app.carDatas.size() == 0) {
 			return;
 		}
 		if (index >= app.carDatas.size()) {
 			index = 0;
 		}
-		
+
 		SharedPreferences preferences = getActivity().getSharedPreferences(
 				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		hs_car.removeAllViews();
@@ -578,7 +576,7 @@ public class FragmentCarInfo extends Fragment {
 				}
 			}
 		}
-		
+
 		hs_car.snapToScreen(index);
 		httpCarInfo.requestAllData();
 	}
@@ -662,10 +660,20 @@ public class FragmentCarInfo extends Fragment {
 	/** 设置体检信息 **/
 	public void setCarHealth(Bundle bundle) {
 		int health_score = bundle.getInt("health_score");
+
 		carViews.get(index).getDialHealthScore()
 				.initValue(health_score, handler);
 		carViews.get(index).getTv_score().setText(String.valueOf(health_score));
 		carViews.get(index).getTv_title().setText("健康指数");
+
+//		// 体检结果存起来
+//		SharedPreferences preferences = this.getActivity()
+//				.getSharedPreferences(Constant.sharedPreferencesName,
+//						Context.MODE_PRIVATE);
+//		Editor editor = preferences.edit();
+//		editor.putString(Constant.sp_health_score
+//				+ app.carDatas.get(index).getObj_id(), health_score + "");
+//		editor.commit();
 	}
 
 	/** 设置驾驶信息 **/
@@ -721,10 +729,11 @@ public class FragmentCarInfo extends Fragment {
 	List<CarView> carViews = new ArrayList<CarView>();
 
 	boolean resumed = false;
+
 	@Override
 	public void onResume() {
 		super.onResume();
-		resumed =true;
+		resumed = true;
 		// 更新车辆位置
 		refreshLoaction();
 		// 刷新车辆信息
