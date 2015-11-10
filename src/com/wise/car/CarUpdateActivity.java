@@ -469,7 +469,7 @@ public class CarUpdateActivity extends Activity {
 
 		String url = Constant.BaseUrl + "vehicle/" + carData.getObj_id()
 				+ "?auth_code=" + app.auth_code;
-
+		Log.i("CarUpdateActivity", "AA " + url);
 		Log.i("CarUpdateActivity", "carData.getObj_id " + carData.getObj_id());
 		Log.i("CarUpdateActivity", "insurance_company " + insurance_company);
 		new NetThread.putDataThread(handler, url, params, update).start();
