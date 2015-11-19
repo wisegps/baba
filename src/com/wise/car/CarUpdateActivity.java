@@ -35,6 +35,8 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
@@ -65,8 +67,25 @@ public class CarUpdateActivity extends Activity {
 	private final int year_check = 3;
 	private final int update = 4;
 	private final int get_traffic = 5;
+
 	private static final int getFuelPrice = 6;
-	
+
+	private static final int Request_Car_Model = 7;// 选择汽车型号
+	private static final int Request_Insruance = 8;// 选择保险公司
+	private static final int Request_City = 9; // 选择违章城市
+	private static final int Request_Gas_NO = 10; // 选择汽油标号
+	private static final int Request_Short = 11; // 选择城市简称
+	private static final int Request_Maintain = 12;// 选择4S店
+
+	public static final int Request_REMOVE = 13;// 请求删除验证码
+	public static final int Request_UPDATE = 14;// 请求更改验证码
+
+	public static final int Result_REMOVE = 15;// 通过验证可以删除
+	public static final int Result_Update = 16;// 通过验证可以修改了
+
+	public static final int Request_Device_Update = 17;// 终端修改成功返回
+	public static final int Result_Device_Update = 18;// 终端修改成功返回
+
 	LinearLayout ll_engine, ll_frame;
 	EditText et_nick_name, et_obj_name, et_engine_no, et_frame_no,
 			et_insurance_tel, et_insurance_no, et_maintain_tel;
@@ -80,7 +99,6 @@ public class CarUpdateActivity extends Activity {
 	CarData carNewData = new CarData();
 
 	List<CityData> chooseCityDatas = new ArrayList<CityData>();
-
 	String car_brand = "";
 	String car_brand_id = "";
 	String car_series = "";
@@ -89,6 +107,8 @@ public class CarUpdateActivity extends Activity {
 	String car_type_id = "";
 	AppApplication app;
 	CarManage carManage = null;
+	private Handler handler;
+	private HandlerThread handlerThread = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +117,13 @@ public class CarUpdateActivity extends Activity {
 		setContentView(R.layout.activity_car_update);
 		app = (AppApplication) getApplication();
 		index = getIntent().getIntExtra("index", 0);
+
+		handlerThread = new HandlerThread("HttpAir");
+		handlerThread.start();
+
+		Looper looper = handlerThread.getLooper();
+		handler = new Handler(looper, callback);
+
 		isService = getIntent().getBooleanExtra("isService", false);
 		if (isService) {
 			carData = ManageActivity.carDatas.get(index);
@@ -104,13 +131,13 @@ public class CarUpdateActivity extends Activity {
 			carData = app.carDatas.get(index);
 		}
 		carNewData = carData;
-		carManage = new CarManage(this,app,handler);
+		carManage = new CarManage(this, app, handler);
 		init();
 		setData();
 		setTime();
 		getTraffic();
 		getFuelPrice();
-		
+
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -130,28 +157,30 @@ public class CarUpdateActivity extends Activity {
 				break;
 			case R.id.tv_models:
 				startActivityForResult(new Intent(CarUpdateActivity.this,
-						ModelsActivity.class), 2);
+						ModelsActivity.class), Request_Car_Model);
 				break;
 			case R.id.tv_city:
 				Intent intent1 = new Intent(CarUpdateActivity.this,
 						TrafficCitiyActivity.class);
 				intent1.putExtra("cityDatas", (Serializable) chooseCityDatas);
-				startActivityForResult(intent1, 2);
+				startActivityForResult(intent1, Request_City);
 				break;
 			case R.id.tv_gas_no:
 				startActivityForResult(new Intent(CarUpdateActivity.this,
-						PetrolGradeActivity.class), 2);
+						PetrolGradeActivity.class), Request_Gas_NO);
 				break;
 			case R.id.tv_insurance_company:
 				startActivityForResult(new Intent(CarUpdateActivity.this,
-						InsuranceActivity.class), 2);
+
+				InsuranceActivity.class), Request_Insruance);
 				break;
 			case R.id.tv_maintain_company:
 				Intent intent = new Intent(CarUpdateActivity.this,
 						FoursActivity.class);
 				intent.putExtra("city", app.City);
 				intent.putExtra("brank", car_brand);
-				startActivityForResult(intent, 2);
+
+				startActivityForResult(intent, Request_Maintain);
 				break;
 			case R.id.tv_insurance_date:
 				ShowDate(inspection);
@@ -165,7 +194,7 @@ public class CarUpdateActivity extends Activity {
 			case R.id.btn_choose:
 				Intent intent2 = new Intent(CarUpdateActivity.this,
 						ShortProvincesActivity.class);
-				startActivityForResult(intent2, 3);
+				startActivityForResult(intent2, Request_Short);
 				break;
 			case R.id.image_help_1:// 帮助图片显示
 				helpPopView();
@@ -174,19 +203,16 @@ public class CarUpdateActivity extends Activity {
 				helpPopView();
 				break;
 			case R.id.btnUnbind:
-				if(hasDeviceId()){
-					intentToRegister(REMOVE);
+				if (hasDeviceId()) {
+					intentToRegister(Request_REMOVE);
 				}
 				break;
 			case R.id.btnUpdate:
-				if(hasDeviceId()){
-					
-					//carManage.updateDevice(index);//测试用
-					
-					
-					intentToRegister(UPDATE);
+				if (hasDeviceId()) {
+					// carManage.updateDevice(index);//测试用
+					intentToRegister(Request_UPDATE);
 				}
-				
+
 				break;
 			case R.id.btnDelete:
 				if (app.isTest) {
@@ -201,42 +227,43 @@ public class CarUpdateActivity extends Activity {
 		}
 	};
 
-	
-	public boolean hasDeviceId(){
+	public boolean hasDeviceId() {
 		boolean b = true;
 		if (carNewData.getDevice_id() == null
 				|| carNewData.getDevice_id().equals("")
 				|| carNewData.getDevice_id().equals("0")) {
-			b= false;
+			b = false;
 			Toast.makeText(this, "未绑定智能终端", Toast.LENGTH_SHORT).show();
 		}
 		return b;
 	}
-	private static final int REMOVE = 5;
-	private static final int UPDATE = 7;
-	public void intentToRegister(int request){
-		SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+
+	public void intentToRegister(int request) {
+		SharedPreferences preferences = getSharedPreferences(
+				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 		String sp_account = preferences.getString(Constant.sp_account, "");
 		if (app.isTest) {
-			Toast.makeText(CarUpdateActivity.this, "演示账号不支持该功能", Toast.LENGTH_SHORT).show();
+			Toast.makeText(CarUpdateActivity.this, "演示账号不支持该功能",
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		Intent intent = new Intent(CarUpdateActivity.this, RegisterActivity.class);
+		Intent intent = new Intent(CarUpdateActivity.this,
+				RegisterActivity.class);
 		intent.putExtra("mark", 1);
-		if(request == REMOVE){
+		if (request == Request_REMOVE) {
 			intent.putExtra("remove", true);
-		}else if(request == UPDATE){
+		} else if (request == Request_UPDATE) {
 			intent.putExtra("device_update", true);
 		}
-		
+
 		intent.putExtra("account", sp_account);
 		startActivityForResult(intent, request);
 	}
-	
-	Handler handler = new Handler() {
+
+	Handler.Callback callback = new Handler.Callback() {
+
 		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
+		public boolean handleMessage(Message msg) {
 			switch (msg.what) {
 			case update:
 				jsonSave(msg.obj.toString());
@@ -251,12 +278,11 @@ public class CarUpdateActivity extends Activity {
 				app.carDatas.remove(index);
 				CarUpdateActivity.this.finish();
 				break;
-			
+
 			}
+			return false;
 		}
 	};
-	
-	
 
 	/** 获取油价 **/
 	private void getFuelPrice() {
@@ -352,7 +378,7 @@ public class CarUpdateActivity extends Activity {
 		for (CityData cityData : chooseCityDatas) {
 			// 发动机号
 			if (cityData.getEngine() == 0) {
-				
+
 			} else {
 				if (cityData.getEngineno() == 1) {// 全部
 					if (engine_no.length() == 0) {
@@ -434,11 +460,10 @@ public class CarUpdateActivity extends Activity {
 		carNewData.setCar_brand_id(car_brand_id);
 		carNewData.setCar_series_id(car_series_id);
 		carNewData.setCar_type_id(car_type_id);
-		
-		if(fuel_price.length()>0){
+
+		if (fuel_price.length() > 0) {
 			carNewData.setFuel_price(Double.valueOf(fuel_price));
 		}
-		
 
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("obj_name", obj_name));
@@ -607,7 +632,6 @@ public class CarUpdateActivity extends Activity {
 		btn_help_1.setOnClickListener(onClickListener);
 		btn_help_2.setOnClickListener(onClickListener);
 
-
 		btnUnbind = (Button) findViewById(R.id.btnUnbind);
 		btnUpdate = (Button) findViewById(R.id.btnUpdate);
 		btnDelete = (Button) findViewById(R.id.btnDelete);
@@ -615,8 +639,7 @@ public class CarUpdateActivity extends Activity {
 		btnUnbind.setOnClickListener(onClickListener);
 		btnUpdate.setOnClickListener(onClickListener);
 		btnDelete.setOnClickListener(onClickListener);
-		
-	
+
 	}
 
 	private String jsonList(List<CityData> chooseCityDatas) {
@@ -646,29 +669,30 @@ public class CarUpdateActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		/*解除绑定*/
-		if (requestCode == REMOVE && resultCode == 6) {// 删除终端
+		/* 解除绑定 */
+		if (requestCode == Request_REMOVE && resultCode == Result_REMOVE) {// 删除终端验证码验证通过
 			carManage.unbind(index);
 			return;
-			
+
 		}
-		
-		/*修改终端*/
-		if (requestCode == UPDATE && resultCode == 8) {// 修改终端
+
+		/* 修改终端 */
+		if (requestCode == Request_UPDATE && resultCode == Result_Update) {// 修改终端
+																			// 验证码验证通过
+			Log.i("CarUpdateActivity", "修改终端");
 			carManage.updateDevice(index);
 			return;
-			
-		}
-		
 
-		/*成功修改终端*/
-		if (requestCode == 2 && resultCode == 1) {// 修改终端成功
-			this.finish();
-			return;
-			
 		}
-		
-		
+
+		/* 成功修改终端 */
+		if (requestCode == Request_Device_Update && resultCode == 1) {// 修改终端成功
+			this.finish();
+			Log.i("CarUpdateActivity", "修改终端成功");
+			return;
+
+		}
+
 		if (resultCode == 1) {// 汽车型号
 			car_brand = data.getStringExtra("brank");
 			car_brand_id = data.getStringExtra("brankId");
@@ -771,7 +795,15 @@ public class CarUpdateActivity extends Activity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		setNote();
+		runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				setNote();
+			}
+
+		});
+
 	}
 
 	/** 设置提示 **/

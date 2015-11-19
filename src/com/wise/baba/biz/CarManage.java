@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import com.wise.baba.AppApplication;
 import com.wise.baba.app.Constant;
 import com.wise.baba.app.Msg;
+import com.wise.baba.entity.AQIEntity;
+import com.wise.baba.entity.Air;
 import com.wise.baba.entity.CarData;
 import com.wise.baba.net.NetThread;
 import com.wise.car.CarActivity;
@@ -22,6 +24,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Handler.Callback;
 import android.os.Message;
 import android.util.Log;
@@ -35,24 +39,56 @@ import android.widget.Toast;
  * 
  */
 
-public class CarManage implements Callback {
+public class CarManage {
 
 	private Context context;
 	private AppApplication app;
-	private Handler thisHandler;
-	private Handler parentHandler;
 
 	private int unbindIndex;
 	private int deleteIndex;
 	private int updateIndex;
+	
+	private Handler uiHandler;
+	private Handler workHandler;
+	private HandlerThread handlerThread = null;
 
-	public CarManage(Context context, AppApplication app, Handler handler) {
+	public CarManage(Context context, AppApplication app, Handler uiHandler) {
 		super();
 		this.context = context;
 		this.app = app;
-		this.thisHandler = new Handler(this);
-		this.parentHandler = handler;
+		this.uiHandler = uiHandler;
+		
+		handlerThread = new HandlerThread("HttpAir");
+		handlerThread.start();
+
+		Looper looper = handlerThread.getLooper();
+		workHandler = new Handler(looper, handleCallBack);
 	}
+	
+	/**
+	 * 工作子线程回调函数：
+	 * 主线程把网络请求数据发送到该工作子线程，子线程解析完毕，发送通知到ui主线程跟新界面
+	 */
+	public Handler.Callback handleCallBack = new Handler.Callback() {
+
+		@Override
+		public boolean handleMessage(Message msg) {
+			switch (msg.what) {
+			case Msg.Delete_Car:
+				jsonDelete(msg.obj.toString());
+				break;
+			case Msg.Unbind:
+				clearData();
+				break;
+			case Msg.Unbind_Clear_Data:
+				jsonClearData(msg.obj.toString(), msg.arg1);
+				break;
+			}
+			return false;
+		}
+
+	};
+
 
 	/**
 	 * 解除绑定
@@ -67,7 +103,7 @@ public class CarManage implements Callback {
 		List<NameValuePair> paramSim = new ArrayList<NameValuePair>();
 		paramSim.add(new BasicNameValuePair("cust_id", "0"));
 		Log.i("CarManage", "解除绑定1");
-		new NetThread.putDataThread(thisHandler, url_sim, paramSim, Msg.Unbind)
+		new NetThread.putDataThread(workHandler, url_sim, paramSim, Msg.Unbind)
 				.start();
 		Log.i("CarManage", "解除绑定2");
 	}
@@ -90,7 +126,7 @@ public class CarManage implements Callback {
 					public void onClick(DialogInterface dialog, int which) {
 						params.add(new BasicNameValuePair("deal_data", "1"));
 						new Thread(
-								new NetThread.putDataThread(thisHandler, url,
+								new NetThread.putDataThread(workHandler, url,
 										params, Msg.Unbind_Clear_Data,
 										unbindIndex)).start();
 					}
@@ -99,7 +135,7 @@ public class CarManage implements Callback {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						new Thread(
-								new NetThread.putDataThread(thisHandler, url,
+								new NetThread.putDataThread(workHandler, url,
 										params, Msg.Unbind_Clear_Data,
 										unbindIndex)).start();
 					}
@@ -120,7 +156,7 @@ public class CarManage implements Callback {
 		intent.putExtra("car_series", carData.getCar_series());
 		// 传以前终端的值
 		intent.putExtra("old_device_id", carData.getDevice_id());
-		((Activity) context).startActivityForResult(intent, 2);
+		((Activity) context).startActivityForResult(intent, CarUpdateActivity.Request_Device_Update);
 	}
 
 	/**
@@ -139,7 +175,7 @@ public class CarManage implements Callback {
 						+ app.carDatas.get(deleteIndex).getObj_id()
 						+ "?auth_code=" + app.auth_code;
 
-				new Thread(new NetThread.DeleteThread(thisHandler, url,
+				new Thread(new NetThread.DeleteThread(workHandler, url,
 						Msg.Delete_Car)).start();
 			}
 		}).setNegativeButton("否", null);
@@ -185,23 +221,6 @@ public class CarManage implements Callback {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public boolean handleMessage(Message msg) {
-
-		switch (msg.what) {
-		case Msg.Delete_Car:
-			jsonDelete(msg.obj.toString());
-			break;
-		case Msg.Unbind:
-			clearData();
-			break;
-		case Msg.Unbind_Clear_Data:
-			jsonClearData(msg.obj.toString(), msg.arg1);
-			break;
-		}
-		return false;
 	}
 
 }

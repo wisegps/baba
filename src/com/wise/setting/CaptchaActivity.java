@@ -271,10 +271,10 @@ public class CaptchaActivity extends Activity {
 			startActivity(intent);
 		} else if (mark == 1) {
 			if (remove) {
-				setResult(5);
+				setResult(RegisterActivity.Result_Device_Remove);
 				finish();
 			} else if (device_update) {
-				setResult(7);
+				setResult(RegisterActivity.Result_Device_Update);
 				finish();
 			} else {
 				// TODO 重置密码

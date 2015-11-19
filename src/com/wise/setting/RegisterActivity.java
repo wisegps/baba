@@ -10,6 +10,7 @@ import com.wise.baba.ManageActivity;
 import com.wise.baba.R;
 import com.wise.baba.app.Constant;
 import com.wise.baba.net.NetThread;
+import com.wise.car.CarUpdateActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -53,6 +54,10 @@ public class RegisterActivity extends Activity {
 	// 终端验证
 	boolean remove = false;
 	boolean device_update = false;
+	
+	public static final int Result_Update_Account = 2;// 选择保险公司
+	public static final int Result_Device_Update = 5;// 选择汽车型号
+	public static final int Result_Device_Remove = 7;// 选择保险公司
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -308,15 +313,15 @@ public class RegisterActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (resultCode) {
-		case 2:
+		case Result_Update_Account:
 			setResult(2, data);
 			finish();
 			break;
-		case 5:
-			setResult(6);
+		case Result_Device_Update:
+			setResult(CarUpdateActivity.Result_Update);
 			finish();
-		case 7:
-			setResult(8);
+		case Result_Device_Remove:
+			setResult(CarUpdateActivity.Result_REMOVE);
 			finish();
 		default:
 			break;
