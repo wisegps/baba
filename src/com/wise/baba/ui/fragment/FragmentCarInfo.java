@@ -666,14 +666,6 @@ public class FragmentCarInfo extends Fragment {
 		carViews.get(index).getTv_score().setText(String.valueOf(health_score));
 		carViews.get(index).getTv_title().setText("健康指数");
 
-//		// 体检结果存起来
-//		SharedPreferences preferences = this.getActivity()
-//				.getSharedPreferences(Constant.sharedPreferencesName,
-//						Context.MODE_PRIVATE);
-//		Editor editor = preferences.edit();
-//		editor.putString(Constant.sp_health_score
-//				+ app.carDatas.get(index).getObj_id(), health_score + "");
-//		editor.commit();
 	}
 
 	/** 设置驾驶信息 **/

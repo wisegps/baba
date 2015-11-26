@@ -9,6 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -49,9 +51,11 @@ public class HttpCarInfo {
 	private AppApplication app;
 	private String deviceId;
 	private String TAG = "HttpCarInfo";
+	private Context context;
 
 	public HttpCarInfo(Context context, Handler uiHandler) {
 		super();
+		this.context = context;
 		this.uiHandler = uiHandler;
 		handlerThread = new HandlerThread("HttpCarInfo");
 		handlerThread.start();
@@ -101,7 +105,7 @@ public class HttpCarInfo {
 		}
 
 	};
-	
+
 	private ErrorListener errorListener = new ErrorListener() {
 		@Override
 		public void onErrorResponse(VolleyError error) {
@@ -193,7 +197,7 @@ public class HttpCarInfo {
 				workHandler.sendMessage(msg);
 			}
 		};
-		
+
 		Request request = new StringRequest(deviceUrl, listener, errorListener);
 		mQueue.add(request);
 	}
@@ -402,15 +406,36 @@ public class HttpCarInfo {
 			Bundle bundle = new Bundle();
 
 			JSONObject jsonObject = new JSONObject(response);
-			
+
 			// 健康指数
 			int health_score = jsonObject.getInt("health_score");
 			bundle.putInt("health_score", health_score);
+
+			saveResHealth(response);
+
 			return bundle;
 		} catch (Exception e) {
 
 		}
 		return null;
+	}
+
+	/**
+	 * 
+	 * saveResHealth 保存体检结果
+	 * 
+	 * @param response
+	 */
+	private void saveResHealth(String response) {
+		// 体检结果存起来
+		SharedPreferences preferences = context.getSharedPreferences(
+				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		Editor editor = preferences.edit();
+		editor.putString(
+				Constant.sp_health_score
+						+ app.carDatas.get(app.currentCarIndex).getObj_id(),
+				response);
+		editor.commit();
 	}
 
 	/**
@@ -451,10 +476,30 @@ public class HttpCarInfo {
 			JSONObject jsonObject = new JSONObject(response);
 			int drive_score = jsonObject.getInt("drive_score");
 			bundle.putInt("drive_score", drive_score);
+			saveResDrive(response);
 			return bundle;
 		} catch (Exception e) {
 		}
 		return null;
+	}
+
+	/**
+	 * 
+	 * saveResDrive 保存驾驶结果
+	 * 
+	 * @param response
+	 */
+	private void saveResDrive(String response) {
+
+		// 存在本地
+		SharedPreferences preferences = context.getSharedPreferences(
+				Constant.sharedPreferencesName, Context.MODE_PRIVATE);
+		Editor editor = preferences.edit();
+		editor.putString(
+				Constant.sp_drive_score
+						+ app.carDatas.get(app.currentCarIndex).getObj_id(),
+				response);
+		editor.commit();
 	}
 
 	/**
