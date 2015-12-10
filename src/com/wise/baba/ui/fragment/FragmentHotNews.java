@@ -23,6 +23,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import com.wise.baba.AppApplication;
 import com.wise.baba.BrowserActivity;
@@ -153,7 +154,17 @@ public class FragmentHotNews extends Fragment implements Callback {
 			String content = news.getContent().replaceAll("】", "】 ");
 			tvContent.setText(content);
 		}
+		
+		
+		
+		//有时候，新闻内容改变后，listview会自动获取焦点，显示在屏幕中间，所以要让scrollView滚回原来高度
+		ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView);
+		int y = (int) scrollView.getY();
+		Log.i("FragmentHotNews", y+"");
 		newsListAdapter.notifyDataSetChanged();
+		y = (int) scrollView.getY();
+		Log.i("FragmentHotNews", y+"");
+		scrollView.smoothScrollTo(0, y);
 
 	}
 
