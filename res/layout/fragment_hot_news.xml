@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/home_card_style"
     android:id="@+id/llytFragmentNews"
+    style="@style/home_card_style"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical" >
@@ -41,7 +41,7 @@
     </View>
 
     <LinearLayout
-       android:id="@+id/llytContent"
+        android:id="@+id/llytContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
@@ -57,9 +57,9 @@
             android:id="@+id/llytNews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
             android:layout_marginLeft="12dp"
-             android:layout_marginRight="12dp"
+            android:layout_marginRight="12dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal" >
 
             <ImageView
@@ -73,8 +73,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
+                android:ellipsize="end"
                 android:lines="3"
-				android:ellipsize="end"
                 android:text="欢迎使用叭叭，请先登录，谢谢"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#c9c9c9" />
@@ -83,52 +83,37 @@
 
     <View style="@style/home_news_line_style" />
 
-    <TextView
-        android:id="@+id/tv_title1"
-        style="@style/home_news_title_style"
-        android:text="暂无车讯" />
-
-    <View style="@style/home_news_line_style" />
-
-    <TextView
-        android:id="@+id/tv_title2"
-        style="@style/home_news_title_style"
-        android:text="暂无车讯" />
-
-    <View style="@style/home_news_line_style" />
-
-    <TextView
-        android:id="@+id/tv_title3"
-        style="@style/home_news_title_style"
-        android:text="暂无车讯" />
-
-  
-    <View style="@style/home_news_line_style" />
+    <com.wise.baba.ui.widget.ListViewInScroll
+        android:id="@+id/lvNews"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:divider="#00000000"
+        android:dividerHeight="0dp" />
+    
 
     <LinearLayout
         android:id="@+id/llytMore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
         android:layout_marginBottom="12dp"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:visibility="visible" >
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ico_news_more"
-            android:visibility="gone"
-             />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_news_more"
             style="@style/home_news_title_style"
-            android:visibility="gone"
             android:layout_marginLeft="5dp"
             android:text="更多本地车讯"
-            android:textColor="#70b3ce" />
+            android:textColor="#70b3ce"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

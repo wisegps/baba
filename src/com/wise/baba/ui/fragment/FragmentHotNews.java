@@ -1,6 +1,7 @@
 package com.wise.baba.ui.fragment;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,8 +17,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import com.wise.baba.AppApplication;
 import com.wise.baba.BrowserActivity;
@@ -36,12 +41,13 @@ import com.wise.baba.ui.adapter.OnCardMenuListener;
 public class FragmentHotNews extends Fragment implements Callback {
 	/** 获取本地资讯 **/
 	AppApplication app;
-	private int[] titleId = { R.id.tv_title0, R.id.tv_title1, R.id.tv_title2,
-			R.id.tv_title3 };
 	private TextView tvContent;
 	private LinearLayout llytNews;
 	private HttpHotNews http;
-	private List<News> newsList;
+	private List<News> newsList = new ArrayList<News>();
+	private ListView lvNews;
+	private TextView tvTitle0;
+	private NewsListAdapter newsListAdapter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,20 +63,42 @@ public class FragmentHotNews extends Fragment implements Callback {
 		tvContent = (TextView) getActivity().findViewById(
 				R.id.tv_title0_content);
 		llytNews = (LinearLayout) getActivity().findViewById(R.id.llytNews);
-
+		tvTitle0 = (TextView) getActivity()
+				.findViewById(R.id.tv_title0);
 		ImageView iv_weather_menu = (ImageView) getActivity().findViewById(
 				R.id.iv_hot_news_menu);
 		llytNews.setOnClickListener(onClickListener);
 		iv_weather_menu.setOnClickListener(onClickListener);
+		lvNews = (ListView) getActivity().findViewById(R.id.lvNews);
+		newsListAdapter = new NewsListAdapter();
+		lvNews.setOnItemClickListener(onItemClickListener);
+		lvNews.setAdapter(newsListAdapter);
 		http = new HttpHotNews(getActivity(), new Handler(this));
 		http.request();
 
 	}
 
+	OnItemClickListener onItemClickListener = new OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int index,
+				long arg3) {
+			showNews(index + 1);
+		}
+	};
+
+	public void showNews(int index) {
+		Intent intent_hot = new Intent(getActivity(), BrowserActivity.class);
+		News news = newsList.get(index);
+		intent_hot.putExtra("url", news.getUrl());
+		intent_hot.putExtra("title", news.getTitle());
+		intent_hot.putExtra("hot_content", news.getContent());
+		startActivity(intent_hot);
+	}
+
 	OnClickListener onClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			int index = -1;
 			switch (v.getId()) {
 			case R.id.iv_hot_news_menu:
 				if (onCardMenuListener != null) {
@@ -78,26 +106,8 @@ public class FragmentHotNews extends Fragment implements Callback {
 				}
 				break;
 			case R.id.llytNews:
-				index = 0;
+				showNews(0);
 				break;
-			case R.id.tv_title1:
-				index = 1;
-				break;
-			case R.id.tv_title2:
-				index = 2;
-				break;
-			case R.id.tv_title3:
-				index = 3;
-				break;
-			}
-			if (index != -1) {
-				Intent intent_hot = new Intent(getActivity(),
-						BrowserActivity.class);
-				News news = newsList.get(index);
-				intent_hot.putExtra("url", news.getUrl());
-				intent_hot.putExtra("title", news.getTitle());
-				intent_hot.putExtra("hot_content", news.getContent());
-				startActivity(intent_hot);
 			}
 
 		}
@@ -119,6 +129,7 @@ public class FragmentHotNews extends Fragment implements Callback {
 		switch (msg.what) {
 		case Msg.Get_News_List:
 			this.newsList = (List<News>) msg.obj;
+			Log.i("FragmentHotNews", newsList.size()+"");
 			setNewsTitle();
 			break;
 		}
@@ -130,25 +141,20 @@ public class FragmentHotNews extends Fragment implements Callback {
 	 */
 	public void setNewsTitle() {
 		if (newsList == null) {
-			return;
+			newsList = new ArrayList<News>();
 		}
 
-		int titleLength = titleId.length;
-		int newsSize = newsList.size();
-		int count = titleLength < newsSize ? titleLength : newsSize;
-		Log.i("FragmentHotNews", "count " + count);
-		for (int i = 0; i < count; i++) {
-			News news = (News) newsList.get(i);
-			if (i == 0) {
-				String content = news.getContent().replaceAll("】", "】 ");
-				Log.i("FragmentHotNews", "getContent " + content);
-				tvContent.setText(content);
-			}
-			TextView tvTitle = (TextView) getActivity()
-					.findViewById(titleId[i]);
-			tvTitle.setOnClickListener(onClickListener);
-			tvTitle.setText(news.getTitle());
+		/*
+		 * 先设置第一条新闻内容
+		 */
+		if (newsList.size() > 0) {
+			News news = (News) newsList.get(0);
+			tvTitle0.setText(news.getTitle());
+			String content = news.getContent().replaceAll("】", "】 ");
+			tvContent.setText(content);
 		}
+		newsListAdapter.notifyDataSetChanged();
+
 	}
 
 	// 在标点符号后加一个空格。
@@ -158,6 +164,42 @@ public class FragmentHotNews extends Fragment implements Callback {
 		return str.trim();
 	}
 
-	
+	class NewsListAdapter extends BaseAdapter {
+
+		@Override
+		public int getCount() {
+			int size = newsList.size();
+			if(size>1){
+				return size-1;
+			}else{
+				return 0;
+			}
+			
+		}
+
+		@Override
+		public Object getItem(int index) {
+			return newsList.get(index + 1);
+		}
+
+		@Override
+		public long getItemId(int index) {
+			return index;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			LayoutInflater inflater = LayoutInflater.from(getActivity());
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.item_news_item, null);
+			}
+			TextView tvTitle = (TextView) convertView
+					.findViewById(R.id.tv_title);
+			tvTitle.setText(newsList.get(position + 1).getTitle());
+			return convertView;
+
+		}
+
+	}
 
 }
