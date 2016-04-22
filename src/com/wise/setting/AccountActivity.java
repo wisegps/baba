@@ -80,8 +80,8 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		app = (AppApplication) getApplication();
 		setContentView(R.layout.activity_account);
+		app = (AppApplication) getApplication();
 		mQueue = Volley.newRequestQueue(this);
 		ImageView iv_back = (ImageView) findViewById(R.id.iv_back);
 		iv_back.setOnClickListener(onClickListener);
@@ -100,23 +100,23 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 		TextView tv_update_pwd = (TextView) findViewById(R.id.tv_update_pwd);
 		tv_update_pwd.setOnClickListener(onClickListener);
 		jsonCustomer();
-		OpenDateDialog.SetCustomDateListener(new OpenDateDialogListener() {
-			@Override
-			public void OnDateChange(String Date, int index) {
-				switch (index) {
-				case R.id.tv_birth:
-					String url = Constant.BaseUrl + "customer/" + app.cust_id + "/field?auth_code=" + app.auth_code;
-					List<NameValuePair> params = new ArrayList<NameValuePair>();
-					params.add(new BasicNameValuePair("field_name", "birth"));
-					params.add(new BasicNameValuePair("field_type", "Date"));
-					params.add(new BasicNameValuePair("field_value", Date));
-					new Thread(new NetThread.putDataThread(handler, url, params, set_birth)).start();
-					birth = Date;
-					tv_birth.setText(Date);
-					break;
-				}
-			}
-		});
+//		OpenDateDialog.SetCustomDateListener(new OpenDateDialogListener() {
+//			@Override
+//			public void OnDateChange(String Date, int index) {
+//				switch (index) {
+//				case R.id.tv_birth:
+//					String url = Constant.BaseUrl + "customer/" + app.cust_id + "/field?auth_code=" + app.auth_code;
+//					List<NameValuePair> params = new ArrayList<NameValuePair>();
+//					params.add(new BasicNameValuePair("field_name", "birth"));
+//					params.add(new BasicNameValuePair("field_type", "Date"));
+//					params.add(new BasicNameValuePair("field_value", Date));
+//					new Thread(new NetThread.putDataThread(handler, url, params, set_birth)).start();
+//					birth = Date;
+//					tv_birth.setText(Date);
+//					break;
+//				}
+//			}
+//		});
 	}
 
 	OnClickListener onClickListener = new OnClickListener() {
@@ -216,6 +216,9 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			SharedPreferences preferences = getSharedPreferences(Constant.sharedPreferencesName, Context.MODE_PRIVATE);
 			String customer = preferences.getString(Constant.sp_customer + app.cust_id, "");
 			JSONObject jsonObject = new JSONObject(customer);
+			
+			Log.d("BUG", "返回信息：" + jsonObject.toString());
+			
 			tv_phone.setText(jsonObject.getString("mobile"));
 			tv_name.setText(jsonObject.getString("cust_name"));
 			tv_email.setText(jsonObject.getString("email"));
@@ -227,7 +230,8 @@ public class AccountActivity extends Activity implements OnUploadProcessListener
 			birth = jsonObject.getString("birth").substring(0, 10);
 			tv_birth.setText(birth);
 			String logo = jsonObject.getString("logo");
-			if (logo == null || logo.equals("")) {
+			//2019-4-22 修复BUG 黑屏原因--->没有设置logo时候  logo字段的值为 "(null)"
+			if (logo == null || logo.equals("") || logo.equals("(null)")) {
 
 			} else {
 				mQueue.add(new ImageRequest(logo, new Response.Listener<Bitmap>() {

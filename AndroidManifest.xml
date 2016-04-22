@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wise.baba"
-    android:versionCode="53"
-    android:versionName="2.23" >
+    android:versionCode="57"
+    android:versionName="2.25" >
 
     <!-- 37 -->
     <supports-screens
@@ -14,7 +14,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="21" />
 
     <permission
         android:name="com.wise.baba.permission.JPUSH_MESSAGE"
@@ -658,9 +658,8 @@
         <!--
 		debug：ENAit7WmjvYO0DmxKMOU4CLx
 		正     式1：DhT4kz88wR3r5yCl6tQCpaNW
-		本机1：YTcG12ht0N8FaxI6rbBd4onM
+		本机wu ：OI7lFCsSZssUM6tFiT7FsfnvBY4rNfUE
 		
-		本机2：v2Nqgx5IjHzNw2osna9SHhGH
         -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"

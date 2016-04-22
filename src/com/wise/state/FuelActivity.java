@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -436,8 +437,19 @@ public class FuelActivity extends Activity {
 						} else if (type == DISTANCE) {
 							avg_fuel1 = Float.valueOf(jsonArray.getJSONObject(i).getString("total_distance"));
 						} else {
-							avg_fuel1 = Float.valueOf(jsonArray.getJSONObject(i).getString("total_fee"));
+							
+							if(!jsonArray.getJSONObject(i).has("total_fee")){
+								avg_fuel1 = 0.0f;
+								Log.i("FragmentHomeAir", "null ----null: ");
+							}else{
+								avg_fuel1 = Float.valueOf(jsonArray.getJSONObject(i).getString("total_fee"));
+								Log.i("FragmentHomeAir", "unnull ----unnull: ");
+							}
+							/*2016-4-22 修复bug 卡死黑屏 --> 判断当 字段 "total_fee" 为空情况*/
+//							avg_fuel1 = Float.valueOf(jsonArray.getJSONObject(i).getString("total_fee"));
 						}
+						
+						
 						int rcv_day = Integer.valueOf(jsonArray.getJSONObject(i).getString("rcv_day").substring(8, 10));
 						String weekDate = jsonArray.getJSONObject(i).getString("rcv_day").substring(0, 10);
 						Efuel.add(new EnergyItem(rcv_day, avg_fuel1, weekDate));

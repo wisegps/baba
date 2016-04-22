@@ -94,7 +94,8 @@ public class DriveActivity extends Activity {
 			carData = app.carDatas.get(app.currentCarIndex);
 		}
 		
-		tv_name.setText(carData.getNick_name());
+		
+		
 		
 		tv_location.setText(carData.getAdress());
 		
@@ -117,12 +118,11 @@ public class DriveActivity extends Activity {
 			tv_location.setAlpha(0.3f);
 			
 			tv_date.setTextColor(Color.BLACK);
-			tv_date.setAlpha(0.3f);
-			
+			tv_date.setAlpha(0.3f);	
 		}
 		
 		
-		
+		tv_name.setText(carData.getNick_name());
 		Device_id = carData.getDevice_id();
 		Date = GetSystem.GetNowMonth().getDay();
 		

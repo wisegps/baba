@@ -11,6 +11,17 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.Request.Method;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMapLoadedCallback;
 import com.baidu.mapapi.map.BitmapDescriptor;
@@ -26,9 +37,11 @@ import com.baidu.mapapi.map.BaiduMap.SnapshotReadyCallback;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.model.LatLngBounds.Builder;
+import com.google.gson.JsonArray;
 import com.wise.baba.AppApplication;
 import com.wise.baba.R;
 import com.wise.baba.app.Constant;
+import com.wise.baba.app.Msg;
 import com.wise.baba.biz.GetSystem;
 import com.wise.baba.net.NetThread;
 
@@ -73,6 +86,9 @@ public class TravelMapActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_travel_map);
+		
+		RequestQueue mQueue = Volley.newRequestQueue(this);  
+		
 		app = (AppApplication) getApplication();
 		ll_content = (LinearLayout) findViewById(R.id.ll_content);
 		ImageView iv_activity_travel_share = (ImageView) findViewById(R.id.iv_activity_travel_share);
@@ -126,7 +142,31 @@ public class TravelMapActivity extends Activity {
 			Log.i("TravelMapActivity", StartTime);
 			Log.i("TravelMapActivity", StopTime);
 			Log.i("TravelMapActivity", url);
-			new NetThread.GetDataThread(handler, url, get_data).start();
+			
+			/*（2016-4-22 修改bug）一下请求获取不了太多数据，改为用volley 请求*/
+//			new NetThread.GetDataThread(handler, url, get_data).start();
+			Request request = new JsonArrayRequest(url,new Response.Listener<JSONArray>() {
+
+				@Override
+				public void onResponse(JSONArray response) {
+					// TODO Auto-generated method stub
+					Message msg = handler.obtainMessage();
+					msg.what = get_data;
+					msg.obj = response;
+					handler.sendMessage(msg);
+					Log.d("TravelMapActivity", "volley请求: " + response);
+				}
+				},new Response.ErrorListener() {
+
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						// TODO Auto-generated method stub
+						Log.e("TravelMapActivity", "volley请求失败: " + error);
+					}
+				});
+			request.setRetryPolicy(new DefaultRetryPolicy(10 * 1000, 1, 1.0f));
+			mQueue.add(request);
+			
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -186,12 +226,17 @@ public class TravelMapActivity extends Activity {
 			}
 		}
 	};
+	
+	/**
+	 * Handler 处理消息
+	 */
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
 			case get_data:
+				Log.i("TravelMapActivity", "行程图数据：" + msg.obj.toString());
 				jsonData(msg.obj.toString());
 				break;
 			}

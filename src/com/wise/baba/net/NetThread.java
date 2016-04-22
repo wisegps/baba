@@ -70,11 +70,12 @@ public class NetThread {
 				URL myURL = new URL(url);
 				HttpURLConnection httpsConn = (HttpURLConnection) myURL.openConnection();
 				if (httpsConn != null) {
+					
 					httpsConn.setConnectTimeout(5*1000);
 					httpsConn.setReadTimeout(5*1000);
 			        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					InputStream inputStream = httpsConn.getInputStream();
-					byte[] buffer = new byte[1024];
+					byte[] buffer = new byte[10240];
 					int len = -1;
 					while((len = inputStream.read(buffer))!= -1){
 					    baos.write(buffer, 0, len);

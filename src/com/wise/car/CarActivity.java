@@ -352,8 +352,8 @@ public class CarActivity extends Activity {
 			List<NameValuePair> paramSim = new ArrayList<NameValuePair>();
 			paramSim.add(new BasicNameValuePair("cust_id", "0"));
 			new NetThread.putDataThread(handler, url_sim, paramSim, remove_cust).start();
-		}
-		if (requestCode == 7 && resultCode == 8) {// 修改终端
+		}/*2016-4-22 修改bug resultCode == 8 改为 ==66*/
+		if (requestCode == 7 && resultCode == 16) {// 修改终端
 			CarData carData = app.carDatas.get(index);
 			Intent intent = new Intent(CarActivity.this, DevicesAddActivity.class);
 			intent.putExtra("car_id", carData.getObj_id());

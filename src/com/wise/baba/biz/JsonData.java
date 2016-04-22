@@ -7,13 +7,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.wise.baba.entity.CarData;
 
 
 public class JsonData {
 	public static List<CarData> jsonCarInfo(String str) {
-		
-		
 		List<CarData> carDatas = new ArrayList<CarData>();
 		try {
 			JSONArray jsonArray = new JSONArray(str);
@@ -78,10 +78,17 @@ public class JsonData {
 					carData.setMaintain_company(jsonObject
 							.getString("maintain_company"));
 				}
-				if (jsonObject.opt("maintain_last_date") != null) {
+				
+				// 2016-4-16 修复bug 登陆黑屏卡住
+				
+				Log.e("BUG", "修复bug：" + jsonObject.isNull("maintain_last_date"));
+				
+				if (!jsonObject.isNull("maintain_last_date")) {
 					carData.setMaintain_last_date(jsonObject.getString(
 							"maintain_last_date").substring(0, 10));
 				}
+				
+				
 				if (jsonObject.opt("maintain_last_mileage") != null) {
 					carData.setMaintain_last_mileage(jsonObject
 							.getString("maintain_last_mileage"));
@@ -105,7 +112,7 @@ public class JsonData {
 				} else {
 					carData.setIfAir(false);
 				}
-				
+//				
 				JSONArray jsonArray2 = new JSONArray(
 						jsonObject.getString("vio_citys"));
 				ArrayList<String> vio_citys = new ArrayList<String>();
