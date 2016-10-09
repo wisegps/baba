@@ -12,4 +12,6 @@ package com.wise.baba.app;
  */
 public class Config {
 
+	public static String updateApkUrl = "http://o.bibibaba.cn/upgrade?app_name=baba&platform=android";
+	
 }

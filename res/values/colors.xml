@@ -147,4 +147,8 @@
 
     
     <color name="transparent1">#fa535353</color>  
+    
+    <color name="wheel_timebtn_nor">#54a3fa</color>
+    <color name="wheel_timebtn_pre">#CCCCCC</color>
+    
 </resources>

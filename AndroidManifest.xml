@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wise.baba"
-    android:versionCode="57"
-    android:versionName="2.25" >
+    android:versionCode="60"
+    android:versionName="2.26" >
 
     <!-- 37 -->
     <supports-screens

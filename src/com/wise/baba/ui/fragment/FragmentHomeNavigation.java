@@ -95,7 +95,6 @@ public class FragmentHomeNavigation extends Fragment implements
 				parent.removeView(view);
 			}
 		}
-
 		imgDown = (ImageView) view.findViewById(R.id.imgDown);
 		imgDown.setOnClickListener(this);
 		gridNav = (CustomGridView) view.findViewById(R.id.gridNav);
@@ -114,6 +113,12 @@ public class FragmentHomeNavigation extends Fragment implements
 		
 
 		Class toActivity = null;
+		
+		if(app.carDatas.size()==0){
+			Toast.makeText(getActivity(), "没有车辆信息或请先绑定车辆", Toast.LENGTH_LONG).show();
+			return;
+		}
+		
 
 		switch (position) {
 		case 0:// 位置监控

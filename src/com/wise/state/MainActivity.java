@@ -6,6 +6,9 @@ import java.util.Iterator;
 
 import org.json.JSONObject;
 
+import versionupdata.BaseVolley;
+import versionupdata.VersionUpdate;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -28,6 +31,7 @@ import com.baidu.navisdk.BNaviEngineManager.NaviEngineInitListener;
 import com.baidu.navisdk.BaiduNaviManager;
 import com.umeng.update.UmengUpdateAgent;
 import com.wise.baba.R;
+import com.wise.baba.app.Config;
 import com.wise.baba.app.Constant;
 import com.wise.baba.biz.GetLocation;
 import com.wise.baba.biz.GetSystem;
@@ -68,8 +72,28 @@ public class MainActivity extends FragmentActivity implements
 		showFragment("home");
 		registerReceiver();
 		checkIndication();
-		UmengUpdateAgent.update(MainActivity.this);
+		BaseVolley.init(this);
+		
+		UmengUpdateAgent.update(MainActivity.this); //友盟更新用不了了2016 10 8
+		
+		update(Config.updateApkUrl);
 	}
+	
+	
+	private void update(String url){
+		 VersionUpdate updata = new VersionUpdate(this);
+		 
+		 
+		 Log.e("UPDATE_TEST", "onCreate................................................");
+		 
+         updata.check(url, new VersionUpdate.UpdateListener() {
+             @Override
+             public void hasNewVersion(boolean isHad, String updateMsg, String apkUrl) {
+
+             }
+         });
+	}
+	
 	
 	@Override
 	protected void onResume() {

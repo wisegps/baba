@@ -140,5 +140,29 @@
         <item name="android:windowBackground">@color/transparent1</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
+    
+    
+    <!-- dialog style-->
+	<style name="progressDialog" parent="@android:style/Theme.Dialog">
+	<item name="android:windowFrame">@null</item>
+	<!-- 边框 -->
+	<item name="android:windowIsFloating">true</item>
+	<!-- 是否悬浮在activity上 -->
+	<item name="android:windowIsTranslucent">true</item>
+	<!-- 半透明 -->
+	<item name="android:windowNoTitle">true</item>
+	<!-- 无标题 -->
+	<item name="android:windowBackground">@android:color/transparent</item>
+	<!-- 背景透明 -->
+	<item name="android:backgroundDimEnabled">true</item>
+	<!-- 模糊 -->
+	<item name="android:backgroundDimAmount">0.6</item>
+	<!-- 灰度 -->
+	<item name="android:windowContentOverlay">@null</item>
+	<!-- 对话框是否有遮盖 -->
+	<!-- <item name="android:windowAnimationStyle">@style/dialog_animation</item>弹出或者进入时的动画效果 -->
+	<item name="android:colorBackgroundCacheHint">@null</item>
+	<!-- 背景缓存颜色 -->
+	</style>
 
 </resources>

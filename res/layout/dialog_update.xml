@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_dialog">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingTop="9dp"
+            android:textColor="#5d6268"
+            android:textSize="15dp"
+            android:text="标题"/>
+        <ImageView
+            android:id="@+id/btn_neg"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:background="@drawable/selector_close_bg"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="15dp"
+        android:paddingRight="15dp"
+        android:paddingLeft="15dp"
+        android:textColor="#5d6268"
+        android:textSize="15dp"
+        android:text="信息"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#ecedf3"/>
+
+    <Button
+        android:id="@+id/btn_pos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/wheel_timebtn_nor"
+        android:background="@drawable/selector_dialog_button"
+        android:text="确定"/>
+
+</LinearLayout>
