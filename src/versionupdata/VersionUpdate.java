@@ -2,6 +2,7 @@ package versionupdata;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -18,6 +19,9 @@ import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -102,20 +106,30 @@ public  class VersionUpdate {
                     vsersionLast = object.getDouble("version");
                     updateApkUrl = object.getString("app_path");
                     String updateMsg = object.getString("logs");
-                    Log.d(TAG, updateMsg);
+                    Log.d(TAG, updateMsg + "\n"
+                    		+ "本地版本 ：" + vsersionNative + "  最新版本：" +  vsersionLast);
                     if(vsersionLast>vsersionNative){
                         JSONArray jsonArray = new JSONArray(updateMsg);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            double logVersion = Double.valueOf(jsonArray.getJSONObject(i).getString("version"));
-                            if (logVersion > vsersionNative) {
-                                updateLogs = jsonArray.getJSONObject(i).getString("log").replaceAll("\\\\r\\\\n", "\n");//替换\r\n
-                                showDialog(mContext,updateLogs,updateApkUrl);
-                                listener.hasNewVersion(true,updateLogs,updateApkUrl);
-                            }else{
-                                listener.hasNewVersion(false,"nothing update","nothing update");
-                            }
-                        }
+                        updateLogs = jsonArray.getJSONObject(jsonArray.length()-1).getString("log").replaceAll("\\\\r\\\\n", "\n");//替换\r\n
+                        showDialog(mContext,updateLogs,updateApkUrl);
+                        listener.hasNewVersion(true,updateLogs,updateApkUrl);
+                    }else{
+                        listener.hasNewVersion(false,"nothing update","nothing update");
                     }
+//                    if(vsersionLast>vsersionNative){
+//                        JSONArray jsonArray = new JSONArray(updateMsg);
+//                        for (int i = 0; i < jsonArray.length(); i++) {
+//                            double logVersion = Double.valueOf(jsonArray.getJSONObject(i).getString("version"));
+//                            if (logVersion > vsersionNative) {
+//                                updateLogs = jsonArray.getJSONObject(i).getString("log").replaceAll("\\\\r\\\\n", "\n");//替换\r\n
+//                                showDialog(mContext,updateLogs,updateApkUrl);
+//                                listener.hasNewVersion(true,updateLogs,updateApkUrl);
+//                            }else{
+//                                listener.hasNewVersion(false,"nothing update","nothing update");
+//                            }
+//                        }
+//                    }
+                    
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -279,15 +293,23 @@ public  class VersionUpdate {
                 case UPDATA_PROGRESS:
                     int size = msg.getData().getInt("size");
                     if(size == fileSize){
-//                        showToast(mContext,"文件下载完成");
+                    	if(downloadDialog!=null){
+                            downloadDialog.dismiss();
+                        }
+                    	downloadDialog.dismiss();
                         showInstallDialog(mContext);
                     }
+                    mProgress.setProgress(size);
                     break;
                 case DOWNLOAD_FAILE:
+                	if(downloadDialog!=null){
+                        downloadDialog.dismiss();
+                    }
                     showToast(mContext,mContext.getResources().getString(R.string.new_version_download_failed));
                     break;
                 case DOWNLOAD_START:
-                    showToast(mContext,mContext.getResources().getString(R.string.download_app_now));
+                    showDownloadingProgress();
+                    mProgress.setMax(fileSize);
                     break;
             }
         }
@@ -341,5 +363,22 @@ public  class VersionUpdate {
         i.setDataAndType(Uri.parse("file://" + apkfile.toString()),
                 "application/vnd.android.package-archive");
         mContext.startActivity(i);
+    }
+    
+    
+    AlertDialog downloadDialog;
+    ProgressBar  mProgress;
+    private void showDownloadingProgress(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        final LayoutInflater inflater = LayoutInflater.from(mContext);
+        View v = inflater.inflate(R.layout.item_download_diaolg, null);
+        mProgress = (ProgressBar) v.findViewById(R.id.progressbar_download);
+        builder.setView(v);
+        builder.setTitle("应用下载中...");
+        builder.setIcon(R.drawable.ic_app_download);
+        downloadDialog = builder.create();
+        downloadDialog.setCanceledOnTouchOutside(false);// 设置点击屏幕Dialog不消�?
+        downloadDialog.show();
+
     }
 }

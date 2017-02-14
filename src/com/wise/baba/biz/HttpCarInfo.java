@@ -17,6 +17,7 @@ import android.os.Handler.Callback;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import com.android.volley.Request.Method;
 import com.android.volley.Request;
@@ -129,8 +130,10 @@ public class HttpCarInfo {
 
 		CarData carData = app.carDatas.get(index);
 		String device_id = carData.getDevice_id();
+		
 		// 3,无设备id
 		if (device_id == null || device_id.equals("")) {
+			Log.e("Welcome","=== return");
 			return;
 		}
 
@@ -138,6 +141,7 @@ public class HttpCarInfo {
 		/*
 		 * 请求设备信息
 		 */
+		if(!TextUtils.isEmpty(brand))
 		requestDevice(device_id, brand);
 
 		String gasNo = "";
@@ -171,6 +175,7 @@ public class HttpCarInfo {
 		/*
 		 * 获取限行信息
 		 */
+		if(!TextUtils.isEmpty(objName))
 		requestCarLimit(device_id, objName);
 	}
 
@@ -181,6 +186,10 @@ public class HttpCarInfo {
 		// Log.i("HttpCarInfo", "获取设备信息");
 		// 获取设备信息
 		String deviceUrl = "";
+		if (device_id == null || device_id.equals("")) {
+			Log.e("Welcome","==11= return");
+			return;
+		}
 		try {
 			deviceUrl = Constant.BaseUrl + "device/" + device_id
 					+ "?auth_code=" + app.auth_code + "&brand="
@@ -319,8 +328,9 @@ public class HttpCarInfo {
 	 */
 	public void requestGps(String device_id) {
 
+		if(device_id == null || TextUtils.isEmpty(device_id))
+			return;
 		String gpsUrl = GetUrl.getCarGpsData(device_id, app.auth_code);
-
 		Listener<String> listener = new Response.Listener<String>() {
 			public void onResponse(String response) {
 				// 返回数据，发送到工作子线程去解析

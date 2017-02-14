@@ -89,7 +89,7 @@ public class MainActivity extends FragmentActivity implements
          updata.check(url, new VersionUpdate.UpdateListener() {
              @Override
              public void hasNewVersion(boolean isHad, String updateMsg, String apkUrl) {
-
+            	 Log.e("UPDATE_TEST", "是否有更新...................................." + isHad);
              }
          });
 	}

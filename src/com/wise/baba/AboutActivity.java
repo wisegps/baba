@@ -1,15 +1,19 @@
 package com.wise.baba;
 
 
+import versionupdata.VersionUpdate;
+
 import com.umeng.update.UmengUpdateAgent;
 import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
 import com.umeng.update.UpdateStatus;
+import com.wise.baba.app.Config;
 import com.wise.baba.app.Constant;
 import com.wise.baba.biz.GetSystem;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -30,16 +34,16 @@ public class AboutActivity extends Activity{
 		tv_check_update.setOnClickListener(onClickListener);
 		tv_version = (TextView)findViewById(R.id.tv_version);
 		setVersion();
-		UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {			
-			@Override
-			public void onUpdateReturned(int arg0, UpdateResponse arg1) {
-				switch (arg0) {
-				case UpdateStatus.No:
-					Toast.makeText(AboutActivity.this, "无更新", Toast.LENGTH_SHORT).show();
-					break;
-				} 
-			}
-		});
+//		UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {			
+//			@Override
+//			public void onUpdateReturned(int arg0, UpdateResponse arg1) {
+//				switch (arg0) {
+//				case UpdateStatus.No:
+////					Toast.makeText(AboutActivity.this, "无更新", Toast.LENGTH_SHORT).show();
+//					break;
+//				} 
+//			}
+//		});
 	}
 	OnClickListener onClickListener = new OnClickListener(){
 		@Override
@@ -49,12 +53,33 @@ public class AboutActivity extends Activity{
 				finish();
 				break;
 			case R.id.tv_check_update:
-				UmengUpdateAgent.forceUpdate(AboutActivity.this);
+//				UmengUpdateAgent.forceUpdate(AboutActivity.this);
+				update(Config.updateApkUrl);
 				break;
 			}
 		}
 		
 	};
+	
+	
+	
+	private void update(String url){
+		 VersionUpdate updata = new VersionUpdate(this);
+		 
+		 
+		 Log.e("UPDATE_TEST", "onCreate................................................");
+		 
+        updata.check(url, new VersionUpdate.UpdateListener() {
+            @Override
+            public void hasNewVersion(boolean isHad, String updateMsg, String apkUrl) {
+           	 Log.e("UPDATE_TEST", "是否有更新...................................." + isHad);
+           	 if(!isHad){
+           		Toast.makeText(AboutActivity.this, "已是最新版本", Toast.LENGTH_SHORT).show();
+           	 }
+            }
+        });
+	}
+	
 	private void setVersion(){
 		//Alpha Beta
 		tv_version.setText("叭叭V"+ GetSystem.GetVersion(AboutActivity.this, Constant.PackageName));
@@ -62,6 +87,6 @@ public class AboutActivity extends Activity{
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		UmengUpdateAgent.setUpdateListener(null);
+//		UmengUpdateAgent.setUpdateListener(null);
 	}
 }

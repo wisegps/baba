@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -116,6 +117,8 @@ public class HttpGetObdData {
 		}
 
 		deviceId = app.carDatas.get(index).getDevice_id();
+		if(deviceId==null || TextUtils.isEmpty(deviceId))
+			return;
 		brand = app.carDatas.get(index).getCar_brand();
 		try {
 			brand = URLEncoder.encode(brand, "UTF-8");

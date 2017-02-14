@@ -21,23 +21,76 @@ public class JsonData {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				CarData carData = new CarData();
 				carData.setObj_id(jsonObject.getInt("obj_id"));
-				carData.setNick_name(jsonObject.getString("nick_name"));
-				if (jsonObject.opt("device_id") == null) {
-					carData.setDevice_id("");
-				} else {
-					if (jsonObject.getString("device_id").equals("0")) {
-						carData.setDevice_id("");
-					} else {
-						carData.setDevice_id(jsonObject.getString("device_id"));
-					}
+				
+				if(jsonObject.has("nick_name")){//2016-11-11 修复 返回数据没有
+					if(!jsonObject.isNull("nick_name"))
+					carData.setNick_name(jsonObject.getString("nick_name"));
+				}else{
+					carData.setNick_name("");
 				}
-				carData.setObj_name(jsonObject.getString("obj_name"));
-				carData.setCar_brand(jsonObject.getString("car_brand"));
-				carData.setCar_brand_id(jsonObject.getString("car_brand_id"));
-				carData.setCar_series(jsonObject.getString("car_series"));
-				carData.setCar_series_id(jsonObject.getString("car_series_id"));
-				carData.setCar_type(jsonObject.getString("car_type"));
-				carData.setCar_type_id(jsonObject.getString("car_type_id"));
+				
+				if(jsonObject.has("device_id")){
+					if(!jsonObject.isNull("device_id")){
+						carData.setDevice_id(jsonObject.getString("device_id"));
+						Log.e("Welcome","=== " + carData.getDevice_id());
+					}else{
+						carData.setDevice_id("");
+					}
+				}else{
+					carData.setDevice_id("");
+					Log.e("Welcome","=== " + carData.getDevice_id());
+				}
+			
+				
+				if(jsonObject.has("obj_name")){
+					if(!jsonObject.isNull("obj_name"))
+					carData.setObj_name(jsonObject.getString("obj_name"));
+				}else{
+					carData.setCar_brand("");
+				}
+				if(jsonObject.has("car_brand")){
+					if(!jsonObject.isNull("car_brand"))
+					carData.setCar_brand(jsonObject.getString("car_brand"));
+				}else{
+					carData.setCar_brand("");
+				}
+				if(jsonObject.has("car_brand_id")){
+					if(!jsonObject.isNull("car_brand_id"))
+					carData.setCar_brand_id(jsonObject.getString("car_brand_id"));
+				}else{
+					carData.setCar_brand_id("0");
+				}
+				
+				if(jsonObject.has("car_series")){
+					if(!jsonObject.isNull("car_series"))
+					carData.setCar_series(jsonObject.getString("car_series"));
+				}else{
+					carData.setCar_series("");
+				}
+				
+				if(jsonObject.has("car_series_id")){
+					if(!jsonObject.isNull("car_series_id"))
+					carData.setCar_series_id(jsonObject.getString("car_series_id"));
+				}else{
+					carData.setCar_series_id("0");
+				}
+				
+				if(jsonObject.has("car_type")){
+					if(!jsonObject.isNull("car_type"))
+					carData.setCar_type(jsonObject.getString("car_type"));
+				}else{
+					carData.setCar_type("");
+				}
+				
+				if(jsonObject.has("car_type_id")){
+					if(!jsonObject.isNull("car_type_id"))
+					carData.setCar_type_id(jsonObject.getString("car_type_id"));
+				}else{
+					carData.setCar_type_id("0");
+				}
+				
+				
+				
 				if (jsonObject.opt("annual_inspect_date") != null) {
 					carData.setAnnual_inspect_date(jsonObject.getString(
 							"annual_inspect_date").substring(0, 10));
@@ -81,13 +134,12 @@ public class JsonData {
 				
 				// 2016-4-16 修复bug 登陆黑屏卡住
 				
-				Log.e("BUG", "修复bug：" + jsonObject.isNull("maintain_last_date"));
+				Log.e("Welcome", "修复bug：" + jsonObject.isNull("maintain_last_date"));
 				
 				if (!jsonObject.isNull("maintain_last_date")) {
 					carData.setMaintain_last_date(jsonObject.getString(
 							"maintain_last_date").substring(0, 10));
 				}
-				
 				
 				if (jsonObject.opt("maintain_last_mileage") != null) {
 					carData.setMaintain_last_mileage(jsonObject
